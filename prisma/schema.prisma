@@ -1,14 +1,917 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  CITOYEN           // Utilisateur authentifié (VISITEUR supprimé - accès public via pages non protégées)
+  DELEGATION        // Responsable secteur : crée événements, actualités, articles, campagnes
+  AUTORITE_LOCALE   // Gestionnaire établissement : gère réclamations affectées
+  ADMIN             // Gestion complète : validation, affectation, CRUD total
+  SUPER_ADMIN       // Gère les droits des admins + toutes permissions admin
+  GOUVERNEUR        // Vue globale lecture seule + détails + téléchargement
+}
+
+
+
+enum Secteur {
+  EDUCATION
+  SANTE
+  SPORT
+  SOCIAL
+  CULTUREL
+  AUTRE
+}
+
+enum StatutReclamation {
+  ACCEPTEE          // Réclamation acceptée par admin (peut être affectée)
+  REJETEE           // Réclamation rejetée par admin avec motif
+}
+
+enum AffectationReclamation {
+  NON_AFFECTEE      // Pas encore affectée (en attente)
+  AFFECTEE          // Affectée à autorité locale ou service interne
+}
+
+enum StatutEvenement {
+  EN_ATTENTE_VALIDATION    // Créé par délégation, en attente validation admin
+  PUBLIEE                  // Validé et publié par admin, visible publiquement
+  EN_ACTION                // Événement en cours actuellement
+  CLOTUREE                 // Événement terminé avec bilan publié
+  REJETEE                  // Rejeté par admin avec motif
+}
+
+enum StatutActualite {
+  BROUILLON
+  EN_ATTENTE_VALIDATION
+  VALIDEE
+  PUBLIEE
+  DEPUBLIEE
+  ARCHIVEE
+}
+
+enum StatutSuggestion {
+  SOUMISE
+  EN_EXAMEN
+  APPROUVEE
+  REJETEE
+  IMPLEMENTEE
+}
+
+enum TypeZone {
+  URBAINE
+  RURALE
+  PERI_URBAINE
+}
+
+enum Accessibilite {
+  FACILE
+  MOYENNE
+  DIFFICILE
+}
+
+enum EtatInfrastructure {
+  EXCELLENT
+  BON
+  MOYEN
+  DEGRADE
+  A_RENOVER
+  DANGEREUX
+}
+
+enum TypeMedia {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  AUTRE
+}
+
+// ============================================
+// GESTION DES UTILISATEURS
+// ============================================
+
+model User {
+  id                      Int       @id @default(autoincrement())
+  
+  // Authentification
+  email                   String    @unique
+  telephone               String?   @unique
+  motDePasse              String    // Hashé bcrypt
+  
+  // Identité
+  nom                     String
+  prenom                  String
+  photo                   String?
+  
+  // Rôle et statut
+  role                    Role      @default(CITOYEN)
+  isActive                Boolean   @default(true)
+  isEmailVerifie          Boolean   @default(false)
+  isTelephoneVerifie      Boolean   @default(false)
+  
+  // === PROFIL DELEGATION (Responsable Secteur) ===
+  secteurResponsable      Secteur?  // Si DELEGATION : secteur géré
+  
+  // === PROFIL AUTORITE LOCALE (Responsable Établissement) ===
+  etablissementId         Int?      @unique
+  etablissement           Etablissement? @relation(fields: [etablissementId], references: [id])
+  
+  // Traçabilité
+  derniereConnexion       DateTime?
+  dateInscription         DateTime  @default(now())
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // Relations
+  evaluations             Evaluation[]
+  reclamationsCreees      Reclamation[]
+  suggestions             Suggestion[]
+  notifications           Notification[]
+  abonnements             AbonnementEtablissement[]
+  
+  // Contenus créés par DELEGATION
+  evenementsCrees         Evenement[]
+  actualiteCreees         Actualite[]
+  articlesCrees           Article[]
+  campagnesCreees         Campagne[]
+  
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@index([secteurResponsable])
+  @@index([etablissementId])
+}
+
+// ============================================
+// GESTION TERRITORIALE HIÉRARCHIQUE
+// Province → Commune → Annexe → Établissement
+// ============================================
+
+model Commune {
+  id                      Int       @id @default(autoincrement())
+  
+  // Identité administrative
+  code                    String    @unique // Code officiel
+  nom                     String
+  nomArabe                String?
+  
+  // Hiérarchie administrative
+  region                  String
+  province                String    // Province de Médiouna
+  
+  // Données démographiques
+  population              Int?
+  superficieKm2           Float?
+  densite                 Float?
+  
+  // Géolocalisation (centroïde)
+  latitude                Float?
+  longitude               Float?
+  
+  // Données SIG
+  geojsonBoundary         Json?     // Polygone GeoJSON
+  
+  // Métadonnées
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // Relations
+  annexes                 Annexe[]
+  etablissements          Etablissement[]  // Relation directe gardée pour flexibilité
+  reclamations            Reclamation[]
+  evenements              Evenement[]
+  
+  @@index([code])
+  @@index([nom])
+  @@index([province])
+}
+
+// ============================================
+// ANNEXES ADMINISTRATIVES
+// Subdivision de la commune pour découpage précis
+// ============================================
+
+model Annexe {
+  id                      Int       @id @default(autoincrement())
+  
+  // Identité
+  code                    String    @unique // Code unique annexe
+  nom                     String    // Ex: "AA ABBERAR", "AA AL HAMD"
+  nomArabe                String?
+  
+  // Rattachement commune
+  communeId               Int
+  commune                 Commune   @relation(fields: [communeId], references: [id])
+  
+  // Géolocalisation
+  latitude                Float?
+  longitude               Float?
+  
+  // Données SIG (découpage précis)
+  geojsonBoundary         Json?     // Polygone GeoJSON de l'annexe
+  
+  // Statistiques
+  population              Int?
+  superficieKm2           Float?
+  
+  // Métadonnées
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // Relations
+  etablissements          Etablissement[]
+  
+  @@index([communeId])
+  @@index([code])
+  @@index([nom])
+}
+
+// ============================================
+// ÉTABLISSEMENTS UNIFIÉS
+// Secteur détermine les attributs spécifiques
+// Position géographique précise pour carte 3D
+// ============================================
+
+model Etablissement {
+  id                      Int       @id @default(autoincrement())
+  
+  // === IDENTIFICATION ===
+  code                    String    @unique // EDU-MED-001
+  nom                     String
+  nomArabe                String?
+  secteur                 Secteur   // Détermine attributs spécifiques
+  
+  // === LOCALISATION ADMINISTRATIVE HIÉRARCHIQUE ===
+  // DOUBLE RELATION (Commune obligatoire + Annexe optionnelle pour précision)
+  communeId               Int       // OBLIGATOIRE
+  commune                 Commune   @relation(fields: [communeId], references: [id])
+  
+  annexeId                Int?      // OPTIONNEL (précision supplémentaire)
+  annexe                  Annexe?   @relation(fields: [annexeId], references: [id])
+  
+  quartierDouar           String?
+  adresseComplete         String?
+  
+  // === GÉOLOCALISATION PRÉCISE (Obligatoire pour carte 3D) ===
+  latitude                Float     // Obligatoire
+  longitude               Float     // Obligatoire
+  altitude                Float?
+  
+  // === CARACTÉRISTIQUES TERRITORIALES ===
+  zoneTypologie           TypeZone?
+  accessibilite           Accessibilite?
+  voieAcces               String?
+  distanceChefLieu        Float?
+  transportPublic         String?
+  
+  // === INFORMATIONS ADMINISTRATIVES ===
+  nature                  String?   // Public, Privé
+  tutelle                 String?
+  statutJuridique         String?
+  gestionnaire            String?
+  responsableNom          String?
+  anneeCreation           Int?
+  anneeOuverture          Int?
+  
+  // === CONTACT ===
+  telephone               String?
+  email                   String?
+  siteWeb                 String?
+  
+  // === INFRASTRUCTURES ===
+  etatInfrastructure      EtatInfrastructure?
+  surfaceTotale           Float?
+  disponibiliteEau        Boolean?
+  disponibiliteElectricite Boolean?
+  connexionInternet       Boolean?
+  
+  // === RESSOURCES HUMAINES ===
+  effectifTotal           Int?
+  
+  // === CAPACITÉ ===
+  capaciteAccueil         Int?
+  
+  // === SERVICES ET PROGRAMMES ===
+  services                String[]
+  programmes              String[]
+  
+  // === DONNÉES SPÉCIFIQUES PAR SECTEUR (JSON) ===
+  donneesSpecifiques      Json      // Structure selon secteur
+  
+  // === MÉDIAS (Gérés via relation Media) ===
+  photoPrincipale         String?
+  
+  // === AFFICHAGE CARTE 3D ===
+  modele3DUrl             String?   // URL modèle 3D pour carte
+  couleurAffichage        String?   // Code couleur hex
+  iconePersonnalise       String?   // URL icône personnalisée
+  
+  // === ÉVALUATION GLOBALE ===
+  noteMoyenne             Float     @default(0)
+  nombreEvaluations       Int       @default(0)
+  
+  // === VISIBILITÉ ET VALIDATION ===
+  isPublie                Boolean   @default(false)
+  isValide                Boolean   @default(false) // Validation admin obligatoire
+  isMisEnAvant            Boolean   @default(false)
+  
+  // === STATUT OPÉRATIONNEL ===
+  statutFonctionnel       String?   // Fonctionnel, Partiel, En rénovation
+  
+  // === FINANCEMENT ===
+  sourcesFinancement      String?
+  budgetAnnuel            Float?
+  partenaires             String?
+  
+  // === OBSERVATIONS ===
+  remarques               String?
+  besoinsUrgents          String?
+  projetsFuturs           String?
+  
+  // === MÉTADONNÉES ===
+  annee                   Int       @default(2025)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  autoriteLocale          User?
+  evaluations             Evaluation[]
+  reclamations            Reclamation[]
+  evenements              Evenement[]
+  actualites              Actualite[]
+  abonnements             AbonnementEtablissement[]
+  medias                  Media[]
+  
+  @@index([code])
+  @@index([secteur])
+  @@index([communeId])
+  @@index([annexeId])
+  @@index([isPublie])
+  @@index([isValide])
+  @@index([nature])
+  @@index([statutFonctionnel])
+  @@index([latitude, longitude]) // Index spatial
+}
+
+// ============================================
+// GESTION CENTRALISÉE DES MÉDIAS
+// Pour événements, réclamations, établissements
+// ============================================
+
+model Media {
+  id                      Int       @id @default(autoincrement())
+  
+  // Fichier
+  nomFichier              String
+  cheminFichier           String    // Chemin stockage
+  urlPublique             String    // URL accessible
+  type                    TypeMedia
+  mimeType                String
+  tailleMo                Float?
+  
+  // Métadonnées
+  largeur                 Int?      // Pour images/vidéos
+  hauteur                 Int?
+  duree                   Int?      // Pour vidéos/audio (secondes)
+  
+  // Relations (optionnelles selon contexte)
+  etablissementId         Int?
+  etablissement           Etablissement? @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  evenementId             Int?
+  evenement               Evenement? @relation(fields: [evenementId], references: [id], onDelete: Cascade)
+  
+  reclamationId           Int?
+  reclamation             Reclamation? @relation(fields: [reclamationId], references: [id], onDelete: Cascade)
+  
+  actualiteId             Int?
+  actualite               Actualite? @relation(fields: [actualiteId], references: [id], onDelete: Cascade)
+  
+  articleId               Int?
+  article                 Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  campagneId              Int?
+  campagne                Campagne? @relation(fields: [campagneId], references: [id], onDelete: Cascade)
+  
+  talentId                Int?
+  talent                  Talent?   @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  
+  // Traçabilité
+  uploadePar              Int?      // User ID
+  createdAt               DateTime  @default(now())
+  
+  @@index([etablissementId])
+  @@index([evenementId])
+  @@index([reclamationId])
+  @@index([actualiteId])
+  @@index([articleId])
+  @@index([campagneId])
+  @@index([type])
+}
+
+// ============================================
+// ABONNEMENTS ÉTABLISSEMENTS
+// Citoyens s'abonnent pour recevoir actualités/événements
+// ============================================
+
+model AbonnementEtablissement {
+  id                      Int       @id @default(autoincrement())
+  
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  etablissementId         Int
+  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  notificationsActives    Boolean   @default(true)
+  
+  createdAt               DateTime  @default(now())
+  
+  @@unique([userId, etablissementId])
+  @@index([userId])
+  @@index([etablissementId])
+}
+
+// ============================================
+// ÉVALUATIONS GLOBALES
+// Citoyens évaluent établissements (note globale uniquement)
+// Admin peut aussi évaluer
+// ============================================
+
+model Evaluation {
+  id                      Int       @id @default(autoincrement())
+  
+  // Évaluateur (Citoyen ou Admin)
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Établissement évalué
+  etablissementId         Int
+  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // Note globale unique (1-5 étoiles)
+  noteGlobale             Float
+  
+  // Commentaire optionnel
+  commentaire             String?   @db.Text
+  
+  // Modération
+  isSignalee              Boolean   @default(false)
+  motifSignalement        String?
+  isValidee               Boolean   @default(true)
+  
+  // Délai modification (7 jours)
+  dateExpiration          DateTime
+  
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  @@unique([userId, etablissementId])
+  @@index([etablissementId])
+  @@index([isSignalee])
+  @@index([isValidee])
+}
+
+// ============================================
+// RÉCLAMATIONS - NOUVEAU WORKFLOW
+// Workflow : Citoyen → Admin (Décision : ACCEPTEE/REJETEE) → Affectation
+// Statut null = En attente décision admin
+// CITOYEN uniquement peut créer (pas de VISITEUR)
+// ============================================
+
+model Reclamation {
+  id                      Int       @id @default(autoincrement())
+  
+  // === CITOYEN (VISITEUR supprimé) ===
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id])
+  
+  // === ÉTABLISSEMENT CONCERNÉ (optionnel) ===
+  etablissementId         Int?
+  etablissement           Etablissement? @relation(fields: [etablissementId], references: [id])
+  
+  // === LOCALISATION ===
+  communeId               Int
+  commune                 Commune   @relation(fields: [communeId], references: [id])
+  quartierDouar           String?
+  adresseComplete         String?
+  
+  latitude                Float?
+  longitude               Float?
+  
+  // === CONTENU ===
+  categorie               String
+  titre                   String
+  description             String    @db.Text
+  
+  // === WORKFLOW SIMPLIFIÉ ===
+  statut                  StatutReclamation?  // null = En attente décision, ACCEPTEE, REJETEE
+  affectationReclamation  AffectationReclamation @default(NON_AFFECTEE)
+  
+  // === AFFECTATION PAR ADMIN (si ACCEPTEE) ===
+  affecteeParAdminId      Int?      // Admin qui affecte
+  affecteeAAutoriteId     Int?      // Autorité locale (User)
+  secteurAffecte          Secteur?  // Secteur de responsabilité
+  serviceInterneProvince  String?   // Service interne si province
+  dateAffectation         DateTime?
+  
+  // === SUIVI ===
+  dateResolution          DateTime?
+  motifRejet              String?   @db.Text  // Si REJETEE
+  solutionApportee        String?   @db.Text  // Si résolue
+  
+  // === VISIBILITÉ ===
+  isArchivee              Boolean   @default(false)
+  
+  // === MÉTADONNÉES ===
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  historique              HistoriqueReclamation[]  // GARDÉE pour traçabilité
+  medias                  Media[]
+  
+  @@index([userId])
+  @@index([etablissementId])
+  @@index([communeId])
+  @@index([statut])
+  @@index([affectationReclamation])
+  @@index([affecteeAAutoriteId])
+  @@index([secteurAffecte])
+  @@index([isArchivee])
+  @@index([createdAt])
+}
+
+// ============================================
+// HISTORIQUE RÉCLAMATIONS
+// TABLE GARDÉE pour audit trail et timeline
+// ============================================
+
+model HistoriqueReclamation {
+  id                      Int       @id @default(autoincrement())
+  
+  reclamationId           Int
+  reclamation             Reclamation @relation(fields: [reclamationId], references: [id], onDelete: Cascade)
+  
+  action                  String    // "CREATION", "ACCEPTATION", "REJET", "AFFECTATION", "RESOLUTION"
+  details                 Json?     // Données contextuelles
+  effectuePar             Int       // User ID qui a fait l'action
+  
+  createdAt               DateTime  @default(now())
+  
+  @@index([reclamationId])
+  @@index([createdAt])
+}
+
+// ============================================
+// SUGGESTIONS CITOYENNES
+// Pas de système de vote (simplifié)
+// ============================================
+
+model Suggestion {
+  id                      Int       @id @default(autoincrement())
+  
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  titre                   String
+  description             String    @db.Text
+  categorie               String?
+  
+  statut                  StatutSuggestion @default(SOUMISE)
+  
+  // Suivi admin
+  reponseAdmin            String?   @db.Text
+  dateTraitement          DateTime?
+  
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([statut])
+  @@index([createdAt])
+}
+
+// ============================================
+// ÉVÉNEMENTS - WORKFLOW 5 STATUTS
+// Créés par DÉLÉGATION (responsable secteur)
+// Validation admin obligatoire avant publication
+// ============================================
+
+model Evenement {
+  id                      Int       @id @default(autoincrement())
+  
+  // === ÉTABLISSEMENT CONCERNÉ ===
+  etablissementId         Int
+  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // Secteur (hérité établissement)
+  secteur                 Secteur
+  
+  // === LOCALISATION ===
+  communeId               Int
+  commune                 Commune   @relation(fields: [communeId], references: [id])
+  lieu                    String?
+  adresse                 String?
+  quartierDouar           String?
+  
+  latitude                Float?
+  longitude               Float?
+  
+  // === CONTENU ===
+  titre                   String
+  description             String    @db.Text
+  
+  // === CATÉGORISATION ===
+  typeCategorique         String
+  categorie               String?
+  tags                    String[]
+  
+  // === DATES ET HORAIRES ===
+  dateDebut               DateTime
+  dateFin                 DateTime?
+  heureDebut              String?
+  heureFin                String?
+  
+  // === ORGANISATEUR ===
+  organisateur            String?
+  contactOrganisateur     String?
+  emailContact            String?
+  
+  // === PARTICIPATION ===
+  capaciteMax             Int?
+  inscriptionsOuvertes    Boolean   @default(false)
+  lienInscription         String?
+  nombreInscrits          Int       @default(0)
+  
+  // === STATUT ET WORKFLOW (5 STATUTS) ===
+  statut                  StatutEvenement @default(EN_ATTENTE_VALIDATION)
+  motifRejet              String?   @db.Text  // Si REJETEE
+  
+  isMisEnAvant            Boolean   @default(false)
+  
+  // === BILAN POST-ÉVÉNEMENT (si CLOTUREE) ===
+  bilanDescription        String?   @db.Text
+  bilanNbParticipants     Int?
+  bilanDatePublication    DateTime?
+  
+  // === STATISTIQUES ===
+  nombreVues              Int       @default(0)
+  nombrePartages          Int       @default(0)
+  
+  // === MÉTADONNÉES ===
+  createdBy               Int       // User ID (DELEGATION)
+  createdByUser           User      @relation(fields: [createdBy], references: [id])
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  medias                  Media[]
+  
+  @@index([etablissementId])
+  @@index([communeId])
+  @@index([secteur])
+  @@index([statut])
+  @@index([dateDebut])
+  @@index([isMisEnAvant])
+  @@index([createdBy])
+}
+
+// ============================================
+// ACTUALITÉS ÉTABLISSEMENTS
+// Créées par DÉLÉGATION (pas autorités locales)
+// Validation admin obligatoire
+// ============================================
+
+model Actualite {
+  id                      Int       @id @default(autoincrement())
+  
+  // === ÉTABLISSEMENT ===
+  etablissementId         Int
+  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // === CONTENU ===
+  titre                   String
+  description             String?
+  contenu                 String    @db.Text
+  
+  // === CATÉGORISATION ===
+  categorie               String?
+  tags                    String[]
+  
+  // === PUBLICATION ===
+  statut                  StatutActualite @default(BROUILLON)
+  isPublie                Boolean   @default(false)
+  isValide                Boolean   @default(false) // Validation admin obligatoire
+  datePublication         DateTime?
+  
+  // === STATISTIQUES ===
+  nombreVues              Int       @default(0)
+  
+  // === MÉTADONNÉES ===
+  createdBy               Int       // User ID (DELEGATION)
+  createdByUser           User      @relation(fields: [createdBy], references: [id])
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  medias                  Media[]
+  
+  @@index([etablissementId])
+  @@index([statut])
+  @@index([isPublie])
+  @@index([isValide])
+  @@index([datePublication])
+  @@index([createdBy])
+}
+
+// ============================================
+// CONTENUS MÉDIOUNA ACTION
+// Créés par DÉLÉGATION (pas Admin)
+// ============================================
+
+model Article {
+  id                      Int       @id @default(autoincrement())
+  
+  titre                   String
+  description             String?
+  contenu                 String    @db.Text
+  categorie               String?
+  tags                    String[]
+  
+  imagePrincipale         String?
+  
+  isPublie                Boolean   @default(false)
+  isMisEnAvant            Boolean   @default(false)
+  datePublication         DateTime?
+  
+  nombreVues              Int       @default(0)
+  
+  // === MÉTADONNÉES ===
+  createdBy               Int       // User ID (DELEGATION)
+  createdByUser           User      @relation(fields: [createdBy], references: [id])
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  medias                  Media[]
+  
+  @@index([isPublie])
+  @@index([datePublication])
+  @@index([createdBy])
+}
+
+model Video {
+  id                      Int       @id @default(autoincrement())
+  
+  titre                   String
+  description             String?   @db.Text
+  urlYoutube              String
+  thumbnail               String?
+  
+  categorie               String?
+  tags                    String[]
+  
+  isPublie                Boolean   @default(false)
+  isMisEnAvant            Boolean   @default(false)
+  
+  nombreVues              Int       @default(0)
+  
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  @@index([isPublie])
+  @@index([categorie])
+}
+
+// ============================================
+// TALENTS LOCAUX
+// Affichage simple pour citoyens
+// Pas de commentaires, pas de partage
+// ============================================
+
+model Talent {
+  id                      Int       @id @default(autoincrement())
+  
+  nom                     String
+  prenom                  String
+  nomArtistique           String?
+  bio                     String?   @db.Text
+  domaine                 String
+  
+  photo                   String?
+  reseauxSociaux          Json?
+  
+  isPublie                Boolean   @default(false)
+  isMisEnAvant            Boolean   @default(false)
+  
+  nombreVues              Int       @default(0)
+  
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // Relations
+  medias                  Media[]
+  
+  @@index([domaine])
+  @@index([isPublie])
+}
+
+
+
+
+
+
+
+
+
+// ============================================
+// CAMPAGNES CITOYENNES
+// Créées par DÉLÉGATION
+// ============================================
+
+model Campagne {
+  id                      Int       @id @default(autoincrement())
+  
+  nom                     String
+  slug                    String    @unique
+  titre                   String
+  description             String?   @db.Text
+  contenu                 String    @db.Text
+  
+  type                    String    // "Je suis Médiouna", "Bouge Médiouna"
+  
+  imagePrincipale         String?
+  
+  isActive                Boolean   @default(false)
+  dateDebut               DateTime?
+  dateFin                 DateTime?
+  
+  // === MÉTADONNÉES ===
+  createdBy               Int       // User ID (DELEGATION)
+  createdByUser           User      @relation(fields: [createdBy], references: [id])
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  medias                  Media[]
+  
+  @@index([slug])
+  @@index([isActive])
+  @@index([createdBy])
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id                      Int       @id @default(autoincrement())
+  
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type                    String
+  titre                   String
+  message                 String    @db.Text
+  lien                    String?
+  
+  isLue                   Boolean   @default(false)
+  
+  createdAt               DateTime  @default(now())
+  
+  @@index([userId, isLue])
+  @@index([createdAt])
+}
+
+// ============================================
+// LOGS D'ACTIVITÉ
+// ============================================
+
+model ActivityLog {
+  id                      Int       @id @default(autoincrement())
+  
+  userId                  Int?
+  action                  String
+  entity                  String
+  entityId                Int?
+  details                 Json?
+  
+  ipAddress               String?
+  userAgent               String?
+  
+  createdAt               DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([entity])
+  @@index([createdAt])
 }

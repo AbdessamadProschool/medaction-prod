@@ -118,6 +118,14 @@ model User {
   isEmailVerifie          Boolean   @default(false)
   isTelephoneVerifie      Boolean   @default(false)
   
+  // Tokens pour réinitialisation et vérification
+  resetToken              String?
+  resetTokenExpiry        DateTime?
+  emailVerificationToken  String?
+  emailVerificationExpiry DateTime?
+  
+
+  
   // === PROFIL DELEGATION (Responsable Secteur) ===
   secteurResponsable      Secteur?  // Si DELEGATION : secteur géré
   

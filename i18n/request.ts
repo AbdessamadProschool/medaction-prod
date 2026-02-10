@@ -1,19 +1,25 @@
 import { getRequestConfig } from 'next-intl/server';
 import { routing } from './routing';
 
-export default getRequestConfig(async ({ locale }) => {
-  // En v3.19.0, l'argument est {locale}.
-  // On valide la locale.
-  let validLocale = locale;
+export default getRequestConfig(async ({ requestLocale }) => {
+  // En v3.26, on reçoit requestLocale qui est une Promise (ou parfois la string directement selon le contexte)
+  let locale: string | undefined;
 
-  // Vérification basique
-  if (!validLocale || !routing.locales.includes(validLocale as any)) {
-    validLocale = routing.defaultLocale;
+  try {
+    // Si c'est une promesse, on l'attend
+    locale = await requestLocale;
+  } catch (error) {
+    console.error('Error retrieving requestLocale:', error);
+  }
+
+  // Validation
+  if (!locale || !routing.locales.includes(locale as any)) {
+    locale = routing.defaultLocale;
   }
 
   return {
-    locale: validLocale,
-    messages: (await import(`../locales/${validLocale}/common.json`)).default,
+    locale,
+    messages: (await import(`../locales/${locale}/common.json`)).default,
     timeZone: 'Africa/Casablanca'
   };
 });

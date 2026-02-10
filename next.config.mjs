@@ -76,7 +76,8 @@ const nextConfig = {
   poweredByHeader: false,
 
   // Mode standalone ACTIVÉ pour la stabilité Docker
-  output: 'standalone',
+  // Mode standalone DÉSACTIVÉ pour éviter les erreurs de modules manquants
+  // output: 'standalone',
 
   // Compression
   compress: true,

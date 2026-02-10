@@ -1,58 +1,39 @@
 
-FROM node:20-bullseye-slim AS deps
+FROM node:20-bullseye-slim
+
 WORKDIR /app
 
-# Install OpenSSL 1.1 (required for Prisma on old Debian/Node images if needed, but 20-bullseye uses 3.x usually. keeping minimal)
+# Install dependencies (incluant OpenSSL pour Prisma)
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
+# Copier les fichiers de dépendances
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 
-# Force install to respect versions
-RUN rm -f package-lock.json && npm install --legacy-peer-deps --ignore-scripts
+# Installer TOUTES les dépendances (y compris dev pour le build)
+RUN npm install --legacy-peer-deps
 
-# 2. Rebuild the source code only when needed
-FROM node:20-bullseye-slim AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copier le code source
 COPY . .
 
-COPY . .
-
+# Désactiver la télémétrie et configurer la mémoire
 ENV NEXT_TELEMETRY_DISABLED=1
-# Force l'utilisation d'un seul worker pour économiser la RAM et éviter le crash EOF
-ENV NEXT_CPU_COUNT=1
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV CI=true
 
+# Générer Prisma et Builder l'app
 RUN npx prisma generate
-RUN npm run build
+RUN npm run build --no-lint
 
-# 3. Production image, copy all the files and run next
-FROM node:20-bullseye-slim AS runner
-WORKDIR /app
+# Nettoyer les devDependencies si possible (optionnel, on garde simple pour la stabilité)
+# RUN npm prune --production
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# 4. Prisma (copy only if needed for runtime)
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-
-USER nextjs
-
+# Exposer le port
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV NODE_ENV=production
 
-CMD ["node", "server.js"]
+# Commande de lancement STANDARD
+CMD ["npm", "start"]

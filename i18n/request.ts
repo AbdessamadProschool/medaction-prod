@@ -12,6 +12,7 @@ export default getRequestConfig(async ({ locale }) => {
   }
 
   return {
+    locale: validLocale,
     messages: (await import(`../locales/${validLocale}/common.json`)).default,
     timeZone: 'Africa/Casablanca'
   };

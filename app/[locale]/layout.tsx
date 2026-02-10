@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "../globals.css";
-import "../rtl.css";
+import { Inter, Outfit, Cairo } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { locales, getDirection } from '@/i18n/routing';
-
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MaintenanceProvider } from "@/components/providers/MaintenanceProvider";
@@ -13,7 +9,8 @@ import { LicenseProvider } from "@/components/providers/LicenseProvider";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { Toaster } from "@/components/ui/sonner";
 
-import { Inter, Outfit, Cairo } from "next/font/google";
+import "../globals.css";
+import "../rtl.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,9 +50,8 @@ export const metadata: Metadata = {
   },
 };
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+// Suppression de generateStaticParams pour éviter les erreurs "Dynamic server usage"
+// Le rendu se fera dynamiquement (SSR), ce qui est préférable pour une app authentifiée.
 
 export default async function RootLayout({
   children,
@@ -64,10 +60,16 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  // Next.js 15: params est maintenant une Promise
+  // Await params first (Next.js 15+ ready)
   const { locale } = await params;
+
+  // Pas d'appel à unstable_setRequestLocale en v3.19
+
+  // Load messages
   const messages = await getMessages();
-  const direction = getDirection(locale as any);
+
+  // Determine direction
+  const direction = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
@@ -77,7 +79,7 @@ export default async function RootLayout({
       >
         {/* Google Analytics */}
         <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID || ''} />
-        
+
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -85,7 +87,7 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NextIntlClientProvider messages={messages}>
+            <NextIntlClientProvider messages={messages} locale={locale}>
               <LicenseProvider>
                 <MaintenanceProvider>
                   {children}

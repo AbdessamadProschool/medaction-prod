@@ -1,7 +1,7 @@
-import {withAuth} from 'next-auth/middleware';
+import { withAuth } from 'next-auth/middleware';
 import createMiddleware from 'next-intl/middleware';
-import {NextRequest, NextResponse} from 'next/server';
-import {routing} from './i18n/routing';
+import { NextRequest, NextResponse } from 'next/server';
+import { routing } from './i18n/routing';
 
 /**
  * ════════════════════════════════════════════════════════════════════════════
@@ -28,7 +28,7 @@ import {routing} from './i18n/routing';
 // TYPES
 // ═══════════════════════════════════════════════════════════════════
 
-type Role = 
+type Role =
   | 'CITOYEN'
   | 'DELEGATION'
   | 'AUTORITE_LOCALE'
@@ -192,8 +192,8 @@ const handleI18nRouting = createMiddleware(routing);
 // ═══════════════════════════════════════════════════════════════════
 
 function isPublicPage(pathname: string): boolean {
-  const normalizedPath = pathname.length > 1 && pathname.endsWith('/') 
-    ? pathname.slice(0, -1) 
+  const normalizedPath = pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
     : pathname;
 
   return PUBLIC_PAGES.some((route) => {
@@ -261,7 +261,7 @@ function isMutationMethod(method: string): boolean {
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
   const realIP = request.headers.get('x-real-ip');
-  
+
   if (forwarded) return forwarded.split(',')[0].trim();
   if (realIP) return realIP;
   return 'unknown';
@@ -271,18 +271,18 @@ function checkRateLimit(ip: string, isPublic: boolean = false): { allowed: boole
   const now = Date.now();
   const key = isPublic ? `public:${ip}` : `api:${ip}`;
   const maxRequests = isPublic ? RATE_LIMIT_CONFIG.publicMaxRequests : RATE_LIMIT_CONFIG.apiMaxRequests;
-  
+
   const entry = rateLimitStore.get(key);
-  
+
   if (!entry || (now - entry.firstRequest) > RATE_LIMIT_CONFIG.windowMs) {
     rateLimitStore.set(key, { count: 1, firstRequest: now });
     return { allowed: true, remaining: maxRequests - 1 };
   }
-  
+
   if (entry.count >= maxRequests) {
     return { allowed: false, remaining: 0 };
   }
-  
+
   entry.count++;
   return { allowed: true, remaining: maxRequests - entry.count };
 }
@@ -298,12 +298,12 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 }
 
 function createApiErrorResponse(
-  status: number, 
-  message: string, 
+  status: number,
+  message: string,
   code: string = 'ERROR'
 ): NextResponse {
   const response = NextResponse.json(
-    { 
+    {
       success: false,
       error: {
         code,
@@ -341,11 +341,11 @@ const authMiddleware = withAuth(
     const token = req.nextauth.token;
     const clientIP = getClientIP(req);
     const isApi = isApiRoute(pathname);
-    
+
     // Extraire le chemin sans locale pour les vérifications
     const effectivePathname = isApi ? pathname : stripLocaleFromPath(pathname);
     const locale = getLocaleFromPath(pathname);
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 1. ROUTES API TOUJOURS PUBLIQUES (Auth, etc.)
     // ─────────────────────────────────────────────────────────────────
@@ -353,7 +353,7 @@ const authMiddleware = withAuth(
       const response = NextResponse.next();
       return addSecurityHeaders(response);
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 2. PAGES PUBLIQUES - Déléguer à next-intl
     // ─────────────────────────────────────────────────────────────────
@@ -361,36 +361,36 @@ const authMiddleware = withAuth(
       const response = handleI18nRouting(req);
       return addSecurityHeaders(response);
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 3. APIs MOBILES
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isMobileApiRoute(pathname)) {
       const rateLimit = checkRateLimit(clientIP, false);
-      
+
       if (!rateLimit.allowed) {
         return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');
       }
-      
+
       const response = NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Mobile-API', 'true');
       return addSecurityHeaders(response);
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 4. RATE LIMITING
     // ─────────────────────────────────────────────────────────────────
     const isPublicRequest = isApi && isPublicReadApiRoute(pathname) && isReadOnlyMethod(method);
     const rateLimit = checkRateLimit(clientIP, isPublicRequest);
-    
+
     if (!rateLimit.allowed) {
       if (isApi) {
         return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');
       }
       return NextResponse.redirect(new URL(`/${locale}/erreur?code=429`, req.url));
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 5. APIs PUBLIQUES EN LECTURE (GET sans auth)
     // ─────────────────────────────────────────────────────────────────
@@ -401,7 +401,7 @@ const authMiddleware = withAuth(
       response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
       return addSecurityHeaders(response);
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 6. APIs TOUJOURS PROTÉGÉES
     // ─────────────────────────────────────────────────────────────────
@@ -413,12 +413,12 @@ const authMiddleware = withAuth(
           'AUTHENTICATION_REQUIRED'
         );
       }
-      
+
       if (!token.isActive) {
         return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
       }
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 7. MUTATIONS SUR APIs PUBLIQUES
     // ─────────────────────────────────────────────────────────────────
@@ -430,11 +430,11 @@ const authMiddleware = withAuth(
           'AUTHENTICATION_REQUIRED'
         );
       }
-      
+
       if (!token.isActive) {
         return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
       }
-      
+
       const allowedRoles = getMutationRoles(pathname);
       if (allowedRoles) {
         const userRole = token.role as Role;
@@ -447,7 +447,7 @@ const authMiddleware = withAuth(
         }
       }
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 8. AUTRES ROUTES API
     // ─────────────────────────────────────────────────────────────────
@@ -455,12 +455,12 @@ const authMiddleware = withAuth(
       if (!token) {
         return createApiErrorResponse(401, 'Authentication required.', 'AUTHENTICATION_REQUIRED');
       }
-      
+
       if (!token.isActive) {
         return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
       }
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 9. PAGES PROTÉGÉES (vérification RBAC)
     // ─────────────────────────────────────────────────────────────────
@@ -470,11 +470,11 @@ const authMiddleware = withAuth(
         loginUrl.searchParams.set('callbackUrl', pathname);
         return NextResponse.redirect(loginUrl);
       }
-      
+
       if (!token.isActive) {
         return NextResponse.redirect(new URL(`/${locale}/compte-desactive`, req.url));
       }
-      
+
       const allowedRoles = getProtectedRouteRoles(effectivePathname);
       if (allowedRoles) {
         const userRole = token.role as Role;
@@ -483,7 +483,7 @@ const authMiddleware = withAuth(
         }
       }
     }
-    
+
     // ─────────────────────────────────────────────────────────────────
     // 10. REQUÊTE AUTORISÉE
     // ─────────────────────────────────────────────────────────────────
@@ -520,5 +520,5 @@ export const config = {
   // - API routes starting with /api (handled separately)
   // - Next.js internals (_next)
   // - Static files with extensions
-  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
+  matcher: [],
 };

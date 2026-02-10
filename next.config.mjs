@@ -293,7 +293,11 @@ const nextConfig = {
   // ─────────────────────────────────────────────────────────────────
   // EXPERIMENTAL FEATURES & PACKAGES
   // ─────────────────────────────────────────────────────────────────
-  // serverExternalPackages: ['prisma', '@prisma/client', 'bcryptjs', 'puppeteer', 'sharp'],
+  experimental: {
+    // Désactiver explicitement l'instrumentation
+    instrumentationHook: false,
+    // serverExternalPackages: ['prisma', '@prisma/client', 'bcryptjs', 'puppeteer', 'sharp'],
+  },
 
   // ─────────────────────────────────────────────────────────────────
   typescript: {

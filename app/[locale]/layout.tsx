@@ -87,14 +87,12 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NextIntlClientProvider messages={messages} locale={locale}>
-              <LicenseProvider>
-                <MaintenanceProvider>
-                  {children}
-                </MaintenanceProvider>
-              </LicenseProvider>
-              <Toaster />
-            </NextIntlClientProvider>
+            <LicenseProvider>
+              <MaintenanceProvider>
+                {children}
+              </MaintenanceProvider>
+            </LicenseProvider>
+            <Toaster />
           </ThemeProvider>
         </SessionProvider>
       </body>

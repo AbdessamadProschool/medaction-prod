@@ -96,6 +96,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
+  // Désactivation de la minification SWC pour éviter le bug clientModules
+  swcMinify: false,
+
   eslint: {
     ignoreDuringBuilds: true,
   },

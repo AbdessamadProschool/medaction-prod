@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 
-# Installer TOUTES les dépendances (y compris dev pour le build)
+# Force clean install
+RUN rm -f package-lock.json
 RUN npm install --legacy-peer-deps
 
 # Copier le code source

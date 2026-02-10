@@ -99,25 +99,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-
-  // ─────────────────────────────────────────────────────────────────
-  // EXPERIMENTAL FEATURES
-  // ─────────────────────────────────────────────────────────────────
-  experimental: {
-    // Désactiver explicitement l'instrumentation pour éviter le bug clientModules
-    instrumentationHook: false,
-  },
-
-  // ─────────────────────────────────────────────────────────────────
-  // WEBPACK
-  // ─────────────────────────────────────────────────────────────────
-  webpack: (config) => {
-    config.externals.push({
-      'utf-8-validate': 'commonjs utf-8-validate',
-      'bufferutil': 'commonjs bufferutil',
-    });
-    return config;
-  },
 };
 
 export default withNextIntl(nextConfig);

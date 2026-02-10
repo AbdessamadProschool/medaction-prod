@@ -64,7 +64,7 @@ const PermissionsPolicy = [
 // CONFIGURATION PRINCIPALE
 // ═══════════════════════════════════════════════════════════════════
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig = {
   // ─────────────────────────────────────────────────────────────────

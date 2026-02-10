@@ -2,6 +2,34 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
 import { z } from 'zod';
+import { checkRateLimit, getClientIP } from '@/lib/auth/security';
+import { isRegistrationEnabled } from '@/lib/settings/service';
+
+// SECURITY: Rate limit config for registration (5 per hour per IP)
+const REGISTER_RATE_LIMIT = { maxRequests: 5, windowMs: 60 * 60 * 1000 };
+
+// SECURITY FIX: Strong password validation regex
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+// SECURITY FIX: XSS Sanitization - Remove HTML tags and escape dangerous characters
+function sanitizeString(input: string): string {
+  return input
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/[<>"'&]/g, (char) => {
+      const escapeMap: Record<string, string> = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '&': '&amp;',
+      };
+      return escapeMap[char] || char;
+    })
+    .trim();
+}
+
+// SECURITY FIX: Validate name contains only safe characters (letters, spaces, hyphens, apostrophes)
+const NAME_REGEX = /^[a-zA-ZàâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ\s\-']+$/;
 
 /**
  * Schéma de validation pour l'inscription
@@ -13,9 +41,29 @@ const registerSchema = z.object({
     .transform((email) => email.toLowerCase().trim()),
   password: z
     .string()
-    .min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
-  nom: z.string().min(2, 'Le nom doit contenir au moins 2 caractères').trim(),
-  prenom: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères').trim(),
+    .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+    .refine(
+      (password) => PASSWORD_REGEX.test(password),
+      'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*?&)'
+    ),
+  nom: z
+    .string()
+    .min(2, 'Le nom doit contenir au moins 2 caractères')
+    .max(100, 'Le nom ne peut pas dépasser 100 caractères')
+    .transform((val) => sanitizeString(val))
+    .refine(
+      (val) => NAME_REGEX.test(val),
+      'Le nom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+    ),
+  prenom: z
+    .string()
+    .min(2, 'Le prénom doit contenir au moins 2 caractères')
+    .max(100, 'Le prénom ne peut pas dépasser 100 caractères')
+    .transform((val) => sanitizeString(val))
+    .refine(
+      (val) => NAME_REGEX.test(val),
+      'Le prénom ne peut contenir que des lettres, espaces, tirets et apostrophes'
+    ),
   telephone: z
     .string()
     .optional()
@@ -29,6 +77,29 @@ const registerSchema = z.object({
  */
 export async function POST(request: NextRequest) {
   try {
+    // 1. Vérifier si les inscriptions sont ouvertes
+    const registrationOpen = await isRegistrationEnabled();
+    if (!registrationOpen) {
+      return NextResponse.json(
+        { success: false, message: 'Les inscriptions sont actuellement fermées par l\'administrateur.' },
+        { status: 403 }
+      );
+    }
+
+    // SECURITY FIX: Rate limiting - 5 inscriptions par heure par IP
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(`register:${clientIP}`, REGISTER_RATE_LIMIT);
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { success: false, message: 'Trop de tentatives d\'inscription. Veuillez réessayer plus tard.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateLimitResult.retryAfter || 3600) }
+        }
+      );
+    }
+
     const body = await request.json();
 
     // Validation des données
@@ -54,14 +125,22 @@ export async function POST(request: NextRequest) {
       select: { id: true },
     });
 
+    // SECURITY FIX: Prevent account enumeration - same response whether email exists or not
     if (existingUserByEmail) {
+      // Simulate the same time as a successful registration by doing a password hash
+      await hashPassword('dummy_password_processing');
+      
+      // Log the attempt for security monitoring
+      console.log(`[REGISTER] Tentative inscription email existant: ${email.replace(/(.{2}).*(@.*)/, '$1***$2')}`);
+      
+      // Return success message to prevent enumeration - but don't actually create account
       return NextResponse.json(
         {
-          success: false,
-          message: 'Cet email est déjà utilisé',
-          errors: { email: ['Cet email est déjà associé à un compte'] },
+          success: true,
+          message: 'Inscription réussie. Vérifiez votre email pour confirmer votre compte.',
+          // Note: We don't return user data here for security
         },
-        { status: 409 }
+        { status: 201 }
       );
     }
 

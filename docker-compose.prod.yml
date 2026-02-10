@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: medaction-postgres
+    restart: unless-stopped
+    # IMPORTANT: Désactive les unix sockets pour éviter les erreurs "Permission denied" sur Proxmox
+    command: postgres -c unix_socket_directories=''
+    environment:
+      POSTGRES_USER: medaction
+      POSTGRES_PASSWORD: medaction_secure_2024
+      POSTGRES_DB: medaction
+      POSTGRES_HOST_AUTH_METHOD: md5
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Indispensable pour l'initialisation à distance
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U medaction -h 127.0.0.1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medaction-network
+
+  app:
+    # Option A: Build sur le serveur (Recommandé si Docker local HS)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: medaction-app:latest
+    container_name: medaction-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      # Mettez l'URL interne du réseau Docker
+      - DATABASE_URL=postgresql://medaction:medaction_secure_2024@postgres:5432/medaction
+      # IMPORTANT: Remplacer IP_SERVEUR par l'IP réelle de votre serveur Proxmox
+      - NEXTAUTH_URL=http://192.168.1.100:3000
+      - NEXTAUTH_SECRET=votre_secret_prod_complexe_a_changer
+      - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN}
+      # Licence
+      - LICENSE_KEY=MED-0D84-C0A3-3DF4-C9AF
+      - LICENSE_DOMAINS=localhost,127.0.0.1,192.168.1.100,192.168.1.103,mediouna.gov.ma
+      - LICENSE_EXPIRY=2026-12-31
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_data:/app/public/uploads
+    networks:
+      - medaction-network
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  medaction-network:
+    driver: bridge

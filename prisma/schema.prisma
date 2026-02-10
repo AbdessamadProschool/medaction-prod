@@ -1,10 +1,13 @@
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // node:20-slim = Debian Bookworm = OpenSSL 3.0.x UNIQUEMENT
+  binaryTargets = ["native", "debian-openssl-3.0.x", "debian-openssl-1.1.x"]
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================
@@ -14,10 +17,11 @@ datasource db {
 enum Role {
   CITOYEN           // Utilisateur authentifié (VISITEUR supprimé - accès public via pages non protégées)
   DELEGATION        // Responsable secteur : crée événements, actualités, articles, campagnes
-  AUTORITE_LOCALE   // Gestionnaire établissement : gère réclamations affectées
+  AUTORITE_LOCALE   // Gestionnaire commune : gère réclamations de la commune
   ADMIN             // Gestion complète : validation, affectation, CRUD total
   SUPER_ADMIN       // Gère les droits des admins + toutes permissions admin
   GOUVERNEUR        // Vue globale lecture seule + détails + téléchargement
+  COORDINATEUR_ACTIVITES // Gère les programmes d'activités quotidiennes des établissements
 }
 
 
@@ -29,6 +33,18 @@ enum Secteur {
   SOCIAL
   CULTUREL
   AUTRE
+}
+
+// Statut des activités programmées (pour COORDINATEUR_ACTIVITES)
+enum StatutActivite {
+  BROUILLON                // Brouillon - visible uniquement par le coordinateur
+  EN_ATTENTE_VALIDATION    // Soumis pour validation par l'admin
+  PLANIFIEE                // Activité validée et programmée pour le futur
+  EN_COURS                 // Activité en cours actuellement
+  TERMINEE                 // Activité terminée, rapport requis
+  RAPPORT_COMPLETE         // Rapport post-activité rempli
+  ANNULEE                  // Activité annulée
+  REPORTEE                 // Activité reportée à une autre date
 }
 
 enum StatutReclamation {
@@ -124,18 +140,31 @@ model User {
   emailVerificationToken  String?
   emailVerificationExpiry DateTime?
   
+  // Authentification à deux facteurs (2FA)
+  twoFactorSecret         String?   // Secret TOTP (chiffré)
+  twoFactorEnabled        Boolean   @default(false)
+  twoFactorBackupCodes    String?   // Codes de secours (JSON chiffré)
 
+  // === SÉCURITÉ : Tracking tentatives de connexion ===
+  loginAttempts           Int       @default(0)    // Nombre de tentatives échouées
+  lastFailedLogin         DateTime?               // Date de dernière tentative échouée
+  lockedUntil             DateTime?               // Date de fin de blocage
   
   // === PROFIL DELEGATION (Responsable Secteur) ===
   secteurResponsable      Secteur?  // Si DELEGATION : secteur géré
   
-  // === PROFIL AUTORITE LOCALE (Responsable Établissement) ===
-  etablissementId         Int?      @unique
-  etablissement           Etablissement? @relation(fields: [etablissementId], references: [id])
+  // === PROFIL AUTORITE LOCALE (Responsable Commune) ===
+  // Chaque autorité locale (ex: Pacha) gère TOUS les établissements d'une commune
+  communeResponsableId    Int?      @unique
+  communeResponsable      Commune?  @relation("AutoriteLocaleCommune", fields: [communeResponsableId], references: [id])
   
   // Traçabilité
   derniereConnexion       DateTime?
   dateInscription         DateTime  @default(now())
+  
+  // Préférences utilisateur (notifications, thème, etc.)
+  preferences             Json?     @default("{}")
+  
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
   
@@ -152,12 +181,35 @@ model User {
   articlesCrees           Article[]
   campagnesCreees         Campagne[]
   
+  // Permissions granulaires (RBAC)
+  userPermissions         UserPermission[]
+  
+  // Participations aux campagnes
+  participationsCampagnes ParticipationCampagne[]
+  
+  // Logs d'activité (existant)
+  activityLogs            ActivityLog[]
+  
+  // Logs d'audit de sécurité (nouveau - plus détaillé)
+  auditLogs               AuditLog[]
+  
+  // Tokens de sécurité (reset password, verification, etc.)
+  securityTokens          SecurityToken[]
+  
+  // === PROFIL COORDINATEUR ACTIVITÉS ===
+  // Établissements gérés par ce coordinateur (IDs stockés directement)
+  etablissementsGeres     Int[]     @default([])
+  // Programmes d'activités créés par ce coordinateur
+  programmesCrees         ProgrammeActivite[] @relation("ProgrammeCreateur")
+  
   @@index([email])
   @@index([role])
   @@index([isActive])
   @@index([secteurResponsable])
-  @@index([etablissementId])
+  @@index([communeResponsableId])
+  @@index([role, isActive]) // Index composite pour filtrer users actifs par rôle
 }
+
 
 // ============================================
 // GESTION TERRITORIALE HIÉRARCHIQUE
@@ -197,6 +249,9 @@ model Commune {
   etablissements          Etablissement[]  // Relation directe gardée pour flexibilité
   reclamations            Reclamation[]
   evenements              Evenement[]
+  
+  // Autorité locale responsable de cette commune
+  autoriteLocale          User?     @relation("AutoriteLocaleCommune")
   
   @@index([code])
   @@index([nom])
@@ -257,6 +312,12 @@ model Etablissement {
   nom                     String
   nomArabe                String?
   secteur                 Secteur   // Détermine attributs spécifiques
+  typeEtablissement       String?   // Type_Etab (école primaire, collège, lycée, etc.)
+  
+  // === DONNÉES SOURCE EXCEL ===
+  codeCommune             String?   // IDEM_COMMU - Code commune source
+  dateCreationFiche       DateTime? // Date de création de la fiche source
+  observation             String?   // Observations/remarques du fichier source
   
   // === LOCALISATION ADMINISTRATIVE HIÉRARCHIQUE ===
   // DOUBLE RELATION (Commune obligatoire + Annexe optionnelle pour précision)
@@ -301,12 +362,24 @@ model Etablissement {
   disponibiliteEau        Boolean?
   disponibiliteElectricite Boolean?
   connexionInternet       Boolean?
+  nombreSalles            Int?      // Nbre_des_Salles - Nombre de salles
   
   // === RESSOURCES HUMAINES ===
   effectifTotal           Int?
+  nombrePersonnel         Int?      // Nb_de_personn - Nombre de personnel
+  cadre                   String?   // Cadre - Type/catégorie du personnel
   
   // === CAPACITÉ ===
   capaciteAccueil         Int?
+  
+  // === STATISTIQUES PÉDAGOGIQUES (Secteur Éducation) ===
+  elevesPrescolaire       Int?      // Élèves_Prescolai
+  elevesTotal             Int?      // Élèves_PrescolaiTotal - Total élèves
+  elevesFilles            Int?      // Nb_élèves_Filles
+  nouveauxInscrits        Int?      // NV_Inscrits
+  nouveauxInscritsFilles  Int?      // NV_Inscrits_Fille
+  derniereAnnee           String?   // Dernier_Année - Année scolaire
+  tauxReussite            Float?    // Dernier_Année_Taux_de_réussit (%)
   
   // === SERVICES ET PROGRAMMES ===
   services                String[]
@@ -346,18 +419,18 @@ model Etablissement {
   projetsFuturs           String?
   
   // === MÉTADONNÉES ===
-  annee                   Int       @default(2025)
+  annee                   Int       @default(2026)
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
   
   // === RELATIONS ===
-  autoriteLocale          User?
   evaluations             Evaluation[]
   reclamations            Reclamation[]
   evenements              Evenement[]
   actualites              Actualite[]
   abonnements             AbonnementEtablissement[]
   medias                  Media[]
+  programmesActivites     ProgrammeActivite[]
   
   @@index([code])
   @@index([secteur])
@@ -487,6 +560,8 @@ model Evaluation {
   @@index([etablissementId])
   @@index([isSignalee])
   @@index([isValidee])
+  @@index([etablissementId, isValidee]) // Index composite pour évaluations validées par établissement
+  @@index([createdAt]) // Pour le tri par date
 }
 
 // ============================================
@@ -557,6 +632,9 @@ model Reclamation {
   @@index([secteurAffecte])
   @@index([isArchivee])
   @@index([createdAt])
+  @@index([statut, affectationReclamation]) // Index composite pour filtrer par statut et affectation
+  @@index([communeId, createdAt]) // Index composite pour réclamations par commune triées
+  @@index([affecteeAAutoriteId, createdAt]) // Index composite pour autorité locale
 }
 
 // ============================================
@@ -636,8 +714,11 @@ model Evenement {
   longitude               Float?
   
   // === CONTENU ===
+  // === CONTENU ===
   titre                   String
+  titreAr                 String?   // Traduction Arabe
   description             String    @db.Text
+  descriptionAr           String?   @db.Text // Traduction Arabe
   
   // === CATÉGORISATION ===
   typeCategorique         String
@@ -708,9 +789,13 @@ model Actualite {
   etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
   
   // === CONTENU ===
+  // === CONTENU ===
   titre                   String
+  titreAr                 String?   // Traduction Arabe
   description             String?
+  descriptionAr           String?   // Traduction Arabe
   contenu                 String    @db.Text
+  contenuAr               String?   @db.Text // Traduction Arabe
   
   // === CATÉGORISATION ===
   categorie               String?
@@ -859,10 +944,26 @@ model Campagne {
   type                    String    // "Je suis Médiouna", "Bouge Médiouna"
   
   imagePrincipale         String?
+  imageCouverture         String?
+  couleurTheme            String?   @default("#1e40af")
+  
+  nombreVues              Int       @default(0)
   
   isActive                Boolean   @default(false)
+  isFeatured              Boolean   @default(false)
+  
+  objectifParticipations  Int?
+  
   dateDebut               DateTime?
   dateFin                 DateTime?
+
+  // Validation Workflow
+  statut                  String    @default("BROUILLON") // BROUILLON, EN_ATTENTE, ACTIVE, TERMINEE, ANNULEE
+
+  // Closure & Report
+  rapportClotureUrl       String?
+  bilanDescription        String?   @db.Text
+  bilanChiffresCles       Json?     // Flexible JSON for custom metrics
   
   // === MÉTADONNÉES ===
   createdBy               Int       // User ID (DELEGATION)
@@ -872,10 +973,35 @@ model Campagne {
   
   // === RELATIONS ===
   medias                  Media[]
+  participations          ParticipationCampagne[]
   
   @@index([slug])
   @@index([isActive])
+  @@index([isFeatured])
   @@index([createdBy])
+}
+
+// ============================================
+// PARTICIPATIONS CAMPAGNE
+// ============================================
+
+model ParticipationCampagne {
+  id                      Int       @id @default(autoincrement())
+  
+  campagneId              Int
+  campagne                Campagne  @relation(fields: [campagneId], references: [id], onDelete: Cascade)
+  
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  message                 String?   @db.Text
+  donneesParticipation    Json?
+  
+  createdAt               DateTime  @default(now())
+  
+  @@unique([campagneId, userId])
+  @@index([campagneId])
+  @@index([userId])
 }
 
 // ============================================
@@ -909,6 +1035,7 @@ model ActivityLog {
   id                      Int       @id @default(autoincrement())
   
   userId                  Int?
+  user                    User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   action                  String
   entity                  String
   entityId                Int?
@@ -923,3 +1050,224 @@ model ActivityLog {
   @@index([entity])
   @@index([createdAt])
 }
+// ============================================
+// SYSTÈME DE PERMISSIONS GRANULAIRES (RBAC)
+// ============================================
+
+model Permission {
+  id                      Int       @id @default(autoincrement())
+  
+  // Identifiant unique de la permission
+  code                    String    @unique // Ex: "users.read", "reclamations.validate"
+  
+  // Informations descriptives
+  nom                     String    // Ex: "Voir les utilisateurs"
+  description             String?   // Description détaillée
+  
+  // Catégorisation
+  groupe                  String    // Ex: "users", "reclamations", "evenements"
+  groupeLabel             String    // Ex: "Utilisateurs", "Réclamations"
+  
+  // Métadonnées
+  ordre                   Int       @default(0)  // Ordre d affichage
+  isActive                Boolean   @default(true)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  // Relations
+  userPermissions         UserPermission[]
+  
+  @@index([groupe])
+  @@index([isActive])
+}
+
+model UserPermission {
+  id                      Int       @id @default(autoincrement())
+  
+  // Utilisateur concerné
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Permission accordée
+  permissionId            Int
+  permission              Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  
+  // Qui a accordé cette permission
+  grantedById             Int?
+  
+  // Métadonnées
+  grantedAt               DateTime  @default(now())
+  expiresAt               DateTime? // Permission temporaire
+  isActive                Boolean   @default(true)
+  
+  @@unique([userId, permissionId])
+  @@index([userId])
+  @@index([permissionId])
+  @@index([isActive])
+}
+
+// ============================================
+// SYSTEM SETTINGS (Paramètres Système)
+// ============================================
+
+model SystemSetting {
+  id                    Int       @id @default(autoincrement())
+  key                   String    @unique // Clé unique du paramètre
+  value                 Json      // Valeur en JSON pour flexibilité
+  category              String    // Catégorie: general, security, notifications, reclamations
+  description           String?   // Description du paramètre
+  
+  // Traçabilité
+  updatedById           Int?      // Qui a modifié en dernier
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([category])
+  @@index([key])
+}
+
+// ============================================
+// PROGRAMME D'ACTIVITÉS (pour COORDINATEUR_ACTIVITES)
+// Gestion des activités quotidiennes des établissements
+// ============================================
+
+model ProgrammeActivite {
+  id                      Int       @id @default(autoincrement())
+  
+  // === ÉTABLISSEMENT CONCERNÉ ===
+  etablissementId         Int
+  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // === DATE ET PÉRIODE ===
+  date                    DateTime  @db.Date
+  heureDebut              String    // Format "08:00"
+  heureFin                String    // Format "12:00"
+  
+  // === DÉTAILS DE L'ACTIVITÉ ===
+  titre                   String    @db.VarChar(150)
+  description             String?   @db.Text
+  typeActivite            String    // Cours, Réunion, Formation, Atelier, Match, etc.
+  responsableNom          String?   // Personne responsable de l'activité
+  participantsAttendus    Int?      // Nombre de participants prévus
+  lieu                    String?   // Salle 3, Terrain de foot, Cour intérieure...
+  
+  // === STATUT DE L'ACTIVITÉ ===
+  statut                  StatutActivite @default(BROUILLON)
+  
+  // === RAPPORT POST-ACTIVITÉ (visible Admin/Gouverneur uniquement) ===
+  presenceEffective       Int?      // Nombre réel de participants
+  tauxPresence            Float?    // Auto-calculé: presenceEffective / participantsAttendus * 100
+  commentaireDeroulement  String?   @db.Text
+  difficultes             String?   @db.Text
+  pointsPositifs          String?   @db.Text
+  photosRapport           String[]  // URLs des photos du rapport
+  noteQualite             Float?    // Note de 1 à 5
+  recommandations         String?   @db.Text
+  rapportComplete         Boolean   @default(false)
+  dateRapport             DateTime?
+  
+  // === VISIBILITÉ ET VALIDATION ===
+  isVisiblePublic         Boolean   @default(true)  // Visible dans le calendrier public
+  isValideParAdmin        Boolean   @default(false) // Validation requise par admin (configurable)
+  requireValidation       Boolean   @default(true)  // Cette activité nécessite-t-elle validation?
+  
+  // === RÉCURRENCE (V1) ===
+  isRecurrent             Boolean   @default(false)
+  recurrencePattern       String?   // DAILY, WEEKLY, MONTHLY
+  recurrenceEndDate       DateTime? @db.Date
+  recurrenceDays          Int[]     // Jours spécifiques pour WEEKLY (0=Dimanche, 1=Lundi...)
+  recurrenceParentId      Int?      // ID de l'activité parente si générée par récurrence
+  
+  // === NOTIFICATIONS ===
+  rappelJ1Envoye          Boolean   @default(false) // Rappel J-1 envoyé
+  alerteRapportEnvoyee    Boolean   @default(false) // Alerte rapport requis envoyée
+  
+  // === MÉTADONNÉES ===
+  createdBy               Int
+  createdByUser           User      @relation("ProgrammeCreateur", fields: [createdBy], references: [id])
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  @@index([etablissementId, date])
+  @@index([statut])
+  @@index([createdBy])
+  @@index([date])
+  @@index([isVisiblePublic, isValideParAdmin])
+
+}
+
+// ============================================
+// AUDIT LOG - TRAÇABILITÉ DE SÉCURITÉ
+// ============================================
+
+model AuditLog {
+  id                      Int       @id @default(autoincrement())
+  
+  // === ACTION ===
+  action                  String    // LOGIN, LOGOUT, ACCESS_DENIED, CREATE, UPDATE, DELETE, etc.
+  resourceType            String?   // User, Reclamation, Etablissement, etc.
+  resourceId              String?   // ID de la ressource affectée
+  
+  // === ACTEUR ===
+  userId                  Int?      // Null si action anonyme (ex: tentative de login échouée)
+  user                    User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // === DÉTAILS ===
+  details                 String?   @db.Text // JSON avec les détails de l'action
+  previousValue           String?   @db.Text // Ancienne valeur (pour UPDATE)
+  newValue                String?   @db.Text // Nouvelle valeur (pour UPDATE)
+  
+  // === CONTEXTE TECHNIQUE ===
+  ipAddress               String?   // Adresse IP du client
+  userAgent               String?   // User-Agent du navigateur
+  requestId               String?   // ID unique de la requête
+  
+  // === RÉSULTAT ===
+  success                 Boolean   @default(true)
+  errorMessage            String?   // Message d'erreur si échec
+  
+  // === MÉTADONNÉES ===
+  createdAt               DateTime  @default(now())
+  
+  @@index([action])
+  @@index([userId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+  @@index([ipAddress])
+  @@index([success])
+}
+
+// ============================================
+// SECURITY TOKENS - Tokens de Sécurité
+// ============================================
+
+model SecurityToken {
+  id                      Int       @id @default(autoincrement())
+  
+  // === TOKEN ===
+  token                   String    @unique
+  type                    String    // PASSWORD_RESET, EMAIL_VERIFICATION, API_KEY
+  
+  // === UTILISATEUR ===
+  userId                  Int
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // === VALIDITÉ ===
+  expiresAt               DateTime
+  usedAt                  DateTime?
+  isRevoked               Boolean   @default(false)
+  
+  // === MÉTADONNÉES ===
+  createdAt               DateTime  @default(now())
+  ipAddress               String?   // IP lors de la création
+  
+  @@index([token])
+  @@index([userId])
+  @@index([type])
+  @@index([expiresAt])
+}
+
+
+
+
+

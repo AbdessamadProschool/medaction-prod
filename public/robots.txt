@@ -1,0 +1,19 @@
+# MedAction - Province de Médiouna
+# https://medaction.ma
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://medaction.ma/sitemap.xml
+
+# Disallow admin routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /delegation/
+Disallow: /autorite/
+Disallow: /gouverneur/
+
+# Allow public assets
+Allow: /uploads/
+Allow: /_next/static/

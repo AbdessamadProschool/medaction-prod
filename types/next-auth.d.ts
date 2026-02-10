@@ -12,7 +12,8 @@ declare module 'next-auth' {
       role: Role;
       photo?: string | null;
       secteurResponsable?: Secteur | null;
-      etablissementId?: number | null;
+      communeResponsableId?: number | null;  // Pour AUTORITE_LOCALE
+      etablissementsGeres?: number[];        // Pour COORDINATEUR_ACTIVITES
       isActive: boolean;
       isEmailVerifie: boolean;
     };
@@ -26,7 +27,8 @@ declare module 'next-auth' {
     role: Role;
     photo?: string | null;
     secteurResponsable?: Secteur | null;
-    etablissementId?: number | null;
+    communeResponsableId?: number | null;
+    etablissementsGeres?: number[];
     isActive: boolean;
     isEmailVerifie: boolean;
   }
@@ -41,9 +43,9 @@ declare module 'next-auth/jwt' {
     role: Role;
     photo?: string | null;
     secteurResponsable?: Secteur | null;
-    etablissementId?: number | null;
+    communeResponsableId?: number | null;
+    etablissementsGeres?: number[];
     isActive: boolean;
     isEmailVerifie: boolean;
   }
 }
-

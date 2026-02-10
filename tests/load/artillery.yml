@@ -1,0 +1,140 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Warm-up phase
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm-up"
+    
+    # Ramp-up phase
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp-up"
+    
+    # Sustained load
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained Load"
+    
+    # Cool-down
+    - duration: 30
+      arrivalRate: 50
+      rampTo: 5
+      name: "Cool-down"
+
+  defaults:
+    headers:
+      Accept: "application/json"
+      User-Agent: "Artillery Load Test"
+
+# Variables for testing
+  variables:
+    etablissementIds:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    secteurs:
+      - "SANTE"
+      - "EDUCATION"
+      - "ADMINISTRATION"
+      - "SPORT"
+
+scenarios:
+  # Scenario 1: Public pages browsing
+  - name: "Browse Public Pages"
+    weight: 40
+    flow:
+      # Homepage
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+      
+      - think: 2
+      
+      # Etablissements list
+      - get:
+          url: "/api/etablissements?page=1&limit=12"
+          expect:
+            - statusCode: 200
+            - contentType: json
+      
+      - think: 1
+      
+      # Communes
+      - get:
+          url: "/api/communes"
+          expect:
+            - statusCode: 200
+      
+      - think: 2
+      
+      # Events list
+      - get:
+          url: "/api/evenements?page=1&limit=9"
+          expect:
+            - statusCode: 200
+
+  # Scenario 2: Search and filter
+  - name: "Search Flow"
+    weight: 25
+    flow:
+      - get:
+          url: "/api/etablissements?page=1&limit=12&secteur={{ secteurs }}"
+          expect:
+            - statusCode: 200
+      
+      - think: 1
+      
+      - get:
+          url: "/api/etablissements?page=1&limit=12&search=ecole"
+          expect:
+            - statusCode: 200
+      
+      - think: 2
+      
+      - get:
+          url: "/api/evenements?page=1&limit=9&secteur=SANTE"
+          expect:
+            - statusCode: 200
+
+  # Scenario 3: Detail pages
+  - name: "View Details"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/etablissements/{{ etablissementIds }}"
+          expect:
+            - statusCode: 200
+      
+      - think: 3
+      
+      - get:
+          url: "/api/evenements/1"
+          expect:
+            - statusCode:
+              - 200
+              - 404
+
+  # Scenario 4: Health check (monitoring)
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+  # Scenario 5: API stress
+  - name: "API Stress"
+    weight: 5
+    flow:
+      - loop:
+        - get:
+            url: "/api/communes"
+        - think: 0.5
+        count: 5

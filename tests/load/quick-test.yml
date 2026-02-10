@@ -1,0 +1,20 @@
+# Quick load test - 30 seconds only
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: "Warm-up"
+    - duration: 20
+      arrivalRate: 20
+      name: "Load"
+
+scenarios:
+  - name: "Quick API Test"
+    flow:
+      - get:
+          url: "/api/health"
+      - get:
+          url: "/api/communes"
+      - get:
+          url: "/api/etablissements?page=1&limit=5"

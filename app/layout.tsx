@@ -1,40 +1,21 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-
-import { SessionProvider } from "@/components/providers/SessionProvider";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "MedAction - Province de Médiouna",
-  description: "Plateforme citoyenne de la Province de Médiouna",
+  title: 'Portail Province Médiouna',
+  description: 'Portail citoyen de la Province de Médiouna',
 };
 
+/**
+ * Layout racine minimal - Next.js App Router avec next-intl
+ * Ce layout est un pass-through car le vrai layout est dans app/[locale]/layout.tsx
+ * IMPORTANT: Ne pas inclure <html> ou <body> ici car ils sont dans le layout locale
+ */
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return (
-    <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-      </body>
-    </html>
-  );
+}) {
+  // Pass-through direct - les balises html/body sont gérées par app/[locale]/layout.tsx
+  return children;
 }
 

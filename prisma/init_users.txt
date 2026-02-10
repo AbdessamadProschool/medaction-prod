@@ -1,0 +1,27 @@
+INSERT INTO "User" (email, "motDePasse", nom, prenom, role, "isActive", "isEmailVerifie", "dateInscription", "updatedAt") 
+VALUES (
+    'superadmin@medaction.ma', 
+    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.aQZVRNWmqLqKiy', 
+    'Admin', 
+    'Super', 
+    'SUPER_ADMIN', 
+    true, 
+    true, 
+    NOW(), 
+    NOW()
+) 
+ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO "User" (email, "motDePasse", nom, prenom, role, "isActive", "isEmailVerifie", "dateInscription", "updatedAt") 
+VALUES (
+    'citoyen@medaction.ma', 
+    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.aQZVRNWmqLqKiy', 
+    'Test', 
+    'Citoyen', 
+    'CITOYEN', 
+    true, 
+    true, 
+    NOW(), 
+    NOW()
+) 
+ON CONFLICT (email) DO NOTHING;

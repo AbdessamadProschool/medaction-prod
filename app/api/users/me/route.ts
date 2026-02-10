@@ -46,17 +46,17 @@ export async function GET() {
         isEmailVerifie: true,
         isTelephoneVerifie: true,
         secteurResponsable: true,
-        etablissementId: true,
+        communeResponsableId: true,
+        etablissementsGeres: true,
         dateInscription: true,
         derniereConnexion: true,
         createdAt: true,
         updatedAt: true,
         // Relations optionnelles
-        etablissement: {
+        communeResponsable: {
           select: {
             id: true,
             nom: true,
-            secteur: true,
           },
         },
       },

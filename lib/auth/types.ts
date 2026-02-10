@@ -16,7 +16,8 @@ export type Role =
   | 'AUTORITE_LOCALE'
   | 'ADMIN'
   | 'SUPER_ADMIN'
-  | 'GOUVERNEUR';
+  | 'GOUVERNEUR'
+  | 'COORDINATEUR_ACTIVITES';
 
 /**
  * Secteurs d'activité
@@ -44,7 +45,8 @@ export interface AuthUser {
   role: Role;
   photo?: string | null;
   secteurResponsable?: Secteur | null;
-  etablissementId?: number | null;
+  communeResponsableId?: number | null;  // Pour AUTORITE_LOCALE
+  etablissementsGeres?: number[];        // Pour COORDINATEUR_ACTIVITES
   isActive: boolean;
   isEmailVerifie: boolean;
 }
@@ -60,7 +62,8 @@ export interface AuthToken {
   role: Role;
   photo?: string | null;
   secteurResponsable?: Secteur | null;
-  etablissementId?: number | null;
+  communeResponsableId?: number | null;
+  etablissementsGeres?: number[];
   isActive: boolean;
   isEmailVerifie: boolean;
   iat?: number;
@@ -90,6 +93,7 @@ export const ROLES = {
   ADMIN: 'ADMIN',
   SUPER_ADMIN: 'SUPER_ADMIN',
   GOUVERNEUR: 'GOUVERNEUR',
+  COORDINATEUR_ACTIVITES: 'COORDINATEUR_ACTIVITES',
 } as const;
 
 /**
@@ -98,10 +102,11 @@ export const ROLES = {
 export const ROLE_HIERARCHY: Record<Role, number> = {
   CITOYEN: 1,
   DELEGATION: 2,
-  AUTORITE_LOCALE: 3,
-  ADMIN: 4,
-  GOUVERNEUR: 5,
-  SUPER_ADMIN: 6,
+  COORDINATEUR_ACTIVITES: 3,
+  AUTORITE_LOCALE: 4,
+  ADMIN: 5,
+  GOUVERNEUR: 6,
+  SUPER_ADMIN: 7,
 };
 
 /**

@@ -1,0 +1,66 @@
+# Docker Compose - MedAction (Version Serveur Finale)
+# Usage: docker compose up -d
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16
+    container_name: medaction-postgres
+    restart: unless-stopped
+    # CRITIQUE: Cette ligne empêche le crash des sockets sur Proxmox
+    command: postgres -c unix_socket_directories=''
+    environment:
+      POSTGRES_USER: medaction
+      POSTGRES_PASSWORD: medaction_secure_2024
+      POSTGRES_DB: medaction
+      # Force l'authentification par mot de passe
+      POSTGRES_HOST_AUTH_METHOD: md5
+    volumes:
+      # NOUVEAU VOLUME pour forcer la ré-initialisation
+      - postgres_data_clean:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      # Vérifie simplement que le serveur répond sur le port TCP (plus robuste)
+      test: [ "CMD-SHELL", "pg_isready -U medaction -h 127.0.0.1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - medaction-network
+
+  # Next.js Application
+  app:
+    image: medaction-app:latest
+    container_name: medaction-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://medaction:medaction_secure_2024@postgres:5432/medaction
+      - NEXTAUTH_URL=http://192.168.1.40:3000
+      - NEXTAUTH_SECRET=super_secret_key_change_in_production_2024
+      - NEXT_PUBLIC_MAPBOX_TOKEN=
+      - LICENSE_KEY=MED-0D84-C0A3-3DF4-C9AF
+      - LICENSE_DOMAINS=localhost,127.0.0.1,192.168.1.103,192.168.1.18,bo.provincemediouna.ma,192.168.1.100,192.168.1.40,192.168.1.41
+      - LICENSE_EXPIRY=2026-12-25
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_data:/app/public/uploads
+    networks:
+      - medaction-network
+
+volumes:
+  postgres_data_clean:
+    # Nouveau nom pour repartir à zéro
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  medaction-network:
+    driver: bridge

@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // Configuration de la licence
 const CLIENT_NAME = 'Portail Médiouna';
-const DOMAINS = ['localhost', '127.0.0.1', 'mediouna.gov.ma', '192.168.1.18'];
+const DOMAINS = ['localhost', '127.0.0.1', '192.168.1.41', 'bo.provincemediouna.ma', 'mediouna.gov.ma'];
 const EXPIRY_DAYS = 365; // 1 an
 
 // Secret pour la génération (doit correspondre à celui dans lib/license/index.ts)

@@ -39,13 +39,13 @@ services:
       # Mettez l'URL interne du réseau Docker
       - DATABASE_URL=postgresql://medaction:medaction_secure_2024@postgres:5432/medaction
       # IMPORTANT: Remplacer IP_SERVEUR par l'IP réelle de votre serveur Proxmox
-      - NEXTAUTH_URL=http://192.168.1.43:3000
+      - NEXTAUTH_URL=http://192.168.1.41:3000
       - NEXTAUTH_SECRET=votre_secret_prod_complexe_a_changer
       - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN}
       # Licence
-      - LICENSE_KEY=MED-0D84-C0A3-3DF4-C9AF
-      - LICENSE_DOMAINS=localhost,127.0.0.1,192.168.1.100,192.168.1.103,mediouna.gov.ma
-      - LICENSE_EXPIRY=2026-12-31
+      - LICENSE_KEY=MED-56CB-ED6B-3E5E-376D
+      - LICENSE_DOMAINS=localhost,127.0.0.1,192.168.1.41,bo.provincemediouna.ma,mediouna.gov.ma
+      - LICENSE_EXPIRY=2027-02-26
       # Indiquer à l'API d'upload d'utiliser ce chemin
       - STORAGE_PATH=/app/public/uploads
     ports:

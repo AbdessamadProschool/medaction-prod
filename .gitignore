@@ -109,6 +109,8 @@ next-env.d.ts
 *.sql
 tmp/
 temp/
+*.tar
+*.tar.gz
 
 # =============================================================================
 # Lock Files (npm only - remove pnpm)

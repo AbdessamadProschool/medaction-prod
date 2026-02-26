@@ -4963,6 +4963,11 @@
       "device": "Appareil / Navigateur",
       "saved_data": "Données enregistrées",
       "no_details": "Aucun détail supplémentaire pour cette opération",
+      "reason": "Raison du refus",
+      "path": "Chemin d'accès",
+      "timestamp": "Horodatage",
+      "other_details": "Autres détails",
+      "system": "Système",
       "close": "Fermer"
     },
     "entities": {

@@ -1,0 +1,6 @@
+# Handle line endings automatically for files detected as text
+# and leave binary files untouched.
+* text=auto
+
+# Force LF for shell scripts to ensure they work on Linux/Docker
+*.sh text eol=lf

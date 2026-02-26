@@ -1,10 +1,15 @@
-import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { MaintenanceBanner } from '@/components/admin/MaintenanceBanner';
 
-export const metadata: Metadata = {
-  title: 'Super Administration | MedAction',
-  description: 'Panneau de contrôle Super Administrateur MedAction',
-};
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'super_admin' });
+  
+  return {
+    title: t('title'),
+    description: t('subtitle')
+  };
+}
 
 export default function SuperAdminLayout({
   children,

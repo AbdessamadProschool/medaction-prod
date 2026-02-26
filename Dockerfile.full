@@ -1,0 +1,111 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║   DOCKERFILE POUR DÉPLOIEMENT PRODUCTION - MODE FULL (sans standalone)       ║
+# ║   Compatible avec les route groups (auth), (main) et next-intl               ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+FROM node:20-slim AS base
+
+# Installer les dépendances système
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    openssl \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ÉTAPE 1: Installation des dépendances (build)
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM base AS deps
+
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+
+RUN npm config set registry https://registry.npmjs.org/
+
+# Installer TOUTES les deps (incluant devDeps pour prisma et le build)
+RUN npm ci --legacy-peer-deps --ignore-scripts
+
+# Générer Prisma Client manuellement
+RUN npx prisma generate
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ÉTAPE 2: Build de l'application
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM base AS builder
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Build Next.js
+RUN npm run build
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ÉTAPE 3: Préparation des dépendances de production uniquement
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM base AS prod-deps
+
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+
+RUN npm config set registry https://registry.npmjs.org/
+
+# Installer uniquement les deps de production (sans devDeps)
+# --ignore-scripts pour éviter le postinstall qui appelle prisma
+RUN npm ci --legacy-peer-deps --omit=dev --ignore-scripts
+
+# Copier le Prisma Client généré depuis deps
+COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ÉTAPE 4: Image de production
+# ═══════════════════════════════════════════════════════════════════════════════
+FROM node:20-slim AS runner
+
+WORKDIR /app
+
+# Installer OpenSSL pour Prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Créer l'utilisateur non-root
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copier les node_modules de production
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# Copier le build complet
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.mjs ./next.config.mjs
+
+# Fichiers additionnels
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/locales ./locales
+COPY --from=builder --chown=nextjs:nodejs /app/i18n ./i18n
+
+# Permissions (Optimisé: fait pendant le COPY)
+# RUN chown -R nextjs:nodejs /app
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DÉMARRAGE: Utiliser next start (pas server.js standalone)
+# ─────────────────────────────────────────────────────────────────────────────
+CMD ["npm", "start"]

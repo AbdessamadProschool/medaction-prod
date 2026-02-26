@@ -1,26 +1,9 @@
-// import { NextResponse } from "next/server";
-// import db from "@/lib/db";
-
-// export async function GET() {
-//    try {
-//       await db.$connect();
-//       return NextResponse.json({ status: "success", message: "Database connection established" });
-//    } catch (error) {
-//       return NextResponse.json({ status: "error", message: "Database connection failed", error: String(error) }, { status: 500 });
-//    } finally {
-//       await db.$disconnect();
-//    }
-// }
-// app/api/test-db/route.ts
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/db' // Import the singleton we created in Step 1
+import { prisma } from '@/lib/db'
 
-// 🟢 GET Request: Read all users
 export async function GET() {
   try {
-    await db.$connect();
-
-    const evenements = await db.evenement.findMany({
+    const evenements = await prisma.evenement.findMany({
       where: {
         statut: { in: ["PUBLIEE", "EN_ACTION", "CLOTUREE"] },
       },
@@ -44,17 +27,13 @@ export async function GET() {
       { status: "error", message: "Database query failed", error: String(error) },
       { status: 500 }
     );
-  } finally {
-    await db.$disconnect();
   }
 }
 
-// 🟠 POST Request: Create a test user
 export async function POST(request: Request) {
    try {
       const body = await request.json()
 
-      // Simple validation
       if (!body.email || !body.nom) {
          return NextResponse.json({ error: 'Email and Nom are required' }, { status: 400 })
       }
@@ -62,7 +41,7 @@ export async function POST(request: Request) {
       const newUser = await prisma.user.create({
          data: {
             email: body.email,
-            motDePasse: "hashed_password_placeholder", // In real app, hash this!
+            motDePasse: "hashed_password_placeholder",
             nom: body.nom,
             prenom: body.prenom || "Test",
             role: "CITOYEN"

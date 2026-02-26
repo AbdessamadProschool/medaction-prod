@@ -1,0 +1,5176 @@
+{
+  "governor": {
+    "sidebar": {
+      "title": "منصة الحاكم",
+      "subtitle": "لوحة القيادة الإقليمية",
+      "logout": "تسجيل الخروج",
+      "nav": {
+        "overview": "نظرة عامة",
+        "performance": "لوحة الشرف",
+        "reclamations": "الشكايات",
+        "map": "خريطة القرار",
+        "reports": "التقارير والتدقيق"
+      },
+      "loading": "جاري تحميل مركز القيادة...",
+      "role_label": "العامل",
+      "compliant_label": "مطابق",
+      "values": {
+        "compliant": "مطابق"
+      }
+    },
+    "reclamations_tab": {
+      "filters": {
+        "search_placeholder": "البحث عن شكاية بالكلمات المفتاحية...",
+        "all": "جميع الشكايات",
+        "pending": "قيد انتظار القرار",
+        "processing": "قيد المعالجة",
+        "rejected": "مرفوضة"
+      },
+      "stats": {
+        "total_flow": "مجموع المعالجة",
+        "admin_decision": "بانتظار قرار إداري",
+        "assigned_ongoing": "معينة / جارية",
+        "urgent_assignment": "للتعيين العاجل"
+      },
+      "card": {
+        "id": "رقم",
+        "open": "فتح الملف",
+        "assigned_to": "تعيين لـ"
+      },
+      "modal": {
+        "details_title": "تفاصيل الشكاية",
+        "attachments": "المرفقات والأدلة",
+        "download": "تحميل",
+        "oversight_title": "إشراف السلطة",
+        "citizen_sender": "المواطن المشتكي",
+        "assigned_authority": "السلطة المعينة",
+        "waiting_assignment": "بانتظار التعيين",
+        "action_required": "يتطلب إجراء إداري",
+        "admin_zone": "المنطقة الإدارية",
+        "footer": "مشغل بواسطة نظام الحكامة المندمج للإقليم",
+        "created_at": "تاريخ الإنشاء",
+        "decisive_action": "إجراء التحكيم",
+        "decisive_action_desc": "تم قبول هذه الشكوى ولكن لم يتم تعيينها بعد. بصفتك عاملاً، يمكنك تكليف السلطة المحلية مباشرة بمعالجتها.",
+        "assigning": "جاري التعيين...",
+        "select_authority": "اختر السلطة المحلية"
+      },
+      "pagination": {
+        "page_x_of_y": "صفحة {current} / {total}"
+      }
+    },
+    "performance_tab": {
+      "podium": {
+        "maestro": "رائد الإقليم",
+        "excellence_points": "نقاط التميز"
+      },
+      "filters": {
+        "search_placeholder": "تدقيق الأداء: بحث بالاسم أو الموقع...",
+        "history": "السجل التاريخي",
+        "monthly": "شهري",
+        "weekly": "أسبوعي",
+        "all_sectors": "جميع القطاعات",
+        "sectors": {
+          "EDUCATION": "التعليم",
+          "SANTE": "الصحة",
+          "SPORT": "الرياضة",
+          "CULTUREL": "ثقافي",
+          "SOCIAL": "اجتماعي"
+        },
+        "all_communes": "جميع الجماعات",
+        "all_annexes": "جميع الملحقات",
+        "reset": "إعادة تعيين"
+      },
+      "toasts": {
+        "load_error": "خطأ في تحميل بيانات الأداء"
+      },
+      "card": {
+        "perf_index": "مؤشر الأداء",
+        "classification": "التصنيف",
+        "decision_center": "مركز القرار",
+        "maturity_score": "مؤشر النضج الإداري",
+        "rank_prefix": "الرتبة",
+        "pts": "نقطة"
+      },
+      "levels": {
+        "leader": "رائد",
+        "excellence": "امتياز",
+        "hope": "واعد"
+      },
+      "pagination": {
+        "page_x_of_y": "صفحة {current} / {total}"
+      }
+    },
+    "header": {
+      "titles": {
+        "overview": "لوحة القيادة",
+        "performance": "مؤشر الأداء الإقليمي",
+        "reclamations": "تدفق الشكايات",
+        "map": "الخريطة التفاعلية",
+        "reports": "التقارير والبيانات"
+      },
+      "notifications": {
+        "title": "الإشعارات",
+        "new": "{count} جديدة",
+        "none": "لا توجد إشعارات",
+        "view_all": "عرض السجل الكامل"
+      },
+      "greetings": {
+        "morning": "صباح الخير",
+        "afternoon": "طاب يومك",
+        "evening": "مساء الخير"
+      }
+    },
+    "overview": {
+      "greeting": {
+        "morning": "صباح الخير",
+        "afternoon": "طاب يومك",
+        "evening": "مساء الخير",
+        "suffix": "، السيد العامل",
+        "subtitle": "رؤية استراتيجية حول نشاط إقليم مديونة"
+      },
+      "quick_actions": {
+        "title": "مركز القيادة",
+        "desc": "وصول سريع إلى وحدات القرار"
+      },
+      "public_portal_btn": "عرض البوابة العمومية",
+      "kpi": {
+        "satisfaction": "رضا المواطنين",
+        "resolution_rate": "نسبة المعالجة",
+        "participations": "المشاركة المواطنة",
+        "active_projects": "مشاريع نشطة",
+        "sub": {
+          "reclamations": "الشكايات",
+          "engagement": "التفاعل",
+          "ongoing": "قيد الإنجاز"
+        },
+        "tooltip": {
+          "resolution": "نسبة الشكايات المحلولة من الإجمالي",
+          "engagement": "إجمالي الاشتراكات + المشاركات في الحملات",
+          "projects": "الحملات النشطة + الأحداث الجارية",
+          "satisfaction": "متوسط تقييم المؤسسات"
+        },
+        "evaluations_count": "{count} تقييمات",
+        "no_evaluations": "لا يوجد تقييم",
+        "citizens": "مواطنون نشطون"
+      },
+      "sectors": {
+        "title": "ترتيب القطاعات",
+        "realtime": "في الوقت الفعلي",
+        "names": {
+          "education": "التعليم",
+          "health": "الصحة",
+          "sport": "الرياضة",
+          "cultural": "الثقافة",
+          "social": "الاجتماعي",
+          "autre": "أخرى"
+        }
+      },
+      "territorial": {
+        "title": "التوزيع المجالي",
+        "communes": "الجماعات",
+        "establishments": "المؤسسات",
+        "events": "الفعاليات"
+      },
+      "alerts": {
+        "title": "فلاش إخباري / تنبيهات",
+        "none": "لا توجد تنبيهات نشطة",
+        "urgent": "عاجل",
+        "info": "معلومة"
+      },
+      "activity_log": {
+        "title": "سجل النشاط",
+        "view_reports": "عرض التقارير",
+        "none": "لا توجد أنشطة حديثة."
+      },
+      "bilans_card": {
+        "title": "غرفة المداولات",
+        "desc": "راجع تقارير الأحداث والحملات للتحقق من صحتها.",
+        "btn": "الوصول إلى الميزانيات العمومية"
+      },
+      "pulse": {
+        "system_active": "النظام نشط",
+        "title": "نبض الإقليم المباشر",
+        "subtitle": "متابعة فورية للنشاط الإداري والمواطن في جميع أنحاء الإقليم."
+      }
+    },
+    "stats": {
+      "active_projects": "المشاريع النشطة",
+      "satisfaction": "الرضا",
+      "alerts": "التنبيهات",
+      "actualites": "الأخبار",
+      "campagnes": "الحملات"
+    },
+    "reports": {
+      "generating": "جاري إنشاء التقرير...",
+      "generated": "تم إنشاء التقرير بنجاح",
+      "recent_title": "التقارير الحديثة",
+      "automated_reports": "التقارير المؤسساتية والتدقيق",
+      "commune_details": {
+        "title": "التحليل المجالي (حسب الجماعة)",
+        "commune_col": "الجماعة",
+        "claims_col": "الشكايات",
+        "resolution_col": "نسبة الحل",
+        "status_col": "تنبيه"
+      },
+      "download": "تحميل التقرير",
+      "audit_trends": "ديناميكية التدقيق (الشكايات مقابل الحلول)",
+      "compliance": "أهلية البنية التحتية الإقليمية",
+      "filters": {
+        "all": "الكل",
+        "6m": "6 أشهر",
+        "1y": "سنة"
+      },
+      "compliance_details": {
+        "title": "تفاصيل الامتثال",
+        "conforme_desc": "تم تأكيد الامتثال",
+        "encours_desc": "التدقيق قيد التنفيذ",
+        "nonconforme_desc": "يتطلب التدخل"
+      },
+      "authors": {
+        "system_ia": "نظام الذكاء التدقيقي"
+      },
+      "view_all": "أرشيف التقارير الإقليمية",
+      "kpi": {
+        "pending_decisions": "قرارات معلقة",
+        "resolution_rate": "نسبة الحل",
+        "active_projects": "مشاريع نشطة",
+        "monthly_events": "أحداث الشهر",
+        "this_week": "هذا الأسبوع",
+        "upcoming": "{count} قادمة"
+      },
+      "index": "المؤشر",
+      "status": {
+        "conforme": "مطابق",
+        "en_cours": "قيد الإنجاز",
+        "non_conforme": "غير مطابق"
+      },
+      "alert": {
+        "title": "إجراء فوري مطلوب",
+        "urgent": "شكايات مستعجلة",
+        "pending": "في انتظار المعالجة",
+        "action": "معالجة الآن"
+      },
+      "chart": {
+        "audits": "التدقيقات (نشطة)",
+        "compliance": "امتثال",
+        "resolved": "تم حلها"
+      },
+      "generator": {
+        "title": "منشئ التقارير",
+        "desc": "قم بتوليد تقارير استراتيجية مخصصة",
+        "generate_btn": "إنشاء تقرير",
+        "period": "الفترة",
+        "format": "صيغة المخرج",
+        "included_modules": "الوحدات المتضمنة",
+        "options": {
+          "stats": "الإحصائيات والمؤشرات",
+          "reclamations": "تفاصيل الشكايات"
+        },
+        "periods": {
+          "last_month": "الشهر الماضي",
+          "q4": "الربع الرابع",
+          "y2025": "سنة 2025"
+        },
+        "formats": {
+          "web": "نسخة ويب (قابل للطباعة)"
+        },
+        "btn": "إنشاء تقرير"
+      },
+      "ai_synthesis": {
+        "title": "التحليل الاستراتيجي الرقمي",
+        "digital_analysis": "التحليل الاستراتيجي الرقمي",
+        "subtitle": "خوارزميات التحليل تقترح التوصيات التالية بناءً على بيانات الأسبوع الحالي.",
+        "alert_detected": "تم اكتشاف تنبيه",
+        "recommendation_ready": "توصية استراتيجية متاحة",
+        "growth_msg": "نمو في النشاط بنسبة {label} في هذه الفترة."
+      },
+      "bilans_page": {
+        "title": "الأرشيف والميزانيات",
+        "subtitle": "الاطلاع على تقارير الفعاليات والأنشطة والحملات بالإقليم.",
+        "loading": "جاري تحميل الميزانيات...",
+        "stats": {
+          "events": "الفعاليات",
+          "activities": "الأنشطة",
+          "campaigns": "الحملات",
+          "participants": "التأثير الإجمالي"
+        },
+        "tabs": {
+          "events": "الفعاليات",
+          "activities": "الأنشطة",
+          "campaigns": "الحملات"
+        },
+        "search": "البحث حسب العنوان أو المؤسسة...",
+        "sectors_all": "جميع القطاعات",
+        "empty": {
+          "events": "لا توجد تقارير للفعاليات",
+          "activities": "لا توجد تقارير للأنشطة",
+          "campaigns": "لا توجد تقارير للحملات",
+          "desc": "حاول تغيير مرشحات البحث الخاصة بك."
+        },
+        "labels": {
+          "photos": "الصور",
+          "participations": "المشاركات",
+          "closing_report": "تقرير الختام",
+          "reduce": "تقليص",
+          "view_details": "عرض التفاصيل",
+          "published_on": "نشر في",
+          "activity_report": "تقرير نشاط مفصل",
+          "progress": "سير النشاط",
+          "positives": "النقاط الإيجابية",
+          "difficulties": "الصعوبات المواجهة",
+          "recommendations": "التوصيات",
+          "report_completed_on": "أتم التقرير في",
+          "present": "الحاضرون",
+          "views": "المشاهدات",
+          "description": "الوصف"
+        }
+      }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "portal_name": "بوابة مديونة",
+      "administration": "الإدارة",
+      "dashboard": "لوحة القيادة",
+      "reclamations": "الشكايات",
+      "suggestions": "المقترحات",
+      "users": "المستخدمون",
+      "etablissements": "المؤسسات",
+      "activities": "الأنشطة",
+      "validation": "التحقق",
+      "events": "الأحداث",
+      "news": "الأخبار",
+      "articles": "المقالات",
+      "campaigns": "الحملات",
+      "reports": "التقارير",
+      "statistics": "الإحصائيات",
+      "home_page": "الصفحة الرئيسية",
+      "settings": "الإعدادات",
+      "super_admin": "المسؤول العام",
+      "popup_announcements": "إعلانات منبثقة",
+      "roles_permissions": "الأدوار والصلاحيات",
+      "messages": "صندوق الرسائل",
+      "notifications": "التنبيهات",
+      "audit_logs": "سجلات التدقيق",
+      "system_config": "إعدادات النظام",
+      "backup": "نسخة احتياطية",
+      "legal": "إشعارات قانونية",
+      "help": "المساعدة والدعم"
+    },
+    "dashboard": {
+      "header": {
+        "title": "لوحة القيادة",
+        "subtitle": "نظرة عامة على نشاط المنصة",
+        "export": "تصدير",
+        "reports": "التقارير"
+      },
+      "metrics": {
+        "users": "المستخدمين",
+        "establishments": "المؤسسات",
+        "events": "الأحداث",
+        "reclamations": "الشكايات",
+        "new_this_month": "جديد هذا الشهر",
+        "validated": "تم التحقق",
+        "in_progress": "قيد التنفيذ",
+        "pending": "قيد الانتظار",
+        "this_month": "هذا الشهر"
+      },
+      "quick_actions": {
+        "title": "إجراءات سريعة",
+        "claims": "الشكايات",
+        "claims_desc": "معالجة الشكايات الواردة",
+        "validation": "التحقق",
+        "validation_desc": "التحقق من المؤسسات",
+        "campaigns": "الحملات",
+        "campaigns_desc": "إدارة الحملات التطوعية",
+        "users": "المستخدمين",
+        "users_desc": "إدارة المستخدمين",
+        "access": "دخول"
+      },
+      "charts": {
+        "events_by_sector": "الأحداث حسب القطاع",
+        "events_distribution": "توزيع الأحداث",
+        "reclamations_by_status": "الشكايات حسب الحالة",
+        "current_breakdown": "التفصيل الحالي",
+        "view_all": "عرض الكل",
+        "no_data": "لا توجد بيانات",
+        "total": "المجموع"
+      },
+      "alerts": {
+        "events_action_required": "إجراء مطلوب للأحداث",
+        "events_pending_closure": "{count} أحداث بانتظار الإغلاق",
+        "manage_now": "إدارة الآن"
+      },
+      "other_sections": {
+        "title": "أقسام أخرى",
+        "news": "الأخبار",
+        "news_desc": "إدارة الأخبار والمقالات",
+        "campaigns": "الحملات",
+        "campaigns_desc": "أحدث الحملات",
+        "suggestions": "المقترحات",
+        "suggestions_desc": "مقترحات المواطنين",
+        "talents": "المواهب",
+        "talents_desc": "إدارة المواهب"
+      },
+      "footer": {
+        "system_activity": "نشاط النظام",
+        "system_operational": "النظام يعمل بشكل طبيعي",
+        "new_users": "مستخدمين جدد",
+        "to_process": "للمعالجة",
+        "active_events": "أحداث نشطة"
+      },
+      "loading": "جاري التحميل...",
+      "toasts": {
+        "refreshing": "جاري تحديث البيانات..."
+      },
+      "no_data": "لا توجد بيانات متاحة",
+      "total": "المجموع"
+    },
+    "header": {
+      "search_placeholder": "بحث...",
+      "site_public": "الموقع العام",
+      "notifications": "الإشعارات",
+      "mark_all_read": "تحديد الكل كمقروء",
+      "no_notifications": "لا توجد إشعارات",
+      "view_history": "عرض السجل",
+      "my_profile": "ملفي الشخصي",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
+      "administrator": "المسؤول",
+      "just_now": "الآن",
+      "minutes_ago": "منذ {count} دقيقة",
+      "hours_ago": "منذ {count} ساعة",
+      "days_ago": "منذ {count} يوم"
+    },
+    "reclamations_page": {
+      "page_title": "الشكايات",
+      "total_reclamations": "إجمالي الشكايات",
+      "search_placeholder": "بحث...",
+      "status_filter": "الحالة",
+      "category_filter": "الفئة",
+      "filters": "تصفية",
+      "not_assigned": "غير مكلف",
+      "anonymous": "مجهول",
+      "pagination": "صفحة {page} من {total}",
+      "stats": {
+        "total": "المجموع",
+        "pending": "قيد الانتظار",
+        "to_dispatch": "للتوزيع",
+        "in_progress": "قيد المعالجة",
+        "rejected": "مرفوضة"
+      },
+      "status_labels": {
+        "pending": "قيد الانتظار",
+        "accepted": "مقبولة",
+        "rejected": "مرفوضة",
+        "assigned": "مكلفة",
+        "to_dispatch": "للتوزيع"
+      },
+      "filters_labels": {
+        "all_communes": "جميع الجماعات",
+        "start_date": "تاريخ البدء"
+      },
+      "columns": {
+        "reclamation": "الشكاية",
+        "citizen": "المواطن",
+        "commune": "الجماعة",
+        "status": "الحالة",
+        "category": "الفئة",
+        "assigned_to": "المكلف",
+        "date": "التاريخ",
+        "actions": "إجراءات"
+      },
+      "empty": {
+        "title": "لا توجد شكايات"
+      },
+      "messages": {
+        "assigned_success": "تم تعيين الشكاية بنجاح",
+        "status_success": "تم تحديث الحالة بنجاح",
+        "deleted_success": "تم حذف الشكاية بنجاح"
+      },
+      "actions": {
+        "view_details": "عرض التفاصيل",
+        "decide": "اتخاذ قرار",
+        "assign": "تعيين",
+        "edit_assignment": "تعديل التعيين",
+        "delete": "حذف"
+      },
+      "modals": {
+        "assignment": {
+          "title": "تعيين شكاية",
+          "unassign": "إلغاء التعيين",
+          "no_agents": "لا يوجد وكلاء متاحون",
+          "create_agents_hint": "أنشئ مستخدمين بالدور المناسب",
+          "local_authorities": "السلطات المحلية",
+          "other_agents": "وكلاء آخرون",
+          "local_badge": "محلي",
+          "delegate_badge": "مندوب",
+          "admin_badge": "مسؤول"
+        },
+        "status": {
+          "title": "تحديث الحالة",
+          "accept_btn": "قبول الشكاية",
+          "accept_desc": "الشكاية صالحة وستتم معالجتها",
+          "reject_btn": "رفض الشكاية",
+          "reject_desc": "الشكاية غير صالحة أو مكررة",
+          "reject_reason_placeholder": "سبب الرفض (مطلوب)"
+        }
+      },
+      "page": "صفحة",
+      "limit": "حد",
+      "affectation": "التعيين",
+      "communeId": "الجماعة",
+      "categorie": "الفئة",
+      "ACCEPTEE": "مقبول",
+      "REJETEE": "مرفوض"
+    },
+    "suggestions_page": {
+      "page_title": "المقترحات",
+      "page_subtitle": "إدارة مقترحات المواطنين",
+      "statuses": {
+        "REJETEE": "مرفوضة",
+        "APPROUVEE": "مقبولة",
+        "EN_EXAMEN": "قيد الدراسة",
+        "SOUMISE": "مقدمة",
+        "IMPLEMENTEE": "منفذة"
+      },
+      "search_placeholder": "بحث...",
+      "no_suggestions": "لا توجد مقترحات",
+      "waiting_suggestions": "اقتراحات قيد الانتظار",
+      "page": "صفحة",
+      "limit": "حد",
+      "page_info": "الصفحة {current} من {total}"
+    },
+    "establishments_page": {
+      "page_title": "إدارة المؤسسات",
+      "total_establishments": "{count} مؤسسة",
+      "filters": "تصفية",
+      "new_establishment": "مؤسسة جديدة",
+      "search_placeholder": "بحث عن مؤسسة...",
+      "reset": "إعادة تعيين",
+      "all_sectors": "كل القطاعات",
+      "empty": {
+        "title": "لا توجد مؤسسات",
+        "no_results": "لم يتم العثور على أي مؤسسة مطابقة",
+        "description": "لم يتم إضافة أي مؤسسة بعد"
+      },
+      "stats": {
+        "total": "المجموع",
+        "validated": "مصدقة",
+        "published": "منشورة",
+        "average_rating": "متوسط التقييم"
+      },
+      "card": {
+        "validated": "مصدقة",
+        "pending": "قيد الانتظار",
+        "published": "منشورة",
+        "publish": "نشر",
+        "unpublish": "إلغاء النشر",
+        "reviews": "{count} تقييم",
+        "details": "التفاصيل",
+        "details_title": "تفاصيل المؤسسة",
+        "validate": "تصديق",
+        "highlight": "تمييز",
+        "remove_highlight": "إزالة التمييز",
+        "delete": "حذف"
+      },
+      "messages": {
+        "error": "حدث خطأ",
+        "updated": "تم التحديث بنجاح",
+        "deleted": "تم الحذف بنجاح",
+        "delete_confirm": "هل أنت متأكد من حذف هذه المؤسسة؟"
+      },
+      "page": "صفحة",
+      "limit": "حد",
+      "includeNonPublie": "تضمين غير المنشور"
+    },
+    "programs_page": {
+      "title": "البرامج والأنشطة",
+      "subtitle": "إدارة البرامج والأنشطة",
+      "create": "إضافة برنامج",
+      "refresh": "تحديث",
+      "stats": {
+        "finished": "منتهية",
+        "validated": "مصدقة",
+        "pending": "قيد الانتظار",
+        "reports_ok": "تقارير مكتملة",
+        "total": "المجموع"
+      },
+      "filters": {
+        "all_validations": "كل التصديقات",
+        "all_statuses": "كل الحالات",
+        "search": "بحث...",
+        "pending_validation": "بانتظار التصديق",
+        "validated": "مصدقة"
+      },
+      "empty": {
+        "title": "لا توجد برامج",
+        "subtitle": "لم يتم العثور على أي برامج"
+      },
+      "status": {
+        "draft": "مسودة",
+        "to_validate": "بانتظار التصديق",
+        "planned": "مخطط لها",
+        "in_progress": "جاري",
+        "finished": "منتهية",
+        "report_ok": "تقرير مكتمل",
+        "cancelled": "ملغاة",
+        "postponed": "مؤجلة"
+      },
+      "table": {
+        "activity": "النشاط",
+        "establishment": "المؤسسة",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "validation": "التصديق",
+        "actions": "إجراءات",
+        "valide": "مصدق",
+        "waiting": "بانتظار"
+      },
+      "types": {
+        "EDUCATION": "تعليم",
+        "CULTUREL": "ثقافي",
+        "SPORT": "رياضة",
+        "SANTE": "صحة",
+        "SOCIAL": "اجتماعي",
+        "ENVIRONMENT": "بيئة",
+        "AUTRE": "آخر"
+      },
+      "modal": {
+        "establishment": "المؤسسة",
+        "sector": "القطاع",
+        "date": "التاريخ",
+        "hours": "التوقيت",
+        "location": "المكان",
+        "participants": "المشاركون المتوقعون",
+        "validated_by_admin": "مصدق من الإدارة",
+        "waiting_validation": "بانتظار التصديق",
+        "visible_public": "مرئي للعموم",
+        "close": "إغلاق",
+        "validate": "تصديق",
+        "hide": "إخفاء",
+        "show": "إظهار"
+      }
+    },
+    "validation_page": {
+      "title": "التحقق من المحتوى",
+      "subtitle": "إدارة محتوى {count} بانتظار الموافقة",
+      "filter": "تصفية",
+      "tabs": {
+        "events": "الأحداث",
+        "news": "الأخبار",
+        "articles": "المقالات",
+        "campaigns": "الحملات"
+      },
+      "card": {
+        "no_description": "لا يوجد وصف"
+      },
+      "actions": {
+        "view": "عرض",
+        "approve": "موافقة",
+        "reject": "رفض"
+      },
+      "messages": {
+        "approved": "تمت الموافقة بنجاح",
+        "rejected": "تم الرفض",
+        "error": "حدث خطأ",
+        "reject_reason": "سبب الرفض:",
+        "guide_title": "دليل التحقق",
+        "guide_text": "تحقق من المحتوى قبل نشره للتأكد من مطابقته للمعايير.",
+        "guide_link": "عرض الدليل"
+      },
+      "empty": {
+        "title": "لا يوجد محتوى بانتظار التحقق",
+        "description": "كل المحتوى تمت معالجته."
+      },
+      "modal": {
+        "details_title": "تفاصيل المحتوى",
+        "start_date": "تاريخ البدء :",
+        "end_date": "تاريخ الانتهاء :",
+        "location": "المكان",
+        "created_by": "تم الإنشاء بواسطة :",
+        "objective": "الهدف :",
+        "participants": "مشارك",
+        "cancel": "إلغاء"
+      }
+    },
+    "news_page": {
+      "page_title": "الأخبار",
+      "total_news": "{count} خبر",
+      "filters": "تصفية",
+      "new_news": "خبر جديد",
+      "search_placeholder": "بحث...",
+      "all_sectors": "كل القطاعات",
+      "reset": "إعادة تعيين",
+      "no_news": "لا توجد أخبار",
+      "no_results": "لا توجد نتائج",
+      "create_first": "قم بإنشاء أول خبر",
+      "highlight": "مميز",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "views": "{count} مشاهدة",
+      "pagination": "صفحة {page} من {totalPages} ({total})",
+      "statuses": {
+        "BROUILLON": "مسودة",
+        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
+        "VALIDEE": "تم التحقق",
+        "PUBLIEE": "منشور",
+        "DEPUBLIEE": "غير منشور",
+        "ARCHIVEE": "مؤرشف"
+      },
+      "modal": {
+        "title": "تفاصيل الخبر",
+        "resume": "ملخص",
+        "no_resume": "لا يوجد ملخص",
+        "sector": "القطاع",
+        "views": "المشاهدات",
+        "created_on": "أنشئ في {date}",
+        "change_status": "تغيير الحالة",
+        "view_online": "عرض على الموقع",
+        "add_highlight": "إضافة للمميز",
+        "remove_highlight": "إزالة من المميز",
+        "delete": "حذف الخبر"
+      },
+      "messages": {
+        "loading_error": "خطأ في التحميل",
+        "status_changed": "تم تغيير الحالة إلى {status}",
+        "error": "حدث خطأ",
+        "highlight_removed": "تمت الإزالة من المميز",
+        "highlight_added": "تمت الإضافة للمميز",
+        "delete_confirm": "هل أنت متأكد من الحذف؟",
+        "deleted": "تم الحذف بنجاح"
+      },
+      "page": "صفحة",
+      "limit": "حد"
+    },
+    "events_page": {
+      "title": "إدارة أحداث",
+      "subtitle": "إدارة الأحداث ({count})",
+      "filters": "تصفية",
+      "create": "حدث جديد",
+      "stats": {
+        "total": "المجموع",
+        "pending": "قيد الانتظار",
+        "published": "منشورة",
+        "in_progress": "جارية",
+        "closed": "مغلقة"
+      },
+      "filter_labels": {
+        "search": "بحث...",
+        "all_statuses": "كل الحالات",
+        "all_sectors": "كل القطاعات",
+        "all_muncipalities": "كل الجماعات",
+        "reset": "إعادة تعيين"
+      },
+      "status": {
+        "pending": "قيد الانتظار",
+        "published": "منشورة",
+        "in_progress": "جارية",
+        "closed": "مغلقة",
+        "rejected": "مرفوضة"
+      },
+      "table": {
+        "event": "الحدث",
+        "sector": "القطاع",
+        "location": "المكان",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "registrations": "التسجيلات",
+        "actions": "إجراءات"
+      },
+      "actions": {
+        "view": "عرض",
+        "edit": "تعديل",
+        "validate": "تصديق",
+        "reject": "رفض",
+        "close": "إغلاق"
+      },
+      "empty": "لا توجد أحداث",
+      "messages": {
+        "reject_reason": "سبب الرفض:",
+        "reject_error": "يرجى تقديم سبب للرفض (10 أحرف على الأقل)",
+        "validated": "تم التصديق بنجاح",
+        "rejected": "تم الرفض",
+        "error": "حدث خطأ"
+      },
+      "communeId": "الجماعة",
+      "dateDebut": "تاريخ البداية",
+      "dateFin": "تاريخ النهاية",
+      "page": "صفحة",
+      "limit": "حد",
+      "create_modal": {
+        "title": "فعالية جديدة",
+        "step_indicator": "المرحلة {current} من {total}",
+        "steps": {
+          "info": "المعلومات",
+          "location": "الموقع",
+          "participation": "المشاركة",
+          "media": "الوسائط"
+        },
+        "form": {
+          "title_label": "العنوان",
+          "title_placeholder": "مثال: دورة تكوينية...",
+          "desc_label": "الوصف",
+          "desc_placeholder": "تفاصيل الفعالية...",
+          "sector_label": "القطاع",
+          "category_label": "الفئة",
+          "select_placeholder": "اختر...",
+          "commune_label": "الجماعة",
+          "establishment_label": "المؤسسة (اختياري)",
+          "location_label": "المكان بدقة",
+          "location_placeholder": "مثال: القاعة المتعددة التخصصات، الملعب البلدي...",
+          "map_label": "الموقع على الخريطة",
+          "start_date": "تاريخ البدء",
+          "end_date": "تاريخ الانتهاء",
+          "start_time": "وقت البدء",
+          "end_time": "وقت الانتهاء",
+          "max_capacity": "الطاقة الاستيعابية القصوى",
+          "capacity_placeholder": "مثال: 100",
+          "is_free": "فعالية مجانية",
+          "price": "الثمن (درهم)",
+          "registration_link": "رابط التسجيل (خارجي)",
+          "photos_label": "صور الفعالية",
+          "upload_text": "انقر أو اسحب الصور هنا",
+          "upload_hint": "PNG, JPG حتى 10 ميجابايت",
+          "summary_title": "ملخص الفعالية",
+          "summary": {
+            "title": "العنوان",
+            "sector": "القطاع",
+            "date": "التاريخ",
+            "location": "المكان",
+            "price": "الثمن",
+            "photos": "الصور"
+          }
+        },
+        "buttons": {
+          "save_draft": "حفظ كمسودة",
+          "cancel": "إلغاء",
+          "prev": "السابق",
+          "next": "التالي",
+          "create": "إنشاء الفعالية"
+        },
+        "errors": {
+          "title_required": "العنوان مطلوب",
+          "desc_required": "الوصف مطلوب",
+          "category_required": "الفئة مطلوبة",
+          "commune_required": "الجماعة مطلوبة",
+          "location_required": "المكان مطلوب",
+          "date_required": "التاريخ مطلوب",
+          "price_required": "الثمن مطلوب"
+        },
+        "categories": {
+          "conf": "مؤتمر",
+          "formation": "تكوين",
+          "atelier": "ورشة عمل",
+          "festival": "مهرجان",
+          "competition": "مسابقة",
+          "spectacle": "عرض",
+          "exposition": "معرض",
+          "open_day": "أبواب مفتوحة",
+          "campaign": "حملة",
+          "rencontre": "لقاء",
+          "ceremony": "حفل",
+          "autre": "أخرى"
+        }
+      }
+    },
+    "users_page": {
+      "page_title": "إدارة المستخدمين",
+      "total_users": "{count} مستخدم",
+      "export": "تصدير",
+      "add": "إضافة",
+      "search_placeholder": "بحث...",
+      "filter_roles_all": "كل الأدوار",
+      "filter_status_all": "كل الحالات",
+      "reset_filters": "إعادة ضبط",
+      "no_users": "لا يوجد مستخدمين",
+      "pagination": "صفحة {start}-{end} من {total}",
+      "roles": {
+        "CITOYEN": "مواطن",
+        "DELEGATION": "مندوبية",
+        "AUTORITE_LOCALE": "سلطة محلية",
+        "COORDINATEUR_ACTIVITES": "منسق الأنشطة",
+        "ADMIN": "مسؤول",
+        "SUPER_ADMIN": "مسؤول عام",
+        "GOUVERNEUR": "السيد العامل"
+      },
+      "role_descriptions": {
+        "CITOYEN": "ولوج للخدمات العامة",
+        "DELEGATION": "ممثل القطاع",
+        "AUTORITE_LOCALE": "الإدارة الترابية",
+        "COORDINATEUR_ACTIVITES": "تنسيق ميداني",
+        "ADMIN": "إدارة تقنية",
+        "SUPER_ADMIN": "صلاحيات كاملة",
+        "GOUVERNEUR": "الإشراف العام"
+      },
+      "sectors": {
+        "EDUCATION": "التعليم",
+        "SANTE": "الصحة",
+        "SPORT": "الرياضة",
+        "SOCIAL": "الشؤون الاجتماعية",
+        "CULTUREL": "الثقافة",
+        "AUTRE": "آخر"
+      },
+      "create_modal": {
+        "title": "مستخدم جديد",
+        "subtitle": "إنشاء حساب جديد",
+        "fields": {
+          "first_name": "الاسم",
+          "last_name": "النسب",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "password": "كلمة المرور",
+          "confirm_password": "تأكيد كلمة المرور",
+          "role": "الدور",
+          "sector": "القطاع",
+          "commune": "الجماعة",
+          "establishments": "المؤسسات ({count})",
+          "active_account": "حساب نشط"
+        },
+        "placeholders": {
+          "first_name": "الاسم",
+          "last_name": "النسب",
+          "email": "email@exemple.com",
+          "password": "كلمة المرور",
+          "phone": "رقم الهاتف"
+        },
+        "helpers": {
+          "commune_helper": "الجماعة التابعة لها",
+          "establishments_helper": "المؤسسات المسيرة (اختيار متعدد)"
+        },
+        "select_option": {
+          "sector": "اختر القطاع",
+          "commune": "اختر الجماعة"
+        },
+        "cancel_btn": "إلغاء",
+        "submit_btn": "إنشاء",
+        "errors": {
+          "password_mismatch": "كلمات المرور غير متطابقة",
+          "password_length": "6 أحرف على الأقل",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "مؤسسة واحدة على الأقل",
+          "create_error": "خطأ في الإنشاء",
+          "server_error": "خطأ في الخادم"
+        },
+        "success": "تم إنشاء المستخدم {name}"
+      },
+      "edit_role_modal": {
+        "title": "تعديل الدور",
+        "current_role": "الدور الحالي",
+        "new_role": "الدور الجديد",
+        "errors": {
+          "edit_error": "خطأ في التعديل",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "مؤسسة واحدة على الأقل",
+          "server_error": "خطأ في الخادم"
+        },
+        "loading": "جارٍ التحميل..."
+      },
+      "table": {
+        "user": "المستخدم",
+        "role": "الدور",
+        "status": "الحالة",
+        "sector_establishment": "القطاع / المؤسسة",
+        "activity": "النشاط",
+        "actions": "إجراءات",
+        "actions_count": "{count} عملية",
+        "estab_count": "{count} مؤسسة"
+      },
+      "statuses": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "activated": "مفعل",
+        "deactivated": "معطل"
+      },
+      "actions": {
+        "edit_role": "تعديل الدور",
+        "reset_password": "تغيير كلمة المرور",
+        "deactivate": "تعطيل",
+        "activate": "تفعيل",
+        "delete": "حذف"
+      },
+      "messages": {
+        "error": "حدث خطأ",
+        "status_changed": "تم {status} الحساب",
+        "delete_confirm": "حذف {name}؟",
+        "user_deleted": "تم حذف المستخدم",
+        "reset_password_confirm": "تغيير كلمة مرور {name}؟",
+        "reset_password_alert": "كلمة المرور الجديدة: {password}",
+        "reset_password_success": "تم تغيير كلمة المرور"
+      }
+    },
+    "establishments": {
+      "back_list": "العودة إلى القائمة",
+      "create_title": "إضافة مؤسسة جديدة",
+      "create_subtitle": "ملء النموذج لإضافة مؤسسة",
+      "sections": {
+        "general": "معلومات عامة",
+        "localization": "الموقع الجغرافي",
+        "contact": "معلومات الاتصال",
+        "description": "الوصف"
+      },
+      "form": {
+        "name": "اسم المؤسسة",
+        "code": "الرمز",
+        "sector": "القطاع",
+        "capacity": "الطاقة الاستيعابية",
+        "commune": "الجماعة",
+        "select_commune": "اختر الجماعة",
+        "address": "العنوان",
+        "latitude": "خط العرض",
+        "longitude": "خط الطول",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "website": "الموقع الإلكتروني",
+        "description_placeholder": "أدخل وصفاً للمؤسسة...",
+        "publish_now": "نشر الآن"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "success": "تم الحفظ بنجاح"
+      }
+    },
+    "news": {
+      "back_list": "العودة إلى القائمة",
+      "create_title": "إضافة خبر جديد",
+      "create_subtitle": "نشر مقال أو إعلان جديد",
+      "sections": {
+        "image": "الصورة الرئيسية",
+        "content": "المحتوى",
+        "sector": "القطاع المعني",
+        "category": "التصنيف",
+        "status": "حالة النشر"
+      },
+      "form": {
+        "image_help": "صيغ مدعومة: JPG, PNG. الحد الأقصى: 5MB",
+        "title": "العنوان",
+        "content": "نص المقال",
+        "select_sector": "تحديد القطاع",
+        "description": "وصف قصير",
+        "image": "صورة الغلاف",
+        "date": "تاريخ النشر",
+        "sector": "قطاع",
+        "category": "فئة",
+        "status": "حالة",
+        "select_category": "اختر فئة...",
+        "select_status": "حدد الحالة..."
+      },
+      "categories": {
+        "TRAVAUX": "أشغال",
+        "ANNONCE": "إعلان",
+        "EVENEMENT": "حدث",
+        "PROJET": "مشروع",
+        "URGENCE": "طارئ"
+      },
+      "status": {
+        "BROUILLON": "مسودة",
+        "BROUILLON_DESC": "محفوظ وغير مرئي للعموم",
+        "EN_ATTENTE_VALIDATION": "قيد المراجعة",
+        "EN_ATTENTE_VALIDATION_DESC": "في انتظار موافقة المسؤول",
+        "PUBLIEE": "منشور",
+        "PUBLIEE_DESC": "مرئي لجميع المستخدمين"
+      },
+      "sectors": {
+        "EDUCATION": "التعليم",
+        "SANTE": "الصحة",
+        "SPORT": "الرياضة",
+        "CULTUREL": "الثقافة",
+        "SOCIAL": "الاجتماعي",
+        "AUTRE": "آخر"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "create": "إنشاء الخبر",
+        "creating": "جاري الإنشاء...",
+        "create_success": "تم إنشاء الأخبار بنجاح"
+      }
+    },
+    "articles_page": {
+      "title": "المقالات",
+      "subtitle": "إدارة المقالات والمحتوى",
+      "create": "مقال جديد",
+      "create_title": "مقال جديد",
+      "create_subtitle": "كتابة مقال جديد لمنصة مديونة",
+      "back_list": "العودة للمقالات",
+      "search": "بحث في المقالات...",
+      "filter_status": "الحالة",
+      "filter_sector": "القطاع",
+      "empty": {
+        "title": "لا توجد مقالات",
+        "create_first": "أنشئ مقالك الأول"
+      },
+      "sections": {
+        "image": "صورة الغلاف",
+        "content": "المحتوى",
+        "category": "التصنيف",
+        "publication": "النشر"
+      },
+      "form": {
+        "title": "عنوان المقال",
+        "summary": "ملخص",
+        "content": "المحتوى الكامل",
+        "image": "صورة الغلاف",
+        "select_image": "اختر صورة",
+        "image_help": "PGN, JPG حتى 5 ميجابايت",
+        "category": "الفئة",
+        "select_category": "اختر فئة",
+        "tags": "الوسوم",
+        "tags_placeholder": "تنمية, ابتكار...",
+        "publish_now": "نشر الآن"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "save": "حفظ المقال",
+        "saving": "جاري الحفظ...",
+        "success": "تم حفظ المقال"
+      },
+      "table": {
+        "title": "العنوان",
+        "author": "الكاتب",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "actions": "إجراءات"
+      },
+      "page": "صفحة",
+      "limit": "حد"
+    },
+    "events": {
+      "new_title": "حدث جديد",
+      "new_subtitle": "قم بإنشاء حدث كامل لإعلام وتعبئة المواطنين.",
+      "form": {
+        "visual": "صورة الحدث",
+        "visual_hint": "صورة جذابة تزيد من المشاركة",
+        "general_info": "معلومات عامة",
+        "title": "عنوان الحدث",
+        "description": "وصف مفصل",
+        "establishment": "المؤسسة المنظمة",
+        "type": "نوع الحدث",
+        "date_place": "التاريخ، الوقت والمكان",
+        "organizer_contact": "المنظم والاتصال",
+        "participation": "المشاركة والتسجيل",
+        "create_btn": "إنشاء الحدث",
+        "creating": "جاري الإنشاء...",
+        "cancel": "إلغاء",
+        "success_create": "تم إنشاء الحدث بنجاح",
+        "image_select": "الصورة المحددة",
+        "delete_image": "حذف",
+        "click_add_image": "انقر لإضافة صورة",
+        "image_format": "PNG, JPG حتى 5 ميجابايت",
+        "select_establishment": "اختر مؤسسة...",
+        "select_type": "اختر نوعاً...",
+        "tags": "الوسوم",
+        "tags_hint": "(مفصولة بفواصل)",
+        "date_start": "تاريخ البدء",
+        "date_end": "تاريخ الانتهاء",
+        "time_start": "وقت البدء",
+        "time_end": "وقت الانتهاء",
+        "location": "المكان / القاعة",
+        "address": "العنوان الكامل",
+        "district": "الحي / الدوار",
+        "organizer_name": "اسم المنظم",
+        "contact_phone": "هاتف الاتصال",
+        "contact_email": "البريد الإلكتروني",
+        "max_capacity": "القدرة الاستيعابية القصوى",
+        "open_registration": "فتح التسجيل",
+        "open_registration_hint": "يسمح للمواطنين التسجيل عبر الإنترنت",
+        "external_link": "رابط تسجيل خارجي"
+      },
+      "errors": {
+        "image_size": "يجب ألا تتجاوز الصورة 5 ميجابايت",
+        "upload_error": "خطأ في تحميل الصورة",
+        "create_error": "خطأ في الإنشاء"
+      }
+    },
+    "reports_page": {
+      "loading": "جارٍ تحميل البيانات...",
+      "title": "التقارير والإحصائيات",
+      "date_range_to": "إلى",
+      "excel": "تصدير Excel",
+      "no_data": "لا توجد بيانات متاحة لهذه الفترة"
+    }
+  },
+  "super_admin": {
+    "title": "الإدارة العامة",
+    "subtitle": "الإشراف الكامل على منصة مد أكشن",
+    "loading": "جاري تحميل لوحة التحكم...",
+    "access_denied": "وصول مرفوض. هذه المنطقة مخصصة للمدير الأعلى فقط.",
+    "export": "تصدير",
+    "manage_admins": "إدارة المشرفين",
+    "toasts": {
+      "data_error": "خطأ في تحميل البيانات",
+      "export_loading": "جاري إعداد التقرير...",
+      "export_success": "تم تصدير التقرير بنجاح",
+      "export_error": "فشل التصدير",
+      "connection_error": "خطأ في الاتصال"
+    },
+    "system_status": {
+      "title": "حالة النظام",
+      "operational": "يعمل بكفاءة",
+      "api": "واجهة برمجة التطبيقات",
+      "database": "قاعدة البيانات",
+      "auth": "المصادقة",
+      "notifications": "الإشعارات",
+      "storage": "تخزين الملفات",
+      "emails": "البريد الإلكتروني",
+      "uptime": "وقت التشغيل",
+      "response_time": "وقت الاستجابة",
+      "errors_24h": "أخطاء 24 ساعة"
+    },
+    "quick_actions": {
+      "title": "إجراءات سريعة",
+      "admins": "المشرفون",
+      "users": "المستخدمون",
+      "reclamations": "الشكايات",
+      "validation": "المصادقة",
+      "events": "الفعاليات",
+      "establishments": "المؤسسات",
+      "activities": "الأنشطة",
+      "logs": "سجلات النشاط",
+      "import": "استيراد البيانات",
+      "licence": "الترخيص",
+      "settings": "إعدادات النظام"
+    },
+    "stats": {
+      "total_users": "إجمالي المستخدمين",
+      "this_month": "هذا الشهر",
+      "admins": "مشرفون",
+      "citizens": "مواطنون",
+      "establishments": "مؤسسات",
+      "validated": "تم التحقق",
+      "events": "فعاليات",
+      "reclamations": "شكايات",
+      "pending": "قيد الانتظار",
+      "urgent": "عاجلة",
+      "content": "المحتوى",
+      "news": "أخبار",
+      "articles": "مقالات"
+    },
+    "recent_activity": {
+      "title": "النشاط الأخير",
+      "view_all": "عرض الكل",
+      "no_activity": "لا يوجد نشاط حديث"
+    },
+    "rbac": {
+      "title": "الأدوار والصلاحيات",
+      "manage": "إدارة",
+      "super_admins": "المسؤولون العامون",
+      "administrators": "المشرفون",
+      "delegations": "المندوبيات",
+      "local_authorities": "السلطات المحلية",
+      "citizens": "المواطنون"
+    },
+    "features": {
+      "title": "ميزات الإدارة",
+      "admin_management": "إدارة المشرفين",
+      "admin_management_desc": "إدارة الحسابات والأدوار",
+      "permissions": "الصلاحيات",
+      "permissions_desc": "تكوين الوصول والامتيازات",
+      "system_settings": "إعدادات النظام",
+      "system_settings_desc": "للتكوين الشامل للمنصة",
+      "backups": "النسخ الاحتياطي",
+      "backups_desc": "إدارة واستعادة النسخ الاحتياطية"
+    },
+    "permissions": {
+      "title": "إدارة الصلاحيات",
+      "subtitle": "تحكم دقيق في الوصول إلى وظائف النظام المختلفة.",
+      "add_role": "إضافة دور",
+      "edit_permission": "تعديل الصلاحية",
+      "role_name": "اسم الدور",
+      "permissions_list": "قائمة الصلاحيات",
+      "save_changes": "حفظ التغييرات",
+      "delete_role": "حذف الدور",
+      "search": "البحث عن صلاحية...",
+      "new": "صلاحية جديدة",
+      "total": "إجمالي الصلاحيات",
+      "active": "مفعلة",
+      "inactive": "معطلة",
+      "groups": "مجموعات",
+      "empty": "لم يتم العثور على صلاحيات",
+      "empty_search": "لا توجد نتائج لبحثك",
+      "empty_desc": "ابدأ بإضافة صلاحيات لتنظيم الوصول.",
+      "messages": {
+        "activated": "تم تفعيل الصلاحية",
+        "deactivated": "تم تعطيل الصلاحية",
+        "confirm_delete": "حذف الصلاحية {name}؟",
+        "deleted": "تم حذف الصلاحية",
+        "required_fields": "يرجى ملء جميع الحقول المطلوبة",
+        "updated": "تم تحديث الصلاحية",
+        "created": "تم إنشاء الصلاحية"
+      },
+      "modal": {
+        "title_create": "إنشاء صلاحية",
+        "title_edit": "تعديل الصلاحية",
+        "code": "الرمز الفريد",
+        "code_tooltip": "المعرف التقني المستخدم في الكود (مثال: USERS_VIEW)",
+        "code_hint": "استخدم الحروف الكبيرة والشرطات السفلية فقط",
+        "name": "الاسم العام",
+        "name_tooltip": "الاسم الذي سيظهر للمسؤولين",
+        "name_placeholder": "مثال: إدارة المستخدمين",
+        "description": "الوصف",
+        "description_placeholder": "ما الغرض من هذه الصلاحية؟",
+        "group": "المجموعة التقنية",
+        "group_select": "اختر مجموعة",
+        "group_title": "تسمية المجموعة",
+        "group_title_hint": "عنوان العرض لهذه المجموعة",
+        "cancel": "إلغاء",
+        "update": "تحديث",
+        "create": "إنشاء الصلاحية",
+        "groups_label": {
+          "USERS": "المسؤولون والمستخدمون",
+          "RECLAMATIONS": "الشكاوى والبلاغات",
+          "ETABLISSEMENTS": "إدارة المؤسسات",
+          "EVENEMENTS": "الأحداث والحملات",
+          "CONTENT": "إدارة المحتوى",
+          "SETTINGS": "إعدادات النظام",
+          "SYSTEM": "البنية التحتية والواجهة البرمجية"
+        }
+      }
+    },
+    "backups": {
+      "title": "نسخ النظام الاحتياطية",
+      "subtitle": "تاريخ ونقاط استعادة آمنة لقاعدة البيانات الخاصة بك.",
+      "create_now": "نسخ الآن",
+      "restore": "استعادة",
+      "download": "تحميل",
+      "last_backup": "آخر نسخة احتياطية",
+      "status": "الحالة",
+      "restore_btn": "استعادة",
+      "create_btn": "نسخة جديدة",
+      "confirm_restore": "هل أنت متأكد من رغبتك في استعادة هذه النسخة؟ سيؤدي ذلك إلى استبدال البيانات الحالية.",
+      "confirm_delete": "حذف هذه النسخة الاحتياطية نهائياً؟",
+      "empty": "لا توجد نسخ احتياطية",
+      "empty_desc": "لمتقم بإنشاء أي نقاط استعادة للنظام بعد.",
+      "messages": {
+        "created": "تم إنشاء النسخة الاحتياطية بنجاح",
+        "deleted": "تم حذف النسخة الاحتياطية",
+        "restored": "تمت الاستعادة بنجاح",
+        "error_create": "خطأ أثناء الإنشاء",
+        "error_delete": "خطأ أثناء الحذف",
+        "error_restore": "خطأ أثناء الاستعادة",
+        "error_format": "صيغة ملف غير صالحة (يتطلب .json)",
+        "error_network": "خطأ في الاتصال بالخادم"
+      }
+    },
+    "footer": {
+      "mode": "الوضع",
+      "full_access": "وصول كامل",
+      "last_backup": "آخر نسخة احتياطية",
+      "version": "إصدار"
+    },
+    "dashboard": {
+      "total_users": "إجمالي المستخدمين",
+      "active_sessions": "الجلسات النشطة",
+      "database_size": "حجم قاعدة البيانات",
+      "server_status": "حالة الخادم"
+    }
+  },
+  "maintenance": {
+    "title": "الموقع في وضع الصيانة",
+    "description": "نقوم حالياً بإجراء تحسينات لتقديم تجربة أفضل لكم. سيعود الموقع للعمل قريباً جداً.",
+    "estimated_duration": "المدة المقدرة",
+    "retry": "إعادة المحاولة",
+    "contact_us": "تواصل معنا",
+    "footer": "بوابة مديونة - عمالة مديونة",
+    "admin_access": "ولوج الإدارة"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "mark_all_read": "تحديد الكل كمقروء",
+    "empty": "لا توجد إشعارات",
+    "empty_desc": "أنت على اطلاع بكل جديد",
+    "view": "عرض",
+    "view_all": "عرض كل الإشعارات",
+    "new": "{count, plural, one {جديد} other {جديدة}}",
+    "time": {
+      "just_now": "الآن",
+      "min_ago": "منذ {count} دقيقة",
+      "hour_ago": "منذ {count} ساعة",
+      "day_ago": "منذ {count} يوم"
+    }
+  },
+  "app": {
+    "name": "عمالة مديونة",
+    "tagline": "البوابة الإقليمية لمديونة",
+    "province": "عمالة مديونة",
+    "portail": "بوابة مديونة"
+  },
+  "campaigns": {
+    "title": "حملات المواطنين",
+    "subtitle": "شاركوا في مبادرات إقليمكم",
+    "hero_title": "الحملات والمبادرات",
+    "hero_subtitle": "اكتشف وشارك في الحملات الجارية بإقليم مديونة. معاً نصنع التغيير.",
+    "initiatives_badge": "مبادرات مواطنة",
+    "all_types": "كل الأنواع",
+    "search_placeholder": "البحث في الحملات...",
+    "no_campaigns_found": "لم يتم العثور على حملات",
+    "check_filters": "يرجى التحقق من المرشحات",
+    "reset_filters": "إعادة تعيين المرشحات",
+    "no_campaigns": "لا توجد حملات حالياً",
+    "deadline": "ي-",
+    "status_finished": "منتهية",
+    "progress": "التقدم",
+    "participants": "مشاركة",
+    "goal": "الهدف",
+    "see_all": "عرض جميع الحملات",
+    "types": {
+      "SOLIDARITE": "تضامن",
+      "ECOLOGIE": "بيئة",
+      "CITOYENNETE": "مواطنة",
+      "AUTRE": "أخرى",
+      "SANTE": "صحة",
+      "CULTURE": "ثقافة",
+      "EDUCATION": "تعليم",
+      "TRAVAUX": "أشغال وبنية تحتية",
+      "ECONOMIE": "اقتصاد",
+      "TRANSPORT": "نقل",
+      "SPORT": "رياضة",
+      "PARTENARIAT": "شراكة",
+      "SUCCESS_STORY": "قصة نجاح",
+      "ANNONCE": "إعلان"
+    },
+    "errors": {
+      "participation_error": "خطأ أثناء المشاركة",
+      "connection_error": "خطأ في الاتصال"
+    },
+    "participate": "شارك",
+    "detail": {
+      "back": "رجوع",
+      "status_active": "حملة جارية",
+      "status_simple": "حملة",
+      "sector_prefix": "قطاع",
+      "views": "{count} مشاهدة",
+      "about_title": "حول هذه الحملة",
+      "progression_title": "التقدم",
+      "goal_reached": "من الهدف المحقق",
+      "participants_default_unit": "مشاركين",
+      "goal_label": "الهدف",
+      "status_continuous": "مستمرة",
+      "status_finishes_today": "تنتهي اليوم",
+      "status_days_left": "{count, plural, =1 {يوم واحد متبقي} =2 {يومان متبقيان} other {{count} أيام متبقية}}",
+      "participate_btn": "شارك في هذه الحملة",
+      "processing": "جاري المعالجة...",
+      "share_btn": "مشاركة",
+      "not_found_title": "الحملة غير موجودة",
+      "not_found_desc": "هذه الحملة غير موجودة أو تم حذفها.",
+      "back_to_list": "العودة إلى الحملات",
+      "auth_required": "يجب تسجيل الدخول للمشاركة",
+      "participation_success": "تم تسجيل مشاركتك بنجاح!",
+      "link_copied": "تم نسخ الرابط!",
+      "copy_failed": "تعذر نسخ الرابط"
+    }
+  },
+  "errors": {
+    "not_found": "الصفحة غير موجودة",
+    "not_found_desc": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "server_error": "خطأ في الخادم",
+    "server_error_desc": "حدث خطأ. يرجى المحاولة مرة أخرى لاحقاً.",
+    "unauthorized": "غير مصرح",
+    "unauthorized_desc": "ليس لديك الصلاحيات اللازمة للوصول إلى هذه الصفحة.",
+    "forbidden": "الوصول مرفوض",
+    "forbidden_desc": "غير مسموح لك بتنفيذ هذا الإجراء.",
+    "required": "المرجو ملء هذا الحقل",
+    "invalid_email": "المرجو إدخال بريد إلكتروني صحيح",
+    "password_min": "كلمة المرور يجب أن تتكون من 8 رموز على الأقل",
+    "generic": "خطأ في النظام",
+    "firstname_min": "الاسم الشخصي قصير للغاية (حرفين على الأقل)",
+    "firstname_max": "الاسم الشخصي طويل للغاية (50 حرف كحد أقصى)",
+    "firstname_invalid": "العنوان يحتوي على رموز غير صالحة",
+    "lastname_min": "الاسم العائلي قصير للغاية (حرفين على الأقل)",
+    "lastname_max": "الاسم العائلي طويل للغاية (50 حرف كحد أقصى)",
+    "lastname_invalid": "العنوان يحتوي على رموز غير صالحة",
+    "phone_invalid": "رقم الهاتف غير صالح (مثال: 0612345678)",
+    "password_uppercase": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل",
+    "password_lowercase": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل",
+    "password_digit": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
+    "password_special": "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل",
+    "password_mismatch": "كلمتا المرور غير متطابقتين",
+    "retry": "إعادة المحاولة"
+  },
+  "access_denied": {
+    "title": "الوصول مرفوض",
+    "message": "ليس لديك الصلاحيات اللازمة للوصول إلى هذه الصفحة. يرجى التواصل مع المسؤول إذا كنت تعتقد أن هذا خطأ.",
+    "back_home": "العودة إلى الصفحة الرئيسية",
+    "previous_page": "الصفحة السابقة",
+    "need_help": "هل تحتاج مساعدة؟",
+    "contact_us": "تواصل معنا"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "etablissements": "المؤسسات",
+    "reclamations": "الشكايات",
+    "evenements": "الفعاليات",
+    "carte": "الخريطة",
+    "dashboard": "لوحة القيادة",
+    "profile": "ملفي الشخصي",
+    "logout": "تسجيل الخروج",
+    "services": "الخدمات الإلكترونية",
+    "mediatheque": "المكتبة الوسائطية",
+    "contact": "اتصل بنا",
+    "accessibilite": "إمكانية الوصول",
+    "connexion": "تسجيل الدخول",
+    "actualites": "المستجدات",
+    "campagnes": "الحملات التضامنية",
+    "articles": "الأدلة والموارد",
+    "nouvelle_reclamation": "شكاية جديدة",
+    "mes_reclamations": "تتبع شكاياتي",
+    "suggestions": "صندوق الاقتراحات",
+    "user_menu": {
+      "pro_space": "الفضاء المهني",
+      "delegation_space": "فضاء المندوبية",
+      "my_profile": "ملفي الشخصي",
+      "security": "الأمان والتحقق",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
+      "admin": "الإدارة"
+    }
+  },
+  "actions": {
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "معاينة",
+    "back": "عودة",
+    "next": "التالي",
+    "previous": "السابق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "clear": "إفراغ",
+    "download": "تحميل",
+    "upload": "رفع الملفات",
+    "explorer": "استكشاف المؤسسات",
+    "soumettre_reclamation": "اقتراح فكرة",
+    "voir_plus": "المزيد",
+    "voir_tous": "عرض الكل",
+    "participer": "مشاركة",
+    "en_savoir_plus": "اقرأ المزيد",
+    "back_home": "العودة إلى الصفحة الرئيسية"
+  },
+  "hero": {
+    "badge": "البوابة الرسمية",
+    "categories": "التعليم • الصحة • الرياضة • الثقافة • الشؤون الاجتماعية",
+    "title": "الخدمات العمومية للقرب",
+    "description": "منصتكم الرقمية للوصول إلى المعلومات، وتقييم الخدمات العمومية، والمشاركة في تنمية الإقليم.",
+    "slide1_title": "إقليم مديونة",
+    "slide1_subtitle": "حكامة وقرب",
+    "slide1_description": "مجال ترابي في توسع مستمر، في خدمة المواطنين.",
+    "slide2_title": "الخدمات الرقمية",
+    "slide2_subtitle": "الإدارة الإلكترونية",
+    "slide2_description": "ولوج مستمر لخدماتكم الإدارية عن بعد، 24/7.",
+    "slide3_title": "التنمية المستدامة",
+    "slide3_subtitle": "ابتكار ومستقبل",
+    "slide3_description": "ملتزمون بمستقبل أخضر ومزدهر للجميع.",
+    "slide4_title": "المشاركة المواطنة",
+    "slide4_subtitle": "رأيكم يهمنا",
+    "slide4_description": "ساهموا بفعالية في القرارات المحلية.",
+    "slide4_title_alt": "مشاركة المواطنين",
+    "slide4_subtitle_alt": "رأيك يهم",
+    "slide4_description_alt": "المساهمة بنشاط في القرارات المحلية."
+  },
+  "search": {
+    "title": "استكشاف الإقليم",
+    "subtitle": "البحث عن المؤسسات والخدمات حسب المجال الجغرافي أو القطاع",
+    "placeholder": "البحث عن مؤسسة، خدمة...",
+    "quick": "الوصول السريع",
+    "all_communes": "جميع الجماعات الترابية"
+  },
+  "sectors": {
+    "title": "قطاعات النشاط",
+    "filter": "تصفية حسب القطاع",
+    "filter_by": "تصفية حسب قطاع {sector}",
+    "education": "التعليم والتكوين",
+    "sante": "الصحة والحماية الاجتماعية",
+    "sport": "الرياضة والشباب",
+    "culture": "الثقافة والتراث",
+    "social": "الرعاية الإجتماعية",
+    "jeunesse": "الشباب والطفولة",
+    "etablissements": "مؤسسة",
+    "infrastructure": "البنية التحتية والطرق",
+    "proprete": "النظافة والبيئة",
+    "eclairage": "الإنارة العمومية",
+    "eau": "الماء والتطهير",
+    "securite": "الأمن والسلامة",
+    "autre": "أخرى",
+    "culturel": "ثقافي"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "accepted": "مقبولة",
+    "rejected": "مرفوضة"
+  },
+  "events": {
+    "title": "أجندة الفعاليات",
+    "subtitle": "مواعيد وأنشطة القرب بإقليم مديونة",
+    "no_events": "لا توجد فعاليات مبرمجة حالياً",
+    "see_all": "تصفح كل الفعاليات",
+    "date": "التاريخ والتوقيت",
+    "location": "الموقع",
+    "organizer": "الجهة المنظمة"
+  },
+  "news": {
+    "title": "المستجدات",
+    "subtitle": "صدى الإقليم وأخبار التنمية المحلية",
+    "no_news": "لا توجد أخبار حالياً",
+    "see_all": "الأرشيف الكامل",
+    "read_more": "تتمة المقال",
+    "published": "تاريخ النشر",
+    "min_read": "دقيقة قراءة"
+  },
+  "news_page": {
+    "badge": "معلومات رسمية",
+    "title_prefix": "مستجدات ",
+    "title_suffix": "الإقليم",
+    "hero_subtitle": "ابق على اطلاع بآخر المشاريع والأحداث والإعلانات الرسمية. الشفافية في خدمة المواطن.",
+    "filter_mobile": "تصفية الأخبار",
+    "search_title": "بحث",
+    "reset": "إعادة تعيين",
+    "search_placeholder": "كلمات مفتاحية...",
+    "categories_title": "الفئات",
+    "all_news": "جميع الأخبار",
+    "view_grid": "شبكة",
+    "view_list": "قائمة",
+    "no_news_found": "لم يتم العثور على أي خبر",
+    "no_news_desc": "لا توجد أخبار تطابق معايير بحثك.",
+    "reset_search": "إعادة تعيين البحث",
+    "page_info": "الصفحة {page} من {totalPages}",
+    "categories": {
+      "ANNONCE": "إعلان",
+      "EVENEMENT": "حدث",
+      "RENOVATION": "أشغال",
+      "SERVICE": "خدمة",
+      "PROJET": "مشروع",
+      "PARTENARIAT": "شراكة",
+      "AUTRE": "آخر",
+      "ACTUALITE": "أخبار",
+      "E_SERVICES": "خدمات إلكترونية",
+      "CULTURE": "ثقافة",
+      "URBANISME": "تعمير",
+      "SUCCESS_STORY": "قصة نجاح",
+      "TRAVAUX": "أشغال"
+    },
+    "read": "اقرأ المزيد",
+    "showing": "عرض {start}-{end} من أصل {total} خبر",
+    "reset_filters": "إعادة تعيين المرشحات",
+    "previous": "السابق",
+    "next": "التالي",
+    "detail": {
+      "back": "عودة",
+      "copied": "تم نسخ الرابط !",
+      "share": "مشاركة",
+      "shared": "تمت المشاركة",
+      "reading_time": "{min} دقيقة قراءة",
+      "written_by": "بقلم {name}",
+      "views": "{count} مشاهدة",
+      "official_source": "مصدر رسمي",
+      "gallery": "معرض الصور",
+      "related_articles": "مقالات ذات صلة",
+      "not_found": "المقال غير موجود",
+      "back_to_list": "العودة إلى القائمة"
+    }
+  },
+  "articles_page": {
+    "badge": "مركز الموارد",
+    "title_prefix": "مقالات و ",
+    "title_suffix": "أدلة عملية",
+    "hero_subtitle": "تعرف على حقوقك، واستكشف الخدمات الإقليمية واطلع على أدلتنا العملية لتبسيط إجراءاتك.",
+    "search_placeholder": "البحث عن مقال...",
+    "all_categories": "جميع المواضيع",
+    "no_articles": "لم يتم العثور على أي مقال",
+    "no_articles_desc": "حاول بكلمات مفتاحية أخرى أو تصفح فئاتنا.",
+    "reset_filters": "إعادة تعيين التصفية",
+    "published_on": "نشر في",
+    "categories": {
+      "ANNONCE": "إعلان",
+      "EVENEMENT": "حدث",
+      "RENOVATION": "أشغال",
+      "SERVICE": "خدمة",
+      "PROJET": "مشروع",
+      "PARTENARIAT": "شراكة",
+      "AUTRE": "آخر",
+      "ACTUALITE": "أخبار",
+      "E_SERVICES": "خدمات إلكترونية",
+      "CULTURE": "ثقافة",
+      "URBANISME": "تعمير",
+      "SUCCESS_STORY": "قصة نجاح",
+      "TRAVAUX": "أشغال",
+      "SOLIDARITE": "تضامن",
+      "CITOYENNETE": "مواطنة",
+      "ECOLOGIE": "بيئة"
+    },
+    "read": "اقرأ",
+    "tags": "الوسوم"
+  },
+  "about_page": {
+    "title": "عن مديونة أكسيون",
+    "subtitle": "مبادرة رقمية لتعزيز الديمقراطية التشاركية وتقريب الإدارة من المواطنين.",
+    "vision_title": "رؤيتنا",
+    "vision_text1": "ولدت مديونة أكسيون من إرادة لخلق جسر مباشر بين مواطني إقليم مديونة وإدارتهم المحلية. نؤمن بشدة بأن المشاركة الفعالة للمواطنين هي مفتاح التنمية المجالية المستدامة والشاملة.",
+    "vision_text2": "تهدف هذه المنصة إلى رقمنة وتبسيط التفاعلات، مما يسمح لكل صوت بأن يُسمع ولكل مشكلة بأن تعالج بشفافية وفعالية.",
+    "values_title": "قيمنا",
+    "values": {
+      "participation": {
+        "title": "المشاركة",
+        "desc": "تشجيع كل مواطن على المساهمة الفعالة في الحياة المحلية."
+      },
+      "transparency": {
+        "title": "الشفافية",
+        "desc": "ضمان رؤية كاملة حول معالجة الطلبات والإجراءات المتخذة."
+      },
+      "efficiency": {
+        "title": "الفعالية",
+        "desc": "تقليص آجال المعالجة وتحسين جودة الخدمات العمومية."
+      }
+    },
+    "stats_title": "الإقليم في أرقام",
+    "stats": {
+      "communes": "جماعات",
+      "etablissements": "مؤسسة",
+      "citizens": "مواطنين نشطين",
+      "service": "خدمة رقمية"
+    }
+  },
+  "suggestions_page": {
+    "title": "صندوق الأفكار",
+    "subtitle": "شارك مقترحاتك لتحسين إقليم مديونة. كل فكرة تهمنا ويمكن أن تحدث الفرق!",
+    "propose_btn": "اقتراح فكرة",
+    "search_placeholder": "البحث عن اقتراح...",
+    "reset_filter": "إعادة تعيين التصفية",
+    "results_found": "{count} اقتراح(ات)",
+    "filter_label": "تصفية: {label}",
+    "no_suggestions": "لا توجد اقتراحات",
+    "no_results": "لا توجد نتائج لبحثك",
+    "be_first": "كن أول من يقترح فكرة!",
+    "status": {
+      "submitted": "في الانتظار",
+      "review": "قيد الدراسة",
+      "approved": "تمت الموافقة",
+      "rejected": "مرفوضة",
+      "implemented": "تم التنفيذ"
+    },
+    "categories": {
+      "infrastructure": "بنية تحتية",
+      "services": "خدمات عمومية",
+      "environment": "بيئة",
+      "education": "تعليم",
+      "health": "صحة",
+      "transport": "نقل",
+      "culture": "ثقافة وترفيه",
+      "digital": "رقمي",
+      "other": "أخرى"
+    },
+    "delete_confirm": "هل أنت متأكد من حذف هذا الاقتراح؟",
+    "delete_success": "تم حذف الاقتراح",
+    "admin_response": "رد الإدارة",
+    "cta_title": "لديك فكرة؟",
+    "cta_text": "سجل الدخول لمشاركة اقتراحك مع المجتمع.",
+    "login_btn": "تسجيل الدخول"
+  },
+  "my_reclamations_page": {
+    "access_denied": "دخول محظور",
+    "permission_text": "ليس لديك الصلاحية للاطلاع على الشكايات.",
+    "back_home": "العودة للرئيسية",
+    "title": "شكاياتي",
+    "subtitle": "تتبع حالة شكاياتك",
+    "new_reclamation": "شكاية جديدة",
+    "stats": {
+      "total": "المجموع",
+      "pending": "في الانتظار",
+      "accepted": "مقبولة"
+    },
+    "tabs": {
+      "all": "الكل",
+      "pending": "في الانتظار",
+      "accepted": "مقبولة"
+    },
+    "empty": {
+      "title": "لا توجد شكايات",
+      "all": "لم تقدم أي شكاية بعد",
+      "filtered": "لا توجد شكايات {filter}",
+      "create_btn": "إنشاء شكاية"
+    },
+    "delete_confirm": "هل تريد حقاً حذف هذه الشكاية؟",
+    "delete_success": "تم حذف الشكاية"
+  },
+  "profile_page": {
+    "title": "ملفي الشخصي",
+    "subtitle": "إدارة معلوماتك الشخصية وإعداداتك",
+    "role_label": {
+      "citizen": "مواطن",
+      "delegation": "مندوبية",
+      "authority": "سلطة محلية",
+      "coordinator": "منسق",
+      "admin": "مسؤول",
+      "super_admin": "مسؤول عام",
+      "governor": "عامل"
+    },
+    "tabs": {
+      "infos": "المعلومات",
+      "security": "الأمان",
+      "notifications": "الإشعارات"
+    },
+    "form": {
+      "firstname": "الاسم الشخصي",
+      "lastname": "الاسم العائلي",
+      "email": "البريد الإلكتروني",
+      "email_hint": "لا يمكن تغيير البريد الإلكتروني",
+      "phone": "الهاتف",
+      "phone_placeholder": "0612345678",
+      "current_password": "كلمة السر الحالية",
+      "new_password": "كلمة سر جديدة",
+      "confirm_password": "تأكيد كلمة السر",
+      "save_btn": "حفظ التعديلات",
+      "saving": "جاري الحفظ...",
+      "change_password_btn": "تغيير كلمة السر",
+      "changing": "جاري التغيير...",
+      "change_password_title": "تغيير كلمة السر",
+      "password": "كلمة السر"
+    },
+    "photo": {
+      "delete_btn": "حذف الصورة",
+      "update_success": "تم تحديث الصورة",
+      "delete_success": "تم حذف الصورة"
+    },
+    "subscriptions_btn": "اشتراكاتي",
+    "notifications": {
+      "title": "تفضيلات الإشعارات",
+      "reclamations": "إشعارات البريد الإلكتروني للشكايات",
+      "reclamations_desc": "تلقي بريد إلكتروني عند تغيير حالة شكاياتك",
+      "events": "تنبيهات الفعاليات",
+      "events_desc": "تلقي إشعارات بخصوص الفعاليات الجديدة في جماعتك",
+      "news": "النشرة الإخبارية والمستجدات",
+      "news_desc": "تلقي آخر مستجدات الإقليم",
+      "save_btn": "حفظ التفضيلات"
+    },
+    "messages": {
+      "success": "تم تحديث الملف الشخصي بنجاح",
+      "password_success": "تم تغيير كلمة السر بنجاح",
+      "error_update": "خطأ أثناء التحديث",
+      "error_password": "كلمات السر غير متطابقة",
+      "error_password_change": "خطأ أثناء تغيير كلمة السر"
+    },
+    "errors": {
+      "upload_fail": "خطأ في التحميل",
+      "delete_fail": "خطأ في الحذف",
+      "min_2": "على الأقل حرفين",
+      "required": "مطلوب",
+      "invalid_format": "تنسيق غير صالح",
+      "min_8": "8 أحرف على الأقل",
+      "uppercase": "حرف كبير مطلوب",
+      "lowercase": "حرف صغير مطلوب",
+      "number": "رقم مطلوب",
+      "password_mismatch": "كلمات المرور غير متطابقة"
+    },
+    "placeholders": {
+      "phone": "0600000000"
+    },
+    "personal_info": "المعلومات الشخصية",
+    "security_header": "الأمان",
+    "admin_header": "الإدارة",
+    "manage_admins": "إدارة المدراء",
+    "view_logs": "عرض السجلات",
+    "2fa": {
+      "title": "المصادقة الثنائية",
+      "enabled": "مفعل",
+      "disabled": "غير مفعل",
+      "active": "نشط",
+      "setup": "إعداد"
+    },
+    "activity": {
+      "title": "النشاط الأخير",
+      "last_login": "آخر تسجيل دخول",
+      "first_login": "أول تسجيل دخول"
+    },
+    "users_page": {
+      "roles": {
+        "CITOYEN": "مواطن",
+        "DELEGATION": "مندوبية",
+        "AUTORITE_LOCALE": "سلطة محلية",
+        "COORDINATEUR_ACTIVITES": "منسق الأنشطة",
+        "ADMIN": "مسؤول",
+        "SUPER_ADMIN": "مسؤول عام",
+        "GOUVERNEUR": "عامل"
+      }
+    }
+  },
+  "stats": {
+    "title": "مؤشرات الأداء",
+    "subtitle": "رصد دينامية الخدمات بالإقليم",
+    "etablissements": "مرفق عمومي",
+    "reclamations": "شكاية تمت معالجتها",
+    "citoyens": "مرتفق مستفيد",
+    "satisfaction": "مؤشر الرضا",
+    "delai": "متوسط مدة المعالجة",
+    "desc_etablissements": "المدارس، المراكز الصحية، المرافق الرياضية ودور الشباب",
+    "desc_reclamations": "شكايات تمت معالجتها وإغلاقها بنجاح",
+    "desc_citoyens": "مواطنون يشاركون بفعالية في المبادرات المحلية",
+    "desc_delai": "متوسط الوقت اللازم للإجابة على الشكايات المستعجلة"
+  },
+  "cta": {
+    "title": "ساهموا في تنمية منطقتك",
+    "subtitle": "رأيكم يهمنا. منصة الشكايات والاقتراحات هي قناتكم المباشرة للتفاعل مع الإدارة.",
+    "btn_reclamation": "تسجيل شكاية",
+    "btn_explorer": "دليل الخدمات",
+    "citizen_space": "فضاء المواطن",
+    "citizen_desc": "أنشئ حسابك لتقديم الشكايات، تتبع معالجتها والمشاركة في الحياة المحلية لجماعتك.",
+    "feature1": "تتبع مآل الشكايات في الوقت الفعلي",
+    "feature2": "إشعارات عبر البريد الإلكتروني والرسائل القصيرة",
+    "feature3": "سجل وتاريخ طلباتكم",
+    "btn_create_account": "إنشاء حسابي",
+    "btn_login": "تسجيل الدخول",
+    "stats_citizens": "مواطن مسجل",
+    "stats_resolution": "نسبة المعالجة",
+    "stats_time": "متوسط وقت الرد",
+    "quote": "\"تمت معالجة شكايتي بسرعة وفعالية. خدمة في المستوى.\""
+  },
+  "footer": {
+    "contact": "معلومات الاتصال",
+    "portails": "بوابات وطنية",
+    "liens": "روابط مفيدة",
+    "siege": "مقر العمالة",
+    "telephone": "مركز الاتصال",
+    "email": "البريد الإلكتروني الرسمي",
+    "siteweb": "البوابة الإلكترونية",
+    "idarati": "إدارتي",
+    "watiqa": "وثيقة",
+    "actualites": "مركز الأخبار",
+    "suggestions": "فضاء الاقتراحات",
+    "description": "البوابة الرسمية لعمالة مديونة. واجهة رقمية موحدة لتقريب الإدارة من المواطن وتسهيل الولوج للخدمات العمومية.",
+    "copyright": "عمالة مديونة. جميع الحقوق محفوظة",
+    "developpeur": "تطوير قسم النظم المعلوماتية",
+    "conditions": "شروط الاستخدام",
+    "confidentialite": "حماية المعطيات الشخصية",
+    "version": "الإصدار"
+  },
+  "common": {
+    "commune": "الجماعة",
+    "rechercher": "بحث",
+    "chargement": "تحميل البيانات...",
+    "erreur": "عذراً، حدث خطأ",
+    "aucun_resultat": "لا توجد نتائج مطابقة",
+    "obligatoire": "حقل إجباري",
+    "optionnel": "اختياري",
+    "oui": "نعم",
+    "non": "لا",
+    "fermer": "إغلاق",
+    "ouvrir": "فتح",
+    "reviews": "آراء",
+    "view_details": "عرض التفاصيل",
+    "access": "ولوج",
+    "stars_rating": "تقييم {rating} نجوم",
+    "scroll": "تمرير",
+    "user": "مستخدم",
+    "loading": "جارٍ التحميل...",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "error": "خطأ",
+    "success": "نجاح",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "directory": {
+    "title": "دليل المؤسسات",
+    "subtitle": "استكشف الخدمات العمومية بالإقليم. مدارس، مراكز صحية، مركبات رياضية: اعثر على كل المعلومات والتوقيت وآراء المواطنين.",
+    "badge": "خدمة عمومية",
+    "results": "النتائج",
+    "showing": "عرض {start}-{end} من أصل {total} مؤسسة",
+    "empty_title": "لم يتم العثور على نتائج",
+    "empty_desc": "لم نعثر على أي مؤسسة تطابق معاييرك. حاول توسيع نطاق البحث.",
+    "reset_filters": "إعادة تعيين التصفية",
+    "search_placeholder": "بحث عن منشأة...",
+    "all_sectors": "جميع القطاعات",
+    "all_communes": "جميع البلديات"
+  },
+  "events_page": {
+    "title": "فعاليات وأنشطة",
+    "subtitle": "شارك في حياة مجتمعك. اعثر على كل الفعاليات الثقافية والرياضية والاجتماعية بالإقليم.",
+    "badge": "الأجندة الإقليمية",
+    "showing": "عرض {start}-{end} من أصل {total} فعالية",
+    "empty_title": "لم يتم العثور على أي فعالية",
+    "empty_desc": "عدل مرشحات البحث للعثور على فعاليات."
+  },
+  "filters": {
+    "title": "تصفية",
+    "annexe": "الملحقة",
+    "all_annexes": "جميع الملحقات",
+    "search_label": "تصفية وبحث",
+    "active": "مفعلة",
+    "reset": "إعادة تعيين",
+    "clear": "مسح الكل",
+    "search_placeholder": "بحث...",
+    "search_etablissement": "البحث عن مؤسسة...",
+    "sector": "القطاع",
+    "location": "الموقع",
+    "note": "التقييم",
+    "status": "الحالة",
+    "all_communes": "كل الجماعات",
+    "all_sectors": "كل القطاعات",
+    "all_notes": "كل التقييمات",
+    "excellent": "ممتاز (+4)",
+    "very_good": "جيد جدا (+3)",
+    "good": "جيد (+2)",
+    "all_status": "الكل",
+    "upcoming": "قادمة",
+    "in_progress": "جارية",
+    "completed": "منتهية"
+  },
+  "pagination": {
+    "prev": "السابق",
+    "next": "التالي"
+  },
+  "reclamation": {
+    "new_title": "شكاية جديدة",
+    "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي",
+    "steps": {
+      "location": "الموقع",
+      "details": "التفاصيل",
+      "proofs": "الإثباتات",
+      "desc_location": "أين توجد المشكلة؟",
+      "desc_details": "صف الوضعية",
+      "desc_proofs": "أضف صوراً"
+    },
+    "form": {
+      "loading_map": "جاري تحميل الخريطة...",
+      "commune": "الجماعة",
+      "select_commune": "اختر الجماعة",
+      "district": "الحي / الدوار",
+      "district_placeholder": "مثال: حي المحمدي",
+      "address": "العنوان / معلمة",
+      "address_placeholder": "مثال: قرب المسجد...",
+      "location_precise": "تحديد الموقع بدقة",
+      "location_help": "انقر على الخريطة أو استخدم نظام تحديد الموقع",
+      "my_position": "موقعي",
+      "locating": "جاري تحديد الموقع...",
+      "position_success": "تم تحديد الموقع بنجاح",
+      "category": "نوع المشكلة",
+      "title": "موضوع الشكاية",
+      "title_placeholder": "مثال: حفرة خطيرة في الطريق الرئيسية",
+      "description": "وصف تفصيلي",
+      "description_placeholder": "صف المشكلة بالتفصيل: منذ متى، التأثير على المواطنين، درجة الاستعجال...",
+      "tip_title": "نصيحة",
+      "tip_text": "كلما كان الوصف دقيقاً ومفصلاً، كلما كانت معالجة شكايتك أسرع وأنجع.",
+      "photos_title": "الإثباتات",
+      "photos_subtitle": "أضف صوراً لدعم شكايتك",
+      "drag_drop": "اسحب الصور هنا",
+      "click_select": "أو انقر للاختيار",
+      "photos_limits": "الحد الأقصى {max} صور • {size}MB لكل صورة",
+      "error_type": "يسمح فقط بالصور",
+      "error_size": "الحجم الأقصى هو {size}MB",
+      "error_max": "يمكنك إضافة {max} صور كحد أقصى"
+    },
+    "disclaimer": {
+      "title": "ميثاق المسؤولية",
+      "service_name": "إقليم مديونة - بوابة المواطن",
+      "warning": "تنبيه هام",
+      "warning_text": "بتقديمك لهذه الشكاية، فإنك تصرح بأن المعلومات المقدمة دقيقة وصحيحة.",
+      "accept": "أوافق وأتابع",
+      "cancel": "إلغاء",
+      "text_verified": "محتوى موثوق",
+      "sub_verified": "أنت مسؤول عن دقة المعلومات والأوصاف المقدمة.",
+      "text_photos": "صور ملائمة",
+      "sub_photos": "يجب أن تكون الصور المحملة ذات صلة ولا تحتوي على محتوى غير لائق.",
+      "text_official": "معالجة رسمية",
+      "sub_official": "ستتم مراجعة شكايتك من قبل السلطات المختصة في الإقليم.",
+      "legal": "وفقاً للقوانين الجاري بها العمل، قد يؤدي أي تصريح كاذب أو سوء استخدام لهذه الخدمة إلى متابعات قضائية.",
+      "legal_warning": "وفقاً للقوانين الجاري بها العمل، قد يؤدي أي تصريح كاذب أو سوء استخدام لهذه الخدمة إلى متابعات قضائية."
+    },
+    "new": {
+      "error_required": "يرجى ملء جميع الحقول المطلوبة",
+      "error_all_required": "يرجى ملء جميع الحقول الإلزامية",
+      "success_sent": "تم إرسال الشكاية بنجاح!"
+    },
+    "success_page": {
+      "title": "تم تسجيل الشكاية!",
+      "message": "تتم معالجة الشكايات والتحقق من مطابقتها. سنعالج طلبك في أقرب الآجال.",
+      "view_my_reclamations": "عرض شكاياتي",
+      "back_home": "العودة للرئيسية"
+    },
+    "actions": {
+      "submit": "إرسال الشكاية",
+      "sending": "جاري الإرسال...",
+      "next": "التالي",
+      "prev": "السابق",
+      "back": "رجوع",
+      "restricted": "ولوج مقيد",
+      "no_permission": "ليس لديك الصلاحية لإنشاء شكاية."
+    },
+    "trust": {
+      "secure": "بيانات آمنة",
+      "compliance": "التحقق من الامتثال والمعالجة في أقرب الآجال",
+      "tracking": "تتبع في الوقت الفعلي"
+    },
+    "ready": {
+      "title": "جاهز للإرسال!",
+      "desc": "الصور اختيارية ولكنها تساعد في فهم المشكلة. انقر على **إرسال الشكاية** للمتابعة."
+    },
+    "progress": {
+      "creating": "جاري إنشاء الشكاية...",
+      "uploading": "جاري رفع الصور...",
+      "finalizing": "جاري الانتهاء..."
+    },
+    "auth": {
+      "login": "اتصال",
+      "register": "تسجيل",
+      "logout": "قطع الاتصال",
+      "email": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "forgot_password": "هل نسيت كلمة المرور؟",
+      "remember_me": "تذكرنى",
+      "no_account": "ليس لديك حساب بعد؟",
+      "has_account": "هل لديك حساب بالفعل؟",
+      "create_account": "إنشاء حساب",
+      "login_title": "مساحة المواطن",
+      "login_subtitle": "الوصول الآمن إلى الخدمات الرقمية الخاصة بك",
+      "register_title": "تسجيل",
+      "register_subtitle": "قم بإنشاء حساب المواطن الخاص بك",
+      "portal_name": "بوابة مديونة",
+      "province_name": "ولاية المديونة",
+      "citizen_portal": "بوابة المواطن",
+      "login_description": "قم بتسجيل الدخول للوصول إلى خدماتك وتقديم الشكاوى والمشاركة في الحياة المحلية.",
+      "feature_reclamations": "تتبع شكاواك في الوقت الحقيقي",
+      "feature_etablissements": "الوصول إلى معلومات المنشأة",
+      "feature_evenements": "ابق على علم بالأحداث المحلية",
+      "verifying": "تَحَقّق...",
+      "locked": "محظور",
+      "verify_code": "تحقق من الرمز",
+      "connect_portal": "تسجيل الدخول إلى البوابة",
+      "verification_code": "رمز التحقق",
+      "back_to_login": "العودة إلى تسجيل الدخول",
+      "security_verification": "فحص الأمان",
+      "enter_6digit_code": "أدخل الرمز المكون من 6 أرقام لتطبيق المصادقة الخاص بك",
+      "already_connected": "لقد قمت بتسجيل الدخول بالفعل. إعادة التوجيه...",
+      "too_many_attempts": "محاولات اتصال كثيرة جدًا. يرجى المحاولة مرة أخرى خلال {minutes} من الدقائق.",
+      "error_generic": "لقد حدث خطأ. يرجى المحاولة مرة أخرى.",
+      "invalid_credentials": "معرفات غير صحيحة",
+      "invalid_credentials_remaining": "معرفات غير صحيحة. {count} من المحاولات المتبقية.",
+      "account_locked": "تم حظر الحساب مؤقتًا. حاول مرة أخرى خلال {minutes} دقيقة.",
+      "copyright": "© 2025 إقليم المديونة - المملكة المغربية",
+      "register_join_community": "انضم إلى مجتمعنا",
+      "register_join_description": "أنشئ حسابك للولوج إلى كافة خدمات إقليم مديونة.",
+      "register_closed": "التسجيلات مغلقة",
+      "register_closed_desc": "التسجيلات مغلقة حاليا من قبل المسؤول. يرجى المحاولة مرة أخرى في وقت لاحق أو الاتصال بالإدارة.",
+      "register_success": "التسجيل ناجح!",
+      "register_success_desc": "لقد تم إنشاء حسابك بنجاح. سيتم إعادة توجيهك إلى صفحة تسجيل الدخول.",
+      "redirecting": "جاري إعادة التوجيه...",
+      "step_identity": "تعريف",
+      "step_identity_desc": "معلوماتك الشخصية",
+      "step_contact": "اتصال",
+      "step_contact_desc": "البريد الإلكتروني والهاتف",
+      "step_security": "حماية",
+      "step_security_desc": "قم بإنشاء كلمة المرور الخاصة بك",
+      "first_name": "الاسم الأول",
+      "first_name_placeholder": "اسمك الأول",
+      "last_name": "اسم",
+      "last_name_placeholder": "اسمك",
+      "phone": "هاتف",
+      "phone_optional": "(خياري)",
+      "phone_placeholder": "0612345678",
+      "continue": "يكمل",
+      "back": "خلف",
+      "password_requirements": "يجب أن تحتوي كلمة المرور على:",
+      "password_req_length": "ما لا يقل عن 8 أحرف",
+      "password_req_case": "حرف كبير واحد وحرف صغير واحد",
+      "password_req_special": "رقم وشخصية خاصة",
+      "confirm_password": "تأكيد كلمة المرور",
+      "creating": "الخلق...",
+      "create_my_account": "إنشاء حسابي",
+      "login_link": "تسجيل الدخول"
+    },
+    "errors": {
+      "required": "هذه الخانة مطلوبه",
+      "invalid_email": "بريد إلكتروني غير صالح",
+      "password_min": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+      "generic": "لقد حدث خطأ",
+      "not_found": "لم يتم العثور على الصفحة",
+      "not_found_desc": "يبدو أن الصفحة التي تبحث عنها قد تم نقلها أو أنها غير موجودة.",
+      "unauthorized": "الوصول غير المصرح به",
+      "server_error": "خطأ في الخادم",
+      "service_unavailable": "الخدمة غير متاحة مؤقتا. يرجى المحاولة مرة أخرى في وقت لاحق."
+    }
+  },
+  "auth": {
+    "account_pending": "حسابكم قيد المراجعة من قبل الإدارة. يرجى الانتظار حتى يتم تفعيله.",
+    "account_banned": "تم تعطيل حسابك. يرجى الاتصال بالدعم.",
+    "login": "تسجيل الدخول",
+    "register": "تسجيل",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "forgot_password_title": "نسيت كلمة المرور؟",
+    "forgot_password_desc": "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
+    "email_sent": "تم إرسال البريد الإلكتروني!",
+    "email_sent_desc": "إذا كان هناك حساب بهذا البريد الإلكتروني، ستتلقى رابطاً لإعادة تعيين كلمة المرور.",
+    "send_link": "إرسال الرابط",
+    "main_title": "بوابة مديونة",
+    "sending": "جاري الإرسال...",
+    "remember_me": "تذكرني",
+    "no_account": "ليس لديك حساب؟",
+    "has_account": "لديك حساب بالفعل؟",
+    "create_account": "إنشاء حساب",
+    "login_title": "فضاء المواطن",
+    "login_subtitle": "ولوج آمن لخدماتكم الرقمية",
+    "register_title": "التسجيل",
+    "register_subtitle": "أنشئ حسابك المواطن",
+    "portal_name": "بوابة مديونة",
+    "province_name": "إقليم مديونة",
+    "citizen_portal": "بوابة المواطن",
+    "login_description": "سجل الدخول للوصول إلى خدماتك، تقديم الشكايات والمشاركة في الحياة المحلية.",
+    "feature_reclamations": "تتبع شكاياتك في الوقت الفعلي",
+    "feature_etablissements": "الوصول إلى معلومات المؤسسات",
+    "feature_evenements": "ابقى على اطلاع بالفعاليات المحلية",
+    "verifying": "جاري التحقق...",
+    "locked": "محظور",
+    "verify_code": "تحقق من الرمز",
+    "connect_portal": "الدخول للبوابة",
+    "verification_code": "رمز التحقق",
+    "back_to_login": "العودة لتسجيل الدخول",
+    "security_verification": "التحقق الأمني",
+    "enter_6digit_code": "أدخل الرمز المكون من 6 أرقام من تطبيق المصادقة",
+    "already_connected": "أنت متصل بالفعل. جاري إعادة التوجيه...",
+    "too_many_attempts": "محاولات دخول كثيرة جداً. يرجى المحاولة بعد {minutes} دقيقة.",
+    "error_generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "invalid_credentials": "بيانات الدخول غير صحيحة",
+    "invalid_credentials_remaining": "بيانات الدخول غير صحيحة. {count} محاولة(ات) متبقية.",
+    "account_locked": "الحساب مغلق مؤقتاً. يرجى المحاولة بعد {minutes} دقيقة.",
+    "copyright": "© 2025 إقليم مديونة - المملكة المغربية",
+    "register_join_community": "انضم لمجتمعنا",
+    "register_join_description": "أنشئ حسابك للوصول لجميع خدمات إقليم مديونة.",
+    "register_closed": "التسجيل مغلق",
+    "register_closed_desc": "التسجيل مغلق حالياً من قبل الإدارة. يرجى المحاولة لاحقاً أو الاتصال بالإدارة.",
+    "register_success": "تم التسجيل بنجاح!",
+    "register_success_desc": "تم إنشاء حسابك بنجاح. سيتم توجيهك لصفحة تسجيل الدخول.",
+    "redirecting": "جاري التوجيه...",
+    "step_identity": "الهوية",
+    "step_identity_desc": "معلوماتك الشخصية",
+    "step_contact": "التواصل",
+    "step_contact_desc": "البريد والهاتف",
+    "step_security": "الأمان",
+    "step_security_desc": "أنشئ كلمة المرور",
+    "first_name": "الاسم الشخصي",
+    "first_name_placeholder": "اسمك الشخصي",
+    "last_name": "الاسم العائلي",
+    "last_name_placeholder": "اسمك العائلي",
+    "phone": "الهاتف",
+    "phone_optional": "(اختياري)",
+    "phone_placeholder": "0612345678",
+    "continue": "متابعة",
+    "back": "رجوع",
+    "password_requirements": "يجب أن تحتوي كلمة المرور على:",
+    "password_req_length": "8 أحرف على الأقل",
+    "password_req_case": "حرف كبير وحرف صغير",
+    "password_req_special": "رقم ورمز خاص",
+    "confirm_password": "تأكيد كلمة المرور",
+    "creating": "جاري الإنشاء...",
+    "create_my_account": "إنشاء حسابي",
+    "login_link": "تسجيل الدخول",
+    "errors": {
+      "required": "هذا الحقل مطلوب",
+      "invalid_email": "بريد إلكتروني غير صالح",
+      "password_min": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+      "generic": "حدث خطأ ما",
+      "not_found": "الصفحة غير موجودة",
+      "not_found_desc": "الصفحة التي تبحث عنها قد تكون نقلت أو لم تعد موجودة.",
+      "unauthorized": "دخول غير مصرح به",
+      "server_error": "خطأ في الخادم"
+    },
+    "placeholders": {
+      "email": "example@email.com",
+      "password": "كلمة المرور",
+      "code": "000000"
+    }
+  },
+  "security_page": {
+    "back_profile": "العودة للملف الشخصي",
+    "title": "أمان الحساب",
+    "subtitle": "إدارة إعدادات الأمان لحسابك",
+    "2fa_title": "المصادقة الثنائية (2FA)",
+    "2fa_enabled_desc": "حسابك محمي بالمصادقة الثنائية",
+    "2fa_disabled_desc": "أضف طبقة أمان إضافية لحسابك",
+    "status_enabled": "مفعل",
+    "status_disabled": "غير مفعل",
+    "disable_btn": "تعطيل 2FA",
+    "setup_btn": "تفعيل 2FA",
+    "authenticator_apps": "استخدم تطبيق مصادقة مثل <strong>Google Authenticator</strong> أو <strong>Microsoft Authenticator</strong> أو <strong>Authy</strong> لتوليد رموز التحقق.",
+    "why_2fa_title": "لماذا تفعيل المصادقة الثنائية؟",
+    "why_2fa_points": {
+      "protection": "حماية إضافية حتى في حال اختراق كلمة المرور",
+      "notification": "تنبيه فوري في حال محاولة الدخول",
+      "compliance": "الامتثال لأفضل ممارسات الأمان"
+    },
+    "setup_modal": {
+      "title": "إعداد المصادقة الثنائية",
+      "steps": {
+        "scan": "مسح",
+        "verify": "تحقق",
+        "finish": "إنهاء"
+      },
+      "error_code_length": "يجب أن يتكون الرمز من 6 أرقام",
+      "error_server": "خطأ في الاتصال بالخادم",
+      "step1_scan": "امسح رمز QR باستخدام تطبيق المصادقة الخاص بك",
+      "step1_manual": "أو أدخل هذا الرمز يدوياً:",
+      "continue": "متابعة",
+      "step2_enter": "أدخل الرمز المكون من 6 أرقام الظاهر في تطبيق المصادقة",
+      "back": "رجوع",
+      "verify": "تحقق",
+      "success_title": "تم تفعيل المصادقة الثنائية بنجاح!",
+      "save_codes": "حفظ رموز الاسترداد أدناه",
+      "important_warning": "هام: ستمكنك هذه الرموز من استعادة الوصول إلى حسابك في حال فقدان جهازك. احفظها في مكان آمن.",
+      "backup_codes": "رموز الاسترداد",
+      "copied": "تم النسخ!",
+      "copy": "نسخ",
+      "download": "تحميل",
+      "finish": "إنهاء",
+      "loading_qr": "جاري توليد رمز QR..."
+    },
+    "disable_modal": {
+      "title": "تعطيل المصادقة الثنائية",
+      "desc": "لتعطيل المصادقة الثنائية، أدخل رمزاً من تطبيق المصادقة الخاص بك.",
+      "cancel": "إلغاء",
+      "disable": "تعطيل"
+    }
+  },
+  "license": {
+    "checking": "جاري التحقق من الترخيص...",
+    "invalid_title": "ترخيص غير صالح",
+    "valid": "ترخيص صالح",
+    "default_error": "هذا التثبيت غير مرخص.",
+    "help_intro": "للحصول على ترخيص صالح:",
+    "help_contact": "اتصل بمسؤول النظام",
+    "help_env": "تحقق من ملف .env الخاص بك",
+    "help_domain": "تأكد من أن النطاق مرخص",
+    "copyright": "© 2026 إقليم مديونة - بوابة المواطن",
+    "warning_expiry": "⚠️ تنبيه: ستنتهي صلاحية ترخيصك خلال {days} يوم. اتصل بالمسؤول للتجديد."
+  },
+  "loading_screen": {
+    "default_message": "جاري التحميل...",
+    "portal_name": "بوابة مديونة",
+    "province_name": "عمالة مديونة",
+    "phrases": {
+      "0": "جاري إعداد مساحتك...",
+      "1": "جاري تحميل البيانات...",
+      "2": "الاتصال بالخدمات...",
+      "3": "جاهز تقريباً..."
+    }
+  },
+  "announcement_modal": {
+    "close_btn": "فهمت"
+  },
+  "map_page": {
+    "title": "خريطة الإقليم",
+    "search_placeholder": "بحث...",
+    "filters": {
+      "title": "تصفية",
+      "close": "إغلاق التصفية",
+      "all_communes": "🌍 جميع الجماعات",
+      "all_annexes": "جميع الملحقات",
+      "period": "📅 الفترة: الكل",
+      "period_7d": "7 أيام القادمة",
+      "period_15d": "15 يوماً القادمة",
+      "period_30d": "30 يوماً القادمة",
+      "period_60d": "الشهرين القادمين",
+      "period_180d": "6 أشهر القادمة",
+      "period_365d": "هذه السنة",
+      "status": "📊 الحالة: الكل",
+      "status_ongoing": "🟢 جاري",
+      "status_upcoming": "🔵 قادم",
+      "status_completed": "⚪ مكتمل",
+      "view_filtered": "عرض مفلتر",
+      "results": "نتائج"
+    },
+    "sectors": {
+      "label": "قطاع",
+      "education": "التعليم",
+      "sante": "الصحة",
+      "sport": "الرياضة",
+      "social": "اجتماعي",
+      "culturel": "ثقافي",
+      "autre": "آخر"
+    },
+    "legend": {
+      "sectors_title": "مفتاح القطاعات",
+      "performance_title": "مفتاح الأداء",
+      "excellence": "امتياز",
+      "excellence_desc": "النتيجة > 70",
+      "standard": "قياسي",
+      "standard_desc": "النتيجة 40 - 70",
+      "attention": "تنبيه",
+      "attention_desc": "النتيجة < 40",
+      "click_instruction": "👆 انقر على نقطة"
+    },
+    "popup": {
+      "activities": "أنشطة",
+      "events": "أحداث",
+      "reviews": "تقييم",
+      "subscriptions": "اشتراك",
+      "reclamations": "شكايات",
+      "filtered_events": "أحداث مفلترة",
+      "others": "+ آخرون",
+      "news": "أخبار",
+      "global_score": "النتيجة العامة",
+      "view_details": "عرض التفاصيل"
+    },
+    "controls": {
+      "performance": "الأداء",
+      "urgency": "استعجال"
+    }
+  },
+  "etablissement_page": {
+    "not_found": {
+      "title": "لم يتم العثور على المؤسسة",
+      "description": "المؤسسة التي تبحث عنها غير موجودة أو تم نقلها.",
+      "back_button": "العودة إلى القائمة"
+    },
+    "buttons": {
+      "back": "رجوع",
+      "share": "مشاركة",
+      "subscribe": "اشتراك",
+      "view_on_maps": "فتح في Google Maps",
+      "visit_site": "زيارة الموقع",
+      "give_rating": "إعطاء تقييم",
+      "login_rating": "سجل الدخول لإبداء رأيك",
+      "checking": "جاري التحقق...",
+      "subscribed": "مشترك",
+      "subscribed_full": "مشترك"
+    },
+    "notifications_hint": "تلقي إشعارات بالفعاليات والأخبار",
+    "tabs": {
+      "infos": "معلومات",
+      "actualites": "أخبار",
+      "activites": "أنشطة",
+      "events": "فعاليات",
+      "articles": "مقالات",
+      "campagnes": "حملات",
+      "avis": "آراء"
+    },
+    "sections": {
+      "about": "حول",
+      "infrastructure": "البنية التحتية والموارد",
+      "specific_details": "تفاصيل محددة",
+      "service_offer": "عرض الخدمات",
+      "gallery": "معرض الصور",
+      "location": "الموقع",
+      "contact": "معلومات الاتصال",
+      "metrics": "مؤشرات رئيسية",
+      "reviews": "آراء المواطنين"
+    },
+    "labels": {
+      "nature": "طبيعة المؤسسة",
+      "creation_date": "تاريخ الإنشاء",
+      "tutelle": "الوصاية",
+      "manager": "المسؤول",
+      "personnel": "الموظفين",
+      "rooms": "قاعات / مساحات",
+      "surface": "المساحة الإجمالية",
+      "infra_status": "حالة البنية التحتية",
+      "internet_available": "الإنترنت متاح",
+      "electricity_available": "الكهرباء متاحة",
+      "water_available": "الماء الصالح للشرب متاح",
+      "doctors": "أطباء",
+      "nurses": "ممرضون",
+      "other_staff": "طاقم آخر",
+      "beds": "أسرة",
+      "ambulances": "سيارات إسعاف",
+      "total_students": "إجمالي التلاميذ",
+      "including_girls": "منهم فتيات",
+      "success_rate": "نسبة النجاح",
+      "teachers": "أساتذة",
+      "last_year": "عدد التلاميذ في سنتهم الأخيرة",
+      "last_year_girls": "فتيات (السنة الأخيرة)",
+      "preschool_students": "تلاميذ (التعليم الأولي)",
+      "preschool_girls": "فتيات (التعليم الأولي)",
+      "new_enrollees": "المسجلون الجدد",
+      "new_enrollees_girls": "فتيات (المسجلون الجدد)",
+      "classes_count": "عدد الأقسام",
+      "cycle": "السلك",
+      "source_data": "المصدر",
+      "address": "العنوان",
+      "code": "الرمز",
+      "type": "النوع",
+      "capacity": "الطاقة الاستيعابية",
+      "budget": "الميزانية",
+      "partner": "الشركاء",
+      "observation": "ملاحظات",
+      "remarks": "ملاحظات",
+      "fields": "ملاعب",
+      "disciplines": "تخصصات رياضية",
+      "beneficiaries": "المستفيدين / الخدمات",
+      "activity_types": "أنواع الأنشطة",
+      "available_services": "الخدمات المتاحة",
+      "educ_programs": "البرامج التعليمية",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "website": "الموقع الإلكتروني",
+      "events_organized": "فعاليات منظمة",
+      "hosting_capacity": "الطاقة الاستيعابية",
+      "citizen_satisfaction": "رضا المواطنين",
+      "photos_count": "{count} صور",
+      "view": "عرض",
+      "neighborhood": "الحي / الدوار"
+    },
+    "placeholders": {
+      "no_events": "لا توجد فعاليات قادمة في الوقت الحالي.",
+      "content_unavailable": "المحتوى قيد التحميل أو غير متوفر لهذا القسم."
+    },
+    "feedback_copied": "تم نسخ الرابط إلى الحافظة!"
+  },
+  "event_page": {
+    "not_found": {
+      "title": "لم يتم العثور على الفعالية",
+      "description": "الفعالية التي تبحث عنها غير موجودة أو تم حذفها.",
+      "back_button": "العودة إلى الفعاليات"
+    },
+    "status": {
+      "ended": "منتهية",
+      "live": "جارية",
+      "upcoming": "قادمة",
+      "tomorrow": "غداً",
+      "in_days": "خلال {days} أيام",
+      "passed": "انتهت"
+    },
+    "buttons": {
+      "back": "رجوع",
+      "share": "مشاركة",
+      "view_all": "عرض الكل",
+      "participate": "أنا مشارك",
+      "login_participate": "سجل الدخول للمشاركة",
+      "download_report": "تحميل التقرير",
+      "contact_email": "تواصل عبر البريد الإلكتروني",
+      "checking": "تحميل...",
+      "subscribed": "المشترك",
+      "subscribed_full": "المشترك"
+    },
+    "labels": {
+      "views": "مشاهدة",
+      "date_time": "التاريخ والوقت",
+      "all_day": "طوال اليوم",
+      "location": "المكان",
+      "organizer": "المنظم",
+      "official_event": "فعالية رسمية",
+      "about": "حول الفعالية",
+      "gallery": "معرض الصور",
+      "participation": "المشاركة",
+      "reserved_places": "أماكن محجوزة",
+      "full": "مكتمل",
+      "closed": "التسجيل مغلق",
+      "organization": "التنظيم",
+      "report": "تقرير الفعالية",
+      "report_hint": "التقرير متاح للإدارة."
+    },
+    "toasts": {
+      "link_copied": "تم نسخ الرابط!",
+      "copy_failed": "تعذر نسخ الرابط"
+    }
+  },
+  "search_page": {
+    "title": "بحث",
+    "subtitle": "ابحث عن المؤسسات والفعاليات والأخبار على بوابة مديونة",
+    "placeholder": "بحث...",
+    "search_btn": "بحث",
+    "filters": "تصفية",
+    "recent_searches": "عمليات البحث الأخيرة",
+    "tabs": {
+      "all": "الكل",
+      "etablissements": "المؤسسات",
+      "evenements": "الفعاليات",
+      "actualites": "الأخبار",
+      "users": "الأشخاص"
+    },
+    "filters_section": {
+      "secteur": "القطاع",
+      "all_sectors": "جميع القطاعات",
+      "date_from": "من تاريخ",
+      "date_to": "إلى تاريخ",
+      "commune": "الجماعة",
+      "commune_placeholder": "تصفية حسب الجماعة...",
+      "reset": "إعادة تعيين التصفية"
+    },
+    "results": {
+      "count": "{count} نتيجة لـ \"{query}\"",
+      "see_all": "عرض الكل ←"
+    },
+    "no_results": {
+      "title": "لا توجد نتائج لـ \"{query}\"",
+      "description": "حاول تعديل بحثك أو استخدام مصطلحات أكثر عمومية.",
+      "suggestions_title": "اقتراحات البحث:"
+    },
+    "empty_state": {
+      "title": "ماذا تبحث عنه؟",
+      "description": "ابحث عن المؤسسات والفعاليات والأخبار وأكثر في إقليم مديونة.",
+      "popular": "عمليات البحث الشائعة",
+      "interactive_map": "الخريطة التفاعلية"
+    },
+    "pagination": "الصفحة {page} من {totalPages}"
+  },
+  "accessibility_page": {
+    "title": "بيان إمكانية الوصول",
+    "intro": "تلتزم عمالة مديونة بجعل بوابتها الرقمية متاحة لجميع المواطنين، بما في ذلك الأشخاص ذوي الإعاقة.",
+    "compliance": {
+      "title": "حالة المطابقة",
+      "description": "بوابة مديونة متوافقة جزئياً مع المعايير الدولية لإمكانية الوصول إلى الويب (WCAG 2.1). نحن نعمل باستمرار على تحسين تجربة المستخدم للجميع."
+    },
+    "features": {
+      "title": "ميزات إمكانية الوصول",
+      "contrast": {
+        "title": "التباين",
+        "description": "تم اختيار الألوان لضمان تباين كافٍ بين النص والخلفية."
+      },
+      "keyboard": {
+        "title": "التنقل بلوحة المفاتيح",
+        "description": "يمكن الوصول إلى معظم الميزات عبر التنقل بلوحة المفاتيح (Tab، Enter، Space)."
+      },
+      "images": {
+        "title": "الصور",
+        "description": "الصور التي تحمل معلومات لديها بديل نصي."
+      },
+      "structure": {
+        "title": "البنية",
+        "description": "تستخدم الصفحات بنية دلالية واضحة (عناوين h1-h6)."
+      },
+      "zoom": {
+        "title": "التكبير",
+        "description": "الموقع متوافق مع تكبير المتصفح حتى 200%."
+      }
+    },
+    "improvements": {
+      "title": "التحسينات المخطط لها",
+      "intro": "نخطط لتنفيذ التالي قريباً:",
+      "high_contrast": "وضع \"تباين عالي\" مخصص.",
+      "screen_readers": "توافق محسّن مع قارئات الشاشة.",
+      "transcription": "النسخ النصي للمحتوى المتعدد الوسائط."
+    },
+    "contact": {
+      "title": "التعليقات والتواصل",
+      "description": "إذا لم تتمكن من الوصول إلى محتوى أو خدمة، يمكنك الاتصال بمسؤول البوابة للحصول على بديل متاح أو الحصول على المحتوى بشكل آخر.",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف"
+    },
+    "declaration_date": "تاريخ الإعلان: ديسمبر 2025",
+    "province": "عمالة مديونة"
+  },
+  "privacy_page": {
+    "title": "سياسة الخصوصية",
+    "intro": "معلومات حول معالجة البيانات على بوابة مديونة لعمالة مديونة.",
+    "data_collection": {
+      "title": "جمع البيانات",
+      "description": "لتقديم ومتابعة شكاية، يجب على المستخدم تقديم وتسجيل مجموعة من المعلومات الشخصية والبيانات المتعلقة بالشكاية. قد تشمل هذه البيانات:",
+      "item_identification": "بيانات التعريف: الاسم، اللقب، البريد الإلكتروني، الهاتف",
+      "item_location": "بيانات الموقع: الجماعة، الحي، العنوان",
+      "item_claim": "بيانات الشكاية: الوصف، الصور، إحداثيات GPS"
+    },
+    "data_usage": {
+      "title": "استخدام البيانات",
+      "description": "تُستخدم البيانات المجمعة من أجل:",
+      "item_management": "إدارة ومعالجة الشكايات المقدمة",
+      "item_improvement": "تحسين خدمات البوابة",
+      "item_statistics": "إعداد إحصائيات مجهولة الهوية",
+      "item_other": "أي استخدام آخر تراه العمالة مناسباً"
+    },
+    "disclaimer": {
+      "title": "إخلاء المسؤولية",
+      "description": "يقر المستخدم ويقبل صراحة أن:",
+      "item_no_responsibility": "عمالة مديونة غير مسؤولة عن فقدان أو سرقة أو إفشاء أو تغيير البيانات، مهما كان السبب.",
+      "item_rights": "تحتفظ عمالة مديونة بالحق في استخدام أو تعديل أو حذف أو نقل البيانات حسبما تراه مناسباً.",
+      "item_risk": "يقدم المستخدم بياناته على مسؤوليته الخاصة."
+    },
+    "province_rights": {
+      "title": "حقوق العمالة",
+      "description": "تحتفظ عمالة مديونة بجميع الحقوق المتعلقة بالبيانات المجمعة عبر هذه البوابة، بما في ذلك:",
+      "item_retain": "الحق في الاحتفاظ بالبيانات للمدة التي تراها ضرورية",
+      "item_delete": "الحق في حذف البيانات دون إشعار مسبق",
+      "item_refuse": "الحق في رفض أي طلب للوصول أو التعديل أو الحذف",
+      "item_action": "الحق في اتخاذ أي إجراء تراه مناسباً بشأن البيانات المجمعة"
+    },
+    "cookies": {
+      "title": "ملفات تعريف الارتباط والبيانات التقنية",
+      "description": "قد تستخدم هذه البوابة ملفات تعريف الارتباط وتجمع بيانات تقنية لتشغيلها. باستخدام هذه البوابة، يوافق المستخدم على استخدام هذه التقنيات."
+    },
+    "modification": {
+      "title": "تعديل السياسة",
+      "description": "يمكن تعديل سياسة الخصوصية هذه في أي وقت دون إشعار مسبق. يُعتبر المستخدم موافقاً على هذه التعديلات بمجرد نشرها على الموقع."
+    },
+    "acceptance": {
+      "title": "القبول",
+      "description": "باستخدام هذه البوابة وتقديم البيانات، يُقر المستخدم بأنه قرأ وفهم ووافق على كامل سياسة الخصوصية هذه، بما في ذلك بنود إخلاء المسؤولية."
+    },
+    "last_update": "آخر تحديث: ديسمبر 2025"
+  },
+  "terms_page": {
+    "title": "الشروط والأحكام العامة للاستخدام",
+    "intro": "مرحباً بكم في بوابة مديونة لعمالة مديونة.",
+    "object": {
+      "title": "الموضوع",
+      "description": "توفر هذه الصفحة معلومات حول الشروط والأحكام المطبقة على استخدام بوابة مديونة لعمالة مديونة.",
+      "description2": "يخضع الوصول إلى هذه البوابة واستخدامها لـ\"الشروط العامة\" المفصلة أدناه، وكذلك للقوانين المعمول بها في المغرب."
+    },
+    "usage": {
+      "title": "استخدام البوابة",
+      "description": "يوافق المستخدم على الوصول إلى البوابة واستخدامها بشكل قانوني، للأغراض الشخصية (غير التجارية) وبطريقة لا تضر بالبوابة. بمجرد الاتصال بالبوابة، يوافق المستخدم على عدم:",
+      "item_discredit": "التشهير أو المضايقة أو الملاحقة أو التهديد أو انتهاك حقوق الآخرين بأي شكل من الأشكال، وفقاً للشروط المنصوص عليها في القانون المعمول به.",
+      "item_stop": "إيقاف أو تعطيل الخدمات أو الشبكات المتصلة بالموقع، بما في ذلك محاولات التخريب أو منع الوصول أو استخدام الموقع من قبل أطراف ثالثة.",
+      "item_use": "استخدام محتوى الموقع لأغراض شخصية بما في ذلك نشر الصور أو مقاطع الفيديو أو النصوص أو المواد على الشبكات الاجتماعية.",
+      "item_transmit": "إرسال أي مواد تحتوي على فيروسات أو أحصنة طروادة أو ديدان أو برامج ضارة أخرى."
+    },
+    "content": {
+      "title": "محتوى البوابة",
+      "description": "تبذل عمالة مديونة الجهود اللازمة لضمان دقة وتحديث المعلومات المنشورة على هذه البوابة.",
+      "description2": "ومع ذلك، فإن عمالة مديونة غير مسؤولة عن الأضرار المباشرة وغير المباشرة التي قد تنتج عن الوصول إلى البوابة أو استخدام المعلومات المنشورة."
+    },
+    "links": {
+      "title": "الروابط الخارجية",
+      "description": "عمالة مديونة غير مسؤولة عن محتوى المواقع الخارجية المتاحة عبر الروابط الموجودة على هذه البوابة."
+    },
+    "ip": {
+      "title": "الملكية الفكرية",
+      "description": "جميع عناصر البوابة (النصوص، الصور، الشعارات، إلخ) محمية بحقوق الملكية الفكرية وهي ملك حصري لعمالة مديونة."
+    },
+    "modification": {
+      "title": "تعديل الشروط",
+      "description": "تحتفظ عمالة مديونة بالحق في تعديل هذه الشروط في أي وقت. يُدعى المستخدمون للاطلاع على هذه الصفحة بانتظام."
+    },
+    "last_update": "آخر تحديث: ديسمبر 2025"
+  },
+  "suggestions": {
+    "modal_title": "اقتراح فكرة",
+    "modal_subtitle": "ساعدنا على تحسين مديونة",
+    "title_label": "عنوان اقتراحك",
+    "title_placeholder": "مثال: إضافة مسارات للدراجات...",
+    "category_label": "الفئة",
+    "description_label": "صف فكرتك",
+    "description_placeholder": "اشرح بالتفصيل اقتراحك، لماذا سيكون مفيداً للمجتمع...",
+    "submit_btn": "إرسال اقتراحي",
+    "submitting": "جاري الإرسال...",
+    "status": {
+      "SOUMISE": "قيد الانتظار",
+      "EN_EXAMEN": "قيد المراجعة",
+      "APPROUVEE": "تمت الموافقة",
+      "REJETEE": "مرفوضة",
+      "IMPLEMENTEE": "تم التنفيذ"
+    },
+    "messages": {
+      "not_found": "الاقتراح غير موجود",
+      "load_error": "خطأ في التحميل",
+      "status_updated": "تم تحديث الحالة",
+      "deleted": "تم حذف الاقتراح",
+      "delete_confirm": "هل أنت متأكد من حذف هذا الاقتراح؟ هذا الإجراء لا يمكن التراجع عنه."
+    },
+    "success_title": "شكراً على اقتراحك!",
+    "success_message": "تم تسجيل فكرتك وسيتم دراستها من قبل فريقنا.",
+    "auto_close": "إغلاق تلقائي...",
+    "error_title_required": "العنوان مطلوب",
+    "error_desc_required": "الوصف مطلوب",
+    "error_desc_min": "يجب أن يحتوي الوصف على 20 حرفاً على الأقل",
+    "chars_remaining": "{count} حرف متبقي",
+    "min_reached": "✓ تم بلوغ الحد الأدنى",
+    "categories": {
+      "infrastructure": "بنية تحتية",
+      "services": "خدمات عمومية",
+      "environnement": "بيئة",
+      "education": "تعليم",
+      "sante": "صحة",
+      "transport": "نقل",
+      "culture": "ثقافة وترفيه",
+      "numerique": "رقمي",
+      "autre": "آخر"
+    }
+  },
+  "admin_campagnes": {
+    "title": "إدارة الحملات",
+    "subtitle": "{total} حملة في المجموع",
+    "filters": "تصفية",
+    "new_campaign": "حملة جديدة",
+    "reset": "إعادة تعيين",
+    "stats": {
+      "total": "مجموع الحملات",
+      "active": "حملات نشطة",
+      "pending": "قيد الانتظار",
+      "participants": "مجموع المشاركين",
+      "finished": "مكتمل"
+    },
+    "search_placeholder": "البحث عن حملة...",
+    "all_statuses": "جميع الحالات",
+    "no_campaigns": "لا توجد حملات",
+    "no_results": "لم يتم العثور على نتائج",
+    "create_first": "أنشئ حملتك الأولى",
+    "progress": "التقدم",
+    "participants_count": "{count} / {total} مشارك",
+    "no_description": "بدون وصف",
+    "details": "تفاصيل الحملة",
+    "description": "الوصف",
+    "start_date": "تاريخ البدء",
+    "end_date": "تاريخ الانتهاء",
+    "change_status": "تغيير الحالة",
+    "delete_campaign": "حذف هذه الحملة",
+    "status": {
+      "draft": "مسودة",
+      "pending": "قيد الانتظار",
+      "active": "نشطة",
+      "paused": "متوقفة مؤقتاً",
+      "finished": "منتهية",
+      "cancelled": "ملغاة"
+    },
+    "page": "صفحة",
+    "limit": "حد"
+  },
+  "admin_bilans": {
+    "title": "التقارير والحصيلة",
+    "subtitle": "الاطلاع على تقارير الأحداث والأنشطة والحملات المنجزة",
+    "stats": {
+      "closed_events": "فعاليات منتهية",
+      "activities_with_report": "أنشطة بتقارير",
+      "finished_campaigns": "حملات منتهية",
+      "total_participations": "إجمالي المشاركات"
+    },
+    "tabs": {
+      "events": "الفعاليات",
+      "activities": "الأنشطة",
+      "campaigns": "الحملات"
+    },
+    "search_placeholder": "بحث...",
+    "all_sectors": "جميع القطاعات",
+    "empty": {
+      "events": "لا توجد تقارير فعاليات",
+      "activities": "لا توجد تقارير أنشطة",
+      "campaigns": "لا توجد حصيلة حملات",
+      "desc_events": "ستظهر تقارير الإغلاق هنا",
+      "desc_activities": "ستظهر تقارير الأنشطة المكتملة هنا",
+      "desc_campaigns": "ستظهر تقارير الحملات المنتهية هنا"
+    },
+    "labels": {
+      "photos": "صور",
+      "documents": "الوثائق والتقارير",
+      "report": "تقرير الإغلاق",
+      "download_report": "تحميل التقرير",
+      "published_on": "نشر بتاريخ",
+      "details": "التفاصيل",
+      "expand": "عرض التفاصيل",
+      "collapse": "إخفاء التفاصيل",
+      "view_all": "عرض الكل",
+      "reduce": "تقليص",
+      "report_activity": "تقرير النشاط",
+      "positives": "نقاط إيجابية",
+      "difficulties": "صعوبات",
+      "recommendations": "توصيات",
+      "completed_on": "تم إكماله يوم",
+      "campaign_finished": "حملة منتهية",
+      "objective_reached": "تم تحقيق الهدف",
+      "participations": "مشاركات",
+      "views": "مشاهدات",
+      "objective": "الهدف",
+      "present": "حاضرون",
+      "deroulement": "سير النشاط",
+      "edit_bilan": "تعديل الحصيلة",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "description": "وصف الحصيلة",
+      "participants": "عدد المشاركين",
+      "reset_bilan": "إعادة تعيين الحصيلة",
+      "confirm_reset": "هل أنت متأكد من حذف هذه الحصيلة؟ ستعود الفعالية إلى حالة 'منشورة' وسيتم مسح تفاصيل الحصيلة."
+    },
+    "loading": "جاري تحميل التقارير...",
+    "messages": {
+      "update_success": "تم تحديث الحصيلة بنجاح",
+      "reset_success": "تمت إعادة تعيين الحصيلة بنجاح"
+    }
+  },
+  "admin_stats": {
+    "title": "إحصائيات",
+    "subtitle": "نظرة عامة على بيانات المنصة",
+    "cards": {
+      "reclamations_total": "مجموع الشكايات",
+      "establishments": "المؤسسات",
+      "events": "الفعاليات",
+      "users": "المستخدمين",
+      "vs_last_month": "مقارنة بالشهر الماضي",
+      "avg_rating": "متوسط التقييم:",
+      "this_month": "هذا الشهر:",
+      "new_this_month": "جدد هذا الشهر:"
+    },
+    "charts": {
+      "reclamations_by_status": "الشكايات حسب الحالة",
+      "establishments_by_sector": "المؤسسات حسب القطاع",
+      "pending": "في الانتظار",
+      "no_data": "لا توجد بيانات متاحة لعرضها"
+    },
+    "info": "يتم تحديث الإحصائيات في الوقت الفعلي. حدد فترة لتحسين البيانات."
+  },
+  "admin_roles": {
+    "title": "إدارة الأدوار والصلاحيات",
+    "description": "عرض حقوق الوصول المحددة لكل دور في النظام.",
+    "read_only_mode": "وضع القراءة فقط (نظام)",
+    "available_roles": "الأدوار المتاحة",
+    "active_permissions": "{count} صلاحيات نشطة",
+    "no_description": "لا يوجد وصف متاح.",
+    "roles": {
+      "CITOYEN": "مواطن",
+      "DELEGATION": "مندوبية",
+      "AUTORITE_LOCALE": "سلطة محلية",
+      "ADMIN": "مسؤول",
+      "SUPER_ADMIN": "مسؤول عام",
+      "GOUVERNEUR": "عامل",
+      "COORDINATEUR_ACTIVITES": "منسق الأنشطة"
+    },
+    "descriptions": {
+      "CITOYEN": "ولوج عام قياسي للمواطنين. يتيح تقديم الشكايات، متابعة الأخبار، والمشاركة في الفعاليات والأنشطة الإقليمية.",
+      "DELEGATION": "مسؤول مصلحة أو قطاع. يتولى إدارة المحتويات (أحداث، أخبار) والمبادرات المتعلقة بمجال اختصاصه.",
+      "AUTORITE_LOCALE": "إدارة ترابية محلية. يتولى تدبير ومعالجة الشكايات ومتابعة الأنشطة الميدانية في نفوذه الجغرافي.",
+      "ADMIN": "مسؤول إداري وظيفي. يمتلك صلاحيات الإشراف على المحتوى، مراجعة البيانات، وإدارة مستخدمي المنصة.",
+      "SUPER_ADMIN": "مسؤول عام للنظام. يمتلك التحكم الكامل في الإعدادات التقنية، إدارة الأدوار (RBAC)، وصيانة أمان المنصة.",
+      "GOUVERNEUR": "رؤية استراتيجية شاملة واطلاع كامل على مؤشرات الأداء والأنشطة عبر إقليم مديونة.",
+      "COORDINATEUR_ACTIVITES": "يتولى التنسيق الميداني والبرمجة التشغيلية للأنشطة والفعاليات داخل المؤسسات."
+    },
+    "groups": {
+      "auth": "المصادقة",
+      "users": "المستخدمين",
+      "reclamations": "الشكايات",
+      "etablissements": "المؤسسات",
+      "evenements": "الفعاليات",
+      "actualites": "الأخبار",
+      "campagnes": "الحملات",
+      "stats": "الإحصائيات",
+      "communes": "الجماعات",
+      "settings": "الإعدادات",
+      "logs": "السجلات",
+      "evaluations": "التقييمات",
+      "programmes": "البرامج",
+      "suggestions": "الاقتراحات",
+      "reports": "التقارير",
+      "map": "الخريطة",
+      "system": "النظام"
+    }
+  },
+  "admin_settings": {
+    "title": "الإعدادات",
+    "subtitle": "تكوين المنصة",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "saved": "تم الحفظ !",
+    "super_admin_only": "يمكن للمسؤول المتميز فقط تعديل الإعدادات.",
+    "tabs": {
+      "general": "عام",
+      "notifications": "الإشعارات",
+      "security": "الأمان",
+      "email": "البريد الإلكتروني"
+    },
+    "general": {
+      "title": "إعدادات عامة",
+      "platform_name": "اسم المنصة",
+      "description": "الوصف",
+      "maintenance_mode": "وضع الصيانة",
+      "enable_maintenance": "تفعيل وضع الصيانة"
+    },
+    "notifications": {
+      "title": "إعدادات الإشعارات",
+      "new_reclamation": "شكاية جديدة",
+      "new_reclamation_desc": "إشعار المسؤولين",
+      "new_user": "مستخدم جديد",
+      "new_user_desc": "إشعار عند التسجيل",
+      "daily_report": "تقرير يومي",
+      "daily_report_desc": "ملخص عبر البريد الإلكتروني كل يوم"
+    },
+    "security": {
+      "title": "إعدادات الأمان",
+      "session_duration": "مدة الجلسة (ساعات)",
+      "max_attempts": "الحد الأقصى لمحاولات الاتصال",
+      "enable_2fa": "تفعيل المصادقة الثنائية للمسؤولين"
+    },
+    "email": {
+      "title": "تكوين البريد الإلكتروني",
+      "sender_email": "البريد المرسل (From)",
+      "contact_email": "بريد الاتصال",
+      "smtp_note": "ملاحظة: يجب تكوين SMTP في متغيرات بيئة الخادم."
+    },
+    "info": "يتم تطبيق التغييرات بعد الحفظ. تتطلب بعض الإعدادات إعادة تشغيل الخادم."
+  },
+  "admin_announcement": {
+    "title": "نافذة الإعلان العامة",
+    "description": "تكوين الرسالة التي تظهر عند فتح الموقع (مثال: صيانة، نسخة تجريبية، معلومات عاجلة).",
+    "save": "حفظ",
+    "general_settings": "إعدادات عامة",
+    "activate": "تفعيل النافذة",
+    "activate_desc": "إذا تم التعطيل، لن تظهر أي نافذة منبثقة.",
+    "message_title": "عنوان الرسالة",
+    "title_placeholder": "مثال: نسخة تجريبية",
+    "message_content": "محتوى الرسالة",
+    "content_placeholder": "رسالتك هنا...",
+    "line_breaks_info": "يدعم فواصل الأسطر.",
+    "show_once": "عرض مرة واحدة في الجلسة (موصى به)",
+    "preview": "معاينة",
+    "preview_btn": "فهمت",
+    "popup_inactive": "نافذة غير نشطة",
+    "preview_note": "هذه محاكاة مرئية تقريبية.",
+    "toasts": {
+      "load_error": "تعذر تحميل التكوين",
+      "success": "تم تحديث التكوين بنجاح",
+      "save_error": "خطأ أثناء الحفظ",
+      "server_error": "خطأ في الاتصال بالخادم"
+    }
+  },
+  "admin_activity_create": {
+    "title": "نشاط جديد",
+    "subtitle": "برمجة نشاط جديد لمؤسسة",
+    "sections": {
+      "general": "معلومات عامة",
+      "planning": "التخطيط",
+      "logistics": "اللوجستيات"
+    },
+    "fields": {
+      "etablissement": "المؤسسة",
+      "select_etablissement": "اختر مؤسسة",
+      "type_activity": "نوع النشاط",
+      "activity_title": "عنوان النشاط",
+      "title_placeholder": "مثال: دوري كرة القدم بين الأحياء",
+      "description": "الوصف",
+      "description_placeholder": "تفاصيل النشاط...",
+      "date": "التاريخ",
+      "start_time": "وقت البدء (س س:د د)",
+      "end_time": "وقت الانتهاء (س س:د د)",
+      "location": "مكان محدد",
+      "location_placeholder": "مثال: قاعة متعددة الاستخدامات، ملعب أ",
+      "manager": "المسؤول",
+      "manager_placeholder": "اسم المسؤول في الموقع",
+      "participants": "المشاركون المتوقعون"
+    },
+    "activity_types": {
+      "Culturel": "ثقافي",
+      "Sportif": "رياضي",
+      "Educatif": "تعليمي",
+      "Social": "اجتماعي",
+      "Formation": "تكوين",
+      "Reunion": "اجتماع",
+      "Autre": "أخرى"
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "create": "إنشاء النشاط"
+    },
+    "messages": {
+      "success": "تم إنشاء نشاط البرنامج بنجاح",
+      "error": "خطأ أثناء الإنشاء",
+      "date_format": "تنسيق التاريخ غير صالح (سنة-شهر-يوم)",
+      "time_format": "تنسيق الوقت غير صالح (ساعة:دقيقة)"
+    }
+  },
+  "admin_performance_tab": {
+    "filters": {
+      "sectors": {
+        "EDUCATION": "التعليم",
+        "SANTE": "الصحة",
+        "SPORT": "الرياضة",
+        "CULTUREL": "الثقافة",
+        "SOCIAL": "الشؤون الاجتماعية",
+        "AUTRE": "آخر"
+      }
+    }
+  },
+  "authority_dashboard": {
+    "commune_prefix": "جماعة {name}",
+    "welcome_message": "مرحباً بك في فضاء التدبير، {name}",
+    "inhabitants": "{count} نسمة",
+    "area": "{km} كم²",
+    "establishments": "المؤسسات",
+    "avg_rating": "معدل التنقيط {note}/5",
+    "pending_reclamations": "شكايات في الانتظار",
+    "assigned_total_sub": "من أصل {total} معينة",
+    "resolution_rate": "نسبة المعالجة",
+    "resolved_count_sub": "{count} تمت معالجتها بنجاح",
+    "assigned_today": "واردة اليوم",
+    "new_reclamations_sub": "شكايات جديدة",
+    "pending_list_title": "شكايات للمعالجة",
+    "view_all": "عرض الكل",
+    "no_pending_title": "الكل مُحدث !",
+    "up_to_date": "لا توجد شكايات معلقة حالياً.",
+    "ago_days": "منذ {count} يوم",
+    "establishments_list_title": "المؤسسات ({count})",
+    "see_all_establishments": "عرض جميع المؤسسات",
+    "by_sector": "حسب القطاع",
+    "by_category": "حسب الفئة"
+  },
+  "authority_reclamations_page": {
+    "title": "الشكايات",
+    "subtitle": "{count} شكاية مخصصة لحسابك",
+    "filters": {
+      "all": "الكل",
+      "pending": "قيد الانتظار",
+      "resolved": "تم حلها",
+      "search_placeholder": "بحث بالعنوان، الوصف...",
+      "all_categories": "جميع الفئات",
+      "reset": "إعادة تعيين",
+      "reset_filters": "إعادة تعيين المرشحات"
+    },
+    "table": {
+      "reclamation": "الشكاية",
+      "citizen": "المواطن",
+      "location": "الموقع",
+      "assigned_on": "تاريخ التعيين",
+      "status": "الحالة",
+      "actions": "إجراءات",
+      "view": "عرض",
+      "ago_days": "منذ {days} يوم",
+      "resolved_badge": "محلولة",
+      "pending_badge": "قيد الانتظار"
+    },
+    "empty": {
+      "title": "لا توجد شكايات",
+      "search_desc": "لا توجد شكاية تطابق معايير البحث الخاصة بك.",
+      "pending_desc": "تهانينا! ليس لديك أي شكاية قيد الانتظار.",
+      "default_desc": "لم يتم تخصيص أي شكاية لحسابك."
+    },
+    "pagination": {
+      "info": "صفحة {page} من {total} ({count} نتائج)"
+    },
+    "page": "الصفحة",
+    "limit": "الحد",
+    "statut": "الحالة",
+    "categorie": "الفئة",
+    "search": "بحث...",
+    "all": "جميع الشكايات"
+  },
+  "authority_establishment_page": {
+    "title": "جماعتي",
+    "subtitle": "معلومات وإدارة الجماعة الترابية",
+    "sections": {
+      "general_info": "معلومات عامة",
+      "stats": "الإحصائيات",
+      "services": "الخدمات الإدارية"
+    },
+    "fields": {
+      "address": "العنوان",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "sector": "الإقليم",
+      "principal": "الرئيس",
+      "capacity": "عدد السكان",
+      "surface": "المساحة",
+      "province_of": "إقليم {name}",
+      "commune_type": "جماعة"
+    },
+    "stats_cards": {
+      "reclamations": "الشكايات",
+      "etablissements": "المؤسسات التابعة",
+      "population": "الساكنة",
+      "surface": "المساحة (كم²)"
+    },
+    "empty": {
+      "title": "لا توجد مؤسسة مرتبطة",
+      "desc": "حسابك غير مرتبط بأي مؤسسة حالياً. يرجى الاتصال بالمسؤول."
+    }
+  },
+  "authority_reclamation_detail": {
+    "status": {
+      "resolved": "تمت المعالجة",
+      "pending": "قيد الانتظار"
+    },
+    "assigned_since": "تم تعيينها منذ {days} يوم • المعرف #{id}",
+    "description": "وصف المشكلة",
+    "photos": "الصور المرفقة ({count})",
+    "solution": {
+      "title": "الحل المقدم",
+      "date": "تم الحل في {date}"
+    },
+    "resolve_form": {
+      "title": "وضع علامة كمنجزة",
+      "label": "الحل المقدم *",
+      "placeholder": "صف الإجراءات المتخذة لحل هذه الشكوى...",
+      "submit": "تأكيد الحل",
+      "cancel": "إلغاء",
+      "open_btn": "تسجيل الحل"
+    },
+    "citizen": {
+      "title": "المواطن",
+      "name": "الاسم الكامل"
+    },
+    "location": {
+      "title": "الموقع",
+      "view_map": "عرض على الخريطة ←"
+    },
+    "establishment": {
+      "title": "المؤسسة المعنية",
+      "view_sheet": "عرض الملف ←"
+    },
+    "dates": {
+      "title": "تواريخ مهمة",
+      "submitted": "تاريخ التقديم",
+      "assigned": "تاريخ التعيين",
+      "resolved": "تاريخ الحل"
+    },
+    "not_found": {
+      "title": "الشكوى غير موجودة",
+      "back": "العودة للقائمة"
+    }
+  },
+  "download_photos": {
+    "downloading": "جاري التحميل...",
+    "completed": "تم التحميل !",
+    "error": "خطأ",
+    "button_label": "{count} صورة",
+    "zip_label": "تحميل الصور (ZIP)",
+    "compressing": "جاري الضغط...",
+    "export_title": "تصدير الصور",
+    "photos_available": "{count} صورة متاحة",
+    "download_tooltip": "تحميل {count} صورة"
+  },
+  "authority_statistics": {
+    "title": "الإحصائيات",
+    "subtitle": "نظرة عامة على معالجة الشكايات",
+    "period_selector": {
+      "week": "هذا الأسبوع",
+      "month": "هذا الشهر",
+      "quarter": "هذا الفصل",
+      "year": "هذه السنة"
+    },
+    "cards": {
+      "total": "مجموع الشكايات",
+      "pending": "قيد الانتظار",
+      "resolved": "تمت المعالجة",
+      "rejected": "مرفوضة"
+    },
+    "charts": {
+      "evolution_title": "تطور الشكايات",
+      "coming_soon": "سيتم إضافة الرسم البياني قريباً",
+      "category_title": "التوزيع حسب الفئة"
+    }
+  },
+  "authority_space": {
+    "title": "فضاء السلطة",
+    "portal_name": "بوابة مديونة",
+    "dashboard": "لوحة القيادة",
+    "reclamations": "الشكايات",
+    "my_establishment": "مؤسستي",
+    "statistics": "الإحصائيات",
+    "role_label": "سلطة محلية",
+    "logout": "تسجيل الخروج",
+    "mobile_title": "فضاء السلطة"
+  },
+  "admin_management": {
+    "title": "إدارة المشرفين",
+    "subtitle": "المشرفون • نظام RBAC",
+    "new_admin": "مشرف جديد +",
+    "search_placeholder": "البحث بالاسم، البريد الإلكتروني...",
+    "columns": {
+      "actions": "الإجراءات",
+      "status": "الحالة",
+      "permissions": "الصلاحيات",
+      "role": "الدور",
+      "contact": "التواصل",
+      "administrator": "اسم المشرف"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "permissions_count": "{count} صلاحية",
+    "all_permissions": "جميع الصلاحيات",
+    "created_at": "تم الإنشاء في",
+    "modal": {
+      "create_title": "إنشاء مشرف جديد",
+      "edit_title": "تعديل المشرف",
+      "permissions_title": "إدارة الصلاحيات",
+      "first_name": "الاسم الأول",
+      "last_name": "الاسم العائلي",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "role": "الدور",
+      "password": "كلمة المرور",
+      "generate_password": "توليد",
+      "show_password": "إظهار",
+      "hide_password": "إخفاء",
+      "active": "نشط",
+      "save": "حفظ",
+      "create": "إنشاء",
+      "cancel": "إلغاء",
+      "select_all": "تحديد الكل",
+      "deselect_all": "إلغاء تحديد الكل",
+      "personal_info": "معلومات شخصية",
+      "contact_auth": "الاتصال والمصادقة",
+      "selected_count": "(تم تحديد {count})",
+      "firstname": "الاسم الأول",
+      "lastname": "اسم",
+      "password_hint": "8 أحرف على الأقل",
+      "generate_pwd": "توليد",
+      "required_fields": "* حقول إجبارية",
+      "create_submit": "إنشاء الحساب",
+      "update_submit": "تحديث البيانات",
+      "delete_title": "حذف الحساب",
+      "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذا الحساب نهائياً؟",
+      "delete_submit": "حذف",
+      "no_admins": "لم يتم العثور على مسؤولين",
+      "create_first": "ابدأ بإنشاء أول حساب مسؤول للمنصة",
+      "active_account": "حساب نشط",
+      "inactive_hint": "الحسابات غير النشطة لا يمكنها الولوج إلى لوحة التحكم."
+    },
+    "confirm_delete": "هل أنت متأكد من حذف هذا المشرف؟",
+    "toasts": {
+      "created": "تم إنشاء المشرف بنجاح",
+      "updated": "تم تحديث المشرف بنجاح",
+      "deleted": "تم حذف المشرف بنجاح",
+      "permissions_updated": "تم تحديث الصلاحيات بنجاح",
+      "error": "حدث خطأ"
+    },
+    "groups": {
+      "select_all": "أضف الكل",
+      "deselect_all": "إزالة الكل"
+    }
+  },
+  "audit_page": {
+    "title": "السجلات والأنشطة",
+    "subtitle": "سجل النشاط وتتبع الإجراءات الإدارية",
+    "total_entries": "{count} مدخلات في المجموع",
+    "last_update": "آخر تحديث : {time}",
+    "live": "مباشر",
+    "auto": "تلقائي",
+    "filters_btn": "مرشحات",
+    "advanced_filters": "مرشحات متقدمة",
+    "reset": "إعادة تعيين",
+    "apply_filters": "تطبيق المرشحات",
+    "refresh_now": "تحديث الآن",
+    "export_csv": "CSV",
+    "export_json": "JSON",
+    "user_activity": "أنشطة المستخدمين",
+    "system_logs": "سجلات النظام",
+    "search_placeholder": "البحث عن إجراء أو مستخدم أو تاريخ...",
+    "search": "البحث",
+    "filters": {
+      "all_entities": "جميع الهيئات",
+      "all_actions": "جميع الإجراءات"
+    },
+    "columns": {
+      "date": "التاريخ",
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "target": "الهدف",
+      "details": "التفاصيل"
+    },
+    "action": "الإجراء",
+    "action_label": "الإجراء",
+    "entity": "الكيان",
+    "user": "المستخدم",
+    "ip": "IP",
+    "source": "المصدر",
+    "level": "المستوى",
+    "date_from": "تاريخ البدء",
+    "date_to": "تاريخ الانتهاء",
+    "message": "الرسالة",
+    "date": "التاريخ",
+    "details": "التفاصيل",
+    "close": "إغلاق",
+    "all": "الكل",
+    "export_btn": "تصدير",
+    "no_logs": "لم يتم العثور على سجلات",
+    "modify_filters_hint": "قم بتعديل المرشحات لرؤية المزيد من النتائج",
+    "page_x_of_y": "الصفحة {current} من {total} ({count} مدخلات)",
+    "details_modal_title": "تفاصيل السجل #{id}",
+    "type_level": "النوع / المستوى",
+    "source_action": "المصدر / الإجراء",
+    "view_details": "عرض التفاصيل",
+    "system_user": "النظام",
+    "all_actions": "الكل",
+    "technical_data": "البيانات التقنية",
+    "no_tech_data": "لا توجد بيانات إضافية",
+    "toasts": {
+      "export_success": "تم تحميل ملف التصدير بنجاح!"
+    },
+    "levels": {
+      "info": "معلومات",
+      "warning": "تحذير",
+      "error": "خطأ",
+      "debug": "تصحيح"
+    },
+    "actions": {
+      "CREATE": "إنشاء",
+      "UPDATE": "تعديل",
+      "DELETE": "حذف",
+      "LOGIN": "تسجيل الدخول",
+      "LOGOUT": "تسجيل الخروج",
+      "VALIDATE": "تصديق",
+      "REJECT": "رفض",
+      "EXPORT": "تصدير",
+      "EXPORT_LOGS": "تصدير السجلات",
+      "UPDATE_PERMISSIONS": "تعديل الصلاحيات"
+    },
+    "entities": {
+      "User": "مستخدم",
+      "Reclamation": "شكاية",
+      "Evenement": "حدث",
+      "Actualite": "خبر",
+      "Etablissement": "مؤسسة"
+    }
+  },
+  "import_page": {
+    "title": "استيراد البيانات بالجملة",
+    "subtitle": "أضف البيانات بسرعة عبر ملفات CSV/Excel",
+    "download_template": {
+      "title": "تحميل النموذج (القالب)",
+      "button": "تحميل",
+      "model": "نموذج المؤسسات",
+      "format": "تنسيق .csv مع رؤوس محددة مسبقاً"
+    },
+    "upload": {
+      "title": "تحميل واستيراد",
+      "click_to_select": "انقر لاختيار ملف",
+      "supported_formats": "CSV أو Excel مدعوم",
+      "uploading": "جاري التحميل...",
+      "processing": "جاري المعالجة..."
+    },
+    "data_types": {
+      "title": "اختر نوع البيانات",
+      "establishments": "المؤسسات",
+      "events": "الفعاليات",
+      "campaigns": "الحملات",
+      "activities": "الأنشطة",
+      "articles": "المقالات",
+      "format_csv": "تنسيق CSV"
+    },
+    "toasts": {
+      "success": "تم الاستيراد بنجاح",
+      "error": "خطأ أثناء الاستيراد",
+      "invalid_file": "ملف غير صالح"
+    }
+  },
+  "licence_page": {
+    "title": "إدارة الترخيص",
+    "subtitle": "معلومات ترخيص التطبيق",
+    "refresh": "تحديث",
+    "status": {
+      "title": "حالة الترخيص",
+      "active": "نشط",
+      "invalid": "غير صالح",
+      "expires_soon": "ينتهي قريباً",
+      "loading": "جاري التحميل..."
+    },
+    "license_key": "مفتاح الترخيص",
+    "not_configured": "غير مكوّن",
+    "expiry_date": "تاريخ الانتهاء",
+    "not_defined": "غير محدد",
+    "days_remaining": "{count} يوم متبقي",
+    "authorized_domains": "النطاقات المصرح بها",
+    "no_domains": "لا توجد نطاقات مكوّنة",
+    "license_error": "خطأ في الترخيص",
+    "load_error": "لا يمكن تحميل معلومات الترخيص",
+    "help": {
+      "title": "كيفية تكوين الترخيص؟",
+      "step1": "تعديل ملف .env على الخادم",
+      "step2": "إضافة المتغيرات: LICENSE_KEY، LICENSE_DOMAINS، LICENSE_EXPIRY",
+      "step3": "إعادة تشغيل التطبيق باستخدام docker compose restart app"
+    },
+    "toasts": {
+      "fetch_error": "خطأ في استرجاع معلومات الترخيص",
+      "connection_error": "خطأ في الاتصال"
+    }
+  },
+  "system_settings": {
+    "title": "إعدادات النظام",
+    "subtitle": "التكوين الشامل للمنصة",
+    "save": "حفظ",
+    "reset": "إعادة تعيين",
+    "saving": "جاري الحفظ...",
+    "loading": "جاري التحميل...",
+    "general": {
+      "title": "الإعدادات العامة",
+      "description": "التكوين الأساسي للمنصة",
+      "site_name": "اسم الموقع",
+      "maintenance_mode": "وضع الصيانة",
+      "maintenance_desc": "حظر الوصول للمستخدمين غير المشرفين",
+      "registration": "التسجيل المفتوح",
+      "registration_desc": "السماح للمستخدمين الجدد بالتسجيل",
+      "email_verification": "التحقق من البريد الإلكتروني",
+      "email_verification_desc": "طلب التحقق من البريد الإلكتروني"
+    },
+    "security": {
+      "title": "الأمان",
+      "description": "إعدادات الأمان والمصادقة",
+      "max_login_attempts": "الحد الأقصى لمحاولات تسجيل الدخول",
+      "max_login_attempts_desc": "قبل الحظر المؤقت",
+      "lockout_duration": "مدة القفل (دقائق)",
+      "session_timeout": "مهلة الجلسة (دقائق)",
+      "session_timeout_desc": "المدة قبل تسجيل الخروج التلقائي",
+      "password_min_length": "أقل طول لكلمة المرور",
+      "password_min_length_desc": "الحد الأدنى للأحرف",
+      "two_factor": "المصادقة الثنائية",
+      "two_factor_desc": "تفعيل المصادقة المزدوجة"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "description": "إعدادات الإشعارات والتنبيهات",
+      "email_notifications": "إشعارات البريد الإلكتروني",
+      "email_notifications_desc": "إرسال الإشعارات عبر البريد الإلكتروني",
+      "sms_notifications": "إشعارات الرسائل القصيرة",
+      "sms_notifications_desc": "إرسال رسائل قصيرة (إذا تم التكوين)",
+      "push_notifications": "إشعارات الدفع",
+      "push_notifications_desc": "الإشعارات في المتصفح",
+      "admin_alerts": "تنبيهات المشرفين",
+      "admin_alerts_desc": "إشعار المشرفين بالإجراءات المهمة",
+      "reclamation_alerts": "تنبيهات الشكايات",
+      "reclamation_alerts_desc": "الإشعار بالشكايات الجديدة"
+    },
+    "reclamations": {
+      "title": "الشكايات",
+      "description": "إعدادات إدارة الشكايات",
+      "auto_assign": "التعيين التلقائي",
+      "auto_assign_desc": "تعيين الشكايات تلقائياً",
+      "max_file_size": "الحد الأقصى لحجم الملف (ميغابايت)",
+      "max_file_size_desc": "حد حجم المرفقات",
+      "urgent_threshold": "عتبة الاستعجال (ساعات)",
+      "urgent_threshold_desc": "المدة قبل التمييز كعاجل",
+      "auto_close": "الإغلاق التلقائي بعد (أيام)",
+      "auto_close_desc": "الإغلاق تلقائياً بعد X يوم"
+    },
+    "toasts": {
+      "save_success": "تم حفظ الإعدادات بنجاح",
+      "save_error": "خطأ أثناء الحفظ",
+      "reset_success": "تمت إعادة تعيين الإعدادات",
+      "load_error": "خطأ أثناء تحميل الإعدادات"
+    }
+  },
+  "delegation": {
+    "dashboard": {
+      "title": "تفويض {sector}",
+      "welcome": "فضاء الإدارة - {name}",
+      "content_summary": "محتويات",
+      "total_views": "إجمالي المشاهدات",
+      "engagement": "التزام",
+      "kpi": {
+        "events": "الأحداث",
+        "pending": "{count} في الانتظار",
+        "published": "تم نشر {count}/{total}.",
+        "news": "أخبار",
+        "views_this_month": "{count} مشاهدة هذا الشهر",
+        "campaigns": "الحملات",
+        "participants": "{count} مشارك",
+        "library": "مكتبة",
+        "publication_rate": "معدل الإعلان."
+      },
+      "recent_activity": {
+        "title": "النشاط الأخير",
+        "view_all": "شاهد الكل",
+        "empty": "لا يوجد نشاط حديث",
+        "columns": {
+          "title": "عنوان",
+          "type": "عطوف",
+          "date": "تاريخ",
+          "status": "حالة",
+          "performance": "أداء"
+        },
+        "types": {
+          "evenement": "حدث",
+          "actualite": "أخبار",
+          "article": "شرط",
+          "campagne": "حملة"
+        },
+        "status": {
+          "published": "تم النشر",
+          "pending": "في الانتظار",
+          "draft": "مسودة",
+          "closed": "مغلق"
+        }
+      },
+      "quick_actions": {
+        "title": "الوصول السريع",
+        "new_event": "حدث جديد",
+        "new_event_desc": "خطط لحدث ما",
+        "new_news": "أخبار جديدة",
+        "new_news_desc": "نشر المعلومات"
+      },
+      "todo": {
+        "title": "قائمة المهام",
+        "to_close": "{count} أحداث تتطلب تقريراً ختامياً",
+        "to_close_campaigns": "{count} حملات تتطلب تقريراً ختامياً",
+        "manage_now": "إدارة الآن",
+        "pending_validation": "{count} أحداث في انتظار المصادقة",
+        "all_good": "أحسنت! جميع المهام مكتملة."
+      },
+      "event_creation": {
+        "title": "إنشاء الحدث",
+        "validation": {
+          "error": "خطأ في التحقق",
+          "success": "تم إنشاء الحدث بنجاح",
+          "success_no_image": "تم إنشاء الحدث بنجاح (بدون صورة)",
+          "upload": {
+            "generic": "فشل تحميل الصورة",
+            "size": "الصورة تتجاوز الحد الأقصى للحجم (5 ميجابايت)",
+            "small": "الملف صغير جدًا",
+            "type": "نوع الملف غير معتمد",
+            "filename": "اسم الملف غير صالح",
+            "security": "تم اكتشاف محتوى قد يكون ضارًا",
+            "no_file": "لم يتم تحديد أي ملفات",
+            "too_many_files": "تم إرسال عدد كبير جدًا من الملفات"
+          },
+          "title_min": "يجب أن يحتوي العنوان على 5 أحرف على الأقل",
+          "description_min": "يجب أن يحتوي الوصف على 20 حرفًا على الأقل",
+          "establishment_required": "الرجاء تحديد المؤسسة",
+          "type_required": "الرجاء تحديد النوع",
+          "start_date_required": "تاريخ البدء مطلوب",
+          "email_invalid": "عنوان البريد الإلكتروني غير صالح",
+          "url_invalid": "عنوان URL غير صالح",
+          "required_fields": "يرجى إكمال كافة الحقول المطلوبة",
+          "server_error": "خطأ في الخادم، يرجى المحاولة مرة أخرى"
+        },
+        "sections": {
+          "visual": {
+            "error_size": "الصورة كبيرة جدًا (الحد الأقصى 5 ميجابايت)",
+            "title": "صورة الغلاف",
+            "subtitle": "أضف صورة جذابة لحدثك",
+            "click_to_add": "انقر لإضافة صورة",
+            "formats": "PNG، JPG، WEBP • الحد الأقصى 5 ميغابايت",
+            "remove": "حذف الصورة",
+            "selected_image": "الصورة المحددة",
+            "current_image": "الصورة الحالية",
+            "change_image": "تغيير الصورة",
+            "image_id": "صورة الحدث"
+          },
+          "general": {
+            "title": "المعلومات الرئيسية",
+            "event_title": "عنوان الحدث",
+            "event_title_placeholder": "مثال: اليوم الرياضي السنوي...",
+            "description": "الوصف",
+            "description_placeholder": "وصف الحدث بالتفصيل...",
+            "event_type": "نوع الحدث",
+            "select_type": "حدد النوع",
+            "establishment": "المؤسسة المعنية",
+            "select_establishment": "حدد مؤسسة",
+            "tags": "العلامات",
+            "tags_hint": "(اختياري، مفصول بفواصل)",
+            "tags_placeholder": "الرياضة والثقافة والشباب ..."
+          },
+          "datetime": {
+            "title": "التاريخ والوقت والموقع",
+            "start_date": "تاريخ البدء",
+            "end_date": "تاريخ الانتهاء",
+            "start_time": "وقت البدء",
+            "end_time": "وقت الانتهاء",
+            "optional": "(اختياري)",
+            "location": "الموقع",
+            "location_placeholder": "قاعة القرية، الملعب الرياضي...",
+            "address": "العنوان",
+            "address_placeholder": "الشارع، الجادة...",
+            "neighborhood": "الحي / الدوار",
+            "neighborhood_placeholder": "الحي، الدوار..."
+          },
+          "organizer": {
+            "title": "المنظم وجهات الاتصال",
+            "name": "اسم المنظم",
+            "name_placeholder": "مثال: إدارة المؤسسة",
+            "phone": "الهاتف",
+            "phone_placeholder": "0600000000",
+            "email": "البريد الإلكتروني للاتصال",
+            "email_placeholder": "contact@example.ma"
+          },
+          "participation": {
+            "title": "المشاركة والتسجيل",
+            "max_capacity": "السعة القصوى",
+            "max_capacity_placeholder": "مثال: 200",
+            "open_registrations": "التسجيلات مفتوحة",
+            "open_registrations_desc": "السماح للزوار بالتسجيل عبر الإنترنت",
+            "external_link": "رابط التسجيل الخارجي",
+            "external_link_placeholder": "https://..."
+          }
+        },
+        "subtitle": "التخطيط لحدث جديد",
+        "back_to_list": "العودة إلى القائمة",
+        "types": {
+          "culturel": "الثقافية",
+          "sportif": "رياضي",
+          "social": "اجتماعي",
+          "educatif": "التعليمية",
+          "sante": "الصحة",
+          "autre": "أخرى"
+        },
+        "buttons": {
+          "save": "حفظ",
+          "saving": "جاري الحفظ...",
+          "create": "إنشاء الفعالية",
+          "cancel": "إلغاء",
+          "creating": "جاري الإنشاء..."
+        },
+        "errors": {
+          "not_found": "لم يتم العثور على الحدث",
+          "update_failed": "حدث خطأ أثناء التحديث",
+          "image_upload_failed": "حدث خطأ أثناء تحميل الصورة"
+        },
+        "success": {
+          "updated": "تم تحديث الحدث بنجاح"
+        }
+      },
+      "event_details": {
+        "back_to_list": "العودة إلى القائمة",
+        "not_found": "لم يتم العثور على الحدث",
+        "status_published": "تم النشر",
+        "status_closed": "مغلق",
+        "status_draft": "مسودة",
+        "description": "الوصف",
+        "organizer": "المنظم",
+        "time": "الوقت",
+        "location": "الموقع",
+        "date": "التاريخ",
+        "capacity": "السعة",
+        "seats": "الأماكن",
+        "close": "إغلاق الحدث",
+        "edit": "تحرير",
+        "report_title": "التقرير الختامي",
+        "participants_count": "المشاركون",
+        "success": {
+          "created": "تم إنشاء الحدث بنجاح",
+          "updated": "تم تغيير الحدث بنجاح"
+        },
+        "organizer_unknown": "منظم غير معروف",
+        "location_unspecified": "الموقع غير محدد",
+        "organizing_entity": "مؤسسة منظمة",
+        "partager": "مشاركة الحدث",
+        "report_file": "ملف التقرير",
+        "report_label": "التقرير الرسمي",
+        "download_report": "تحميل التقرير الكامل",
+        "visualize_gallery": "معرض صور الحصيلة",
+        "view_label": "عرض",
+        "loading": "جاري التحميل...",
+        "preview": "معاينة",
+        "bilan_image": "صورة التقرير"
+      },
+      "my_events": {
+        "title": "الأحداث الخاصة بي",
+        "description": "إدارة الفعاليات ({count})",
+        "header_title": "إدارة الأحداث",
+        "count_label": "{count, plural, =1 {حدث واحد} other {{count} أحداث}}",
+        "create_new": "حدث جديد",
+        "search_placeholder": "البحث عن حدث...",
+        "success_message": "تم حذف الحدث بنجاح",
+        "status_filter": {
+          "all": "جميع الحالات",
+          "draft": "مسودة",
+          "pending": "في انتظار",
+          "published": "تم النشر",
+          "finished": "تم",
+          "closed": "مغلق",
+          "cancelled": "تم الإلغاء",
+          "active": "قيد التقدم"
+        },
+        "view_mode": {
+          "list": "عرض القائمة",
+          "grid": "عرض الشبكة"
+        },
+        "columns": {
+          "event": "الحدث",
+          "date_location": "التاريخ والموقع",
+          "stats": "الإحصائيات",
+          "status": "الحالة",
+          "actions": "الإجراءات"
+        },
+        "item": {
+          "views": "مشاهدات",
+          "registered": "مسجل",
+          "edit": "تحرير",
+          "delete": "حذف",
+          "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذا الحدث؟",
+          "close_action": "إغلاق"
+        },
+        "empty": {
+          "title": "لا يوجد حدث",
+          "description": "لم تقم بإنشاء حدث بعد. ابدأ الآن!",
+          "action": "إنشاء حدث"
+        },
+        "success": "تم حذف الحدث بنجاح",
+        "page": "صفحة",
+        "limit": "حد",
+        "search": "بحث",
+        "statut": "الحالة"
+      },
+      "my_news": {
+        "title": "أخباري",
+        "header_title": "إدارة الأخبار",
+        "create_new": "أخبار جديدة",
+        "search_placeholder": "البحث عن الأخبار...",
+        "status_filter": "التصفية حسب الحالة",
+        "status_published": "تم النشر",
+        "status_draft": "مسودة",
+        "item": {
+          "published": "تم النشر",
+          "draft": "مسودة",
+          "edit": "تحرير",
+          "delete": "حذف",
+          "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذا الخبر؟"
+        },
+        "empty_state": {
+          "title": "لا توجد أخبار",
+          "description": "لم تقم بنشر أي أخبار بعد.",
+          "action": "إنشاء الأخبار"
+        }
+      },
+      "articles": {
+        "title": "مقالاتي",
+        "header_title": "إدارة المقالات",
+        "count_label": "{count, plural, =1 {مقال واحد} other {{count} مقالات}}",
+        "new_article": "مقالة جديدة",
+        "search_placeholder": "البحث عن عنصر...",
+        "filter_all": "جميع الحالات",
+        "filter_published": "تم النشر",
+        "filter_draft": "المسودات",
+        "status_published": "تم النشر",
+        "status_draft": "مسودة",
+        "views": "مشاهدات",
+        "edit": "تحرير",
+        "delete_confirm": "هل أنت متأكد من أنك تريد حذف هذه المقالة؟",
+        "delete_success": "تم حذف المشاركة بنجاح",
+        "delete_error": "حدث خطأ أثناء الحذف",
+        "page": "الصفحة",
+        "of": "على",
+        "empty_title": "لا توجد عناصر",
+        "empty_subtitle": "لم تقم بإنشاء مقال بعد.",
+        "create_first": "إنشاء مقالتي الأولى",
+        "limit": "حد",
+        "search": "بحث",
+        "statut": "الحالة",
+        "creation": {
+          "back_to_list": "العودة إلى المقالات",
+          "subtitle": "مقالة جديدة",
+          "title": "إنشاء مقال",
+          "validation": {
+            "title_min": "يجب أن يتكون العنوان من 5 أحرف على الأقل",
+            "content_min": "يجب أن لا يقل طول المحتوى عن 50 حرفًا"
+          },
+          "errors": {
+            "upload_failed": "حدث خطأ أثناء تحميل الصورة",
+            "create_failed": "حدث خطأ أثناء إنشاء المقالة"
+          },
+          "success": {
+            "created": "تم إنشاء المشاركة بنجاح"
+          },
+          "sections": {
+            "cover": {
+              "title": "صورة الغلاف",
+              "subtitle": "صورة الغلاف الحالية",
+              "click_to_add": "انقر لإضافة صورة",
+              "formats": "PNG، JPG بحجم يصل إلى 5 ميجابايت",
+              "selected": "الصورة المحددة",
+              "remove": "حذف"
+            },
+            "content": {
+              "title": "محتوى المقال",
+              "article_title": "عنوان المقال",
+              "article_title_placeholder": "عنوان جذاب لمقالتك...",
+              "summary": "ملخص",
+              "summary_placeholder": "ملخص قصير للمقال ...",
+              "full_content": "المحتوى التفصيلي",
+              "full_content_placeholder": "اكتب مقالتك كاملة هنا..."
+            },
+            "metadata": {
+              "title": "البيانات الوصفية",
+              "category": "الفئة",
+              "category_placeholder": "اختر الفئة",
+              "tags": "العلامات",
+              "tags_hint": "(مفصولة بفاصلة)",
+              "tags_placeholder": "الصحة والتعليم والرياضة ...",
+              "categories": {
+                "actualite": "أخبار",
+                "dossier": "ملف",
+                "interview": "مقابلة",
+                "reportage": "تقرير",
+                "tribune": "تريبيون"
+              }
+            },
+            "publication": {
+              "title": "النشر",
+              "publish_now": "النشر فورًا",
+              "publish_now_desc": "ستكون المقالة مرئية عند الإنشاء"
+            }
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "save": "نشر المقال",
+            "saving": "منشور..."
+          }
+        },
+        "edit_page": {
+          "back_to_list": "العودة إلى المقالات",
+          "subtitle": "تحرير العنصر",
+          "title": "التغيير",
+          "errors": {
+            "not_found": "لم يتم العثور على العنصر",
+            "update_failed": "حدث خطأ أثناء التحديث"
+          },
+          "success": {
+            "updated": "تم تحديث المقالة بنجاح"
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "التسجيل..."
+          }
+        }
+      },
+      "campaigns": {
+        "title": "حملاتي",
+        "header_title": "إدارة الحملات",
+        "count_label": "{count, plural, =1 {حملة واحدة} other {{count} حملات}}",
+        "new_campaign": "حملة جديدة",
+        "search_placeholder": "البحث عن حملة...",
+        "filter_all": "جميع الحملات",
+        "filter_active": "نشط",
+        "filter_upcoming": "قريبا",
+        "filter_finished": "مكتمل",
+        "status_active": "نشط",
+        "status_finished": "مكتمل",
+        "status_closed": "تم الإغلاق",
+        "participants": "المشاركين",
+        "objective": "الهدف",
+        "edit": "تحرير",
+        "close_action": "إغلاق",
+        "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذه الحملة؟",
+        "delete_success": "تم حذف الحملة بنجاح",
+        "delete_error": "حدث خطأ أثناء الحذف",
+        "page": "الصفحة",
+        "of": "على",
+        "empty_title": "لا توجد حملة",
+        "empty_subtitle": "لم تقم بإنشاء حملة بعد.",
+        "create_first": "إنشاء حملتي الأولى",
+        "types": {
+          "sante": "الصحة",
+          "environnement": "البيئة",
+          "education": "التعليم",
+          "social": "اجتماعي",
+          "autre": "أخرى",
+          "solidarite": "التضامن",
+          "ecologie": "علم البيئة",
+          "citoyennete": "المواطنة"
+        },
+        "limit": "حد",
+        "search": "بحث",
+        "statut": "الحالة",
+        "details": {
+          "general_progress": "التقدم",
+          "description_title": "الوصف",
+          "content_title": "المحتوى",
+          "stats_title": "الإحصائيات",
+          "participants": "المشاركون",
+          "objective": "الهدف",
+          "planning_title": "الجدول الزمني",
+          "start_date": "تاريخ البدء",
+          "end_date": "تاريخ الانتهاء",
+          "location": "الموقع",
+          "management_title": "الإدارة",
+          "edit": "تحرير",
+          "delete": "حذف"
+        },
+        "creation": {
+          "back_to_list": "العودة إلى الحملات",
+          "subtitle": "حملة جديدة",
+          "title": "إنشاء حملة",
+          "validation": {
+            "title_min": "يجب أن يتكون العنوان من 5 أحرف على الأقل",
+            "description_min": "يجب ألا يقل طول الوصف عن 20 حرفًا",
+            "type_required": "الرجاء تحديد النوع",
+            "start_date_required": "تاريخ البدء مطلوب"
+          },
+          "errors": {
+            "upload_failed": "حدث خطأ أثناء تحميل الصورة",
+            "create_failed": "حدث خطأ أثناء الإنشاء"
+          },
+          "success": {
+            "created": "تم إنشاء الحملة بنجاح"
+          },
+          "sections": {
+            "cover": {
+              "title": "صورة الغلاف",
+              "click_to_add": "انقر لإضافة صورة",
+              "formats": "PNG، JPG بحجم يصل إلى 5 ميجابايت",
+              "subtitle": "صورة الغلاف الحالية"
+            },
+            "general": {
+              "title": "معلومات عامة",
+              "type": "نوع الحملة",
+              "type_placeholder": "حدد النوع",
+              "campaign_title": "عنوان الحملة",
+              "campaign_title_placeholder": "عنوان حملتك...",
+              "description": "وصف مختصر",
+              "description_placeholder": "ملخص قصير للحملة..."
+            },
+            "datetime": {
+              "title": "التواريخ والموقع",
+              "start_date": "تاريخ البدء",
+              "end_date": "تاريخ الانتهاء",
+              "location": "الموقع",
+              "location_placeholder": "المدينة، الموقع المحدد..."
+            },
+            "objectives": {
+              "title": "الأهداف",
+              "target_participants": "هدف المشاركين",
+              "target_placeholder": "مثال: 500"
+            }
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "create": "إطلاق الحملة",
+            "creating": "الخلق..."
+          }
+        },
+        "edit_page": {
+          "back_to_list": "العودة إلى الحملات",
+          "subtitle": "تعديل الحملة",
+          "title": "تعديل الحملة",
+          "errors": {
+            "not_found": "لم يتم العثور على الحملة",
+            "update_failed": "حدث خطأ أثناء التحديث"
+          },
+          "success": {
+            "updated": "تم تحديث الحملة بنجاح"
+          },
+          "actions": {
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "التسجيل..."
+          }
+        },
+        "view": "عرض"
+      },
+      "news_creation": {
+        "back_to_list": "العودة إلى الأخبار",
+        "subtitle": "تحرير الأخبار",
+        "edit_title": "تعديل الخبر رقم {id}",
+        "title": "أخبار جديدة",
+        "validation": {
+          "titre_min": "يجب أن يتكون العنوان من 5 أحرف على الأقل",
+          "content_min": "يجب أن لا يقل طول المحتوى عن 20 حرفًا",
+          "establishment_required": "الرجاء تحديد المؤسسة"
+        },
+        "errors": {
+          "not_found": "لم يتم العثور على الأخبار",
+          "update_failed": "حدث خطأ أثناء التحديث",
+          "server_error": "خطأ في الخادم"
+        },
+        "success": {
+          "updated": "تم تحديث الأخبار بنجاح",
+          "created": "تم نشر الأخبار بنجاح"
+        },
+        "sections": {
+          "media": {
+            "title": "صورة الغلاف",
+            "placeholder": "انقر لإضافة صورة",
+            "hint": "PNG، JPG بحجم يصل إلى 5 ميجابايت",
+            "remove_btn": "حذف",
+            "selected_label": "الصورة المحددة",
+            "size_error": "يجب ألا يتجاوز حجم الصورة 5 ميجابايت"
+          },
+          "content": {
+            "title": "التحرير",
+            "titre_label": "عنوان المقال",
+            "titre_placeholder": "مثال: تم الانتهاء من تجديد الواجهة",
+            "description_label": "قبعة / وصف قصير",
+            "description_placeholder": "ملخص سريع للمعاينة...",
+            "body_label": "المحتوى الكامل",
+            "body_placeholder": "اكتب مقالتك هنا..."
+          },
+          "context": {
+            "category_title": "الفئة",
+            "establishment_title": "التأسيس",
+            "establishment_placeholder": "حدد مؤسسة...",
+            "category_options": {
+              "general": "عام",
+              "works": "الأعمال والتطورات",
+              "announcement": "إعلان رسمي",
+              "partnership": "الشراكة",
+              "success_story": "النجاح"
+            }
+          }
+        },
+        "actions": {
+          "cancel": "إلغاء",
+          "update": "حفظ",
+          "updating": "التسجيل...",
+          "publish": "نشر",
+          "publishing": "منشور..."
+        }
+      },
+      "event_edit": {
+        "subtitle": "تعديل الحدث",
+        "title": "حدث التحرير",
+        "errors": {
+          "not_found": "لم يتم العثور على الحدث",
+          "update_failed": "حدث خطأ أثناء التحديث",
+          "image_upload_failed": "حدث خطأ أثناء تحميل الصورة"
+        },
+        "success": {
+          "updated": "تم تحديث الحدث بنجاح"
+        },
+        "buttons": {
+          "cancel": "إلغاء",
+          "save": "حفظ التغييرات",
+          "saving": "التسجيل..."
+        }
+      },
+      "event_closure": {
+        "breadcrumbs": "اختتام الحدث",
+        "title": "إغلاق الحدث",
+        "event_label": "الحدث سيغلق",
+        "report": {
+          "title": "التقرير الختامي",
+          "label": "التقرير (PDF أو Word)",
+          "upload_text": "انقر لإضافة ملف",
+          "formats": "ملف PDF وDOC بحجم يصل إلى 10 ميجابايت",
+          "success": "تم إغلاق الحدث بنجاح"
+        },
+        "info_box": {
+          "title": "المعلومات",
+          "text": "بمجرد إغلاق الحدث، لم يعد من الممكن تعديل الحدث."
+        },
+        "participation": {
+          "title": "المشاركة",
+          "real_count": "عدد المشاركين الفعليين",
+          "placeholder": "مثال: 150"
+        },
+        "qualitative": {
+          "title": "التقييم النوعي",
+          "label": "التقدير العام لهذا الحدث",
+          "placeholder": "قم بوصف العملية والنقاط الإيجابية ومجالات التحسين..."
+        },
+        "gallery": {
+          "title": "معرض الصور",
+          "add": "إضافة الصور",
+          "hint": "JPG، PNG يصل حجم كل منهما إلى 5 ميجابايت"
+        },
+        "validation": {
+          "required_fields": "يرجى إكمال كافة الحقول المطلوبة",
+          "closure_error": "خطأ في الإغلاق",
+          "server_error": "خطأ في الخادم"
+        },
+        "errors": {
+          "image_upload_failed": "حدث خطأ أثناء تحميل الصورة"
+        },
+        "buttons": {
+          "cancel": "إلغاء",
+          "confirm": "تأكيد الإغلاق",
+          "processing": "المعالجة قيد التقدم..."
+        }
+      },
+      "campaign_closure": {
+        "breadcrumbs": "اختتام الحملة",
+        "title": "إغلاق الحملة",
+        "campaign_label": "سيتم إغلاق الحملة",
+        "report": {
+          "title": "التقرير الختامي",
+          "label": "التقرير (PDF أو Word)",
+          "upload_text": "انقر لإضافة ملف",
+          "formats": "ملف PDF وDOC بحجم يصل إلى 10 ميجابايت",
+          "success": "تم إغلاق الحملة بنجاح"
+        },
+        "info_box": {
+          "title": "المعلومات",
+          "text": "بمجرد إغلاق الحملة، لم يعد من الممكن تعديلها."
+        },
+        "participation": {
+          "title": "المشاركة الفوقية",
+          "real_count": "إجمالي المشاركات المسجلة",
+          "placeholder": "مثال: 500"
+        },
+        "qualitative": {
+          "title": "تحليل النتائج",
+          "label": "خلاصة ومنجزات الحملة",
+          "placeholder": "قم بوصف نتائج هذه الحملة، التحديات والدروس المستفادة..."
+        },
+        "gallery": {
+          "title": "معرض صور الحصيلة",
+          "add": "إضافة صور الحملة",
+          "hint": "JPG، PNG يصل حجم كل منهما إلى 5 ميجابايت"
+        },
+        "validation": {
+          "required_fields": "يرجى إكمال كافة الحقول المطلوبة",
+          "closure_error": "خطأ في الإغلاق",
+          "server_error": "خطأ في الخادم"
+        },
+        "errors": {
+          "image_upload_failed": "حدث خطأ أثناء تحميل الصورة"
+        },
+        "buttons": {
+          "cancel": "إلغاء",
+          "confirm": "تأكيد وإغلاق الحملة",
+          "processing": "جاري المعالجة..."
+        }
+      }
+    },
+    "sidebar": {
+      "dashboard": "لوحة التحكم",
+      "my_events": "أحداثي",
+      "my_news": "أخباري",
+      "my_articles": "مقالاتي",
+      "my_campaigns": "حملاتي",
+      "stats": "إحصائيات"
+    },
+    "sectors": {
+      "health": "الصحة",
+      "education": "التعليم",
+      "sport": "الرياضة",
+      "culture": "الثقافة",
+      "youth": "الشباب",
+      "social": "الاجتماعي",
+      "environment": "البيئة",
+      "administration": "الإدارة"
+    }
+  },
+  "coordinator": {
+    "dashboard": {
+      "title": "فضاء المنسق",
+      "welcome": "مرحباً، {name}",
+      "subtitle": "لديك {count} أنشطة مبرمجة اليوم",
+      "refresh": "تحديث",
+      "new_activity": "نشاط جديد",
+      "alert": {
+        "title": "تقارير معلقة",
+        "message": "لديك <strong>{count} أنشطة منجزة</strong> تتطلب تقرير إغلاق.",
+        "action": "إكمال التقارير"
+      },
+      "stats": {
+        "today": "اليوم",
+        "activity_unit": "أنشطة",
+        "week": "هذا الأسبوع",
+        "programmed": "مبَرمجة",
+        "running": "جاري التنفيذ",
+        "now": "الآن",
+        "reports": "التقارير",
+        "to_complete": "للإنجاز"
+      },
+      "upcoming": {
+        "title": "الأنشطة القادمة",
+        "subtitle": "برنامج 7 أيام القادمة",
+        "view_all": "عرض الجدول الكامل",
+        "empty": {
+          "title": "لا توجد أنشطة مبرمجة",
+          "subtitle": "جدولك فارغ للأيام السبعة القادمة",
+          "action": "برمجة نشاط"
+        }
+      },
+      "quick_actions": {
+        "title": "إجراءات سريعة",
+        "create": {
+          "title": "برمجة",
+          "subtitle": "إنشاء نشاط جديد"
+        },
+        "establishments": {
+          "title": "المؤسسات",
+          "subtitle": "إدارة المؤسسات"
+        },
+        "report": {
+          "title": "التقارير",
+          "subtitle": "إدخال الحصيلة"
+        },
+        "home": {
+          "title": "الرئيسية",
+          "subtitle": "العودة للواجهة"
+        }
+      },
+      "side_stats": {
+        "title": "الأداء",
+        "completed": "المكتملة",
+        "progression": "{percent}% من الهدف الأسبوعي"
+      }
+    },
+    "status": {
+      "planned": "مخطط له",
+      "in_progress": "جاري",
+      "completed": "مكتمل",
+      "report_done": "مغلق",
+      "cancelled": "ملغى",
+      "postponed": "مؤجل"
+    },
+    "navigation": {
+      "dashboard": "لوحة القيادة",
+      "dashboard_desc": "نظرة عامة على الأنشطة",
+      "calendar": "التقويم",
+      "calendar_desc": "تخطيط الأنشطة",
+      "establishments": "المؤسسات",
+      "establishments_desc": "تسيير الهياكل",
+      "reports": "التقارير",
+      "reports_desc": "تقارير الأنشطة",
+      "profile": "ملفي الشخصي",
+      "home_access": "دخول البوابة",
+      "logout": "تسجيل الخروج"
+    },
+    "calendar": {
+      "create_panel": {
+        "activite": "نشاط",
+        "title": "إضافة نشاط",
+        "subtitle": "خطط لنشاط جديد في التقويم",
+        "today": "اليوم",
+        "submit_all": "حفظ الكل",
+        "import": "استيراد الأنشطة",
+        "new_activity": "نشاط جديد",
+        "loading": "جارٍ التحميل...",
+        "add": "إضافة",
+        "confirm_delete": "تأكيد الحذف؟",
+        "error_delete": "خطأ أثناء الحذف",
+        "date": "التاريخ",
+        "time_start": "وقت البداية",
+        "time_end": "وقت النهاية",
+        "location": "الموقع",
+        "responsible": "المسؤول",
+        "description": "الوصف",
+        "is_recurrent": "نشاط متكرر",
+        "recurrence_end": "نهاية التكرار",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "success_update": "تم التحديث بنجاح",
+        "success_create": "تم الإنشاء بنجاح",
+        "success_message": "تم حفظ النشاط بنجاح",
+        "edit_title": "تعديل النشاط",
+        "activity_title": "عنوان النشاط",
+        "activity_title_placeholder": "أدخل العنوان...",
+        "establishment": "المؤسسة",
+        "select_establishment": "اختر مؤسسة",
+        "type": "نوع النشاط",
+        "select_type": "اختر نوع النشاط...",
+        "description_placeholder": "تفاصيل النشاط...",
+        "participants": "عدد المشاركين",
+        "recurrence_pattern": "نمط التكرار",
+        "daily": "يومي",
+        "weekly": "أسبوعي",
+        "monthly": "شهري",
+        "daily_no_weekend": "كل يوم (ما عدا نهاية الأسبوع)",
+        "select_days": "اختر الأيام",
+        "save_changes": "حفظ التغييرات",
+        "create": "إنشاء النشاط"
+      }
+    },
+    "establishments": {
+      "title": "المؤسسات",
+      "subtitle": "قائمة المؤسسات الخاضعة لتنسيقكم",
+      "search_placeholder": "البحث حسب الاسم أو الرمز...",
+      "view_details": "عرض التفاصيل"
+    },
+    "reports": {
+      "title": "تقارير الأنشطة",
+      "subtitle": "الاطلاع على التقارير وتدبيرها",
+      "all": "جميع التقارير",
+      "pending": "في الانتظار",
+      "completed": "مكتملة",
+      "search_placeholder": "تصفية التقارير..."
+    }
+  },
+  "reclamation_categories": {
+    "Infrastructure": "بنية تحتية",
+    "Services": "خدمات",
+    "Propreté": "نظافة",
+    "Sécurité": "أمن",
+    "Personnel": "موظفون",
+    "Accessibilité": "ولوجية",
+    "Autre": "أخرى"
+  },
+  "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
+  "suggestion_rate_limit": "تم استنفاد عدد الاقتراحات المسموح به. يمكنكم تقديم اقتراح جديد ابتداءً من {date}.",
+  "permissions": {
+    "auth": {
+      "login": "تسجيل الدخول",
+      "register": "إنشاء حساب",
+      "logout": "تسجيل الخروج",
+      "reset-password": "إعادة تعيين كلمة المرور"
+    },
+    "users": {
+      "read": "عرض المستخدمين (أساسي)",
+      "read_full": "عرض المستخدمين (كامل)",
+      "create": "إنشاء مستخدم",
+      "edit": "تعديل مستخدم",
+      "edit_role": "تغيير الدور",
+      "delete": "حذف مستخدم (مؤقت)",
+      "hard-delete": "حذف نهائي",
+      "activate": "تفعيل/تعطيل الحساب",
+      "security": "عرض معلومات الأمان",
+      "me": {
+        "read": "عرض ملفي الشخصي",
+        "edit": "تعديل ملفي الشخصي"
+      }
+    },
+    "reclamations": {
+      "read": "عرض الشكايات",
+      "read_all": "عرض كل الشكايات",
+      "read_assigned": "عرض الشكايات المسندة",
+      "create": "إنشاء شكاية",
+      "edit": "تعديل شكاية",
+      "delete": "حذف شكاية",
+      "archive": "أرشفة شكاية",
+      "assign": "إسناد شكاية",
+      "validate": "المصادقة على القرار",
+      "resolve": "تحديد كمحلوة",
+      "comment": {
+        "internal": "إضافة تعليق داخلي"
+      }
+    },
+    "evenements": {
+      "read": "عرض الفعاليات",
+      "read_all": "عرض كل الفعاليات",
+      "create": "إنشاء فعالية",
+      "edit": "تعديل فعالية",
+      "edit_all": "تعديل كل الفعاليات",
+      "delete": "حذف فعالية",
+      "validate": "المصادقة على فعالية",
+      "feature": "تمييز فعالية",
+      "subscribe": "الاشتراك في فعالية",
+      "participate": "المشاركة في فعالية",
+      "report": "عرض تقرير الفعالية"
+    },
+    "actualites": {
+      "read": "قراءة الأخبار",
+      "create": "إنشاء خبر",
+      "edit": "تعديل خبر",
+      "delete": "حذف خبر",
+      "publish": "نشر خبر",
+      "validate": "المصادقة على خبر"
+    },
+    "etablissements": {
+      "read": "عرض المؤسسات",
+      "create": "إنشاء مؤسسة",
+      "edit": "تعديل مؤسسة",
+      "delete": "حذف مؤسسة",
+      "validate": "المصادقة على مؤسسة",
+      "publish": "نشر مؤسسة",
+      "subscribe": "الاشتراك في مؤسسة"
+    },
+    "evaluations": {
+      "read": "قراءة التقييمات",
+      "create": "تقييم",
+      "edit": "تعديل تقييم",
+      "delete": "حذف تقييم",
+      "validate": "إدارة التقييمات",
+      "report": "الإبلاغ عن تقييم"
+    },
+    "campagnes": {
+      "read": "عرض الحملات",
+      "create": "إنشاء حملة",
+      "edit": "تعديل حملة",
+      "delete": "حذف حملة",
+      "activate": "تغيير حالة الحملة",
+      "participate": "المشاركة في حملة"
+    },
+    "programmes": {
+      "read": "عرض البرامج",
+      "create": "إنشاء برنامج",
+      "edit": "تعديل برنامج",
+      "delete": "حذف برنامج",
+      "validate": "المصادقة على برنامج",
+      "report": "ملء تقرير النشاط"
+    },
+    "suggestions": {
+      "create": "إنشاء اقتراح",
+      "read": {
+        "own": "عرض اقتراحاتي"
+      }
+    },
+    "stats": {
+      "view": {
+        "global": "عرض إحصائيات عامة",
+        "secteur": "عرض إحصائيات القطاع",
+        "commune": "عرض إحصائيات الجماعة",
+        "etablissement": "عرض إحصائيات المؤسسة"
+      }
+    },
+    "reports": {
+      "export": "تصدير التقارير"
+    },
+    "map": {
+      "view": "عرض الخريطة",
+      "view_full": "عرض الخريطة المتقدمة"
+    },
+    "system": {
+      "settings": {
+        "read": "عرض الإعدادات",
+        "edit": "تعديل الإعدادات"
+      },
+      "logs": {
+        "view": "عرض السجلات"
+      },
+      "backup": "إدارة النسخ الاحتياطي",
+      "restore": "استعادة النظام"
+    },
+    "permissions": {
+      "manage": "إدارة الصلاحيات"
+    },
+    "communes": {
+      "manage": "إدارة الجماعات"
+    }
+  },
+  "contact_page": {
+    "title": "اتصل بنا",
+    "subtitle": "نحن هنا للاستماع إليكم والإجابة على استفساراتكم",
+    "form_title": "نموذج التواصل",
+    "warning": {
+      "title": "تنبيه هام",
+      "text": "يرجى العلم بأنكم تتحملون المسؤولية الكاملة عن دقة المعلومات المقدمة. يرجى إدخال بريد إلكتروني صالح لتلقي الرد."
+    },
+    "success_title": "تم الإرسال بنجاح!",
+    "success_message": "لقد تلقينا رسالتكم وسنرد عليكم في أقرب الآجال.",
+    "send_another": "إرسال رسالة أخرى",
+    "name_label": "الاسم الكامل",
+    "name_placeholder": "الاسم والنسب",
+    "email_label": "البريد الإلكتروني",
+    "email_placeholder": "بريدك الإلكتروني",
+    "subject_label": "الموضوع",
+    "subject_placeholder": "اختر موضوع الرسالة",
+    "subjects": {
+      "info": "طلب معلومات",
+      "tech": "دعم تقني",
+      "partenariat": "شراكة",
+      "autre": "آخر"
+    },
+    "message_label": "الرسالة",
+    "message_placeholder": "اكتب رسالتك هنا...",
+    "sending": "جاري الإرسال...",
+    "submit_btn": "إرسال الرسالة",
+    "coords_title": "معلومات الاتصال",
+    "address_label": "العنوان",
+    "address_value": "عمالة إقليم مديونة، شارع الحسن الثاني، مديونة",
+    "phone_label": "الهاتف",
+    "email_contact_label": "البريد الإلكتروني",
+    "rate_limit_error": "لقد تجاوزت الحد المسموح به من الرسائل. يرجى المحاولة في {date}.",
+    "map_popup": "عمالة إقليم مديونة",
+    "phone_value": "05 22 51 00 51 (قياسي) • 05 22 51 19 10 (فاكس)",
+    "email_contact_value": "contact@provincemedioun.ma"
+  },
+  "admin_campaigns": {
+    "new": {
+      "title": "حملة جديدة",
+      "subtitle": "أطلق مبادرة مواطنة أو حملة توعية.",
+      "back_to_list": "العودة إلى الحملات",
+      "details_section": "تفاصيل الحملة",
+      "goals_dates_section": "الأهداف والتواريخ",
+      "visual_section": "صورة الحملة",
+      "status_section": "حالة الحملة",
+      "form": {
+        "short_name": "الاسم المختصر (داخلي)",
+        "short_name_placeholder": "مثال: شتاء دافئ 2025",
+        "type": "النوع",
+        "type_placeholder": "اختر...",
+        "public_title": "العنوان العام",
+        "public_title_placeholder": "مثال: حملة جمع الملابس الشتوية",
+        "short_desc": "وصف قصير",
+        "short_desc_placeholder": "عنوان جذاب للحملة...",
+        "content": "محتوى مفصل",
+        "content_placeholder": "شرح كامل للحملة...",
+        "participants_goal": "هدف المشاركين",
+        "participants_goal_placeholder": "مثال: 1000",
+        "theme_color": "لون السمة",
+        "start_date": "تاريخ البدء",
+        "end_date": "تاريخ الانتهاء",
+        "image_banner": "راية الحملة",
+        "image_hint": "PNG, JPG حتى 5 ميجابايت",
+        "cancel": "إلغاء",
+        "create": "إنشاء الحملة",
+        "creating": "جاري الإنشاء..."
+      },
+      "types": {
+        "SOLIDARITE": "تضامن",
+        "ECOLOGIE": "بيئة",
+        "CITOYENNETE": "مواطنة",
+        "SANTE": "صحة",
+        "EDUCATION": "تعليم",
+        "SPORT": "رياضة",
+        "CULTURE": "ثقافة",
+        "AUTRE": "آخر"
+      },
+      "statuses": {
+        "BROUILLON_label": "مسودة",
+        "BROUILLON_desc": "مرئي للمشرفين فقط",
+        "ACTIVE_label": "نشطة",
+        "ACTIVE_desc": "حملة جارية، مرئية للجمهور",
+        "TERMINEE_label": "منتهية",
+        "TERMINEE_desc": "حملة مغلقة"
+      },
+      "validation": {
+        "title_required": "العنوان مطلوب (5 أحرف على الأقل)",
+        "name_required": "الاسم المختصر مطلوب",
+        "content_required": "المحتوى المفصل مطلوب",
+        "type_required": "النوع مطلوب",
+        "image_size": "يجب ألا تتجاوز الصورة 5 ميجابايت",
+        "success": "تم إنشاء الحملة بنجاح",
+        "error": "خطأ أثناء الإنشاء"
+      },
+      "BROUILLON": "مسودة",
+      "EN_ATTENTE": "في الانتظار",
+      "PUBLIEE": "منشور",
+      "TERMINEE": "منتهي",
+      "ANNULEE": "ملغى"
+    }
+  },
+  "welcome_popup": {
+    "title": "مرحبًا بكم في بوابة مديونة",
+    "content": "مرحبًا بكم في بوابة مديونة! يسعدنا انضمامكم إلى منصّتكم المواطِنة، حيث يمكنكم المساهمة بسهولة في تحسين جودة الخدمات، الإبلاغ عن الملاحظات، والاطلاع على آخر الأخبار. معًا نبني إقليمًا أفضل.",
+    "start_button": "ابدأ",
+    "dont_show_again": "عدم إظهار هذه الرسالة مرة أخرى"
+  },
+  "audit_log": {
+    "actions": {
+      "LOGIN": "تسجيل الدخول",
+      "LOGIN_SUCCESS": "تسجيل دخول ناجح",
+      "LOGIN_FAILED": "فشل تسجيل الدخول",
+      "LOGOUT": "تسجيل الخروج",
+      "REGISTER": "تسجيل مستخدم جديد",
+      "CREATE_USER": "إنشاء مستخدم",
+      "UPDATE_USER": "تحديث مستخدم",
+      "DELETE_USER": "حذف مستخدم",
+      "UPDATE_PERMISSIONS": "تحديث الصلاحيات",
+      "CREATE_BACKUP": "إنشاء نسخة احتياطية",
+      "PASSWORD_RESET_BY_ADMIN": "إعادة تعيين كلمة المرور",
+      "ACCESS_DENIED": "تم رفض الوصول"
+    },
+    "modal": {
+      "title": "تفاصيل السجل #{id}",
+      "not_available": "غير متوفر",
+      "unknown": "غير معروف",
+      "ip_address": "عنوان IP",
+      "device": "الجهاز / المتصفح",
+      "saved_data": "البيانات المسجلة",
+      "no_details": "لا توجد تفاصيل إضافية لهذه العملية",
+      "close": "إغلاق"
+    },
+    "entities": {
+      "User": "مستخدم",
+      "Reclamation": "شكاية",
+      "System": "نظام",
+      "Route": "مسار / صفحة",
+      "Authentication": "المصادقة"
+    }
+  },
+  "toasts": {
+    "success": "عملية ناجحة",
+    "error": "حدث خطأ",
+    "deleted": "تم الحذف بنجاح",
+    "updated": "تم التحديث بنجاح",
+    "created": "تم الإنشاء بنجاح",
+    "copied": "تم النسخ!",
+    "downloaded": "تم التحميل بنجاح"
+  },
+  "performance_tab": {
+    "podium": {
+      "maestro": "المايسترو الإقليمي",
+      "excellence_points": "نقاط التميز"
+    },
+    "filters": {
+      "search_placeholder": "تدقيق الأداء: البحث بالاسم أو الموقع...",
+      "history": "تاريخية",
+      "monthly": "شهريا",
+      "weekly": "أسبوعي",
+      "all_sectors": "جميع القطاعات",
+      "sectors": {
+        "EDUCATION": "تعليم",
+        "SANTE": "صحة",
+        "SPORT": "رياضة",
+        "CULTUREL": "ثقافية",
+        "SOCIAL": "اجتماعي"
+      },
+      "all_communes": "جميع البلديات",
+      "all_annexes": "جميع المرفقات",
+      "reset": "إعادة ضبط"
+    },
+    "toasts": {
+      "load_error": "خطأ في تحميل الأداء"
+    },
+    "card": {
+      "perf_index": "الأداء. فِهرِس",
+      "classification": "تصنيف",
+      "decision_center": "مركز القرار"
+    },
+    "pagination": {
+      "page_x_of_y": "الصفحة {current} / {total}"
+    }
+  },
+  "decision_center": {
+    "tabs": {
+      "overview": "نظرة عامة",
+      "infos": "معلومات",
+      "performance": "مؤشر النتيجة",
+      "live": "الحالات والتدفقات",
+      "docs": "وثائق"
+    },
+    "labels": {
+      "rank": "التصنيف",
+      "subscribers": "المشتركين",
+      "events": "الأحداث",
+      "activities": "الأنشطة",
+      "reclamations": "المطالبات",
+      "performance_index": "مؤشر الأداء",
+      "social_score": "النقاط الاجتماعية",
+      "decision_report": "إنشاء تقرير قرار",
+      "decision_report_desc": "أداة مساعدة لاتخاذ القرار: استخراج ملخص شامل للوضعية الحالية لتسهيل التدخل أو المصادقة.",
+      "utility_status": "الشبكات والمرافق",
+      "emergency_diag": "الطوارئ والتشخيص",
+      "activity_log": "سجل النشاط الأخير",
+      "citizen_watch": "اليقظة المواطنة",
+      "not_informative": "غير محدد",
+      "no_activity": "لا توجد تدفقات حديثة متاحة.",
+      "bilan_impact": "الوصول إلى حصيلة الأثر",
+      "rh_total": "إجمالي الموارد البشرية",
+      "capacity": "الطاقة الاستيعابية",
+      "technical_dossier": "الملف التقني",
+      "no_citizen_reviews": "لا توجد مراجعات من المواطنين حالياً.",
+      "address_not_provided": "العنوان غير متوفر.",
+      "google_maps": "خرائط جوجل",
+      "our_map": "عرض على الخريطة التفاعلية"
+    },
+    "infos": {
+      "gouvernance": "الحكامة",
+      "logistique": "اللوجستيك",
+      "specifications": "المواصفات",
+      "extra": "معلومات تكميلية",
+      "localisation": "الموقع",
+      "contact": "الاتصال",
+      "directeur": "المدير / المسؤول",
+      "structure": "الهيكل",
+      "ouverture": "تاريخ الافتتاح",
+      "statut": "الوضعية",
+      "cadre": "الإطار",
+      "unites": "الوحدات / القاعات",
+      "surface": "المساحة",
+      "budget": "الميزانية",
+      "reussite": "نسبة النجاح",
+      "apprenants": "المتمدرسين",
+      "type": "النوع",
+      "nature": "الطبيعة",
+      "abandon": "معدل الانقطاع",
+      "tutelle": "الوصاية",
+      "gestionnaire": "الجهة المسيرة",
+      "statut_fonctionnel": "الحالة التشغيلية",
+      "telephone": "الهاتف المباشر",
+      "email": "البريد الإلكتروني الرسمي",
+      "site_web": "بوابة الويب",
+      "observation": "ملاحظات ميدانية",
+      "prescolaire": "التعليم الأولي",
+      "filles": "الإناث",
+      "capacite": "القدرة الاستيعابية"
+    },
+    "status": {
+      "nominal": "المؤسسة حالياً في المرحلة العادية.",
+      "no_emergency": "لم تبلغ السلطات المحلية عن أي احتياج عاجل.",
+      "urgent_alert": "تنبيه ميداني",
+      "normal_ops": "عمليات عادية",
+      "active": "نشط",
+      "not_available": "غير متوفر",
+      "publiee": "منشور",
+      "cloturee": "مغلق",
+      "en_cours": "في طور المعالجة"
+    },
+    "rank": {
+      "s": "نخبة",
+      "a": "امتياز",
+      "b": "جيد جداً",
+      "c": "مقبول",
+      "d": "ضعيف"
+    },
+    "radar": {
+      "engagement": "التفاعل",
+      "social": "الاجتماعي",
+      "satisfaction": "الرضا",
+      "subscribers": "المشتركين",
+      "news": "الأخبار"
+    },
+    "performance": {
+      "maturity_balance": "توازن النضج",
+      "indicators_5_pillars": "مؤشرات الركائز الخمس",
+      "strategic_analysis": "التحليل الاستراتيجي",
+      "high_efficiency_msg": "تظهر المؤسسة كفاءة هيكلية عالية وديناميكية مدنية نموذجية.",
+      "stable_performance_msg": "أداء مستقر مع تحديد مجالات للتحسين في جانب التفاعل.",
+      "positive_trend": "تم رصد اتجاه إيجابي",
+      "resolution": "نسبة المعالجة",
+      "closed_cases": "الملفات المغلقة",
+      "impact": "الأثر المتوقع",
+      "significant": "ملموس",
+      "local_reach": "الإشعاع المحلي"
+    },
+    "media": {
+      "main_facade": "الواجهة الرئيسية",
+      "field_view": "منظر ميداني",
+      "no_docs": "لا توجد مستندات تقنية مؤرشفة.",
+      "tech_doc": "مستند تقني",
+      "no_comment": "تقرير متابعة بدون تعليق محدد.",
+      "citizen_watch": "يقظة المواطن",
+      "institutional_action": "إجراء مؤسسي"
+    },
+    "utilities": {
+      "water": "التزويد بالماء",
+      "electricity": "الشبكة الكهربائية",
+      "internet": "الربط بالإنترنت"
+    },
+    "extra_fields": {
+      "creation_year": "سنة التأسيس",
+      "zone": "المنطقة التابعة",
+      "accessibility": "الولوجيات",
+      "staff": "عدد الموظفين",
+      "executives": "الأطر الإدارية",
+      "infra_state": "حالة البنية التحتية",
+      "QuartierDouar": "الحي / الدوار",
+      "ElevesPrescolaire": "تلاميذ التعليم الأولي",
+      "ElevesPrescolaireFilles": "إناث التعليم الأولي"
+    },
+    "filters": {
+      "all": "الكل",
+      "events": "الأحداث",
+      "news": "الأخبار",
+      "activities": "الأنشطة الميدانية",
+      "reclamations": "الشكايات",
+      "comments": "تعليقات المواطنين"
+    },
+    "modal": {
+      "close": "إغلاق",
+      "details": "التفاصيل الكاملة",
+      "date": "التاريخ",
+      "status": "الحالة",
+      "description": "الوصف",
+      "open_details": "عرض التفاصيل"
+    }
+  },
+  "header": {
+    "titles": {
+      "overview": "لوحة التحكم",
+      "performance": "مؤشر الأداء الإقليمي",
+      "reclamations": "تدفق المطالبات",
+      "map": "التصور الجغرافي المكاني",
+      "reports": "مركز التقارير"
+    },
+    "notifications": {
+      "title": "إشعارات",
+      "new": "{count} أخبار",
+      "none": "لا الإخطارات",
+      "view_all": "شاهد كل التاريخ"
+    }
+  },
+  "overview": {
+    "greeting": {
+      "morning": "صباح الخير",
+      "afternoon": "مساء الخير",
+      "evening": "مساء الخير",
+      "suffix": "يا سيادة المحافظ",
+      "subtitle": "رؤية استراتيجية لنشاط إقليم مديونة"
+    },
+    "public_portal_btn": "عرض البوابة العامة",
+    "kpi": {
+      "satisfaction": "مؤشر الرضا",
+      "resolution_rate": "معدل القرار",
+      "participations": "المشاركات",
+      "active_projects": "المشاريع النشطة",
+      "sub": {
+        "reclamations": "المطالبات",
+        "engagement": "التزام",
+        "ongoing": "في تَقَدم"
+      },
+      "tooltip": {
+        "satisfaction": "متوسط ​​التصنيف لجميع المنشآت في المحافظة",
+        "resolution": "نسبة الشكاوى التي تم حلها من الإجمالي",
+        "engagement": "إجمالي عدد الاشتراكات + المشاركات في الحملة",
+        "projects": "الحملات النشطة + الأحداث الجارية"
+      }
+    },
+    "sectors": {
+      "title": "تصنيف القطاع",
+      "realtime": "في الوقت الحالى",
+      "names": {
+        "education": "تعليم",
+        "health": "صحة",
+        "sport": "رياضة",
+        "cultural": "ثقافية",
+        "social": "اجتماعي",
+        "autre": "آخر"
+      }
+    },
+    "territorial": {
+      "title": "التوزيع الإقليمي",
+      "communes": "البلديات",
+      "establishments": "المنشآت",
+      "events": "الأحداث"
+    },
+    "alerts": {
+      "title": "أخبار فلاش / تنبيهات",
+      "none": "لا يوجد تنبيه نشط",
+      "urgent": "عاجل",
+      "info": "معلومة"
+    },
+    "activity_log": {
+      "title": "سجل النشاط",
+      "view_reports": "عرض التقارير"
+    },
+    "bilans_card": {
+      "title": "غرفة الحالة",
+      "desc": "راجع تقارير الأحداث والأنشطة والحملات للتحقق من صحتها.",
+      "btn": "الوصول إلى الميزانية العمومية"
+    }
+  },
+  "reports": {
+    "audit_trends": "اتجاهات التدقيق (6 أشهر)",
+    "compliance": "الامتثال العالمي (البنية التحتية)",
+    "automated_reports": "التقارير الآلية",
+    "download": "تحميل",
+    "download_started": "بدأ التحميل...",
+    "generating": "جارٍ إنشاء التقرير...",
+    "generated": "تم إنشاء التقرير بنجاح!",
+    "recent_title": "التقارير الأخيرة",
+    "view_all": "أرشيفات كاملة",
+    "kpi": {
+      "pending_decisions": "القرارات المعلقة",
+      "resolution_rate": "معدل القرار",
+      "active_projects": "المشاريع النشطة",
+      "monthly_events": "أحداث هذا الشهر",
+      "this_week": ".هذا الاسبوع",
+      "upcoming": "{count} قريبا"
+    },
+    "index": "فِهرِس",
+    "status": {
+      "conforme": "متوافق",
+      "en_cours": "في تَقَدم",
+      "non_conforme": "غير متوافق"
+    },
+    "alert": {
+      "title": "مطلوب اتخاذ إجراء فوري",
+      "urgent": "مطالبات عاجلة",
+      "pending": "في انتظار المعالجة",
+      "action": "العملية الآن"
+    },
+    "chart": {
+      "audits": "عمليات التدقيق (نشطة)",
+      "resolved": "الامتثال (تم الحل)"
+    },
+    "docs": {
+      "monthly": "تقرير النشاط الشهري",
+      "audit": "تدقيق أداء T4",
+      "claims": "تحليل المطالبات",
+      "performance": "مراجعة الأداء"
+    },
+    "authors": {
+      "system_ia": "نظام الذكاء الاصطناعي",
+      "division_chief": "رئيس القسم",
+      "sg": "مقاطعة سان جرمان"
+    },
+    "status_labels": {
+      "validated": "صالح",
+      "pending": "في الانتظار"
+    },
+    "generator": {
+      "title": "مولد التقرير",
+      "subtitle": "تصدير البيانات والأنشطة",
+      "period": "فترة",
+      "format": "شكل",
+      "included_modules": "الوحدات متضمنة",
+      "options": {
+        "stats": "إحصائيات",
+        "reclamations": "المطالبات",
+        "etablissements": "المنشآت",
+        "performance": "أداء"
+      },
+      "btn": "إنشاء التقرير الرسمي"
+    },
+    "bilans_cta": {
+      "title": "الوصول إلى التقارير الكاملة",
+      "desc": "عرض جميع التقارير الختامية والأحداث المكتملة وتقارير الأنشطة.",
+      "btn": "افتح الميزانية العمومية"
+    },
+    "filters": {
+      "6m": "6 أشهر",
+      "1y": "1 سنة",
+      "all": "الجميع"
+    },
+    "compliance_details": {
+      "title": "تفاصيل الامتثال",
+      "conforme_desc": "المنشآت التي تحترم كافة المعايير",
+      "encours_desc": "الترقية قيد التقدم (الموعد النهائي أقل من 3 أشهر)",
+      "nonconforme_desc": "يتطلب التدخل ذو الأولوية"
+    }
+  },
+  "bilans_page": {
+    "title": "تقييمات وتقارير المحافظة",
+    "subtitle": "التقارير الختامية لفعاليات وأنشطة وحملات مدينة مديونة",
+    "loading": "جارٍ تحميل الميزانيات العمومية...",
+    "stats": {
+      "events": "الأحداث المغلقة",
+      "activities": "الأنشطة مع التقرير",
+      "campaigns": "الحملات المكتملة",
+      "participants": "إجمالي المشاركين"
+    },
+    "chart": {
+      "title": "التوزيع حسب القطاع"
+    },
+    "tabs": {
+      "events": "الأحداث",
+      "activities": "أنشطة",
+      "campaigns": "الحملات"
+    },
+    "search": "البحث حسب العنوان أو المنشأة...",
+    "sectors_all": "جميع القطاعات",
+    "empty": {
+      "events": "لا توجد تقارير الأحداث",
+      "activities": "لا يوجد تقرير النشاط",
+      "campaigns": "لا توجد نتائج الحملة",
+      "desc": "ستظهر التقارير المكتملة هنا"
+    },
+    "labels": {
+      "closing_report": "التقرير الختامي",
+      "activity_report": "تقرير النشاط",
+      "citizen_campaign": "حملة المواطن",
+      "campaign_success": "اكتملت الحملة بنجاح",
+      "objective": "موضوعي",
+      "participations": "مشاركات",
+      "views": "وجهات النظر",
+      "present": "حاضر",
+      "published_on": "تم النشر بتاريخ",
+      "report_completed_on": "اكتمل التقرير بتاريخ",
+      "positives": "نقاط إيجابية",
+      "difficulties": "الصعوبات",
+      "recommendations": "التوصيات",
+      "progress": "عملية",
+      "photos": "صور",
+      "reduce": "يقلل",
+      "view_details": "انظر التفاصيل",
+      "view_all": "شاهد الكل",
+      "reached": "وصل"
+    }
+  },
+  "admin_portal": {
+    "messages": {
+      "title": "صندوق الوارد",
+      "subtitle": "إدارة رسائل المنصة",
+      "messages_count": "إجمالي {count} رسائل",
+      "search_placeholder": "البحث حسب المرسل أو الموضوع...",
+      "db_error_title": "خطأ في قاعدة البيانات",
+      "author": "المرسل",
+      "date": "تاريخ الاستلام",
+      "member": "نوع العضو",
+      "subject_message": "الرسالة والموضوع",
+      "actions": "إجراءات",
+      "view": "التفاصيل",
+      "reply": "رد",
+      "received_on": "تم الاستلام في",
+      "reply_email": "الرد عبر البريد الإلكتروني",
+      "no_messages": "لا توجد رسائل",
+      "loading": "جارٍ تحميل الرسائل...",
+      "mark_read": "وضع علامة مقروء",
+      "delete": "حذف",
+      "categories": {
+        "info": "معلومات",
+        "tech": "تقني",
+        "question": "سؤال",
+        "complaint": "شكوى",
+        "suggestion": "اقتراح"
+      },
+      "db_error_desc": "حدث خطأ أثناء استرداد الرسائل من قاعدة البيانات.",
+      "no_messages_desc": "صندوق الوارد الخاص بك فارغ حالياً. ستظهر الرسائل الجديدة هنا.",
+      "close": "إغلاق",
+      "mark_read_success": "تم تحديد الرسالة كمقروءة",
+      "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذه الرسالة؟",
+      "delete_success": "تم حذف الرسالة بنجاح"
+    }
+  },
+  "notifications_page": {
+    "title": "الإشعارات",
+    "unread_count": "{count} غير مقروءة",
+    "all_read": "تمت قراءة جميع الإشعارات",
+    "mark_all_read": "تحديد الكل كمقروء",
+    "delete_read": "حذف المقروءة",
+    "filter_all": "الكل ({count})",
+    "filter_unread": "غير المقروءة ({count})",
+    "empty_title": "لا توجد إشعارات",
+    "empty_unread": "ليس لديك إشعارات غير مقروءة",
+    "empty_all": "صندوق الإشعارات فارغ",
+    "confirm_delete": "هل أنت متأكد من حذف جميع الإشعارات المقروءة؟",
+    "page_info": "الصفحة {current} من {total}",
+    "time": {
+      "just_now": "الآن",
+      "minutes_ago": "منذ {count} دقائق",
+      "hours_ago": "منذ {count} ساعات",
+      "days_ago": "منذ {count} أيام"
+    },
+    "types": {
+      "NOUVELLE_RECLAMATION": "شكاية جديدة",
+      "RECLAMATION_ACCEPTEE": "تم قبول الشكاية",
+      "RECLAMATION_REJETEE": "تم رفض الشكاية",
+      "RECLAMATION_AFFECTEE": "تم تعيين الشكاية",
+      "RECLAMATION_RESOLUE": "تم حل الشكاية",
+      "EVENEMENT_VALIDE": "تم قبول الفعالية",
+      "EVENEMENT_REJETE": "تم رفض الفعالية",
+      "NOUVEL_EVENEMENT": "فعالية جديدة",
+      "ROLE_CHANGED": "تغيير الدور",
+      "ACCOUNT_ACTIVATED": "تم تفعيل الحساب",
+      "SYSTEM": "النظام",
+      "EVENT_CREATION": "إنشاء فعالية",
+      "ACTUALITE_CREATION": "إنشاء خبر",
+      "CAMPAGNE_CREATION": "إنشاء حملة"
+    },
+    "actions": {
+      "view": "عرض التفاصيل",
+      "mark_read": "تحديد كمقروء"
+    }
+  },
+  "admin_evenement_modifier": {
+    "title": "تعديل الفعالية",
+    "loading": "جاري التحميل...",
+    "not_found": "الفعالية غير موجودة",
+    "back_list": "إلى القائمة",
+    "finished": "فعالية منتهية",
+    "finished_desc": "هذه الفعالية انتهت ويجب اختتامها بتقرير.",
+    "close_now": "اختتام الآن",
+    "inscribed": "{count} مسجلين",
+    "views": "{count} مشاهدات",
+    "quick_actions": "إجراءات سريعة",
+    "validate": "مصادقة",
+    "reject": "رفض",
+    "publish": "نشر",
+    "start": "بدء",
+    "close_title": "اختتام الفعالية",
+    "close_desc": "املأ تقرير الاختتام وحصيلة المشاركة لإنهاء هذه الفعالية.",
+    "rapport_label": "تقرير الاختتام *",
+    "rapport_placeholder": "صف سير الفعالية، النقاط القوية، والصعوبات التي واجهتها...",
+    "real_participants_label": "العدد الحقيقي للمشاركين",
+    "real_participants_placeholder": "مثال: 150",
+    "image_section": "صورة الفعالية",
+    "change_image": "تغيير",
+    "remove_image": "حذف",
+    "new_image": "صورة جديدة",
+    "current_image": "الصورة الحالية",
+    "click_add_image": "انقر لإضافة صورة",
+    "image_format": "PNG، JPG حتى 5 ميجابايت",
+    "titre_label": "العنوان *",
+    "description_label": "الوصف *",
+    "date_debut": "تاريخ البدء *",
+    "date_fin": "تاريخ الانتهاء",
+    "lieu_label": "المكان",
+    "capacite_max": "الطاقة الاستيعابية القصوى",
+    "rapport_section": "تقرير الاختتام",
+    "real_participants_badge": "{count} مشاركين حقيقيين",
+    "report_files": "ملفات التقرير",
+    "official_report": "تقرير الاختتام الرسمي",
+    "click_to_open": "انقر للفتح/التحميل",
+    "bilan_gallery": "معرض صور الحصيلة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "delete_confirm": "هل أنت متأكد من حذف هذه الفعالية؟",
+    "image_size_error": "يجب ألا يتجاوز حجم الصورة 5 ميجابايت",
+    "upload_error": "خطأ أثناء تحميل الصورة",
+    "save_success": "تم تحديث الفعالية بنجاح",
+    "cloture_success": "تمت اختتام الفعالية بنجاح",
+    "delete_success": "تم حذف الفعالية",
+    "statuts": {
+      "EN_ATTENTE_VALIDATION": "في الانتظار",
+      "VALIDEE": "تمت المصادقة",
+      "PUBLIEE": "منشورة",
+      "EN_ACTION": "قيد التنفيذ",
+      "CLOTUREE": "مختتمة",
+      "ANNULEE": "ملغاة"
+    },
+    "messages": {
+      "loading_error": "خطأ أثناء التحميل",
+      "image_size_error": "يجب ألا يتجاوز حجم الصورة 5 ميجابايت",
+      "upload_success": "تم تحميل الصورة بنجاح",
+      "upload_error": "خطأ أثناء تحميل الصورة",
+      "save_success_with_image": "تم تحديث الفعالية والصورة بنجاح",
+      "save_success_no_image": "تم تحديث الفعالية (لم يتم تغيير الصورة)",
+      "save_success": "تم تحديث الفعالية بنجاح",
+      "error": "حدث خطأ ما",
+      "status_changed": "تم تغيير الحالة إلى \"{status}\"",
+      "report_required": "تقرير الاختتام مطلوب",
+      "cloture_success": "تمت اختتام الفعالية بنجاح",
+      "cloture_error": "خطأ أثناء الاختتام",
+      "delete_confirm": "هل أنت متأكد من حذف هذه الفعالية؟",
+      "delete_success": "تم حذف الفعالية",
+      "delete_error": "خطأ أثناء الحذف"
+    },
+    "bilan_image": "تقرير",
+    "preview_image": "معاينة"
+  }
+}

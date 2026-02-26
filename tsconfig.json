@@ -21,6 +21,7 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./*"
@@ -35,6 +36,17 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "*-pentest*.ts",
+    "*-audit*.ts",
+    "*-exploit*.ts",
+    "final-security-check.ts",
+    "professional-security-audit.ts",
+    "ultimate-security-audit.ts",
+    "business-logic-*.ts",
+    "load-testing*.ts",
+    "chaos-engineering*.ts",
+    "file-upload-security*.ts",
+    "race-condition*.ts"
   ]
 }

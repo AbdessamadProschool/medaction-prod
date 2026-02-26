@@ -1,0 +1,72 @@
+
+FROM node:20-bullseye-slim AS base
+
+# 1. Install dependencies & Build
+FROM base AS builder
+WORKDIR /app
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+# UTILISATION DE 'install' AU LIEU DE 'ci' (Plus tolérant au lockfile)
+# --no-audit pour gagner du temps
+# --legacy-peer-deps pour éviter les conflits
+# --ignore-scripts pour ne pas fail sur des scripts
+RUN npm install --legacy-peer-deps --ignore-scripts --no-audit
+
+COPY . .
+RUN npx prisma generate
+RUN npm run build
+
+# 2. Production Runner (Clean Slate)
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Configuration système
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+# --- INSTALLATION PROD ---
+# Installer openssl (Requis pour Prisma)
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+COPY package.json package-lock.json* ./
+# INSTALLATION PROPRE AVEC DEPENDANCES DEV TEMPORAIRES
+# 2. Copie du schéma (Requis pour postinstall prisma generate)
+COPY prisma ./prisma
+
+# 1. On installe TOUT (y compris prisma CLI v5) en forçant production=false car NODE_ENV est à production
+RUN npm install --production=false --legacy-peer-deps --no-audit
+
+
+
+# 3. Génération du client (Utilisation de npx pour trouver le binaire local)
+RUN npx prisma generate
+
+# 4. Nettoyage : On supprime les devDependencies pour alléger l'image
+# RUN npm prune --production
+
+# Copie des fichiers buildés
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.mjs ./
+COPY --from=builder --chown=nextjs:nodejs /app/i18n ./i18n
+COPY --from=builder --chown=nextjs:nodejs /app/locales ./locales
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+USER nextjs
+
+EXPOSE 3000
+
+# Vérification (Debug)
+RUN ls -la node_modules/.bin/next && echo "SUCCESS: Next binary found!"
+
+# Lancement explicite via chemin absolu
+CMD ["./node_modules/.bin/next", "start"]

@@ -1,0 +1,3 @@
+UPDATE "User" 
+SET "motDePasse"='$2b$10$4MYs7L2Ui3qtzATCkgevM.PvDz8NLBUd0VDRJay0HVhl5AfBSXxA6' 
+WHERE email IN ('superadmin@medaction.ma', 'citoyen@medaction.ma');

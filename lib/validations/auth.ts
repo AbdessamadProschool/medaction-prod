@@ -11,6 +11,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(1, 'Le mot de passe est requis'),
+  code: z.string().optional(),
 });
 
 /**

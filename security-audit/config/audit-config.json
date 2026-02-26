@@ -1,0 +1,196 @@
+{
+    "target": "http://192.168.1.100:3000",
+    "apiBaseUrl": "http://192.168.1.100:3000/api",
+    "aggressive": true,
+    "stealth": false,
+    "threads": 20,
+    "timeout": 30000,
+    "maxRetries": 3,
+    "rateLimit": 50,
+    "delayBetweenRequests": 100,
+    "scope": {
+        "includePaths": [
+            "/api/*",
+            "/auth/*",
+            "/dashboard/*",
+            "/uploads/*",
+            "/reclamations/*",
+            "/etablissements/*",
+            "/evenements/*",
+            "/profil/*",
+            "/gouverneur/*",
+            "/delegation/*",
+            "/super-admin/*",
+            "/coordinateur/*"
+        ],
+        "excludePaths": [
+            "/api/health",
+            "/favicon.ico",
+            "/_next/*",
+            "/static/*"
+        ],
+        "testAuthentication": true,
+        "testAuthorization": true,
+        "testInjections": true,
+        "testBusinessLogic": true,
+        "testCrypto": true,
+        "testSession": true,
+        "testDataExposure": true,
+        "testMisconfig": true,
+        "testDoS": {
+            "enabled": false,
+            "maxConcurrent": 100,
+            "duration": 30,
+            "testSlowloris": false,
+            "testResourceExhaustion": true,
+            "testReDoS": true,
+            "testLargePayload": true
+        }
+    },
+    "credentials": {
+        "citoyen": {
+            "email": "citoyen.test@medaction.ma",
+            "password": "CitoyenTest2024!",
+            "role": "CITOYEN"
+        },
+        "autorite": {
+            "email": "autorite.test@medaction.ma",
+            "password": "AutoriteTest2024!",
+            "role": "AUTORITE_LOCALE"
+        },
+        "delegation": {
+            "email": "delegation@medaction.ma",
+            "password": "Delegation2024!",
+            "role": "DELEGATION"
+        },
+        "gouverneur": {
+            "email": "gouverneur@medaction.ma",
+            "password": "Gouverneur2024!",
+            "role": "GOUVERNEUR"
+        },
+        "superadmin": {
+            "email": "superadmin@medaction.ma",
+            "password": "SuperAdmin2024!",
+            "role": "SUPER_ADMIN"
+        }
+    },
+    "attackIntensity": {
+        "xss": {
+            "enabled": true,
+            "maxPayloads": 100,
+            "testReflected": true,
+            "testStored": true,
+            "testDOM": true
+        },
+        "sqli": {
+            "enabled": true,
+            "maxPayloads": 50,
+            "testUnion": true,
+            "testBlind": true,
+            "testTime": true,
+            "testError": true
+        },
+        "idor": {
+            "enabled": true,
+            "testSequentialIds": true,
+            "maxIdRange": 1000
+        },
+        "bruteforce": {
+            "enabled": true,
+            "maxAttempts": 100,
+            "passwordList": "wordlists/common-passwords.txt"
+        },
+        "fileUpload": {
+            "enabled": true,
+            "testExtensions": [
+                ".php",
+                ".jsp",
+                ".asp",
+                ".exe",
+                ".svg",
+                ".html"
+            ],
+            "testMimeTypes": true,
+            "testNull bytes": true
+        }
+    },
+    "output": {
+        "format": [
+            "json",
+            "html",
+            "markdown",
+            "pdf"
+        ],
+        "reportDir": "./security-audit/reports",
+        "screenshots": true,
+        "videoRecording": false,
+        "verboseLogging": true,
+        "saveRawResponses": false
+    },
+    "medactionSpecific": {
+        "roles": [
+            "CITOYEN",
+            "AUTORITE_LOCALE",
+            "DELEGUE_COMMUNE",
+            "DELEGATION",
+            "GOUVERNEUR",
+            "COORDINATEUR",
+            "ADMIN",
+            "SUPER_ADMIN"
+        ],
+        "criticalEndpoints": [
+            "/api/reclamations",
+            "/api/reclamations/:id",
+            "/api/reclamations/:id/decision",
+            "/api/reclamations/:id/affecter",
+            "/api/users",
+            "/api/users/:id",
+            "/api/evenements",
+            "/api/evenements/:id",
+            "/api/etablissements",
+            "/api/etablissements/:id",
+            "/api/evaluations",
+            "/api/stats",
+            "/api/admin/users",
+            "/api/admin/settings",
+            "/api/notifications",
+            "/api/upload",
+            "/api/license"
+        ],
+        "sensitiveDataPatterns": [
+            "password",
+            "motDePasse",
+            "token",
+            "secret",
+            "apiKey",
+            "creditCard",
+            "ssn",
+            "cin"
+        ],
+        "fileUploadEndpoints": [
+            "/api/upload",
+            "/api/users/me/photo",
+            "/api/reclamations/:id/media",
+            "/api/evenements/:id/media"
+        ],
+        "publicEndpoints": [
+            "/api/etablissements",
+            "/api/evenements",
+            "/api/actualites",
+            "/api/health",
+            "/api/license/check"
+        ]
+    },
+    "headers": {
+        "User-Agent": "MedAction-Security-Auditor/2.0",
+        "Accept": "application/json, text/html, */*",
+        "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+        "Accept-Encoding": "gzip, deflate",
+        "Connection": "keep-alive"
+    },
+    "proxy": {
+        "enabled": false,
+        "host": "127.0.0.1",
+        "port": 8080
+    }
+}

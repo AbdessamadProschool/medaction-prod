@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+        fontFamily: {
+            sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+            outfit: ["var(--font-outfit)", "ui-sans-serif", "system-ui"],
+            cairo: ["var(--font-cairo)", "ui-sans-serif", "system-ui"],
+        },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -49,12 +54,45 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+            gov: {
+                blue: {
+                    DEFAULT: 'hsl(var(--gov-blue))',
+                    dark: 'hsl(var(--gov-blue-dark))',
+                    light: 'hsl(var(--gov-blue-light))',
+                },
+                red: {
+                    DEFAULT: 'hsl(var(--gov-red))',
+                    dark: 'hsl(var(--gov-red-dark))',
+                    light: 'hsl(var(--gov-red-light))',
+                },
+                green: {
+                    DEFAULT: 'hsl(var(--gov-green))',
+                    dark: 'hsl(var(--gov-green-dark))',
+                    light: 'hsl(var(--gov-green-light))',
+                },
+                gold: {
+                    DEFAULT: 'hsl(var(--gov-gold))',
+                    dark: 'hsl(var(--gov-gold-dark))',
+                    light: 'hsl(var(--gov-gold-light))',
+                },
+            }
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		keyframes: {
+  			float: {
+  				'0%': { transform: 'translateY(100vh)', opacity: '0' },
+  				'10%': { opacity: '1' },
+  				'90%': { opacity: '1' },
+  				'100%': { transform: 'translateY(-100px)', opacity: '0' }
+  			}
+  		},
+  		animation: {
+  			float: 'float 15s linear infinite'
   		}
   	}
   },

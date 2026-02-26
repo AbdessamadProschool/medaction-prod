@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    ports:
+      - 5001:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dockge-data:/app/data
+      # Mapper le dossier courant comme une stack pour que Dockge puisse le contrôler
+      - ./:/opt/stacks/medaction
+    environment:
+      # Optionnel : Sécurité
+      - DOCKGE_STACKS_DIR=/opt/stacks

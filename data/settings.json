@@ -1,0 +1,21 @@
+{
+  "general": {
+    "nomPlateforme": "Portail - Province de Médiouna",
+    "description": "Plateforme citoyenne de la Province de Médiouna",
+    "modeMaintenance": false
+  },
+  "notifications": {
+    "nouvelleReclamation": true,
+    "nouvelUtilisateur": true,
+    "rapportQuotidien": false
+  },
+  "security": {
+    "dureeSession": 1,
+    "tentativesConnexionMax": 5,
+    "doubleAuthentification": true
+  },
+  "email": {
+    "emailEnvoi": "noreply@medaction.ma",
+    "emailContact": "contact@provincemediouna.ma"
+  }
+}

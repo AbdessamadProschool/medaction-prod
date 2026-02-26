@@ -1,0 +1,7 @@
+-- Création du super admin par défaut
+-- Mot de passe: Admin123!
+-- Hash généré avec bcryptjs (12 rounds)
+UPDATE "User" SET "motDePasse" = '$2b$12$Z3hgE/hhbVdqqHu.ZDT7m.jqmf7mjbvpfrCkDWTXJxcDUvQrVF6.K' WHERE email = 'admin@medaction.gov.ma';
+
+-- Afficher les utilisateurs créés
+SELECT id, email, nom, prenom, role FROM "User" LIMIT 5;

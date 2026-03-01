@@ -17,8 +17,8 @@ interface Etablissement {
   photoPrincipale?: string;
   noteMoyenne: number;
   nombreEvaluations: number;
-  commune: { nom: string };
-  annexe?: { nom: string } | null;
+  commune: { nom: string; nomArabe?: string };
+  annexe?: { nom: string; nomArabe?: string } | null;
   nature?: string;
   _count?: {
     evaluations: number;
@@ -31,6 +31,7 @@ interface Etablissement {
 interface Commune {
   id: number;
   nom: string;
+  nomArabe?: string;
 }
 
 const secteurs = [
@@ -65,7 +66,7 @@ function EtablissementsContent() {
   const [secteur, setSecteur] = useState(searchParams.get('secteur') || '');
   const [communeId, setCommuneId] = useState(searchParams.get('communeId') || '');
   const [annexeId, setAnnexeId] = useState(searchParams.get('annexeId') || ''); // NEW
-  const [annexes, setAnnexes] = useState<{id: number; nom: string}[]>([]); // NEW
+  const [annexes, setAnnexes] = useState<{id: number; nom: string; nomArabe?: string}[]>([]); // NEW
   const [noteMin, setNoteMin] = useState(parseInt(searchParams.get('noteMin') || '0') || 0);
   
   // Pagination
@@ -336,7 +337,9 @@ function EtablissementsContent() {
                   >
                     <option value="">{t('filters.all_communes')}</option>
                     {communes.map(c => (
-                      <option key={c.id} value={c.id}>{c.nom}</option>
+                      <option key={c.id} value={c.id}>
+                        {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -352,7 +355,9 @@ function EtablissementsContent() {
                   >
                     <option value="">{t('filters.all_annexes') || 'Toutes les annexes'}</option>
                     {annexes.map(a => (
-                      <option key={a.id} value={a.id}>{a.nom}</option>
+                      <option key={a.id} value={a.id}>
+                        {locale === 'ar' ? (a.nomArabe || a.nom) : a.nom}
+                      </option>
                     ))}
                   </select>
                 </div>

@@ -110,7 +110,7 @@
       },
       "notifications": {
         "title": "الإشعارات",
-        "new": "{count} جديدة",
+        "new": "{count, plural, =0 {لا توجد إشعارات} =1 {إشعار جديد} =2 {إشعاران جديدان} other {{count} إشعارات جديدة}}",
         "none": "لا توجد إشعارات",
         "view_all": "عرض السجل الكامل"
       },
@@ -210,7 +210,12 @@
         "commune_col": "الجماعة",
         "claims_col": "الشكايات",
         "resolution_col": "نسبة الحل",
-        "status_col": "تنبيه"
+        "status_col": "تنبيه",
+        "commune": "الجماعة",
+        "reclamations": "الشكايات",
+        "resolution": "نسبة الحل",
+        "status": "الحالة",
+        "view_details": "عرض التفاصيل"
       },
       "download": "تحميل التقرير",
       "audit_trends": "ديناميكية التدقيق (الشكايات مقابل الحلول)",
@@ -324,7 +329,44 @@
           "views": "المشاهدات",
           "description": "الوصف"
         }
-      }
+      },
+      "download_started": "بدأ التحميل..."
+    }
+  },
+  "app": {
+    "name": "عمالة مديونة",
+    "tagline": "البوابة الإقليمية لمديونة",
+    "province": "عمالة مديونة",
+    "portail": "بوابة مديونة"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "etablissements": "المؤسسات",
+    "reclamations": "الشكايات",
+    "evenements": "الفعاليات",
+    "carte": "الخريطة",
+    "dashboard": "لوحة القيادة",
+    "profile": "ملفي الشخصي",
+    "logout": "تسجيل الخروج",
+    "services": "الخدمات الإلكترونية",
+    "mediatheque": "المكتبة الوسائطية",
+    "contact": "اتصل بنا",
+    "accessibilite": "إمكانية الوصول",
+    "connexion": "تسجيل الدخول",
+    "actualites": "المستجدات",
+    "campagnes": "الحملات التضامنية",
+    "articles": "الأدلة والموارد",
+    "nouvelle_reclamation": "شكاية جديدة",
+    "mes_reclamations": "تتبع شكاياتي",
+    "suggestions": "صندوق الاقتراحات",
+    "user_menu": {
+      "pro_space": "الفضاء المهني",
+      "delegation_space": "فضاء المندوبية",
+      "my_profile": "ملفي الشخصي",
+      "security": "الأمان والتحقق",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
+      "admin": "الإدارة"
     }
   },
   "admin": {
@@ -355,7 +397,8 @@
       "system_config": "إعدادات النظام",
       "backup": "نسخة احتياطية",
       "legal": "إشعارات قانونية",
-      "help": "المساعدة والدعم"
+      "help": "المساعدة والدعم",
+      "logout": "تسجيل الخروج"
     },
     "dashboard": {
       "header": {
@@ -480,6 +523,16 @@
         "date": "التاريخ",
         "actions": "إجراءات"
       },
+      "table": {
+        "reclamation": "الشكاية",
+        "citizen": "المواطن",
+        "commune": "الجماعة",
+        "status": "الحالة",
+        "category": "الفئة",
+        "assigned_to": "المكلف",
+        "date": "التاريخ",
+        "actions": "إجراءات"
+      },
       "empty": {
         "title": "لا توجد شكايات"
       },
@@ -524,6 +577,53 @@
       "ACCEPTEE": "مقبول",
       "REJETEE": "مرفوض"
     },
+    "reclamation_detail_page": {
+      "title": "شكاية رقم {id}",
+      "citizen_title": "المواطن",
+      "location_title": "الموقع",
+      "commune": "الجماعة",
+      "district": "الحي / الدوار",
+      "address": "العنوان / معلمة",
+      "description_title": "الوصف",
+      "photos_title": "الصور ({count})",
+      "actions_title": "إجراءات",
+      "accept": "قبول",
+      "reject": "رفض",
+      "dates_title": "التواريخ",
+      "created_at": "أنشئت في",
+      "updated_at": "آخر تحديث",
+      "history_title": "السجل",
+      "not_found": "الشكاية غير موجودة",
+      "load_error": "خطأ في التحميل",
+      "connection_error": "خطأ في الاتصال",
+      "back_to_list": "العودة للقائمة",
+      "reject_reason_placeholder": "صف سبب الرفض...",
+      "confirm_reject": "تأكيد الرفض",
+      "cancel": "إلغاء",
+      "solution_title": "الحل المقدم",
+      "reject_reason_title": "سبب الرفض",
+      "establishment_title": "المؤسسة",
+      "status": {
+        "pending": "قيد الانتظار",
+        "ACCEPTEE": "مقبولة",
+        "REJETEE": "مرفوضة"
+      },
+      "assignment": {
+        "NON_AFFECTEE": "غير مكلفة",
+        "AFFECTEE": "مكلفة"
+      },
+      "messages": {
+        "reject_reason_required": "يرجى ذكر سبب الرفض"
+      }
+    },
+    "history_actions": {
+      "CREATION": "إنشاء",
+      "VALIDATION": "تصديق",
+      "REJET": "رفض",
+      "AFFECTATION": "تعيين",
+      "RESOLUTION": "حل",
+      "UPDATE": "تحديث"
+    },
     "suggestions_page": {
       "page_title": "المقترحات",
       "page_subtitle": "إدارة مقترحات المواطنين",
@@ -539,7 +639,26 @@
       "waiting_suggestions": "اقتراحات قيد الانتظار",
       "page": "صفحة",
       "limit": "حد",
-      "page_info": "الصفحة {current} من {total}"
+      "page_info": "الصفحة {current} من {total}",
+      "table": {
+        "suggestion": "الاقتراح",
+        "category": "الفئة",
+        "citizen": "المواطن",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "actions": "الإجراءات"
+      },
+      "detail_modal": {
+        "title": "تفاصيل المقترح",
+        "current_status": "الحالة الحالية",
+        "suggestion_title": "عنوان المقترح",
+        "category": "الفئة",
+        "description": "الوصف",
+        "submitted_by": "مقدم من طرف",
+        "admin_response": "رد الإدارة",
+        "response_placeholder": "أدخل رداً رسمياً...",
+        "change_status": "تغيير الحالة"
+      }
     },
     "establishments_page": {
       "page_title": "إدارة المؤسسات",
@@ -625,7 +744,10 @@
         "validation": "التصديق",
         "actions": "إجراءات",
         "valide": "مصدق",
-        "waiting": "بانتظار"
+        "waiting": "بانتظار",
+        "view_details": "عرض التفاصيل",
+        "validate": "تصديق",
+        "unvalidate": "إلغاء التصديق"
       },
       "types": {
         "EDUCATION": "تعليم",
@@ -1392,12 +1514,6 @@
       "day_ago": "منذ {count} يوم"
     }
   },
-  "app": {
-    "name": "عمالة مديونة",
-    "tagline": "البوابة الإقليمية لمديونة",
-    "province": "عمالة مديونة",
-    "portail": "بوابة مديونة"
-  },
   "campaigns": {
     "title": "حملات المواطنين",
     "subtitle": "شاركوا في مبادرات إقليمكم",
@@ -1497,36 +1613,6 @@
     "previous_page": "الصفحة السابقة",
     "need_help": "هل تحتاج مساعدة؟",
     "contact_us": "تواصل معنا"
-  },
-  "nav": {
-    "home": "الرئيسية",
-    "etablissements": "المؤسسات",
-    "reclamations": "الشكايات",
-    "evenements": "الفعاليات",
-    "carte": "الخريطة",
-    "dashboard": "لوحة القيادة",
-    "profile": "ملفي الشخصي",
-    "logout": "تسجيل الخروج",
-    "services": "الخدمات الإلكترونية",
-    "mediatheque": "المكتبة الوسائطية",
-    "contact": "اتصل بنا",
-    "accessibilite": "إمكانية الوصول",
-    "connexion": "تسجيل الدخول",
-    "actualites": "المستجدات",
-    "campagnes": "الحملات التضامنية",
-    "articles": "الأدلة والموارد",
-    "nouvelle_reclamation": "شكاية جديدة",
-    "mes_reclamations": "تتبع شكاياتي",
-    "suggestions": "صندوق الاقتراحات",
-    "user_menu": {
-      "pro_space": "الفضاء المهني",
-      "delegation_space": "فضاء المندوبية",
-      "my_profile": "ملفي الشخصي",
-      "security": "الأمان والتحقق",
-      "settings": "الإعدادات",
-      "logout": "تسجيل الخروج",
-      "admin": "الإدارة"
-    }
   },
   "actions": {
     "submit": "إرسال",
@@ -1706,32 +1792,32 @@
     "tags": "الوسوم"
   },
   "about_page": {
-    "title": "عن مديونة أكسيون",
+    "title": "حول مديونة أكشن",
     "subtitle": "مبادرة رقمية لتعزيز الديمقراطية التشاركية وتقريب الإدارة من المواطنين.",
     "vision_title": "رؤيتنا",
-    "vision_text1": "ولدت مديونة أكسيون من إرادة لخلق جسر مباشر بين مواطني إقليم مديونة وإدارتهم المحلية. نؤمن بشدة بأن المشاركة الفعالة للمواطنين هي مفتاح التنمية المجالية المستدامة والشاملة.",
-    "vision_text2": "تهدف هذه المنصة إلى رقمنة وتبسيط التفاعلات، مما يسمح لكل صوت بأن يُسمع ولكل مشكلة بأن تعالج بشفافية وفعالية.",
+    "vision_text1": "ولدت 'مديونة أكشن' من الرغبة في إنشاء جسر مباشر بين مواطني إقليم مديونة وإدارتهم المحلية. نحن نؤمن بشدة أن المشاركة الفعالة للمواطنين هي مفتاح التنمية الترابية المستدامة والشاملة.",
+    "vision_text2": "هدفنا هو التحول الرقمي للخدمات العمومية لتسهيل حياة المواطن وتعزيز الثقة في المؤسسات، مما يسمح لكل صوت بأن يُسمع ولكل مشكلة أن تُعالج بشفافية وفعالية.",
     "values_title": "قيمنا",
     "values": {
       "participation": {
         "title": "المشاركة",
-        "desc": "تشجيع كل مواطن على المساهمة الفعالة في الحياة المحلية."
+        "desc": "تشجيع كل مواطن على المساهمة بنشاط في الحياة المحلية."
       },
       "transparency": {
         "title": "الشفافية",
-        "desc": "ضمان رؤية كاملة حول معالجة الطلبات والإجراءات المتخذة."
+        "desc": "ضمان رؤية كاملة لمعالجة الطلبات والإجراءات المتخذة."
       },
       "efficiency": {
         "title": "الفعالية",
-        "desc": "تقليص آجال المعالجة وتحسين جودة الخدمات العمومية."
+        "desc": "تقليل أوقات المعالجة وتحسين جودة الخدمات العامة."
       }
     },
     "stats_title": "الإقليم في أرقام",
     "stats": {
       "communes": "جماعات",
-      "etablissements": "مؤسسة",
-      "citizens": "مواطنين نشطين",
-      "service": "خدمة رقمية"
+      "etablissements": "مؤسسات",
+      "citizens": "مواطنون",
+      "service": "خدمة"
     }
   },
   "suggestions_page": {
@@ -1928,22 +2014,45 @@
     "quote": "\"تمت معالجة شكايتي بسرعة وفعالية. خدمة في المستوى.\""
   },
   "footer": {
-    "contact": "معلومات الاتصال",
-    "portails": "بوابات وطنية",
-    "liens": "روابط مفيدة",
-    "siege": "مقر العمالة",
-    "telephone": "مركز الاتصال",
-    "email": "البريد الإلكتروني الرسمي",
-    "siteweb": "البوابة الإلكترونية",
-    "idarati": "إدارتي",
-    "watiqa": "وثيقة",
-    "actualites": "مركز الأخبار",
-    "suggestions": "فضاء الاقتراحات",
-    "description": "البوابة الرسمية لعمالة مديونة. واجهة رقمية موحدة لتقريب الإدارة من المواطن وتسهيل الولوج للخدمات العمومية.",
-    "copyright": "عمالة مديونة. جميع الحقوق محفوظة",
-    "developpeur": "تطوير قسم النظم المعلوماتية",
+    "description": "منصة مواطنة لإقليم مديونة. شارك، استعلم وساهم في التنمية المحلية.",
+    "liens": "روابط سريعة",
+    "portails": "البوابات الحكومية",
+    "contact": "اتصال",
+    "siege": "المقر",
+    "telephone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "siteweb": "الموقع الإلكتروني",
+    "copyright": "إقليم مديونة. جميع الحقوق محفوظة.",
+    "developpeur": "تم تطوير البوابة من قبل إقليم مديونة",
+    "idarati": "Idarati.ma",
+    "watiqa": "Watiqa.ma",
+    "confidentialite": "سياسة الخصوصية",
     "conditions": "شروط الاستخدام",
-    "confidentialite": "حماية المعطيات الشخصية",
+    "sections": {
+      "discover": "اكتشف",
+      "services": "خدمات",
+      "communes": "جماعات",
+      "contact": "اتصال"
+    },
+    "links": {
+      "etablissements": "المؤسسات",
+      "events": "الفعاليات",
+      "news": "الأخبار",
+      "campaigns": "الحملات",
+      "map": "خريطة تفاعلية",
+      "submit_reclamation": "تقديم شكاية",
+      "track_reclamation": "تتبع الشكاية",
+      "articles": "مقالات ودلائل",
+      "faq": "الأسئلة الشائعة",
+      "contact": "اتصل بنا",
+      "legal_mentions": "إشعارات قانونية",
+      "privacy_policy": "سياسة الخصوصية",
+      "terms_of_use": "شروط الاستخدام",
+      "accessibility": "الولوجية"
+    },
+    "rights_reserved": "جميع الحقوق محفوظة.",
+    "actualites": "الأخبار",
+    "suggestions": "الاقتراحات",
     "version": "الإصدار"
   },
   "common": {
@@ -2760,7 +2869,10 @@
       "load_error": "خطأ في التحميل",
       "status_updated": "تم تحديث الحالة",
       "deleted": "تم حذف الاقتراح",
-      "delete_confirm": "هل أنت متأكد من حذف هذا الاقتراح؟ هذا الإجراء لا يمكن التراجع عنه."
+      "delete_confirm": "هل أنت متأكد من حذف هذا الاقتراح؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "admin_response_title": "رد الإدارة",
+      "admin_response_placeholder": "أدخل رداً...",
+      "superadmin_only_delete_warning": "وحده المسؤول العام يمكنه الحذف"
     },
     "success_title": "شكراً على اقتراحك!",
     "success_message": "تم تسجيل فكرتك وسيتم دراستها من قبل فريقنا.",
@@ -2784,7 +2896,7 @@
   },
   "admin_campagnes": {
     "title": "إدارة الحملات",
-    "subtitle": "{total} حملة في المجموع",
+    "subtitle": "إدارة حملات التوعية ({count})",
     "filters": "تصفية",
     "new_campaign": "حملة جديدة",
     "reset": "إعادة تعيين",
@@ -3538,9 +3650,9 @@
       "total_views": "إجمالي المشاهدات",
       "engagement": "التزام",
       "kpi": {
-        "events": "الأحداث",
-        "pending": "{count} في الانتظار",
-        "published": "تم نشر {count}/{total}.",
+        "events": "الفعاليات",
+        "pending": "{count, plural, =0 {لا شيء في الانتظار} =1 {واحد في الانتظار} other {{count} في الانتظار}}",
+        "published": "{count}/{total} منشورة",
         "news": "أخبار",
         "views_this_month": "{count} مشاهدة هذا الشهر",
         "campaigns": "الحملات",
@@ -3580,9 +3692,9 @@
         "new_news_desc": "نشر المعلومات"
       },
       "todo": {
-        "title": "قائمة المهام",
-        "to_close": "{count} أحداث تتطلب تقريراً ختامياً",
-        "to_close_campaigns": "{count} حملات تتطلب تقريراً ختامياً",
+        "title": "للقيام به",
+        "to_close": "{count, plural, =0 {لا توجد فعاليات للإغلاق} =1 {فعالية واحدة للإغلاق} other {{count} فعاليات للإغلاق}}",
+        "to_close_campaigns": "{count, plural, =0 {لا توجد حملات للإغلاق} =1 {حملة واحدة للإغلاق} other {{count} حملات للإغلاق}}",
         "manage_now": "إدارة الآن",
         "pending_validation": "{count} أحداث في انتظار المصادقة",
         "all_good": "أحسنت! جميع المهام مكتملة."
@@ -4290,6 +4402,13 @@
       "logout": "تسجيل الخروج"
     },
     "calendar": {
+      "title": "جدول الأنشطة",
+      "subtitle": "برمجة وتسيير مخططات الأنشطة",
+      "today": "اليوم",
+      "import": "استيراد",
+      "new_activity": "نشاط جديد",
+      "loading": "جارٍ التحميل...",
+      "add": "إضافة",
       "create_panel": {
         "activite": "نشاط",
         "title": "إضافة نشاط",
@@ -4332,13 +4451,58 @@
         "select_days": "اختر الأيام",
         "save_changes": "حفظ التغييرات",
         "create": "إنشاء النشاط"
+      },
+      "import_modal": {
+        "title": "استيراد جماعي",
+        "subtitle": "استيراد الأنشطة من ملف",
+        "help": {
+          "title": "كيفية استخدام الاستيراد:",
+          "step1": "قم بتحميل نموذج CSV أدناه",
+          "step2": "قم بتعبئة الملف بأنشطتك",
+          "step3": "استخدم المعرفات أدناه لعمود etablissementId",
+          "step4": "قم باستيراد الملف المكتمل"
+        },
+        "reference": {
+          "title": "مرجع المؤسسات",
+          "hint": "استخدم المعرف (الرقم الأول) في عمود 'etablissementId' في ملفك"
+        },
+        "template": {
+          "download": "تحميل نموذج CSV"
+        },
+        "upload": {
+          "click": "انقر لاختيار ملف",
+          "hint": "CSV أو Excel (.csv, .xlsx)",
+          "error_type": "يرجى اختيار ملف CSV أو Excel",
+          "error_no_file": "يرجى اختيار ملف"
+        },
+        "import": {
+          "button": "استيراد",
+          "processing": "جاري الاستيراد...",
+          "success": "تم استيراد {success} نشاط(أنشطة) من أصل {total}",
+          "errors_label": "الأخطاء:",
+          "row_error": "السطر {row}: {message}",
+          "more_errors": "...و {count} أخطاء أخرى"
+        },
+        "buttons": {
+          "close": "إغلاق",
+          "cancel": "إلغاء"
+        }
       }
     },
     "establishments": {
       "title": "المؤسسات",
       "subtitle": "قائمة المؤسسات الخاضعة لتنسيقكم",
       "search_placeholder": "البحث حسب الاسم أو الرمز...",
-      "view_details": "عرض التفاصيل"
+      "view_details": "عرض التفاصيل",
+      "stats": {
+        "events": "الفعاليات",
+        "evaluations": "التقييمات"
+      },
+      "empty": {
+        "title": "لا توجد مؤسسات",
+        "subtitle": "لا توجد أي مؤسسة تحت تنسيقكم حالياً.",
+        "search": "لا توجد مؤسسة تطابق بحثكم."
+      }
     },
     "reports": {
       "title": "تقارير الأنشطة",
@@ -4346,7 +4510,25 @@
       "all": "جميع التقارير",
       "pending": "في الانتظار",
       "completed": "مكتملة",
-      "search_placeholder": "تصفية التقارير..."
+      "search_placeholder": "تصفية التقارير...",
+      "stats": {
+        "total": "الإجمالي",
+        "pending": "في الانتظار",
+        "completed": "المكتملة"
+      },
+      "empty": {
+        "title": "لم يتم العثور على أي تقرير",
+        "subtitle": "ستظهر التقارير هنا بعد اختتام الأنشطة.",
+        "all_completed": "تم إكمال جميع التقارير!"
+      },
+      "status": {
+        "pending": "تقرير قيد الإنجاز",
+        "completed": "تم إكمال التقرير"
+      },
+      "actions": {
+        "fill": "ملء الحصيلة",
+        "view": "الاطلاع"
+      }
     }
   },
   "reclamation_categories": {
@@ -4356,6 +4538,7 @@
     "Sécurité": "أمن",
     "Personnel": "موظفون",
     "Accessibilité": "ولوجية",
+    "education": "التعليم",
     "Autre": "أخرى"
   },
   "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
@@ -4522,10 +4705,20 @@
     "address_value": "عمالة إقليم مديونة، شارع الحسن الثاني، مديونة",
     "phone_label": "الهاتف",
     "email_contact_label": "البريد الإلكتروني",
+    "email_contact_value": "contact@provincemediouna.ma",
     "rate_limit_error": "لقد تجاوزت الحد المسموح به من الرسائل. يرجى المحاولة في {date}.",
     "map_popup": "عمالة إقليم مديونة",
-    "phone_value": "05 22 51 00 51 (قياسي) • 05 22 51 19 10 (فاكس)",
-    "email_contact_value": "contact@provincemedioun.ma"
+    "phone_value": "05 22 51 00 51 (Standard) • 05 22 51 00 10 (Fax)",
+    "hours_label": "ساعات العمل",
+    "hours_value": "الإثنين - الجمعة: 08:30 - 16:30",
+    "validation_error": "حدث خطأ في التحقق من البيانات",
+    "validation": {
+      "name_short": "يجب أن يحتوي الاسم على حرفين على الأقل",
+      "email_invalid": "يرجى إدخال بريد إلكتروني صالح",
+      "subject_required": "يرجى اختيار موضوع الرسالة",
+      "message_short": "يجب أن تحتوي الرسالة على 10 أحرف على الأقل",
+      "message_long": "لا يمكن أن تتجاوز الرسالة 1000 حرف"
+    }
   },
   "admin_campaigns": {
     "new": {
@@ -4676,7 +4869,7 @@
       "decision_center": "مركز القرار"
     },
     "pagination": {
-      "page_x_of_y": "الصفحة {current} / {total}"
+      "page_x_of_y": "صفحة {x} من {y}"
     }
   },
   "decision_center": {

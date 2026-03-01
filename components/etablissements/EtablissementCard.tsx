@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { GraduationCap, Hospital, Trophy, HeartHandshake, Drama, Building2, MapPin, Star } from 'lucide-react';
 import React from 'react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Etablissement {
   id: number;
@@ -15,8 +15,8 @@ interface Etablissement {
   photoPrincipale?: string;
   noteMoyenne: number;
   nombreEvaluations: number;
-  commune: { nom: string };
-  annexe?: { nom: string } | null;
+  commune: { nom: string; nomArabe?: string };
+  annexe?: { nom: string; nomArabe?: string } | null;
   nature?: string;
   telephone?: string;
   _count?: {
@@ -58,6 +58,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function EtablissementCard({ etablissement, index, view = 'grid' }: EtablissementCardProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const config = secteurConfig[etablissement.secteur] || secteurConfig.AUTRE;
   
   if (view === 'list') {
@@ -98,7 +99,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
                 </span>
                 <span className="flex items-center gap-1 text-xs text-gray-500 truncate">
                   <MapPin className="w-3 h-3" />
-                  {etablissement.commune.nom}
+                  {locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}
                 </span>
               </div>
               
@@ -177,11 +178,11 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
         <div className="flex-1">
           <div className="flex items-center gap-1 text-xs text-gray-500 mb-2 truncate">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{etablissement.commune.nom}</span>
+            <span className="truncate">{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
             {etablissement.annexe && (
                <>
                 <span className="text-gray-300 mx-1">•</span>
-                <span className="truncate">{etablissement.annexe.nom}</span>
+                <span className="truncate">{locale === 'ar' ? (etablissement.annexe.nomArabe || etablissement.annexe.nom) : etablissement.annexe.nom}</span>
                </>
             )}
           </div>

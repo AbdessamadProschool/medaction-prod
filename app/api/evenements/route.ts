@@ -101,8 +101,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       createdBy: userId,
     },
     include: {
-      etablissement: { select: { nom: true } },
-      commune: { select: { nom: true } },
+      etablissement: { select: { nom: true, nomArabe: true } },
+      commune: { select: { nom: true, nomArabe: true } },
     }
   });
 
@@ -208,8 +208,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.evenement.findMany({
       where,
       include: {
-        etablissement: { select: { nom: true, secteur: true } },
-        commune: { select: { nom: true } },
+        etablissement: { select: { nom: true, nomArabe: true, secteur: true } },
+        commune: { select: { nom: true, nomArabe: true } },
         medias: { take: 1, select: { urlPublique: true } },
       },
       orderBy: isAdmin ? { createdAt: 'desc' } : { dateDebut: 'asc' },

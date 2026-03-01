@@ -12,6 +12,7 @@ export const GET = withErrorHandler(async () => {
         select: {
           id: true,
           nom: true,
+          nomArabe: true,
           code: true,
         },
         orderBy: { nom: 'asc' }

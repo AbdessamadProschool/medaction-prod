@@ -211,7 +211,11 @@
         "reclamations": "Réclamations",
         "resolution": "Taux Résolution",
         "status": "Alerte",
-        "view_details": "Précision Terrain"
+        "view_details": "Précision Terrain",
+        "commune_col": "Commune",
+        "claims_col": "Réclamations",
+        "resolution_col": "Taux de Résolution",
+        "status_col": "Statut"
       },
       "authors": {
         "system_ia": "Système IA & Audit"
@@ -344,6 +348,36 @@
     "province": "Province de Médiouna",
     "portail": "PORTAIL MEDIOUNA"
   },
+  "nav": {
+    "home": "Accueil",
+    "etablissements": "Établissements",
+    "reclamations": "Réclamations",
+    "evenements": "Événements",
+    "carte": "Carte",
+    "dashboard": "Tableau de bord",
+    "profile": "Mon profil",
+    "logout": "Déconnexion",
+    "services": "Services",
+    "mediatheque": "Médiathèque",
+    "contact": "Contact",
+    "accessibilite": "Accessibilité",
+    "connexion": "Connexion",
+    "actualites": "Actualités",
+    "campagnes": "Campagnes",
+    "articles": "Guides & Ressources",
+    "nouvelle_reclamation": "Nouvelle réclamation",
+    "mes_reclamations": "Mes réclamations",
+    "suggestions": "Suggestions",
+    "user_menu": {
+      "pro_space": "Espace Pro",
+      "delegation_space": "Espace Délégation",
+      "my_profile": "Mon profil",
+      "security": "Sécurité & 2FA",
+      "settings": "Paramètres",
+      "logout": "Déconnexion",
+      "admin": "Administration"
+    }
+  },
   "campaigns": {
     "title": "Campagnes Citoyennes",
     "subtitle": "Participez aux initiatives de votre province",
@@ -458,36 +492,6 @@
     "previous_page": "Page précédente",
     "need_help": "Besoin d'aide ?",
     "contact_us": "Contactez-nous"
-  },
-  "nav": {
-    "home": "Accueil",
-    "etablissements": "Établissements",
-    "reclamations": "Réclamations",
-    "evenements": "Événements",
-    "carte": "Carte",
-    "dashboard": "Tableau de bord",
-    "profile": "Mon profil",
-    "logout": "Déconnexion",
-    "services": "Services",
-    "mediatheque": "Médiathèque",
-    "contact": "Contact",
-    "accessibilite": "Accessibilité",
-    "connexion": "Connexion",
-    "actualites": "Actualités",
-    "campagnes": "Campagnes",
-    "articles": "Guides & Ressources",
-    "nouvelle_reclamation": "Nouvelle réclamation",
-    "mes_reclamations": "Mes réclamations",
-    "suggestions": "Suggestions",
-    "user_menu": {
-      "pro_space": "Espace Pro",
-      "delegation_space": "Espace Délégation",
-      "my_profile": "Mon profil",
-      "security": "Sécurité & 2FA",
-      "settings": "Paramètres",
-      "logout": "Déconnexion",
-      "admin": "Administration"
-    }
   },
   "actions": {
     "submit": "Soumettre",
@@ -701,7 +705,17 @@
       "title": "Avis important",
       "text": "Vous êtes entièrement responsable de l'exactitude des informations fournies. Veuillez saisir une adresse email valide pour recevoir une réponse."
     },
-    "rate_limit_error": "Le quota de messages autorisé est atteint. Vous pourrez envoyer un nouveau message à partir du {date}."
+    "rate_limit_error": "Le quota de messages autorisé est atteint. Vous pourrez envoyer un nouveau message à partir du {date}.",
+    "hours_label": "Horaires d'ouverture",
+    "hours_value": "Lundi - Vendredi : 08:30 - 16:30",
+    "validation_error": "Une erreur est survenue dans le formulaire",
+    "validation": {
+      "name_short": "Le nom doit contenir au moins 2 caractères",
+      "email_invalid": "Veuillez saisir une adresse email valide",
+      "subject_required": "Veuillez sélectionner un sujet",
+      "message_short": "Le message doit contenir au moins 10 caractères",
+      "message_long": "Le message ne peut pas dépasser 1000 caractères"
+    }
   },
   "about_page": {
     "title": "À propos de Médiouna Action",
@@ -728,9 +742,51 @@
     "stats": {
       "communes": "Communes",
       "etablissements": "Établissements",
-      "citizens": "Citoyens Actifs",
-      "service": "Service Digital"
+      "citizens": "Citoyens",
+      "service": "Service"
     }
+  },
+  "footer": {
+    "contact": "Contact",
+    "portails": "Portails officiels",
+    "liens": "Liens rapides",
+    "siege": "SIÈGE PROVINCIAL",
+    "telephone": "TÉLÉPHONE",
+    "email": "EMAIL",
+    "siteweb": "SITE WEB",
+    "idarati": "Idarati",
+    "watiqa": "Watiqa",
+    "actualites": "Actualités",
+    "suggestions": "Suggestions",
+    "description": "Plateforme citoyenne dédiée aux habitants de la Province de Mediouna. Signalez, participez et contribuez au développement de votre région.",
+    "copyright": "Province de Mediouna - Royaume du Maroc. Tous droits réservés",
+    "developpeur": "Développé par Cellule Informatique Province Mediouna",
+    "conditions": "Conditions d'utilisation",
+    "confidentialite": "Politique de confidentialité",
+    "version": "Version",
+    "sections": {
+      "discover": "Découvrir",
+      "services": "Services",
+      "communes": "Communes",
+      "contact": "Contact"
+    },
+    "links": {
+      "etablissements": "Établissements",
+      "events": "Événements",
+      "news": "Actualités",
+      "campaigns": "Campagnes",
+      "map": "Carte Interactive",
+      "submit_reclamation": "Soumettre une réclamation",
+      "track_reclamation": "Suivi de réclamation",
+      "articles": "Articles & Guides",
+      "faq": "FAQ",
+      "contact": "Contactez-nous",
+      "legal_mentions": "Mentions Légales",
+      "privacy_policy": "Politique de Confidentialité",
+      "terms_of_use": "Conditions d'Utilisation",
+      "accessibility": "Accessibilité"
+    },
+    "rights_reserved": "Tous droits réservés."
   },
   "suggestions_page": {
     "title": "Boîte à idées",
@@ -739,7 +795,7 @@
     "search_placeholder": "Rechercher une suggestion...",
     "reset_filter": "Réinitialiser filtre",
     "results_found": "{count} suggestion(s) trouvée(s)",
-    "filter_label": "Filtre",
+    "filter_label": "Filtre : {label}",
     "no_suggestions": "Aucune suggestion",
     "no_results": "Aucun résultat pour votre recherche",
     "be_first": "Soyez le premier à proposer une idée !",
@@ -882,6 +938,17 @@
       "title": "Activité récente",
       "last_login": "Dernière connexion",
       "first_login": "Première connexion"
+    },
+    "users_page": {
+      "roles": {
+        "CITOYEN": "Citoyen",
+        "DELEGATION": "Délégation",
+        "AUTORITE_LOCALE": "Autorité Locale",
+        "COORDINATEUR_ACTIVITES": "Coordinateur d'Activités",
+        "ADMIN": "Administrateur",
+        "SUPER_ADMIN": "Super Administrateur",
+        "GOUVERNEUR": "Gouverneur"
+      }
     }
   },
   "stats": {
@@ -913,25 +980,6 @@
     "stats_resolution": "Taux de résolution",
     "stats_time": "Délai moyen",
     "quote": "\"Ma réclamation a été traitée rapidement. Un service efficace.\""
-  },
-  "footer": {
-    "contact": "Contact",
-    "portails": "Portails officiels",
-    "liens": "Liens rapides",
-    "siege": "SIÈGE PROVINCIAL",
-    "telephone": "TÉLÉPHONE",
-    "email": "EMAIL",
-    "siteweb": "SITE WEB",
-    "idarati": "Idarati",
-    "watiqa": "Watiqa",
-    "actualites": "Actualités",
-    "suggestions": "Suggestions",
-    "description": "Plateforme citoyenne dédiée aux habitants de la Province de Mediouna. Signalez, participez et contribuez au développement de votre région.",
-    "copyright": "Province de Mediouna - Royaume du Maroc. Tous droits réservés",
-    "developpeur": "Développé par Cellule Informatique Province Mediouna",
-    "conditions": "Conditions d'utilisation",
-    "confidentialite": "Politique de confidentialité",
-    "version": "Version"
   },
   "common": {
     "commune": "Commune",
@@ -1708,7 +1756,8 @@
       "system_config": "Configuration Système",
       "backup": "Sauvegarde",
       "legal": "Mentions Légales",
-      "help": "Aide & Support"
+      "help": "Aide & Support",
+      "logout": "Déconnexion"
     },
     "dashboard": {
       "header": {
@@ -2366,6 +2415,16 @@
         "date": "Date",
         "actions": "Actions"
       },
+      "table": {
+        "reclamation": "Réclamation",
+        "citizen": "Citoyen",
+        "commune": "Commune",
+        "status": "Statut",
+        "category": "Catégorie",
+        "assigned_to": "Assigné à",
+        "date": "Date",
+        "actions": "Actions"
+      },
       "empty": {
         "title": "Aucune réclamation"
       },
@@ -2410,6 +2469,53 @@
       "ACCEPTEE": "Acceptée",
       "REJETEE": "Rejetée"
     },
+    "reclamation_detail_page": {
+      "title": "Réclamation #{id}",
+      "citizen_title": "Citoyen",
+      "location_title": "Localisation",
+      "commune": "Commune",
+      "district": "Quartier / Douar",
+      "address": "Adresse / Repère",
+      "description_title": "Description",
+      "photos_title": "Photos ({count})",
+      "actions_title": "Actions",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "dates_title": "Dates",
+      "created_at": "Créée le",
+      "updated_at": "Mise à jour",
+      "history_title": "Historique",
+      "not_found": "Réclamation non trouvée",
+      "load_error": "Erreur lors du chargement",
+      "connection_error": "Erreur de connexion",
+      "back_to_list": "Retour à la liste",
+      "reject_reason_placeholder": "Décrivez le motif du rejet...",
+      "confirm_reject": "Confirmer le rejet",
+      "cancel": "Annuler",
+      "solution_title": "Solution apportée",
+      "reject_reason_title": "Motif de rejet",
+      "establishment_title": "Établissement",
+      "status": {
+        "pending": "En attente",
+        "ACCEPTEE": "Acceptée",
+        "REJETEE": "Rejetée"
+      },
+      "assignment": {
+        "NON_AFFECTEE": "Non affectée",
+        "AFFECTEE": "Affectée"
+      },
+      "messages": {
+        "reject_reason_required": "Veuillez indiquer un motif de rejet"
+      }
+    },
+    "history_actions": {
+      "CREATION": "Création",
+      "VALIDATION": "Validation",
+      "REJET": "Rejet",
+      "AFFECTATION": "Affectation",
+      "RESOLUTION": "Résolution",
+      "UPDATE": "Mise à jour"
+    },
     "suggestions_page": {
       "page_title": "Suggestions",
       "page_subtitle": "Gérer les suggestions des citoyens",
@@ -2425,7 +2531,26 @@
       "waiting_suggestions": "Suggestions en attente",
       "page": "Page",
       "limit": "Limite",
-      "page_info": "Page {current} sur {total}"
+      "page_info": "Page {current} sur {total}",
+      "table": {
+        "suggestion": "Suggestion",
+        "category": "Catégorie",
+        "citizen": "Citoyen",
+        "status": "Statut",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "detail_modal": {
+        "title": "Détails de la suggestion",
+        "current_status": "Statut actuel",
+        "suggestion_title": "Titre de la suggestion",
+        "category": "Catégorie",
+        "description": "Description",
+        "submitted_by": "Soumise par",
+        "admin_response": "Réponse de l'administration",
+        "response_placeholder": "Saisir une réponse officielle...",
+        "change_status": "Changer le statut"
+      }
     },
     "establishments_page": {
       "page_title": "Gestion des Etablissements",
@@ -3265,7 +3390,9 @@
       "capacity": "Capacité",
       "technical_dossier": "Dossier Technique",
       "no_citizen_reviews": "Aucun avis citoyen pour le moment.",
-      "address_not_provided": "Adresse non fournie."
+      "address_not_provided": "Adresse non fournie.",
+      "google_maps": "Google Maps",
+      "our_map": "Voir sur la carte interactive"
     },
     "infos": {
       "gouvernance": "Gouvernance",
@@ -3388,7 +3515,7 @@
     },
     "notifications": {
       "title": "Notifications",
-      "new": "{count} Nouvelles",
+      "new": "{count, plural, =0 {aucune nouvelle} =1 {une nouvelle} other {{count} nouvelles}}",
       "none": "Aucune notification",
       "view_all": "Voir tout l'historique"
     }
@@ -3871,6 +3998,7 @@
     "Sécurité": "Sécurité",
     "Personnel": "Personnel",
     "Accessibilité": "Accessibilité",
+    "education": "Éducation",
     "Autre": "Autre"
   },
   "coordinator": {
@@ -3952,6 +4080,13 @@
       "logout": "Déconnexion"
     },
     "calendar": {
+      "title": "Calendrier des Activités",
+      "subtitle": "Planifiez et gérez les programmes d'activités",
+      "today": "Aujourd'hui",
+      "import": "Importer",
+      "new_activity": "Nouvelle activité",
+      "loading": "Chargement...",
+      "add": "Ajouter",
       "create_panel": {
         "activite": "Activité",
         "title": "Ajouter une activité",
@@ -3994,13 +4129,58 @@
         "select_days": "Sélectionner les jours",
         "save_changes": "Enregistrer les modifications",
         "create": "Créer l'activité"
+      },
+      "import_modal": {
+        "title": "Import en masse",
+        "subtitle": "Importer des activités depuis un fichier",
+        "help": {
+          "title": "Comment utiliser l'import :",
+          "step1": "Téléchargez le modèle CSV ci-dessous",
+          "step2": "Remplissez le fichier avec vos activités",
+          "step3": "Utilisez les IDs ci-dessous pour la colonne etablissementId",
+          "step4": "Importez le fichier complété"
+        },
+        "reference": {
+          "title": "Référence des établissements",
+          "hint": "Utilisez l'ID (premier nombre) dans la colonne 'etablissementId' de votre fichier"
+        },
+        "template": {
+          "download": "Télécharger le modèle CSV"
+        },
+        "upload": {
+          "click": "Cliquez pour sélectionner un fichier",
+          "hint": "CSV ou Excel (.csv, .xlsx)",
+          "error_type": "Veuillez sélectionner un fichier CSV ou Excel",
+          "error_no_file": "Veuillez sélectionner un fichier"
+        },
+        "import": {
+          "button": "Importer",
+          "processing": "Import en cours...",
+          "success": "{success} activité(s) importée(s) sur {total}",
+          "errors_label": "Erreurs :",
+          "row_error": "Ligne {row}: {message}",
+          "more_errors": "...et {count} autres erreurs"
+        },
+        "buttons": {
+          "close": "Fermer",
+          "cancel": "Annuler"
+        }
       }
     },
     "establishments": {
       "title": "Établissements",
       "subtitle": "Liste des établissements sous votre coordination",
       "search_placeholder": "Rechercher par nom ou code...",
-      "view_details": "Voir les détails"
+      "view_details": "Voir les détails",
+      "stats": {
+        "events": "Événements",
+        "evaluations": "Évaluations"
+      },
+      "empty": {
+        "title": "Aucun établissement",
+        "subtitle": "Aucun établissement n'est actuellement sous votre coordination.",
+        "search": "Aucun établissement ne correspond à votre recherche."
+      }
     },
     "reports": {
       "title": "Rapports d'activités",
@@ -4008,7 +4188,25 @@
       "all": "Tous les rapports",
       "pending": "En attente",
       "completed": "Terminés",
-      "search_placeholder": "Filtrer les rapports..."
+      "search_placeholder": "Filtrer les rapports...",
+      "stats": {
+        "total": "Total",
+        "pending": "En attente",
+        "completed": "Terminés"
+      },
+      "empty": {
+        "title": "Aucun rapport trouvé",
+        "subtitle": "Les rapports apparaîtront ici après la clôture des activités.",
+        "all_completed": "Tous les rapports ont été complétés !"
+      },
+      "status": {
+        "pending": "Rapport à remplir",
+        "completed": "Rapport complété"
+      },
+      "actions": {
+        "fill": "Remplir le bilan",
+        "view": "Consulter"
+      }
     }
   },
   "delegation": {
@@ -4020,7 +4218,7 @@
       "engagement": "Engagement",
       "kpi": {
         "events": "Événements",
-        "pending": "{count} en attente",
+        "pending": "{count, plural, =0 {aucun en attente} =1 {un en attente} other {{count} en attente}}",
         "published": "{count}/{total} publiés",
         "news": "Actualités",
         "views_this_month": "{count} vues ce mois",
@@ -4062,8 +4260,8 @@
       },
       "todo": {
         "title": "À Faire",
-        "to_close": "{count} événements à clôturer",
-        "to_close_campaigns": "{count} campagnes à clôturer",
+        "to_close": "{count, plural, =0 {aucun événement à clôturer} =1 {un événement à clôturer} other {{count} événements à clôturer}}",
+        "to_close_campaigns": "{count, plural, =0 {aucune campagne à clôturer} =1 {une campagne à clôturer} other {{count} campagnes à clôturer}}",
         "manage_now": "Gérer",
         "pending_validation": "{count} événements en attente de validation",
         "all_good": "Rien à signaler, tout est à jour !"
@@ -4286,7 +4484,7 @@
       "articles": {
         "title": "Bibliothèque",
         "header_title": "Gestion des Articles",
-        "count_label": "Articles",
+        "count_label": "{count, plural, =0 {aucun article} =1 {un article} other {{count} articles}}",
         "new_article": "Nouvel Article",
         "search_placeholder": "Rechercher un article...",
         "filter_all": "Tous les statuts",
@@ -4388,7 +4586,7 @@
       "campaigns": {
         "title": "Mes Campagnes",
         "header_title": "Gestion des Campagnes",
-        "count_label": "Campagnes",
+        "count_label": "{count, plural, =0 {aucune campagne} =1 {une campagne} other {{count} campagnes}}",
         "new_campaign": "Nouvelle Campagne",
         "search_placeholder": "Rechercher une campagne...",
         "filter_all": "Toutes les campagnes",
@@ -5138,5 +5336,39 @@
     },
     "bilan_image": "Bilan",
     "preview_image": "Prévisualisation"
+  },
+  "performance_tab": {
+    "podium": {
+      "maestro": "Maestro Territorial",
+      "excellence_points": "Points d'Excellence"
+    },
+    "filters": {
+      "search_placeholder": "Audit de performance : recherche par nom ou lieu...",
+      "history": "Historique",
+      "monthly": "Mensuel",
+      "weekly": "Hebdomadaire",
+      "all_sectors": "Tous les secteurs",
+      "sectors": {
+        "EDUCATION": "Éducation",
+        "SANTE": "Santé",
+        "SPORT": "Sport",
+        "CULTUREL": "Culturel",
+        "SOCIAL": "Social"
+      },
+      "all_communes": "Toutes les communes",
+      "all_annexes": "Toutes les annexes",
+      "reset": "Réinitialiser"
+    },
+    "toasts": {
+      "load_error": "Erreur de chargement des données"
+    },
+    "card": {
+      "perf_index": "Indice de performance",
+      "classification": "Classement Territorial",
+      "decision_center": "Centre de Décision"
+    },
+    "pagination": {
+      "page_x_of_y": "Page {x} sur {y}"
+    }
   }
 }

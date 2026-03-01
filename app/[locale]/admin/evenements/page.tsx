@@ -43,8 +43,8 @@ interface Evenement {
   nombreInscrits: number;
   capaciteMax: number | null;
   createdAt: string;
-  commune: { id: number; nom: string };
-  etablissement: { id: number; nom: string } | null;
+  commune: { id: number; nom: string; nomArabe?: string };
+  etablissement: { id: number; nom: string; nomArabe?: string } | null;
   createdByUser: { nom: string; prenom: string } | null;
 }
 
@@ -86,7 +86,7 @@ function AdminEvenementsContent() {
   const locale = useLocale();
   
   const [evenements, setEvenements] = useState<Evenement[]>([]);
-  const [communes, setCommunes] = useState<{ id: number; nom: string }[]>([]);
+  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
@@ -362,7 +362,9 @@ function AdminEvenementsContent() {
             >
               <option value="">{t('filter_labels.all_muncipalities')}</option>
               {communes.map(c => (
-                <option key={c.id} value={c.id}>{c.nom}</option>
+                <option key={c.id} value={c.id}>
+                  {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                </option>
               ))}
             </select>
 
@@ -429,7 +431,7 @@ function AdminEvenementsContent() {
                       <div className="flex items-center gap-1.5 text-sm text-gray-600">
                         <MapPin size={14} />
                         <span className="line-clamp-1">
-                          {evenement.lieu || evenement.commune?.nom || '-'}
+                          {evenement.lieu || (locale === 'ar' ? (evenement.commune?.nomArabe || evenement.commune?.nom) : evenement.commune?.nom) || '-'}
                         </span>
                       </div>
                     </td>

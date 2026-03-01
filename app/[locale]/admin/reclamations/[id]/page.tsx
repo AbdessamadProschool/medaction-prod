@@ -22,6 +22,7 @@ import {
   Phone,
 } from 'lucide-react';
 import DownloadPhotosButton from '@/components/reclamations/DownloadPhotosButton';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Reclamation {
   id: number;
@@ -48,10 +49,12 @@ interface Reclamation {
   commune: {
     id: number;
     nom: string;
+    nomArabe?: string;
   };
   etablissement: {
     id: number;
     nom: string;
+    nomArabe?: string;
     secteur: string;
   } | null;
   historique: {
@@ -80,6 +83,11 @@ const AFFECTATION_COLORS: Record<string, { bg: string; text: string; label: stri
 };
 
 export default function ReclamationDetailPage() {
+  const t = useTranslations('admin.reclamation_detail_page');
+  const tCategories = useTranslations('reclamation_categories');
+  const tHistory = useTranslations('history_actions');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
   const params = useParams();
   const router = useRouter();
   const reclamationId = params.id as string;
@@ -105,12 +113,12 @@ export default function ReclamationDetailPage() {
         const data = await res.json();
         setReclamation(data.data); // L'API retourne { data: reclamation }
       } else if (res.status === 404) {
-        setError('Réclamation non trouvée');
+        setError(t('not_found'));
       } else {
-        setError('Erreur lors du chargement');
+        setError(t('load_error'));
       }
     } catch (err) {
-      setError('Erreur de connexion');
+      setError(t('connection_error'));
     } finally {
       setLoading(false);
     }
@@ -139,7 +147,7 @@ export default function ReclamationDetailPage() {
 
   const handleReject = async () => {
     if (!motifRejet.trim()) {
-      alert('Veuillez indiquer un motif de rejet');
+      alert(t('messages.reject_reason_required'));
       return;
     }
     setActionLoading('reject');
@@ -176,9 +184,9 @@ export default function ReclamationDetailPage() {
     return (
       <div className="text-center py-16">
         <AlertTriangle className="w-16 h-16 text-red-300 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">{error || 'Erreur'}</h2>
-        <Link href="/admin" className="text-emerald-600 hover:underline">
-          Retour au dashboard
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">{error || tCommon('errors.generic')}</h2>
+        <Link href="/admin/reclamations" className="text-emerald-600 hover:underline">
+          {t('back_to_list')}
         </Link>
       </div>
     );
@@ -200,17 +208,17 @@ export default function ReclamationDetailPage() {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Réclamation #{reclamation.id}
+              {t('title', { id: reclamation.id })}
             </h1>
             <p className="text-gray-500 mt-1">{reclamation.titre}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${statutInfo.bg} ${statutInfo.text}`}>
-            {statutInfo.label}
+            {t(`status.${reclamation.statut || 'pending'}`)}
           </span>
           <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${affectationInfo.bg} ${affectationInfo.text}`}>
-            {affectationInfo.label}
+            {t(`assignment.${reclamation.affectationReclamation}`)}
           </span>
         </div>
       </div>
@@ -222,14 +230,14 @@ export default function ReclamationDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <MessageSquare size={20} className="text-emerald-500" />
-              Description
+              {t('description_title')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
               {reclamation.description}
             </p>
             <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
               <span className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
-                {reclamation.categorie}
+                {tCategories(reclamation.categorie)}
               </span>
             </div>
           </div>
@@ -240,7 +248,7 @@ export default function ReclamationDetailPage() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <ImageIcon size={20} className="text-emerald-500" />
-                  Photos ({reclamation.medias.filter(m => m.type === 'IMAGE').length})
+                  {t('photos_title', { count: reclamation.medias.filter(m => m.type === 'IMAGE').length })}
                 </h2>
                 <DownloadPhotosButton
                   reclamationId={reclamation.id}
@@ -267,7 +275,7 @@ export default function ReclamationDetailPage() {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <FileText size={20} className="text-emerald-500" />
-                Actions
+                {t('actions_title')}
               </h2>
 
               {showRejectForm ? (
@@ -275,7 +283,7 @@ export default function ReclamationDetailPage() {
                   <textarea
                     value={motifRejet}
                     onChange={(e) => setMotifRejet(e.target.value)}
-                    placeholder="Motif du rejet..."
+                    placeholder={t('reject_reason_placeholder')}
                     rows={3}
                     className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-red-500"
                   />
@@ -286,13 +294,13 @@ export default function ReclamationDetailPage() {
                       className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
                     >
                       {actionLoading === 'reject' && <Loader2 size={16} className="animate-spin" />}
-                      Confirmer le rejet
+                      {t('confirm_reject')}
                     </button>
                     <button
                       onClick={() => setShowRejectForm(false)}
                       className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
                     >
-                      Annuler
+                      {t('cancel')}
                     </button>
                   </div>
                 </div>
@@ -308,14 +316,14 @@ export default function ReclamationDetailPage() {
                     ) : (
                       <CheckCircle size={18} />
                     )}
-                    Accepter
+                    {t('accept')}
                   </button>
                   <button
                     onClick={() => setShowRejectForm(true)}
                     className="flex items-center gap-2 px-6 py-3 bg-white border border-red-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
                   >
                     <XCircle size={18} />
-                    Rejeter
+                    {t('reject')}
                   </button>
                 </div>
               )}
@@ -327,7 +335,7 @@ export default function ReclamationDetailPage() {
             <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800 p-6">
               <h2 className="font-semibold text-red-700 dark:text-red-400 mb-2 flex items-center gap-2">
                 <XCircle size={20} />
-                Motif de rejet
+                {t('reject_reason_title')}
               </h2>
               <p className="text-red-600 dark:text-red-300">{reclamation.motifRejet}</p>
             </div>
@@ -338,7 +346,7 @@ export default function ReclamationDetailPage() {
             <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200 dark:border-green-800 p-6">
               <h2 className="font-semibold text-green-700 dark:text-green-400 mb-2 flex items-center gap-2">
                 <CheckCircle size={20} />
-                Solution apportée
+                {t('solution_title')}
               </h2>
               <p className="text-green-600 dark:text-green-300">{reclamation.solutionApportee}</p>
             </div>
@@ -351,7 +359,7 @@ export default function ReclamationDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <User size={20} className="text-emerald-500" />
-              Citoyen
+              {t('citizen_title')}
             </h2>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -375,20 +383,20 @@ export default function ReclamationDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <MapPin size={20} className="text-emerald-500" />
-              Localisation
+              {t('location_title')}
             </h2>
             <div className="space-y-2 text-sm">
               <p className="text-gray-600 dark:text-gray-300">
-                <span className="font-medium">Commune:</span> {reclamation.commune.nom}
+                <span className="font-medium">{t('commune')}:</span> {locale === 'ar' ? (reclamation.commune.nomArabe || reclamation.commune.nom) : reclamation.commune.nom}
               </p>
               {reclamation.quartierDouar && (
                 <p className="text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Quartier:</span> {reclamation.quartierDouar}
+                  <span className="font-medium">{t('district')}:</span> {reclamation.quartierDouar}
                 </p>
               )}
               {reclamation.adresseComplete && (
                 <p className="text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Adresse:</span> {reclamation.adresseComplete}
+                  <span className="font-medium">{t('address')}:</span> {reclamation.adresseComplete}
                 </p>
               )}
             </div>
@@ -399,10 +407,10 @@ export default function ReclamationDetailPage() {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Building2 size={20} className="text-emerald-500" />
-                Établissement
+                {t('establishment_title')}
               </h2>
               <p className="font-medium text-gray-900 dark:text-white">
-                {reclamation.etablissement.nom}
+                {locale === 'ar' ? (reclamation.etablissement.nomArabe || reclamation.etablissement.nom) : reclamation.etablissement.nom}
               </p>
               <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-2 inline-block">
                 {reclamation.etablissement.secteur}
@@ -414,12 +422,12 @@ export default function ReclamationDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <Calendar size={20} className="text-emerald-500" />
-              Dates
+              {t('dates_title')}
             </h2>
             <div className="space-y-2 text-sm">
               <p className="text-gray-600 dark:text-gray-300">
-                <span className="font-medium">Créée le:</span>{' '}
-                {new Date(reclamation.createdAt).toLocaleDateString('fr-FR', {
+                <span className="font-medium">{t('created_at')}:</span>{' '}
+                {new Date(reclamation.createdAt).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
@@ -428,8 +436,8 @@ export default function ReclamationDetailPage() {
                 })}
               </p>
               <p className="text-gray-600 dark:text-gray-300">
-                <span className="font-medium">Mise à jour:</span>{' '}
-                {new Date(reclamation.updatedAt).toLocaleDateString('fr-FR', {
+                <span className="font-medium">{t('updated_at')}:</span>{' '}
+                {new Date(reclamation.updatedAt).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
@@ -445,16 +453,16 @@ export default function ReclamationDetailPage() {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Clock size={20} className="text-emerald-500" />
-                Historique
+                {t('history_title')}
               </h2>
               <div className="space-y-4">
                 {reclamation.historique.map((h) => (
                   <div key={h.id} className="flex gap-3 text-sm">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full mt-1.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{h.action}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{tHistory(h.action)}</p>
                       <p className="text-xs text-gray-500">
-                        {new Date(h.createdAt).toLocaleDateString('fr-FR')}
+                        {new Date(h.createdAt).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
                       </p>
                     </div>
                   </div>

@@ -47,8 +47,8 @@ interface Reclamation {
   createdAt: string;
   citoyen: { id: number; nom: string; prenom: string } | null;
   user: { nom: string; prenom: string; email: string } | null;
-  commune: { id: number; nom: string };
-  etablissement: { id: number; nom: string } | null;
+  commune: { id: number; nom: string; nomArabe?: string };
+  etablissement: { id: number; nom: string; nomArabe?: string } | null;
   affecteeAAutorite: { id: number; nom: string; prenom: string } | null;
 }
 
@@ -91,7 +91,7 @@ export default function AdminReclamationsPage() {
   
   const [reclamations, setReclamations] = useState<Reclamation[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
-  const [communes, setCommunes] = useState<{ id: number; nom: string }[]>([]);
+  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
@@ -426,7 +426,9 @@ export default function AdminReclamationsPage() {
                 >
                   <option value="">{t('filters_labels.all_communes')}</option>
                   {communes.map(c => (
-                    <option key={c.id} value={c.id}>{c.nom}</option>
+                    <option key={c.id} value={c.id}>
+                      {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                    </option>
                   ))}
                 </select>
 
@@ -548,7 +550,7 @@ export default function AdminReclamationsPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5 text-sm text-gray-600">
                             <MapPin size={14} />
-                            {reclamation.commune.nom}
+                            {locale === 'ar' ? (reclamation.commune.nomArabe || reclamation.commune.nom) : reclamation.commune.nom}
                           </div>
                         </td>
                         <td className="px-4 py-3">

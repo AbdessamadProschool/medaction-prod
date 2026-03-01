@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { UseFormRegister, UseFormSetValue, FieldErrors } from 'react-hook-form';
 import { ReclamationFormData } from '@/lib/validations/reclamation';
 import { MapPin, Navigation, Building2, Home, CheckCircle2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 // Import dynamique de la carte (SSR disabled)
 const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
@@ -23,6 +23,7 @@ const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
 interface Commune {
   id: number;
   nom: string;
+  nomArabe?: string;
 }
 
 interface LocalisationSectionProps {
@@ -39,6 +40,7 @@ export default function LocalisationSection({
   watch 
 }: LocalisationSectionProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const [communes, setCommunes] = useState<Commune[]>([]);
   const [loading, setLoading] = useState(true);
   const [gpsLoading, setGpsLoading] = useState(false);
@@ -114,7 +116,7 @@ export default function LocalisationSection({
             <option value="">{t('reclamation.form.select_commune')}</option>
             {communes.map((commune) => (
               <option key={commune.id} value={commune.id}>
-                {commune.nom}
+                {locale === 'ar' ? (commune.nomArabe || commune.nom) : commune.nom}
               </option>
             ))}
           </select>

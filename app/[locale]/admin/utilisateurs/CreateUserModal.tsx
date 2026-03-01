@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, User, Mail, Phone, Lock, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface CreateUserModalProps {
   onClose: () => void;
@@ -28,6 +28,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   const tRoles = useTranslations('admin.users_page.role_descriptions');
   const tRolesMain = useTranslations('admin.users_page.roles');
   const tSectors = useTranslations('admin.users_page.sectors');
+  const locale = useLocale();
 
   const [formData, setFormData] = useState({
     nom: '',
@@ -42,8 +43,8 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
     etablissementsGeres: [] as number[],
     isActive: true,
   });
-  const [communes, setCommunes] = useState<{ id: number; nom: string }[]>([]);
-  const [etablissements, setEtablissements] = useState<{ id: number; nom: string }[]>([]);
+  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
+  const [etablissements, setEtablissements] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -353,7 +354,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   >
                     <option value="">{t('select_option.commune')}</option>
                     {communes.map((c) => (
-                      <option key={c.id} value={c.id}>{c.nom}</option>
+                      <option key={c.id} value={c.id}>
+                        {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -389,7 +392,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                           className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500"
                         />
                         <Building2 className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{etab.nom}</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                          {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
+                        </span>
                       </label>
                     ))
                   )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface User {
   id: number;
@@ -40,13 +40,14 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
   const tRolesMain = useTranslations('admin.users_page.roles');
   const tSectors = useTranslations('admin.users_page.sectors');
   const tCreate = useTranslations('admin.users_page.create_modal');
+  const locale = useLocale();
 
   const [selectedRole, setSelectedRole] = useState(user.role);
   const [secteurResponsable, setSecteurResponsable] = useState(user.secteurResponsable || '');
   const [communeResponsableId, setCommuneResponsableId] = useState(user.communeResponsableId?.toString() || '');
   const [etablissementsGeres, setEtablissementsGeres] = useState<number[]>(user.etablissementsGeres || []);
-  const [communes, setCommunes] = useState<{ id: number; nom: string }[]>([]);
-  const [etablissements, setEtablissements] = useState<{ id: number; nom: string }[]>([]);
+  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
+  const [etablissements, setEtablissements] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -243,7 +244,9 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                 >
                   <option value="">{tCreate('select_option.commune')}</option>
                   {communes.map((c) => (
-                    <option key={c.id} value={c.id}>{c.nom}</option>
+                    <option key={c.id} value={c.id}>
+                      {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -276,7 +279,9 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                         className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500"
                       />
                       <Building2 className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{etab.nom}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
+                      </span>
                     </label>
                   ))
                 )}

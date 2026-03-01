@@ -3,38 +3,43 @@
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
-const navigation = {
-  decouvrir: [
-    { name: 'Établissements', href: '/etablissements' },
-    { name: 'Événements', href: '/evenements' },
-    { name: 'Actualités', href: '/actualites' },
-    { name: 'Campagnes', href: '/campagnes' },
-    { name: 'Carte Interactive', href: '/carte' },
-  ],
-  services: [
-    { name: 'Soumettre une réclamation', href: '/reclamations/nouvelle' },
-    { name: 'Suivi de réclamation', href: '/mes-reclamations' },
-    { name: 'Articles & Guides', href: '/articles' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'Contact', href: '/contact' },
-  ],
-  legal: [
-    { name: 'Mentions légales', href: '/mentions-legales' },
-    { name: 'Politique de confidentialité', href: '/confidentialite' },
-    { name: 'Conditions d\'utilisation', href: '/conditions' },
-    { name: 'Accessibilité', href: '/accessibilite' },
-  ],
-  communes: [
-    { name: 'Médiouna', href: '/communes/mediouna' },
-    { name: 'Tit Mellil', href: '/communes/tit-mellil' },
-    { name: 'Sidi Hajjaj', href: '/communes/sidi-hajjaj' },
-    { name: 'Mejjatia Ouled Taleb', href: '/communes/mejjatia' },
-    { name: 'Lahraouiyine', href: '/communes/lahraouiyine' },
-  ],
-};
+export default function Footer() {
+  const t = useTranslations('footer');
+  const tContact = useTranslations('contact_page');
 
-const socialLinks = [
+  const navigation = {
+    discover: [
+      { name: t('links.etablissements'), href: '/etablissements' },
+      { name: t('links.events'), href: '/evenements' },
+      { name: t('links.news'), href: '/actualites' },
+      { name: t('links.campaigns'), href: '/campagnes' },
+      { name: t('links.map'), href: '/carte' },
+    ],
+    services: [
+      { name: t('links.submit_reclamation'), href: '/reclamations/nouvelle' },
+      { name: t('links.track_reclamation'), href: '/mes-reclamations' },
+      { name: t('links.articles'), href: '/articles' },
+      { name: t('links.faq'), href: '/faq' },
+      { name: t('links.contact'), href: '/contact' },
+    ],
+    legal: [
+      { name: t('links.legal_mentions'), href: '/mentions-legales' },
+      { name: t('links.privacy_policy'), href: '/confidentialite' },
+      { name: t('links.terms_of_use'), href: '/conditions' },
+      { name: t('links.accessibility'), href: '/accessibilite' },
+    ],
+    communes: [
+      { name: 'Médiouna', href: '/communes/mediouna' },
+      { name: 'Tit Mellil', href: '/communes/tit-mellil' },
+      { name: 'Sidi Hajjaj', href: '/communes/sidi-hajjaj' },
+      { name: 'Mejjatia Ouled Taleb', href: '/communes/mejjatia' },
+      { name: 'Lahraouiyine', href: '/communes/lahraouiyine' },
+    ],
+  };
+
+  const socialLinks = [
   {
     name: 'Facebook',
     href: 'https://facebook.com',
@@ -73,7 +78,6 @@ const socialLinks = [
   },
 ];
 
-export default function Footer() {
   return (
     <footer className="relative bg-gray-900 text-gray-300 overflow-hidden">
       {/* Moroccan Pattern Overlay */}
@@ -104,11 +108,11 @@ export default function Footer() {
                   <span className="text-white">PORTAIL </span>
                   <span className="text-[hsl(45,93%,47%)]">MEDIOUNA</span>
                 </span>
-                <span className="block text-xs text-gray-400 font-sans">Province de Médiouna</span>
+                <span className="block text-xs text-gray-400 font-sans">{tContact('coords_title')}</span>
               </div>
             </Link>
             <p className="text-gray-400 mb-6 max-w-sm">
-              Plateforme citoyenne de la Province de Médiouna. Participez, informez-vous et contribuez au développement local.
+              {t('description')}
             </p>
             {/* Social Links */}
             <div className="flex gap-4">
@@ -131,9 +135,9 @@ export default function Footer() {
 
           {/* Découvrir */}
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Découvrir</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('sections.discover')}</h3>
             <ul className="space-y-3">
-              {navigation.decouvrir.map((item) => (
+              {navigation.discover.map((item) => (
                 <li key={item.name}>
                   <Link href={item.href} className="text-gray-400 hover:text-[hsl(45,93%,47%)] transition-colors">
                     {item.name}
@@ -145,7 +149,7 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Services</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('sections.services')}</h3>
             <ul className="space-y-3">
               {navigation.services.map((item) => (
                 <li key={item.name}>
@@ -159,7 +163,7 @@ export default function Footer() {
 
           {/* Communes */}
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Communes</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('sections.communes')}</h3>
             <ul className="space-y-3">
               {navigation.communes.map((item) => (
                 <li key={item.name}>
@@ -173,26 +177,26 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Contact</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('sections.contact')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-[hsl(45,93%,47%)] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span className="text-gray-400">SIÈGE DE LA PROVINCE DE MEDIOUNA, Route 3010 VERS TIT MELLIL</span>
+                <span className="text-gray-400">{tContact('address_value')}</span>
               </li>
               <li className="flex items-center gap-3">
                 <svg className="w-5 h-5 text-[hsl(45,93%,47%)] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span className="text-gray-400">05 22 51 00 51 (Standard) • 05 22 51 19 10 (Fax)</span>
+                <span className="text-gray-400">{tContact('phone_value')}</span>
               </li>
               <li className="flex items-center gap-3">
                 <svg className="w-5 h-5 text-[hsl(45,93%,47%)] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span className="text-gray-400">contact@provincemediouna.ma</span>
+                <span className="text-gray-400">{tContact('email_contact_value')}</span>
               </li>
             </ul>
           </div>
@@ -215,7 +219,7 @@ export default function Footer() {
               ))}
             </div>
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} Province de Médiouna. Tous droits réservés.
+              © {new Date().getFullYear()} {tContact('coords_title')}. {t('rights_reserved')}
             </p>
           </div>
         </div>

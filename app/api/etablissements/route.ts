@@ -87,6 +87,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
   if (search) {
     where.OR = [
       { nom: { contains: search, mode: "insensitive" } },
+      { nomArabe: { contains: search, mode: "insensitive" } },
       { code: { contains: search, mode: "insensitive" } },
       { adresseComplete: { contains: search, mode: "insensitive" } },
     ];
@@ -110,8 +111,8 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         { nom: 'asc' }
       ],
       include: {
-        commune: { select: { id: true, nom: true } },
-        annexe: { select: { id: true, nom: true } },
+        commune: { select: { id: true, nom: true, nomArabe: true } },
+        annexe: { select: { id: true, nom: true, nomArabe: true } },
         _count: {
           select: {
             evaluations: true,
@@ -193,8 +194,8 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       programmes: result.data.programmes || [],
     },
     include: {
-      commune: { select: { id: true, nom: true } },
-      annexe: { select: { id: true, nom: true } },
+      commune: { select: { id: true, nom: true, nomArabe: true } },
+      annexe: { select: { id: true, nom: true, nomArabe: true } },
     },
   });
 

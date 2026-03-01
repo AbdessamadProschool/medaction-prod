@@ -17,8 +17,9 @@ interface Actualite {
   etablissement?: {
     id: number;
     nom: string;
+    nomArabe?: string;
     secteur: string;
-    commune?: { nom: string };
+    commune?: { nom: string; nomArabe?: string };
   } | null;
   medias: { urlPublique: string }[];
 }
@@ -144,7 +145,7 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
                {news.etablissement?.commune?.nom && (
                <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 font-medium truncate max-w-[150px]">
                   <MapPin className="w-3.5 h-3.5" />
-                  {news.etablissement.commune.nom}
+                  {locale === 'ar' ? (news.etablissement.commune.nomArabe || news.etablissement.commune.nom) : news.etablissement.commune.nom}
                </div>
                )}
              </div>

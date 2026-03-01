@@ -49,8 +49,8 @@ interface Etablissement {
   noteMoyenne: number;
   nombreEvaluations: number;
   createdAt: string;
-  commune: { id: number; nom: string } | null;
-  annexe: { id: number; nom: string } | null;
+  commune: { id: number; nom: string; nomArabe?: string } | null;
+  annexe: { id: number; nom: string; nomArabe?: string } | null;
   responsable: { id: number; nom: string; prenom: string } | null;
   photoPrincipale: string | null;
   _count?: {
@@ -499,7 +499,7 @@ export default function AdminEtablissementsPage() {
                   {etablissement.commune && (
                     <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
                       <MapPin size={14} />
-                      <span>{etablissement.commune.nom}</span>
+                      <span>{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
                     </div>
                   )}
 

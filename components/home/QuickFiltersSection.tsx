@@ -39,6 +39,7 @@ const secteursData: Secteur[] = [
 interface Commune {
   id: number;
   nom: string;
+  nomArabe?: string;
   code?: string;
 }
 
@@ -206,7 +207,7 @@ export default function QuickFiltersSection() {
                   <option value="">{t('search.all_communes')}</option>
                   {communes.map((commune) => (
                     <option key={commune.id} value={commune.id}>
-                      {commune.nom}
+                      {locale === 'ar' ? (commune.nomArabe || commune.nom) : commune.nom}
                     </option>
                   ))}
                 </select>

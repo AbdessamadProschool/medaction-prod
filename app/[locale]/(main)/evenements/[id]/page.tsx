@@ -53,8 +53,8 @@ interface Evenement {
   bilanNbParticipants?: number;
   compteRenduUrl?: string;
   tags: string[];
-  etablissement: { nom: string; secteur: string };
-  commune: { nom: string };
+  etablissement: { nom: string; nomArabe?: string; secteur: string };
+  commune: { nom: string; nomArabe?: string };
   createdByUser: { nom: string; prenom: string };
   medias: { id: number; urlPublique: string; type: string }[];
 }
@@ -318,8 +318,8 @@ export default function EvenementDetailPage() {
                   <div>
                    <div>
                       <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.location')}</p>
-                      <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.lieu || event.commune.nom}</p>
-                      <p className="text-sm opacity-80 truncate max-w-[200px]">{event.commune.nom}</p>
+                      <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}</p>
+                      <p className="text-sm opacity-80 truncate max-w-[200px]">{locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom}</p>
                    </div>
                   </div>
                </div>
@@ -331,7 +331,7 @@ export default function EvenementDetailPage() {
                   </div>
                   <div>
                      <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.organizer')}</p>
-                     <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.organisateur || event.etablissement?.nom || 'N/A'}</p>
+                     <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.organisateur || (locale === 'ar' ? (event.etablissement?.nomArabe || event.etablissement?.nom) : event.etablissement?.nom) || 'N/A'}</p>
                      <p className="text-sm opacity-80 truncate max-w-[200px]">{t('labels.official_event')}</p>
                   </div>
                </div>
@@ -445,7 +445,7 @@ export default function EvenementDetailPage() {
                    </div>
                    <div className="flex items-start gap-3 text-gray-600 bg-gray-50 p-4 rounded-xl">
                       <MapPin className="w-5 h-5 shrink-0 mt-0.5 text-gray-400" />
-                      <p>{event.adresse || event.lieu || `${event.commune.nom}, Province de Médiouna`}</p>
+                      <p>{event.adresse || event.lieu || `${locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom}, Province de Médiouna`}</p>
                    </div>
                 </motion.div>
              )}
@@ -530,10 +530,10 @@ export default function EvenementDetailPage() {
                 
                 <div className="flex items-center gap-4 mb-4">
                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-400 text-lg">
-                      {event.etablissement?.nom?.[0] || '?'}
+                      {locale === 'ar' ? (event.etablissement?.nomArabe?.[0] || event.etablissement?.nom?.[0]) : event.etablissement?.nom?.[0] || '?'}
                    </div>
                    <div>
-                      <p className="font-bold text-gray-900 leading-tight">{event.etablissement?.nom || 'N/A'}</p>
+                      <p className="font-bold text-gray-900 leading-tight">{locale === 'ar' ? (event.etablissement?.nomArabe || event.etablissement?.nom) : event.etablissement?.nom || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{event.etablissement?.secteur || 'N/A'}</p>
                    </div>
                 </div>

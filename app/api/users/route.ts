@@ -115,6 +115,7 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             nom: true,
+            nomArabe: true,
           }
         },
         _count: {

@@ -21,6 +21,7 @@ import {
   Shield,
   BarChart3,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface SidebarItem {
   name: string;
@@ -31,14 +32,14 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { name: 'Tableau de bord', href: '/admin', icon: LayoutDashboard },
-  { name: 'Utilisateurs', href: '/admin/utilisateurs', icon: Users, roles: ['ADMIN', 'SUPER_ADMIN'] },
-  { name: 'Validation', href: '/admin/validation', icon: FileCheck },
-  { name: 'Établissements', href: '/admin/etablissements', icon: Building2 },
-  { name: 'Événements', href: '/admin/evenements', icon: Calendar },
-  { name: 'Réclamations', href: '/admin/reclamations', icon: MessageSquare },
-  { name: 'Statistiques', href: '/admin/statistiques', icon: BarChart3 },
-  { name: 'Paramètres', href: '/admin/parametres', icon: Settings, roles: ['SUPER_ADMIN'] },
+  { name: 'dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'users', href: '/admin/utilisateurs', icon: Users, roles: ['ADMIN', 'SUPER_ADMIN'] },
+  { name: 'validation', href: '/admin/validation', icon: FileCheck },
+  { name: 'etablissements', href: '/admin/etablissements', icon: Building2 },
+  { name: 'events', href: '/admin/evenements', icon: Calendar },
+  { name: 'reclamations', href: '/admin/reclamations', icon: MessageSquare },
+  { name: 'statistics', href: '/admin/statistiques', icon: BarChart3 },
+  { name: 'settings', href: '/admin/parametres', icon: Settings, roles: ['SUPER_ADMIN'] },
 ];
 
 export default function AdminSidebar() {
@@ -46,6 +47,7 @@ export default function AdminSidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const t = useTranslations('admin.sidebar');
 
   const userRole = session?.user?.role || 'CITOYEN';
 
@@ -97,9 +99,9 @@ export default function AdminSidebar() {
             {!isCollapsed && (
               <div>
                 <h1 className="font-bold text-lg bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  Portail Mediouna
+                  {t('portal_name')}
                 </h1>
-                <p className="text-xs text-slate-400">Administration</p>
+                <p className="text-xs text-slate-400">{t('administration')}</p>
               </div>
             )}
           </div>
@@ -130,7 +132,7 @@ export default function AdminSidebar() {
                 />
                 {!isCollapsed && (
                   <>
-                    <span className="font-medium">{item.name}</span>
+                    <span className="font-medium">{t(item.name)}</span>
                     {item.badge && (
                       <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                         {item.badge}
@@ -168,7 +170,7 @@ export default function AdminSidebar() {
             `}
           >
             <LogOut size={20} />
-            {!isCollapsed && <span>Déconnexion</span>}
+            {!isCollapsed && <span>{t('logout')}</span>}
           </button>
         </div>
 

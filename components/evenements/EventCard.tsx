@@ -25,7 +25,7 @@ interface Evenement {
   nombreInscrits: number;
   nombreVues: number;
   etablissement: { nom: string };
-  commune: { nom: string };
+  commune: { nom: string; nomArabe?: string };
   medias?: { urlPublique: string }[];
 }
 
@@ -137,7 +137,7 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
            <div className="flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-1.5 truncate max-w-[60%]">
                  <MapPin className="w-3.5 h-3.5 shrink-0" />
-                 <span className="truncate">{event.lieu || event.commune.nom}</span>
+                  <span className="truncate">{event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}</span>
               </div>
               {event.capaciteMax && (
                  <div className="flex items-center gap-1.5 font-medium">

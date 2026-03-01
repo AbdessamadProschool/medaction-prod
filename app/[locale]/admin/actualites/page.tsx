@@ -45,7 +45,13 @@ interface Actualite {
   datePublication: string | null;
   createdAt: string;
   createdByUser: { id: number; nom: string; prenom: string } | null;
-  commune: { id: number; nom: string } | null;
+  etablissement: { 
+    id: number; 
+    nom: string; 
+    nomArabe?: string;
+    secteur: string; 
+    commune: { id: number; nom: string; nomArabe?: string } | null;
+  } | null;
 }
 
 const STATUT_STYLES: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
@@ -576,6 +582,18 @@ export default function AdminActualitesPage() {
                     <p className="font-medium text-gray-900 dark:text-white flex items-center gap-1">
                       <TrendingUp size={14} />
                       {selectedActualite.nombreVues}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('modal.establishment')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white truncate">
+                      {locale === 'ar' ? (selectedActualite.etablissement?.nomArabe || selectedActualite.etablissement?.nom) : selectedActualite.etablissement?.nom}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('modal.commune')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white truncate">
+                      {locale === 'ar' ? (selectedActualite.etablissement?.commune?.nomArabe || selectedActualite.etablissement?.commune?.nom) : selectedActualite.etablissement?.commune?.nom}
                     </p>
                   </div>
                 </div>

@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
+import { useTranslations } from 'next-intl';
+
 interface ImportResult {
   success: number;
   errors: Array<{ row: number; message: string }>;
@@ -35,6 +37,7 @@ interface BulkImportModalProps {
 }
 
 export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImportModalProps) {
+  const t = useTranslations('coordinator.calendar.import_modal');
   const { data: session } = useSession();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -287,8 +290,8 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                 <FileSpreadsheet className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 dark:text-white">Import en masse</h3>
-                <p className="text-sm text-gray-500">Importer des activités depuis un fichier</p>
+                <h3 className="font-bold text-gray-900 dark:text-white">{t('title')}</h3>
+                <p className="text-sm text-gray-500">{t('subtitle')}</p>
               </div>
             </div>
             <button
@@ -307,13 +310,13 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                 <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-blue-900 dark:text-blue-300 mb-2">
-                    Comment utiliser l'import :
+                    {t('help.title')}
                   </p>
                   <ol className="list-decimal list-inside space-y-1 text-blue-700 dark:text-blue-400">
-                    <li>Téléchargez le modèle CSV ci-dessous</li>
-                    <li>Remplissez le fichier avec vos activités</li>
-                    <li>Utilisez les IDs ci-dessous pour la colonne etablissementId</li>
-                    <li>Importez le fichier complété</li>
+                    <li>{t('help.step1')}</li>
+                    <li>{t('help.step2')}</li>
+                    <li>{t('help.step3')}</li>
+                    <li>{t('help.step4')}</li>
                   </ol>
                 </div>
               </div>
@@ -324,7 +327,7 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200">
                 <div className="flex items-center gap-2 mb-3">
                   <Building2 className="w-5 h-5 text-amber-600" />
-                  <h4 className="font-semibold text-amber-900">Référence des établissements</h4>
+                  <h4 className="font-semibold text-amber-900">{t('reference.title')}</h4>
                 </div>
                 <div className="space-y-2">
                   {etablissements.map((etab) => (
@@ -346,7 +349,7 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-amber-700">
-                  💡 Utilisez l'ID (premier nombre) dans la colonne "etablissementId" de votre fichier
+                  💡 {t('reference.hint')}
                 </p>
               </div>
             )}
@@ -357,7 +360,7 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
               className="w-full flex items-center justify-center gap-3 p-4 border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-all"
             >
               <Download className="w-5 h-5" />
-              <span className="font-medium">Télécharger le modèle CSV</span>
+              <span className="font-medium">{t('template.download')}</span>
             </button>
 
             {/* File Upload */}
@@ -399,9 +402,9 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                   <div className="text-center">
                     <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                     <p className="font-medium text-gray-900 dark:text-white">
-                      Cliquez pour sélectionner un fichier
+                      {t('upload.click')}
                     </p>
-                    <p className="text-sm text-gray-500">CSV ou Excel (.csv, .xlsx)</p>
+                    <p className="text-sm text-gray-500">{t('upload.hint')}</p>
                   </div>
                 )}
               </button>
@@ -432,19 +435,19 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                     <p className={`font-medium ${
                       result.errors.length === 0 ? 'text-emerald-700' : 'text-amber-700'
                     }`}>
-                      {result.success} activité(s) importée(s) sur {result.total}
+                      {t('import.success', { success: result.success, total: result.total })}
                     </p>
                     {result.errors.length > 0 && (
                       <div className="mt-2 max-h-32 overflow-y-auto">
-                        <p className="text-sm text-amber-700 font-medium mb-1">Erreurs :</p>
+                        <p className="text-sm text-amber-700 font-medium mb-1">{t('import.errors_label')}</p>
                         {result.errors.slice(0, 5).map((err, i) => (
                           <p key={i} className="text-xs text-amber-600">
-                            Ligne {err.row}: {err.message}
+                            {t('import.row_error', { row: err.row, message: err.message })}
                           </p>
                         ))}
                         {result.errors.length > 5 && (
                           <p className="text-xs text-amber-600 mt-1">
-                            ...et {result.errors.length - 5} autres erreurs
+                            {t('import.more_errors', { count: result.errors.length - 5 })}
                           </p>
                         )}
                       </div>
@@ -461,7 +464,7 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
               onClick={handleClose}
               className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              {result ? 'Fermer' : 'Annuler'}
+              {result ? t('buttons.close') : t('buttons.cancel')}
             </button>
             {!result && (
               <button
@@ -472,12 +475,12 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }: BulkImpo
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Import en cours...
+                    {t('import.processing')}
                   </>
                 ) : (
                   <>
                     <Upload className="w-4 h-4" />
-                    Importer
+                    {t('import.button')}
                   </>
                 )}
               </button>

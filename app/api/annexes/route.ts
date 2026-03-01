@@ -23,6 +23,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     select: {
       id: true,
       nom: true,
+      nomArabe: true,
       code: true,
       communeId: true
     },

@@ -58,7 +58,7 @@ export default function NouveauEventPage() {
   });
   type EventForm = z.infer<typeof eventSchema>;
   const [loading, setLoading] = useState(false);
-  const [etablissements, setEtablissements] = useState<{id: number, nom: string, secteur?: string}[]>([]);
+  const [etablissements, setEtablissements] = useState<{id: number, nom: string, nomArabe?: string, secteur?: string}[]>([]);
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -97,6 +97,7 @@ export default function NouveauEventPage() {
       fetchEtablissements();
     }
   }, [session]);
+  const locale = useLocale();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -308,7 +309,9 @@ export default function NouveauEventPage() {
                     >
                       <option value="">Sélectionner un établissement...</option>
                       {etablissements.map(e => (
-                        <option key={e.id} value={e.id}>{e.nom}</option>
+                        <option key={e.id} value={e.id}>
+                          {locale === 'ar' ? (e.nomArabe || e.nom) : e.nom}
+                        </option>
                       ))}
                     </select>
                   </div>

@@ -19,7 +19,7 @@ import {
   KeyRound,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import CreateUserModal from './CreateUserModal';
 import EditRoleModal from './EditRoleModal';
 
@@ -35,7 +35,7 @@ interface User {
   isEmailVerifie: boolean;
   secteurResponsable: string | null;
   communeResponsableId: number | null;
-  communeResponsable: { id: number; nom: string } | null;
+  communeResponsable: { id: number; nom: string; nomArabe?: string } | null;
   etablissementsGeres?: number[];
   derniereConnexion: string | null;
   createdAt: string;
@@ -76,6 +76,7 @@ const ROLE_COLORS: Record<string, string> = {
 
 export default function UsersPage() {
   const t = useTranslations('admin.users_page');
+  const locale = useLocale();
   const [users, setUsers] = useState<User[]>([]);
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10, total: 0, totalPages: 0 });
   const [loading, setLoading] = useState(true);
@@ -341,7 +342,7 @@ export default function UsersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-600 dark:text-gray-300">
-                        {user.secteurResponsable || user.communeResponsable?.nom || 
+                        {user.secteurResponsable || (locale === 'ar' ? (user.communeResponsable?.nomArabe || user.communeResponsable?.nom) : user.communeResponsable?.nom) || 
                          (user.etablissementsGeres && user.etablissementsGeres.length > 0 
                            ? t('table.estab_count', { count: user.etablissementsGeres.length }) 
                            : '-')}

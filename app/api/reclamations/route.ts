@@ -84,8 +84,8 @@ export const POST = withPermission('reclamations.create', withErrorHandler(async
       affectationReclamation: 'NON_AFFECTEE',
     },
     include: {
-      commune: { select: { nom: true } },
-      etablissement: { select: { nom: true } },
+      commune: { select: { nom: true, nomArabe: true } },
+      etablissement: { select: { nom: true, nomArabe: true } },
     }
   });
 
@@ -232,8 +232,8 @@ export const GET = withPermission('reclamations.read', withErrorHandler(async (r
       orderBy,
       include: {
         user: { select: { nom: true, prenom: true, email: true } },
-        commune: { select: { id: true, nom: true } },
-        etablissement: { select: { id: true, nom: true, secteur: true } },
+        commune: { select: { id: true, nom: true, nomArabe: true } },
+        etablissement: { select: { id: true, nom: true, nomArabe: true, secteur: true } },
         medias: true,
       }
     }),

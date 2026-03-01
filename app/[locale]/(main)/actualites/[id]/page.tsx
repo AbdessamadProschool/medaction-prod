@@ -26,8 +26,9 @@ interface Actualite {
   etablissement: {
     id: number;
     nom: string;
+    nomArabe?: string;
     secteur: string;
-    commune: { nom: string };
+    commune: { nom: string; nomArabe?: string };
   };
   medias: { urlPublique: string; type: string }[];
   createdByUser: { nom: string; prenom: string } | null;
@@ -213,7 +214,7 @@ export default function ActualiteDetailPage() {
                   ) : (
                     <div className="flex items-center gap-2">
                        <Building2 className="w-4 h-4" />
-                       <span>{actualite.etablissement?.nom || 'N/A'}</span>
+                       <span>{locale === 'ar' ? (actualite.etablissement?.nomArabe || actualite.etablissement?.nom) : actualite.etablissement?.nom || 'N/A'}</span>
                     </div>
                   )}
                   <span className="w-1 h-1 bg-white/40 rounded-full" />
@@ -292,11 +293,11 @@ export default function ActualiteDetailPage() {
                  <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">{t('detail.official_source')}</p>
                     <Link href={`/etablissements/${actualite.etablissement?.id || ''}`} className="font-bold text-gray-900 text-lg hover:text-[hsl(213,80%,28%)]">
-                       {actualite.etablissement?.nom || 'N/A'}
+                       {locale === 'ar' ? (actualite.etablissement?.nomArabe || actualite.etablissement?.nom) : actualite.etablissement?.nom || 'N/A'}
                     </Link>
                     <p className="text-sm text-gray-500 flex items-center gap-1">
                        <MapPin className="w-3.5 h-3.5" />
-                       {actualite.etablissement?.commune?.nom || 'N/A'} • {actualite.etablissement?.secteur || 'N/A'}
+                       {locale === 'ar' ? (actualite.etablissement?.commune?.nomArabe || actualite.etablissement?.commune?.nom) : actualite.etablissement?.commune?.nom || 'N/A'} • {actualite.etablissement?.secteur || 'N/A'}
                     </p>
                  </div>
               </div>

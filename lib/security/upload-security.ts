@@ -103,30 +103,23 @@ export const UPLOAD_CONFIG = {
   ],
   
   // Dangerous content patterns (embedded code detection)
+  // UPDATED: More specific patterns to reduce false positives in binary images
   DANGEROUS_CONTENT_PATTERNS: [
     /<\?php/i,                   // PHP opening tag
     /<\?=/,                      // PHP short echo
-    /<%/,                        // ASP/JSP tags
+    /<%/ ,                       // ASP/JSP tags
     /<script/i,                  // JavaScript
     /javascript:/i,              // JavaScript protocol
     /vbscript:/i,               // VBScript protocol
     /on\w+\s*=/i,               // Event handlers (onclick, onload, etc.)
-    /eval\s*\(/i,               // eval() calls
-    /system\s*\(/i,             // system() calls (PHP/shell)
-    /exec\s*\(/i,               // exec() calls
-    /passthru\s*\(/i,           // passthru() (PHP)
-    /shell_exec\s*\(/i,         // shell_exec() (PHP)
-    /\$_GET/,                    // PHP superglobals
-    /\$_POST/,
-    /\$_REQUEST/,
-    /\$_FILES/,
+    /\b(eval|system|exec|passthru|shell_exec)\s*\(/i, // Dangerous function calls as words
+    /\$_(GET|POST|REQUEST|FILES)\b/,    // PHP superglobals
     /<\s*iframe/i,              // iframes
     /<\s*object/i,              // object tags
     /<\s*embed/i,               // embed tags
     /<!ENTITY/i,                // XML entity (XXE)
     /<!DOCTYPE.*SYSTEM/i,       // External DTD
-    /url\s*\(/i,                // CSS url() - ImageMagick exploit
-    /push\s+graphic-context/i,  // ImageTragick
+    // Removed: url\s*\( and push\s+graphic-context as they yield too many false positives in binary images
   ],
   
   // Rate limiting

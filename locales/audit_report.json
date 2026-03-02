@@ -1,0 +1,85 @@
+{
+  "stats": {
+    "frKeysCount": 4052,
+    "arKeysCount": 4052,
+    "missingInArCount": 0,
+    "missingInFrCount": 0,
+    "mismatchesCount": 5,
+    "identicalValuesCount": 0
+  },
+  "missingInAr": [],
+  "missingInFr": [],
+  "mismatches": [
+    {
+      "key": "campaigns.detail.status_days_left",
+      "fr": {
+        "vars": [
+          "count"
+        ]
+      },
+      "ar": {
+        "vars": [
+          "count",
+          "{count",
+          "يومان متبقيان"
+        ]
+      }
+    },
+    {
+      "key": "notifications.new",
+      "fr": {
+        "vars": [
+          "count",
+          "nouvelles"
+        ]
+      },
+      "ar": {
+        "vars": [
+          "count",
+          "جديدة"
+        ]
+      }
+    },
+    {
+      "key": "delegation.dashboard.my_events.count_label",
+      "fr": {
+        "vars": [
+          "count",
+          "un événement",
+          "{count"
+        ]
+      },
+      "ar": {
+        "vars": [
+          "count",
+          "{count"
+        ]
+      }
+    },
+    {
+      "key": "delegation.dashboard.articles.count_label",
+      "fr": {
+        "vars": []
+      },
+      "ar": {
+        "vars": [
+          "count",
+          "{count"
+        ]
+      }
+    },
+    {
+      "key": "delegation.dashboard.campaigns.count_label",
+      "fr": {
+        "vars": []
+      },
+      "ar": {
+        "vars": [
+          "count",
+          "{count"
+        ]
+      }
+    }
+  ],
+  "identicalValues": []
+}

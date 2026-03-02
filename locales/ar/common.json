@@ -5370,5 +5370,38 @@
     },
     "bilan_image": "تقرير",
     "preview_image": "معاينة"
+  },
+  "evaluation_page": {
+    "title": "تقييم المؤسسة",
+    "edit_title": "تعديل تقييمي",
+    "error_not_found": "المؤسسة غير موجودة",
+    "error_loading": "خطأ في تحميل البيانات",
+    "error_max_photos": "يُسمح بحد أقصى 3 صور",
+    "error_no_rating": "يرجى تقديم تقييم قبل التأكيد",
+    "error_submit": "خطأ في إرسال تقييمك",
+    "error_connection": "خطأ في الاتصال",
+    "success_title": "شكراً لتقييمكم!",
+    "success_edit_title": "تم تحديث تقييمك بنجاح",
+    "redirecting": "جارٍ تحويلك إلى صفحة المؤسسة...",
+    "already_submitted_title": "تم التقييم مسبقاً",
+    "already_submitted_desc": "لقد قمت بتقييم هذه المؤسسة بالفعل. يمكنك تعديله بعد فترة زمنية معينة.",
+    "view_establishment_btn": "عرض المؤسسة",
+    "access_restricted_title": "دخول مقيد",
+    "access_restricted_desc": "ليس لديك الصلاحيات اللازمة لتقييم هذه المؤسسة.",
+    "back": "الرجوع",
+    "rating_question": "ما هو التقييم الذي تمنحه لهذه المؤسسة؟",
+    "comment_label": "تعليقك (اختياري)",
+    "comment_placeholder": "شارك تجربتك بالتفصيل هنا...",
+    "ratings": {
+      "1": "محبط جداً",
+      "2": "محبط",
+      "3": "متوسط",
+      "4": "راضٍ",
+      "5": "ممتاز"
+    },
+    "edit_remaining_days": "يمكنك تعديل رأيك لمدة {days} أيام إضافية.",
+    "submitting": "جارٍ الإرسال...",
+    "submit_btn_edit": "حفظ التعديلات",
+    "submit_btn_create": "نشر تقييمي"
   }
 }

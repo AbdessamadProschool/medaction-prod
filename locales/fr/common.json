@@ -5370,5 +5370,38 @@
     "pagination": {
       "page_x_of_y": "Page {x} sur {y}"
     }
+  },
+  "evaluation_page": {
+    "title": "Évaluer l'établissement",
+    "edit_title": "Modifier mon évaluation",
+    "error_not_found": "Établissement introuvable",
+    "error_loading": "Erreur lors du chargement des données",
+    "error_max_photos": "Maximum 3 photos autorisées",
+    "error_no_rating": "Veuillez donner une note avant de valider",
+    "error_submit": "Erreur lors de l'envoi de votre évaluation",
+    "error_connection": "Erreur de connexion",
+    "success_title": "Merci pour votre évaluation !",
+    "success_edit_title": "Votre évaluation a été mise à jour",
+    "redirecting": "Redirection vers l'établissement...",
+    "already_submitted_title": "Déjà évalué",
+    "already_submitted_desc": "Vous avez déjà donné votre avis sur cet établissement. Vous pourrez le modifier après un certain délai.",
+    "view_establishment_btn": "Voir l'établissement",
+    "access_restricted_title": "Accès restreint",
+    "access_restricted_desc": "Vous n'avez pas les permissions nécessaires pour évaluer cet établissement.",
+    "back": "Retour",
+    "rating_question": "Quelle note donneriez-vous à cet établissement ?",
+    "comment_label": "Votre commentaire (optionnel)",
+    "comment_placeholder": "Partagez votre expérience détaillée ici...",
+    "ratings": {
+      "1": "Très déçu",
+      "2": "Déçu",
+      "3": "Moyen",
+      "4": "Satisfait",
+      "5": "Excellent"
+    },
+    "edit_remaining_days": "Vous pouvez modifier votre avis pendant encore {days} jours.",
+    "submitting": "Envoi en cours...",
+    "submit_btn_edit": "Enregistrer les modifications",
+    "submit_btn_create": "Publier mon évaluation"
   }
 }

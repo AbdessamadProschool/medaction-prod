@@ -1,0 +1,444 @@
+[
+  {
+    "filename": "common.json",
+    "stats": {
+      "frKeysCount": 4096,
+      "arKeysCount": 4096,
+      "missingInAr": 0,
+      "missingInFr": 0,
+      "mismatches": 10,
+      "emptyAr": 0,
+      "identicalFRAR": 2,
+      "potentialFrenchInAr": 58
+    },
+    "missingInAr": [],
+    "missingInFr": [],
+    "mismatches": [
+      {
+        "key": "governor.header.notifications.new",
+        "fr": {
+          "vars": [
+            "count"
+          ],
+          "value": "{count} nouvelles"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count",
+            "إشعار جديد",
+            "إشعاران جديدان"
+          ],
+          "value": "{count, plural, =0 {لا توجد إشعارات} =1 {إشعار جديد} =2 {إشعاران جديدان} other {{count} إشعارات جديدة}}"
+        }
+      },
+      {
+        "key": "campaigns.detail.status_days_left",
+        "fr": {
+          "vars": [
+            "count"
+          ],
+          "value": "{count} jours restants"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count",
+            "يومان متبقيان"
+          ],
+          "value": "{count, plural, =1 {يوم واحد متبقي} =2 {يومان متبقيان} other {{count} أيام متبقية}}"
+        }
+      },
+      {
+        "key": "notifications.new",
+        "fr": {
+          "vars": [
+            "count",
+            "nouvelles"
+          ],
+          "value": "{count, plural, one {nouvelle} other {nouvelles}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "جديدة"
+          ],
+          "value": "{count, plural, one {جديد} other {جديدة}}"
+        }
+      },
+      {
+        "key": "header.notifications.new",
+        "fr": {
+          "vars": [
+            "count",
+            "une nouvelle",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucune nouvelle} =1 {une nouvelle} other {{count} nouvelles}}"
+        },
+        "ar": {
+          "vars": [
+            "count"
+          ],
+          "value": "{count} أخبار"
+        }
+      },
+      {
+        "key": "delegation.dashboard.kpi.pending",
+        "fr": {
+          "vars": [
+            "count",
+            "un en attente",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucun en attente} =1 {un en attente} other {{count} en attente}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count",
+            "واحد في الانتظار"
+          ],
+          "value": "{count, plural, =0 {لا شيء في الانتظار} =1 {واحد في الانتظار} other {{count} في الانتظار}}"
+        }
+      },
+      {
+        "key": "delegation.dashboard.todo.to_close",
+        "fr": {
+          "vars": [
+            "count",
+            "un événement à clôturer",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucun événement à clôturer} =1 {un événement à clôturer} other {{count} événements à clôturer}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count",
+            "فعالية واحدة للإغلاق"
+          ],
+          "value": "{count, plural, =0 {لا توجد فعاليات للإغلاق} =1 {فعالية واحدة للإغلاق} other {{count} فعاليات للإغلاق}}"
+        }
+      },
+      {
+        "key": "delegation.dashboard.todo.to_close_campaigns",
+        "fr": {
+          "vars": [
+            "count",
+            "une campagne à clôturer",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucune campagne à clôturer} =1 {une campagne à clôturer} other {{count} campagnes à clôturer}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count",
+            "حملة واحدة للإغلاق"
+          ],
+          "value": "{count, plural, =0 {لا توجد حملات للإغلاق} =1 {حملة واحدة للإغلاق} other {{count} حملات للإغلاق}}"
+        }
+      },
+      {
+        "key": "delegation.dashboard.my_events.count_label",
+        "fr": {
+          "vars": [
+            "count",
+            "un événement",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucun événement} =1 {un événement} other {{count} événements}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count"
+          ],
+          "value": "{count, plural, =1 {حدث واحد} other {{count} أحداث}}"
+        }
+      },
+      {
+        "key": "delegation.dashboard.articles.count_label",
+        "fr": {
+          "vars": [
+            "count",
+            "un article",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucun article} =1 {un article} other {{count} articles}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count"
+          ],
+          "value": "{count, plural, =1 {مقال واحد} other {{count} مقالات}}"
+        }
+      },
+      {
+        "key": "delegation.dashboard.campaigns.count_label",
+        "fr": {
+          "vars": [
+            "count",
+            "une campagne",
+            "{count"
+          ],
+          "value": "{count, plural, =0 {aucune campagne} =1 {une campagne} other {{count} campagnes}}"
+        },
+        "ar": {
+          "vars": [
+            "count",
+            "{count"
+          ],
+          "value": "{count, plural, =1 {حملة واحدة} other {{count} حملات}}"
+        }
+      }
+    ],
+    "emptyAr": [],
+    "identicalFRAR": [
+      {
+        "key": "contact_page.email_contact_value",
+        "value": "contact@provincemediouna.ma"
+      },
+      {
+        "key": "admin.users_page.create_modal.placeholders.email",
+        "value": "email@exemple.com"
+      }
+    ],
+    "potentialFrenchInAr": [
+      {
+        "key": "governor.reclamations_tab.pagination.page_x_of_y",
+        "value": "صفحة {current} / {total}"
+      },
+      {
+        "key": "governor.performance_tab.pagination.page_x_of_y",
+        "value": "صفحة {current} / {total}"
+      },
+      {
+        "key": "governor.header.notifications.new",
+        "value": "{count, plural, =0 {لا توجد إشعارات} =1 {إشعار جديد} =2 {إشعاران جديدان} other {{count} إشعارات جديدة}}"
+      },
+      {
+        "key": "campaigns.detail.status_days_left",
+        "value": "{count, plural, =1 {يوم واحد متبقي} =2 {يومان متبقيان} other {{count} أيام متبقية}}"
+      },
+      {
+        "key": "notifications.new",
+        "value": "{count, plural, one {جديد} other {جديدة}}"
+      },
+      {
+        "key": "sectors.filter_by",
+        "value": "تصفية حسب قطاع {sector}"
+      },
+      {
+        "key": "news_page.page_info",
+        "value": "الصفحة {page} من {totalPages}"
+      },
+      {
+        "key": "news_page.showing",
+        "value": "عرض {start}-{end} من أصل {total} خبر"
+      },
+      {
+        "key": "contact_page.phone_value",
+        "value": "05 22 51 00 51 (Standard) • 05 22 51 00 10 (Fax)"
+      },
+      {
+        "key": "contact_page.email_contact_value",
+        "value": "contact@provincemediouna.ma"
+      },
+      {
+        "key": "footer.idarati",
+        "value": "Idarati.ma"
+      },
+      {
+        "key": "footer.watiqa",
+        "value": "Watiqa.ma"
+      },
+      {
+        "key": "my_reclamations_page.empty.filtered",
+        "value": "لا توجد شكايات {filter}"
+      },
+      {
+        "key": "common.stars_rating",
+        "value": "تقييم {rating} نجوم"
+      },
+      {
+        "key": "events_page.showing",
+        "value": "عرض {start}-{end} من أصل {total} فعالية"
+      },
+      {
+        "key": "directory.showing",
+        "value": "عرض {start}-{end} من أصل {total} مؤسسة"
+      },
+      {
+        "key": "reclamation.auth.too_many_attempts",
+        "value": "محاولات اتصال كثيرة جدًا. يرجى المحاولة مرة أخرى خلال {minutes} من الدقائق."
+      },
+      {
+        "key": "reclamation.auth.account_locked",
+        "value": "تم حظر الحساب مؤقتًا. حاول مرة أخرى خلال {minutes} دقيقة."
+      },
+      {
+        "key": "security_page.authenticator_apps",
+        "value": "استخدم تطبيق مصادقة مثل <strong>Google Authenticator</strong> أو <strong>Microsoft Authenticator</strong> أو <strong>Authy</strong> لتوليد رموز التحقق."
+      },
+      {
+        "key": "etablissement_page.buttons.view_on_maps",
+        "value": "فتح في Google Maps"
+      },
+      {
+        "key": "search_page.results.count",
+        "value": "{count} نتيجة لـ \"{query}\""
+      },
+      {
+        "key": "search_page.no_results.title",
+        "value": "لا توجد نتائج لـ \"{query}\""
+      },
+      {
+        "key": "search_page.pagination",
+        "value": "الصفحة {page} من {totalPages}"
+      },
+      {
+        "key": "accessibility_page.features.keyboard.description",
+        "value": "يمكن الوصول إلى معظم الميزات عبر التنقل بلوحة المفاتيح (Tab، Enter، Space)."
+      },
+      {
+        "key": "admin.events_page.create_modal.step_indicator",
+        "value": "المرحلة {current} من {total}"
+      },
+      {
+        "key": "admin.news_page.pagination",
+        "value": "صفحة {page} من {totalPages} ({total})"
+      },
+      {
+        "key": "admin.users_page.pagination",
+        "value": "صفحة {start}-{end} من {total}"
+      },
+      {
+        "key": "admin.users_page.messages.reset_password_alert",
+        "value": "كلمة المرور الجديدة: {password}"
+      },
+      {
+        "key": "admin.users_page.create_modal.placeholders.email",
+        "value": "email@exemple.com"
+      },
+      {
+        "key": "admin.suggestions_page.page_info",
+        "value": "الصفحة {current} من {total}"
+      },
+      {
+        "key": "admin.reports_page.excel",
+        "value": "تصدير Excel"
+      },
+      {
+        "key": "audit_page.page_x_of_y",
+        "value": "الصفحة {current} من {total} ({count} مدخلات)"
+      },
+      {
+        "key": "import_page.subtitle",
+        "value": "أضف البيانات بسرعة عبر ملفات CSV/Excel"
+      },
+      {
+        "key": "import_page.upload.supported_formats",
+        "value": "CSV أو Excel مدعوم"
+      },
+      {
+        "key": "licence_page.help.step2",
+        "value": "إضافة المتغيرات: LICENSE_KEY، LICENSE_DOMAINS، LICENSE_EXPIRY"
+      },
+      {
+        "key": "licence_page.help.step3",
+        "value": "إعادة تشغيل التطبيق باستخدام docker compose restart app"
+      },
+      {
+        "key": "auth.too_many_attempts",
+        "value": "محاولات دخول كثيرة جداً. يرجى المحاولة بعد {minutes} دقيقة."
+      },
+      {
+        "key": "auth.account_locked",
+        "value": "الحساب مغلق مؤقتاً. يرجى المحاولة بعد {minutes} دقيقة."
+      },
+      {
+        "key": "auth.placeholders.email",
+        "value": "example@email.com"
+      },
+      {
+        "key": "coordinator.dashboard.alert.message",
+        "value": "لديك <strong>{count} أنشطة منجزة</strong> تتطلب تقرير إغلاق."
+      },
+      {
+        "key": "coordinator.dashboard.side_stats.progression",
+        "value": "{percent}% من الهدف الأسبوعي"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.help.step3",
+        "value": "استخدم المعرفات أدناه لعمود etablissementId"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.reference.hint",
+        "value": "استخدم المعرف (الرقم الأول) في عمود 'etablissementId' في ملفك"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.upload.hint",
+        "value": "CSV أو Excel (.csv, .xlsx)"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.upload.error_type",
+        "value": "يرجى اختيار ملف CSV أو Excel"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.import.success",
+        "value": "تم استيراد {success} نشاط(أنشطة) من أصل {total}"
+      },
+      {
+        "key": "coordinator.calendar.import_modal.import.row_error",
+        "value": "السطر {row}: {message}"
+      },
+      {
+        "key": "delegation.dashboard.title",
+        "value": "تفويض {sector}"
+      },
+      {
+        "key": "delegation.dashboard.kpi.pending",
+        "value": "{count, plural, =0 {لا شيء في الانتظار} =1 {واحد في الانتظار} other {{count} في الانتظار}}"
+      },
+      {
+        "key": "delegation.dashboard.todo.to_close",
+        "value": "{count, plural, =0 {لا توجد فعاليات للإغلاق} =1 {فعالية واحدة للإغلاق} other {{count} فعاليات للإغلاق}}"
+      },
+      {
+        "key": "delegation.dashboard.todo.to_close_campaigns",
+        "value": "{count, plural, =0 {لا توجد حملات للإغلاق} =1 {حملة واحدة للإغلاق} other {{count} حملات للإغلاق}}"
+      },
+      {
+        "key": "delegation.dashboard.event_creation.sections.organizer.email_placeholder",
+        "value": "contact@example.ma"
+      },
+      {
+        "key": "delegation.dashboard.event_creation.sections.participation.external_link_placeholder",
+        "value": "https://..."
+      },
+      {
+        "key": "delegation.dashboard.my_events.count_label",
+        "value": "{count, plural, =1 {حدث واحد} other {{count} أحداث}}"
+      },
+      {
+        "key": "delegation.dashboard.articles.count_label",
+        "value": "{count, plural, =1 {مقال واحد} other {{count} مقالات}}"
+      },
+      {
+        "key": "delegation.dashboard.campaigns.count_label",
+        "value": "{count, plural, =1 {حملة واحدة} other {{count} حملات}}"
+      },
+      {
+        "key": "super_admin.permissions.modal.code_tooltip",
+        "value": "المعرف التقني المستخدم في الكود (مثال: USERS_VIEW)"
+      },
+      {
+        "key": "notifications_page.page_info",
+        "value": "الصفحة {current} من {total}"
+      }
+    ]
+  }
+]

@@ -115,7 +115,11 @@ export async function GET(
         });
       }
       
-      return new NextResponse('Not Found', { status: 404 });
+      console.warn(`[FILE-SERVE] ❌ File not found: ${filePath}`);
+      return new NextResponse(JSON.stringify({ error: 'File Not Found', path: requestedPath }), { 
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // ═══════════════════════════════════════════════════════════════

@@ -71,63 +71,48 @@ Le script `scripts/backup.ts` crée une archive complète (Base de données + Fi
 ### 2.1 Lancement Manuel (Test)
 Depuis le dossier du projet :
 ```bash
-# Lancer le backup
-npx ts-node scripts/backup.ts
+# Lancer le backup (Base de données + Uploads)
+npm run system:backup
 ```
-✅ **Résultat :** Un dossier est créé : `backups/backup-2026-02-13-10h00/` contenant `database.dump` et `uploads.zip`.
+✅ **Résultat :** Un dossier est créé dans `backups/backup-YYYY-MM-DD.../` contenant `database.dump` et `uploads.zip`.
 
 ### 2.2 Automatisation Quotidienne (Cron)
-Pour sauvegarder tous les jours à 3h00 du matin :
+Pour sauvegarder tous les jours à 3h00 du matin sur deux disques :
 
-1. Ouvrir l'éditeur crontab :
-```bash
-crontab -e
-```
-
+1. Ouvrir l'éditeur crontab : `crontab -e`
 2. Ajouter la ligne suivante :
 ```bash
-0 3 * * * cd /chemin/vers/votre/projet && /usr/bin/npx ts-node scripts/backup.ts >> /var/log/medaction_backup.log 2>&1
+0 3 * * * cd /home/medaction && SECONDARY_BACKUP_DIR=/mnt/backup_disk npm run system:backup >> /var/log/medaction_backup.log 2>&1
 ```
 
 ---
 
-## 🔄 PARTIE 3 : Restauration en cas de Désastre (Restore)
+## 🔄 PARTIE 3 : Test de Reprise après Désastre (DR Test)
 
-Scénario : Le serveur a brûlé ou vous avez tout effacé par erreur. Vous avez réinstallé Docker et récupéré le code source.
-
-### Étape 3.1 : Pré-requis
-1. **Redémarrer les conteneurs** (vides) :
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-   *La base de données sera vide, le site sera "neuf".*
-
-2. **Avoir votre dossier de backup** prêt (récupéré depuis votre stockage externe/cloud).
-   Disons qu'il est dans `./backups/backup-2026-02-13-10h00`.
-
-### Étape 3.2 : Lancer la Restauration "One-Click"
+### Étape 3.1 : Simuler la perte de données
+⚠️ **ATTENTION :** Ne faites cela que si vous avez une sauvegarde valide !
 ```bash
-# Commande magique
-npx ts-node scripts/restore.ts ./backups/backup-2026-02-13-10h00
+# Supprimer toutes les données de la base
+docker exec -it medaction-postgres psql -U medaction -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+```
+
+### Étape 3.2 : Lancer la Restauration
+```bash
+npm run system:restore ./backups/backup-2026-04-14...
 ```
 
 ### Étape 3.3 : Ce que fait le script automatiquement
-1. 🛑 Il lit le fichier `database.dump`.
-2. 🗑️ Il vide la base de données actuelle.
-3. 📥 Il injecte toutes les anciennes données (utilisateurs, réclamations, configs...).
-4. 📂 Il dézippe `uploads.zip` et remet toutes les images à leur place dans `/mnt/data/medaction/uploads`.
-
-### Étape 3.4 : Vérification
-Connectez-vous au site. Tout doit être revenu exactement comme au moment du backup.
+1. 🛑 Il restaure `database.dump` dans PostgreSQL.
+2. 📂 Il dézippe `uploads.zip` et remet toutes les images dans le dossier des uploads.
 
 ---
 
-## 🛡️ Résumé des Commandes Utiles
+## 🛡️ Résumé des Commandes Finales
 
 | Action | Commande |
 | :--- | :--- |
-| **Vérifier l'espace disque** | `df -h /mnt/data` |
-| **Voir les backups** | `ls -lh ./backups` |
-| **Lancer un backup** | `npx ts-node scripts/backup.ts` |
-| **Restaurer** | `npx ts-node scripts/restore.ts <dossier_backup>` |
-| **Logs Docker** | `docker-compose -f docker-compose.prod.yml logs -f --tail=100` |
+| **Lancer Backup** | `npm run system:backup` |
+| **Restaurer Backup** | `npm run system:restore <chemin_backup>` |
+| **Vérifier Espace** | `df -h /mnt/data` |
+| **Voir les Backups** | `ls -lh ./backups` |
+| **Logs de Maintenance** | `cat /var/log/medaction_backup.log` |

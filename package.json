@@ -37,7 +37,9 @@
     "i18n:extract": "tsx scripts/i18n/extract-keys.ts",
     "i18n:validate": "tsx scripts/i18n/validate-translations.ts",
     "i18n:sync": "tsx scripts/i18n/sync-locales.ts",
-    "i18n:translate": "tsx scripts/i18n/translate-missing.ts"
+    "i18n:translate": "tsx scripts/i18n/translate-missing.ts",
+    "system:backup": "tsx scripts/backup.ts",
+    "system:restore": "tsx scripts/restore.ts"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.7.5",

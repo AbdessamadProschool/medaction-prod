@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { promisify } from 'util';
 
@@ -9,7 +9,7 @@ const execAsync = promisify(exec);
 const BACKUP_ROOT = process.env.BACKUP_DIR || join(process.cwd(), 'backups');
 const DB_USER = process.env.POSTGRES_USER || 'medaction';
 const DB_NAME = process.env.POSTGRES_DB || 'medaction';
-const CONTAINER_NAME = 'medaction-postgres'; // Nom du conteneur DB
+const CONTAINER_NAME = 'medaction-postgres'; 
 
 async function restore(backupPath: string) {
   console.log('🚀 Starting System Restore...');
@@ -26,54 +26,57 @@ async function restore(backupPath: string) {
   
   if (existsSync(dumpFile)) {
     try {
-      // Commande pour restaurer dans le conteneur Docker
-      // cat dump | docker exec -i CONTAINER pg_restore -U user -d db
-      const command = `type "${dumpFile}" | docker exec -i ${CONTAINER_NAME} pg_restore -U ${DB_USER} -d ${DB_NAME} -c`;
+      // Détecter la commande de lecture (type sur Windows, cat sur Linux)
+      const catCmd = process.platform === 'win32' ? 'type' : 'cat';
       
-      console.log('⏳ Executing restore (this may take a while)...');
+      // On force le mode clean (-c) pour écraser les données existantes
+      const command = `${catCmd} "${dumpFile}" | docker exec -i ${CONTAINER_NAME} pg_restore -U ${DB_USER} -d ${DB_NAME} -c`;
+      
+      console.log('⏳ Executing database restore (this may take a while)...');
       await execAsync(command);
       console.log('✅ Database restored successfully.');
     } catch (error) {
       console.error('❌ Database restore failed:', error);
-      console.log('💡 Tip: Ensure the database container is running.');
+      console.log('💡 Tip: Ensure the database container is running and healthy.');
     }
   } else {
     console.log('⚠️ No database dump found in backup.');
   }
 
   // 2. FILES RESTORE
-  console.log('ww️ Restoring Uploads...');
+  console.log('📂 Restoring Uploads...');
   const uploadsZip = join(backupPath, 'uploads.zip');
   const uploadDir = process.env.UPLOAD_DIR || join(process.cwd(), 'public', 'uploads');
 
   if (existsSync(uploadsZip)) {
     try {
-      // Dezip avec 7zip ou PowerShell (compatible Windows)
-      // Ici on assume un environnement node standard avec unzip
-      // Pour une portabilité max, on utiliserait une lib JS unzipper, 
-      // mais pour ce script admin, on utilise unzip système ou powershell
+      if (!existsSync(uploadDir)) mkdirSync(uploadDir, { recursive: true });
+
+      let unzipCmd;
+      if (process.platform === 'win32') {
+        unzipCmd = `powershell -command "Expand-Archive -Path '${uploadsZip}' -DestinationPath '${uploadDir}' -Force"`;
+      } else {
+        unzipCmd = `unzip -o "${uploadsZip}" -d "${uploadDir}"`;
+      }
       
-      // PowerShell command pour dézipper
-      const psCommand = `powershell -command "Expand-Archive -Path '${uploadsZip}' -DestinationPath '${uploadDir}' -Force"`;
-      await execAsync(psCommand);
-      
+      console.log('⏳ Unzipping files...');
+      await execAsync(unzipCmd);
       console.log('✅ Uploads restored successfully.');
     } catch (error) {
       console.error('❌ Upload restore failed:', error);
-      console.log('💡 Tip: Ensure powershell is available or install unzip.');
+      console.log('💡 Tip: Ensure "unzip" is installed on Linux or "powershell" on Windows.');
     }
   } else {
     console.log('⚠️ No uploads archive found in backup.');
   }
 
   console.log('🎉 System Restore Complete!');
-  console.log('🔄 Please restart the application container to ensure all caches are cleared.');
 }
 
 // Prendre le chemin du backup en argument
 const targetBackup = process.argv[2];
 if (!targetBackup) {
-  console.error('❌ Usage: npx ts-node scripts/restore.ts <path_to_backup_folder>');
+  console.error('❌ Usage: npm run system:restore <path_to_backup_folder>');
   process.exit(1);
 }
 

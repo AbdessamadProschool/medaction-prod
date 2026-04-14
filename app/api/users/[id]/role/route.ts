@@ -125,7 +125,8 @@ export async function PATCH(
 
     // Vérifier que les établissements existent si fournis (pour COORDINATEUR_ACTIVITES)
     if (etablissementsGeres && etablissementsGeres.length > 0) {
-      const etabs = await prisma.etablissement.findMany({ 
+      const etabs = await prisma.etablissement.findMany({
+      take: 100, 
         where: { id: { in: etablissementsGeres } } 
       });
       if (etabs.length !== etablissementsGeres.length) {

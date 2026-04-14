@@ -13,10 +13,22 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     throw new UnauthorizedError('Vous devez être connecté pour voir vos abonnements');
   }
 
-  const userId = parseInt(session.user.id);
+  const idRaw = session.user.id;
+  const userId = idRaw ? parseInt(idRaw) : NaN;
+  
+  if (isNaN(userId)) {
+    throw new ValidationError('ID utilisateur invalide');
+  }
+
   const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
+  
+  // Safe parsing of page and limit
+  const pageParam = searchParams.get('page');
+  const page = pageParam ? Math.max(parseInt(pageParam) || 1, 1) : 1;
+  
+  const limitParam = searchParams.get('limit');
+  const limit = limitParam ? Math.min(Math.max(parseInt(limitParam) || 20, 1), 100) : 20;
+  
   const skip = (page - 1) * limit;
 
   const [abonnements, total] = await Promise.all([
@@ -33,7 +45,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
             commune: { select: { nom: true } },
             _count: {
               select: {
-                evenements: true,
+                evenementsOrganises: true,
                 actualites: true,
               }
             }
@@ -69,7 +81,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     throw new UnauthorizedError('Vous devez être connecté pour vous abonner');
   }
 
-  const userId = parseInt(session.user.id);
+  const idRaw = session.user.id;
+  const userId = idRaw ? parseInt(idRaw) : NaN;
+  
+  if (isNaN(userId)) {
+    throw new UnauthorizedError('Identifiant utilisateur invalide');
+  }
   
   // Vérifier permission
   const { checkPermission } = await import("@/lib/permissions");

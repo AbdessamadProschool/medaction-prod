@@ -19,6 +19,7 @@ export async function POST(request: Request) {
 
     if (type === 'reclamations') {
         data = await prisma.reclamation.findMany({
+      take: 100,
             where: { createdAt: { gte: start, lte: end } },
             include: { commune: true, user: true }
         });
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
         ]);
     } else if (type === 'evenements') {
         data = await prisma.evenement.findMany({
+      take: 100,
             where: { createdAt: { gte: start, lte: end } },
             include: { commune: true }
         });

@@ -97,6 +97,7 @@ export async function GET(request: NextRequest) {
     let campagnesParticipations = 0;
     try {
       const campagneIds = await prisma.campagne.findMany({
+      take: 100,
         where: { createdBy: userId },
         select: { id: true }
       });

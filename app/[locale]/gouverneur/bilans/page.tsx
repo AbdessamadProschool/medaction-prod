@@ -139,7 +139,7 @@ export default function GouverneurBilansPage() {
       ]);
 
       if (reportsRes.success) {
-        setReports(reportsRes.data);
+        setReports(reportsRes.data || []);
       }
 
       if (evtRes.ok) {
@@ -224,19 +224,19 @@ export default function GouverneurBilansPage() {
                  <div class="grid">
                     <div class="card">
                        <h3>${isRTL ? 'الشكايات الواردة' : 'Réclamations Reçues'}</h3>
-                       <div class="value">${d.stats.reclamations.total}</div>
+                       <div class="value">${d.reclamations.total}</div>
                     </div>
                     <div class="card">
                        <h3>${isRTL ? 'نسبة المعالجة' : 'Taux de Résolution'}</h3>
-                       <div class="value" style="color: ${d.stats.reclamations.resolutionRate > 80 ? '#10b981' : '#f59e0b'}">${d.stats.reclamations.resolutionRate}%</div>
+                       <div class="value" style="color: ${d.reclamations.tauxResolution > 80 ? '#10b981' : '#f59e0b'}">${d.reclamations.tauxResolution}%</div>
                     </div>
                     <div class="card">
                        <h3>${isRTL ? 'المؤسسات' : 'Établissements'}</h3>
-                       <div class="value">${d.stats.etablissements.total}</div>
+                       <div class="value">${d.etablissements.total}</div>
                     </div>
                     <div class="card">
                        <h3>${isRTL ? 'الفعاليات القادمة' : 'Événements à Venir'}</h3>
-                       <div class="value">${d.stats.evenements.upcoming}</div>
+                       <div class="value">${d.evenements.total}</div>
                     </div>
                  </div>
               </div>
@@ -248,11 +248,11 @@ export default function GouverneurBilansPage() {
                  <div class="grid">
                     <div class="card">
                        <h3>${isRTL ? 'الأخبار المنشورة' : 'Actualités Publiées'}</h3>
-                       <div class="value">${d.stats.actualites?.total || 0}</div>
+                       <div class="value">${d.actualites?.total || 0}</div>
                     </div>
                     <div class="card">
                        <h3>${isRTL ? 'الحملات النشطة' : 'Campagnes Actives'}</h3>
-                       <div class="value">${d.stats.campagnes?.total || 0}</div>
+                       <div class="value">${d.campagnes?.total || 0}</div>
                     </div>
                  </div>
               </div>
@@ -271,7 +271,7 @@ export default function GouverneurBilansPage() {
                  <table class="table">
                     <thead><tr><th>${isRTL ? 'القطاع' : 'Secteur'}</th><th>${isRTL ? 'عدد المؤسسات' : 'Établissements'}</th></tr></thead>
                     <tbody>
-                       ${d.stats.etablissements.bySector.map((s: any) => `<tr><td>${s.secteur}</td><td><strong>${s.count}</strong></td></tr>`).join('')}
+                       ${d.evenements.parSecteur ? d.evenements.parSecteur.map((s: any) => `<tr><td>${s.secteur}</td><td><strong>${s.count}</strong></td></tr>`).join('') : ''}
                     </tbody>
                  </table>
               </div>

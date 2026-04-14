@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { authOptions } from "@/lib/auth/config";
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     // Filtres communs
     const etabWhere: any = { isPublie: true };
-    if (communeId) etabWhere.communeId = parseInt(communeId);
+    if (communeId) etabWhere.communeId = safeParseInt(communeId, 0);
     if (secteur) etabWhere.secteur = secteur;
 
     // Exécuter toutes les requêtes en parallèle pour optimiser

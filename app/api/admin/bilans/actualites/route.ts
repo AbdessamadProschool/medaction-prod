@@ -1,24 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { safeParseInt } from '@/lib/utils/parse';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
 
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Non autorisé');
-  }
-
-  const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
-  if (!allowedRoles.includes(session.user.role || '')) {
-    throw new ForbiddenError('Accès réservé aux administrateurs et gouverneurs');
-  }
-
+export const GET = withPermission('bilans.read', withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '50', 0), 100);
 
   const actualites = await prisma.actualite.findMany({
     where: { isPublie: true },
@@ -41,8 +29,5 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     take: limit
   });
 
-  return NextResponse.json({
-    success: true,
-    data: actualites
-  });
-});
+  return successResponse(actualites, 'Actualités récupérées avec succès');
+}));

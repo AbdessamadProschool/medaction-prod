@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -16,7 +17,7 @@ export async function GET(
     
     const campagne = await prisma.campagne.findFirst({
       where: isNumeric 
-        ? { id: parseInt(id) }
+        ? { id: safeParseInt(id, 0) }
         : { slug: id },
       include: {
         _count: {
@@ -92,7 +93,7 @@ export async function POST(
 
     const { id } = await params;
     const userId = parseInt(session.user.id);
-    const campagneId = parseInt(id);
+    const campagneId = safeParseInt(id, 0);
 
     // Vérification stricte de la permission de participer
     const { checkPermission } = await import("@/lib/permissions");
@@ -174,7 +175,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const campagneId = parseInt(id);
+    const campagneId = safeParseInt(id, 0);
     const body = await request.json();
 
     // Vérifier si la campagne existe
@@ -248,7 +249,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const campagneId = parseInt(id);
+    const campagneId = safeParseInt(id, 0);
 
     // Vérifier si la campagne existe
     const existingCampagne = await prisma.campagne.findUnique({

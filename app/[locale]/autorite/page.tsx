@@ -159,7 +159,7 @@ export default function AutoriteDashboard() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
-                {t('commune_prefix', { name: communeName })}
+                {t('commune_prefix', { name: communeName || '' })}
               </h1>
               {!isRtl && stats?.commune?.nomArabe && (
                 <p className="text-white/80 font-cairo text-lg" dir="rtl">{stats.commune.nomArabe}</p>
@@ -168,7 +168,7 @@ export default function AutoriteDashboard() {
                 <p className="text-white/80 font-outfit text-sm" dir="ltr">{stats.commune.nom}</p>
               )}
               <p className="text-white/70 mt-2 text-sm md:text-base font-light">
-                {t('welcome_message', { name: session?.user?.prenom })}
+                {t('welcome_message', { name: session?.user?.prenom || '' })}
               </p>
             </div>
           </div>
@@ -390,12 +390,18 @@ export default function AutoriteDashboard() {
                   <Link
                     key={etab.id}
                     href={`/etablissements/${etab.id}`}
-                    className="flex items-center justify-between p-3.5 hover:bg-gray-50 transition-all border-b border-gray-50 last:border-0 group"
+                    className="flex justify-between p-3.5 hover:bg-gray-50 transition-all border-b border-gray-50 last:border-0 group"
                   >
                     <div className="flex-1 min-w-0 ml-2 rtl:ml-0 rtl:mr-2">
-                      <p className="font-semibold text-gray-900 text-sm truncate group-hover:text-gov-blue transition-colors">
-                        {etab.nom}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-gray-900 text-sm truncate group-hover:text-gov-blue transition-colors">
+                          {etab.nom}
+                        </p>
+                         {/* Link inside Link is problematic, but we can use a span with onClick if needed or a separate icon */}
+                         <span className="p-1 text-gray-300 group-hover:text-emerald-500 transition-colors pointer-events-none">
+                            <FileText size={14} />
+                         </span>
+                      </div>
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wide mt-1 ${secteurColors[etab.secteur] || secteurColors.AUTRE}`}>
                         {tSectors(etab.secteur)}
                       </span>

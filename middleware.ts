@@ -116,6 +116,16 @@ const ALWAYS_PUBLIC_API_ROUTES = [
   '/api/license/check',
 ];
 
+const SENSITIVE_API_ROUTES = [
+  '/api/auth/callback/credentials',
+  '/api/auth/mobile/login',
+  '/api/auth/register',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+  '/api/auth/mobile/register',
+  '/api/auth/mobile/forgot-password',
+];
+
 // ═══════════════════════════════════════════════════════════════════
 // APIs MOBILES
 // ═══════════════════════════════════════════════════════════════════
@@ -228,6 +238,12 @@ function isAlwaysProtectedApiRoute(pathname: string): boolean {
   );
 }
 
+function isSensitiveApiRoute(pathname: string): boolean {
+  return SENSITIVE_API_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+}
+
 function getProtectedRouteRoles(pathname: string): Role[] | undefined {
   for (const [route, roles] of Object.entries(PROTECTED_ROUTES)) {
     if (pathname === route || pathname.startsWith(`${route}/`)) {
@@ -259,19 +275,61 @@ function isMutationMethod(method: string): boolean {
 }
 
 function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for');
+  // 1. Priorité absolue : l'IP détectée par la plateforme/runtime
+  if (request.ip) return request.ip;
+
+  // 2. En production, on ne fait pas confiance aux en-têtes HTTP arbitraires
+  // car ils peuvent être falsifiés par le client si le proxy n'est pas configuré pour les écraser.
+  if (process.env.NODE_ENV === 'production') {
+    return 'proxied-unknown';
+  }
+
+  // 3. En développement ou environnements spécifiques, on vérifie les headers standards
   const realIP = request.headers.get('x-real-ip');
-  
-  if (forwarded) return forwarded.split(',')[0].trim();
   if (realIP) return realIP;
+
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const ips = forwarded.split(',').map(ip => ip.trim());
+    return ips[ips.length - 1];
+  }
+
   return 'unknown';
 }
 
-function checkRateLimit(ip: string, isPublic: boolean = false): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const key = isPublic ? `public:${ip}` : `api:${ip}`;
-  const maxRequests = isPublic ? RATE_LIMIT_CONFIG.publicMaxRequests : RATE_LIMIT_CONFIG.apiMaxRequests;
+
+async function checkRateLimit(
+  ip: string, 
+  type: 'public' | 'api' | 'login' = 'api'
+): Promise<{ allowed: boolean; remaining: number }> {
+  let maxRequests = RATE_LIMIT_CONFIG.apiMaxRequests;
+  if (type === 'public') maxRequests = RATE_LIMIT_CONFIG.publicMaxRequests;
+  if (type === 'login') maxRequests = RATE_LIMIT_CONFIG.loginMaxRequests;
+
+  const key = `rate-limit:${type}:${ip}`;
   
+  // Si Upstash Redis est configuré
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    try {
+      const { Redis } = await import('@upstash/redis');
+      const redis = Redis.fromEnv();
+      
+      const requests = await redis.incr(key);
+      if (requests === 1) {
+        await redis.expire(key, Math.floor(RATE_LIMIT_CONFIG.windowMs / 1000));
+      }
+      
+      if (requests > maxRequests) {
+        return { allowed: false, remaining: 0 };
+      }
+      return { allowed: true, remaining: maxRequests - requests };
+    } catch (e) {
+      console.warn('Erreur Upstash Redis, fallback vers mémoire locale.', e);
+    }
+  }
+
+  // Fallback En mémoire
+  const now = Date.now();
   const entry = rateLimitStore.get(key);
   
   if (!entry || (now - entry.firstRequest) > RATE_LIMIT_CONFIG.windowMs) {
@@ -343,9 +401,18 @@ function getLocale(req: NextRequest): string {
 // ═══════════════════════════════════════════════════════════════════
 
 const authMiddleware = withAuth(
-  function middleware(req) {
+  async function middleware(req) {
     const { pathname } = req.nextUrl;
     const method = req.method;
+
+    // ─────────────────────────────────────────────────────────────────
+    // 0. BLOCAGE DES VERBES HTTP DANGEREUX (Verb Tampering)
+    // ─────────────────────────────────────────────────────────────────
+    const forbiddenMethods = ['TRACE', 'TRACK', 'CONNECT'];
+    if (forbiddenMethods.includes(method)) {
+      return createApiErrorResponse(405, 'HTTP method not allowed', 'METHOD_NOT_ALLOWED');
+    }
+
     const token = req.nextauth.token;
     const clientIP = getClientIP(req);
     const isApi = isApiRoute(pathname);
@@ -374,7 +441,7 @@ const authMiddleware = withAuth(
     // 3. APIs MOBILES
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isMobileApiRoute(pathname)) {
-      const rateLimit = checkRateLimit(clientIP, false);
+      const rateLimit = await checkRateLimit(clientIP, false);
       
       if (!rateLimit.allowed) {
         return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');
@@ -387,10 +454,24 @@ const authMiddleware = withAuth(
     }
     
     // ─────────────────────────────────────────────────────────────────
-    // 4. RATE LIMITING
+    // 0. PROTECTION DES ROUTES DE DÉVELOPPEMENT ET TEST
     // ─────────────────────────────────────────────────────────────────
-    const isPublicRequest = isApi && isPublicReadApiRoute(pathname) && isReadOnlyMethod(method);
-    const rateLimit = checkRateLimit(clientIP, isPublicRequest);
+    if (pathname.startsWith('/api/dev') || pathname.startsWith('/api/test-db')) {
+      if (process.env.NODE_ENV === 'production') {
+        return createApiErrorResponse(404, 'Not Found', 'NOT_FOUND');
+      }
+    }
+
+    // 1. RATE LIMITING (Sécurité anti-DoS)
+    // ─────────────────────────────────────────────────────────────────
+    let rateLimitType: 'public' | 'api' | 'login' = 'api';
+    if (isApi && isPublicReadApiRoute(pathname) && isReadOnlyMethod(method)) {
+      rateLimitType = 'public';
+    } else if (isApi && isSensitiveApiRoute(pathname)) {
+      rateLimitType = 'login';
+    }
+
+    const rateLimit = await checkRateLimit(clientIP, rateLimitType);
     
     if (!rateLimit.allowed) {
       if (isApi) {
@@ -449,7 +530,7 @@ const authMiddleware = withAuth(
         if (!allowedRoles.includes(userRole)) {
           return createApiErrorResponse(
             403,
-            `Access denied. Required roles: ${allowedRoles.join(', ')}. Your role: ${userRole}`,
+            'Access denied. You do not have the required permissions for this action.',
             'ACCESS_DENIED'
           );
         }
@@ -457,15 +538,32 @@ const authMiddleware = withAuth(
     }
     
     // ─────────────────────────────────────────────────────────────────
-    // 8. AUTRES ROUTES API
+    // 8. AUTRES ROUTES API (Protection par défaut)
     // ─────────────────────────────────────────────────────────────────
-    if (isApi && !isPublicReadApiRoute(pathname) && !isAlwaysProtectedApiRoute(pathname)) {
+    if (isApi && !isPublicReadApiRoute(pathname) && !isAlwaysPublicApiRoute(pathname)) {
       if (!token) {
         return createApiErrorResponse(401, 'Authentication required.', 'AUTHENTICATION_REQUIRED');
       }
       
       if (!token.isActive) {
         return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
+      }
+
+      // Hardening: Si c'est un segment sensible non listé explicitement
+      const sensitiveSegments = ['/api/admin', '/api/super-admin', '/api/gouverneur', '/api/logs', '/api/audit', '/api/settings'];
+      const userRole = token.role as Role;
+      
+      if (sensitiveSegments.some(seg => pathname.startsWith(seg))) {
+        const adminRoles: Role[] = ['ADMIN', 'SUPER_ADMIN'];
+        const gouverneurRoles: Role[] = ['GOUVERNEUR', 'SUPER_ADMIN'];
+        
+        if (pathname.startsWith('/api/gouverneur') && !gouverneurRoles.includes(userRole)) {
+          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+        }
+        
+        if ((pathname.startsWith('/api/admin') || pathname.startsWith('/api/super-admin')) && !adminRoles.includes(userRole)) {
+          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+        }
       }
     }
     

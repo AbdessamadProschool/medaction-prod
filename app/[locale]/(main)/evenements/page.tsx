@@ -27,9 +27,10 @@ interface Evenement {
   capaciteMax?: number;
   nombreInscrits: number;
   nombreVues: number;
-  etablissement: { nom: string };
+  etablissement?: { nom: string } | null;
   commune: { nom: string };
   medias?: { urlPublique: string }[];
+  isOrganiseParProvince?: boolean;
 }
 
 const SECTEURS = [

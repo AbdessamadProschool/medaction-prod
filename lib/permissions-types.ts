@@ -63,6 +63,8 @@ export type PermissionCode =
   | 'etablissements.validate'
   | 'etablissements.publish'
   | 'etablissements.subscribe'
+  | 'etablissements.request.create'
+  | 'etablissements.request.edit'
 
   // --- ÉVALUATIONS ---
   | 'evaluations.read'
@@ -98,6 +100,7 @@ export type PermissionCode =
   | 'stats.view.commune'
   | 'stats.view.etablissement'
   | 'reports.export'         
+  | 'bilans.read'            
 
   // --- CARTOGRAPHIE ---
   | 'map.view'
@@ -109,6 +112,8 @@ export type PermissionCode =
   | 'system.logs.view'
   | 'system.backup'
   | 'system.restore'
+  | 'system.import'
+  | 'system.license.read'
   | 'permissions.manage'     
   | 'communes.manage';       
 
@@ -175,6 +180,8 @@ export const PERMISSION_LABELS: Record<PermissionCode, string> = {
   'etablissements.validate': 'Valider établissement',
   'etablissements.publish': 'Publier établissement',
   'etablissements.subscribe': "S'abonner établissement",
+  'etablissements.request.create': "Demander la création d'établissement",
+  'etablissements.request.edit': "Demander la modification d'établissement",
 
   // Evaluations
   'evaluations.read': 'Lire évaluations',
@@ -210,6 +217,7 @@ export const PERMISSION_LABELS: Record<PermissionCode, string> = {
   'stats.view.commune': 'Voir stats commune',
   'stats.view.etablissement': 'Voir stats établissement',
   'reports.export': 'Exporter rapports',
+  'bilans.read': 'Consulter les bilans et rapports récapitulatifs',
 
   // Map
   'map.view': 'Voir carte',
@@ -221,6 +229,8 @@ export const PERMISSION_LABELS: Record<PermissionCode, string> = {
   'system.logs.view': 'Voir logs',
   'system.backup': 'Gérer backups',
   'system.restore': 'Restaurer système',
+  'system.import': 'Importer des données Excel/CSV',
+  'system.license.read': 'Consulter les informations de licence',
   'permissions.manage': 'Gérer permissions',
   'communes.manage': 'Gérer communes',
 };
@@ -252,6 +262,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     'evenements.create', 'evenements.edit', 'evenements.delete', 'evenements.report', // Scope secteur
     'actualites.create', 'actualites.edit', 'actualites.delete', 'actualites.publish',
     'campagnes.create', 'campagnes.edit', 'campagnes.activate', // Scope
+    'etablissements.request.create', 'etablissements.request.edit',
     'stats.view.secteur', 'stats.view.etablissement'
   ] as PermissionCode[],
 
@@ -278,6 +289,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     // Métier
     'programmes.create', 'programmes.edit', 'programmes.delete', 'programmes.report',
     'programmes.read', 
+    'etablissements.request.create', 'etablissements.request.edit',
     'stats.view.etablissement'
   ] as PermissionCode[],
 
@@ -307,6 +319,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     'etablissements.read',
     'campagnes.read',
     'programmes.read',
+    'bilans.read',
     'stats.view.global', 'stats.view.secteur', 'stats.view.commune', 'stats.view.etablissement',
     'reports.export',
     'map.view.full'
@@ -321,10 +334,12 @@ export const AVAILABLE_ADMIN_PERMISSIONS: PermissionCode[] = [
     'evenements.read.all', 'evenements.validate', 'evenements.delete', 'evenements.feature', 'evenements.edit.all', 'evenements.report',
     'actualites.validate', 'actualites.publish', 'actualites.delete',
     'etablissements.create', 'etablissements.edit', 'etablissements.validate', 'etablissements.publish', 'etablissements.delete',
+    'etablissements.request.create', 'etablissements.request.edit',
     'evaluations.validate', 'evaluations.delete',
     'campagnes.activate',
     'programmes.validate',
     'stats.view.global', 'stats.view.secteur', 'stats.view.commune', 'reports.export',
+    'bilans.read',
     'communes.manage',
     'system.logs.view',
     'permissions.manage' // Ajouté pour cohérence si besoin

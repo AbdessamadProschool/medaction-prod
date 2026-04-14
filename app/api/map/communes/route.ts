@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const includeStats = searchParams.get('includeStats') === 'true';
 
     const communes = await prisma.commune.findMany({
+      take: 100,
       select: {
         id: true,
         code: true,

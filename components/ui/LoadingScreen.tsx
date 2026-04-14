@@ -7,6 +7,8 @@ import { useTranslations } from 'next-intl';
 interface LoadingScreenProps {
   message?: string;
   size?: 'sm' | 'md' | 'lg' | 'fullscreen';
+  showProgress?: boolean;
+  progress?: number;
 }
 
 // Animated icons for different sectors
@@ -46,6 +48,8 @@ const AnimatedIcons = () => {
 export default function LoadingScreen({ 
   message, 
   size = 'fullscreen',
+  showProgress = false,
+  progress = 0
 }: LoadingScreenProps) {
   const t = useTranslations('loading_screen');
   const defaultMessage = t('default_message');

@@ -1,20 +1,44 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { z } from 'zod';
+import { sanitizeString } from '@/lib/security/validation';
+
+// Schéma de validation pour création d'article
+const createArticleSchema = z.object({
+  titre: z.string()
+    .min(5, "Le titre est obligatoire (minimum 5 caractères)")
+    .max(200, "Le titre ne doit pas dépasser 200 caractères")
+    .transform(sanitizeString),
+  description: z.string()
+    .max(500, "La description ne doit pas dépasser 500 caractères")
+    .optional()
+    .transform(v => v ? sanitizeString(v) : undefined),
+  contenu: z.string()
+    .min(50, "Le contenu est obligatoire (minimum 50 caractères)")
+    .transform(v => v.trim()),
+  categorie: z.string().optional().transform(v => v ? sanitizeString(v) : undefined),
+  imagePrincipale: z.string().optional(),
+  imageCouverture: z.string().optional(),
+  resume: z.string().optional().transform(v => v ? sanitizeString(v) : undefined),
+  tags: z.array(z.string()).optional(),
+  isPublie: z.boolean().optional(),
+});
 
 // GET - Liste publique des articles
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '12'), 100);
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '12', 0), 100);
   const search = searchParams.get('search') || '';
   const categorie = searchParams.get('categorie') || '';
 
-  const where: Record<string, unknown> = {
+  const where: Record<string, any> = {
     isPublie: true,
   };
 
@@ -111,43 +135,27 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   const body = await request.json();
 
-  // Validation détaillée
-  const errors: Array<{ field: string; message: string }> = [];
+  // Validation avec Zod
+  const validation = createArticleSchema.safeParse(body);
 
-  if (!body.titre || body.titre.trim().length < 5) {
-    errors.push({ field: 'titre', message: 'Le titre est obligatoire (minimum 5 caractères)' });
-  }
-  if (body.titre && body.titre.length > 200) {
-    errors.push({ field: 'titre', message: 'Le titre ne doit pas dépasser 200 caractères' });
-  }
-
-  if (!body.contenu || body.contenu.trim().length < 50) {
-    errors.push({ field: 'contenu', message: 'Le contenu est obligatoire (minimum 50 caractères)' });
+  if (!validation.success) {
+    throw new ValidationError('Données invalides', { 
+      fieldErrors: validation.error.flatten().fieldErrors 
+    });
   }
 
-  if (errors.length > 0) {
-    throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
-      { 
-        fieldErrors: errors.reduce((acc, e) => {
-          if (!acc[e.field]) acc[e.field] = [];
-          acc[e.field].push(e.message);
-          return acc;
-        }, {} as Record<string, string[]>)
-      }
-    );
-  }
+  const data = validation.data;
 
   const article = await prisma.article.create({
     data: {
-      titre: body.titre.trim(),
-      contenu: body.contenu.trim(),
-      description: body.resume?.trim() || body.description?.trim() || body.contenu.substring(0, 200),
-      categorie: body.categorie,
-      imagePrincipale: body.imageCouverture || body.imagePrincipale,
-      tags: body.tags || [],
-      isPublie: body.isPublie || false,
-      datePublication: body.isPublie ? new Date() : null,
+      titre: data.titre,
+      contenu: data.contenu,
+      description: data.resume || data.description || data.contenu.substring(0, 200),
+      categorie: data.categorie,
+      imagePrincipale: data.imageCouverture || data.imagePrincipale,
+      tags: data.tags || [],
+      isPublie: data.isPublie || false,
+      datePublication: data.isPublie ? new Date() : null,
       createdBy: userId,
     },
   });

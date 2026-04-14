@@ -202,6 +202,10 @@ model User {
   // Programmes d'activités créés par ce coordinateur
   programmesCrees         ProgrammeActivite[] @relation("ProgrammeCreateur")
   
+  // === RELATIONS WORKFLOW ÉTABLISSEMENTS ===
+  demandesSoumises        DemandeModificationEtablissement[] @relation("DemandesSoumises")
+  demandesValidees        DemandeModificationEtablissement[] @relation("DemandesValidees")
+  
   @@index([email])
   @@index([role])
   @@index([isActive])
@@ -425,6 +429,9 @@ model Etablissement {
   besoinsUrgents          String?
   projetsFuturs           String?
   
+  // === CHAMPS COMPLÉMENTAIRES (JSON Flexible) ===
+  champsComplementaires   Json      @default("{}")
+  
   // === MÉTADONNÉES ===
   annee                   Int       @default(2026)
   createdAt               DateTime  @default(now())
@@ -433,11 +440,18 @@ model Etablissement {
   // === RELATIONS ===
   evaluations             Evaluation[]
   reclamations            Reclamation[]
-  evenements              Evenement[]
+  evenementsOrganises     Evenement[] @relation("EvenementOrganisateur")
+  evenementsHeberges      Evenement[] @relation("EvenementLieu")
+  evenementsPartenaire    Evenement[] @relation("EvenementPartenaires")
+  campagnesHebergees      Campagne[]  @relation("CampagneLieu")
+  campagnesPartenaire     Campagne[]  @relation("CampagnePartenaires")
   actualites              Actualite[]
   abonnements             AbonnementEtablissement[]
   medias                  Media[]
-  programmesActivites     ProgrammeActivite[]
+  activitesOrganisees     ProgrammeActivite[] @relation("ActiviteOrganisateur")
+  activitesHebergees      ProgrammeActivite[] @relation("ActiviteLieu")
+  activitesPartenaire     ProgrammeActivite[] @relation("ActivitePartenaires")
+  demandesModification    DemandeModificationEtablissement[] @relation("DemandesModification")
   
   @@index([code])
   @@index([secteur])
@@ -703,12 +717,21 @@ model Suggestion {
 model Evenement {
   id                      Int       @id @default(autoincrement())
   
-  // === ÉTABLISSEMENT CONCERNÉ ===
-  etablissementId         Int
-  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  // === ORGANISATEUR PRINCIPAL ET SECTEUR ===
+  etablissementId         Int?
+  etablissement           Etablissement? @relation("EvenementOrganisateur", fields: [etablissementId], references: [id], onDelete: Cascade)
   
-  // Secteur (hérité établissement)
-  secteur                 Secteur
+  // Secteur (hérité établissement ou province)
+  secteur                 Secteur?
+  
+  // === NOUVELLES OPTIONS PROVINCE ET PARTENARIAT ===
+  isOrganiseParProvince   Boolean   @default(false)
+  sousCouvertProvince     Boolean   @default(false)
+  etablissementsPartenaires Etablissement[] @relation("EvenementPartenaires")
+  
+  // === LIEU DE L'ÉVÉNEMENT (si établissement différent) ===
+  lieuEtablissementId     Int?
+  lieuEtablissement       Etablissement? @relation("EvenementLieu", fields: [lieuEtablissementId], references: [id], onDelete: SetNull)
   
   // === LOCALISATION ===
   communeId               Int
@@ -954,6 +977,15 @@ model Campagne {
   imageCouverture         String?
   couleurTheme            String?   @default("#1e40af")
   
+  // === NOUVELLES OPTIONS PROVINCE ET PARTENARIAT ===
+  isOrganiseParProvince   Boolean   @default(false)
+  sousCouvertProvince     Boolean   @default(false)
+  etablissementsPartenaires Etablissement[] @relation("CampagnePartenaires")
+  
+  // === LIEU DE LA CAMPAGNE (si applicable) ===
+  lieuEtablissementId     Int?
+  lieuEtablissement       Etablissement? @relation("CampagneLieu", fields: [lieuEtablissementId], references: [id], onDelete: SetNull)
+  
   nombreVues              Int       @default(0)
   
   isActive                Boolean   @default(false)
@@ -1141,9 +1173,18 @@ model SystemSetting {
 model ProgrammeActivite {
   id                      Int       @id @default(autoincrement())
   
-  // === ÉTABLISSEMENT CONCERNÉ ===
-  etablissementId         Int
-  etablissement           Etablissement @relation(fields: [etablissementId], references: [id], onDelete: Cascade)
+  // === ORGANISATEUR PRINCIPAL ===
+  etablissementId         Int?
+  etablissement           Etablissement? @relation("ActiviteOrganisateur", fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // === NOUVELLES OPTIONS PROVINCE ET PARTENARIAT ===
+  isOrganiseParProvince   Boolean   @default(false)
+  sousCouvertProvince     Boolean   @default(false)
+  etablissementsPartenaires Etablissement[] @relation("ActivitePartenaires")
+  
+  // === LIEU DE L'ACTIVITÉ (si établissement différent) ===
+  lieuEtablissementId     Int?
+  lieuEtablissement       Etablissement? @relation("ActiviteLieu", fields: [lieuEtablissementId], references: [id], onDelete: SetNull)
   
   // === DATE ET PÉRIODE ===
   date                    DateTime  @db.Date
@@ -1296,5 +1337,54 @@ model ContactMessage {
   
   @@index([email])
   @@index([userId])
+  @@index([createdAt])
+}
+
+// ============================================
+// DEMANDES DE MODIFICATION / CRÉATION D'ÉTABLISSEMENTS
+// Workflow : DELEGATION/COORDINATEUR → Admin (Validation)
+// Trace toutes les opérations sensibles
+// ============================================
+
+model DemandeModificationEtablissement {
+  id                    Int       @id @default(autoincrement())
+  
+  // Type de demande
+  type                  String    @default("MODIFICATION") // "CREATION" ou "MODIFICATION"
+  
+  // Établissement cible (null si CREATION)
+  etablissementId       Int?
+  etablissement         Etablissement? @relation("DemandesModification", fields: [etablissementId], references: [id], onDelete: Cascade)
+  
+  // Données proposées (JSON complet ou partiel des champs Etablissement)
+  donneesModifiees      Json
+  
+  // Champs complémentaires libres
+  champsComplementaires Json      @default("{}")
+  
+  // Justification de l'opération
+  justification         String?   @db.Text
+  
+  // Statut du workflow
+  statut                String    @default("EN_ATTENTE_VALIDATION") // EN_ATTENTE_VALIDATION, APPROUVEE, REJETEE
+  motifRejet            String?   @db.Text
+  
+  // Traçabilité (Acteur)
+  soumisParId           Int
+  soumisPar             User      @relation("DemandesSoumises", fields: [soumisParId], references: [id])
+  
+  // Traçabilité (Validateur)
+  valideParId           Int?
+  validePar             User?     @relation("DemandesValidees", fields: [valideParId], references: [id])
+  
+  // Dates
+  dateValidation        DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([statut])
+  @@index([soumisParId])
+  @@index([etablissementId])
+  @@index([type])
   @@index([createdAt])
 }

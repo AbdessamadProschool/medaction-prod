@@ -24,9 +24,10 @@ interface Evenement {
   capaciteMax?: number;
   nombreInscrits: number;
   nombreVues: number;
-  etablissement: { nom: string };
+  etablissement?: { nom: string; nomArabe?: string } | null;
   commune: { nom: string; nomArabe?: string };
   medias?: { urlPublique: string }[];
+  isOrganiseParProvince?: boolean;
 }
 
 interface EventCardProps {
@@ -137,7 +138,11 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
            <div className="flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-1.5 truncate max-w-[60%]">
                  <MapPin className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">{event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}</span>
+                  <span className="truncate">
+                    {event.lieu || 
+                     (event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe || event.etablissement.nom) : event.etablissement.nom) : 
+                     (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna'))}
+                  </span>
               </div>
               {event.capaciteMax && (
                  <div className="flex items-center gap-1.5 font-medium">

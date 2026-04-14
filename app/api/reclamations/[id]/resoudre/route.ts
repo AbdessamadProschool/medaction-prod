@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -21,7 +22,7 @@ export async function POST(
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const reclamationId = parseInt(params.id);
+    const reclamationId = safeParseInt(params.id, 0);
     const body = await request.json();
     const { solution, commentaire } = body;
 

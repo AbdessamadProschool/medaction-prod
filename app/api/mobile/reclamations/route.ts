@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { decode } from 'next-auth/jwt';
 import { prisma } from '@/lib/db';
@@ -55,8 +56,8 @@ export async function GET(request: NextRequest) {
 
     // 3. Parse query params
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 50);
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = Math.min(safeParseInt(searchParams.get('limit') || '10', 0), 50);
     const status = searchParams.get('status');
 
     // 4. Build query
@@ -184,8 +185,8 @@ export async function POST(request: NextRequest) {
         description,
         categorie: categorie || 'AUTRE',
         userId,
-        etablissementId: etablissementId ? parseInt(etablissementId) : undefined,
-        communeId: communeId ? parseInt(communeId) : 1, // Default commune
+        etablissementId: etablissementId ? safeParseInt(etablissementId, 0) : undefined,
+        communeId: communeId ? safeParseInt(communeId, 0) : 1, // Default commune
         latitude: latitude ? parseFloat(latitude) : undefined,
         longitude: longitude ? parseFloat(longitude) : undefined,
         // Note: Les photos sont gérées via l'endpoint /api/upload et la relation medias

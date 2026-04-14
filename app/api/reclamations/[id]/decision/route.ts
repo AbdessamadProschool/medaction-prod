@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -28,7 +29,7 @@ export async function PATCH(
       }, { status: 403 });
     }
 
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
     const body = await request.json();
     const validation = decisionSchema.safeParse(body);
 

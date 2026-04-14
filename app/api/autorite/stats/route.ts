@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
             select: {
               reclamations: true,
               evaluations: true,
-              evenements: true,
+              evenementsOrganises: true,
             }
           }
         },

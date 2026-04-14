@@ -117,7 +117,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
           select: {
             evaluations: true,
             reclamations: true,
-            evenements: true,
+            evenementsOrganises: true,
           }
         }
       },

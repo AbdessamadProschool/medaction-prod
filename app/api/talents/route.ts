@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
@@ -9,8 +10,8 @@ import { z } from 'zod';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = safeParseInt(searchParams.get('limit') || '10', 0);
     const search = searchParams.get('search') || '';
     const domaine = searchParams.get('domaine') || '';
     const isPublie = searchParams.get('isPublie'); // 'true', 'false', or undefined

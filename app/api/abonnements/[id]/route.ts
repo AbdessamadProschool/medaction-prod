@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -16,7 +17,7 @@ export async function GET(
     }
 
     const { id } = await params;
-    const abonnementId = parseInt(id);
+    const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
 
     const abonnement = await prisma.abonnementEtablissement.findFirst({
@@ -62,7 +63,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const abonnementId = parseInt(id);
+    const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
     const body = await request.json();
     const { notificationsActives } = body;
@@ -117,7 +118,7 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const abonnementId = parseInt(id);
+    const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
 
     // Vérifier que l'abonnement appartient à l'utilisateur

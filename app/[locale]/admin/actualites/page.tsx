@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Actualite {
   id: number;
@@ -70,6 +70,7 @@ const SECTEURS_KEYS = [
 export default function AdminActualitesPage() {
   const t = useTranslations('admin.news_page');
   const tSectors = useTranslations('admin.users_page.sectors');
+  const locale = useLocale();
 
   const [actualites, setActualites] = useState<Actualite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -528,9 +529,9 @@ export default function AdminActualitesPage() {
               {/* Modal Content */}
               <div className="p-6 space-y-6">
                 {/* Image */}
-                {selectedActualite.imageUrl && (
+                {selectedActualite.medias?.[0]?.urlPublique && (
                   <img
-                    src={selectedActualite.imageUrl}
+                    src={selectedActualite.medias[0].urlPublique}
                     alt={selectedActualite.titre}
                     className="w-full h-48 object-cover rounded-xl"
                   />

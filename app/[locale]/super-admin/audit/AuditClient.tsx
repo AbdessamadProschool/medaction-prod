@@ -58,6 +58,7 @@ interface ActivityLog {
 // Composant pour afficher une valeur JSON de manière lisible
 const JSONValue = ({ value }: { value: any }) => {
   const locale = useLocale();
+  const t = useTranslations();
   if (value === null || value === undefined) {
     return <span className="text-gray-400 italic text-xs">null</span>;
   }
@@ -120,6 +121,7 @@ const JSONValue = ({ value }: { value: any }) => {
 
 const LogDetailsViewer = ({ details }: { details: any }) => {
   const locale = useLocale();
+  const t = useTranslations();
   if (!details) return null;
 
   // Handle ACCESS_DENIED specific structure

@@ -12,6 +12,7 @@ import {
   ChevronLeft, ChevronRight, X, User, MapPin, Tag, Building2 
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 
 interface Actualite {
   id: number;
@@ -62,15 +63,25 @@ export default function ActualiteDetailPage() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    let controller: AbortController | null = null;
+    
     if (params.id) {
-      fetch(`/api/actualites/${params.id}`)
+      controller = new AbortController();
+      fetch(`/api/actualites/${params.id}`, { signal: controller.signal })
         .then(res => res.json())
         .then(json => {
           setActualite(json.data);
           setLoading(false);
         })
-        .catch(() => setLoading(false));
+        .catch(err => {
+          if (err.name === 'AbortError') return;
+          setLoading(false);
+        });
     }
+
+    return () => {
+      if (controller) controller.abort();
+    };
   }, [params.id]);
 
   const handleShare = async () => {
@@ -263,12 +274,12 @@ export default function ActualiteDetailPage() {
               )}
 
               {/* Main HTML Content */}
-              <div 
+              <SafeHTML 
                  className={`prose prose-lg prose-slate max-w-none 
                  prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-[hsl(213,80%,28%)]
                  prose-a:text-[hsl(45,93%,47%)] prose-a:no-underline hover:prose-a:underline
                  prose-blockquote:border-l-4 prose-blockquote:border-[hsl(45,93%,47%)] prose-blockquote:bg-amber-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-r-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
-                 dangerouslySetInnerHTML={{ __html: actualite.contenu }}
+                 html={actualite.contenu}
               />
 
               {/* Tags */}

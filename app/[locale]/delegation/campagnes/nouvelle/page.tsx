@@ -46,6 +46,8 @@ export default function NouvelleCampagnePage() {
     dateFin: z.string().optional(),
     lieu: z.string().optional(),
     couleurTheme: z.string().optional(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
   });
 
   type CampagneForm = z.infer<typeof campagneSchema>;
@@ -53,7 +55,9 @@ export default function NouvelleCampagnePage() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<CampagneForm>({
     resolver: zodResolver(campagneSchema),
     defaultValues: {
-      couleurTheme: '#10b981'
+      couleurTheme: '#10b981',
+      isOrganiseParProvince: false,
+      sousCouvertProvince: false,
     }
   });
 
@@ -98,6 +102,8 @@ export default function NouvelleCampagnePage() {
         body: JSON.stringify({
             ...data,
             objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
+            isOrganiseParProvince: data.isOrganiseParProvince,
+            sousCouvertProvince: data.sousCouvertProvince,
             imagePrincipale: imageUrl
         }),
       });
@@ -401,6 +407,36 @@ export default function NouvelleCampagnePage() {
                     />
                   </div>
                 </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('isOrganiseParProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحملة مباشرة بعمالة مديونة</p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('sousCouvertProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+                  </div>
+                </label>
               </div>
             </div>
           </div>

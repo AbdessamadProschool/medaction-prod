@@ -30,7 +30,7 @@ export function showApiErrors(
   response: ApiErrorResponse,
   fallbackMessage: string = 'Une erreur est survenue'
 ) {
-  const errorInfo = response.error || response;
+  const errorInfo = (response.error || response) as any;
   
   // Cas 1: Erreurs avec détails de champs
   if (errorInfo.details && Array.isArray(errorInfo.details)) {

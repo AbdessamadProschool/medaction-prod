@@ -1,48 +1,38 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { NextRequest } from 'next/server';
 import { validateLicense } from '@/lib/license';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
+import { ForbiddenError } from '@/lib/exceptions';
 
 /**
  * GET /api/admin/license
  * Récupère les informations de licence (Super Admin uniquement)
  */
-export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
-    
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    // Récupérer les infos de licence depuis les variables d'environnement
-    const licenseKey = process.env.LICENSE_KEY || '';
-    const licenseDomains = process.env.LICENSE_DOMAINS || '';
-    const licenseExpiry = process.env.LICENSE_EXPIRY || '';
-
-    // Valider la licence
-    const validation = validateLicense();
-
-    // Masquer partiellement la clé pour la sécurité
-    const maskedKey = licenseKey 
-      ? `${licenseKey.substring(0, 8)}****${licenseKey.substring(licenseKey.length - 4)}`
-      : '';
-
-    return NextResponse.json({
-      valid: validation.valid,
-      error: validation.error,
-      daysRemaining: validation.details?.daysRemaining,
-      key: maskedKey,
-      domains: licenseDomains ? licenseDomains.split(',').map(d => d.trim()) : [],
-      expiryDate: licenseExpiry || null,
-    });
-    
-  } catch (error) {
-    console.error('Erreur GET /api/admin/license:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+export const GET = withPermission('system.license.read', withErrorHandler(async (req: NextRequest, { session }) => {
+  // Sécurité renforcée : Seul le super admin peut voir les détails de licence
+  if (session.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès réservé au Super Administrateur');
   }
-}
+
+  // Récupérer les infos de licence
+  const licenseKey = process.env.LICENSE_KEY || '';
+  const licenseDomains = process.env.LICENSE_DOMAINS || '';
+  const licenseExpiry = process.env.LICENSE_EXPIRY || '';
+
+  // Valider la licence
+  const validation = validateLicense();
+
+  // Masquer partiellement la clé
+  const maskedKey = licenseKey 
+    ? `${licenseKey.substring(0, 8)}****${licenseKey.substring(licenseKey.length - 4)}`
+    : '';
+
+  return successResponse({
+    valid: validation.valid,
+    error: validation.error,
+    daysRemaining: validation.details?.daysRemaining,
+    key: maskedKey,
+    domains: licenseDomains ? licenseDomains.split(',').map(d => d.trim()) : [],
+    expiryDate: licenseExpiry || null,
+  }, 'Informations de licence récupérées');
+}));

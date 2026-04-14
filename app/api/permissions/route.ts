@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     // Récupérer toutes les permissions (actives et inactives pour SUPER_ADMIN)
     const showAll = session.user.role === 'SUPER_ADMIN';
     const permissions = await prisma.permission.findMany({
+      take: 100,
       where: showAll ? {} : { isActive: true },
       orderBy: [
         { groupe: 'asc' },

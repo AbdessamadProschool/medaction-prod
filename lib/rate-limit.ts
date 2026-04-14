@@ -57,15 +57,12 @@ const rateLimitStore: Map<string, RateLimitEntry> = new Map();
 const CLEANUP_INTERVAL = 5 * 60 * 1000;
 let lastCleanup = Date.now();
 
-function cleanupExpiredEntries() {
+function cleanupIfNeeded() {
   const now = Date.now();
   if (now - lastCleanup < CLEANUP_INTERVAL) return;
   
   lastCleanup = now;
-  const entries = Array.from(rateLimitStore.entries());
-  
-  for (const [key, entry] of entries) {
-    // Supprimer les entrées inactives depuis plus de 10 minutes
+  for (const [key, entry] of rateLimitStore.entries()) {
     if (now - entry.lastRefill > 10 * 60 * 1000) {
       rateLimitStore.delete(key);
     }
@@ -84,7 +81,7 @@ export function checkRateLimit(
   identifier: string,
   config: RateLimitConfig = RATE_LIMIT_CONFIGS.default
 ): RateLimitResult {
-  cleanupExpiredEntries();
+  cleanupIfNeeded();
   
   const now = Date.now();
   const { maxRequests, windowMs } = config;
@@ -185,6 +182,7 @@ interface UploadThrottleEntry {
 }
 
 const uploadThrottleStore: Map<string, UploadThrottleEntry> = new Map();
+let lastUploadCleanup = Date.now(); // SUG-01: Indépendant du cleanup global
 
 // Limites uploads
 const UPLOAD_LIMITS = {
@@ -193,14 +191,19 @@ const UPLOAD_LIMITS = {
   maxFileSize: 10 * 1024 * 1024, // 10 MB par fichier
 };
 
-/**
- * Vérifier le throttling des uploads
- */
 export function checkUploadThrottle(
   identifier: string,
   fileSize: number
 ): { allowed: boolean; reason?: string } {
+  // MIN-04: Lazy cleanup pour le store d'uploads
   const now = Date.now();
+  if (now - lastUploadCleanup > CLEANUP_INTERVAL) {
+     lastUploadCleanup = now;
+     for (const [key, ent] of uploadThrottleStore.entries()) {
+        if (now - ent.lastUpload > 10 * 60 * 1000) uploadThrottleStore.delete(key);
+     }
+  }
+  
   const windowMs = 60000; // 1 minute
   
   let entry = uploadThrottleStore.get(identifier);
@@ -251,27 +254,14 @@ export function checkUploadThrottle(
 // EXPORT RATE LIMIT HEADERS
 // ============================================
 
-/**
- * Générer les headers de rate limit pour la réponse
- */
-export function getRateLimitHeaders(result: RateLimitResult): Record<string, string> {
+export function getRateLimitHeaders(result: RateLimitResult, maxRequests: number): Record<string, string> {
   return {
+    'X-RateLimit-Limit': maxRequests.toString(),
     'X-RateLimit-Remaining': result.remaining.toString(),
     'X-RateLimit-Reset': Math.ceil(result.resetIn / 1000).toString(),
     ...(result.retryAfter ? { 'Retry-After': result.retryAfter.toString() } : {}),
   };
 }
 
-// Nettoyage périodique des stores
-if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
-    const now = Date.now();
-    const uploadEntries = Array.from(uploadThrottleStore.entries());
-    
-    for (const [key, entry] of uploadEntries) {
-      if (now - entry.lastUpload > 10 * 60 * 1000) {
-        uploadThrottleStore.delete(key);
-      }
-    }
-  }, CLEANUP_INTERVAL);
-}
+// setInterval supprimé pour compatibilité Serverless/Edge
+// Dans un environnement de production multi-instances, utiliser Redis.

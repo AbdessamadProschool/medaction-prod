@@ -53,10 +53,12 @@ interface Evenement {
   bilanNbParticipants?: number;
   compteRenduUrl?: string;
   tags: string[];
-  etablissement: { nom: string; nomArabe?: string; secteur: string };
+  etablissement?: { nom: string; nomArabe?: string; secteur: string } | null;
   commune: { nom: string; nomArabe?: string };
   createdByUser: { nom: string; prenom: string };
   medias: { id: number; urlPublique: string; type: string }[];
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
 }
 
 const getSecteurConfig = (t: any): Record<string, { gradient: string; Icon: LucideIcon; label: string; bgLight: string }> => ({
@@ -331,8 +333,21 @@ export default function EvenementDetailPage() {
                   </div>
                   <div>
                      <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.organizer')}</p>
-                     <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.organisateur || (locale === 'ar' ? (event.etablissement?.nomArabe || event.etablissement?.nom) : event.etablissement?.nom) || 'N/A'}</p>
-                     <p className="text-sm opacity-80 truncate max-w-[200px]">{t('labels.official_event')}</p>
+                     <p className="font-bold text-lg leading-tight line-clamp-2">
+                      {event.organisateur || 
+                       (event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe || event.etablissement.nom) : event.etablissement.nom) : 
+                       (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna'))}
+                     </p>
+                     {event.sousCouvertProvince ? (
+                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold shadow-sm backdrop-blur-md">
+                             <Sparkles className="w-3 h-3" />
+                             {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
+                         </div>
+                     ) : (
+                         <p className="text-sm opacity-80 line-clamp-1 mt-0.5">
+                            {event.isOrganiseParProvince ? t('labels.provincial_event') : t('labels.official_event')}
+                         </p>
+                     )}
                   </div>
                </div>
             </motion.div>
@@ -530,11 +545,23 @@ export default function EvenementDetailPage() {
                 
                 <div className="flex items-center gap-4 mb-4">
                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-400 text-lg">
-                      {locale === 'ar' ? (event.etablissement?.nomArabe?.[0] || event.etablissement?.nom?.[0]) : event.etablissement?.nom?.[0] || '?'}
+                      {(event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe?.[0] || event.etablissement.nom?.[0]) : event.etablissement.nom?.[0]) : 'M') || '?'}
                    </div>
                    <div>
-                      <p className="font-bold text-gray-900 leading-tight">{locale === 'ar' ? (event.etablissement?.nomArabe || event.etablissement?.nom) : event.etablissement?.nom || 'N/A'}</p>
-                      <p className="text-xs text-gray-500">{event.etablissement?.secteur || 'N/A'}</p>
+                      <p className="font-bold text-gray-900 leading-tight mt-0.5">
+                       {event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe || event.etablissement.nom) : event.etablissement.nom) : 
+                       (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna')}
+                      </p>
+                      {event.sousCouvertProvince ? (
+                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold shadow-sm">
+                             <Sparkles className="w-3.5 h-3.5" />
+                             {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
+                         </div>
+                      ) : (
+                         <p className="text-xs text-gray-500 mt-0.5">
+                            {event.etablissement?.secteur || t('labels.provincial_organization')}
+                         </p>
+                      )}
                    </div>
                 </div>
 

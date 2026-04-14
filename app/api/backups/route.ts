@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
       prisma.actualite.findMany(),
       prisma.article.findMany(),
       prisma.campagne.findMany(),
-      prisma.reclamation.findMany({ include: { historique: true } }),
+      prisma.reclamation.findMany({
+      take: 100, include: { historique: true } }),
       prisma.suggestion.findMany(),
       prisma.programmeActivite.findMany(),
       prisma.evaluation.findMany(),

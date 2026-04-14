@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     await (prisma as any).contactMessage.update({
-      where: { id: typeof id === 'string' ? parseInt(id) : id },
+      where: { id: typeof id === 'string' ? safeParseInt(id, 0) : id },
       data: { isRead: true }
     });
 

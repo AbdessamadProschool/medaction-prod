@@ -36,6 +36,9 @@ export default function NouveauEventPage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [etablissements, setEtablissements] = useState<{id: number, nom: string, secteur?: string}[]>([]);
+  const [allEtablissements, setAllEtablissements] = useState<{id: number, nom: string, secteur: string}[]>([]);
+  const [locationMode, setLocationMode] = useState<'manuel' | 'etablissement'>('manuel');
+  const [lieuSecteur, setLieuSecteur] = useState('');
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -61,6 +64,9 @@ export default function NouveauEventPage() {
     inscriptionsOuvertes: z.boolean().optional(),
     lienInscription: z.string().url(t('validation.url_invalid')).optional().or(z.literal('')),
     tags: z.string().optional(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
+    lieuEtablissementId: z.string().optional(),
   });
 
   type EventForm = z.infer<typeof eventSchema>;
@@ -68,7 +74,9 @@ export default function NouveauEventPage() {
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EventForm>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
-      inscriptionsOuvertes: false
+      inscriptionsOuvertes: false,
+      isOrganiseParProvince: false,
+      sousCouvertProvince: false,
     }
   });
 
@@ -101,6 +109,13 @@ export default function NouveauEventPage() {
         const data = await res.json();
         if (data.data) {
           setEtablissements(data.data);
+        }
+        
+        // Fetch all establishments for location selection
+        const resAll = await fetch('/api/etablissements?limit=100');
+        const dataAll = await resAll.json();
+        if (dataAll.data) {
+          setAllEtablissements(dataAll.data);
         }
       } catch (error) {
         console.error("Erreur chargement établissements", error);
@@ -192,6 +207,12 @@ export default function NouveauEventPage() {
             etablissementId: parseInt(data.etablissementId),
             capaciteMax: data.capaciteMax ? parseInt(data.capaciteMax) : null,
             tags: tagsArray,
+            isOrganiseParProvince: data.isOrganiseParProvince,
+            sousCouvertProvince: data.sousCouvertProvince,
+            lieuEtablissementId: locationMode === 'etablissement' && data.lieuEtablissementId ? parseInt(data.lieuEtablissementId) : null,
+            lieu: locationMode === 'manuel' ? data.lieu : null,
+            adresse: locationMode === 'manuel' ? data.adresse : null,
+            quartierDouar: locationMode === 'manuel' ? data.quartierDouar : null,
             imagePrincipale: imageUrl
         }),
       });
@@ -516,43 +537,96 @@ export default function NouveauEventPage() {
               </div>
 
               {/* Lieu */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-3">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
                   <label className="block text-sm font-bold text-gray-700 text-start">
                     <MapPin className="w-4 h-4 inline me-2 text-gray-400" />
                     {t('sections.datetime.location')}
                   </label>
-                  <input
-                    {...register('lieu')}
-                    type="text"
-                    placeholder={t('sections.datetime.location_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
-                  />
+                  
+                  <div className="flex bg-gray-100 p-1 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setLocationMode('manuel')}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      {t('sections.datetime.manual_entry')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLocationMode('etablissement')}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      {t('sections.datetime.existing_establishment')}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="block text-sm font-bold text-gray-700 text-start">
-                    {t('sections.datetime.address')}
-                  </label>
-                  <input
-                    {...register('adresse')}
-                    type="text"
-                    placeholder={t('sections.datetime.address_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 bg-gray-50/50 focus:bg-white text-sm text-start"
-                  />
-                </div>
-              </div>
+                {locationMode === 'etablissement' ? (
+                  <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="space-y-3">
+                      <label className="block text-xs font-bold text-gray-600 text-start">{t('sections.datetime.location_sector')}</label>
+                      <select
+                        value={lieuSecteur}
+                        onChange={(e) => setLieuSecteur(e.target.value)}
+                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                      >
+                        <option value="">{t('sections.datetime.all_sectors')}</option>
+                        <option value="EDUCATION">Éducation</option>
+                        <option value="SANTE">Santé</option>
+                        <option value="SPORT">Sport</option>
+                        <option value="SOCIAL">Social</option>
+                        <option value="CULTUREL">Culturel</option>
+                        <option value="AUTRE">Autre</option>
+                      </select>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="block text-xs font-bold text-gray-600 text-start">{t('sections.datetime.establishment_location_label')}</label>
+                      <select
+                        {...register('lieuEtablissementId')}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                      >
+                        <option value="">{t('sections.datetime.select_establishment_location')}</option>
+                        {allEtablissements
+                          .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
+                          .map(e => (
+                          <option key={e.id} value={e.id} className="truncate max-w-[250px]">{e.nom} {e.secteur ? `(${e.secteur})` : ''}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <input
+                          {...register('lieu')}
+                          type="text"
+                          placeholder={t('sections.datetime.location_placeholder')}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
+                        />
+                      </div>
 
-              <div className="space-y-3">
-                <label className="block text-sm font-bold text-gray-700 text-start">
-                  {t('sections.datetime.neighborhood')}
-                </label>
-                <input
-                  {...register('quartierDouar')}
-                  type="text"
-                  placeholder={t('sections.datetime.neighborhood_placeholder')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
-                />
+                      <div className="space-y-3">
+                        <input
+                          {...register('adresse')}
+                          type="text"
+                          placeholder={t('sections.datetime.address_placeholder')}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 bg-gray-50/50 focus:bg-white text-sm text-start"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <input
+                        {...register('quartierDouar')}
+                        type="text"
+                        placeholder={t('sections.datetime.neighborhood_placeholder')}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -606,6 +680,36 @@ export default function NouveauEventPage() {
                   />
                   {errors.emailContact && <p className="text-red-500 text-sm mt-2 font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {errors.emailContact.message}</p>}
                 </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('isOrganiseParProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحدث مباشرة بعمالة مديونة</p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('sousCouvertProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+                  </div>
+                </label>
               </div>
             </div>
           </div>

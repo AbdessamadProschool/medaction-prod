@@ -5,13 +5,16 @@ import { Prisma } from '@prisma/client';
 import { formatZodErrors, formatPrismaError, createErrorResponse } from './error-formatter';
 import { SystemLogger } from './system-logger';
 
-type ApiContext = {
-  params: any;
+import { Session } from 'next-auth';
+
+export type ApiContext = {
+  params?: any; // MAJ Next.js 15 params can be a Promise
+  session?: Session; // MAJ-01: Session typée
 };
 
 type ApiHandler = (
   req: NextRequest,
-  context: ApiContext
+  context: any
 ) => Promise<NextResponse>;
 
 /**
@@ -24,27 +27,20 @@ type ApiHandler = (
  * - Gestion des erreurs Prisma avec messages explicites
  * - Logging sécurisé (stack trace en dev seulement)
  */
-export function withErrorHandler(handler: ApiHandler): (req: NextRequest, context: ApiContext) => Promise<NextResponse> {
-  return async (req: NextRequest, context: ApiContext) => {
+export function withErrorHandler(handler: ApiHandler): (req: NextRequest, context: any) => Promise<NextResponse> {
+  return async (req: NextRequest, context: any) => {
     try {
       // Exécuter la logique métier
       return await handler(req, context);
     } catch (error: any) {
-      // 1. Logging Sécurisé (Interne seulement)
-      console.error('[API_ERROR]', {
-        path: req.url,
-        method: req.method,
-        error: error.message,
-        code: error.code,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      });
-
-      // Log to SystemLogger for dynamic monitoring
+      // 1. Logging Sécurisé
       const urlPath = new URL(req.url).pathname;
-      SystemLogger.error('api', `${req.method} ${urlPath} - ${error.message}`, {
+      const errorMsg = error instanceof Error ? error.message : String(error); // MIN-01: Guard message
+      SystemLogger.error('api', `${req.method} ${urlPath} - ${errorMsg}`, {
         path: urlPath,
         method: req.method,
         errorCode: error.code,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
       });
 
       // 2. Gestion des types d'erreurs connus

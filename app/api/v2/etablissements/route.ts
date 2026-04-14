@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 /**
  * API Route optimisée pour les établissements
  * Utilise le cache, pagination par curseur, et sélections optimisées
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     const useCursor = cursor !== null || searchParams.get('mode') === 'cursor';
     
     // Params communs
-    const limit = Math.min(50, parseInt(searchParams.get('limit') || '12'));
+    const limit = Math.min(50, safeParseInt(searchParams.get('limit') || '12', 0));
     const secteur = searchParams.get('secteur');
     const communeId = searchParams.get('communeId');
     const search = searchParams.get('search');
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (communeId) {
-      where.communeId = parseInt(communeId);
+      where.communeId = safeParseInt(communeId, 0);
     }
     
     // Recherche textuelle
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
     // ======================================
     if (useCursor) {
       const cursorOptions = buildCursorPagination({
-        cursor: cursor ? parseInt(cursor) : undefined,
+        cursor: cursor ? safeParseInt(cursor, 0) : undefined,
         limit,
       });
       

@@ -134,7 +134,7 @@ export default function AdminSuggestionsPage() {
       });
 
       if (res.ok) {
-        const statutLabel = STATUT_CONFIG[newStatut]?.label || newStatut;
+        const statutLabel = t(`statuses.${newStatut}`);
         toast.success(`Statut changé: ${statutLabel}`);
         fetchSuggestions();
         setShowDetailModal(false);

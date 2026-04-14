@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 
 interface PendingItem {
   id: number;
@@ -457,9 +458,9 @@ export default function ValidationPage() {
                )}
 
                {selectedItem.contenu && (
-                 <div 
+                 <SafeHTML 
                    className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-2xl ltr:[&_*]:text-left rtl:[&_*]:text-right text-gray-800 dark:text-gray-200"
-                   dangerouslySetInnerHTML={{ __html: selectedItem.contenu }}
+                   html={selectedItem.contenu}
                  />
                )}
                

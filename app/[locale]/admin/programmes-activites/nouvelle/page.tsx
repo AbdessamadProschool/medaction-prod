@@ -31,6 +31,8 @@ export default function AdminNouveauProgrammePage() {
     responsableNom: z.string().optional(),
     participantsAttendus: z.string().optional().refine((val) => !val || !isNaN(parseInt(val)), t('fields.participants')), // "Must be a number"
     description: z.string().optional(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
   }), [t]);
 
   type FormValues = z.infer<typeof formSchema>;
@@ -52,7 +54,9 @@ export default function AdminNouveauProgrammePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       typeActivite: "Culturel",
-      participantsAttendus: "0"
+      participantsAttendus: "0",
+      isOrganiseParProvince: false,
+      sousCouvertProvince: false,
     }
   });
 
@@ -65,6 +69,8 @@ export default function AdminNouveauProgrammePage() {
         ...data,
         etablissementId: parseInt(data.etablissementId),
         participantsAttendus: data.participantsAttendus ? parseInt(data.participantsAttendus) : undefined,
+        isOrganiseParProvince: data.isOrganiseParProvince,
+        sousCouvertProvince: data.sousCouvertProvince,
       };
 
       const res = await fetch("/api/programmes-activites", {
@@ -255,7 +261,7 @@ export default function AdminNouveauProgrammePage() {
               </div>
 
                <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.participants')}</label>
+                 <label className="text-sm font-medium">{t('fields.participants')}</label>
                 <input
                   type="number"
                   {...register("participantsAttendus")}
@@ -263,6 +269,36 @@ export default function AdminNouveauProgrammePage() {
                 />
                 {errors.participantsAttendus && <p className="text-sm text-red-500">{errors.participantsAttendus.message}</p>}
               </div>
+            </div>
+            
+            <div className="grid gap-4 md:grid-cols-2 mt-4 pt-4 border-t">
+              <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                <div className="pt-0.5">
+                  <input
+                    type="checkbox"
+                    {...register("isOrganiseParProvince")}
+                    className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="text-start">
+                  <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                  <p className="text-[10px] text-gray-500 mt-1">سيتم ربط النشاط مباشرة بعمالة مديونة</p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                <div className="pt-0.5">
+                  <input
+                    type="checkbox"
+                    {...register("sousCouvertProvince")}
+                    className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="text-start">
+                  <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                  <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+                </div>
+              </label>
             </div>
           </div>
 

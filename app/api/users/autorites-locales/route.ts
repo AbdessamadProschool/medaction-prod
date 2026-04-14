@@ -18,21 +18,28 @@ export async function GET(req: NextRequest) {
     }
 
     const searchParams = req.nextUrl.searchParams;
-    const communeId = searchParams.get('communeId');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+    const communeIdRaw = searchParams.get('communeId');
+    const communeId = communeIdRaw ? parseInt(communeIdRaw) : undefined;
+    
+    if (communeIdRaw && isNaN(communeId as number)) {
+      return NextResponse.json({ error: 'ID Commune invalide' }, { status: 400 });
+    }
 
     // Construire le filtre
-    const where: any = {
+    const where: import('@prisma/client').Prisma.UserWhereInput = {
       role: 'AUTORITE_LOCALE',
       isActive: true,
     };
 
     // Si communeId spécifié, filtrer par commune
-    if (communeId) {
-      where.communeResponsableId = parseInt(communeId);
+    if (communeId !== undefined) {
+      where.communeResponsableId = communeId;
     }
 
     const autorites = await prisma.user.findMany({
       where,
+      take: limit,
       select: {
         id: true,
         nom: true,

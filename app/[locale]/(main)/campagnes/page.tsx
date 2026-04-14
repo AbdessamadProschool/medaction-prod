@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   Megaphone, Search, Users, Target, ChevronLeft, ChevronRight,
   Loader2, X, Calendar, CheckCircle, ArrowRight, Sparkles, Heart, Filter
@@ -13,6 +13,7 @@ import {
 import { useSession } from 'next-auth/react';
 import { PermissionGuard } from '@/hooks/use-permission';
 import CampaignCard from '@/components/campagnes/CampaignCard';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 
 interface Campagne {
   id: number;
@@ -42,6 +43,7 @@ interface TypeCampagne {
 
 function CampagnesContent() {
   const t = useTranslations('campaigns');
+  const locale = useLocale();
   const { data: session } = useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -66,9 +68,10 @@ function CampagnesContent() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Views Increment Logic
+  // Views Increment Logic & Scroll Lock
   useEffect(() => {
     if (selectedCampagne) {
+      document.body.style.overflow = 'hidden';
       const viewedKey = `viewed_campaign_${selectedCampagne.id}`;
       const hasViewed = sessionStorage.getItem(viewedKey);
 
@@ -76,7 +79,13 @@ function CampagnesContent() {
         fetch(`/api/campagnes/${selectedCampagne.id}/vues`, { method: 'POST' });
         sessionStorage.setItem(viewedKey, 'true');
       }
+    } else {
+      document.body.style.overflow = 'unset';
     }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [selectedCampagne]);
 
   // Fetch Data
@@ -480,107 +489,123 @@ function CampagnesContent() {
                   </div>
               </div>
 
-              {/* Modal Content */}
-              <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
+              {/* Modal Content and Footer Wrap */}
+              <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 {participationSuccess ? (
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="flex flex-col items-center text-center py-10"
-                  >
-                    <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
-                      <CheckCircle className="w-12 h-12 text-emerald-600" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      {t('success_title')}
-                    </h3>
-                    <p className="text-gray-500 mb-8 max-w-sm">
-                      {t('success_message')}
-                    </p>
-                    <button
-                      onClick={() => { setSelectedCampagne(null); setParticipationSuccess(false); }}
-                      className="px-8 py-3 bg-gray-100 text-gray-900 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                  <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="flex flex-col items-center text-center py-10"
                     >
-                      {t('close')}
-                    </button>
-                  </motion.div>
+                      <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                        <CheckCircle className="w-12 h-12 text-emerald-600" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        {t('success_title')}
+                      </h3>
+                      <p className="text-gray-500 mb-8 max-w-sm">
+                        {t('success_message')}
+                      </p>
+                      <button
+                        onClick={() => { setSelectedCampagne(null); setParticipationSuccess(false); }}
+                        className="px-8 py-3 bg-gray-100 text-gray-900 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                      >
+                        {t('close')}
+                      </button>
+                    </motion.div>
+                  </div>
                 ) : (
                   <>
-                     <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-500">
-                        {(selectedCampagne.dateDebut || selectedCampagne.dateFin) && (
-                           <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                              <Calendar className="w-4 h-4 text-gray-400" />
-                              <span>
-                                 {selectedCampagne.dateDebut && new Date(selectedCampagne.dateDebut).toLocaleDateString('fr-FR')}
-                                 {selectedCampagne.dateFin && ` - ${new Date(selectedCampagne.dateFin).toLocaleDateString('fr-FR')}`}
-                              </span>
-                           </div>
-                        )}
-                        <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                           <Users className="w-4 h-4 text-gray-400" />
-                           <span>{selectedCampagne.nombreParticipations} {t('participants')}</span>
-                        </div>
-                     </div>
+                     <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
+                       <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-500">
+                          {(selectedCampagne.dateDebut || selectedCampagne.dateFin) && (
+                             <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                                <Calendar className="w-4 h-4 text-gray-400" />
+                                <span>
+                                   {selectedCampagne.dateDebut && new Date(selectedCampagne.dateDebut).toLocaleDateString('fr-FR')}
+                                   {selectedCampagne.dateFin && ` - ${new Date(selectedCampagne.dateFin).toLocaleDateString('fr-FR')}`}
+                                </span>
+                             </div>
+                          )}
+                          <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                             <Users className="w-4 h-4 text-gray-400" />
+                             <span>{selectedCampagne.nombreParticipations} {t('participants')}</span>
+                          </div>
+                       </div>
 
-                    <div className="prose prose-emerald max-w-none mb-8 text-gray-600">
-                        {selectedCampagne.description && <p className="lead">{selectedCampagne.description}</p>}
-                        {selectedCampagne.contenu && (
-                           <div dangerouslySetInnerHTML={{ __html: selectedCampagne.contenu }} />
-                        )}
-                    </div>
-
-                    {/* Progress Bar inside Modal */}
-                    {selectedCampagne.objectifParticipations && (
-                      <div className="bg-emerald-50/50 rounded-2xl p-5 mb-8 border border-emerald-100">
-                        <div className="flex items-center justify-between mb-3">
-                           <span className="font-bold text-emerald-900 text-sm">{t('objective_progress')}</span>
-                           <span className="text-emerald-700 font-bold text-sm">
-                              {Math.round(getProgress(selectedCampagne))}%
-                           </span>
-                        </div>
-                        <div className="h-4 bg-emerald-100 rounded-full overflow-hidden">
-                           <div 
-                              className="h-full rounded-full transition-all duration-1000 bg-emerald-500"
-                              style={{ width: `${getProgress(selectedCampagne)}%`}}
-                           />
-                        </div>
-                        <p className="text-center text-xs text-emerald-600/80 mt-2 font-medium">
-                           {selectedCampagne.nombreParticipations} sur {selectedCampagne.objectifParticipations} {t('participants_required')}
-                        </p>
+                      <div 
+                         className="prose prose-emerald max-w-none mb-8 text-gray-600"
+                         dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                      >
+                          {selectedCampagne.description && <p className="lead">{selectedCampagne.description}</p>}
+                          {selectedCampagne.contenu && (
+                             <SafeHTML html={selectedCampagne.contenu} />
+                          )}
                       </div>
-                    )}
 
-                     {/* Action Button */}
-                     <PermissionGuard 
-                        permission="campagnes.participate"
-                        fallback={
-                           <Link
-                              href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
-                              className="w-full py-4 flex items-center justify-center gap-2 bg-gray-900 text-white font-bold rounded-2xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-200"
-                           >
-                              <Heart className="w-5 h-5" />
-                              {t('login_to_participate')}
-                           </Link>
-                        }
-                     >
-                        <button
-                           onClick={handleParticipate}
-                           disabled={participating}
-                           className="w-full py-4 flex items-center justify-center gap-2 bg-[hsl(145,63%,32%)] text-white font-bold rounded-2xl hover:bg-[hsl(145,63%,38%)] transition-all shadow-xl shadow-emerald-200 disabled:opacity-70 disabled:cursor-not-allowed group"
-                        >
-                           {participating ? (
-                           <>
-                              <Loader2 className="w-5 h-5 animate-spin" />
-                              {t('participating')}
-                           </>
-                           ) : (
-                           <>
-                              <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                              {t('confirm_participation')}
-                           </>
-                           )}
-                        </button>
-                     </PermissionGuard>
+                      {/* Progress Bar inside Modal */}
+                      {selectedCampagne.objectifParticipations && (
+                        <div className="bg-emerald-50/50 rounded-2xl p-5 mb-8 border border-emerald-100">
+                          <div className="flex items-center justify-between mb-3">
+                             <span className="font-bold text-emerald-900 text-sm">{t('objective_progress')}</span>
+                             <span className="text-emerald-700 font-bold text-sm">
+                                {Math.round(getProgress(selectedCampagne))}%
+                             </span>
+                          </div>
+                          <div className="h-4 bg-emerald-100 rounded-full overflow-hidden">
+                             <div 
+                                className="h-full rounded-full transition-all duration-1000 bg-emerald-500"
+                                style={{ width: `${getProgress(selectedCampagne)}%`}}
+                             />
+                          </div>
+                          <p className="text-center text-xs text-emerald-600/80 mt-2 font-medium">
+                             {selectedCampagne.nombreParticipations} sur {selectedCampagne.objectifParticipations} {t('participants_required')}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                 
+                   {/* Action Button Sticky Footer */}
+                   <div className="p-6 pt-4 border-t border-gray-100 bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-10 flex-shrink-0">
+                       {selectedCampagne.dateFin && new Date() > new Date(new Date(selectedCampagne.dateFin).setHours(23, 59, 59)) ? (
+                          <div className="w-full py-4 flex items-center justify-center gap-2 bg-gray-100 text-gray-500 font-bold rounded-2xl border border-gray-200">
+                             <Calendar className="w-5 h-5 flex-shrink-0" />
+                             {t('campaign_ended') || 'Campagne terminée'}
+                          </div>
+                       ) : (
+                         <PermissionGuard 
+                            permission="campagnes.participate"
+                            fallback={
+                               <Link
+                                  href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
+                                  className="w-full py-4 flex items-center justify-center gap-2 bg-gray-900 text-white font-bold rounded-2xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-200"
+                               >
+                                  <Heart className="w-5 h-5" />
+                                  {t('login_to_participate')}
+                               </Link>
+                            }
+                         >
+                            <button
+                               onClick={handleParticipate}
+                               disabled={participating}
+                               className="w-full py-4 flex items-center justify-center gap-2 bg-[hsl(145,63%,32%)] text-white font-bold rounded-2xl hover:bg-[hsl(145,63%,38%)] transition-all shadow-lg hover:shadow-[hsl(145,63%,32%)]/30 disabled:opacity-70 disabled:cursor-not-allowed group"
+                            >
+                               {participating ? (
+                               <>
+                                  <Loader2 className="w-5 h-5 animate-spin" />
+                                  {t('participating')}
+                               </>
+                               ) : (
+                               <>
+                                  <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                  {t('confirm_participation')}
+                               </>
+                               )}
+                            </button>
+                         </PermissionGuard>
+                       )}
+                   </div>
                   </>
                 )}
               </div>

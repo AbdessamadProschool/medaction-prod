@@ -81,12 +81,12 @@ export async function GET(req: NextRequest) {
     // Performance par secteur (basée sur événements, évaluations, réclamations, actualités)
     const secteurPerformance = await Promise.all(
       ['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL'].map(async (secteur) => {
-        const etabsInSecteur = await prisma.etablissement.count({ where: { secteur: secteur as any } });
+        const etabsInSecteur = await prisma.etablissement.count({ where: { secteur: secteur as import('@prisma/client').Secteur } });
         
         // Count events including those in action or closed (for activity pulse)
         const eventsInSecteur = await prisma.evenement.count({ 
           where: { 
-            secteur: secteur as any, 
+            secteur: secteur as import('@prisma/client').Secteur, 
             statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } 
           } 
         });
@@ -94,17 +94,17 @@ export async function GET(req: NextRequest) {
         // Count published news for this sector
         const actualitesInSecteur = await prisma.actualite.count({
           where: { 
-            etablissement: { secteur: secteur as any },
+            etablissement: { secteur: secteur as import('@prisma/client').Secteur },
             isPublie: true 
           }
         });
 
         const reclamationsInSecteur = await prisma.reclamation.count({
-          where: { etablissement: { secteur: secteur as any } }
+          where: { etablissement: { secteur: secteur as import('@prisma/client').Secteur } }
         });
 
         const avgNoteInSecteur = await prisma.etablissement.aggregate({
-          where: { secteur: secteur as any },
+          where: { secteur: secteur as import('@prisma/client').Secteur },
           _avg: { noteMoyenne: true }
         });
         
@@ -368,7 +368,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Erreur dashboard gouverneur:', error);
     return NextResponse.json(
-      { error: 'Erreur serveur', details: error instanceof Error ? error.message : 'Unknown' },
+      { error: 'Une erreur interne est survenue lors du chargement du dashboard' },
       { status: 500 }
     );
   }

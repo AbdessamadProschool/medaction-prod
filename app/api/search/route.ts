@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { StatutEvenement, StatutActualite } from '@prisma/client';
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q') || '';
     const type = (searchParams.get('type') || 'all') as SearchType;
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
+    const limit = Math.min(safeParseInt(searchParams.get('limit') || '20', 0), 50);
     const autocomplete = searchParams.get('autocomplete') === 'true';
 
     if (!query || query.length < 2) {

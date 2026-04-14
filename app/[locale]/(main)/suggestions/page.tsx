@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   Lightbulb,
   Plus,
@@ -19,7 +19,6 @@ import {
   ChevronRight,
   User,
   Sparkles,
-  TrendingUp,
   TrendingUp,
   Trash2,
   Building2,

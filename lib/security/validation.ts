@@ -463,4 +463,40 @@ export const SecurityValidation = {
   },
 };
 
+/**
+ * SECURITY UTILITY: Mask sensitive data before logging
+ * Prevents accidental exposure of passwords, tokens, or PII in logs
+ */
+export function maskSensitiveData(data: any): any {
+  if (!data) return data;
+  
+  const sensitiveKeys = ['password', 'token', 'secret', 'code', 'motDePasse', 'key', 'apiKey'];
+  
+  if (typeof data === 'string') {
+    // If it's a long string that looks like a token or secret
+    if (data.length > 32) return data.substring(0, 4) + '...' + data.substring(data.length - 4);
+    return '***';
+  }
+  
+  if (Array.isArray(data)) {
+    return data.map(maskSensitiveData);
+  }
+  
+  if (typeof data === 'object') {
+    const masked: Record<string, any> = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (sensitiveKeys.some(sk => key.toLowerCase().includes(sk.toLowerCase()))) {
+        masked[key] = '***MASKED***';
+      } else if (typeof value === 'object') {
+        masked[key] = maskSensitiveData(value);
+      } else {
+        masked[key] = value;
+      }
+    }
+    return masked;
+  }
+  
+  return data;
+}
+
 export default SecurityValidation;

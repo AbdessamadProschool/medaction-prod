@@ -3,37 +3,40 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
 import { z } from 'zod';
+import { SecurityValidation } from '@/lib/security/validation';
 
-// Schéma de validation pour création d'événement (compatible Zod v4)
+// Schéma de validation sécurisé pour création d'événement
 const createEvenementSchema = z.object({
-  etablissementId: z.number(),
-  communeId: z.number(),
+  etablissementId: SecurityValidation.schemas.id,
+  communeId: SecurityValidation.schemas.id,
   secteur: z.enum(['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL', 'AUTRE']),
-  titre: z.string().min(5, "Le titre doit contenir au moins 5 caractères").max(200, "Le titre ne doit pas dépasser 200 caractères"),
-  description: z.string().min(20, "La description doit contenir au moins 20 caractères").max(5000, "La description ne doit pas dépasser 5000 caractères"),
-  typeCategorique: z.string().min(1, "Le type d'événement est obligatoire"),
-  categorie: z.string().optional(),
-  tags: z.array(z.string()).optional(),
+  titre: SecurityValidation.schemas.title,
+  description: SecurityValidation.schemas.description,
+  typeCategorique: z.string().min(1, "Le type d'événement est obligatoire").transform(SecurityValidation.sanitizeString),
+  categorie: z.string().max(50).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  tags: z.array(z.string().max(30)).max(10).optional(),
   dateDebut: z.string().min(1, "La date de début est obligatoire"),
   dateFin: z.string().optional(),
   heureDebut: z.string().optional(),
   heureFin: z.string().optional(),
-  lieu: z.string().max(200, "Le lieu ne doit pas dépasser 200 caractères").optional(),
-  adresse: z.string().max(300, "L'adresse ne doit pas dépasser 300 caractères").optional(),
-  quartierDouar: z.string().max(100, "Le quartier/douar ne doit pas dépasser 100 caractères").optional(),
+  lieu: z.string().max(200).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  adresse: z.string().max(300).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  quartierDouar: z.string().max(100).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
-  organisateur: z.string().max(100, "Le nom de l'organisateur ne doit pas dépasser 100 caractères").optional(),
-  contactOrganisateur: z.string().max(50, "Le contact ne doit pas dépasser 50 caractères").optional(),
-  emailContact: z.string().email("L'adresse email n'est pas valide").optional().or(z.literal('')),
-  capaciteMax: z.number().min(0, "La capacité ne peut pas être négative").optional(),
+  organisateur: z.string().max(100).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  contactOrganisateur: z.string().max(50).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  emailContact: z.string().email().optional().or(z.literal('')),
+  capaciteMax: z.number().int().min(0).optional(),
   inscriptionsOuvertes: z.boolean().optional(),
-  lienInscription: z.string().url("Le lien d'inscription doit être une URL valide").optional().or(z.literal('')),
+  lienInscription: z.string().url().optional().or(z.literal('')),
+  isOrganiseParProvince: z.boolean().optional(),
+  sousCouvertProvince: z.boolean().optional(),
 });
 
-// POST - Créer un événement (DELEGATION uniquement)
+// POST - Créer un événement
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const session = await getServerSession(authOptions);
   
@@ -41,8 +44,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     throw new UnauthorizedError('Vous devez être connecté pour créer un événement');
   }
 
-  // Vérifier la permission
   const userId = parseInt(session.user.id);
+  
+  // Vérifier la permission
   const { checkPermission } = await import("@/lib/permissions");
   const hasPermission = await checkPermission(userId, 'evenements.create');
 
@@ -54,31 +58,19 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = createEvenementSchema.safeParse(body);
 
   if (!validation.success) {
-    // Formater les erreurs Zod en messages lisibles
-    const fieldErrors: Record<string, string[]> = {};
-    for (const issue of validation.error.issues) {
-      const field = issue.path.join('.') || 'general';
-      if (!fieldErrors[field]) fieldErrors[field] = [];
-      fieldErrors[field].push(issue.message);
-    }
-    
-    const errorMessages = Object.values(fieldErrors).flat();
-    throw new ValidationError(
-      errorMessages.length === 1 ? errorMessages[0] : `${errorMessages.length} erreurs de validation`,
-      { fieldErrors }
-    );
+    throw validation.error;
   }
 
   const data = validation.data;
 
-  // Créer l'événement avec statut EN_ATTENTE_VALIDATION
+  // Créer l'événement
   const evenement = await prisma.evenement.create({
     data: {
       etablissementId: data.etablissementId,
       communeId: data.communeId,
       secteur: data.secteur,
-      titre: data.titre.trim(),
-      description: data.description.trim(),
+      titre: data.titre,
+      description: data.description,
       typeCategorique: data.typeCategorique,
       categorie: data.categorie,
       tags: data.tags || [],
@@ -86,17 +78,19 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       dateFin: data.dateFin ? new Date(data.dateFin) : null,
       heureDebut: data.heureDebut,
       heureFin: data.heureFin,
-      lieu: data.lieu?.trim(),
-      adresse: data.adresse?.trim(),
-      quartierDouar: data.quartierDouar?.trim(),
+      lieu: data.lieu,
+      adresse: data.adresse,
+      quartierDouar: data.quartierDouar,
       latitude: data.latitude,
       longitude: data.longitude,
-      organisateur: data.organisateur?.trim(),
-      contactOrganisateur: data.contactOrganisateur?.trim(),
-      emailContact: data.emailContact?.trim() || undefined,
+      organisateur: data.organisateur,
+      contactOrganisateur: data.contactOrganisateur,
+      emailContact: data.emailContact || undefined,
       capaciteMax: data.capaciteMax,
       inscriptionsOuvertes: data.inscriptionsOuvertes || false,
-      lienInscription: data.lienInscription?.trim() || undefined,
+      lienInscription: data.lienInscription || undefined,
+      isOrganiseParProvince: data.isOrganiseParProvince || false,
+      sousCouvertProvince: data.sousCouvertProvince || false,
       statut: 'EN_ATTENTE_VALIDATION',
       createdBy: userId,
     },
@@ -106,7 +100,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   });
 
-  // Notifier les admins (non bloquant)
+  // Notifier les admins (non-bloquant)
   try {
     const admins = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
@@ -125,85 +119,100 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       });
     }
   } catch (notifError) {
-    console.error('Erreur notification (non bloquante):', notifError);
+    console.warn('Erreur notification événement:', notifError);
   }
 
   return NextResponse.json({
     success: true,
-    message: 'Événement créé avec succès. Il sera visible après validation par un administrateur.',
+    message: 'Événement créé avec succès. Il sera visible après validation.',
     data: evenement 
   }, { status: 201 });
 });
 
-// GET - Liste des événements (Public: PUBLIEE/EN_ACTION/CLOTUREE)
+// GET - Liste des événements
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100);
+  
+  // SECURITY FIX: Use secure pagination
+  const { page, limit } = SecurityValidation.validatePagination(
+    searchParams.get('page'),
+    searchParams.get('limit')
+  );
+  
   const secteur = searchParams.get('secteur');
   const statut = searchParams.get('statut');
-  const communeId = searchParams.get('communeId');
-  const etablissementId = searchParams.get('etablissementId');
+  const communeIdRaw = searchParams.get('communeId');
+  const etablissementIdRaw = searchParams.get('etablissementId');
+  const annexeIdRaw = searchParams.get('annexeId');
   const search = searchParams.get('search');
   const upcoming = searchParams.get('upcoming');
 
   const session = await getServerSession(authOptions);
-  const isAdmin = session?.user?.role && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
+  const isAdminOrGouv = session?.user?.role && ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(session.user.role);
   const isDelegation = session?.user?.role === 'DELEGATION';
 
-  // Construction du filtre
-  const where: any = {};
+  // Construction du filtre sécurisé
+  const andConditions: any[] = [];
   const now = new Date();
 
-  // Pour le public: uniquement les événements publiés/en action/clôturés
-  if (!isAdmin) {
-    where.statut = { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] };
-  } else if (statut) {
+  // 1. Filtrage de base selon le rôle
+  if (!isAdminOrGouv && !isDelegation) {
+    andConditions.push({ statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } });
+  } else if (isDelegation && session?.user?.id) {
+    andConditions.push({
+      OR: [
+        { statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } },
+        { createdBy: parseInt(session.user.id) }
+      ]
+    });
+  }
+
+  // 2. Filtres optionnels
+  if (statut && isAdminOrGouv) {
     if (statut === 'EN_ACTION') {
-      where.AND = [
-        { statut: 'EN_ACTION' },
-        {
-          OR: [
-            { dateFin: null },
-            { dateFin: { gte: now } }
-          ]
-        }
-      ];
+      andConditions.push({ statut: 'EN_ACTION' });
+      andConditions.push({ OR: [{ dateFin: null }, { dateFin: { gte: now } }] });
     } else if (statut === 'A_CLOTURER') {
-      where.dateFin = { lt: now };
-      where.statut = { not: 'CLOTUREE' };
+      andConditions.push({ dateFin: { lt: now } });
+      andConditions.push({ statut: { not: 'CLOTUREE' } });
     } else {
-      where.statut = statut;
+      andConditions.push({ statut });
     }
   }
 
-  // Si délégation, montrer aussi ses propres événements en attente
-  if (isDelegation && session?.user?.id) {
-    where.OR = [
-      { statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } },
-      { createdBy: parseInt(session.user.id) }
-    ];
-    delete where.statut;
+  if (secteur) andConditions.push({ secteur });
+  
+  if (communeIdRaw) {
+    const id = SecurityValidation.validateId(communeIdRaw);
+    if (id) andConditions.push({ communeId: id });
   }
-
-  // Filtres additionnels
-  if (secteur) where.secteur = secteur;
-  if (communeId) where.communeId = parseInt(communeId);
-  if (etablissementId) where.etablissementId = parseInt(etablissementId);
+  
+  if (etablissementIdRaw) {
+    const id = SecurityValidation.validateId(etablissementIdRaw);
+    if (id) andConditions.push({ etablissementId: id });
+  }
+  
+  if (annexeIdRaw) {
+    const id = SecurityValidation.validateId(annexeIdRaw);
+    if (id) andConditions.push({ etablissement: { annexeId: id } });
+  }
 
   if (search) {
-    where.OR = [
-      { titre: { contains: search, mode: 'insensitive' } },
-      { description: { contains: search, mode: 'insensitive' } },
-    ];
+    const sanitized = SecurityValidation.sanitizeString(search);
+    andConditions.push({
+      OR: [
+        { titre: { contains: sanitized, mode: 'insensitive' } },
+        { description: { contains: sanitized, mode: 'insensitive' } },
+      ]
+    });
   }
 
-  // Événements à venir
   if (upcoming === 'true') {
-    where.dateDebut = { gte: new Date() };
+    andConditions.push({ dateDebut: { gte: now } });
   }
 
-  // Requête avec pagination
+  const where = andConditions.length > 0 ? { AND: andConditions } : {};
+
   const [evenements, total] = await Promise.all([
     prisma.evenement.findMany({
       where,
@@ -211,29 +220,27 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         etablissement: { select: { nom: true, nomArabe: true, secteur: true } },
         commune: { select: { nom: true, nomArabe: true } },
         medias: { take: 1, select: { urlPublique: true } },
+        createdByUser: { select: { nom: true, prenom: true } },
       },
-      orderBy: isAdmin ? { createdAt: 'desc' } : { dateDebut: 'asc' },
+      orderBy: isAdminOrGouv ? { createdAt: 'desc' } : { dateDebut: 'asc' },
       skip: (page - 1) * limit,
       take: limit,
     }),
     prisma.evenement.count({ where })
   ]);
 
-  return NextResponse.json(
-    {
-      success: true,
-      data: evenements,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
-    },
-    {
-      headers: {
-        'Cache-Control': isAdmin ? 'no-store' : 'public, max-age=60, s-maxage=60',
-      }
+  return NextResponse.json({
+    success: true,
+    data: evenements,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit)
     }
-  );
+  }, {
+    headers: {
+      'Cache-Control': isAdminOrGouv ? 'no-store' : 'public, max-age=60, s-maxage=60',
+    }
+  });
 });

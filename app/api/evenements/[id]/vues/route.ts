@@ -6,7 +6,10 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
+    }
     
     await prisma.evenement.update({
       where: { id },

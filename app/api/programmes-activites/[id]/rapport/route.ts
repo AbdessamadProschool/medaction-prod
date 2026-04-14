@@ -36,7 +36,7 @@ export async function POST(
     
     const canEdit = 
       ['ADMIN', 'SUPER_ADMIN'].includes(userRole) ||
-      (userRole === 'COORDINATEUR_ACTIVITES' && etablissementsGeres.includes(activite.etablissementId));
+      (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId ? etablissementsGeres.includes(activite.etablissementId) : false);
 
     if (!canEdit) {
       return NextResponse.json({ error: 'Non autorisé à modifier cette activité' }, { status: 403 });

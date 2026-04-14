@@ -1,26 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { safeParseInt } from '@/lib/utils/parse';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
 
 // GET - Liste des campagnes terminées/clôturées avec bilans
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Vous devez être connecté pour accéder aux bilans');
-  }
-
-  // Roles autorisés: ADMIN, SUPER_ADMIN, GOUVERNEUR
-  const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
-  if (!allowedRoles.includes(session.user.role || '')) {
-    throw new ForbiddenError('Accès réservé aux administrateurs et gouverneurs');
-  }
-
+export const GET = withPermission('bilans.read', withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '50', 0), 100);
 
   // Campagnes terminées ou closes
   const campagnes = await prisma.campagne.findMany({
@@ -74,9 +61,5 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     totalVues: data.reduce((sum, c) => sum + (c.nombreVues || 0), 0),
   };
 
-  return NextResponse.json({
-    success: true,
-    data,
-    stats,
-  });
-});
+  return successResponse({ data, stats }, 'Bilans des campagnes récupérés avec succès');
+}));

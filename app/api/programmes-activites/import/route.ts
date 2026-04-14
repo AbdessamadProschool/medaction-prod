@@ -164,10 +164,10 @@ export async function POST(request: NextRequest) {
       message: `${successfulImports.length} programme(s) importé(s) avec succès`
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erreur import programmes:', error);
     return NextResponse.json({ 
-      error: error.message || 'Erreur serveur lors de l\'import' 
+      error: 'Une erreur interne est survenue lors de l\'import' 
     }, { status: 500 });
   }
 }

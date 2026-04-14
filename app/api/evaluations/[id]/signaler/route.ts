@@ -64,6 +64,7 @@ export async function POST(
 
     // Notifier les admins
     const admins = await prisma.user.findMany({
+      take: 100,
       where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
       select: { id: true },
     });

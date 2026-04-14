@@ -27,6 +27,8 @@ interface Campagne {
   nombreVues?: number;
   auteur?: { prenom: string; nom: string };
   createdAt?: string;
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
 }
 
 export default function CampagneDetailPage() {
@@ -54,7 +56,9 @@ export default function CampagneDetailPage() {
             imageUrl: data.data.imagePrincipale || data.data.imageCouverture,
             objectif: data.data.objectifParticipations,
             progression: data.data.nombreParticipations || 0,
-            statut: data.data.isActive ? 'EN_COURS' : data.data.statut // Fallback pour affichage statut
+            statut: data.data.isActive ? 'EN_COURS' : data.data.statut,
+            isOrganiseParProvince: data.data.isOrganiseParProvince,
+            sousCouvertProvince: data.data.sousCouvertProvince,
           };
           setCampagne(mappedData);
         } else {

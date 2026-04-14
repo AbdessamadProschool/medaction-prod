@@ -19,6 +19,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
   }
 
   const annexes = await prisma.annexe.findMany({
+      take: 100,
     where,
     select: {
       id: true,

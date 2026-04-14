@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -20,8 +21,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   const { searchParams } = new URL(request.url);
   
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '12'), 100);
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '12', 0), 100);
   const search = searchParams.get('search') || '';
   const statut = searchParams.get('statut') || '';
 

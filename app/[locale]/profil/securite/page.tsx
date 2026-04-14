@@ -25,6 +25,7 @@ import {
   Download,
   CheckCircle,
 } from 'lucide-react';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 
 interface TwoFactorData {
   secret: string;
@@ -321,9 +322,9 @@ IMPORTANT: Ces codes vous permettent de récupérer l'accès à votre compte si 
               <div className="flex items-start gap-3">
               <Smartphone className="w-5 h-5 text-gray-400 mt-0.5" />
               <div>
-                <p 
+                <SafeHTML 
                   className="text-sm text-gray-600"
-                  dangerouslySetInnerHTML={{ __html: t.raw('authenticator_apps') }}
+                  html={String(t.raw('authenticator_apps'))}
                 />
               </div>
             </div>

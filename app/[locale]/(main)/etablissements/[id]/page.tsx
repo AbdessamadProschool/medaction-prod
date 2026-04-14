@@ -385,25 +385,39 @@ export default function EtablissementDetailPage() {
 
                {/* CTA Box */}
                <div className="lg:w-72 shrink-0">
-                  <PermissionGuard 
-                    permission="etablissements.subscribe"
-                    fallback={
+                  <div className="flex flex-col gap-3">
+                    <PermissionGuard 
+                      permission="etablissements.subscribe"
+                      fallback={
+                        <Link 
+                          href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
+                          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02]"
+                        >
+                            <Star className="w-5 h-5 fill-current" />
+                            {t('buttons.subscribe')}
+                         </Link>
+                      }
+                    >
+                      <SubscribeButton 
+                        etablissementId={etablissement.id} 
+                        etablissementNom={etablissement.nom}
+                        className="w-full px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02] flex justify-center"
+                      />
+                    </PermissionGuard>
+
+                    {/* Button for requesting an update (Modification workflow) */}
+                    <PermissionGuard permission="etablissements.request.edit">
                       <Link 
-                        href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
-                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02]"
+                        href={`/delegation/etablissements/${etablissement.id}/demande-modification`}
+                        className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all shadow-xl"
                       >
-                          <Star className="w-5 h-5 fill-current" />
-                          {t('buttons.subscribe')}
-                       </Link>
-                    }
-                  >
-                    <SubscribeButton 
-                      etablissementId={etablissement.id} 
-                      etablissementNom={etablissement.nom}
-                      className="w-full px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02] flex justify-center"
-                    />
-                  </PermissionGuard>
-                  <p className="text-center text-white/50 text-xs mt-3">
+                         <FileText className="w-5 h-5" />
+                         {t('buttons.request_edit') || 'Demander une mise à jour'}
+                      </Link>
+                    </PermissionGuard>
+                  </div>
+                  
+                  <p className="text-center text-white/50 text-xs mt-4">
                      {t('notifications_hint')}
                   </p>
                </div>

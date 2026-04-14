@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import {
-  validateMobileApiKey,
-  unauthorizedResponse,
-} from '@/lib/mobile/security';
+import { withMobileAuth } from '@/lib/mobile/security';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { NotFoundError } from '@/lib/exceptions';
+import { getSafeId } from '@/lib/utils/parse';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -11,42 +11,21 @@ interface RouteParams {
 
 /**
  * GET /api/mobile/etablissements/[id]
- * Returns etablissement details
+ * Returns etablissement details with mobile authentication wrapper
  */
-export async function GET(request: NextRequest, { params }: RouteParams) {
-  try {
-    // 1. Validate API Key
-    if (!validateMobileApiKey(request)) {
-      return unauthorizedResponse();
-    }
+export const GET = withErrorHandler(withMobileAuth(async (request: NextRequest, context: any) => {
+  // Extract params from context (passed by Next.js or the wrapper)
+  const { id: idStr } = await (context.params as Promise<{ id: string }>);
+  const etablissementId = getSafeId(idStr);
 
-    const { id } = await params;
-    const etablissementId = parseInt(id);
-
-    if (isNaN(etablissementId)) {
-      return NextResponse.json(
-        { success: false, message: 'ID invalide' },
-        { status: 400 }
-      );
-    }
-
-    // 2. Get etablissement
-    const etablissement = await prisma.etablissement.findUnique({
+  // Get etablissement and evaluations in parallel
+  const [etablissement, evaluations] = await Promise.all([
+    prisma.etablissement.findUnique({
       where: { id: etablissementId },
       include: {
-        commune: {
-          select: {
-            id: true,
-            nom: true,
-          },
-        },
-        annexe: {
-          select: {
-            id: true,
-            nom: true,
-          },
-        },
-        evenements: {
+        commune: { select: { id: true, nom: true } },
+        annexe: { select: { id: true, nom: true } },
+        evenementsOrganises: {
           where: {
             statut: 'PUBLIEE',
             dateDebut: { gte: new Date() },
@@ -65,39 +44,25 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           select: {
             evaluations: true,
             reclamations: true,
-            evenements: true,
+            evenementsOrganises: true,
           },
         },
       },
-    });
-
-    if (!etablissement) {
-      return NextResponse.json(
-        { success: false, message: 'Établissement non trouvé' },
-        { status: 404 }
-      );
-    }
-
-    // 3. Get average rating
-    const evaluations = await prisma.evaluation.aggregate({
+    }),
+    prisma.evaluation.aggregate({
       where: { etablissementId },
       _avg: { noteGlobale: true },
       _count: true,
-    });
+    })
+  ]);
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        ...etablissement,
-        avgRating: evaluations._avg?.noteGlobale ?? 0,
-        reviewCount: evaluations._count,
-      },
-    });
-  } catch (error) {
-    console.error('[MOBILE_ETABLISSEMENT_DETAIL_ERROR]', error);
-    return NextResponse.json(
-      { success: false, message: 'Erreur serveur' },
-      { status: 500 }
-    );
+  if (!etablissement) {
+    throw new NotFoundError('Établissement non trouvé');
   }
-}
+
+  return successResponse({
+    ...etablissement,
+    avgRating: evaluations._avg?.noteGlobale ?? 0,
+    reviewCount: evaluations._count,
+  });
+}));

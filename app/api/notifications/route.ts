@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
@@ -34,8 +35,8 @@ export async function GET(request: NextRequest) {
     const userId = parseInt(session.user.id as string);
     const { searchParams } = new URL(request.url);
     
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = safeParseInt(searchParams.get('limit') || '20', 0);
     const unreadOnly = searchParams.get('unreadOnly') === 'true';
     const type = searchParams.get('type') || '';
 

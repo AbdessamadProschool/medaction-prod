@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { checkRateLimit, RATE_LIMIT_CONFIGS } from '@/lib/rate-limit';
+import { SecurityValidation } from '@/lib/security/validation';
+import { checkRateLimit, getClientIP } from '@/lib/auth/security';
 
 // SECURITY: Rate limit config for password reset (3 requests per hour per IP)
 const RESET_RATE_LIMIT = { maxRequests: 3, windowMs: 60 * 60 * 1000 };
@@ -14,14 +15,6 @@ function generateToken(): string {
   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-/**
- * Extrait l'IP du client (pour rate limiting)
- */
-function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
-         request.headers.get('x-real-ip') || 
-         'unknown';
-}
 
 /**
  * POST /api/auth/forgot-password
@@ -43,14 +36,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email } = await request.json();
-
-    if (!email) {
+    const body = await request.json();
+    
+    // Validation avec SecurityValidation
+    const validation = SecurityValidation.schemas.email.safeParse(body.email);
+    
+    if (!validation.success) {
       return NextResponse.json(
-        { success: false, message: 'Email requis' },
+        { success: false, message: 'Email invalide' },
         { status: 400 }
       );
     }
+
+    const email = validation.data;
 
     // Chercher l'utilisateur
     const user = await prisma.user.findUnique({

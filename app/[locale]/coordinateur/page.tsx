@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 import { 
   Calendar, 
   Building2, 
@@ -251,8 +252,9 @@ export default function CoordinateurDashboard() {
              </div>
              <div>
                <h3 className="font-bold text-lg mb-1">{t('alert.title')}</h3>
-               <p className="text-red-700/80" 
-                  dangerouslySetInnerHTML={{ __html: t.raw('alert.message').replace('{count}', stats.rapportsEnAttente) }} 
+               <SafeHTML 
+                  className="text-red-700/80" 
+                  html={String(t.raw('alert.message')).replace('{count}', String(stats.rapportsEnAttente))} 
                />
              </div>
           </div>

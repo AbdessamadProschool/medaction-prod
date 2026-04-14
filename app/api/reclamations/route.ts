@@ -1,45 +1,40 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
-import { SECURITY_LIMITS, sanitizeString } from '@/lib/security/validation';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { SecurityValidation } from '@/lib/security/validation';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
+import { Prisma, StatutReclamation, AffectationReclamation } from '@prisma/client';
+
+// Whitelist des catégories autorisées ALIGNÉES SUR L'UI
+const VALID_CATEGORIES = [
+  'infrastructure', 'proprete', 'eclairage', 'eau', 'securite', 
+  'education', 'sante', 'sport', 'social', 'autre'
+] as const;
 
 // Schéma de validation sécurisé pour la création (OWASP compliant)
 const createReclamationSchema = z.object({
-  etablissementId: z.number().int().positive().max(SECURITY_LIMITS.ID_MAX).optional(),
-  communeId: z.number().int().positive().max(SECURITY_LIMITS.ID_MAX),
-  quartierDouar: z.string().max(200).optional().transform(val => val ? sanitizeString(val) : undefined),
-  adresseComplete: z.string().max(500).optional().transform(val => val ? sanitizeString(val) : undefined),
+  etablissementId: SecurityValidation.schemas.id.optional(),
+  communeId: SecurityValidation.schemas.id,
+  quartierDouar: z.string().max(200).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  adresseComplete: z.string().max(500).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
-  categorie: z.string().min(1, 'La catégorie est requise').max(50),
-  titre: z.string()
-    .min(SECURITY_LIMITS.TITLE_MIN, `Le titre doit contenir au moins ${SECURITY_LIMITS.TITLE_MIN} caractères`)
-    .max(SECURITY_LIMITS.TITLE_MAX, `Le titre ne doit pas dépasser ${SECURITY_LIMITS.TITLE_MAX} caractères`)
-    .transform(sanitizeString),
-  description: z.string()
-    .min(20, 'La description doit contenir au moins 20 caractères')
-    .max(SECURITY_LIMITS.DESCRIPTION_MAX, `La description ne doit pas dépasser ${SECURITY_LIMITS.DESCRIPTION_MAX} caractères`)
-    .transform(sanitizeString),
+  categorie: z.enum(VALID_CATEGORIES),
+  titre: SecurityValidation.schemas.title,
+  description: SecurityValidation.schemas.description,
 });
 
 // POST - Créer une réclamation
-export const POST = withPermission('reclamations.create', withErrorHandler(async (request) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user) {
-    throw new UnauthorizedError();
-  }
+export const POST = withPermission('reclamations.create', withErrorHandler(async (request, { session }) => {
+  const userId = SecurityValidation.validateId(session?.user?.id);
+  if (!userId) throw new UnauthorizedError('Session utilisateur invalide');
 
-  // Rate Limiting : 5 réclamations par mois
-  const userId = parseInt(session.user.id);
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+  // Rate Limiting métier : 5 réclamations par mois
   const count = await prisma.reclamation.count({
     where: {
       userId,
@@ -50,139 +45,141 @@ export const POST = withPermission('reclamations.create', withErrorHandler(async
   if (count >= 5) {
      const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString();
      return NextResponse.json(
-       { error: 'LIMIT_EXCEEDED', resetDate: nextReset }, 
+       { 
+         success: false, 
+         error: 'LIMIT_EXCEEDED', 
+         resetDate: nextReset, 
+         message: 'Limite mensuelle de réclamations atteinte (5).' 
+       }, 
        { status: 429 }
      );
   }
-
-  // NOTE: La restriction "Seuls les citoyens" est levée pour permettre à tout rôle ayant 'reclamations.create' de poster.
-  // L'héritage des permissions fait que ADMIN peut aussi créer.
 
   const body = await request.json();
   const validation = createReclamationSchema.safeParse(body);
 
   if (!validation.success) {
-    throw new ValidationError('Données invalides', validation.error.flatten());
+    throw validation.error;
   }
 
   const data = validation.data;
 
-  // Créer la réclamation avec statut null (en attente de décision)
-  const reclamation = await prisma.reclamation.create({
-    data: {
-      userId: parseInt(session.user.id),
-      etablissementId: data.etablissementId,
-      communeId: data.communeId,
-      quartierDouar: data.quartierDouar,
-      adresseComplete: data.adresseComplete,
-      latitude: data.latitude,
-      longitude: data.longitude,
-      categorie: data.categorie,
-      titre: data.titre,
-      description: data.description,
-      statut: null, // En attente de décision admin
-      affectationReclamation: 'NON_AFFECTEE',
-    },
-    include: {
-      commune: { select: { nom: true, nomArabe: true } },
-      etablissement: { select: { nom: true, nomArabe: true } },
-    }
-  });
-
-  // Créer l'entrée d'historique
-  await prisma.historiqueReclamation.create({
-    data: {
-      reclamationId: reclamation.id,
-      action: 'CREATION',
-      details: {
-        titre: reclamation.titre,
-        categorie: reclamation.categorie,
+  // Utiliser une transaction pour l'atomicité
+  const result = await prisma.$transaction(async (tx) => {
+    // Créer la réclamation
+    const reclamation = await tx.reclamation.create({
+      data: {
+        userId,
+        etablissementId: data.etablissementId,
+        communeId: data.communeId,
+        quartierDouar: data.quartierDouar,
+        adresseComplete: data.adresseComplete,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        categorie: data.categorie,
+        titre: data.titre,
+        description: data.description,
+        statut: null,
+        affectationReclamation: 'NON_AFFECTEE',
       },
-      effectuePar: parseInt(session.user.id),
-    }
+      include: {
+        commune: { select: { nom: true, nomArabe: true } },
+        etablissement: { select: { nom: true, nomArabe: true } },
+      }
+    });
+
+    // Créer l'entrée d'historique
+    await tx.historiqueReclamation.create({
+      data: {
+        reclamationId: reclamation.id,
+        action: 'CREATION',
+        details: {
+          titre: reclamation.titre,
+          categorie: reclamation.categorie,
+        },
+        effectuePar: userId,
+      }
+    });
+
+    return reclamation;
   });
 
-  return NextResponse.json({ 
-    message: 'Réclamation créée avec succès',
-    data: reclamation 
-  }, { status: 201 });
+  return successResponse(result, 'Réclamation créée avec succès', 201);
 }));
 
 // GET - Lister les réclamations (selon le rôle)
-export const GET = withPermission('reclamations.read', withErrorHandler(async (request) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user) {
-    throw new UnauthorizedError();
-  }
+export const GET = withPermission('reclamations.read', withErrorHandler(async (request, { session }) => {
+  const userId = SecurityValidation.validateId(session?.user?.id);
+  if (!userId) throw new UnauthorizedError();
 
   const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '10');
+  
+  // Pagination bornée et sécurisée
+  const { page, limit } = SecurityValidation.validatePagination(
+    searchParams.get('page'), 
+    searchParams.get('limit')
+  );
   const skip = (page - 1) * limit;
-  const statut = searchParams.get('statut');
-  const affectation = searchParams.get('affectation');
-  const urgentes = searchParams.get('urgentes');
-  const communeId = searchParams.get('communeId');
-  const sortBy = searchParams.get('sortBy') || 'createdAt';
-  const search = searchParams.get('search');
 
-  let where: any = {};
-  const andConditions: any[] = [];
-  const userId = parseInt(session.user.id);
+  const statutRaw = searchParams.get('statut');
+  const affectationRaw = searchParams.get('affectation');
+  const urgentes = searchParams.get('urgentes');
+  const communeIdRaw = searchParams.get('communeId');
+  const sortByRaw = searchParams.get('sortBy');
+  const searchRaw = searchParams.get('search');
+
+  let where: Prisma.ReclamationWhereInput = {};
+  const andConditions: Prisma.ReclamationWhereInput[] = [];
   const role = session.user.role;
 
   // Filtres selon le rôle
+  const roleFilters: Prisma.ReclamationWhereInput[] = [];
+
   switch (role) {
     case 'CITOYEN':
-      // Un citoyen ne voit que SES réclamations
-      andConditions.push({ userId });
+      roleFilters.push({ userId });
       break;
-
     case 'AUTORITE_LOCALE':
-      // Une autorité locale voit les réclamations qui lui sont affectées
-      andConditions.push({ affecteeAAutoriteId: userId });
+      roleFilters.push({ affecteeAAutoriteId: userId });
       break;
-
-    case 'DELEGATION':
-      // Une délégation voit les réclamations de son secteur
+    case 'DELEGATION': {
       const delegation = await prisma.user.findUnique({
         where: { id: userId },
         select: { secteurResponsable: true }
       });
       if (delegation?.secteurResponsable) {
-        andConditions.push({ secteurAffecte: delegation.secteurResponsable });
+        roleFilters.push({ secteurAffecte: delegation.secteurResponsable });
       } else {
-        // Si pas de secteur, on ne montre rien par sécurité
-        andConditions.push({ id: -1 });
+        roleFilters.push({ id: -1 });
       }
       break;
-
+    }
     case 'ADMIN':
     case 'SUPER_ADMIN':
     case 'GOUVERNEUR':
-      // Voient tout
       break;
-
     default:
-      throw new ForbiddenError();
+      throw new ForbiddenError("Rôle non reconnu");
   }
 
-  // Filtres additionnels
-  if (statut) {
-    const s = statut.toUpperCase();
+  if (roleFilters.length > 0) {
+    andConditions.push(...roleFilters);
+  }
+
+  // Filtres additionnels sanitisés
+  if (statutRaw) {
+    const s = statutRaw.toUpperCase();
     if (s === 'EN_ATTENTE') {
       andConditions.push({ statut: null });
-    } else if (s === 'ACCEPTEE' || s === 'REJETEE') {
-      andConditions.push({ statut: s });
+    } else if (Object.values(StatutReclamation).includes(s as StatutReclamation)) {
+      andConditions.push({ statut: s as StatutReclamation });
     }
   }
 
-  if (affectation) {
-    andConditions.push({ affectationReclamation: affectation });
+  if (affectationRaw && Object.values(AffectationReclamation).includes(affectationRaw.toUpperCase() as AffectationReclamation)) {
+    andConditions.push({ affectationReclamation: affectationRaw.toUpperCase() as AffectationReclamation });
   }
 
-  // Filtre urgentes: réclamations en attente (statut null) ou non résolues
   if (urgentes === 'true') {
     andConditions.push({
       OR: [
@@ -197,34 +194,37 @@ export const GET = withPermission('reclamations.read', withErrorHandler(async (r
     });
   }
 
-  // Filtre par commune
-  if (communeId) {
-    andConditions.push({ communeId: parseInt(communeId) });
+  const validCommuneId = SecurityValidation.validateId(communeIdRaw);
+  if (validCommuneId) {
+    andConditions.push({ communeId: validCommuneId });
   }
 
-  // Filtre par recherche
-  if (search) {
-    andConditions.push({
-      OR: [
-        { titre: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        { code: { contains: search, mode: 'insensitive' } },
-      ]
-    });
+  if (searchRaw) {
+    const sanitizedSearch = SecurityValidation.sanitizeString(searchRaw).slice(0, 100);
+    if (sanitizedSearch) {
+      andConditions.push({
+        OR: [
+          { titre: { contains: sanitizedSearch, mode: 'insensitive' } },
+          { description: { contains: sanitizedSearch, mode: 'insensitive' } },
+        ]
+      });
+    }
   }
 
-  // Assembler le where
   if (andConditions.length > 0) {
     where.AND = andConditions;
   }
 
-  // Ordre de tri
-  let orderBy: any = { createdAt: 'desc' };
-  if (sortBy === 'dateAffectation') {
-    orderBy = { dateAffectation: 'desc' };
+  // Whitelist pour le tri
+  const ALLOWED_SORT_FIELDS = ['createdAt', 'dateAffectation'];
+  let orderBy: Prisma.ReclamationOrderByWithRelationInput = { createdAt: 'desc' };
+  if (sortByRaw && ALLOWED_SORT_FIELDS.includes(sortByRaw)) {
+    orderBy = { [sortByRaw]: 'desc' };
   }
 
-  const [reclamations, total] = await Promise.all([
+  const baseConditions = roleFilters.length > 0 ? roleFilters : [];
+
+  const [reclamations, total, countEnAttente, countAccepted, countToAssign, countProcessing] = await Promise.all([
     prisma.reclamation.findMany({
       where,
       skip,
@@ -237,16 +237,20 @@ export const GET = withPermission('reclamations.read', withErrorHandler(async (r
         medias: true,
       }
     }),
-    prisma.reclamation.count({ where })
+    prisma.reclamation.count({ where }),
+    prisma.reclamation.count({ where: { AND: [...baseConditions, { statut: null }] } }),
+    prisma.reclamation.count({ where: { AND: [...baseConditions, { statut: 'ACCEPTEE' }] } }),
+    prisma.reclamation.count({ where: { AND: [...baseConditions, { statut: 'ACCEPTEE', affectationReclamation: 'NON_AFFECTEE' }] } }),
+    prisma.reclamation.count({ where: { AND: [...baseConditions, { statut: 'ACCEPTEE', affectationReclamation: 'AFFECTEE' }] } }),
   ]);
 
-  // Récupérer les agents affectés manuellement (la relation n'existe pas dans le schéma)
-  const affecteeIds = reclamations
-    .filter(r => r.affecteeAAutoriteId)
-    .map(r => r.affecteeAAutoriteId as number);
+  const affecteeIds = Array.from(new Set(
+    reclamations
+      .filter(r => r.affecteeAAutoriteId)
+      .map(r => r.affecteeAAutoriteId as number)
+  ));
   
-  let affecteesMap: Map<number, { id: number; nom: string; prenom: string; role: string }> = new Map();
-  
+  let affecteesMap = new Map<number, { id: number; nom: string; prenom: string; role: string }>();
   if (affecteeIds.length > 0) {
     const affectees = await prisma.user.findMany({
       where: { id: { in: affecteeIds } },
@@ -255,30 +259,12 @@ export const GET = withPermission('reclamations.read', withErrorHandler(async (r
     affecteesMap = new Map(affectees.map(a => [a.id, a]));
   }
 
-  // Calculer les stats globales pour le dashboard (base sur les filtres de rôle mais sans les filtres de statut/recherche)
-  // On crée un 'whereBase' pour avoir les stats pertinentes pour l'utilisateur sans les filtres appliqués à la liste
-  let whereBase: any = {};
-  if (andConditions.length > 0) {
-    // On ne garde que les filtres de rôle (les premiers ajoutés)
-    const roleFilters = andConditions.filter(c => c.userId || c.affecteeAAutoriteId || c.secteurAffecte || c.id === -1);
-    if (roleFilters.length > 0) whereBase.AND = roleFilters;
-  }
-
-  const [countEnAttente, countAccepted, countToAssign, countProcessing] = await Promise.all([
-    prisma.reclamation.count({ where: { ...whereBase, statut: null } }),
-    prisma.reclamation.count({ where: { ...whereBase, statut: 'ACCEPTEE' } }),
-    prisma.reclamation.count({ where: { ...whereBase, statut: 'ACCEPTEE', affectationReclamation: 'NON_AFFECTEE' } }),
-    prisma.reclamation.count({ where: { ...whereBase, statut: 'ACCEPTEE', affectationReclamation: 'AFFECTEE' } }),
-  ]);
-
-  // Enrichir les réclamations avec les agents affectés
-  const enrichedReclamations = reclamations.map(r => ({
-    ...r,
-    affecteeAAutorite: r.affecteeAAutoriteId ? affecteesMap.get(r.affecteeAAutoriteId) || null : null,
-  }));
-
   return NextResponse.json({
-    data: enrichedReclamations,
+    success: true,
+    data: reclamations.map(r => ({
+      ...r,
+      affecteeAAutorite: r.affecteeAAutoriteId ? affecteesMap.get(r.affecteeAAutoriteId) : null
+    })),
     pagination: {
       page,
       limit,

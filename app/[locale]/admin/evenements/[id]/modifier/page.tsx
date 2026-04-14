@@ -56,6 +56,8 @@ interface Evenement {
   tags?: string[];
   bilanDescription?: string;
   bilanNbParticipants?: number;
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
 }
 
 const getStatuses = (t: any) => [
@@ -99,6 +101,8 @@ export default function ModifierEvenementPage() {
     statut: '',
     capaciteMax: '',
     inscriptionsOuvertes: false,
+    isOrganiseParProvince: false,
+    sousCouvertProvince: false,
     // Champs de clôture
     rapportCloture: '',
     bilanParticipation: '',
@@ -132,6 +136,8 @@ export default function ModifierEvenementPage() {
         statut: evt.statut || '',
         capaciteMax: evt.capaciteMax?.toString() || '',
         inscriptionsOuvertes: evt.inscriptionsOuvertes || false,
+        isOrganiseParProvince: evt.isOrganiseParProvince || false,
+        sousCouvertProvince: evt.sousCouvertProvince || false,
         rapportCloture: evt.rapportCloture || '',
         bilanParticipation: evt.bilanParticipation?.toString() || '',
       });
@@ -263,6 +269,8 @@ export default function ModifierEvenementPage() {
           ...formData,
           capaciteMax: formData.capaciteMax ? parseInt(formData.capaciteMax) : null,
           bilanParticipation: formData.bilanParticipation ? parseInt(formData.bilanParticipation) : null,
+          isOrganiseParProvince: formData.isOrganiseParProvince,
+          sousCouvertProvince: formData.sousCouvertProvince,
           imagePrincipale: imageUrl,
         }),
       });
@@ -715,6 +723,38 @@ export default function ModifierEvenementPage() {
                 min="0"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
+            <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+              <div className="pt-0.5">
+                <input
+                  type="checkbox"
+                  checked={formData.isOrganiseParProvince}
+                  onChange={(e) => setFormData({ ...formData, isOrganiseParProvince: e.target.checked })}
+                  className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                />
+              </div>
+              <div className="text-start">
+                <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحدث مباشرة بعمالة مديونة</p>
+              </div>
+            </label>
+
+            <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+              <div className="pt-0.5">
+                <input
+                  type="checkbox"
+                  checked={formData.sousCouvertProvince}
+                  onChange={(e) => setFormData({ ...formData, sousCouvertProvince: e.target.checked })}
+                  className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                />
+              </div>
+              <div className="text-start">
+                <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+              </div>
+            </label>
           </div>
 
           {/* Rapport de clôture (si clôturé) */}

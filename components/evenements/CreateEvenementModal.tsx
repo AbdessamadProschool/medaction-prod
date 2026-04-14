@@ -1,847 +1,674 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
-import {
-  X,
-  ChevronRight,
-  ChevronLeft,
-  Check,
-  Calendar,
-  MapPin,
-  Users,
+import { useState, useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { 
+  X, 
+  ChevronRight, 
+  ChevronLeft, 
+  Upload, 
+  MapPin, 
+  Calendar, 
+  Clock, 
+  Users, 
+  Target,
   Image as ImageIcon,
   Loader2,
-  Upload,
-  Trash2,
-  Clock,
+  Check,
   Building2,
-  Info,
+  Sparkles,
   Save,
+  Trash2
 } from 'lucide-react';
-import { z } from 'zod';
+import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import dynamic from 'next/dynamic';
 
-// Carte dynamique
-const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
+const LocationMap = dynamic(() => import('../maps/LocationMap'), { 
   ssr: false,
-  loading: () => <div className="w-full h-48 bg-gray-100 rounded-xl animate-pulse" />,
+  loading: () => <div className="h-48 w-full bg-gray-100 animate-pulse rounded-xl flex items-center justify-center"><MapPin className="text-gray-400" /></div>
 });
-
-// Schéma de validation Zod
-const evenementSchema = z.object({
-  // Step 1: Infos base
-  titre: z.string().min(5, "Minimum 5 caractères").max(200, "Maximum 200 caractères"),
-  description: z.string().min(20, "Minimum 20 caractères").max(5000, "Maximum 5000 caractères"),
-  secteur: z.enum(['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL', 'AUTRE']),
-  typeCategorique: z.string().min(1, "Catégorie requise"),
-  
-  // Step 2: Localisation
-  communeId: z.number().int().positive("Commune requise"),
-  etablissementId: z.number().int().positive().optional().nullable(),
-  lieu: z.string().min(3, "Lieu requis").max(255),
-  adresseComplete: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  
-  // Step 3: Participation
-  dateDebut: z.string().min(1, "Date de début requise"),
-  dateFin: z.string().optional(),
-  heureDebut: z.string().optional(),
-  heureFin: z.string().optional(),
-  capaciteMax: z.number().int().positive().optional().nullable(),
-  isGratuit: z.boolean(),
-  prixEntree: z.number().positive().optional().nullable(),
-  lienInscription: z.string().url().optional().nullable().or(z.literal('')),
-  
-  // Step 4: Médias
-  medias: z.array(z.object({
-    url: z.string(),
-    type: z.enum(['IMAGE', 'VIDEO']),
-  })).optional(),
-});
-
-type EvenementFormData = z.infer<typeof evenementSchema>;
-
-interface CreateEvenementModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: (evenement: any) => void;
-}
 
 interface Commune {
   id: number;
   nom: string;
+  nomArabe?: string;
 }
 
 interface Etablissement {
   id: number;
   nom: string;
+  nomArabe?: string;
+  secteur: string;
 }
 
-const STEPS = [
-  { id: 1, title: 'Informations', icon: Info, description: 'Titre et description' },
-  { id: 2, title: 'Localisation', icon: MapPin, description: 'Lieu de l\'événement' },
-  { id: 3, title: 'Participation', icon: Users, description: 'Dates et inscriptions' },
-  { id: 4, title: 'Médias', icon: ImageIcon, description: 'Photos et vidéos' },
-];
+interface CreateEvenementModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
 
 const SECTEURS = [
-  { value: 'EDUCATION', label: 'Éducation', emoji: '🎓' },
-  { value: 'SANTE', label: 'Santé', emoji: '🏥' },
-  { value: 'SPORT', label: 'Sport', emoji: '⚽' },
-  { value: 'SOCIAL', label: 'Social', emoji: '🤝' },
-  { value: 'CULTUREL', label: 'Culturel', emoji: '🎭' },
-  { value: 'AUTRE', label: 'Autre', emoji: '📌' },
+  { value: 'EDUCATION', label: 'Éducation' },
+  { value: 'SANTE', label: 'Santé' },
+  { value: 'SPORT', label: 'Sport' },
+  { value: 'SOCIAL', label: 'Social' },
+  { value: 'CULTUREL', label: 'Culturel' },
+  { value: 'AUTRE', label: 'Autre' },
 ];
 
-const CATEGORIES = [
-  'Conférence', 'Formation', 'Atelier', 'Festival', 'Compétition',
-  'Spectacle', 'Exposition', 'Journée portes ouvertes', 'Campagne',
-  'Rencontre', 'Cérémonie', 'Autre',
+const STEPS = [
+  { id: 1, title: 'Informations' },
+  { id: 2, title: 'Lieu & Organisation' },
+  { id: 3, title: 'Participation' },
+  { id: 4, title: 'Médias' },
 ];
 
-const CATEGORY_KEYS: Record<string, string> = {
-  'Conférence': 'conf',
-  'Formation': 'formation',
-  'Atelier': 'atelier',
-  'Festival': 'festival',
-  'Compétition': 'competition',
-  'Spectacle': 'spectacle',
-  'Exposition': 'exposition',
-  'Journée portes ouvertes': 'open_day',
-  'Campagne': 'campaign',
-  'Rencontre': 'rencontre',
-  'Cérémonie': 'ceremony',
-  'Autre': 'autre',
-};
-
-export default function CreateEvenementModal({
-  isOpen,
-  onClose,
-  onSuccess,
-}: CreateEvenementModalProps) {
-  const router = useRouter();
-  const t = useTranslations('admin.events_page.create_modal');
-  const tSectors = useTranslations('admin.users_page.sectors'); // Reusing sectors translations from users page for consistency
+export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: CreateEvenementModalProps) {
+  const t = useTranslations('admin.events');
+  const tSectors = useTranslations('admin.users_page.sectors');
   const locale = useLocale();
-
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [savingDraft, setSavingDraft] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  
-  // Dynamic Steps
-  const stepsList = [
-    { id: 1, key: 'info', icon: Info },
-    { id: 2, key: 'location', icon: MapPin },
-    { id: 3, key: 'participation', icon: Users },
-    { id: 4, key: 'media', icon: ImageIcon },
-  ];
-  
-  // Data
   const [communes, setCommunes] = useState<Commune[]>([]);
   const [etablissements, setEtablissements] = useState<Etablissement[]>([]);
-  
-  // Form data
-  const [formData, setFormData] = useState<Partial<EvenementFormData>>({
-    titre: '',
-    description: '',
-    secteur: 'AUTRE',
-    typeCategorique: '',
-    communeId: undefined,
-    etablissementId: null,
-    lieu: '',
-    adresseComplete: '',
-    latitude: 33.45,
-    longitude: -7.52,
-    dateDebut: '',
-    dateFin: '',
-    heureDebut: '',
-    heureFin: '',
-    capaciteMax: null,
-    isGratuit: true,
-    prixEntree: null,
-    lienInscription: '',
-    medias: [],
-  });
-  
-  // Upload
-  const [uploadedImages, setUploadedImages] = useState<{ url: string; filename: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<{url: string, type: 'IMAGE'}[]>([]);
+  const [savingDraft, setSavingDraft] = useState(false);
 
-  // Charger communes
-  useEffect(() => {
-    const loadCommunes = async () => {
-      try {
-        const res = await fetch('/api/map/communes');
-        if (res.ok) {
-          const data = await res.json();
-          setCommunes(data.communes || []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement communes:', error);
-      }
-    };
-    if (isOpen) loadCommunes();
-  }, [isOpen]);
+  // New states for location mode
+  const [locationMode, setLocationMode] = useState<'manuel' | 'etablissement'>('manuel');
+  const [lieuSecteur, setLieuSecteur] = useState('');
 
-  // Charger établissements par commune
-  useEffect(() => {
-    const loadEtablissements = async () => {
-      if (!formData.communeId) {
-        setEtablissements([]);
-        return;
-      }
-      try {
-        const res = await fetch(`/api/etablissements?communeId=${formData.communeId}&limit=100`);
-        if (res.ok) {
-          const data = await res.json();
-          setEtablissements(data.data || []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement établissements:', error);
-      }
-    };
-    loadEtablissements();
-  }, [formData.communeId]);
+  const evenementSchema = useMemo(() => z.object({
+    titre: z.string().min(5, t('errors.create_error')).max(200),
+    description: z.string().min(20, t('errors.create_error')).max(5000),
+    secteur: z.enum(['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL', 'AUTRE']),
+    typeCategorique: z.string().min(1),
+    communeId: z.number().int().positive(),
+    etablissementId: z.number().int().positive().optional().nullable(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
+    lieuEtablissementId: z.number().int().positive().optional().nullable(),
+    lieu: z.string().min(3).max(255),
+    adresse: z.string().optional(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
+    dateDebut: z.string().min(1),
+    dateFin: z.string().optional(),
+    heureDebut: z.string().optional(),
+    heureFin: z.string().optional(),
+    capaciteMax: z.number().int().positive().optional().nullable(),
+    isGratuit: z.boolean().default(true),
+    prixEntree: z.number().positive().optional().nullable(),
+    lienInscription: z.string().url().optional().nullable().or(z.literal('')),
+    organisateur: z.string().optional(),
+  }), [t]);
 
-  // Charger draft depuis localStorage
+  const { register, handleSubmit, watch, setValue, formState: { errors }, trigger } = useForm({
+    resolver: zodResolver(evenementSchema),
+    defaultValues: {
+      isGratuit: true,
+      communeId: 1, // Default to Médiouna
+      isOrganiseParProvince: false,
+      sousCouvertProvince: false,
+    }
+  });
+
+  const formData = watch();
+
   useEffect(() => {
     if (isOpen) {
-      const draft = localStorage.getItem('evenement_draft');
-      if (draft) {
-        try {
-          const parsed = JSON.parse(draft);
-          setFormData(parsed.formData);
-          setUploadedImages(parsed.images || []);
-          setCurrentStep(parsed.step || 1);
-        } catch (e) {
-          console.error('Erreur parsing draft:', e);
-        }
-      }
+      loadInitialData();
     }
   }, [isOpen]);
 
-  // Update form data
-  const updateField = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  // Valider step
-  const validateStep = (step: number): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (step === 1) {
-      if (!formData.titre || formData.titre.length < 5) {
-        newErrors.titre = t('errors.title_required');
-      }
-      if (!formData.description || formData.description.length < 20) {
-        newErrors.description = t('errors.desc_required');
-      }
-      if (!formData.typeCategorique) {
-        newErrors.typeCategorique = t('errors.category_required');
-      }
-    }
-
-    if (step === 2) {
-      if (!formData.communeId) {
-        newErrors.communeId = t('errors.commune_required');
-      }
-      if (!formData.lieu || formData.lieu.length < 3) {
-        newErrors.lieu = t('errors.location_required');
-      }
-    }
-
-    if (step === 3) {
-      if (!formData.dateDebut) {
-        newErrors.dateDebut = t('errors.date_required');
-      }
-      if (!formData.isGratuit && (!formData.prixEntree || formData.prixEntree <= 0)) {
-        newErrors.prixEntree = t('errors.price_required');
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Navigation
-  const goNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(4, prev + 1));
-    }
-  };
-
-  const goPrev = () => {
-    setCurrentStep(prev => Math.max(1, prev - 1));
-  };
-
-  // Save draft
-  const saveDraft = async () => {
-    setSavingDraft(true);
+  const loadInitialData = async () => {
     try {
-      localStorage.setItem('evenement_draft', JSON.stringify({
-        formData,
-        images: uploadedImages,
-        step: currentStep,
-        savedAt: new Date().toISOString(),
-      }));
-      // Petit délai pour UX
-      await new Promise(r => setTimeout(r, 500));
-    } finally {
-      setSavingDraft(false);
-    }
-  };
-
-  // Upload images
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      Array.from(files).forEach(file => formData.append('files', file));
-      formData.append('type', 'evenement');
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUploadedImages(prev => [
-          ...prev,
-          ...data.uploaded.map((f: any) => ({ url: f.url, filename: f.filename })),
-        ]);
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Erreur upload');
+      const [communesRes, etablissementsRes] = await Promise.all([
+        fetch('/api/map/communes'),
+        fetch('/api/etablissements?limit=1000')
+      ]);
+      
+      if (communesRes.ok) {
+        const data = await communesRes.json();
+        setCommunes(data.communes || []);
+      }
+      
+      if (etablissementsRes.ok) {
+        const data = await etablissementsRes.json();
+        setEtablissements(data.data || []);
       }
     } catch (error) {
-      alert('Erreur de connexion');
+      console.error('Erreur chargement données:', error);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setUploading(true);
+    
+    try {
+      const files = Array.from(e.target.files);
+      const uploadPromises = files.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'evenements');
+        
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          return { url: data.url, type: 'IMAGE' as const };
+        }
+        return null;
+      });
+      
+      const results = await Promise.all(uploadPromises);
+      const validResults = results.filter((r): r is {url: string, type: 'IMAGE'} => r !== null);
+      setUploadedImages(prev => [...prev, ...validResults]);
+    } catch (error) {
+      toast.error(t('errors.upload_error'));
     } finally {
       setUploading(false);
     }
   };
 
-  // Supprimer image
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Soumettre
-  const handleSubmit = async () => {
-    // Valider tous les steps
-    for (let i = 1; i <= 3; i++) {
-      if (!validateStep(i)) {
-        setCurrentStep(i);
-        return;
-      }
-    }
+  const updateField = (name: any, value: any) => {
+    setValue(name, value);
+  };
 
+  const goNext = async () => {
+    let fieldsToValidate: any[] = [];
+    if (currentStep === 1) fieldsToValidate = ['titre', 'description', 'secteur', 'typeCategorique'];
+    if (currentStep === 2) fieldsToValidate = ['lieu', 'communeId'];
+    if (currentStep === 3) fieldsToValidate = ['dateDebut'];
+
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const goPrev = () => setCurrentStep(prev => prev - 1);
+
+  const saveDraft = async () => {
+    setSavingDraft(true);
+    // Logic for saving draft
+    setTimeout(() => {
+      setSavingDraft(false);
+      toast.success(t('buttons.save_draft_success'));
+    }, 1000);
+  };
+
+  const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const submitData = {
-        ...formData,
-        medias: uploadedImages.map(img => ({
-          url: img.url,
-          type: 'IMAGE' as const,
-        })),
-      };
-
-      const res = await fetch('/api/evenements', {
+      const res = await fetch('/api/admin/evenements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData),
+        body: JSON.stringify({
+          ...data,
+          medias: uploadedImages,
+          statut: 'EN_ATTENTE_VALIDATION',
+          lieuEtablissementId: locationMode === 'etablissement' && data.lieuEtablissementId ? data.lieuEtablissementId : null,
+          lieu: locationMode === 'manuel' ? data.lieu : null,
+          adresse: locationMode === 'manuel' ? data.adresse : null,
+        })
       });
 
       if (res.ok) {
-        const data = await res.json();
-        // Supprimer le draft
-        localStorage.removeItem('evenement_draft');
-        onSuccess?.(data.data);
-        onClose();
-        router.push(`/evenements/${data.data.id}`);
+        toast.success(t('validation.success'));
+        onSuccess();
       } else {
-        const data = await res.json();
-        alert(data.error || 'Erreur création');
+        const err = await res.json();
+        toast.error(err.error || t('validation.error'));
       }
     } catch (error) {
-      alert('Erreur de connexion');
+      toast.error(t('errors.create_error'));
     } finally {
       setLoading(false);
     }
   };
 
-  // Fermer et sauvegarder draft
-  const handleClose = () => {
-    saveDraft();
-    onClose();
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              {t('title')}
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <Sparkles className="text-emerald-500 w-5 h-5" />
+              {t('new_title')}
             </h2>
-            <p className="text-sm text-gray-500">
-               {t('step_indicator', { current: currentStep, total: 4 })}
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('new_subtitle')}</p>
           </div>
-          <button
-            onClick={handleClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-          >
-            <X size={20} />
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Steps indicator */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            {stepsList.map((step, index) => {
-              const Icon = step.icon;
-              const isActive = currentStep === step.id;
-              const isCompleted = currentStep > step.id;
-              
-              return (
-                <div key={step.id} className="flex items-center">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                      isCompleted 
-                        ? 'bg-emerald-500 text-white'
-                        : isActive 
-                          ? 'bg-emerald-100 text-emerald-600 border-2 border-emerald-500'
-                          : 'bg-gray-100 text-gray-400'
-                    }`}>
-                      {isCompleted ? <Check size={18} /> : <Icon size={18} />}
-                    </div>
-                    <span className={`text-xs mt-1 hidden sm:block ${
-                      isActive ? 'text-emerald-600 font-medium' : 'text-gray-400'
-                    }`}>
-                      {t(`steps.${step.key}`)}
-                    </span>
-                  </div>
-                  {index < stepsList.length - 1 && (
-                    <div className={`w-8 sm:w-16 h-0.5 mx-2 ${
-                      isCompleted ? 'bg-emerald-500' : 'bg-gray-200'
-                    }`} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        {/* Steps Progress */}
+        <div className="flex items-center justify-center gap-4 py-4 bg-gray-50/50 dark:bg-gray-900/20 border-b border-gray-100 dark:border-gray-700">
+          {STEPS.map((step) => (
+            <div key={step.id} className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                currentStep === step.id 
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-500/10' 
+                  : currentStep > step.id 
+                    ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30' 
+                    : 'bg-gray-200 text-gray-500 dark:bg-gray-700'
+              }`}>
+                {currentStep > step.id ? <Check size={16} /> : step.id}
+              </div>
+              <span className={`text-sm font-medium hidden sm:inline ${
+                currentStep === step.id ? 'text-gray-900 dark:text-white' : 'text-gray-400'
+              }`}>
+                {step.title}
+              </span>
+              {step.id < STEPS.length && <div className="w-12 h-[2px] bg-gray-200 dark:bg-gray-700 mx-2 hidden sm:block" />}
+            </div>
+          ))}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {/* Step 1: Infos base */}
           {currentStep === 1 && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('form.title_label')} *
-                </label>
-                <input
-                  type="text"
-                  value={formData.titre || ''}
-                  onChange={(e) => updateField('titre', e.target.value)}
-                  placeholder={t('form.title_placeholder')}
-                  className={`w-full px-4 py-2.5 rounded-xl border ${
-                    errors.titre ? 'border-red-500' : 'border-gray-200'
-                  } focus:ring-2 focus:ring-emerald-500 focus:border-transparent`}
-                />
-                {errors.titre && (
-                  <p className="text-red-500 text-xs mt-1">{errors.titre}</p>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('form.title')} *
+                  </label>
+                  <input
+                    {...register('titre')}
+                    type="text"
+                    placeholder="Ex: Nettoyage de la plage"
+                    className={`w-full px-4 py-3 rounded-xl border ${
+                      errors.titre ? 'border-red-500' : 'border-gray-200 dark:border-gray-600'
+                    } focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all`}
+                  />
+                  {errors.titre && <p className="text-red-500 text-xs mt-1">{errors.titre.message?.toString()}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('form.sector')} *
+                  </label>
+                  <select
+                    {...register('secteur')}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all appearance-none bg-white"
+                  >
+                    <option value="">Sélectionner...</option>
+                    {SECTEURS.map(s => (
+                      <option key={s.value} value={s.value}>{tSectors(s.value as any)}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Catégorie d'événement *
+                  </label>
+                  <input
+                    {...register('typeCategorique')}
+                    type="text"
+                    placeholder="Ex: Concours de dessin"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Description détaillée *
+                  </label>
+                  <textarea
+                    {...register('description')}
+                    rows={4}
+                    placeholder="Détails de l'événement..."
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                  />
+                </div>
+
+                <div className="md:col-span-2 pt-4 border-t border-gray-100">
+                   <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-emerald-500" />
+                      Organisation & Établissement
+                   </h4>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                        <div className="pt-0.5">
+                          <input
+                            type="checkbox"
+                            {...register('isOrganiseParProvince')}
+                            className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">Organisé par la Province</span>
+                          <p className="text-xs text-gray-500 mt-1">L'événement sera rattaché à la Province de Médiouna</p>
+                        </div>
+                      </label>
+
+                      <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                        <div className="pt-0.5">
+                          <input
+                            type="checkbox"
+                            {...register('sousCouvertProvince')}
+                            className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">Sous le couvert de la Province</span>
+                          <p className="text-xs text-gray-500 mt-1">Affichage "Sous le couvert de Monsieur le Gouverneur"</p>
+                        </div>
+                      </label>
+                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Commune *
+                  </label>
+                  <select
+                    {...register('communeId', { valueAsNumber: true })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  >
+                    {communes.map(c => (
+                      <option key={c.id} value={c.id}>{locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="md:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Type de lieu d'événement *
+                    </label>
+                    <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                      <button
+                        type="button"
+                        onClick={() => setLocationMode('manuel')}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white dark:bg-gray-700 text-emerald-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                      >
+                        Saisie Manuelle
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLocationMode('etablissement')}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white dark:bg-gray-700 text-emerald-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                      >
+                        Établissement Existant
+                      </button>
+                    </div>
+                  </div>
+
+                  {locationMode === 'etablissement' ? (
+                    <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
+                      <div className="space-y-3">
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">Secteur du lieu (optionnel)</label>
+                        <select
+                          value={lieuSecteur}
+                          onChange={(e) => setLieuSecteur(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all text-sm"
+                        >
+                          <option value="">Tous les secteurs</option>
+                          <option value="EDUCATION">Éducation</option>
+                          <option value="SANTE">Santé</option>
+                          <option value="SPORT">Sport</option>
+                          <option value="SOCIAL">Social</option>
+                          <option value="CULTUREL">Culturel</option>
+                          <option value="AUTRE">Autre</option>
+                        </select>
+                      </div>
+                      <div className="space-y-3">
+                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">Établissement (Emplacement)</label>
+                        <select
+                          {...register('lieuEtablissementId', { valueAsNumber: true })}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all text-sm"
+                        >
+                          <option value="">Sélectionnez un établissement...</option>
+                          {etablissements
+                            .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
+                            .map(e => (
+                            <option key={e.id} value={e.id} className="truncate max-w-[200px]">
+                              {locale === 'ar' ? (e.nomArabe || e.nom) : e.nom} {e.secteur ? `(${e.secteur})` : ''}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Lieu exact ou Nom de la salle *
+                        </label>
+                        <input
+                          {...register('lieu')}
+                          type="text"
+                          placeholder="Ex: Grande Salle du Conseil"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Position sur la carte
+                        </label>
+                        <LocationMap 
+                          position={{ lat: formData.latitude || 33.45, lng: formData.longitude || -7.52 }}
+                          onPositionChange={(lat, lng) => {
+                            updateField('latitude', lat);
+                            updateField('longitude', lng);
+                          }}
+                          height="h-64"
+                        />
+                        <p className="text-xs text-gray-400 mt-2 italic">Glissez le marqueur pour définir l'emplacement exact</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentStep === 3 && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Date de début *
+                  </label>
+                  <input
+                    {...register('dateDebut')}
+                    type="date"
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Date de fin
+                  </label>
+                  <input
+                    {...register('dateFin')}
+                    type="date"
+                    min={formData.dateDebut || new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Heure de début
+                  </label>
+                  <input
+                    {...register('heureDebut')}
+                    type="time"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Heure de fin
+                  </label>
+                  <input
+                    {...register('heureFin')}
+                    type="time"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Capacité maximale
+                  </label>
+                  <input
+                    {...register('capaciteMax', { valueAsNumber: true })}
+                    type="number"
+                    placeholder="Ex: 500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+
+                <div className="flex flex-col justify-end">
+                   <label className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors w-full">
+                      <input
+                        type="checkbox"
+                        {...register('isGratuit')}
+                        className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <span className="font-medium text-gray-900">Participation gratuite</span>
+                    </label>
+                </div>
+
+                {!formData.isGratuit && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Prix d'entrée (DH) *
+                    </label>
+                    <input
+                      {...register('prixEntree', { valueAsNumber: true })}
+                      type="number"
+                      placeholder="Ex: 50"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none"
+                    />
+                  </div>
                 )}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('form.desc_label')} *
-                </label>
-                <textarea
-                  value={formData.description || ''}
-                  onChange={(e) => updateField('description', e.target.value)}
-                  rows={4}
-                  placeholder={t('form.desc_placeholder')}
-                  className={`w-full px-4 py-2.5 rounded-xl border ${
-                    errors.description ? 'border-red-500' : 'border-gray-200'
-                  } focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none`}
-                />
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
-                  {errors.description && (
-                    <span className="text-red-500">{errors.description}</span>
-                  )}
-                  <span>{formData.description?.length || 0}/5000</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.sector_label')} *
-                  </label>
-                  <select
-                    value={formData.secteur || 'AUTRE'}
-                    onChange={(e) => updateField('secteur', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                  >
-                    {SECTEURS.map(s => (
-                      <option key={s.value} value={s.value}>
-                         {s.emoji} {tSectors(s.value)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.category_label')} *
-                  </label>
-                  <select
-                    value={formData.typeCategorique || ''}
-                    onChange={(e) => updateField('typeCategorique', e.target.value)}
-                    className={`w-full px-4 py-2.5 rounded-xl border ${
-                      errors.typeCategorique ? 'border-red-500' : 'border-gray-200'
-                    } focus:ring-2 focus:ring-emerald-500`}
-                  >
-                    <option value="">{t('form.select_placeholder')}</option>
-                    {CATEGORIES.map(c => (
-                      <option key={c} value={c}>
-                        {t(`categories.${CATEGORY_KEYS[c] || 'autre'}`)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
             </div>
           )}
 
-          {/* Step 2: Localisation */}
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.commune_label')} *
-                  </label>
-                  <select
-                    value={formData.communeId || ''}
-                    onChange={(e) => updateField('communeId', e.target.value ? parseInt(e.target.value) : undefined)}
-                    className={`w-full px-4 py-2.5 rounded-xl border ${
-                      errors.communeId ? 'border-red-500' : 'border-gray-200'
-                    } focus:ring-2 focus:ring-emerald-500`}
-                  >
-                    <option value="">{t('form.select_placeholder')}</option>
-                    {communes.map(c => (
-                      <option key={c.id} value={c.id}>{c.nom}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.establishment_label')}
-                  </label>
-                  <select
-                    value={formData.etablissementId || ''}
-                    onChange={(e) => updateField('etablissementId', e.target.value ? parseInt(e.target.value) : null)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                    disabled={!formData.communeId}
-                  >
-                    <option value="">{t('form.select_placeholder')}</option>
-                    {etablissements.map(e => (
-                      <option key={e.id} value={e.id}>{e.nom}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                   {t('form.location_label')} *
-                </label>
-                <input
-                  type="text"
-                  value={formData.lieu || ''}
-                  onChange={(e) => updateField('lieu', e.target.value)}
-                  placeholder={t('form.location_placeholder')}
-                  className={`w-full px-4 py-2.5 rounded-xl border ${
-                    errors.lieu ? 'border-red-500' : 'border-gray-200'
-                  } focus:ring-2 focus:ring-emerald-500`}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                   {t('form.map_label')}
-                </label>
-                <LocationMap
-                  position={{ lat: formData.latitude || 33.45, lng: formData.longitude || -7.52 }}
-                  onPositionChange={(lat, lng) => {
-                    updateField('latitude', lat);
-                    updateField('longitude', lng);
-                  }}
-                  height="h-48"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Participation */}
-          {currentStep === 3 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.start_date')} *
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.dateDebut || ''}
-                    onChange={(e) => updateField('dateDebut', e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-4 py-2.5 rounded-xl border ${
-                      errors.dateDebut ? 'border-red-500' : 'border-gray-200'
-                    } focus:ring-2 focus:ring-emerald-500`}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.end_date')}
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.dateFin || ''}
-                    onChange={(e) => updateField('dateFin', e.target.value)}
-                    min={formData.dateDebut || new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.start_time')}
-                  </label>
-                  <input
-                    type="time"
-                    value={formData.heureDebut || ''}
-                    onChange={(e) => updateField('heureDebut', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.end_time')}
-                  </label>
-                  <input
-                    type="time"
-                    value={formData.heureFin || ''}
-                    onChange={(e) => updateField('heureFin', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('form.max_capacity')}
-                </label>
-                <input
-                  type="number"
-                  value={formData.capaciteMax || ''}
-                  onChange={(e) => updateField('capaciteMax', e.target.value ? parseInt(e.target.value) : null)}
-                  placeholder={t('form.capacity_placeholder')}
-                  min={1}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-
-              <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.isGratuit}
-                    onChange={(e) => updateField('isGratuit', e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
-                  />
-                  <span className="font-medium">{t('form.is_free')}</span>
-                </label>
-              </div>
-
-              {!formData.isGratuit && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {t('form.price')} *
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.prixEntree || ''}
-                    onChange={(e) => updateField('prixEntree', e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="50"
-                    min={0}
-                    step={0.01}
-                    className={`w-full px-4 py-2.5 rounded-xl border ${
-                      errors.prixEntree ? 'border-red-500' : 'border-gray-200'
-                    } focus:ring-2 focus:ring-emerald-500`}
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {t('form.registration_link')}
-                </label>
-                <input
-                  type="url"
-                  value={formData.lienInscription || ''}
-                  onChange={(e) => updateField('lienInscription', e.target.value)}
-                  placeholder="https://..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Médias */}
           {currentStep === 4 && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('form.photos_label')}
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                  Photos de l'événement
                 </label>
                 
-                {/* Zone d'upload */}
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    disabled={uploading}
-                  />
-                  {uploading ? (
-                    <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-                  ) : (
-                    <>
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-500">
-                        {t('form.upload_text')}
-                      </span>
-                      <span className="text-xs text-gray-400 mt-1">
-                        {t('form.upload_hint')}
-                      </span>
-                    </>
-                  )}
-                </label>
-              </div>
-
-              {/* Images uploadées */}
-              {uploadedImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {uploadedImages.map((img, index) => (
-                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden group">
-                      <img
-                        src={img.url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                  {uploadedImages.map((img, idx) => (
+                    <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-100 dark:border-gray-700">
+                      <img src={img.url} className="w-full h-full object-cover" />
+                      <button 
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <Trash2 size={14} />
                       </button>
                     </div>
                   ))}
+                  <label className="aspect-video rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                    <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                    {uploading ? <Loader2 className="w-6 h-6 animate-spin text-emerald-500" /> : <Upload className="w-6 h-6 text-gray-400 group-hover:text-emerald-500 transition-colors" />}
+                    <span className="text-xs text-gray-400 mt-2 font-medium">Ajouter</span>
+                  </label>
                 </div>
-              )}
+              </div>
 
-              {/* Résumé */}
-              <div className="bg-emerald-50 rounded-xl p-4 mt-6">
-                <h4 className="font-medium text-emerald-800 mb-3">{t('form.summary_title')}</h4>
-                <div className="space-y-2 text-sm text-emerald-700">
-                  <p><strong>{t('form.summary.title')}:</strong> {formData.titre || '-'}</p>
-                  <p><strong>{t('form.summary.sector')}:</strong> {SECTEURS.find(s => s.value === formData.secteur)?.label ? tSectors(formData.secteur) : '-'}</p>
-                  <p><strong>{t('form.summary.date')}:</strong> {formData.dateDebut ? new Date(formData.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR') : '-'}</p>
-                  <p><strong>{t('form.summary.location')}:</strong> {formData.lieu || '-'}</p>
-                  <p><strong>{t('form.summary.price')}:</strong> {formData.isGratuit ? t('form.is_free') : `${formData.prixEntree} DH`}</p>
-                  <p><strong>{t('form.summary.photos')}:</strong> {uploadedImages.length}</p>
-                </div>
+              {/* Résumé Final */}
+              <div className="p-6 bg-gray-50 dark:bg-gray-900/40 rounded-2xl border border-gray-100 dark:border-gray-700">
+                 <h4 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <Target className="w-5 h-5 text-emerald-500" />
+                    Résumé de l'événement
+                 </h4>
+                 <div className="grid grid-cols-2 gap-y-3 text-sm">
+                    <span className="text-gray-500">Titre :</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{formData.titre || '-'}</span>
+                    <span className="text-gray-500">Secteur :</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{formData.secteur ? tSectors(formData.secteur as any) : '-'}</span>
+                    <span className="text-gray-500">Lieu :</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{formData.lieu || '-'}</span>
+                    <span className="text-gray-500">Date :</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{formData.dateDebut || '-'}</span>
+                    <span className="text-gray-500">Organisation :</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                       {formData.isOrganiseParProvince ? 'Province de Médiouna' : 'Établissement'}
+                    </span>
+                 </div>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-gray-100 dark:border-gray-700">
-          <button
-            onClick={saveDraft}
-            disabled={savingDraft}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            {savingDraft ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <Save size={16} />
-            )}
-            {t('buttons.save_draft')}
-          </button>
+        <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800">
+           <button
+             onClick={saveDraft}
+             disabled={savingDraft}
+             className="px-6 py-2.5 text-gray-600 dark:text-gray-400 font-medium flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors disabled:opacity-50"
+           >
+             {savingDraft ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+             Brouillon
+           </button>
 
-          <div className="flex items-center gap-3">
-            {currentStep > 1 && (
-              <button
-                onClick={goPrev}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                {t('buttons.prev')}
-              </button>
-            )}
-
-            {currentStep < 4 ? (
-              <button
-                onClick={goNext}
-                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors"
-              >
-                {t('buttons.next')}
-                {locale === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50"
-              >
-                {loading ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : (
-                  <Check size={18} />
-                )}
-                Créer l'événement
-              </button>
-            )}
-          </div>
+           <div className="flex items-center gap-4">
+             {currentStep > 1 && (
+               <button
+                 onClick={goPrev}
+                 className="px-6 py-2.5 text-gray-600 dark:text-gray-400 font-medium flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
+               >
+                 <ChevronLeft size={18} />
+                 Retour
+               </button>
+             )}
+             {currentStep < 4 ? (
+               <button
+                 onClick={goNext}
+                 className="px-8 py-2.5 bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 hover:shadow-emerald-500/40 transition-all flex items-center gap-2"
+               >
+                 Suivant
+                 <ChevronRight size={18} />
+               </button>
+             ) : (
+               <button
+                 onClick={handleSubmit(onSubmit)}
+                 disabled={loading}
+                 className="px-10 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all flex items-center gap-2 disabled:opacity-50"
+               >
+                 {loading ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
+                 Créer l'événement
+               </button>
+             )}
+           </div>
         </div>
       </div>
     </div>

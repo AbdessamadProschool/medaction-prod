@@ -53,6 +53,8 @@ export default function ModifierCampagnePage() {
     dateFin: z.string().optional(),
     lieu: z.string().optional(),
     couleurTheme: z.string().optional(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
   });
 
   type CampagneForm = z.infer<typeof campagneSchema>;
@@ -85,6 +87,8 @@ export default function ModifierCampagnePage() {
             dateFin: camp.dateFin ? new Date(camp.dateFin).toISOString().split('T')[0] : '',
             lieu: camp.lieu || '',
             couleurTheme: camp.couleurTheme || '#10b981',
+            isOrganiseParProvince: camp.isOrganiseParProvince || false,
+            sousCouvertProvince: camp.sousCouvertProvince || false,
           });
           
           // Image actuelle
@@ -147,6 +151,8 @@ export default function ModifierCampagnePage() {
         body: JSON.stringify({
           ...data,
           objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
+          isOrganiseParProvince: data.isOrganiseParProvince,
+          sousCouvertProvince: data.sousCouvertProvince,
           imagePrincipale: imageUrl
         }),
       });
@@ -451,7 +457,7 @@ export default function ModifierCampagnePage() {
             </div>
           </div>
 
-          {/* Objectifs */}
+          {/* Objectifs & Options */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className="px-5 py-3 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-purple-50/50 to-transparent">
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
@@ -462,7 +468,7 @@ export default function ModifierCampagnePage() {
               </h2>
             </div>
             
-            <div className="p-4">
+            <div className="p-4 space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-gray-700 text-start">
@@ -500,6 +506,36 @@ export default function ModifierCampagnePage() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className="pt-4 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('isOrganiseParProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحملة مباشرة بعمالة مديونة</p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('sousCouvertProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="text-start">
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+                  </div>
+                </label>
               </div>
             </div>
           </div>

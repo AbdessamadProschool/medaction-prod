@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
     const campagne = await prisma.campagne.findUnique({
       where: { id },
       include: {
@@ -52,7 +53,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const userId = parseInt(session.user.id);
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
     const body = await request.json();
 
     // Vérifier propriété
@@ -115,7 +116,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     const userId = parseInt(session.user.id);
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
 
     // Vérifier propriété
     const campagne = await prisma.campagne.findUnique({

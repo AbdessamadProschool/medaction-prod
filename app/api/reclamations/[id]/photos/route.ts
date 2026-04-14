@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -19,7 +20,7 @@ export async function GET(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
     const userId = parseInt(session.user.id);
     const role = session.user.role;
 
@@ -152,7 +153,7 @@ export async function HEAD(
       return new NextResponse(null, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
 
     const reclamation = await prisma.reclamation.findUnique({
       where: { id },

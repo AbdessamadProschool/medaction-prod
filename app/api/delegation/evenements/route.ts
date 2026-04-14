@@ -146,7 +146,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
   // Récupérer la commune de l'établissement
   let communeId = body.communeId;
-  let secteur = session.user.secteurResponsable as any || 'AUTRE';
+  let secteur = session.user.secteurResponsable as import('@prisma/client').Secteur || 'AUTRE';
 
   if (body.etablissementId) {
     const etablissement = await prisma.etablissement.findUnique({
@@ -193,6 +193,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       lienInscription: body.lienInscription?.trim(),
       etablissementId: parseInt(body.etablissementId),
       communeId: communeId,
+      isOrganiseParProvince: body.isOrganiseParProvince || false,
+      sousCouvertProvince: body.sousCouvertProvince || false,
       statut: 'EN_ATTENTE_VALIDATION',
       createdBy: userId,
     },

@@ -19,6 +19,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { SafeHTML } from '@/components/ui/SafeHTML';
 
 const getCategoryKey = (cat: string) => {
   return cat.toUpperCase()
@@ -232,9 +233,9 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             )}
 
             {/* Main Content */}
-            <div 
+            <SafeHTML 
               className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-[hsl(213,80%,28%)] prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
-              dangerouslySetInnerHTML={{ __html: article.contenu }}
+              html={article.contenu}
             />
 
             {/* Tags Footer */}

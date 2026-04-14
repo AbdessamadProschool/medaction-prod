@@ -166,18 +166,20 @@ export function checkRateLimit(userId: string): { allowed: boolean; retryAfter?:
   }
   
   limit.count++;
+  
+  // Lazy pruning: randomly cleanup old entries when we have too many
+  if (uploadRateLimits.size > 1000 && Math.random() < 0.1) {
+    const time = Date.now();
+    for (const [k, v] of uploadRateLimits.entries()) {
+      if (time > v.resetTime) uploadRateLimits.delete(k);
+    }
+  }
+  
   return { allowed: true };
 }
 
-// Cleanup old rate limits periodically
-setInterval(() => {
-  const now = Date.now();
-  Array.from(uploadRateLimits.entries()).forEach(([key, value]) => {
-    if (now > value.resetTime + 60000) {
-      uploadRateLimits.delete(key);
-    }
-  });
-}, 60000);
+// Periodic cleanup is removed for serverless compatibility.
+// We use lazy pruning instead in checkRateLimit.
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MAGIC BYTES VALIDATION (OWASP: CWE-434 Prevention)

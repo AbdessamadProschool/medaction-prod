@@ -8,6 +8,7 @@
         "overview": "Vue d'ensemble",
         "performance": "Tableau d'Honneur",
         "reclamations": "Réclamations",
+        "evenements": "Événements",
         "map": "Carte de Décision",
         "reports": "Rapports & Audit"
       },
@@ -105,6 +106,7 @@
         "overview": "Tableau de Bord",
         "performance": "Indice de Performance Provincial",
         "reclamations": "Flux des Réclamations",
+        "evenements": "Événements",
         "map": "Carte Interactive",
         "reports": "Rapports & Données"
       },
@@ -274,6 +276,7 @@
         },
         "periods": {
           "last_month": "Mois Dernier",
+          "weekly": "Semaine en cours",
           "q4": "Trimestre T4",
           "y2025": "Année 2025"
         },
@@ -394,6 +397,10 @@
     "status_finished": "Terminée",
     "progress": "Progression",
     "participants": "participants",
+    "objective_progress": "Progression de l'objectif",
+    "participants_required": "participants requis",
+    "login_to_participate": "Connectez-vous pour participer",
+    "confirm_participation": "Confirmer ma participation",
     "goal": "Objectif",
     "see_all": "Voir toutes les campagnes",
     "types": {
@@ -441,7 +448,8 @@
       "participation_success": "Votre participation a bien été enregistrée !",
       "link_copied": "Lien copié dans le presse-papiers !",
       "copy_failed": "Impossible de copier le lien"
-    }
+    },
+    "campaign_ended": "Campagne terminée"
   },
   "notifications": {
     "title": "Notifications",
@@ -575,7 +583,10 @@
     "see_all": "Voir tous les événements",
     "date": "Date",
     "location": "Lieu",
-    "organizer": "Organisateur"
+    "organizer": "Organisateur",
+    "form": {
+      "sector": "Secteur de l'événement"
+    }
   },
   "news": {
     "title": "Actualités",
@@ -1737,6 +1748,7 @@
       "suggestions": "Suggestions",
       "users": "Utilisateurs",
       "etablissements": "Établissements",
+      "etablissements_requests": "Demandes Établissements",
       "activities": "Activités",
       "validation": "Validation",
       "events": "Événements",
@@ -2015,6 +2027,9 @@
           "ceremony": "Cérémonie",
           "autre": "Autre"
         }
+      },
+      "form": {
+        "sector": "Secteur de l'événement"
       }
     },
     "news_page": {
@@ -2176,26 +2191,65 @@
       "create_subtitle": "Remplissez les informations pour créer un nouvel établissement",
       "back_list": "Retour à la liste",
       "sections": {
-        "general": "Informations Générales",
-        "localization": "Localisation",
-        "contact": "Contact et Web",
-        "description": "Description"
+        "general": "Identification & Secteur",
+        "localization": "Géolocalisation & Commune",
+        "contact": "Contact & Web",
+        "infra": "Infrastructure & Équipements",
+        "staff": "Ressources Humaines & Capacité",
+        "education": "Données Pédagogiques",
+        "financial": "Financement & Projets",
+        "description": "Description détaillée"
       },
       "form": {
         "name": "Nom de l'établissement",
+        "nameArabe": "Nom (Arabe)",
         "code": "Code Identifiant",
         "sector": "Secteur",
+        "nature": "Nature (Public/Privé)",
+        "manager": "Nom du Responsable",
+        "infra_status": "État de l'Infrastructure",
         "capacity": "Capacité d'accueil",
-        "commune": "Commune",
+        "commune": "Commune de rattachement",
         "address": "Adresse complète",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
+        "latitude": "Latitude (GPS)",
+        "longitude": "Longitude (GPS)",
         "email": "Email",
         "phone": "Téléphone",
         "website": "Site Web",
         "description_placeholder": "Décrivez l'établissement, sa mission, ses services...",
         "publish_now": "Publier immédiatement sur le portail citoyen",
-        "select_commune": "Sélectionner une commune"
+        "select_commune": "Sélectionner une commune",
+        "altitude": "Altitude (m)",
+        "quartier": "Quartier / Douar",
+        "adresse_complete": "Adresse complète",
+        "tutelle": "Ministère / Tutelle",
+        "statutJuridique": "Statut Juridique",
+        "gestionnaire": "Gestionnaire",
+        "anneeCreation": "Année de création",
+        "anneeOuverture": "Année d'ouverture",
+        "statutFonctionnel": "Statut Opérationnel",
+        "surfaceTotale": "Surface Totale (m²)",
+        "disponibiliteEau": "Accès à l'eau potable",
+        "disponibiliteElectricite": "Accès à l'électricité",
+        "connexionInternet": "Connexion Internet",
+        "nombreSalles": "Nombre total de salles",
+        "effectifTotal": "Effectif Total",
+        "nombrePersonnel": "Nombre de personnel",
+        "cadre": "Type de cadre",
+        "capaciteAccueil": "Capacité d'accueil",
+        "annexe": "Annexe administrative",
+        "typeEtab": "Type d'établissement",
+        "cycle": "Cycle d'enseignement",
+        "nbClasses": "Nombre de classes",
+        "nbEnseignants": "Nombre d'enseignants",
+        "nbCadres": "Nombre de cadres admin",
+        "elevesPrescolaire": "Élèves (Préscolaire)",
+        "elevesTotal": "Nombre total d'élèves",
+        "nouveauxInscrits": "Nouveaux inscrits",
+        "tauxReussite": "Taux de réussite (%)",
+        "sourcesFinancement": "Sources de financement",
+        "budgetAnnuel": "Budget annuel (DH)",
+        "partenaires": "Partenaires / Donateurs"
       },
       "actions": {
         "cancel": "Annuler",
@@ -2242,7 +2296,8 @@
         "max_capacity": "Capacité maximale (personnes)",
         "open_registration": "Ouvrir les inscriptions",
         "open_registration_hint": "Permet aux citoyens de s'inscrire en ligne",
-        "external_link": "Lien d'inscription externe"
+        "external_link": "Lien d'inscription externe",
+        "sector": "Secteur de l'événement"
       },
       "errors": {
         "image_size": "L'image ne doit pas dépasser 5MB",
@@ -4333,7 +4388,13 @@
             "address": "Adresse",
             "address_placeholder": "Rue, avenue...",
             "neighborhood": "Quartier / Douar",
-            "neighborhood_placeholder": "Quartier, douar..."
+            "neighborhood_placeholder": "Quartier, douar...",
+            "manual_entry": "Saisie Manuelle",
+            "existing_establishment": "Établissement Existant",
+            "location_sector": "Secteur du lieu (optionnel)",
+            "all_sectors": "Tous les secteurs",
+            "select_establishment_location": "Sélectionnez un établissement...",
+            "establishment_location_label": "Établissement (Emplacement)"
           },
           "organizer": {
             "title": "Organisateur & Contact",
@@ -5403,5 +5464,39 @@
     "submitting": "Envoi en cours...",
     "submit_btn_edit": "Enregistrer les modifications",
     "submit_btn_create": "Publier mon évaluation"
+  },
+  "establishments_workflow": {
+    "title": "Gestion du Patrimoine Établissements",
+    "subtitle": "Workflow de validation et mise à jour des données",
+    "request_creation": "Demander la création",
+    "request_edit": "Demander une mise à jour",
+    "complementary_fields": "Données Complémentaires",
+    "complementary_fields_desc": "Ajoutez des informations spécifiques supplémentaires (format flexible).",
+    "add_field": "Ajouter un paramètre",
+    "field_name": "Nom de la donnée",
+    "field_value": "Valeur",
+    "justification": "Justification de la demande",
+    "justification_placeholder": "Expliquez pourquoi cette création ou modification est nécessaire...",
+    "submit_success": "Votre demande a été transmise à l'administration pour validation.",
+    "status": {
+      "EN_ATTENTE_VALIDATION": "En attente d'arbitrage",
+      "APPROUVEE": "Validée et Appliquée",
+      "REJETEE": "Demande Rejetée"
+    },
+    "admin_validation": {
+      "title": "Centre d'Arbitrage Établissements",
+      "back_list": "Retour aux demandes",
+      "approve": "Valider & Appliquer",
+      "reject": "Rejeter la demande",
+      "motif_rejet": "Motif du rejet (obligatoire si rejet)",
+      "motif_placeholder": "Expliquez les raisons du refus...",
+      "history": "Historique des demandes",
+      "soumis_par": "Soumis par",
+      "date": "Date de soumission",
+      "type": "Type d'opération",
+      "diff": "Modifications demandées",
+      "applied_success": "Modifications appliquées à l'établissement avec succès.",
+      "rejected_success": "Demande rejetée avec succès."
+    }
   }
 }

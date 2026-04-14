@@ -148,7 +148,8 @@ export async function POST(req: Request) {
       if (d.userPermissions?.length) await tx.userPermission.createMany({ data: cleanData(d.userPermissions) });
       
       // Historique Réclamations (Recupéré de reclamations include ou table séparée ?)
-      // Dans le POST backup, on a fait `prisma.reclamation.findMany({ include: { historique: true } })`
+      // Dans le POST backup, on a fait `prisma.reclamation.findMany({
+      take: 100, include: { historique: true } })`
       // Donc l'historique est imbriqué dans reclamations.
       // On doit le parser.
       if (d.reclamations?.length) {

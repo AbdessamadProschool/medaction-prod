@@ -19,6 +19,8 @@ import {
   logSecurityEvent,
   UPLOAD_CONFIG,
 } from "@/lib/security/upload-security";
+import { stat } from "fs/promises";
+import { SystemLogger } from "@/lib/system-logger";
 
 // Configuration
 // PROFESSIONAL CONFIGURATION: Allows external volume mapping via STORAGE_PATH
@@ -31,7 +33,7 @@ const UPLOAD_DIR = STORAGE_PATH
 
 // Ensure the directory exists on startup (optional but good practice)
 // Note: We create directories dynamically, so this is just for the root
-console.log(`[UPLOAD] Configuration Storage: ${UPLOAD_DIR}`);
+// SystemLogger.info('upload', `Configuration Storage: ${UPLOAD_DIR}`);
 
 // POST /api/upload - Secure file upload endpoint
 export async function POST(request: NextRequest) {
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
       logSecurityEvent('UPLOAD_BLOCKED', {
         userId,
         filename: 'N/A',
-        reason: `Invalid upload type: ${uploadType}`,
+        reason: `Invalid upload type: ${uploadType.slice(0, 50).replace(/[\r\n]/g, '')}`,
         ip: userIp,
       });
       
@@ -158,13 +160,10 @@ export async function POST(request: NextRequest) {
           strictMode: true, // Block files with any suspicious content
         });
 
-        // Log pour debugging
-        console.log(`[UPLOAD] Validation du fichier "${file.name}":`, {
+        // Log pour auditing via SystemLogger
+        SystemLogger.debug('upload', `Validation fichier: ${file.name}`, {
           isValid: validation.isValid,
-          error: validation.error,
-          errorCode: validation.errorCode,
-          sanitizedFilename: validation.sanitizedFilename,
-          warnings: validation.securityWarnings,
+          errorCode: validation.errorCode
         });
 
         if (!validation.isValid) {
@@ -207,12 +206,10 @@ export async function POST(request: NextRequest) {
         // Use Uint8Array for robust conversion (fixes potential Node.js ArrayBuffer issues)
         const buffer = Buffer.from(new Uint8Array(bytes));
         
-        console.log(`[UPLOAD] Writing file: ${filepath}`);
-        console.log(`[UPLOAD]   Buffer size: ${buffer.length} bytes`);
-        console.log(`[UPLOAD]   Upload dir: ${uploadPath}`);
+        SystemLogger.debug('upload', `Writing file: ${secureFilename}`);
 
         if (buffer.length === 0) {
-          console.error(`[UPLOAD] ❌ EMPTY BUFFER for file ${file.name}! Skipping write.`);
+          SystemLogger.error('upload', 'EMPTY BUFFER', { filename: file.name });
           errors.push({
             filename: file.name,
             error: 'Le fichier est vide après traitement',
@@ -223,14 +220,23 @@ export async function POST(request: NextRequest) {
 
         await writeFile(filepath, buffer);
         
-        // Verify file was actually written
-        const { existsSync, statSync } = require('fs');
-        const fileWritten = existsSync(filepath);
-        const fileSize = fileWritten ? statSync(filepath).size : 0;
-        console.log(`[UPLOAD]   File written: ${fileWritten}, size on disk: ${fileSize} bytes`);
+        // 6.4 VERIFICATION (OWASP RECOMMENDED)
+        let diskSize = 0;
+        try {
+           const stats = await stat(filepath);
+           diskSize = stats.size;
+        } catch (e) {
+           SystemLogger.error('upload', 'Échec d\'écriture détecté', { filename: secureFilename });
+           errors.push({
+             filename: file.name,
+             error: 'Échec de l\'écriture du fichier',
+             code: 'WRITE_FAILED',
+           });
+           continue;
+        }
         
-        if (!fileWritten || fileSize === 0) {
-          console.error(`[UPLOAD] ❌ File write FAILED or empty! Path: ${filepath}`);
+        if (diskSize === 0) {
+          SystemLogger.error('upload', 'Fichier vide après écriture', { filename: secureFilename });
           errors.push({
             filename: file.name,
             error: 'Échec de l\'écriture du fichier',
@@ -248,7 +254,7 @@ export async function POST(request: NextRequest) {
           ip: userIp,
         });
 
-        console.log(`[UPLOAD] ✅ SUCCESS: ${secureFilename} (${(fileSize/1024).toFixed(1)} KB)`);
+        SystemLogger.info('upload', `✅ SUCCESS: ${secureFilename} (${(diskSize/1024).toFixed(1)} KB)`);
 
         uploadedFiles.push({
           filename: secureFilename,
@@ -259,7 +265,7 @@ export async function POST(request: NextRequest) {
         });
 
       } catch (fileError) {
-        console.error(`Error processing file ${file.name}:`, fileError);
+        SystemLogger.error('upload', `Error processing file ${file.name}`);
         errors.push({
           filename: file.name,
           error: 'Erreur lors du traitement du fichier',
@@ -288,7 +294,7 @@ export async function POST(request: NextRequest) {
     return response;
 
   } catch (error) {
-    console.error("Erreur POST /api/upload:", error);
+    SystemLogger.error("upload", "Erreur POST /api/upload");
     return NextResponse.json(
       { error: "Erreur serveur", code: "SERVER_ERROR" }, 
       { status: 500 }

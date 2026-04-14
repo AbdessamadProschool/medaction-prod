@@ -31,9 +31,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ logged: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Erreur logging access denied:', error);
-    // Gestion de l'erreur si la colonne n'existe pas ou autre
-    return NextResponse.json({ logged: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ logged: false }, { status: 500 });
   }
 }

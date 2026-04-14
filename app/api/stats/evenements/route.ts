@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
@@ -10,11 +11,11 @@ export async function GET(request: NextRequest) {
     const secteur = searchParams.get('secteur');
 
     const dateDebut = new Date();
-    dateDebut.setDate(dateDebut.getDate() - parseInt(periode));
+    dateDebut.setDate(dateDebut.getDate() - safeParseInt(periode, 0));
 
     // Filtres
     const where: any = {};
-    if (communeId) where.communeId = parseInt(communeId);
+    if (communeId) where.communeId = safeParseInt(communeId, 0);
     if (secteur) where.secteur = secteur;
 
     // Requêtes parallèles optimisées

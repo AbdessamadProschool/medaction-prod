@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -24,13 +25,13 @@ export async function GET(request: NextRequest) {
     const entity = searchParams.get('entity');
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
-    const limit = parseInt(searchParams.get('limit') || '1000');
+    const limit = safeParseInt(searchParams.get('limit') || '1000', 0);
 
     // Construire les filtres
     const where: any = {};
 
     if (userId) {
-      where.userId = parseInt(userId);
+      where.userId = safeParseInt(userId, 0);
     }
 
     if (action) {

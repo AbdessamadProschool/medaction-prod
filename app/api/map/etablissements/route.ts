@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     // Filtre par événements
     if (hasEvents) {
-      where.evenements = {
+      where.evenementsOrganises = {
         some: {
           statut: 'PUBLIEE'
         }
@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
           anneeOuverture: true, anneeCreation: true, effectifTotal: true, nombrePersonnel: true, budgetAnnuel: true, sourcesFinancement: true,
           tutelle: true, responsableNom: true, accessibilite: true, surfaceTotale: true, disponibiliteEau: true, disponibiliteElectricite: true, connexionInternet: true,
           elevesTotal: true, elevesFilles: true, nouveauxInscrits: true, commune: { select: { id: true, nom: true } }, annexe: { select: { id: true, nom: true, communeId: true } },
-          _count: { select: { evaluations: true, abonnements: true, reclamations: true, evenements: { where: { statut: 'PUBLIEE' } }, actualites: { where: { statut: { in: ['PUBLIEE', 'VALIDEE'] } } }, programmesActivites: { where: { statut: { not: 'BROUILLON' } } } } },
-          evenements: { where: { statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] as any } }, orderBy: { dateDebut: 'desc' }, take: 20, select: { id: true, titre: true, dateDebut: true, dateFin: true, statut: true, typeCategorique: true } },
-          programmesActivites: { where: { statut: { not: 'BROUILLON' as any } }, orderBy: { date: 'desc' }, take: 20, select: { id: true, titre: true, date: true, heureDebut: true, heureFin: true, statut: true } }
+          _count: { select: { evaluations: true, abonnements: true, reclamations: true, evenementsOrganises: { where: { statut: 'PUBLIEE' } }, actualites: { where: { statut: { in: ['PUBLIEE', 'VALIDEE'] } } }, activitesOrganisees: { where: { statut: { not: 'BROUILLON' } } } } },
+          evenementsOrganises: { where: { statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } }, orderBy: { dateDebut: 'desc' }, take: 20, select: { id: true, titre: true, dateDebut: true, dateFin: true, statut: true, typeCategorique: true } },
+          activitesOrganisees: { where: { statut: { not: 'BROUILLON' } }, orderBy: { date: 'desc' }, take: 20, select: { id: true, titre: true, date: true, heureDebut: true, heureFin: true, statut: true } }
       },
     });
 
@@ -133,12 +133,12 @@ export async function GET(request: NextRequest) {
         evaluationsCount: etab._count.evaluations,
         abonnementsCount: etab._count.abonnements,
         reclamationsCount: etab._count.reclamations,
-        evenementsCount: etab._count.evenements,
+        evenementsCount: etab._count.evenementsOrganises,
         actualitesCount: etab._count.actualites,
-        activitesCount: etab._count.programmesActivites,
+        activitesCount: etab._count.activitesOrganisees,
         // Arrays for filtering
-        eventsList: etab.evenements,
-        activitiesList: etab.programmesActivites
+        eventsList: etab.evenementsOrganises,
+        activitiesList: etab.activitesOrganisees
       },
       geometry: {
         type: 'Point',

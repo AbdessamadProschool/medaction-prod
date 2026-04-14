@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -74,8 +75,8 @@ export async function GET(request: NextRequest) {
     const dateDebut = searchParams.get('dateDebut');
     const dateFin = searchParams.get('dateFin');
     const statut = searchParams.get('statut');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = Math.min(safeParseInt(searchParams.get('limit') || '50', 0), 100);
     const skip = (page - 1) * limit;
 
     // Construire le filtre de base
@@ -109,7 +110,7 @@ export async function GET(request: NextRequest) {
 
     // Filtres additionnels
     if (etablissementId) {
-      where.etablissementId = parseInt(etablissementId);
+      where.etablissementId = safeParseInt(etablissementId, 0);
     }
 
     if (dateDebut && dateFin) {

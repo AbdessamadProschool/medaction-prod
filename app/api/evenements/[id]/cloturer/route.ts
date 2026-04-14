@@ -45,11 +45,11 @@ export const POST = withErrorHandler(async (
 
   // Vérifier que l'événement peut être clôturé
   if (evenement.statut === 'CLOTUREE') {
-    throw new AppError('Cet événement est déjà clôturé', 'ALREADY_CLOSED', 400);
+    throw new AppError('Cet événement est déjà clôturé', 'VALIDATION_ERROR', 400);
   }
 
-  if (evenement.statut === 'ANNULEE') {
-    throw new AppError('Un événement annulé ne peut pas être clôturé', 'INVALID_STATUS', 400);
+  if (evenement.statut === 'REJETEE') {
+    throw new AppError('Un événement rejeté ne peut pas être clôturé', 'VALIDATION_ERROR', 400);
   }
 
   const body = await request.json();
@@ -78,17 +78,17 @@ export const POST = withErrorHandler(async (
 
   // Créer un log d'audit
   try {
-    await prisma.audit.create({
+    await prisma.auditLog.create({
       data: {
         action: 'CLOTURE_EVENEMENT',
-        entite: 'Evenement',
-        entiteId: id,
+        resourceType: 'Evenement',
+        resourceId: id.toString(),
         userId: parseInt(session.user.id),
-        details: {
+        details: JSON.stringify({
           titre: evenement.titre,
           rapportCloture: body.rapportCloture.substring(0, 100) + '...',
           bilanParticipation: body.bilanParticipation,
-        }
+        })
       }
     });
   } catch (auditError) {

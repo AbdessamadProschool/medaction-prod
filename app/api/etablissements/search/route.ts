@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (communeId) {
-      where.communeId = parseInt(communeId);
+      where.communeId = safeParseInt(communeId, 0);
     }
 
     const etablissements = await prisma.etablissement.findMany({

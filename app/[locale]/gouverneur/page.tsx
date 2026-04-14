@@ -49,6 +49,7 @@ import { toast } from 'sonner';
 import { signOut } from 'next-auth/react';
 import ReclamationsTab from './components/ReclamationsTab';
 import PerformanceTab from './components/PerformanceTab';
+import EvenementsTab from './components/EvenementsTab';
 import DecisionCenterModal from './components/DecisionCenterModal';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart as RePieChart, Pie, Cell } from 'recharts';
 import dynamic from 'next/dynamic';
@@ -139,7 +140,7 @@ export default function GouverneurDashboard() {
   const router = useRouter();
   
   // State
-  const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'reclamations' | 'map' | 'reports'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'reclamations' | 'map' | 'reports' | 'activites'>('overview');
   const [stats, setStats] = useState<Stats | null>(null);
   const [alerts, setAlerts] = useState<AlertAction[]>([]);
   
@@ -175,6 +176,8 @@ export default function GouverneurDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   // State for Real Reports & Insights
   const [reportPeriod, setReportPeriod] = useState('Mois Dernier');
+  const [reportCommuneId, setReportCommuneId] = useState<number | undefined>(undefined);
+  const [reportSector, setReportSector] = useState<string | undefined>(undefined);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedReclamationId, setSelectedReclamationId] = useState<number | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -192,7 +195,7 @@ export default function GouverneurDashboard() {
             ]);
 
             if (insightsRes.success) setAiInsights(insightsRes.data);
-            if (reportsRes.success) setRecentReports(reportsRes.data);
+            if (reportsRes.success) setRecentReports(reportsRes.data ?? []);
         } catch (e) {
             console.error("Failed to fetch report data", e);
         }
@@ -203,169 +206,31 @@ export default function GouverneurDashboard() {
   const handleGenerateReport = async () => {
     setIsGenerating(true);
     toast.loading(t('reports.generating'));
-    
     try {
-      const result = await generateGovernorReport(reportPeriod);
-      
+      const result = await generateGovernorReport(reportPeriod, {
+        communeId: reportCommuneId,
+        secteur: reportSector
+      });
       if (result.success && result.data) {
         toast.dismiss();
         toast.success(t('reports.generated'));
-        
-        // Open Report Window
         const reportWindow = window.open('', '_blank');
         if (reportWindow) {
           const d = result.data;
-          const htmlContent = `
-            <!DOCTYPE html>
-            <html dir="${isRTL ? 'rtl' : 'ltr'}">
-            <head>
-              <title>Rapport du Gouverneur - ${d.period}</title>
-              <style>
-                body { font-family: 'Segoe UI', sans-serif; padding: 40px; color: #1e293b; }
-                .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
-                .logo { font-size: 24px; font-weight: 900; color: #0f172a; }
-                .meta { color: #64748b; font-size: 14px; margin-top: 10px; }
-                .section { margin-bottom: 30px; }
-                h2 { font-size: 18px; color: #334155; border-left: 4px solid #3b82f6; padding-left: 10px; margin-bottom: 15px; }
-                .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-                .card { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
-                .card h3 { margin: 0 0 5px 0; font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-                .card .value { font-size: 28px; font-weight: 800; color: #0f172a; }
-                .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-                .table th { background: #f1f5f9; font-size: 12px; text-transform: uppercase; color: #475569; }
-                .footer { margin-top: 50px; text-align: right; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px; }
-                @media print { body { padding: 0; } }
-              </style>
-            </head>
-            <body>
-              <!-- Official Watermark -->
-              <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.03; pointer-events: none; display: flex; align-items: center; justify-content: center;">
-                  <div style="font-size: 150px; font-weight: 900; color: #000; transform: rotate(-45deg);">OFFICIEL</div>
-              </div>
-
-              <div class="header">
-                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 30px;">
-                    <div>
-                        <div class="logo" style="font-size: 18px; font-weight: 900; letter-spacing: 1px;">ROYAUME DU MAROC</div>
-                        <div style="font-size: 14px; font-weight: 600; color: #64748b;">PROVINCE DE MÉDIOUNA</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 10px; font-weight: 700; background: #0f172a; color: white; padding: 4px 10px; border-radius: 99px; display: inline-block;">CONFIDENTIEL</div>
-                        <div class="meta" style="margin-top: 5px;">Réf: GOV-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}</div>
-                    </div>
-                 </div>
-                 
-                 <div style="text-align: center; margin: 40px 0;">
-                     <h1 style="font-size: 32px; font-weight: 900; color: #0f172a; margin: 0;">Rapport d'Activité Gouverneur</h1>
-                     <div style="font-size: 16px; color: #64748b; font-weight: 500; margin-top: 10px;">Période: ${reportPeriod}</div>
-                 </div>
-              </div>
-
-              <div class="section">
-                 <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; border-left: 4px solid #d97706; padding-left: 10px; margin-bottom: 20px;">1. Synthèse Globale</h2>
-                 <div class="grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                    <div class="card">
-                       <h3>Réclamations Reçues</h3>
-                       <div class="value">${s.reclamations.total || 0}</div>
-                       <div style="font-size: 10px; color: #22c55e;">+${s.reclamations.nouveauCetteSemaine || 0} cette semaine</div>
-                    </div>
-                    <div class="card">
-                       <h3>Taux de Résolution</h3>
-                       <div class="value" style="color: ${s.reclamations.tauxResolution > 80 ? '#22c55e' : '#f59e0b'}">${s.reclamations.tauxResolution || 0}%</div>
-                    </div>
-                    <div class="card">
-                       <h3>Établissements Actifs</h3>
-                       <div class="value">${s.etablissements.total || 0}</div>
-                    </div>
-                    <div class="card">
-                       <h3>Événements à Venir</h3>
-                       <div class="value">${s.evenements.aVenir || 0}</div>
-                    </div>
-                 </div>
-              </div>
-
-              <div class="section">
-                 <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; border-left: 4px solid #2563eb; padding-left: 10px; margin-bottom: 20px;">2. Détail par Commune</h2>
-                 <table class="table">
-                    <thead><tr><th>Commune</th><th>État des Lieux</th><th>Priorité</th></tr></thead>
-                    <tbody>
-                       ${s.communes.details && s.communes.details.length > 0 ? s.communes.details.map((c: any) => `
-                           <tr>
-                               <td style="font-weight: 700;">${c.nom}</td>
-                               <td><strong>${c.count || 0}</strong> dossiers actifs</td>
-                               <td><span style="padding: 2px 8px; border-radius: 4px; background: #f1f5f9; font-size: 10px; font-weight: 700;">NORMALE</span></td>
-                           </tr>
-                       `).join('') : '<tr><td colspan="3" style="text-align: center; color: #94a3b8;">Aucune donnée disponible</td></tr>'}
-                    </tbody>
-                 </table>
-              </div>
-
-              <div class="section">
-                 <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; border-left: 4px solid #7c3aed; padding-left: 10px; margin-bottom: 20px;">3. Répartition Sectorielle</h2>
-                 <table class="table">
-                    <thead><tr><th>Secteur</th><th>Performance</th><th>Distribution</th></tr></thead>
-                    <tbody>
-                       ${Object.entries(s.etablissements.parSecteur || {}).map(([secteur, count]) => `
-                           <tr>
-                               <td style="font-weight: 700;">${secteur}</td>
-                               <td>
-                                   <div style="height: 6px; background: #e2e8f0; border-radius: 3px; width: 100px; overflow: hidden;">
-                                       <div style="height: 100%; background: #0f172a; width: ${Math.min(100, (Number(count)/s.etablissements.total)*100)}%;"></div>
-                                   </div>
-                               </td>
-                               <td><strong>${count}</strong> établissements</td>
-                           </tr>
-                       `).join('')}
-                    </tbody>
-                 </table>
-              </div>
-              
-              
-              <div class="section">
-                 <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; border-left: 4px solid #10b981; padding-left: 10px; margin-bottom: 20px;">4. Communication & Projets</h2>
-                 <div class="grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-                    <div class="card">
-                       <h3>Actualités Publiées</h3>
-                       <div class="value">${d.stats.actualites?.total || 0}</div>
-                    </div>
-                    <div class="card">
-                       <h3>Campagnes Actives</h3>
-                       <div class="value">${d.stats.campagnes?.total || 0}</div>
-                    </div>
-                 </div>
-              </div>
-
-
-              <div class="section" style="page-break-inside: avoid;">
-                 <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; border-left: 4px solid #ef4444; padding-left: 10px; margin-bottom: 20px;">5. Alertes & Recommandations</h2>
-                 <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 15px;">
-                     <h4 style="margin: 0 0 10px 0; color: #be123c;">⚠️ Points d'Attention</h4>
-                     <ul style="margin: 0; padding-left: 20px; color: #881337; font-size: 12px;">
-                         <li>Le taux de résolution des réclamations nécessite une amélioration dans la commune de Médiouna.</li>
-                         <li>Maintenance préventive recommandée pour 3 établissements sportifs.</li>
-                     </ul>
-                 </div>
-              </div>
-
-              <div class="footer">
-                 <div>PROVINCE DE MÉDIOUNA • GOUVERNEUR DASHBOARD V2.0</div>
-                 <div style="margin-top: 5px;">Document généré par l'Intelligence Artificielle • Usage Interne Uniquement</div>
-              </div>
-
-              <script>
-                 window.onload = function() { window.print(); }
-              </script>
-            </body>
-            </html>
-          `;
-          reportWindow.document.write(htmlContent);
+          const ref = `GOV-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+          const SL: Record<string,string>={EDUCATION:'Education',SANTE:'Sante',SPORT:'Sport',SOCIAL:'Social',CULTUREL:'Culturel',AUTRE:'Autre'};
+          const sc=(s:string)=>s==='EXCELLENT'?'#10b981':s==='BON'?'#3b82f6':s==='MOYEN'?'#f59e0b':'#ef4444';
+          const acl=(sev:string)=>sev==='CRITIQUE'?'background:#fff1f2;border-color:#fecaca;color:#991b1b':'background:#fffbeb;border-color:#fcd34d;color:#92400e';
+          const html=`<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'><title>Rapport Provincial - ${d.period}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f0f4f8;color:#0f172a;font-size:13px}.page{background:#fff;max-width:1050px;margin:0 auto;padding:48px 56px}.hdr{border-bottom:3px solid #1e3a8a;padding-bottom:22px;margin-bottom:28px}.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.badge-conf{background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:99px;font-weight:800;font-size:9px;border:1px solid #fca5a5}.ref{font-size:9px;color:#94a3b8;margin-top:5px;font-weight:600}.title-center{text-align:center;padding-top:20px}.title-center h1{font-size:22px;font-weight:900;color:#1e3a8a;text-transform:uppercase}.title-center .sub{font-size:12px;color:#475569;margin-top:4px}.period-b{display:inline-block;background:#1e3a8a;color:#fff;padding:3px 16px;border-radius:99px;font-size:11px;font-weight:700;margin-top:8px}.sec{margin-top:30px}.sec-hdr{display:flex;align-items:center;gap:8px;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:14px}.sec-num{background:#1e3a8a;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}.sec-hdr h2{font-size:14px;font-weight:800;color:#1e3a8a}.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}.kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--c,#3b82f6)}.kpi.r{--c:#ef4444}.kpi.g{--c:#10b981}.kpi.o{--c:#f59e0b}.kpi.p{--c:#8b5cf6}.kpi.b{--c:#3b82f6}.kpi-l{font-size:8px;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}.kpi-v{font-size:26px;font-weight:900;color:#0f172a;line-height:1}.kpi-s{font-size:9px;color:#64748b;margin-top:4px}.tw{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}table{width:100%;border-collapse:collapse}th{background:#f1f5f9;padding:9px 12px;font-size:9px;font-weight:800;text-transform:uppercase;color:#475569;text-align:left}td{padding:9px 12px;font-size:11px;border-top:1px solid #f1f5f9;vertical-align:middle}.pill{padding:2px 8px;border-radius:99px;font-weight:700;font-size:9px;display:inline-block}.pr{background:#fee2e2;color:#991b1b}.po{background:#fef3c7;color:#92400e}.pg{background:#dcfce7;color:#166534}.pb{background:#dbeafe;color:#1e40af}.al{border:1px solid;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}.al-sev{font-size:8px;font-weight:900;text-transform:uppercase;margin-bottom:1px}.al-msg{font-size:11px;font-weight:600}.rl{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;color:#166534;display:flex;gap:6px;margin-bottom:6px}.foot{margin-top:40px;padding-top:20px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start}@media print{body{background:#fff}.page{padding:24px 32px}@page{size:A4;margin:8mm}}</style></head><body><div class='page'><div class='hdr'><div class='hdr-top'><div><strong style='font-size:14px;color:#1e3a8a'>Royaume du Maroc</strong><div style='font-size:10px;color:#64748b'>Ministere de l Interior - Province de Mediouna</div></div><div style='text-align:right'><span class='badge-conf'>CONFIDENTIEL</span><div class='ref'>Ref: ${ref} | ${new Date().toLocaleDateString('fr-FR')}</div></div></div><div class='title-center'><h1>Rapport Provincial de Pilotage Strategique</h1><div class='sub'>Tableau de bord analytique - Plateforme MedAction</div><span class='period-b'>Periode: ${d.period}</span></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>1</div><h2>Performance Territoriale (Annexes)</h2></div><div class='tw'><table><thead><tr><th>Commune</th><th>Annexe</th><th>Etablissements</th><th>Activites</th></tr></thead><tbody>${d.annexes.map((a:any)=>'<tr><td style=font-weight:800;color:#1e3a8a>'+a.commune+'</td><td>'+a.nom+'</td><td style=text-align:center;font-weight:800>'+a.etablissements+'</td><td style=text-align:center><span class=pill pb>Actif</span></td></tr>').join('')}</tbody></table></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>2</div><h2>Reclamations Citoyennes</h2></div><div class='kpi4'><div class='kpi r'><div class='kpi-l'>Total Dossiers</div><div class='kpi-v'>${d.reclamations.total}</div><div class='kpi-s'>Soumis sur la periode</div></div><div class='kpi o'><div class='kpi-l'>En Attente</div><div class='kpi-v'>${d.reclamations.enAttente}</div><div class='kpi-s'>${d.reclamations.urgentes} urgentes +72h</div></div><div class='kpi g'><div class='kpi-l'>Taux Resolution</div><div class='kpi-v'>${d.reclamations.tauxResolution}%</div><div class='kpi-s'>${d.reclamations.resolues} clotures</div></div><div class='kpi b'><div class='kpi-l'>Acceptation</div><div class='kpi-v'>${d.reclamations.tauxAcceptation}%</div><div class='kpi-s'>${d.reclamations.acceptees} acc / ${d.reclamations.rejetees} rej</div></div></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>3</div><h2>Activites et Publications</h2></div><div class='kpi4'><div class='kpi b'><div class='kpi-l'>Evenements</div><div class='kpi-v'>${d.evenements.total}</div><div class='kpi-s'>${d.evenements.publies} publies</div></div><div class='kpi p'><div class='kpi-l'>Actualites</div><div class='kpi-v'>${d.actualites.total}</div><div class='kpi-s'>Articles publies</div></div><div class='kpi g'><div class='kpi-l'>Campagnes</div><div class='kpi-v'>${d.campagnes.total}</div><div class='kpi-s'>Campagnes actives</div></div><div class='kpi o'><div class='kpi-l'>Satisfaction</div><div class='kpi-v'>${d.satisfaction.moyenne}/5</div><div class='kpi-s' style=color:${sc(d.satisfaction.status)};font-weight:700>${d.satisfaction.status} - ${d.satisfaction.totalEvaluations} avis</div></div></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>4</div><h2>Classement Dynamisme Etablissements</h2></div><div class='tw'><table><thead><tr><th>#</th><th>Etablissement</th><th>Commune/Annexe</th><th>Secteur</th><th>Evenements</th><th>Daily Act.</th><th>Recl.</th><th>Performance</th></tr></thead><tbody>${d.etablissements.ranking.map((e:any,i:number)=>'<tr><td style=font-weight:900>#'+(i+1)+'</td><td><div style=font-weight:800;color:#1e3a8a>'+e.nom+'</div></td><td><div style=font-size:9px;font-weight:700>'+e.commune+'</div><div style=font-size:8px;color:#94a3b8>'+e.annexe+'</div></td><td><span class=pill pb>'+(SL[e.secteur]||e.secteur)+'</span></td><td style=text-align:center;color:#3b82f6;font-weight:800>'+e.details.evenements+'</td><td style=text-align:center;color:#10b981;font-weight:800>'+e.details.programmes+'</td><td style=text-align:center;font-weight:700;color:'+(e.details.reclamations>5?'#ef4444':e.details.reclamations>0?'#f59e0b':'#10b981')+'>'+e.details.reclamations+'</td><td style=text-align:right><span style=background:'+(e.activityScore>20?'#1e3a8a':e.activityScore>0?'#3b82f6':'#94a3b8')+';color:#fff;padding:2px 10px;border-radius:5px;font-weight:900;font-size:10px>'+e.activityScore+'</span></td></tr>').join('')}</tbody></table></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>5</div><h2>Alertes et Recommandations</h2></div>${d.alerts?.length>0?d.alerts.map((a:any)=>'<div class=al style='+acl(a.severity)+'><strong>['+a.severity+']</strong> '+a.message+'</div>').join(''):''}${d.recommendations.map((r:string)=>'<div class=rl><span>-></span><span>'+r+'</span></div>').join('')}</div><div class='foot'><div><strong>M. le Gouverneur - Province de Mediouna</strong><br/>Rapport MedAction - Pilotage Strategique</div><div style=text-align:right;font-size:9px;color:#94a3b8><div>Ref: ${ref}</div><div>Par: ${d.generatedBy}</div><div>${new Date().toLocaleString('fr-FR')}</div></div></div></div><script>window.onload=function(){window.print()}</script></body></html>`;
+          reportWindow.document.write(html);
           reportWindow.document.close();
         }
       } else {
-        toast.error('Erreur lors de la génération');
+        toast.dismiss();
+        toast.error(result.error || 'Erreur de generation du rapport');
       }
     } catch (e) {
+      toast.dismiss();
       toast.error('Erreur serveur');
     } finally {
       setIsGenerating(false);
@@ -522,6 +387,7 @@ export default function GouverneurDashboard() {
                { id: 'performance', label: t('sidebar.nav.performance'), icon: Trophy },
                { id: 'reclamations', label: t('sidebar.nav.reclamations'), icon: FileText },
                { id: 'map', label: t('sidebar.nav.map'), icon: MapPin },
+               { id: 'activites', label: isRTL ? 'الأنشطة والأحداث' : 'Activités & Événements', icon: Calendar },
                { id: 'reports', label: t('sidebar.nav.reports'), icon: BarChart3 },
              ].map(item => (
                 <button
@@ -587,6 +453,7 @@ export default function GouverneurDashboard() {
                   {activeTab === 'performance' && t('header.titles.performance')}
                   {activeTab === 'reclamations' && t('header.titles.reclamations')}
                   {activeTab === 'map' && t('header.titles.map')}
+                  {activeTab === 'activites' && (isRTL ? 'الأنشطة والأحداث' : 'Activités & Événements')}
                   {activeTab === 'reports' && t('header.titles.reports')}
                </h2>
                <div className="hidden md:flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-gray-100">
@@ -1567,6 +1434,18 @@ export default function GouverneurDashboard() {
                   </motion.div>
                )}
 
+               {/* 📅 ACTIVITÉS TAB */}
+               {activeTab === 'activites' && (
+                  <motion.div
+                    key="activites"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                     <EvenementsTab />
+                  </motion.div>
+               )}
 
 
             </AnimatePresence>

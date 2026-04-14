@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -27,7 +28,7 @@ export async function POST(
     }
 
     const { id } = params;
-    const activityId = parseInt(id);
+    const activityId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
 
     // 1. Check if activity exists and user has rights
@@ -52,7 +53,7 @@ export async function POST(
          select: { etablissementsGeres: true } 
       });
       
-      const managesEtab = user?.etablissementsGeres.includes(activite.etablissementId);
+      const managesEtab = activite.etablissementId ? user?.etablissementsGeres.includes(activite.etablissementId) : false;
       
       if (!managesEtab && activite.createdBy !== userId) {
         return NextResponse.json({ error: 'Vous ne gérez pas cette activité' }, { status: 403 });

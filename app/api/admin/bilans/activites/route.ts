@@ -1,28 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { safeParseInt } from '@/lib/utils/parse';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
 
 // GET - Liste des activités avec rapport complété (bilans)
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Vous devez être connecté pour accéder aux bilans');
-  }
-
-  // Roles autorisés: ADMIN, SUPER_ADMIN, GOUVERNEUR
-  const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
-  if (!allowedRoles.includes(session.user.role || '')) {
-    throw new ForbiddenError('Accès réservé aux administrateurs et gouverneurs');
-  }
-
+export const GET = withPermission('bilans.read', withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const secteur = searchParams.get('secteur');
   const etablissementId = searchParams.get('etablissementId');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '50', 0), 100);
 
   // Construire le filtre
   const where: any = {
@@ -30,7 +17,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   };
 
   if (etablissementId) {
-    where.etablissementId = parseInt(etablissementId);
+    where.etablissementId = safeParseInt(etablissementId, 0);
   }
 
   // Filtre par secteur via l'établissement
@@ -55,7 +42,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       lieu: true,
       statut: true,
       participantsAttendus: true,
-      // Rapport
       presenceEffective: true,
       tauxPresence: true,
       commentaireDeroulement: true,
@@ -66,7 +52,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       recommandations: true,
       rapportComplete: true,
       dateRapport: true,
-      // Relations
       etablissement: {
         select: { 
           id: true, 
@@ -96,14 +81,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   };
 
   activites.forEach(a => {
-    const secteurName = a.etablissement.secteur;
+    const secteurName = a.etablissement?.secteur || 'Général/Province';
     stats.parSecteur[secteurName] = (stats.parSecteur[secteurName] || 0) + 1;
     stats.parTypeActivite[a.typeActivite] = (stats.parTypeActivite[a.typeActivite] || 0) + 1;
   });
 
-  return NextResponse.json({
-    success: true,
-    data: activites,
-    stats,
-  });
-});
+  return successResponse({ data: activites, stats }, 'Bilans des activités récupérés avec succès');
+}));

@@ -4,66 +4,20 @@ import { hashPassword } from '@/lib/auth/password';
 import { z } from 'zod';
 import { checkRateLimit, getClientIP } from '@/lib/auth/security';
 import { isRegistrationEnabled } from '@/lib/settings/service';
+import { SecurityValidation } from '@/lib/security/validation';
 
 // SECURITY: Rate limit config for registration (5 per hour per IP)
 const REGISTER_RATE_LIMIT = { maxRequests: 5, windowMs: 60 * 60 * 1000 };
 
-// SECURITY FIX: Strong password validation regex
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-// SECURITY FIX: XSS Sanitization - Remove HTML tags and escape dangerous characters
-function sanitizeString(input: string): string {
-  return input
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/[<>"'&]/g, (char) => {
-      const escapeMap: Record<string, string> = {
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        '&': '&amp;',
-      };
-      return escapeMap[char] || char;
-    })
-    .trim();
-}
-
-// SECURITY FIX: Validate name contains only safe characters (letters, spaces, hyphens, apostrophes)
-const NAME_REGEX = /^[a-zA-ZàâäéèêëïîôùûüçÀÂÄÉÈÊËÏÎÔÙÛÜÇ\s\-']+$/;
 
 /**
  * Schéma de validation pour l'inscription
  */
 const registerSchema = z.object({
-  email: z
-    .string()
-    .email('Email invalide')
-    .transform((email) => email.toLowerCase().trim()),
-  password: z
-    .string()
-    .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
-    .refine(
-      (password) => PASSWORD_REGEX.test(password),
-      'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*?&)'
-    ),
-  nom: z
-    .string()
-    .min(2, 'Le nom doit contenir au moins 2 caractères')
-    .max(100, 'Le nom ne peut pas dépasser 100 caractères')
-    .transform((val) => sanitizeString(val))
-    .refine(
-      (val) => NAME_REGEX.test(val),
-      'Le nom ne peut contenir que des lettres, espaces, tirets et apostrophes'
-    ),
-  prenom: z
-    .string()
-    .min(2, 'Le prénom doit contenir au moins 2 caractères')
-    .max(100, 'Le prénom ne peut pas dépasser 100 caractères')
-    .transform((val) => sanitizeString(val))
-    .refine(
-      (val) => NAME_REGEX.test(val),
-      'Le prénom ne peut contenir que des lettres, espaces, tirets et apostrophes'
-    ),
+  email: SecurityValidation.schemas.email,
+  password: SecurityValidation.schemas.password,
+  nom: SecurityValidation.schemas.name,
+  prenom: SecurityValidation.schemas.name,
   telephone: z
     .string()
     .optional()

@@ -3,13 +3,14 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
+import { sanitizeString } from '@/lib/security/validation';
 
 // Schéma de validation
 const contactSchema = z.object({
-  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  email: z.string().email("Email invalide"),
-  sujet: z.string().min(3, "Le sujet doit contenir au moins 3 caractères"),
-  message: z.string().min(10, "Le message doit contenir au moins 10 caractères").max(1000, "Message trop long")
+  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères").transform(sanitizeString),
+  email: z.string().email("Email invalide").transform(val => val.toLowerCase().trim()),
+  sujet: z.string().min(3, "Le sujet doit contenir au moins 3 caractères").transform(sanitizeString),
+  message: z.string().min(10, "Le message doit contenir au moins 10 caractères").max(1000, "Message trop long").transform(sanitizeString)
 });
 
 export async function POST(req: Request) {
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
        
        if (!isNaN(userId)) {
          try {
-           const count = await (prisma as any).contactMessage.count({
+           const count = await prisma.contactMessage.count({
              where: {
                userId: userId,
                createdAt: { gte: startOfMonth }
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
     } else {
        // Si invité, on limite par email pour éviter le spam simple
        try {
-         const count = await (prisma as any).contactMessage.count({
+         const count = await prisma.contactMessage.count({
             where: {
               email: email,
               createdAt: { gte: startOfMonth }
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
     }
 
     // 3. Sauvegarde
-    const newMessage = await (prisma as any).contactMessage.create({
+    const newMessage = await prisma.contactMessage.create({
       data: {
         nom,
         email,
@@ -95,7 +96,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Erreur API Contact:', error);
     return NextResponse.json(
-      { error: 'Erreur serveur', details: error instanceof Error ? error.message : 'Unknown' }, 
+      { error: 'Une erreur interne est survenue. Veuillez réessayer plus tard.' }, 
       { status: 500 }
     );
   }

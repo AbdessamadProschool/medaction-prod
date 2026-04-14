@@ -1,55 +1,46 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getClientIP } from '@/lib/auth/security';
+import { prisma } from '@/lib/db';
+import { timingSafeEqual } from 'crypto';
+import { maskSensitiveData } from '@/lib/security/validation';
+
 /**
  * Mobile API Security Configuration
  * 
- * This file contains security utilities for the mobile API endpoints.
- * It includes API key validation, rate limiting, and security logging.
+ * Performance & Security:
+ * - Constant-time comparison for API keys
+ * - OOM-protected failed attempt tracking (LRU-like behavior)
+ * - Strict type safety for Next.js 15
  */
-
-import { NextRequest, NextResponse } from 'next/server';
-import { getClientIP, checkRateLimit } from '@/lib/auth/security';
-import { prisma } from '@/lib/db';
 
 // ============================================
 // MOBILE API KEY CONFIGURATION
 // ============================================
 
-/**
- * Mobile API Key - Should be set in environment variables in production
- * Generate with: openssl rand -hex 32
- */
-const MOBILE_API_KEY = process.env.MOBILE_API_KEY || 'dev-mobile-api-key-change-in-production';
+const RAW_API_KEY = process.env.MOBILE_API_KEY;
 
-/**
- * Header name for the mobile API key
- */
+if (!RAW_API_KEY && process.env.NODE_ENV === 'production') {
+  throw new Error('FATAL: MOBILE_API_KEY MUST be set in production environment.');
+}
+
+// Fallback for development only
+const ACTUAL_API_KEY = RAW_API_KEY || 'dev-mobile-api-key-safe-for-local';
+const API_KEY_BUFFER = Buffer.from(ACTUAL_API_KEY);
+
 export const MOBILE_API_KEY_HEADER = 'X-Mobile-API-Key';
 
 /**
- * Validates the mobile API key from request headers
+ * Validates the mobile API key from request headers using timing-safe comparison
  */
 export function validateMobileApiKey(request: NextRequest): boolean {
   const apiKey = request.headers.get(MOBILE_API_KEY_HEADER);
   
-  if (!apiKey) {
-    return false;
-  }
-  
-  // Constant-time comparison to prevent timing attacks
-  if (apiKey.length !== MOBILE_API_KEY.length) {
-    return false;
-  }
-  
-  let result = 0;
-  for (let i = 0; i < apiKey.length; i++) {
-    result |= apiKey.charCodeAt(i) ^ MOBILE_API_KEY.charCodeAt(i);
-  }
-  
-  return result === 0;
+  if (!apiKey || apiKey.length !== ACTUAL_API_KEY.length) return false;
+
+  const inputBuffer = Buffer.from(apiKey);
+  return timingSafeEqual(inputBuffer, API_KEY_BUFFER);
 }
 
-/**
- * Returns an unauthorized response for invalid API key
- */
 export function unauthorizedResponse(): NextResponse {
   return NextResponse.json(
     { 
@@ -83,25 +74,24 @@ interface SecurityLogEntry {
   ip: string;
   email?: string;
   userId?: number;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   userAgent?: string;
 }
 
 /**
- * Logs security events to the database for monitoring and alerting
+ * Logs security events with structured data and automatic masking
  */
 export async function logSecurityEvent(entry: SecurityLogEntry): Promise<void> {
   try {
-    // Log to console for immediate visibility
-    const logLevel = ['LOGIN_FAILED', 'LOGIN_BLOCKED', 'INVALID_API_KEY', 'RATE_LIMIT_EXCEEDED', 'CAPTCHA_FAILED']
-      .includes(entry.event) ? 'warn' : 'info';
+    const isCritical = ['LOGIN_FAILED', 'LOGIN_BLOCKED', 'INVALID_API_KEY', 'RATE_LIMIT_EXCEEDED'].includes(entry.event);
+    const logLevel = isCritical ? 'warn' : 'info';
     
-    const maskedEmail = entry.email?.replace(/(.{2}).*(@.*)/, '$1***$2') || 'N/A';
-    const maskedIP = entry.ip.substring(0, 8) + '***';
+    // Masking for PII in standard logs
+    const maskedEmail = entry.email ? entry.email.replace(/(.{2}).*(@.*)/, '$1***$2') : 'N/A';
+    const maskedIP = entry.ip.includes(':') ? '[IPV6]' : entry.ip.split('.').slice(0, 2).join('.') + '.X.X';
     
     console[logLevel](`[SECURITY] ${entry.event} | IP: ${maskedIP} | Email: ${maskedEmail}`);
     
-    // Store in database for audit trail
     await prisma.activityLog.create({
       data: {
         userId: entry.userId || null,
@@ -112,41 +102,42 @@ export async function logSecurityEvent(entry: SecurityLogEntry): Promise<void> {
           ip: entry.ip,
           email: entry.email,
           userAgent: entry.userAgent,
-          ...entry.details,
-        },
+          timestamp: new Date().toISOString(),
+          ...maskSensitiveData(entry.details),
+        } as any, // Prisma Json field
       },
     });
   } catch (error) {
-    // Don't fail the request if logging fails
-    console.error('[SECURITY_LOG_ERROR]', error);
+    console.error('[SECURITY_LOG_ERROR] Fail-safe active:', error);
   }
 }
 
 // ============================================
-// CAPTCHA CONFIGURATION (hCaptcha)
+// CAPTCHA & OOM PROTECTION (Simple LRU)
 // ============================================
 
-/**
- * After this many failed attempts, captcha is required
- */
 export const CAPTCHA_THRESHOLD = 3;
+const MAX_CACHE_SIZE = 5000; // Protection against OOM/DoS via IP spinning
 
 /**
- * In-memory store for tracking failed attempts per IP/email
- * In production, use Redis for distributed tracking
+ * In-memory store with size limit and lazy eviction
  */
-const failedAttemptStore: Map<string, { count: number; lastAttempt: number }> = new Map();
+const failedAttemptStore = new Map<string, { count: number; lastAttempt: number }>();
 
-/**
- * Checks if captcha is required for this IP/email
- */
+function pruneCacheIfNeeded() {
+  if (failedAttemptStore.size > MAX_CACHE_SIZE) {
+    const oldestKey = failedAttemptStore.keys().next().value;
+    if (oldestKey) failedAttemptStore.delete(oldestKey);
+  }
+}
+
 export function isCaptchaRequired(ip: string, email?: string): boolean {
   const key = email ? `captcha:${email}` : `captcha:ip:${ip}`;
   const entry = failedAttemptStore.get(key);
   
   if (!entry) return false;
   
-  // Reset after 15 minutes of no activity
+  // Cleanup if older than 15 minutes
   if (Date.now() - entry.lastAttempt > 15 * 60 * 1000) {
     failedAttemptStore.delete(key);
     return false;
@@ -155,39 +146,37 @@ export function isCaptchaRequired(ip: string, email?: string): boolean {
   return entry.count >= CAPTCHA_THRESHOLD;
 }
 
-/**
- * Records a failed attempt for captcha tracking
- */
 export function recordFailedAttemptForCaptcha(ip: string, email?: string): void {
   const key = email ? `captcha:${email}` : `captcha:ip:${ip}`;
   const entry = failedAttemptStore.get(key);
+  
+  pruneCacheIfNeeded();
   
   if (!entry) {
     failedAttemptStore.set(key, { count: 1, lastAttempt: Date.now() });
   } else {
     entry.count++;
     entry.lastAttempt = Date.now();
+    // Move to end (most recent) to simulate LRU behavior with Map iteration order
+    failedAttemptStore.delete(key);
     failedAttemptStore.set(key, entry);
   }
 }
 
-/**
- * Resets failed attempts after successful login
- */
 export function resetFailedAttempts(ip: string, email?: string): void {
   if (email) failedAttemptStore.delete(`captcha:${email}`);
   failedAttemptStore.delete(`captcha:ip:${ip}`);
 }
 
-/**
- * Verifies hCaptcha token
- */
 export async function verifyCaptcha(token: string): Promise<boolean> {
   const secret = process.env.HCAPTCHA_SECRET;
   
   if (!secret) {
-    console.warn('[CAPTCHA] HCAPTCHA_SECRET not configured, skipping verification');
-    return true; // Skip in development if not configured
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[CAPTCHA] HCAPTCHA_SECRET missing in production. Access denied.');
+      return false;
+    }
+    return true; 
   }
   
   try {
@@ -200,44 +189,34 @@ export async function verifyCaptcha(token: string): Promise<boolean> {
     const data = await response.json();
     return data.success === true;
   } catch (error) {
-    console.error('[CAPTCHA] Verification error:', error);
+    console.error('[CAPTCHA] Verification failed:', error);
     return false;
   }
 }
 
 // ============================================
-// HELPER MIDDLEWARE
+// NEXT.JS ROUTE MIDDLEWARE
 // ============================================
 
-/**
- * Wrapper for mobile API endpoints with security checks
- */
+type RouteContext = { params: Promise<Record<string, string | string[]>> };
+
 export function withMobileAuth(
-  handler: (request: NextRequest) => Promise<NextResponse>
-): (request: NextRequest) => Promise<NextResponse> {
-  return async (request: NextRequest) => {
-    // 1. Validate API Key
+  handler: (request: NextRequest, context: RouteContext) => Promise<NextResponse>
+): (request: NextRequest, context: any) => Promise<NextResponse> {
+  return async (request: NextRequest, context: any) => {
     if (!validateMobileApiKey(request)) {
       const ip = getClientIP(request);
+      
+      // Strict security logging must be awaited
       await logSecurityEvent({
         event: 'INVALID_API_KEY',
         ip,
         userAgent: request.headers.get('user-agent') || undefined,
       });
+      
       return unauthorizedResponse();
     }
     
-    // 2. Execute handler
-    return handler(request);
+    return handler(request, context as RouteContext);
   };
 }
-
-// Cleanup old entries periodically
-setInterval(() => {
-  const now = Date.now();
-  Array.from(failedAttemptStore.entries()).forEach(([key, entry]) => {
-    if (now - entry.lastAttempt > 30 * 60 * 1000) { // 30 minutes
-      failedAttemptStore.delete(key);
-    }
-  });
-}, 5 * 60 * 1000); // Every 5 minutes

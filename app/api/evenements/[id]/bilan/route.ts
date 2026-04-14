@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -17,7 +18,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const id = safeParseInt(params.id, 0);
     const userId = parseInt(session.user.id);
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
 
@@ -119,7 +120,7 @@ export async function PATCH(
       where: { id },
       data: {
         bilanDescription,
-        bilanNbParticipants: bilanNbParticipants ? parseInt(bilanNbParticipants) : null,
+        bilanNbParticipants: bilanNbParticipants ? safeParseInt(bilanNbParticipants, 0) : null,
         bilanDatePublication: new Date(),
       },
       include: {

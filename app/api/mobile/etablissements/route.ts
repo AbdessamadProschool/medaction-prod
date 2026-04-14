@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import {
@@ -19,8 +20,8 @@ export async function GET(request: NextRequest) {
 
     // 2. Parse query params
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = Math.min(safeParseInt(searchParams.get('limit') || '20', 0), 100);
     const secteur = searchParams.get('secteur');
     const communeId = searchParams.get('communeId');
     const search = searchParams.get('search');
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (communeId) {
-      where.communeId = parseInt(communeId);
+      where.communeId = safeParseInt(communeId, 0);
     }
     
     if (search) {
@@ -67,7 +68,7 @@ export async function GET(request: NextRequest) {
             select: {
               evaluations: true,
               reclamations: true,
-              evenements: true,
+              evenementsOrganises: true,
             },
           },
         },

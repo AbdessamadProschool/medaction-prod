@@ -48,7 +48,7 @@ export async function logActivity(options: LogActivityOptions): Promise<void> {
     let userAgent = options.userAgent;
     
     try {
-      const headersList = headers();
+      const headersList = await headers();
       if (!ipAddress) {
         ipAddress = headersList.get('x-forwarded-for')?.split(',')[0] 
           || headersList.get('x-real-ip') 

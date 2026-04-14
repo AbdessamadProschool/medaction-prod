@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { Prisma } from '@prisma/client';
@@ -9,8 +10,8 @@ export async function GET(request: Request) {
     const type = searchParams.get('type') || 'all';
     const secteur = searchParams.get('secteur');
     const date = searchParams.get('date');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '12');
+    const page = safeParseInt(searchParams.get('page') || '1', 0);
+    const limit = safeParseInt(searchParams.get('limit') || '12', 0);
     const skip = (page - 1) * limit;
 
     // Calculer la date de filtre si fournie

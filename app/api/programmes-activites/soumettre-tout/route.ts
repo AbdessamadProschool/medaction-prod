@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -45,8 +46,8 @@ export async function POST(request: NextRequest) {
       where.etablissementId = { in: user.etablissementsGeres };
       
       // Filtre optionnel par établissement spécifique
-      if (etablissementId && user.etablissementsGeres.includes(parseInt(etablissementId))) {
-        where.etablissementId = parseInt(etablissementId);
+      if (etablissementId && user.etablissementsGeres.includes(safeParseInt(etablissementId, 0))) {
+        where.etablissementId = safeParseInt(etablissementId, 0);
       }
     }
 
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     if (admins.length > 0) {
       // Extraire les noms uniques des établissements
-      const etablissementsNomsArray = activites.map(a => a.etablissement.nom);
+      const etablissementsNomsArray = activites.map(a => a.etablissement ? a.etablissement.nom : 'Province');
       const etablissementsNoms = Array.from(new Set(etablissementsNomsArray)).join(', ');
       
       await prisma.notification.createMany({
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Logger l'action
-    const etablissementsForLog = activites.map(a => a.etablissement.nom);
+    const etablissementsForLog = activites.map(a => a.etablissement ? a.etablissement.nom : 'Province');
     await prisma.activityLog.create({
       data: {
         userId,

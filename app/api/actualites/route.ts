@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -5,14 +6,23 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 import { z } from 'zod';
+import { sanitizeString } from '@/lib/security/validation';
 
 // Schéma de validation pour création d'actualité (compatible Zod v4)
 const createActualiteSchema = z.object({
   etablissementId: z.number().int().positive(),
-  titre: z.string().min(5, "Le titre doit contenir au moins 5 caractères").max(200, "Le titre ne doit pas dépasser 200 caractères"),
-  description: z.string().max(500, "La description ne doit pas dépasser 500 caractères").optional(),
-  contenu: z.string().min(50, "Le contenu doit contenir au moins 50 caractères"),
-  categorie: z.string().optional(),
+  titre: z.string()
+    .min(5, "Le titre doit contenir au moins 5 caractères")
+    .max(200, "Le titre ne doit pas dépasser 200 caractères")
+    .transform(sanitizeString),
+  description: z.string()
+    .max(500, "La description ne doit pas dépasser 500 caractères")
+    .optional()
+    .transform(v => v ? sanitizeString(v) : undefined),
+  contenu: z.string()
+    .min(50, "Le contenu doit contenir au moins 50 caractères")
+    .transform(v => v.trim()),
+  categorie: z.string().optional().transform(v => v ? sanitizeString(v) : undefined),
   tags: z.array(z.string()).optional(),
   imagePrincipale: z.string().optional(),
 });
@@ -73,9 +83,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const actualite = await prisma.actualite.create({
     data: {
       etablissementId: data.etablissementId,
-      titre: data.titre.trim(),
-      description: data.description?.trim(),
-      contenu: data.contenu.trim(),
+      titre: data.titre,
+      description: data.description,
+      contenu: data.contenu,
       categorie: data.categorie,
       tags: data.tags || [],
       statut: 'EN_ATTENTE_VALIDATION',
@@ -120,8 +130,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 // GET - Liste des actualités
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100);
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '10', 0), 100);
   const categorie = searchParams.get('categorie');
   const etablissementId = searchParams.get('etablissementId');
   const search = searchParams.get('search');
@@ -131,44 +141,39 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const isAdmin = session?.user?.role && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
   const isDelegation = session?.user?.role === 'DELEGATION';
 
-  // Construction du filtre
-  const where: any = {};
+  // Construction du filtre sécurisé
+  const andConditions: any[] = [];
 
-  // Pour le public: uniquement les actualités publiées et validées
-  if (!isAdmin) {
-    where.isPublie = true;
-    where.isValide = true;
-    where.statut = 'PUBLIEE';
-  } else if (statut) {
-    where.statut = statut;
+  // Filtre de base selon le rôle
+  if (!isAdmin && !isDelegation) {
+    andConditions.push({ isPublie: true, isValide: true, statut: 'PUBLIEE' });
+  } else if (isAdmin && statut) {
+    andConditions.push({ statut });
   }
 
-  // Si délégation, montrer aussi ses propres actualités
+  // Permission spécifique Délégation
   if (isDelegation && session?.user?.id) {
-    where.OR = [
-      { isPublie: true, isValide: true, statut: 'PUBLIEE' },
-      { createdBy: parseInt(session.user.id) }
-    ];
-    delete where.isPublie;
-    delete where.isValide;
-    delete where.statut;
+    andConditions.push({
+      OR: [
+        { isPublie: true, isValide: true, statut: 'PUBLIEE' },
+        { createdBy: parseInt(session.user.id) }
+      ]
+    });
   }
 
-  // Filtres additionnels
-  if (categorie) {
-    where.categorie = categorie;
-  }
-
-  if (etablissementId) {
-    where.etablissementId = parseInt(etablissementId);
-  }
-
+  // Filtres optionnels
+  if (categorie) andConditions.push({ categorie });
+  if (etablissementId) andConditions.push({ etablissementId: safeParseInt(etablissementId, 0) });
   if (search) {
-    where.OR = [
-      { titre: { contains: search, mode: 'insensitive' } },
-      { contenu: { contains: search, mode: 'insensitive' } },
-    ];
+    andConditions.push({
+      OR: [
+        { titre: { contains: search, mode: 'insensitive' } },
+        { contenu: { contains: search, mode: 'insensitive' } },
+      ]
+    });
   }
+
+  const where = andConditions.length > 0 ? { AND: andConditions } : {};
 
   // Requête avec pagination
   const [actualites, total] = await Promise.all([

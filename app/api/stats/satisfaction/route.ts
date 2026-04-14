@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
@@ -10,11 +11,11 @@ export async function GET(request: NextRequest) {
     const secteur = searchParams.get('secteur');
 
     const dateDebut = new Date();
-    dateDebut.setDate(dateDebut.getDate() - parseInt(periode));
+    dateDebut.setDate(dateDebut.getDate() - safeParseInt(periode, 0));
 
     // Filtres pour établissements
     const etabWhere: any = { isPublie: true };
-    if (communeId) etabWhere.communeId = parseInt(communeId);
+    if (communeId) etabWhere.communeId = safeParseInt(communeId, 0);
     if (secteur) etabWhere.secteur = secteur;
 
     // Requêtes parallèles optimisées
@@ -143,7 +144,7 @@ export async function GET(request: NextRequest) {
 
     const totalEvaluations = globalStats._count.id || 1;
     const distributionFormatted = Object.entries(distribution).map(([note, count]) => ({
-      note: parseInt(note),
+      note: safeParseInt(note, 0),
       count,
       pourcentage: ((count / totalEvaluations) * 100).toFixed(1) + '%',
     }));

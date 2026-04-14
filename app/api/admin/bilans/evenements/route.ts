@@ -1,28 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { safeParseInt } from '@/lib/utils/parse';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
 
 // GET - Liste des événements clôturés avec bilans
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Vous devez être connecté pour accéder aux bilans');
-  }
-
-  // Roles autorisés: ADMIN, SUPER_ADMIN, GOUVERNEUR
-  const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
-  if (!allowedRoles.includes(session.user.role || '')) {
-    throw new ForbiddenError('Accès réservé aux administrateurs et gouverneurs');
-  }
-
+export const GET = withPermission('bilans.read', withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
   const secteur = searchParams.get('secteur');
   const communeId = searchParams.get('communeId');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '50', 0), 100);
 
   // Construire le filtre
   const where: any = {
@@ -35,7 +22,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   if (communeId) {
-    where.communeId = parseInt(communeId);
+    where.communeId = safeParseInt(communeId, 0);
   }
 
   const evenements = await prisma.evenement.findMany({
@@ -77,12 +64,12 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   };
 
   evenements.forEach(e => {
-    stats.parSecteur[e.secteur] = (stats.parSecteur[e.secteur] || 0) + 1;
+    const secteurName = e.secteur || 'Général/Province';
+    stats.parSecteur[secteurName] = (stats.parSecteur[secteurName] || 0) + 1;
   });
 
-  return NextResponse.json({
-    success: true,
+  return successResponse({
     data: evenements,
     stats,
-  });
-});
+  }, 'Bilans des événements récupérés avec succès', 200);
+}));

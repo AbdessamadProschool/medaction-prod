@@ -2,18 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
+import { SecurityValidation } from '@/lib/security/validation';
+import { z } from 'zod';
+
+// Schéma de validation pour la mise à jour
+const updateActualiteSchema = z.object({
+  titre: SecurityValidation.schemas.title.optional(),
+  description: z.string().max(500).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  contenu: z.string().min(50, "Le contenu doit contenir au moins 50 caractères").optional(),
+  categorie: z.string().optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
+  tags: z.array(z.string().max(30)).optional(),
+  isValide: z.boolean().optional(),
+  isPublie: z.boolean().optional(),
+  statut: z.string().optional(),
+});
 
 // GET - Récupérer une actualité par ID
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
-  const { id: idStr } = await params;
-  const id = parseInt(idStr);
+  const id = SecurityValidation.validateId(params.id);
   
-  if (isNaN(id)) {
+  if (!id) {
     throw new ValidationError("L'identifiant de l'actualité n'est pas valide");
   }
 
@@ -41,7 +54,7 @@ export const GET = withErrorHandler(async (
     throw new NotFoundError("L'actualité demandée n'existe pas");
   }
 
-  // Vérifier les permissions d'accès
+  // Vérifier les permissions d'accès - IDOR Protection
   const isOwner = userId === actualite.createdBy;
   const isPublished = actualite.isPublie && actualite.isValide && actualite.statut === 'PUBLIEE';
 
@@ -49,16 +62,13 @@ export const GET = withErrorHandler(async (
     throw new ForbiddenError("Vous n'avez pas accès à cette actualité");
   }
 
-  // NOTE: L'incrément des vues doit être géré par une route dédiée
-  // avec vérification côté client via sessionStorage pour éviter les doublons
-
-  return NextResponse.json({ success: true, data: actualite });
+  return successResponse(actualite);
 });
 
-// PUT - Modifier une actualité (Admin)
+// PUT/PATCH - Modifier une actualité
 export const PUT = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
   const session = await getServerSession(authOptions);
   
@@ -66,10 +76,8 @@ export const PUT = withErrorHandler(async (
     throw new UnauthorizedError('Vous devez être connecté pour modifier une actualité');
   }
 
-  const { id: idStr } = await params;
-  const id = parseInt(idStr);
-  
-  if (isNaN(id)) {
+  const id = SecurityValidation.validateId(params.id);
+  if (!id) {
     throw new ValidationError("L'identifiant de l'actualité n'est pas valide");
   }
 
@@ -90,51 +98,37 @@ export const PUT = withErrorHandler(async (
   }
 
   const body = await request.json();
+  const validation = updateActualiteSchema.safeParse(body);
   
-  // Validation
-  const errors: Array<{ field: string; message: string }> = [];
-  
-  if (body.titre && body.titre.length < 5) {
-    errors.push({ field: 'titre', message: 'Le titre doit contenir au moins 5 caractères' });
-  }
-  if (body.titre && body.titre.length > 200) {
-    errors.push({ field: 'titre', message: 'Le titre ne doit pas dépasser 200 caractères' });
-  }
-  if (body.contenu && body.contenu.length < 50) {
-    errors.push({ field: 'contenu', message: 'Le contenu doit contenir au moins 50 caractères' });
+  if (!validation.success) {
+    throw validation.error;
   }
 
-  if (errors.length > 0) {
-    throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
-      { fieldErrors: errors.reduce((acc, e) => ({ ...acc, [e.field]: [e.message] }), {}) }
-    );
-  }
-  
-  // Construire les données de mise à jour
+  const data = validation.data;
   const updateData: any = {};
   
-  if (body.titre) updateData.titre = body.titre.trim();
-  if (body.description !== undefined) updateData.description = body.description?.trim();
-  if (body.contenu) updateData.contenu = body.contenu.trim();
-  if (body.categorie !== undefined) updateData.categorie = body.categorie;
-  if (body.tags) updateData.tags = Array.isArray(body.tags) ? body.tags : [];
+  if (data.titre) updateData.titre = data.titre;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.contenu) updateData.contenu = data.contenu.trim();
+  if (data.categorie !== undefined) updateData.categorie = data.categorie;
+  if (data.tags) updateData.tags = data.tags;
   
   // Les admins peuvent modifier le statut de validation/publication
   if (isAdmin) {
-    if (body.isValide !== undefined) updateData.isValide = body.isValide;
-    if (body.isPublie !== undefined) {
-      updateData.isPublie = body.isPublie;
-      if (body.isPublie) {
+    if (data.isValide !== undefined) updateData.isValide = data.isValide;
+    if (data.isPublie !== undefined) {
+      updateData.isPublie = data.isPublie;
+      if (data.isPublie) {
         updateData.datePublication = new Date();
         updateData.statut = 'PUBLIEE';
       }
     }
-    if (body.statut) updateData.statut = body.statut;
-  } else if (isOwner && actualite.statut === 'VALIDEE') {
-    // Si modification par le propriétaire, repasser en attente de validation
+    if (data.statut) updateData.statut = data.statut;
+  } else if (isOwner && actualite.statut === 'PUBLIEE') {
+    // Si modification par le propriétaire sur une actualité déjà publiée, repasser en attente
     updateData.statut = 'EN_ATTENTE_VALIDATION';
     updateData.isValide = false;
+    updateData.isPublie = false;
   }
 
   const updated = await prisma.actualite.update({
@@ -145,20 +139,15 @@ export const PUT = withErrorHandler(async (
     }
   });
 
-  return NextResponse.json({ 
-    success: true,
-    message: 'Actualité modifiée avec succès',
-    data: updated 
-  });
+  return successResponse(updated, 'Actualité modifiée avec succès');
 });
 
-// PATCH - Modifier une actualité (compatibilité)
 export const PATCH = PUT;
 
 // DELETE - Supprimer une actualité
 export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
   const session = await getServerSession(authOptions);
   
@@ -166,10 +155,8 @@ export const DELETE = withErrorHandler(async (
     throw new UnauthorizedError('Vous devez être connecté pour supprimer une actualité');
   }
 
-  const { id: idStr } = await params;
-  const id = parseInt(idStr);
-  
-  if (isNaN(id)) {
+  const id = SecurityValidation.validateId(params.id);
+  if (!id) {
     throw new ValidationError("L'identifiant de l'actualité n'est pas valide");
   }
 
@@ -189,14 +176,11 @@ export const DELETE = withErrorHandler(async (
     throw new ForbiddenError("Vous n'êtes pas autorisé à supprimer cette actualité");
   }
 
-  // Supprimer les médias associés d'abord
+  // Supprimer les médias associés d'abord (Cascade manuelle si nécessaire selon les contraintes Prisma)
   await prisma.media.deleteMany({ where: { actualiteId: id } });
   
   // Supprimer l'actualité
   await prisma.actualite.delete({ where: { id } });
 
-  return NextResponse.json({ 
-    success: true,
-    message: `L'actualité "${actualite.titre}" a été supprimée`
-  });
+  return successResponse(null, `L'actualité "${actualite.titre}" a été supprimée`);
 });

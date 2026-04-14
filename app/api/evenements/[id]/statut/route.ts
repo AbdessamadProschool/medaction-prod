@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError, AppError } from '@/lib/exceptions';
+import { getSafeId } from '@/lib/utils/parse';
+import { StatutEvenement } from '@prisma/client';
 
 const STATUT_LABELS: Record<string, string> = {
   'EN_ATTENTE_VALIDATION': 'En attente de validation',
@@ -36,13 +38,9 @@ export const PATCH = withErrorHandler(async (
   }
 
   const { id: idStr } = await params;
-  const id = parseInt(idStr);
+  const id = getSafeId(idStr);
   
-  if (isNaN(id)) {
-    throw new ValidationError("L'identifiant n'est pas valide");
-  }
-
-  const userId = parseInt(session.user.id);
+  const userId = Number(session.user.id);
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
 
   const body = await request.json();
@@ -82,7 +80,7 @@ export const PATCH = withErrorHandler(async (
   if (!allowedTransitions.includes(nouveauStatut)) {
     throw new AppError(
       `Transition de "${STATUT_LABELS[evenement.statut]}" vers "${STATUT_LABELS[nouveauStatut]}" non autorisée`,
-      'INVALID_TRANSITION',
+      'VALIDATION_ERROR',
       400
     );
   }
@@ -91,7 +89,7 @@ export const PATCH = withErrorHandler(async (
   if (nouveauStatut === 'CLOTUREE') {
     throw new AppError(
       'Pour clôturer un événement, utilisez le formulaire de clôture avec rapport',
-      'USE_CLOTURE_ENDPOINT',
+      'VALIDATION_ERROR',
       400
     );
   }
@@ -102,15 +100,15 @@ export const PATCH = withErrorHandler(async (
     if (evenement.dateDebut > now) {
       throw new AppError(
         "L'événement ne peut pas être mis en action avant sa date de début",
-        'DATE_NOT_REACHED',
+        'VALIDATION_ERROR',
         400
       );
     }
   }
 
   // Mise à jour
-  const updateData: any = {
-    statut: nouveauStatut,
+  const updateData: { statut: StatutEvenement; datePublication?: Date } = {
+    statut: nouveauStatut as StatutEvenement,
   };
 
   if (nouveauStatut === 'PUBLIEE') {
@@ -152,14 +150,14 @@ export const PATCH = withErrorHandler(async (
       }
     }
   } catch (notifError) {
+    // Note: Log notification errors but don't fail the request
     console.error('Erreur notification (non bloquante):', notifError);
   }
 
-  return NextResponse.json({
-    success: true,
-    message: `Événement "${evenement.titre}" marqué comme "${STATUT_LABELS[nouveauStatut]}"`,
-    data: updated 
-  });
+  return successResponse(
+    updated,
+    `Événement "${evenement.titre}" marqué comme "${STATUT_LABELS[nouveauStatut]}"`
+  );
 });
 
 // POST - Alias pour compatibilité

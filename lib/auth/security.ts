@@ -221,8 +221,28 @@ export async function validatePasswordRequirements(password: string): Promise<{
 }
 
 // ============================================
-// 2FA RATE LIMITING (SECURITY FIX)
+// RATE LIMITING & CACHE PROTECTION (OOM SAFE)
 // ============================================
+
+const MAX_CACHE_SIZE = 5000; // Protection contre l'épuisement mémoire (DoS par IPs)
+
+/**
+ * Nettoyage paresseux du cache si la taille dépasse la limite
+ */
+function pruneStoreIfNeeded(store: Map<string, any>) {
+  if (store.size > MAX_CACHE_SIZE) {
+    // Supprimer la première entrée (la plus ancienne dans l'ordre d'insertion d'un Map JS)
+    const oldestKey = store.keys().next().value;
+    if (oldestKey) store.delete(oldestKey);
+  }
+}
+
+// Stores sécurisés avec protection OOM
+const twoFAAttempts: Map<string, { count: number; lastAttempt: number; lockedUntil: number | null }> = new Map();
+
+const TWO_FA_MAX_ATTEMPTS = 3;
+const TWO_FA_LOCKOUT_MINUTES = 15;
+const TWO_FA_ATTEMPT_WINDOW = 5 * 60 * 1000; // 5 minutes
 
 interface TwoFAAttemptResult {
   allowed: boolean;
@@ -230,17 +250,6 @@ interface TwoFAAttemptResult {
   lockoutMinutes?: number;
 }
 
-// In-memory store for 2FA attempts (in production, use Redis)
-const twoFAAttempts: Map<string, { count: number; lastAttempt: number; lockedUntil: number | null }> = new Map();
-
-const TWO_FA_MAX_ATTEMPTS = 3;
-const TWO_FA_LOCKOUT_MINUTES = 15;
-const TWO_FA_ATTEMPT_WINDOW = 5 * 60 * 1000; // 5 minutes
-
-/**
- * SECURITY FIX: Rate limiting pour la vérification 2FA
- * Bloque après 3 tentatives échouées pendant 15 minutes
- */
 export function check2FAAttempts(email: string): TwoFAAttemptResult {
   const key = `2fa:${email.toLowerCase()}`;
   const now = Date.now();
@@ -255,29 +264,27 @@ export function check2FAAttempts(email: string): TwoFAAttemptResult {
     };
   }
   
-  // Si blocage expiré ou pas d'entrée, autoriser
-  if (!entry || (entry.lockedUntil && now >= entry.lockedUntil)) {
+  // Si blocage expiré ou dernière tentative hors fenêtre, autoriser (Lazy Cleanup)
+  if (entry && ( (entry.lockedUntil && now >= entry.lockedUntil) || (now - entry.lastAttempt > TWO_FA_ATTEMPT_WINDOW) )) {
+    twoFAAttempts.delete(key);
     return { allowed: true, attemptsRemaining: TWO_FA_MAX_ATTEMPTS };
   }
   
-  // Si dernière tentative hors de la fenêtre, réinitialiser
-  if (now - entry.lastAttempt > TWO_FA_ATTEMPT_WINDOW) {
-    twoFAAttempts.delete(key);
+  if (!entry) {
     return { allowed: true, attemptsRemaining: TWO_FA_MAX_ATTEMPTS };
   }
   
   return {
     allowed: entry.count < TWO_FA_MAX_ATTEMPTS,
-    attemptsRemaining: TWO_FA_MAX_ATTEMPTS - entry.count,
+    attemptsRemaining: Math.max(0, TWO_FA_MAX_ATTEMPTS - entry.count),
   };
 }
 
-/**
- * SECURITY FIX: Enregistre une tentative 2FA échouée
- */
 export function record2FAFailure(email: string): TwoFAAttemptResult {
   const key = `2fa:${email.toLowerCase()}`;
   const now = Date.now();
+  
+  pruneStoreIfNeeded(twoFAAttempts);
   
   let entry = twoFAAttempts.get(key);
   
@@ -335,22 +342,23 @@ interface RateLimitResult {
 // In-memory store for rate limiting (in production, use Redis)
 const rateLimitStore: Map<string, { count: number; resetAt: number }> = new Map();
 
-/**
- * SECURITY FIX: Generic rate limiting function
- * @param key - Unique key (e.g., "register:192.168.1.1" or "forgot-password:192.168.1.1")
- * @param config - Rate limit configuration
- */
 export function checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
   const now = Date.now();
   const entry = rateLimitStore.get(key);
   
-  // If no entry or window expired, create new entry
-  if (!entry || now >= entry.resetAt) {
+  // Lazy cleanup si expiré
+  if (entry && now >= entry.resetAt) {
+    rateLimitStore.delete(key);
+    return { allowed: true, remaining: config.maxRequests - 1 };
+  }
+  
+  if (!entry) {
+    pruneStoreIfNeeded(rateLimitStore);
     rateLimitStore.set(key, { count: 1, resetAt: now + config.windowMs });
     return { allowed: true, remaining: config.maxRequests - 1 };
   }
   
-  // If within limit, increment
+  // Si dans la limite, incrémenter
   if (entry.count < config.maxRequests) {
     entry.count++;
     rateLimitStore.set(key, entry);
@@ -473,15 +481,7 @@ function isPrivateIP(ip: string): boolean {
   return false;
 }
 
-// Cleanup old entries periodically (every 5 minutes)
-setInterval(() => {
-  const now = Date.now();
-  Array.from(rateLimitStore.entries()).forEach(([key, entry]) => {
-    if (now >= entry.resetAt) {
-      rateLimitStore.delete(key);
-    }
-  });
-}, 5 * 60 * 1000);
+// Cleanup via lazy pruning instead of setInterval for Serverless compatibility
 
 // ============================================
 // LOGIN RATE LIMITING (IP-BASED) - SECURITY FIX
@@ -502,25 +502,24 @@ interface LoginRateLimitResult {
   blockedMinutes?: number;
 }
 
-/**
- * SECURITY FIX: Check if an IP is rate limited for login attempts
- * This protects against brute force attacks even for non-existent emails
- */
 export function checkLoginRateLimit(ip: string): LoginRateLimitResult {
   const now = Date.now();
   const key = `login:${ip}`;
   const entry = loginAttemptsByIP.get(key);
   
-  // If blocked, check if block has expired
+  // If blocked, check if block has expired (Lazy Cleanup)
   if (entry?.blockedUntil && now < entry.blockedUntil) {
     const blockedMinutes = Math.ceil((entry.blockedUntil - now) / 60000);
     return { allowed: false, blockedMinutes };
   }
   
-  // If block expired or no entry, reset
-  if (!entry || now >= entry.resetAt || (entry.blockedUntil && now >= entry.blockedUntil)) {
+  // Si expiré ou bloqué expiré, reset
+  if (entry && (now >= entry.resetAt || (entry.blockedUntil && now >= entry.blockedUntil))) {
+    loginAttemptsByIP.delete(key);
     return { allowed: true, attemptsRemaining: LOGIN_RATE_LIMIT.maxAttempts };
   }
+  
+  if (!entry) return { allowed: true, attemptsRemaining: LOGIN_RATE_LIMIT.maxAttempts };
   
   // Check if within limit
   if (entry.count < LOGIN_RATE_LIMIT.maxAttempts) {
@@ -560,20 +559,12 @@ export function recordLoginAttemptByIP(ip: string, success: boolean): void {
     // If max attempts reached, block
     if (entry.count >= LOGIN_RATE_LIMIT.maxAttempts) {
       entry.blockedUntil = now + LOGIN_RATE_LIMIT.blockDurationMs;
-      console.warn(`[SECURITY] IP ${ip.substring(0, 8)}*** blocked for ${LOGIN_RATE_LIMIT.blockDurationMs / 60000} minutes - too many login attempts`);
+      console.warn(`[SECURITY] IP blocked for too many failed login attempts`);
     }
   }
   
   loginAttemptsByIP.set(key, entry);
 }
 
-// Cleanup login attempts periodically
-setInterval(() => {
-  const now = Date.now();
-  Array.from(loginAttemptsByIP.entries()).forEach(([key, entry]) => {
-    if (now >= entry.resetAt && (!entry.blockedUntil || now >= entry.blockedUntil)) {
-      loginAttemptsByIP.delete(key);
-    }
-  });
-}, 5 * 60 * 1000);
+// Cleanup via lazy pruning instead of setInterval for Serverless compatibility
 

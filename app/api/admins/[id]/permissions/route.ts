@@ -73,6 +73,7 @@ export async function PATCH(
 
     // Vérifier que les permissions existent en base
     const validPermissions = await prisma.permission.findMany({
+      take: 100,
       where: { code: { in: requestedPermissions }, isActive: true },
       select: { code: true }
     });

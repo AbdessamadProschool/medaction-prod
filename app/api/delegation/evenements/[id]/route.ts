@@ -180,6 +180,8 @@ export async function PUT(request: NextRequest, segmentData: RouteParams) {
           if (body.inscriptionsOuvertes !== undefined) updateData.inscriptionsOuvertes = body.inscriptionsOuvertes;
           if (body.lienInscription !== undefined) updateData.lienInscription = body.lienInscription?.trim() || null;
           if (body.tags !== undefined) updateData.tags = Array.isArray(body.tags) ? body.tags : [];
+          if (body.isOrganiseParProvince !== undefined) updateData.isOrganiseParProvince = body.isOrganiseParProvince;
+          if (body.sousCouvertProvince !== undefined) updateData.sousCouvertProvince = body.sousCouvertProvince;
 
           // === GESTION DE L'IMAGE PRINCIPALE ===
           if (body.imagePrincipale !== undefined) {

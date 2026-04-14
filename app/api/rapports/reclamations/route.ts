@@ -35,6 +35,7 @@ export async function GET(request: Request) {
     
     // Enrichir avec les noms de communes
     const communes = await prisma.commune.findMany({
+      take: 100,
         where: { id: { in: byCommune.map(c => c.communeId) } },
         select: { id: true, nom: true }
     });
@@ -49,6 +50,7 @@ export async function GET(request: Request) {
     // On va récupérer les données et grouper en JS pour simplifier et rester agnostique DB si possible, 
     // ou utiliser une raw query si le volume est important. Pour l'instant JS.
     const allReclamations = await prisma.reclamation.findMany({
+      take: 100,
         where: { createdAt: { gte: startDate, lte: endDate } },
         select: { createdAt: true }
     });

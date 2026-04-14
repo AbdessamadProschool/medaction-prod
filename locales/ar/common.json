@@ -995,6 +995,9 @@
           "ceremony": "حفل",
           "autre": "أخرى"
         }
+      },
+      "form": {
+        "sector": "قطاع الحدث"
       }
     },
     "users_page": {
@@ -1129,15 +1132,23 @@
       "create_title": "إضافة مؤسسة جديدة",
       "create_subtitle": "ملء النموذج لإضافة مؤسسة",
       "sections": {
-        "general": "معلومات عامة",
-        "localization": "الموقع الجغرافي",
-        "contact": "معلومات الاتصال",
-        "description": "الوصف"
+        "general": "التعريف والقطاع",
+        "localization": "الموقع الجغرافي والجماعة",
+        "contact": "الاتصال والمواقع",
+        "infra": "البنية التحتية والتجهيزات",
+        "staff": "الموارد البشرية والقدرة",
+        "education": "البيانات البيداغوجية",
+        "financial": "التمويل والمشاريع",
+        "description": "وصف مفصل"
       },
       "form": {
         "name": "اسم المؤسسة",
+        "nameArabe": "الاسم (بالعربية)",
         "code": "الرمز",
         "sector": "القطاع",
+        "nature": "النوع (عام/خاص)",
+        "manager": "اسم المسؤول",
+        "infra_status": "حالة البنية التحتية",
         "capacity": "الطاقة الاستيعابية",
         "commune": "الجماعة",
         "select_commune": "اختر الجماعة",
@@ -1148,7 +1159,49 @@
         "phone": "الهاتف",
         "website": "الموقع الإلكتروني",
         "description_placeholder": "أدخل وصفاً للمؤسسة...",
-        "publish_now": "نشر الآن"
+        "publish_now": "نشر الآن",
+        "altitude": "الارتفاع (م)",
+        "quartier": "الحي / الدوار",
+        "adresse_complete": "العنوان الكامل",
+        "tutelle": "وزارة الوصاية",
+        "statutJuridique": "الوضع القانوني",
+        "gestionnaire": "المسير",
+        "anneeCreation": "سنة التأسيس",
+        "anneeOuverture": "سنة الافتتاح",
+        "statutFonctionnel": "الحالة التشغيلية",
+        "statut_fonctionnel": "الحالة التشغيلية",
+        "surfaceTotale": "المساحة الإجمالية (م²)",
+        "disponibiliteEau": "الربط بالماء الصالح للشرب",
+        "disponibiliteElectricite": "الربط بالكهرباء",
+        "connexionInternet": "الاتصال بالإنترنت",
+        "nombreSalles": "عدد القاعات",
+        "effectifTotal": "العدد الإجمالي",
+        "nombrePersonnel": "عدد المستخدمين",
+        "cadre": "نوع الإطار",
+        "capaciteAccueil": "الطاقة الاستيعابية",
+        "annexe": "الملحقة الإدارية",
+        "typeEtab": "نوع المؤسسة",
+        "cycle": "سلك التعليم",
+        "nbClasses": "عدد الفصول",
+        "nbEnseignants": "عدد المدرسين",
+        "nbCadres": "عدد الأطر الإدارية",
+        "elevesPrescolaire": "تلاميذ التعليم الأولي",
+        "elevesTotal": "العدد الإجمالي للتلاميذ",
+        "nouveauxInscrits": "المسجلون الجدد",
+        "tauxReussite": "نسبة النجاح (%)",
+        "sourcesFinancement": "مصادر التمويل",
+        "budgetAnnuel": "الميزانية السنوية (درهم)",
+        "partenaires": "الشركاء / المانحون",
+        "voie_acces": "مسلك الولوج",
+        "transport_public": "النقل العمومي",
+        "distance_chef_lieu": "المسافة عن مركز الجماعة (كلم)",
+        "elevesFilles": "مجموع الإناث",
+        "elevesPrescolaireFilles": "إناث التعليم الأولي",
+        "nouveauxInscritsFilles": "إناث المسجلين الجدد",
+        "fillesDerniereAnnee": "إناث السنة الختامية",
+        "remarques": "ملاحظات",
+        "besoinsUrgents": "احتياجات مستعجلة",
+        "projetsFuturs": "مشاريع مستقبلية"
       },
       "actions": {
         "cancel": "إلغاء",
@@ -1299,7 +1352,8 @@
         "max_capacity": "القدرة الاستيعابية القصوى",
         "open_registration": "فتح التسجيل",
         "open_registration_hint": "يسمح للمواطنين التسجيل عبر الإنترنت",
-        "external_link": "رابط تسجيل خارجي"
+        "external_link": "رابط تسجيل خارجي",
+        "sector": "قطاع الحدث"
       },
       "errors": {
         "image_size": "يجب ألا تتجاوز الصورة 5 ميجابايت",
@@ -1577,7 +1631,12 @@
       "participation_success": "تم تسجيل مشاركتك بنجاح!",
       "link_copied": "تم نسخ الرابط!",
       "copy_failed": "تعذر نسخ الرابط"
-    }
+    },
+    "objective_progress": "تقدم الهدف",
+    "participants_required": "المشاركين المطلوبين",
+    "login_to_participate": "تسجيل الدخول للمشاركة",
+    "confirm_participation": "تأكيد مشاركتي",
+    "campaign_ended": "انتهت الحملة"
   },
   "errors": {
     "not_found": "الصفحة غير موجودة",
@@ -3764,7 +3823,13 @@
             "address": "العنوان",
             "address_placeholder": "الشارع، الجادة...",
             "neighborhood": "الحي / الدوار",
-            "neighborhood_placeholder": "الحي، الدوار..."
+            "neighborhood_placeholder": "الحي، الدوار...",
+            "manual_entry": "إدخال يدوي",
+            "existing_establishment": "مؤسسة موجودة",
+            "location_sector": "قطاع الموقع (اختياري)",
+            "all_sectors": "جميع القطاعات",
+            "select_establishment_location": "...اختر مؤسسة",
+            "establishment_location_label": "المؤسسة (الموقع)"
           },
           "organizer": {
             "title": "المنظم وجهات الاتصال",
@@ -5403,5 +5468,40 @@
     "submitting": "جارٍ الإرسال...",
     "submit_btn_edit": "حفظ التعديلات",
     "submit_btn_create": "نشر تقييمي"
+  },
+  "establishments_workflow": {
+    "title": "إدارة ممتلكات المؤسسات",
+    "subtitle": "سير عمل التحقق وتحديث البيانات",
+    "request_creation": "طلب إنشاء",
+    "request_edit": "طلب تحديث",
+    "complementary_fields": "بيانات تكميلية",
+    "complementary_fields_desc": "إضافة معلومات محددة إضافية (تنسيق مرن).",
+    "add_field": "إضافة معلمة",
+    "field_name": "اسم المعطى",
+    "field_value": "القيمة",
+    "justification": "تبرير الطلب",
+    "justification_placeholder": "اشرح لماذا هذا الإنشاء أو التعديل ضروري...",
+    "soumettre": "إرسال الطلب",
+    "submit_success": "تم إرسال طلبكم إلى الإدارة للتحقق.",
+    "status": {
+      "EN_ATTENTE_VALIDATION": "في انتظار التحكيم",
+      "APPROUVEE": "تمت المصادقة والتطبيق",
+      "REJETEE": "تم رفض الطلب"
+    },
+    "admin_validation": {
+      "title": "مركز تحكيم المؤسسات",
+      "back_list": "العودة إلى الطلبات",
+      "approve": "المصادقة والتطبيق",
+      "reject": "رفض الطلب",
+      "motif_rejet": "سبب الرفض (إلزامي إذا تم الرفض)",
+      "motif_placeholder": "اشرح أسباب الرفض...",
+      "history": "تاريخ الطلبات",
+      "soumis_par": "مقدم من طرف",
+      "date": "تاريخ التقديم",
+      "type": "نوع العملية",
+      "diff": "التعديلات المطلوبة",
+      "applied_success": "تم تطبيق التعديلات على المؤسسة بنجاح.",
+      "rejected_success": "تم رفض الطلب بنجاح."
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
@@ -10,10 +11,11 @@ export async function GET(request: NextRequest) {
 
     const where: any = {};
     if (communeId) {
-      where.communeId = parseInt(communeId);
+      where.communeId = safeParseInt(communeId, 0);
     }
 
     const annexes = await prisma.annexe.findMany({
+      take: 100,
       where,
       select: {
         id: true,

@@ -27,6 +27,7 @@ import {
   Megaphone,
   Globe,
   Mail,
+  Clock,
 } from 'lucide-react';
 
 import { usePermission } from '@/hooks/use-permission';
@@ -52,6 +53,7 @@ const NAV_ITEMS_CONFIG: NavItem[] = [
   { href: '/admin/suggestions', labelKey: 'suggestions', icon: Lightbulb, badgeKey: 'suggestions', permission: 'suggestions.read.own' },
   { href: '/admin/utilisateurs', labelKey: 'users', icon: Users, badgeKey: 'utilisateurs', permission: 'users.read' },
   { href: '/admin/etablissements', labelKey: 'etablissements', icon: Building2, permission: 'etablissements.read' },
+  { href: '/admin/etablissements/demandes', labelKey: 'etablissements_requests', icon: Clock, badgeKey: 'etablissementsRequests', permission: 'etablissements.request.edit' },
   { href: '/admin/programmes-activites', labelKey: 'activities', icon: ClipboardList, badgeKey: 'activites', permission: 'programmes.read' },
   { href: '/admin/validation', labelKey: 'validation', icon: CheckSquare, badgeKey: 'validation', permission: 'reclamations.validate' },
   { href: '/admin/evenements', labelKey: 'events', icon: Calendar, badgeKey: 'evenements', permission: 'evenements.read' },
@@ -83,6 +85,7 @@ interface BadgeCounts {
   evenements: number;
   utilisateurs: number;
   messages: number;
+  etablissementsRequests: number;
 }
 
 export default function AdminSidebar() {
@@ -106,6 +109,7 @@ export default function AdminSidebar() {
     evenements: 0,
     utilisateurs: 0,
     messages: 0,
+    etablissementsRequests: 0,
   });
 
   // Synchroniser l'état collapsed avec le document pour que le layout puisse s'adapter
@@ -130,6 +134,7 @@ export default function AdminSidebar() {
             evenements: data.evenements || 0,
             utilisateurs: data.utilisateurs || 0,
             messages: data.messages || 0,
+            etablissementsRequests: data.etablissementRequests || 0,
           });
         }
       } catch (error) {

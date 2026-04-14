@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { KeyRound, Shield, Calendar, Globe, AlertTriangle, Check, RefreshCw, Server, Info, Lock, Copy } from 'lucide-react';
+import { KeyRound, Shield, Calendar, Globe, AlertTriangle, Check, RefreshCw, Server, Info, Lock, Copy, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';

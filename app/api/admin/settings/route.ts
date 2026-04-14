@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { NextRequest } from 'next/server';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ForbiddenError } from '@/lib/exceptions';
+import { SecurityValidation } from '@/lib/security/validation';
+import { withPermission } from '@/lib/auth/api-guard';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { z } from 'zod';
 
 // Chemin du fichier de configuration
 const SETTINGS_FILE = path.join(process.cwd(), 'data', 'settings.json');
@@ -32,8 +33,11 @@ const DEFAULT_SETTINGS = {
   },
 };
 
-// Sections valides
-const VALID_SECTIONS = ['general', 'notifications', 'security', 'email'] as const;
+// Schéma de validation pour la mise à jour des paramètres
+const updateSettingsSchema = z.object({
+  section: z.enum(['general', 'notifications', 'security', 'email']),
+  data: z.record(z.any()),
+});
 
 // Lire les paramètres
 async function getSettings() {
@@ -46,91 +50,49 @@ async function getSettings() {
 }
 
 // Sauvegarder les paramètres
-async function saveSettings(settings: typeof DEFAULT_SETTINGS) {
+async function saveSettings(settings: any) {
   const dir = path.dirname(SETTINGS_FILE);
-  try {
-    await fs.mkdir(dir, { recursive: true });
-  } catch {
-    // Le dossier existe peut-être déjà
-  }
+  await fs.mkdir(dir, { recursive: true });
   await fs.writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf-8');
 }
 
 // GET /api/admin/settings - Récupérer les paramètres
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Vous devez être connecté pour accéder aux paramètres');
-  }
-
-  // Seuls les admins peuvent accéder aux paramètres
-  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
-    throw new ForbiddenError('Accès réservé aux administrateurs');
-  }
-
+export const GET = withPermission('system.settings.read', withErrorHandler(async (request: NextRequest) => {
   const settings = await getSettings();
-
-  return NextResponse.json({
-    success: true,
-    data: settings,
-  });
-});
+  return successResponse(settings);
+}));
 
 // PUT /api/admin/settings - Mettre à jour les paramètres
-export const PUT = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user?.id) {
-    throw new UnauthorizedError('Vous devez être connecté pour modifier les paramètres');
-  }
-
-  // Seuls les SUPER_ADMIN peuvent modifier les paramètres
+export const PUT = withPermission('system.settings.edit', withErrorHandler(async (request: NextRequest, { session }) => {
+  // Protection supplémentaire : seul le SUPER_ADMIN peut modifier les paramètres critiques
   if (session.user.role !== 'SUPER_ADMIN') {
     throw new ForbiddenError('Seul le Super Administrateur peut modifier les paramètres système');
   }
 
   const body = await request.json();
-  const { section, data } = body;
+  const { section, data } = updateSettingsSchema.parse(body);
 
-  // Validation
-  const errors: Array<{ field: string; message: string }> = [];
-
-  if (!section) {
-    errors.push({ field: 'section', message: 'La section à modifier est obligatoire' });
-  } else if (!VALID_SECTIONS.includes(section)) {
-    errors.push({ 
-      field: 'section', 
-      message: `Section invalide. Sections acceptées: ${VALID_SECTIONS.join(', ')}` 
-    });
-  }
-
-  if (!data || typeof data !== 'object') {
-    errors.push({ field: 'data', message: 'Les données de mise à jour sont obligatoires' });
-  }
-
-  if (errors.length > 0) {
-    throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
-      { fieldErrors: errors.reduce((acc, e) => ({ ...acc, [e.field]: [e.message] }), {}) }
-    );
-  }
-
-  // Récupérer les paramètres actuels
   const currentSettings = await getSettings();
+  
+  // Sanitisation basique
+  const sanitizedData: Record<string, any> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (typeof value === 'string') {
+      sanitizedData[key] = SecurityValidation.sanitizeString(value);
+    } else {
+      sanitizedData[key] = value;
+    }
+  }
 
-  // Mettre à jour la section spécifiée
-  currentSettings[section as keyof typeof DEFAULT_SETTINGS] = {
-    ...currentSettings[section as keyof typeof DEFAULT_SETTINGS],
-    ...data,
+  currentSettings[section] = {
+    ...currentSettings[section],
+    ...sanitizedData,
   };
 
-  // Sauvegarder
   await saveSettings(currentSettings);
 
-  return NextResponse.json({
-    success: true,
-    message: 'Paramètres mis à jour avec succès',
-    data: currentSettings,
-  });
-});
+  // Logging de sécurité
+  SecurityValidation.logSecurityEvent('SUSPICIOUS_ACTIVITY', `System settings updated: section ${section} by ${session.user.email}`);
+
+  return successResponse(currentSettings, 'Paramètres mis à jour avec succès');
+}));

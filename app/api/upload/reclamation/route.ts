@@ -10,6 +10,11 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { 
+  SECURITY_LIMITS, 
+  sanitizeString, 
+  validateId // MAJ-01: Ajout import
+} from '@/lib/security/validation';
 import { prisma } from '@/lib/db';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
@@ -20,6 +25,7 @@ import {
   logSecurityEvent,
   UPLOAD_CONFIG,
 } from '@/lib/security/upload-security';
+import { SystemLogger } from '@/lib/system-logger';
 
 // Reclamation-specific configuration
 const MAX_UPLOADS_PER_RECLAMATION = 5;
@@ -27,6 +33,18 @@ const UPLOAD_COOLDOWN_MS = 1000; // 1 second between uploads
 
 // Concurrent upload protection (per reclamation)
 const uploadLocks = new Map<string, number>();
+let lastLockCleanup = Date.now(); // SUG-03: Pour cleanup lazy
+
+function cleanupLocksIfNeeded() {
+  const now = Date.now();
+  if (now - lastLockCleanup < 60000) return;
+  lastLockCleanup = now;
+  for (const [key, timestamp] of uploadLocks.entries()) {
+    if (now - timestamp > 60000) {
+      uploadLocks.delete(key);
+    }
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -43,6 +61,16 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
+    const validUserId = validateId(userId); // MAJ-01: Validation IDOR robuste
+    if (!validUserId) {
+      return NextResponse.json(
+        { error: 'Session invalide', code: 'INVALID_SESSION' }, 
+        { status: 401 }
+      );
+    }
+
+    cleanupLocksIfNeeded(); // SUG-03: Cleanup lazy compatible serverless
+
     const userIp = request.headers.get('x-forwarded-for') || 
                    request.headers.get('x-real-ip') || 
                    'unknown';
@@ -155,7 +183,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (reclamation.userId !== parseInt(userId)) {
+    if (reclamation.userId !== validUserId) {
       logSecurityEvent('UPLOAD_BLOCKED', {
         userId,
         filename: 'N/A',
@@ -169,8 +197,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check status - prevent uploads if already treated (matches PATCH logic)
-    if (reclamation.statut && ['ACCEPTEE', 'AFFECTEE', 'EN_COURS', 'RESOLUE', 'REJETEE'].includes(reclamation.statut)) {
+    // MAJ-02: Bloquer si une décision (ACCEPTEE/REJETEE) a déjà été prise (Prisma Enum)
+    if (reclamation.statut !== null) {
       return NextResponse.json({ 
         error: 'Impossible d\'ajouter des fichiers à une réclamation déjà traitée',
         code: 'CLOSED_RECLAMATION'
@@ -282,7 +310,10 @@ export async function POST(request: Request) {
         savedFiles.push(media);
 
       } catch (fileError) {
-        console.error(`Error processing file ${file.name}:`, fileError);
+        SystemLogger.error('upload-reclamation', `Error processing file ${file.name}`, {
+          error: fileError instanceof Error ? fileError.message : String(fileError),
+          reclamationId: reclamationIdNum
+        });
         errors.push({
           filename: file.name,
           error: 'Erreur lors du traitement du fichier',
@@ -309,20 +340,12 @@ export async function POST(request: Request) {
     return response;
 
   } catch (error) {
-    console.error('Erreur upload:', error);
+    SystemLogger.error('upload-reclamation', 'Erreur critique upload réclamation', {
+      error: error instanceof Error ? error.message : String(error)
+    });
     return NextResponse.json(
       { error: 'Erreur lors de l\'upload', code: 'SERVER_ERROR' }, 
       { status: 500 }
     );
   }
 }
-
-// Cleanup old locks periodically
-setInterval(() => {
-  const now = Date.now();
-  Array.from(uploadLocks.entries()).forEach(([key, timestamp]) => {
-    if (now - timestamp > 60000) {
-      uploadLocks.delete(key);
-    }
-  });
-}, 60000);

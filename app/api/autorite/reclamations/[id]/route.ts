@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -19,7 +20,7 @@ export async function GET(
       return NextResponse.json({ error: 'Accès réservé aux autorités locales' }, { status: 403 });
     }
 
-    const reclamationId = parseInt(params.id);
+    const reclamationId = safeParseInt(params.id, 0);
     const autoriteId = parseInt(session.user.id);
 
     const reclamation = await prisma.reclamation.findFirst({

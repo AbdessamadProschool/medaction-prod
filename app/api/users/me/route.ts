@@ -3,13 +3,16 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
+import { SecurityValidation } from '@/lib/security/validation';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, NotFoundError, ConflictError } from '@/lib/exceptions';
 
 /**
  * Schéma de validation pour la mise à jour du profil
  */
 const updateProfileSchema = z.object({
-  nom: z.string().min(2).max(50).optional(),
-  prenom: z.string().min(2).max(50).optional(),
+  nom: SecurityValidation.schemas.title.optional(),
+  prenom: SecurityValidation.schemas.title.optional(),
   telephone: z
     .string()
     .regex(/^(\+212|0)[5-7]\d{8}$/, 'Numéro de téléphone marocain invalide')
@@ -21,146 +24,102 @@ const updateProfileSchema = z.object({
  * GET /api/users/me
  * Récupère les informations du profil de l'utilisateur connecté
  */
-export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
+export const GET = withErrorHandler(async () => {
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, message: 'Non authentifié' },
-        { status: 401 }
-      );
-    }
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Vous devez être connecté');
+  }
 
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(session.user.id) },
-      select: {
-        id: true,
-        email: true,
-        nom: true,
-        prenom: true,
-        telephone: true,
-        photo: true,
-        role: true,
-        isActive: true,
-        isEmailVerifie: true,
-        isTelephoneVerifie: true,
-        secteurResponsable: true,
-        communeResponsableId: true,
-        etablissementsGeres: true,
-        dateInscription: true,
-        derniereConnexion: true,
-        createdAt: true,
-        updatedAt: true,
-        // Relations optionnelles
-        communeResponsable: {
-          select: {
-            id: true,
-            nom: true,
-          },
+  const user = await prisma.user.findUnique({
+    where: { id: parseInt(session.user.id) },
+    select: {
+      id: true,
+      email: true,
+      nom: true,
+      prenom: true,
+      telephone: true,
+      photo: true,
+      role: true,
+      isActive: true,
+      isEmailVerifie: true,
+      isTelephoneVerifie: true,
+      secteurResponsable: true,
+      communeResponsableId: true,
+      etablissementsGeres: true,
+      dateInscription: true,
+      derniereConnexion: true,
+      createdAt: true,
+      updatedAt: true,
+      communeResponsable: {
+        select: {
+          id: true,
+          nom: true,
         },
       },
-    });
+    },
+  });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: 'Utilisateur non trouvé' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    console.error('[GET /api/users/me] Erreur:', error);
-    return NextResponse.json(
-      { success: false, message: 'Erreur serveur' },
-      { status: 500 }
-    );
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé');
   }
-}
+
+  return successResponse(user);
+});
 
 /**
  * PATCH /api/users/me
  * Met à jour les informations du profil de l'utilisateur connecté
  */
-export async function PATCH(request: Request) {
-  try {
-    const session = await getServerSession(authOptions);
+export const PATCH = withErrorHandler(async (request: Request) => {
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, message: 'Non authentifié' },
-        { status: 401 }
-      );
-    }
-
-    const body = await request.json();
-    const validation = updateProfileSchema.safeParse(body);
-
-    if (!validation.success) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Données invalides',
-          errors: validation.error.flatten().fieldErrors,
-        },
-        { status: 400 }
-      );
-    }
-
-    const { nom, prenom, telephone } = validation.data;
-
-    // Vérifier si le téléphone est déjà utilisé
-    if (telephone) {
-      const existingPhone = await prisma.user.findFirst({
-        where: {
-          telephone,
-          id: { not: parseInt(session.user.id) },
-        },
-      });
-
-      if (existingPhone) {
-        return NextResponse.json(
-          { success: false, message: 'Ce numéro de téléphone est déjà utilisé' },
-          { status: 409 }
-        );
-      }
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: parseInt(session.user.id) },
-      data: {
-        ...(nom && { nom }),
-        ...(prenom && { prenom }),
-        ...(telephone !== undefined && { telephone }),
-      },
-      select: {
-        id: true,
-        email: true,
-        nom: true,
-        prenom: true,
-        telephone: true,
-        photo: true,
-        role: true,
-        updatedAt: true,
-      },
-    });
-
-    console.log(`[PATCH /api/users/me] Profil mis à jour pour: ${updatedUser.email}`);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Profil mis à jour avec succès',
-      data: updatedUser,
-    });
-  } catch (error) {
-    console.error('[PATCH /api/users/me] Erreur:', error);
-    return NextResponse.json(
-      { success: false, message: 'Erreur serveur' },
-      { status: 500 }
-    );
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Vous devez être connecté');
   }
-}
+
+  const body = await request.json();
+  const validation = updateProfileSchema.safeParse(body);
+
+  if (!validation.success) {
+    throw validation.error;
+  }
+
+  const { nom, prenom, telephone } = validation.data;
+  const userId = parseInt(session.user.id);
+
+  // Vérifier si le téléphone est déjà utilisé par un autre utilisateur
+  if (telephone) {
+    const existingPhone = await prisma.user.findFirst({
+      where: {
+        telephone,
+        id: { not: userId },
+      },
+    });
+
+    if (existingPhone) {
+      throw new ConflictError('Ce numéro de téléphone est déjà utilisé');
+    }
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      ...(nom && { nom }),
+      ...(prenom && { prenom }),
+      ...(telephone !== undefined && { telephone }),
+    },
+    select: {
+      id: true,
+      email: true,
+      nom: true,
+      prenom: true,
+      telephone: true,
+      photo: true,
+      role: true,
+      updatedAt: true,
+    },
+  });
+
+  return successResponse(updatedUser, 'Profil mis à jour avec succès');
+});

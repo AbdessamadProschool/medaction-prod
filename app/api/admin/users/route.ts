@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { safeParseInt } from '@/lib/utils/parse';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { hashPassword } from '@/lib/auth/password';
 import { z } from 'zod';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ForbiddenError, ConflictError } from '@/lib/exceptions';
+import { withPermission } from '@/lib/auth/api-guard';
 
 // Schéma de validation pour la création d'utilisateur
 const createUserSchema = z.object({
@@ -15,28 +15,21 @@ const createUserSchema = z.object({
   prenom: z.string().min(2, 'Le prénom est requis'),
   role: z.enum(['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR']),
   telephone: z.string().optional(),
-  secteurResponsable: z.any().optional(), // Sera validé si le rôle est DELEGATION
-  etablissementId: z.number().optional(), // Sera validé si le rôle est AUTORITE_LOCALE
+  secteurResponsable: z.any().optional(),
+  etablissementId: z.number().optional(),
 });
 
 // GET /api/admin/users - Lister les utilisateurs
-export const GET = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  if (!session?.user || !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-    throw new ForbiddenError('Accès non autorisé');
-  }
-
+export const GET = withPermission('users.read', withErrorHandler(async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '10');
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '10', 0), 100);
   const search = searchParams.get('search') || '';
   const role = searchParams.get('role');
 
   const skip = (page - 1) * limit;
 
-  // Construction du filtre
   const where: any = {};
-  
   if (search) {
     where.OR = [
       { nom: { contains: search, mode: 'insensitive' } },
@@ -49,7 +42,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     where.role = role;
   }
 
-  // Récupérer les données
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where,
@@ -62,7 +54,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         photo: true,
         isActive: true,
         lastFailedLogin: true,
-        createdAt: true, // Note: using createdAt/updatedAt if available or dateInscription
         dateInscription: true,
         derniereConnexion: true,
       },
@@ -73,7 +64,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.user.count({ where }),
   ]);
 
-  return NextResponse.json({
+  return successResponse({
     users,
     pagination: {
       total,
@@ -82,29 +73,18 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       limit,
     },
   });
-});
+}));
 
 // POST /api/admin/users - Créer un utilisateur
-export const POST = withErrorHandler(async (request: NextRequest) => {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user) {
-    throw new UnauthorizedError();
-  }
-
+export const POST = withPermission('users.create', withErrorHandler(async (request: NextRequest, { session }) => {
+  // Seul un Super Admin peut créer des utilisateurs administratifs ou d'autres membres
+  // Cette restriction est conservée du code initial pour la sécurité du déploiement
   if (session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Seul un Super Admin peut créer des administrateurs');
+    throw new ForbiddenError('Seul un Super Admin peut créer des utilisateurs via ce module');
   }
 
   const body = await request.json();
-  
-  // Validation
-  const validation = createUserSchema.safeParse(body);
-  if (!validation.success) {
-    throw new ValidationError(validation.error.issues[0].message);
-  }
-
-  const { email, password, nom, prenom, role, telephone, secteurResponsable, etablissementId } = validation.data;
+  const { email, password, nom, prenom, role, telephone, secteurResponsable, etablissementId } = createUserSchema.parse(body);
 
   // Vérifier unicité email
   const existingUser = await prisma.user.findUnique({
@@ -112,13 +92,11 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 
   if (existingUser) {
-    throw new AppError('Cet email est déjà utilisé', 'CONFLICT', 409);
+    throw new ConflictError('Cet email est déjà utilisé');
   }
 
-  // Hasher le mot de passe
   const hashedPassword = await hashPassword(password);
 
-  // Préparer les données
   const userData: any = {
     email: email.toLowerCase(),
     motDePasse: hashedPassword,
@@ -127,11 +105,10 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     role,
     telephone,
     isActive: true,
-    isEmailVerifie: true, // Admin created users are verified by default
+    isEmailVerifie: true,
     dateInscription: new Date(),
   };
 
-  // Gestion des champs spécifiques aux rôles
   if (role === 'DELEGATION' && secteurResponsable) {
     userData.secteurResponsable = secteurResponsable;
   }
@@ -151,5 +128,5 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     },
   });
 
-  return NextResponse.json(newUser, { status: 201 });
-});
+  return successResponse(newUser, 'Utilisateur créé avec succès', 201);
+}));

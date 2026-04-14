@@ -1,3 +1,4 @@
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -13,20 +14,14 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     throw new UnauthorizedError('Vous devez être connecté');
   }
 
-  // Vérifier le rôle
+  // SECURITÉ: Vérifier le rôle (déduit de la session)
   if (session.user.role !== 'AUTORITE_LOCALE') {
     throw new ForbiddenError('Accès réservé aux autorités locales');
   }
 
-  const autoriteId = parseInt(session.user.id);
+  const communeId = session.user.communeResponsableId;
 
-  // Récupérer la commune responsable de l'autorité
-  const autorite = await prisma.user.findUnique({
-    where: { id: autoriteId },
-    select: { communeResponsableId: true }
-  });
-
-  if (!autorite?.communeResponsableId) {
+  if (!communeId) {
     throw new AppError(
       'Aucune commune assignée à votre compte. Contactez un administrateur pour lier votre compte à une commune.',
       'VALIDATION_ERROR',
@@ -34,12 +29,11 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     );
   }
 
-  const communeId = autorite.communeResponsableId;
   const { searchParams } = new URL(request.url);
   
   // Paramètres de filtrage
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '20', 0), 50);
   const skip = (page - 1) * limit;
   
   const statut = searchParams.get('statut');
@@ -69,7 +63,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
   // Filtre par établissement
   if (etablissementId) {
-    where.etablissementId = parseInt(etablissementId);
+    where.etablissementId = safeParseInt(etablissementId, 0);
   }
 
   // Recherche textuelle

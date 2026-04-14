@@ -14,6 +14,7 @@ export async function GET() {
     const userId = parseInt(session.user.id);
 
     const evaluations = await prisma.evaluation.findMany({
+      take: 100,
       where: { userId },
       include: {
         etablissement: {

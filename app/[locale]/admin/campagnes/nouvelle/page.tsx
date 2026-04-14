@@ -43,7 +43,9 @@ export default function AdminNouvelleCampagnePage() {
     dateDebut: z.string().optional(),
     dateFin: z.string().optional(),
     couleurTheme: z.string().optional(),
-    statut: z.string().default('BROUILLON'),
+    statut: z.string().min(1),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
   }), [t]);
 
   type CampagneForm = z.infer<typeof campagneSchema>;
@@ -97,6 +99,8 @@ export default function AdminNouvelleCampagnePage() {
         body: JSON.stringify({
           ...data,
           objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
+          isOrganiseParProvince: data.isOrganiseParProvince,
+          sousCouvertProvince: data.sousCouvertProvince,
           imagePrincipale: imageUrl
         }),
       });
@@ -333,33 +337,74 @@ export default function AdminNouvelleCampagnePage() {
           </div>
         </div>
 
-        {/* Statut */}
+        {/* Statut & Options */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-          <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-            <Send className="w-4 h-4 text-green-500" />
-            {t('status_section')}
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {STATUTS_LIST.map(statut => (
-              <label 
-                key={statut}
-                className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  selectedStatut === statut
-                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                }`}
-              >
-                <input
-                  type="radio"
-                  {...register('statut')}
-                  value={statut}
-                  className="sr-only"
-                />
-                <span className="font-medium text-gray-900 dark:text-white">{t(`statuses.${statut}_label`)}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t(`statuses.${statut}_desc`)}</span>
-              </label>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <Send className="w-4 h-4 text-green-500" />
+                {t('status_section')}
+              </h3>
+              
+              <div className="grid grid-cols-1 gap-4">
+                {STATUTS_LIST.map(statut => (
+                  <label 
+                    key={statut}
+                    className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                      selectedStatut === statut
+                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      {...register('statut')}
+                      value={statut}
+                      className="sr-only"
+                    />
+                    <span className="font-medium text-gray-900 dark:text-white">{t(`statuses.${statut}_label`)}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t(`statuses.${statut}_desc`)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-blue-500" />
+                Options d'organisation
+              </h3>
+              
+              <div className="space-y-4">
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('isOrganiseParProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">Organisée par la Province</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">La campagne sera directement rattachée à la Province de Médiouna</p>
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors group">
+                  <div className="pt-0.5">
+                    <input
+                      type="checkbox"
+                      {...register('sousCouvertProvince')}
+                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">Sous le couvert de la Province</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Mention "Sous le couvert de Monsieur le Gouverneur" affichée</p>
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -9,6 +9,7 @@ export const GET = withErrorHandler(async () => {
     cacheKey.communes(),
     async () => {
       return await prisma.commune.findMany({
+      take: 100,
         select: {
           id: true,
           nom: true,

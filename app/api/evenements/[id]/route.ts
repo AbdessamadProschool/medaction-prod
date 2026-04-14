@@ -85,45 +85,59 @@ export const PUT = withErrorHandler(async (
 
   const body = await request.json();
   
-  // Validation
-  const errors: Array<{ field: string; message: string }> = [];
-  
-  if (body.titre && body.titre.length < 5) {
-    errors.push({ field: 'titre', message: 'Le titre doit contenir au moins 5 caractères' });
-  }
-  if (body.description && body.description.length < 20) {
-    errors.push({ field: 'description', message: 'La description doit contenir au moins 20 caractères' });
+  // Schéma de validation pour la mise à jour (partiel)
+  const updateSchema = z.object({
+    titre: z.string().min(5).max(200).optional(),
+    description: z.string().min(20).max(5000).optional(),
+    typeCategorique: z.string().optional(),
+    lieu: z.string().max(200).optional().nullable(),
+    adresse: z.string().max(300).optional().nullable(),
+    dateDebut: z.string().optional(),
+    dateFin: z.string().optional().nullable(),
+    heureDebut: z.string().optional().nullable(),
+    heureFin: z.string().optional().nullable(),
+    capaciteMax: z.number().min(0).optional().nullable(),
+    inscriptionsOuvertes: z.boolean().optional(),
+    isOrganiseParProvince: z.boolean().optional(),
+    sousCouvertProvince: z.boolean().optional(),
+    bilanDescription: z.string().max(5000).optional().nullable(),
+    bilanNbParticipants: z.number().int().min(0).optional().nullable(),
+    statut: z.string().optional(),
+    imagePrincipale: z.string().optional().nullable(),
+  });
+
+  const validation = updateSchema.safeParse(body);
+  if (!validation.success) {
+    throw new ValidationError("Données de mise à jour invalides", { fieldErrors: validation.error.flatten().fieldErrors });
   }
 
-  if (errors.length > 0) {
-    throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
-      { fieldErrors: errors.reduce((acc, e) => ({ ...acc, [e.field]: [e.message] }), {}) }
-    );
-  }
-
-  // Construire les données de mise à jour
+  const data = validation.data;
   const updateData: any = {};
   
-  if (body.titre) updateData.titre = body.titre.trim();
-  if (body.description) updateData.description = body.description.trim();
-  if (body.typeCategorique) updateData.typeCategorique = body.typeCategorique;
-  if (body.lieu !== undefined) updateData.lieu = body.lieu?.trim();
-  if (body.adresse !== undefined) updateData.adresse = body.adresse?.trim();
-  if (body.dateDebut) updateData.dateDebut = new Date(body.dateDebut);
-  if (body.dateFin) updateData.dateFin = new Date(body.dateFin);
-  if (body.heureDebut !== undefined) updateData.heureDebut = body.heureDebut;
-  if (body.heureFin !== undefined) updateData.heureFin = body.heureFin;
-  if (body.capaciteMax !== undefined) updateData.capaciteMax = body.capaciteMax;
-  if (body.inscriptionsOuvertes !== undefined) updateData.inscriptionsOuvertes = body.inscriptionsOuvertes;
+  if (data.titre) updateData.titre = data.titre.trim();
+  if (data.description) updateData.description = data.description.trim();
+  if (data.typeCategorique) updateData.typeCategorique = data.typeCategorique;
+  if (data.lieu !== undefined) updateData.lieu = data.lieu?.trim() || null;
+  if (data.adresse !== undefined) updateData.adresse = data.adresse?.trim() || null;
+  if (data.dateDebut) updateData.dateDebut = new Date(data.dateDebut);
+  if (data.dateFin !== undefined) updateData.dateFin = data.dateFin ? new Date(data.dateFin) : null;
+  if (data.heureDebut !== undefined) updateData.heureDebut = data.heureDebut;
+  if (data.heureFin !== undefined) updateData.heureFin = data.heureFin;
+  if (data.capaciteMax !== undefined) updateData.capaciteMax = data.capaciteMax;
+  if (data.inscriptionsOuvertes !== undefined) updateData.inscriptionsOuvertes = data.inscriptionsOuvertes;
   
-  // Champs de bilan
-  if (body.bilanDescription !== undefined) updateData.bilanDescription = body.bilanDescription;
-  if (body.bilanNbParticipants !== undefined) updateData.bilanNbParticipants = parseInt(body.bilanNbParticipants);
+  // Champs de bilan (autorisés pour créateur/admin)
+  if (data.bilanDescription !== undefined) updateData.bilanDescription = data.bilanDescription;
+  if (data.bilanNbParticipants !== undefined) updateData.bilanNbParticipants = data.bilanNbParticipants;
   
-  // Les admins peuvent modifier le statut
-  if (isAdmin && body.statut) {
-    updateData.statut = body.statut;
+  // SECURITY FIX: Champs réservés uniquement aux administrateurs
+  if (isAdmin) {
+    if (data.isOrganiseParProvince !== undefined) updateData.isOrganiseParProvince = data.isOrganiseParProvince;
+    if (data.sousCouvertProvince !== undefined) updateData.sousCouvertProvince = data.sousCouvertProvince;
+    if (data.statut) updateData.statut = data.statut;
+  } else if (data.isOrganiseParProvince !== undefined || data.sousCouvertProvince !== undefined || data.statut !== undefined) {
+    // Si un non-admin essaie de modifier ces champs, on les ignore silencieusement ou on pourrait lever une erreur.
+    // Pour une UX fluide, on ignore généralement, mais ici on va s'assurer de ne pas les injecter.
   }
 
   const updated = await prisma.evenement.update({
@@ -136,7 +150,7 @@ export const PUT = withErrorHandler(async (
   });
 
   // === GESTION DE L'IMAGE PRINCIPALE ===
-  if (body.imagePrincipale !== undefined) {
+  if (data.imagePrincipale !== undefined) {
     // Supprimer l'ancienne image principale si elle existe
     await prisma.media.deleteMany({
       where: {
@@ -146,14 +160,14 @@ export const PUT = withErrorHandler(async (
     });
 
     // Créer la nouvelle image si fournie
-    if (body.imagePrincipale) {
+    if (data.imagePrincipale) {
       await prisma.media.create({
         data: {
           nomFichier: 'Image Principale',
-          cheminFichier: body.imagePrincipale,
-          urlPublique: body.imagePrincipale,
+          cheminFichier: data.imagePrincipale,
+          urlPublique: data.imagePrincipale,
           type: 'IMAGE',
-          mimeType: 'image/jpeg',
+          mimeType: 'image/jpeg', // Devrait idéalement être détecté dynamiquement
           evenementId: id,
           uploadePar: userId
         }

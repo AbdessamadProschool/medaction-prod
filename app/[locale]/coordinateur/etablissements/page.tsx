@@ -214,14 +214,24 @@ export default function CoordinateurEtablissementsPage() {
                 </div>
 
                 {/* Action */}
-                <Link
-                  href={`/etablissements/${etablissement.id}`}
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 rounded-xl transition-all font-bold group-hover:border-emerald-200 border border-transparent"
-                >
-                  <Eye size={18} />
-                  <span>{t('view_details')}</span>
-                  <ChevronLeft size={18} className="mr-auto text-gray-400 group-hover:text-emerald-500" />
-                </Link>
+                <div className="space-y-2">
+                  <Link
+                    href={`/delegation/etablissements/${etablissement.id}/demande-modification`}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition-all font-bold border border-blue-100"
+                  >
+                    <RefreshCw size={18} />
+                    <span>Demander une modification</span>
+                  </Link>
+
+                  <Link
+                    href={`/etablissements/${etablissement.id}`}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 rounded-xl transition-all font-bold group-hover:border-emerald-200 border border-transparent"
+                  >
+                    <Eye size={18} />
+                    <span>{t('view_details')}</span>
+                    <ChevronLeft size={18} className="mr-auto text-gray-400 group-hover:text-emerald-500" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))

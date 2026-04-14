@@ -27,6 +27,7 @@ import {
   Handshake,
   Leaf,
   Landmark,
+  Building2,
   type LucideIcon
 } from 'lucide-react';
 
@@ -384,6 +385,17 @@ export default function DelegationDashboard() {
                 <div>
                   <span className="block font-bold text-sm">{t('quick_actions.new_news')}</span>
                   <span className="text-xs text-blue-200 opacity-80">{t('quick_actions.new_news_desc')}</span>
+                </div>
+                <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
+              </Link>
+
+              <Link href="/delegation/etablissements" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/5 group active:scale-95">
+                <div className="bg-white/20 p-2.5 rounded-xl group-hover:bg-white/30 transition-colors shadow-inner">
+                  <Building2 size={20} />
+                </div>
+                <div>
+                  <span className="block font-bold text-sm">Établissements</span>
+                  <span className="text-xs text-blue-200 opacity-80">Proposer des mises à jour</span>
                 </div>
                 <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
               </Link>

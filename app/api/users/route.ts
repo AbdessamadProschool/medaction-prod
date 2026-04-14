@@ -3,95 +3,76 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { hashPassword } from "@/lib/auth/password";
+import { SecurityValidation } from "@/lib/security/validation";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ForbiddenError, ValidationError, ConflictError } from "@/lib/exceptions";
+import { withPermission } from "@/lib/auth/api-guard";
+import { z } from "zod";
 
-// Types pour les rôles autorisés
-const ADMIN_ROLES = ['ADMIN', 'SUPER_ADMIN'];
-const SUPER_ADMIN_ONLY = ['SUPER_ADMIN'];
-
-// Vérifier les permissions admin
-async function checkAdminPermission(requiredRoles: string[] = ADMIN_ROLES) {
-  const session = await getServerSession(authOptions);
-  
-  if (!session?.user) {
-    return { authorized: false, error: "Non authentifié", status: 401 };
-  }
-  
-  if (!requiredRoles.includes(session.user.role)) {
-    return { authorized: false, error: "Accès non autorisé", status: 403 };
-  }
-  
-  return { authorized: true, user: session.user };
-}
+// Schéma de validation pour la création d'utilisateur par Admin
+const createUserSchema = z.object({
+  email: SecurityValidation.schemas.email,
+  telephone: z.string()
+    .regex(/^(\+212|0)[5-7]\d{8}$/, "Numéro de téléphone marocain invalide")
+    .optional(),
+  motDePasse: SecurityValidation.schemas.password,
+  nom: SecurityValidation.schemas.name,
+  prenom: SecurityValidation.schemas.name,
+  photo: z.string().url().optional(),
+  role: z.string().default('CITOYEN'),
+  isActive: z.boolean().default(true),
+  secteurResponsable: z.string().optional(),
+  communeResponsableId: SecurityValidation.schemas.id.optional(),
+  etablissementsGeres: z.array(z.number().int()).optional(),
+});
 
 // GET /api/users - Liste des utilisateurs (ADMIN, SUPER_ADMIN)
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+export const GET = withPermission('users.read', withErrorHandler(async (request: NextRequest, { session }) => {
+  const { searchParams } = new URL(request.url);
+  
+  // Paramètres de filtrage avec validation sécurisée
+  const { page, limit } = SecurityValidation.validatePagination(
+    searchParams.get('page'),
+    searchParams.get('limit')
+  );
+  
+  const searchRaw = searchParams.get('search') || '';
+  const role = searchParams.get('role') || '';
+  const isActiveRaw = searchParams.get('isActive');
+  const secteur = searchParams.get('secteur') || '';
+  const sortByRaw = searchParams.get('sortBy') || 'createdAt';
+  const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc';
 
-    // Vérifier la permission
-    const { checkPermission } = await import("@/lib/permissions");
-    const hasPermission = await checkPermission(parseInt(session.user.id), 'users.read');
+  // Whitelist pour le tri
+  const ALLOWED_SORT_FIELDS = ['createdAt', 'nom', 'prenom', 'email', 'role', 'derniereConnexion'];
+  const sortBy = ALLOWED_SORT_FIELDS.includes(sortByRaw) ? sortByRaw : 'createdAt';
 
-    if (!hasPermission) {
-      return NextResponse.json({ error: "Accès non autorisé" }, { status: 403 });
-    }
-    
-    // Pour compatibilité avec le reste du code existant qui utilise authCheck
-    const authCheck = { user: session.user };
+  // Construction des filtres
+  const where: any = {};
 
-    const { searchParams } = new URL(request.url);
-    
-    // Paramètres de filtrage
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const search = searchParams.get('search') || '';
-    const role = searchParams.get('role') || '';
-    const isActive = searchParams.get('isActive');
-    const secteur = searchParams.get('secteur') || '';
-    const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+  // Recherche sanitisée
+  if (searchRaw) {
+    const search = SecurityValidation.sanitizeString(searchRaw);
+    where.OR = [
+      { nom: { contains: search, mode: 'insensitive' } },
+      { prenom: { contains: search, mode: 'insensitive' } },
+      { email: { contains: search, mode: 'insensitive' } },
+      { telephone: { contains: search, mode: 'insensitive' } },
+    ];
+  }
 
-    // Construction des filtres
-    const where: any = {};
+  if (role) where.role = role;
+  if (isActiveRaw !== null && isActiveRaw !== '') where.isActive = isActiveRaw === 'true';
+  if (secteur) where.secteurResponsable = secteur;
 
-    // Recherche par nom, prénom ou email
-    if (search) {
-      where.OR = [
-        { nom: { contains: search, mode: 'insensitive' } },
-        { prenom: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { telephone: { contains: search, mode: 'insensitive' } },
-      ];
-    }
+  // Sécurité supplémentaire : Exclure les SUPER_ADMIN si l'utilisateur n'est pas SUPER_ADMIN
+  if (session.user.role !== 'SUPER_ADMIN') {
+    where.role = { not: 'SUPER_ADMIN' };
+  }
 
-    // Filtrer par rôle
-    if (role) {
-      where.role = role;
-    }
-
-    // Filtrer par statut actif
-    if (isActive !== null && isActive !== undefined && isActive !== '') {
-      where.isActive = isActive === 'true';
-    }
-
-    // Filtrer par secteur (pour DELEGATION)
-    if (secteur) {
-      where.secteurResponsable = secteur;
-    }
-
-    // Exclure les SUPER_ADMIN si l'utilisateur n'est pas SUPER_ADMIN
-    if (authCheck.user?.role !== 'SUPER_ADMIN') {
-      where.role = { not: 'SUPER_ADMIN' };
-    }
-
-    // Compter le total
-    const total = await prisma.user.count({ where });
-
-    // Récupérer les utilisateurs avec pagination
-    const users = await prisma.user.findMany({
+  // Requêtes DB
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
       where,
       select: {
         id: true,
@@ -103,188 +84,101 @@ export async function GET(request: NextRequest) {
         role: true,
         isActive: true,
         isEmailVerifie: true,
-        isTelephoneVerifie: true,
-        secteurResponsable: true,
-        communeResponsableId: true,
-        etablissementsGeres: true,
         derniereConnexion: true,
         dateInscription: true,
         createdAt: true,
-        updatedAt: true,
-        communeResponsable: {
-          select: {
-            id: true,
-            nom: true,
-            nomArabe: true,
-          }
-        },
+        communeResponsable: { select: { id: true, nom: true } },
         _count: {
           select: {
             evaluations: true,
             reclamationsCreees: true,
-            evenementsCrees: true,
-            actualiteCreees: true,
           }
         }
       },
       orderBy: { [sortBy]: sortOrder },
       skip: (page - 1) * limit,
       take: limit,
-    });
+    }),
+    prisma.user.count({ where }),
+  ]);
 
-    // Statistiques par rôle
-    const stats = await prisma.user.groupBy({
-      by: ['role'],
-      _count: { id: true },
-    });
+  // Statistiques de répartition par rôle
+  const stats = await prisma.user.groupBy({
+    by: ['role'],
+    _count: { id: true },
+  });
 
-    const roleStats = stats.reduce((acc, item) => {
-      acc[item.role] = item._count.id;
-      return acc;
-    }, {} as Record<string, number>);
+  const roleStats = stats.reduce((acc, item) => {
+    acc[item.role] = item._count.id;
+    return acc;
+  }, {} as Record<string, number>);
 
-    return NextResponse.json({
-      users,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-      stats: {
-        total: await prisma.user.count(),
-        active: await prisma.user.count({ where: { isActive: true } }),
-        inactive: await prisma.user.count({ where: { isActive: false } }),
-        byRole: roleStats,
-      }
-    });
-
-  } catch (error) {
-    console.error("Erreur GET /api/users:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return NextResponse.json({
+    success: true,
+    data: users,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+    stats: {
+      total,
+      byRole: roleStats,
+    }
+  });
+}));
 
 // POST /api/users - Créer un utilisateur (ADMIN, SUPER_ADMIN)
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+export const POST = withPermission('users.create', withErrorHandler(async (request: NextRequest, { session }) => {
+  const body = await request.json();
+  const validation = createUserSchema.safeParse(body);
 
-    // Vérifier la permission
-    const { checkPermission } = await import("@/lib/permissions");
-    const hasPermission = await checkPermission(parseInt(session.user.id), 'users.create');
-
-    if (!hasPermission) {
-      return NextResponse.json({ error: "Accès non autorisé" }, { status: 403 });
-    }
-
-    const authCheck = { user: session.user };
-
-    const body = await request.json();
-    const {
-      email,
-      telephone,
-      motDePasse,
-      nom,
-      prenom,
-      photo,
-      role,
-      isActive = true,
-      secteurResponsable,
-      communeResponsableId,
-      etablissementsGeres,
-    } = body;
-
-    // Validation des champs requis
-    if (!email || !nom || !prenom) {
-      return NextResponse.json(
-        { error: "Email, nom et prénom sont requis" },
-        { status: 400 }
-      );
-    }
-
-    // Validation du mot de passe
-    if (!motDePasse || motDePasse.length < 6) {
-      return NextResponse.json(
-        { error: "Le mot de passe doit contenir au moins 6 caractères" },
-        { status: 400 }
-      );
-    }
-
-    // Vérifier que l'email n'existe pas déjà
-    const existingEmail = await prisma.user.findUnique({ where: { email } });
-    if (existingEmail) {
-      return NextResponse.json(
-        { error: "Cet email est déjà utilisé" },
-        { status: 409 }
-      );
-    }
-
-    // Vérifier que le téléphone n'existe pas déjà (si fourni)
-    if (telephone) {
-      const existingPhone = await prisma.user.findUnique({ where: { telephone } });
-      if (existingPhone) {
-        return NextResponse.json(
-          { error: "Ce numéro de téléphone est déjà utilisé" },
-          { status: 409 }
-        );
-      }
-    }
-
-    // Restriction : seul SUPER_ADMIN peut créer des ADMIN ou SUPER_ADMIN
-    if (['ADMIN', 'SUPER_ADMIN'].includes(role) && authCheck.user?.role !== 'SUPER_ADMIN') {
-      return NextResponse.json(
-        { error: "Seul un Super Admin peut créer des administrateurs" },
-        { status: 403 }
-      );
-    }
-
-    // Hasher le mot de passe
-    const hashedPassword = await hashPassword(motDePasse);
-
-    // Créer l'utilisateur
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        telephone: telephone || null,
-        motDePasse: hashedPassword,
-        nom,
-        prenom,
-        photo: photo || null,
-        role: role || 'CITOYEN',
-        isActive,
-        isEmailVerifie: true, // Créé par admin = vérifié
-        secteurResponsable: secteurResponsable || null,
-        communeResponsableId: communeResponsableId || null,
-        etablissementsGeres: etablissementsGeres || [],
-      },
-      select: {
-        id: true,
-        email: true,
-        telephone: true,
-        nom: true,
-        prenom: true,
-        photo: true,
-        role: true,
-        isActive: true,
-        secteurResponsable: true,
-        communeResponsableId: true,
-        etablissementsGeres: true,
-        createdAt: true,
-      }
-    });
-
-    return NextResponse.json({
-      success: true,
-      message: "Utilisateur créé avec succès",
-      user: newUser,
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error("Erreur POST /api/users:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  if (!validation.success) {
+    throw validation.error;
   }
-}
+
+  const data = validation.data;
+
+  // Restriction : seul SUPER_ADMIN peut créer des ADMIN ou SUPER_ADMIN
+  if (['ADMIN', 'SUPER_ADMIN'].includes(data.role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError("Seul un Super Admin peut créer des comptes administratifs");
+  }
+
+  // Vérifier unicité email
+  const existingEmail = await prisma.user.findUnique({ where: { email: data.email } });
+  if (existingEmail) {
+    throw new ConflictError("Cet email est déjà utilisé");
+  }
+
+  // Vérifier unicité téléphone
+  if (data.telephone) {
+    const existingPhone = await prisma.user.findUnique({ where: { telephone: data.telephone } });
+    if (existingPhone) {
+      throw new ConflictError("Ce numéro de téléphone est déjà utilisé");
+    }
+  }
+
+  // Hasher le mot de passe
+  const hashedPassword = await hashPassword(data.motDePasse);
+
+  // Créer l'utilisateur
+  const newUser = await prisma.user.create({
+    data: {
+      ...data,
+      motDePasse: hashedPassword,
+      isEmailVerifie: true, // Créé par admin = vérifié par défaut
+    },
+    select: {
+      id: true,
+      email: true,
+      nom: true,
+      prenom: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+    }
+  });
+
+  return successResponse(newUser, "Utilisateur créé avec succès", 201);
+}));

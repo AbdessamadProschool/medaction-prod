@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -6,8 +6,9 @@ import { prisma } from '@/lib/db';
 // DELETE - Réinitialiser le 2FA d'un utilisateur (SUPER_ADMIN uniquement)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     
@@ -110,8 +111,9 @@ export async function DELETE(
 // GET - Statut 2FA d'un utilisateur (pour affichage admin)
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

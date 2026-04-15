@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -41,8 +41,9 @@ async function updateNoteMoyenne(etablissementId: number) {
 // GET /api/evaluations/[id] - Détails d'une évaluation
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const evaluationId = SecurityValidation.validateId(params.id);
 
   if (!evaluationId) {
@@ -67,8 +68,9 @@ export const GET = withErrorHandler(async (
 // PATCH /api/evaluations/[id] - Modifier une évaluation (< 7 jours)
 export const PATCH = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -143,8 +145,9 @@ export const PATCH = withErrorHandler(async (
 // DELETE /api/evaluations/[id] - Supprimer une évaluation
 export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {

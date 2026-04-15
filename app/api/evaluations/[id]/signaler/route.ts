@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -11,8 +11,9 @@ const signalementSchema = z.object({
 // POST /api/evaluations/[id]/signaler - Signaler une évaluation
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

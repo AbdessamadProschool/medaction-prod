@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -8,8 +8,9 @@ import { z } from 'zod';
 // GET /api/talents/[id]
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const id = parseInt(params.id);
     if (isNaN(id)) {
@@ -44,8 +45,9 @@ export async function GET(
 // PATCH /api/talents/[id] (Admin only)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
 
@@ -86,8 +88,9 @@ export async function PATCH(
 // DELETE /api/talents/[id] (Admin only)
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params: _p }: { params: Promise<{ id: string }> }
   ) {
+  const params = await _p;
     try {
       const session = await getServerSession(authOptions);
   

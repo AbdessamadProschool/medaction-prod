@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -16,8 +16,9 @@ const updateReclamationSchema = z.object({
 // GET - Détails d'une réclamation
 export const GET = withErrorHandler(async (
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -65,8 +66,9 @@ export const GET = withErrorHandler(async (
 // PATCH - Mise à jour d'une réclamation (propriétaire seulement, champs limités)
 export const PATCH = withErrorHandler(async (
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -134,8 +136,9 @@ export const PATCH = withErrorHandler(async (
 // DELETE - Supprimer une réclamation (propriétaire si non traitée, ou Admin)
 export const DELETE = withErrorHandler(async (
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {

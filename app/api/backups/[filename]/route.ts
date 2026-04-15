@@ -1,4 +1,4 @@
-
+﻿
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -12,8 +12,9 @@ const BACKUP_DIR = join(process.cwd(), 'backups');
 // GET /api/backups/[filename] - Télécharger un backup
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params: _p }: { params: Promise<{ filename: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
@@ -52,8 +53,9 @@ export async function GET(
 // DELETE /api/backups/[filename] - Supprimer un backup
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params: _p }: { params: Promise<{ filename: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'SUPER_ADMIN') {

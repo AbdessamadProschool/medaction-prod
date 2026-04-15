@@ -1,4 +1,4 @@
-import { safeParseInt } from '@/lib/utils/parse';
+﻿import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -7,8 +7,9 @@ import { getEffectiveUserPermissions } from '@/lib/permissions';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {

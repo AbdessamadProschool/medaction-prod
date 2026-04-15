@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -6,8 +6,9 @@ import { authOptions } from "@/lib/auth/config";
 // GET /api/evaluations/user/[etablissementId] - Évaluation de l'utilisateur pour un établissement
 export async function GET(
   request: NextRequest,
-  { params }: { params: { etablissementId: string } }
+  { params: _p }: { params: Promise<{ etablissementId: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

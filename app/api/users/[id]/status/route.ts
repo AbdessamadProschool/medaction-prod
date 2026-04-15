@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -6,8 +6,9 @@ import { authOptions } from "@/lib/auth/config";
 // PATCH /api/users/[id]/status - Modifier le statut (actif/inactif) d'un utilisateur
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     // Vérification de l'authentification
     const session = await getServerSession(authOptions);
@@ -135,8 +136,9 @@ export async function PATCH(
 // GET /api/users/[id]/status - Récupérer le statut d'un utilisateur
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

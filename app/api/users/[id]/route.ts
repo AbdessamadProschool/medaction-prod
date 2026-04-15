@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -28,8 +28,9 @@ const updateUserSchema = z.object({
 // GET /api/users/[id] - Détails d'un utilisateur
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     throw new UnauthorizedError("Non authentifié");
@@ -102,8 +103,9 @@ export const GET = withErrorHandler(async (
 // PATCH /api/users/[id] - Modifier un utilisateur (Admin)
 export const PATCH = withPermission('users.edit', withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
 
@@ -177,8 +179,9 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
 // DELETE /api/users/[id] - Supprimer un utilisateur
 export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
 

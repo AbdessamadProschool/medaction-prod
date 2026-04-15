@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -9,7 +9,7 @@ import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } fro
 // GET /api/suggestions/[id] - Détail d'une suggestion
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
   const id = SecurityValidation.validateId(params.id);
   if (!id) throw new ValidationError("Identifiant de suggestion invalide");
@@ -49,7 +49,7 @@ export const GET = withErrorHandler(async (
 // DELETE /api/suggestions/[id] - Supprimer sa propre suggestion
 export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
   const session = await getServerSession(authOptions);
 
@@ -84,6 +84,7 @@ export const DELETE = withErrorHandler(async (
     role !== 'ADMIN' && 
     ['APPROUVEE', 'IMPLEMENTEE'].includes(suggestion.statut)
   ) {
+  const params = await _p;
     throw new ForbiddenError('Cette suggestion ne peut plus être supprimée car elle a été traitée');
   }
 

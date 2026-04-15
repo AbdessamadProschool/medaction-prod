@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -22,8 +22,9 @@ const updateActualiteSchema = z.object({
 // GET - Récupérer une actualité par ID
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const id = SecurityValidation.validateId(params.id);
   
   if (!id) {
@@ -68,8 +69,9 @@ export const GET = withErrorHandler(async (
 // PUT/PATCH - Modifier une actualité
 export const PUT = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -147,8 +149,9 @@ export const PATCH = PUT;
 // DELETE - Supprimer une actualité
 export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {

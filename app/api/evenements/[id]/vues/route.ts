@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const id = parseInt(params.id, 10);
     if (isNaN(id)) {

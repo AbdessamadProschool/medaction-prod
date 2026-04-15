@@ -1,4 +1,4 @@
-import { safeParseInt } from '@/lib/utils/parse';
+﻿import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -11,8 +11,9 @@ import { Readable } from 'stream';
 // GET /api/reclamations/[id]/photos - Télécharger les photos en ZIP
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     
@@ -144,8 +145,9 @@ export async function GET(
 // HEAD - Obtenir les métadonnées (nombre de photos, taille estimée)
 export async function HEAD(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

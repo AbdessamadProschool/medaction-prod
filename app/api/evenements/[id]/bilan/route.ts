@@ -1,4 +1,4 @@
-import { safeParseInt } from '@/lib/utils/parse';
+﻿import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -9,8 +9,9 @@ import path from 'path';
 // PATCH - Ajouter un bilan à un événement clôturé
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) {
+  const params = await _p;
   try {
     const session = await getServerSession(authOptions);
     

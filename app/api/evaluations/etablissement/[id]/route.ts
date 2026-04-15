@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { SecurityValidation } from "@/lib/security/validation";
 import { withErrorHandler, successResponse } from "@/lib/api-handler";
@@ -7,8 +7,9 @@ import { NotFoundError, ValidationError } from "@/lib/exceptions";
 // GET /api/evaluations/etablissement/[id] - Évaluations d'un établissement
 export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const etablissementId = SecurityValidation.validateId(params.id);
 
   if (!etablissementId) {

@@ -40,6 +40,7 @@ interface RouteParams {
  * Returns a specific reclamation details
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await (arguments[1] as any).params; // Fix for standard params object
   try {
     // 1. Validate API Key
     if (!validateMobileApiKey(request)) {

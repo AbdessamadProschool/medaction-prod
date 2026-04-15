@@ -5,20 +5,21 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // GET - Récupérer une campagne
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id: idParam } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const id = safeParseInt(params.id, 0);
+    const id = safeParseInt(idParam, 0);
     const campagne = await prisma.campagne.findUnique({
       where: { id },
       include: {
@@ -46,6 +47,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // PUT - Modifier une campagne
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id: idParam } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -53,7 +55,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const userId = parseInt(session.user.id);
-    const id = safeParseInt(params.id, 0);
+    const id = safeParseInt(idParam, 0);
     const body = await request.json();
 
     // Vérifier propriété
@@ -109,6 +111,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE - Supprimer une campagne
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id: idParam } = await params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -116,7 +119,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     const userId = parseInt(session.user.id);
-    const id = safeParseInt(params.id, 0);
+    const id = safeParseInt(idParam, 0);
 
     // Vérifier propriété
     const campagne = await prisma.campagne.findUnique({

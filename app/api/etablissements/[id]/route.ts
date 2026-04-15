@@ -109,7 +109,6 @@ export const GET = withErrorHandler(async (req: NextRequest, { params }: RoutePa
 
 // PATCH - Modifier un établissement (ADMIN ou DELEGATION assignée)
 export const PATCH = withErrorHandler(async (req: NextRequest, { params }: RouteParams) => {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -166,7 +165,6 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
 
 // DELETE - Supprimer un établissement (ADMIN uniquement)
 export const DELETE = withErrorHandler(async (req: NextRequest, { params }: RouteParams) => {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {

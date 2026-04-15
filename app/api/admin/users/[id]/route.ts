@@ -19,7 +19,6 @@ const updateUserSchema = z.object({
 });
 
 export const GET = withPermission('users.read', withErrorHandler(async (request: NextRequest, { params }) => {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const id = safeParseInt(params.id, 0);
   const user = await prisma.user.findUnique({
     where: { id },

@@ -55,7 +55,6 @@ interface ArticleConnexe {
 }
 
 export default function ArticleDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const { id } = use(params);
   const router = useRouter();
   const t = useTranslations('articles_page');

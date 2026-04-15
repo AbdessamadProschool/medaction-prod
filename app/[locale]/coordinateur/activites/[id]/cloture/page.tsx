@@ -18,7 +18,6 @@ import {
 import { Link } from '@/i18n/navigation';
 
 export default function ClotureActivitePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const { id } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(false);

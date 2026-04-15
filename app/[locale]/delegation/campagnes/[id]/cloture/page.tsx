@@ -19,7 +19,6 @@ import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function ClotureCampagnePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const resolvedParams = use(params);
   const campagneId = resolvedParams.id;
   const t = useTranslations('delegation.dashboard.campaign_closure');

@@ -24,7 +24,6 @@ import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function EditActualitePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const { id } = use(params);
   const t = useTranslations('delegation.dashboard.news_creation');
   const router = useRouter();

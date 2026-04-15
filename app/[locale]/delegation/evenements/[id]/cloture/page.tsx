@@ -18,7 +18,6 @@ import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function ClotureEventPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await (arguments[0] as any).params; // Safety await
   const resolvedParams = use(params);
   const eventId = resolvedParams.id;
   const t = useTranslations('delegation.dashboard.event_closure');

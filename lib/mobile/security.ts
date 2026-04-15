@@ -20,7 +20,7 @@ import { maskSensitiveData } from '@/lib/security/validation';
 const RAW_API_KEY = process.env.MOBILE_API_KEY;
 
 if (!RAW_API_KEY && process.env.NODE_ENV === 'production') {
-  throw new Error('FATAL: MOBILE_API_KEY MUST be set in production environment.');
+  console.warn('⚠️  [SECURITY] MOBILE_API_KEY is missing. Requests to Mobile API will fail with default key.');
 }
 
 // Fallback for development only

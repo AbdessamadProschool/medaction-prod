@@ -45,6 +45,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Note: Prisma est déjà inclus dans standalone par next-intl si configuré, 
 # mais on garde une trace si besoin.
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 USER nextjs
 

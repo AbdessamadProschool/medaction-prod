@@ -16,7 +16,7 @@ case $COMMAND in
 
         # 1. Base de données
         echo "📊 Sauvegarde de la base de données..."
-        docker exec medaction-postgres pg_dump -U medaction medaction -F c > "$BACKUP_DIR/database.dump"
+        docker exec medaction-postgres pg_dump -h localhost -U medaction medaction -F c > "$BACKUP_DIR/database.dump"
         
         # 2. Uploads
         echo "📂 Sauvegarde des images..."

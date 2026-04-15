@@ -31,7 +31,8 @@ $files = @(
     "tsconfig.json",
     "middleware.ts",
     "postcss.config.mjs",
-    "tailwind.config.ts"
+    "tailwind.config.ts",
+    "scripts"
 )
 
 # On filtre les fichiers qui n'existent pas pour éviter les erreurs

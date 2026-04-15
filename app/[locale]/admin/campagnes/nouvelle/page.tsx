@@ -15,7 +15,8 @@ import {
   Palette,
   Loader2,
   ArrowLeft,
-  Send
+  Send,
+  Building2
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';

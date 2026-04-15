@@ -127,7 +127,7 @@ backups/
 # Misc Development
 # =============================================================================
 .agent/
-scripts/
+# scripts/ (Maintenu pour la maintenance serveur)
 *.config.ts
 !next.config.mjs
 !tailwind.config.ts

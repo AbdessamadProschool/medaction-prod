@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { MaintenanceBanner } from '@/components/admin/MaintenanceBanner';
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'super_admin' });
   

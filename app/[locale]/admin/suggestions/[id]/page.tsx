@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 
 export default function SuggestionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await (arguments[0] as any).params; // Safety await
   const { id } = use(params);
   const router = useRouter();
   const { data: session } = useSession();

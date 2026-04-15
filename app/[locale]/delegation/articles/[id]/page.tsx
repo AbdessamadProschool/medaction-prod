@@ -26,6 +26,7 @@ import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await (arguments[0] as any).params; // Safety await
   const { id } = use(params);
   const t = useTranslations('delegation.dashboard.articles.edit_page');
   const tCreate = useTranslations('delegation.dashboard.articles.creation');

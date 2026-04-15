@@ -36,7 +36,7 @@ const DEFAULT_SETTINGS = {
 // Schéma de validation pour la mise à jour des paramètres
 const updateSettingsSchema = z.object({
   section: z.enum(['general', 'notifications', 'security', 'email']),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
 });
 
 // Lire les paramètres

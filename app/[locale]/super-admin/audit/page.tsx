@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import AuditClient from './AuditClient';
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'audit_page' });
   
@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
   };
 }
 
-export default async function AuditPage({ params }: { params: { locale: string } }) {
+export default async function AuditPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   
   // Activer le rendu statique pour cette route localisée

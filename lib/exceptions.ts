@@ -55,3 +55,15 @@ export class ForbiddenError extends AppError {
     super(message, 'FORBIDDEN', 403);
   }
 }
+
+export class BadRequestError extends AppError {
+  constructor(message = 'Requête invalide', context?: Record<string, any>) {
+    super(message, 'VALIDATION_ERROR', 400, context);
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message = 'Conflit de données') {
+    super(message, 'CONFLICT', 409);
+  }
+}

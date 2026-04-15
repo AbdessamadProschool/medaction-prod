@@ -22,11 +22,12 @@ case $COMMAND in
         echo "📂 Sauvegarde des images..."
         docker exec medaction-app tar -czf - -C /app/public/uploads . > "$BACKUP_DIR/uploads.zip"
 
-        # 3. Miroir secondaire (si configuré)
-        # Adaptatif selon votre config Proxmox
-        if [ -d "/mnt/data/backups" ]; then
+        # 3. Miroir secondaire (si détecté)
+        if [ -d "/mnt/data" ]; then
             echo "💾 Miroir sur disque secondaire..."
+            mkdir -p "/mnt/data/backups"
             cp -r "$BACKUP_DIR" "/mnt/data/backups/"
+            echo "✅ Miroir créé sur /mnt/data/backups"
         fi
 
         echo "✅ Sauvegarde réussie dans : $BACKUP_DIR"

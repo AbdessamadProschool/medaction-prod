@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -148,19 +148,25 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
   }
 
   // Mise à jour
+  const { etablissementsGeres, communeResponsableId, ...userData } = data;
+  
   const updatedUser = await prisma.user.update({
     where: { id: userId },
     data: {
-      ...(data.nom && { nom: data.nom }),
-      ...(data.prenom && { prenom: data.prenom }),
-      ...(data.email && { email: data.email }),
-      ...(data.telephone !== undefined && { telephone: data.telephone }),
-      ...(data.photo !== undefined && { photo: data.photo }),
-      ...(data.isActive !== undefined && { isActive: data.isActive }),
-      ...(data.role && { role: data.role }),
-      ...(data.secteurResponsable !== undefined && { secteurResponsable: data.secteurResponsable }),
-      ...(data.communeResponsableId !== undefined && { communeResponsableId: data.communeResponsableId }),
-      ...(data.etablissementsGeres !== undefined && { etablissementsGeres: data.etablissementsGeres }),
+      ...(userData.nom && { nom: userData.nom }),
+      ...(userData.prenom && { prenom: userData.prenom }),
+      ...(userData.email && { email: userData.email }),
+      ...(userData.telephone !== undefined && { telephone: userData.telephone }),
+      ...(userData.photo !== undefined && { photo: userData.photo }),
+      ...(userData.isActive !== undefined && { isActive: userData.isActive }),
+      ...(userData.role && { role: userData.role }),
+      ...(userData.secteurResponsable !== undefined && { secteurResponsable: userData.secteurResponsable }),
+      ...(communeResponsableId !== undefined && { 
+        communeResponsable: communeResponsableId === null ? { disconnect: true } : { connect: { id: communeResponsableId } } 
+      }),
+      ...(etablissementsGeres !== undefined && { 
+        etablissementsGeres: { set: etablissementsGeres.map((id: number) => ({ id })) } 
+      }),
     },
     select: {
       id: true,

@@ -89,9 +89,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 
   if (existingEval) {
-    throw new ConflictError("Vous avez déjà évalué cet établissement. Vous pouvez modifier votre évaluation existante.", {
-      existingEvaluationId: existingEval.id
-    });
+    throw new ConflictError("Vous avez déjà évalué cet établissement. Vous pouvez modifier votre évaluation existante.");
   }
 
   // Date d'expiration (7 jours pour modification)

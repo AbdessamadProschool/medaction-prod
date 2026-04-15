@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -11,6 +11,7 @@ export const GET = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
 ) => {
+  const params = await _p;
   const id = SecurityValidation.validateId(params.id);
   if (!id) throw new ValidationError("Identifiant de suggestion invalide");
 
@@ -57,6 +58,7 @@ export const DELETE = withErrorHandler(async (
     throw new UnauthorizedError('Non authentifié');
   }
 
+  const params = await _p;
   const id = SecurityValidation.validateId(params.id);
   if (!id) throw new ValidationError("Identifiant de suggestion invalide");
   

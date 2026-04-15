@@ -162,12 +162,20 @@ export const POST = withPermission('users.create', withErrorHandler(async (reque
   // Hasher le mot de passe
   const hashedPassword = await hashPassword(data.motDePasse);
 
+  const { etablissementsGeres, communeResponsableId, ...userData } = data;
+
   // Créer l'utilisateur
   const newUser = await prisma.user.create({
     data: {
-      ...data,
+      ...userData,
       motDePasse: hashedPassword,
       isEmailVerifie: true, // Créé par admin = vérifié par défaut
+      ...(communeResponsableId && {
+        communeResponsable: { connect: { id: communeResponsableId } }
+      }),
+      ...(etablissementsGeres && {
+        etablissementsGeres: { connect: etablissementsGeres.map((id: number) => ({ id })) }
+      })
     },
     select: {
       id: true,

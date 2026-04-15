@@ -37,6 +37,13 @@
   ],
   "exclude": [
     "node_modules",
+    "__tests__",
+    "tests",
+    "cypress",
+    "e2e",
+    "scripts",
+    "prisma/seed*",
+    "prisma.config.ts",
     "*-pentest*.ts",
     "*-audit*.ts",
     "*-exploit*.ts",

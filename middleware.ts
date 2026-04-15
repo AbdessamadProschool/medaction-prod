@@ -276,7 +276,7 @@ function isMutationMethod(method: string): boolean {
 
 function getClientIP(request: NextRequest): string {
   // 1. Priorité absolue : l'IP détectée par la plateforme/runtime
-  if (request.ip) return request.ip;
+  if ((request as any).ip) return (request as any).ip;
 
   // 2. En production, on ne fait pas confiance aux en-têtes HTTP arbitraires
   // car ils peuvent être falsifiés par le client si le proxy n'est pas configuré pour les écraser.
@@ -441,7 +441,7 @@ const authMiddleware = withAuth(
     // 3. APIs MOBILES
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isMobileApiRoute(pathname)) {
-      const rateLimit = await checkRateLimit(clientIP, false);
+      const rateLimit = await checkRateLimit(clientIP, 'api');
       
       if (!rateLimit.allowed) {
         return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');

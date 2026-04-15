@@ -165,9 +165,9 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
         communeResponsable: communeResponsableId === null ? { disconnect: true } : { connect: { id: communeResponsableId } } 
       }),
       ...(etablissementsGeres !== undefined && { 
-        etablissementsGeres: { set: etablissementsGeres.map((id: number) => ({ id })) } 
+        etablissementsGeres: etablissementsGeres 
       }),
-    },
+    } as any,
     select: {
       id: true,
       email: true,

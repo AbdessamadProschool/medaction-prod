@@ -174,9 +174,9 @@ export const POST = withPermission('users.create', withErrorHandler(async (reque
         communeResponsable: { connect: { id: communeResponsableId } }
       }),
       ...(etablissementsGeres && {
-        etablissementsGeres: { connect: etablissementsGeres.map((id: number) => ({ id })) }
+        etablissementsGeres: etablissementsGeres
       })
-    },
+    } as any,
     select: {
       id: true,
       email: true,

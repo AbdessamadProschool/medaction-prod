@@ -36,7 +36,7 @@ async function checkData() {
               where: {
                   OR: [
                       { adresseComplete: { contains: 'lahra', mode: 'insensitive' } },
-                      { notes: { contains: 'lahra', mode: 'insensitive' } } // Assuming notes/remarques might capture it? Schema says 'remarques'
+                      { remarques: { contains: 'lahra', mode: 'insensitive' } } // Assuming notes/remarques might capture it? Schema says 'remarques'
                   ]
               },
               take: 3

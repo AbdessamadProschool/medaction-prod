@@ -47,6 +47,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
+# Créer les dossiers nécessaires à l'écriture runtime AVANT de changer d'utilisateur
+RUN mkdir -p /app/backups /app/public/uploads && \
+    chown -R nextjs:nodejs /app/backups /app/public/uploads && \
+    chmod -R 775 /app/backups /app/public/uploads
+
 USER nextjs
 
 EXPOSE 3000

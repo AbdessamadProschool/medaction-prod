@@ -39,11 +39,22 @@ else
 fi
 
 # 5. Relancer les containers
-echo -e "${YELLOW}[5/5] Lancement des conteneurs...${NC}"
+echo -e "${YELLOW}[5/6] Lancement des conteneurs...${NC}"
 docker compose -f docker-compose.prod.yml up -d
 
-# 5. Nettoyage
-echo -e "${YELLOW}[5/5] Nettoyage du système...${NC}"
+# 6. Synchronisation automatique du schéma de base de données
+echo -e "${YELLOW}[6/6] Synchronisation du schéma de base de données...${NC}"
+echo -e "${YELLOW}  ⏳ Attente que PostgreSQL soit prêt (15 secondes)...${NC}"
+sleep 15
+
+if docker exec medaction-postgres psql -U medaction -d medaction -f - < scripts/db-migrate.sql > /dev/null 2>&1; then
+    echo -e "${GREEN}  ✅ Schéma synchronisé avec succès.${NC}"
+else
+    echo -e "${YELLOW}  ⚠️  Synchronisation schéma : vérifiez les logs si nécessaire.${NC}"
+fi
+
+# Nettoyage
+echo -e "${YELLOW}Nettoyage du système...${NC}"
 docker image prune -f
 
 echo -e "${GREEN}=== ✅ Déploiement terminé avec succès ! ===${NC}"

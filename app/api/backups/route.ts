@@ -6,11 +6,9 @@ import { prisma } from '@/lib/db';
 import { writeFile, readdir, stat, unlink } from 'fs/promises';
 import { join } from 'path';
 
-// Dossier de stockage des backups (relatif à la racine du projet ou /tmp)
-// Note: En production (Vercel), on ne peut pas écrire sur le disque de façon persistante.
-// Mais ici c'est un environnement local/VPS selon le contexte utilisateur.
-// On va utiliser un dossier 'backups' à la racine pour l'instant.
-const BACKUP_DIR = join(process.cwd(), 'backups');
+// Dossier de stockage des backups
+// Utilise /tmp/medaction-backups pour garantir l'accès en écriture dans tous les environnements Docker
+const BACKUP_DIR = process.env.BACKUP_DIR || '/tmp/medaction-backups';
 
 // S'assurer que le dossier existe (nécessite Node.js fs)
 import fs from 'fs';

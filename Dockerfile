@@ -46,6 +46,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # mais on garde une trace si besoin.
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/locales ./locales
 
 # Créer les dossiers nécessaires à l'écriture runtime AVANT de changer d'utilisateur
 RUN mkdir -p /app/backups /app/public/uploads && \

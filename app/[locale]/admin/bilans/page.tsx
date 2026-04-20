@@ -137,31 +137,36 @@ export default function BilansPage() {
     setLoading(true);
     try {
       const [evtRes, actRes, campRes] = await Promise.all([
-        fetch('/api/admin/bilans/evenements'),
-        fetch('/api/admin/bilans/activites'),
-        fetch('/api/admin/bilans/campagnes'),
+        fetch('/api/admin/bilans/evenements').catch(() => null),
+        fetch('/api/admin/bilans/activites').catch(() => null),
+        fetch('/api/admin/bilans/campagnes').catch(() => null),
       ]);
 
-      if (evtRes.ok) {
-        const evtData = await evtRes.json();
-        const evts = evtData.data?.data || (Array.isArray(evtData.data) ? evtData.data : []);
-        setEvenements(evts);
+      if (evtRes?.ok) {
+        try {
+          const evtData = await evtRes.json();
+          const evts = evtData.data?.data || evtData.data;
+          setEvenements(Array.isArray(evts) ? evts : []);
+        } catch { setEvenements([]); }
       }
 
-      if (actRes.ok) {
-        const actData = await actRes.json();
-        const acts = actData.data?.data || (Array.isArray(actData.data) ? actData.data : []);
-        setActivites(acts);
+      if (actRes?.ok) {
+        try {
+          const actData = await actRes.json();
+          const acts = actData.data?.data || actData.data;
+          setActivites(Array.isArray(acts) ? acts : []);
+        } catch { setActivites([]); }
       }
 
-      if (campRes.ok) {
-        const campData = await campRes.json();
-        const camps = campData.data?.data || (Array.isArray(campData.data) ? campData.data : []);
-        setCampagnes(camps);
+      if (campRes?.ok) {
+        try {
+          const campData = await campRes.json();
+          const camps = campData.data?.data || campData.data;
+          setCampagnes(Array.isArray(camps) ? camps : []);
+        } catch { setCampagnes([]); }
       }
     } catch (error) {
       console.error('Erreur chargement bilans:', error);
-      toast.error('Erreur lors du chargement des bilans');
     } finally {
       setLoading(false);
     }

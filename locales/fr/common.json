@@ -2280,6 +2280,13 @@
         "cancel": "Annuler",
         "save": "Enregistrer l'établissement",
         "success": "Établissement créé avec succès"
+      },
+      "requests": {
+        "subtitle": "Centre d'arbitrage et de validation des données techniques",
+        "refresh": "Actualiser la liste",
+        "no_requests": "Aucune demande en attente",
+        "select_to_view": "Sélectionnez une demande pour voir les détails",
+        "can_validate_reject": "Vous pouvez valider ou rejeter les modifications proposées"
       }
     },
     "events": {

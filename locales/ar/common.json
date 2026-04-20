@@ -404,60 +404,59 @@
     },
     "articles_page": {
       "title": "المقالات",
-      "subtitle": "إدارة مقالات ومحتويات المنصة",
-      "create": "مقالة جديدة",
-      "create_title": "مقالة جديدة",
-      "create_subtitle": "اكتب مقالة لمنصة مدأكسيون.",
-      "back_list": "العودة إلى المقالات",
-      "search": "بحث عن مقالة...",
-      "filters": "تصفية",
-      "labels": {
-        "search_placeholder": "بحث...",
-        "all_statuses": "كل الحالات",
-        "reset": "إعادة تعيين",
-        "featured": "مميز",
-        "no_resume": "لا يوجد ملخص"
+      "subtitle": "إدارة المقالات والمحتوى",
+      "create": "مقال جديد",
+      "create_title": "مقال جديد",
+      "create_subtitle": "كتابة مقال جديد لمنصة مديونة",
+      "back_list": "العودة للمقالات",
+      "search": "بحث في المقالات...",
+      "filter_status": "الحالة",
+      "filter_sector": "القطاع",
+      "empty": {
+        "title": "لا توجد مقالات",
+        "create_first": "أنشئ مقالك الأول"
       },
+      "sections": {
+        "image": "صورة الغلاف",
+        "content": "المحتوى",
+        "category": "التصنيف",
+        "publication": "النشر"
+      },
+      "form": {
+        "title": "عنوان المقال",
+        "summary": "ملخص",
+        "content": "المحتوى الكامل",
+        "image": "صورة الغلاف",
+        "select_image": "اختر صورة",
+        "image_help": "PGN, JPG حتى 5 ميجابايت",
+        "category": "الفئة",
+        "select_category": "اختر فئة",
+        "tags": "الوسوم",
+        "tags_placeholder": "تنمية, ابتكار...",
+        "publish_now": "نشر الآن"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "save": "حفظ المقال",
+        "saving": "جاري الحفظ...",
+        "success": "تم حفظ المقال"
+      },
+      "table": {
+        "title": "العنوان",
+        "author": "الكاتب",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "actions": "إجراءات"
+      },
+      "page": "صفحة",
+      "limit": "حد",
+      "filters": "تصفية",
       "stats": {
         "total": "المجموع",
         "published": "منشورة",
         "pending": "قيد الانتظار",
         "views": "المشاهدات",
         "views_desc": "إجمالي مشاهدات المقالات"
-      },
-      "filters_labels": {
-        "all": "جميع المقالات",
-        "featured": "المميزة فقط"
-      },
-      "status": {
-        "draft": "مسودة",
-        "pending": "قيد الانتظار",
-        "published": "منشورة",
-        "rejected": "مرفوضة",
-        "archived": "مؤرشفة"
-      },
-      "empty": {
-        "title": "لا توجد مقالات",
-        "no_results": "لا توجد نتائج لبحثك",
-        "create_first": "قم بإنشاء أول مقالة"
-      },
-      "modal": {
-        "title": "تفاصيل المقالة",
-        "resume": "الملخص",
-        "views": "مشاهدة",
-        "likes": "إعجاب",
-        "author": "الكاتب",
-        "change_status": "تغيير الحالة",
-        "toggle_featured": "إضافة للمميز",
-        "toggle_featured_off": "إزالة من المميز",
-        "delete": "حذف المقالة"
-      },
-      "messages": {
-        "status_changed": "تم تغيير الحالة بنجاح",
-        "highlighted": "تمت الإضافة للمميز",
-        "unhighlighted": "تمت الإزالة من المميز",
-        "confirm_delete": "هل أنت متأكد من حذف هذه المقالة؟",
-        "deleted": "تم الحذف بنجاح"
       }
     },
     "dashboard": {
@@ -530,82 +529,92 @@
       "total": "المجموع"
     },
     "establishments": {
-      "create_title": "مؤسسة جديدة",
-      "create_subtitle": "يرجى ملء المعلومات لإنشاء مؤسسة جديدة",
       "back_list": "العودة إلى القائمة",
+      "create_title": "إضافة مؤسسة جديدة",
+      "create_subtitle": "ملء النموذج لإضافة مؤسسة",
       "sections": {
         "general": "التعريف والقطاع",
         "localization": "الموقع الجغرافي والجماعة",
-        "contact": "الاتصال والويب",
-        "infra": "البنية التحتية والمعدات",
-        "staff": "الموارد البشرية والطاقة الاستيعابية",
-        "education": "المعطيات التربوية",
+        "contact": "الاتصال والمواقع",
+        "infra": "البنية التحتية والتجهيزات",
+        "staff": "الموارد البشرية والقدرة",
+        "education": "البيانات البيداغوجية",
         "financial": "التمويل والمشاريع",
         "description": "وصف مفصل"
       },
       "form": {
         "name": "اسم المؤسسة",
         "nameArabe": "الاسم (بالعربية)",
-        "code": "رمز التعريف",
+        "code": "الرمز",
         "sector": "القطاع",
-        "nature": "الطبيعة (عام/خاص)",
+        "nature": "النوع (عام/خاص)",
         "manager": "اسم المسؤول",
         "infra_status": "حالة البنية التحتية",
         "capacity": "الطاقة الاستيعابية",
-        "commune": "جماعة الانتماء",
-        "address": "العنوان الكامل",
-        "latitude": "خط العرض (GPS)",
-        "longitude": "خط الطول (GPS)",
+        "commune": "الجماعة",
+        "select_commune": "اختر الجماعة",
+        "address": "العنوان",
+        "latitude": "خط العرض",
+        "longitude": "خط الطول",
         "email": "البريد الإلكتروني",
         "phone": "الهاتف",
         "website": "الموقع الإلكتروني",
-        "description_placeholder": "صف المؤسسة، مهمتها، خدماتها...",
-        "publish_now": "النشر فوراً على بوابة المواطن",
-        "select_commune": "اختر جماعة",
+        "description_placeholder": "أدخل وصفاً للمؤسسة...",
+        "publish_now": "نشر الآن",
         "altitude": "الارتفاع (م)",
         "quartier": "الحي / الدوار",
         "adresse_complete": "العنوان الكامل",
-        "tutelle": "الوزارة / الوصاية",
+        "tutelle": "وزارة الوصاية",
         "statutJuridique": "الوضع القانوني",
-        "gestionnaire": "المدبر",
+        "gestionnaire": "المسير",
         "anneeCreation": "سنة التأسيس",
         "anneeOuverture": "سنة الافتتاح",
         "statutFonctionnel": "الحالة التشغيلية",
+        "statut_fonctionnel": "الحالة التشغيلية",
         "surfaceTotale": "المساحة الإجمالية (م²)",
-        "disponibiliteEau": "الولوج للماء الصالح للشرب",
+        "disponibiliteEau": "الربط بالماء الصالح للشرب",
         "disponibiliteElectricite": "الربط بالكهرباء",
         "connexionInternet": "الاتصال بالإنترنت",
-        "nombreSalles": "العدد الإجمالي للحجرات",
-        "effectifTotal": "إجمالي العاملين",
-        "nombrePersonnel": "عدد الموظفين",
+        "nombreSalles": "عدد القاعات",
+        "effectifTotal": "العدد الإجمالي",
+        "nombrePersonnel": "عدد المستخدمين",
         "cadre": "نوع الإطار",
         "capaciteAccueil": "الطاقة الاستيعابية",
         "annexe": "الملحقة الإدارية",
         "typeEtab": "نوع المؤسسة",
-        "cycle": "السلك التعليمي",
-        "nbClasses": "عدد الأقسام",
-        "nbEnseignants": "عدد الأساتذة",
+        "cycle": "سلك التعليم",
+        "nbClasses": "عدد الفصول",
+        "nbEnseignants": "عدد المدرسين",
         "nbCadres": "عدد الأطر الإدارية",
-        "elevesPrescolaire": "التلاميذ (التعليم الأولي)",
+        "elevesPrescolaire": "تلاميذ التعليم الأولي",
         "elevesTotal": "العدد الإجمالي للتلاميذ",
         "nouveauxInscrits": "المسجلون الجدد",
         "tauxReussite": "نسبة النجاح (%)",
         "sourcesFinancement": "مصادر التمويل",
         "budgetAnnuel": "الميزانية السنوية (درهم)",
-        "partenaires": "الشركاء / المانحون"
+        "partenaires": "الشركاء / المانحون",
+        "voie_acces": "مسلك الولوج",
+        "transport_public": "النقل العمومي",
+        "distance_chef_lieu": "المسافة عن مركز الجماعة (كلم)",
+        "elevesFilles": "مجموع الإناث",
+        "elevesPrescolaireFilles": "إناث التعليم الأولي",
+        "nouveauxInscritsFilles": "إناث المسجلين الجدد",
+        "fillesDerniereAnnee": "إناث السنة الختامية",
+        "remarques": "ملاحظات",
+        "besoinsUrgents": "احتياجات مستعجلة",
+        "projetsFuturs": "مشاريع مستقبلية"
       },
       "actions": {
         "cancel": "إلغاء",
-        "save": "تسجيل المؤسسة",
-        "success": "تم إنشاء المؤسسة بنجاح"
+        "save": "حفظ",
+        "success": "تم الحفظ بنجاح"
       },
       "requests": {
-        "title": "مركز تحكيم المؤسسات",
-        "subtitle": "التحكيم والمصادقة على التراث الإقليمي",
-        "refresh": "تحديث",
-        "no_requests": "لا توجد طلبات في الانتظار",
-        "select_to_view": "اختر طلباً من القائمة لفحصه",
-        "can_validate_reject": "يمكنك قبول أو رفض التعديلات بعد الفحص"
+        "subtitle": "مركز تحكيم وفض نزاعات البيانات التقنية للمؤسسات",
+        "refresh": "تحديث البيانات",
+        "no_requests": "لا توجد طلبات معلقة",
+        "select_to_view": "اختر طلباً من القائمة لعرض التفاصيل",
+        "can_validate_reject": "يمكنك قبول أو رفض التعديلات المقترحة"
       }
     },
     "header": {
@@ -1266,88 +1275,6 @@
         "reset_password_success": "تم تغيير كلمة المرور"
       }
     },
-    "establishments": {
-      "back_list": "العودة إلى القائمة",
-      "create_title": "إضافة مؤسسة جديدة",
-      "create_subtitle": "ملء النموذج لإضافة مؤسسة",
-      "sections": {
-        "general": "التعريف والقطاع",
-        "localization": "الموقع الجغرافي والجماعة",
-        "contact": "الاتصال والمواقع",
-        "infra": "البنية التحتية والتجهيزات",
-        "staff": "الموارد البشرية والقدرة",
-        "education": "البيانات البيداغوجية",
-        "financial": "التمويل والمشاريع",
-        "description": "وصف مفصل"
-      },
-      "form": {
-        "name": "اسم المؤسسة",
-        "nameArabe": "الاسم (بالعربية)",
-        "code": "الرمز",
-        "sector": "القطاع",
-        "nature": "النوع (عام/خاص)",
-        "manager": "اسم المسؤول",
-        "infra_status": "حالة البنية التحتية",
-        "capacity": "الطاقة الاستيعابية",
-        "commune": "الجماعة",
-        "select_commune": "اختر الجماعة",
-        "address": "العنوان",
-        "latitude": "خط العرض",
-        "longitude": "خط الطول",
-        "email": "البريد الإلكتروني",
-        "phone": "الهاتف",
-        "website": "الموقع الإلكتروني",
-        "description_placeholder": "أدخل وصفاً للمؤسسة...",
-        "publish_now": "نشر الآن",
-        "altitude": "الارتفاع (م)",
-        "quartier": "الحي / الدوار",
-        "adresse_complete": "العنوان الكامل",
-        "tutelle": "وزارة الوصاية",
-        "statutJuridique": "الوضع القانوني",
-        "gestionnaire": "المسير",
-        "anneeCreation": "سنة التأسيس",
-        "anneeOuverture": "سنة الافتتاح",
-        "statutFonctionnel": "الحالة التشغيلية",
-        "statut_fonctionnel": "الحالة التشغيلية",
-        "surfaceTotale": "المساحة الإجمالية (م²)",
-        "disponibiliteEau": "الربط بالماء الصالح للشرب",
-        "disponibiliteElectricite": "الربط بالكهرباء",
-        "connexionInternet": "الاتصال بالإنترنت",
-        "nombreSalles": "عدد القاعات",
-        "effectifTotal": "العدد الإجمالي",
-        "nombrePersonnel": "عدد المستخدمين",
-        "cadre": "نوع الإطار",
-        "capaciteAccueil": "الطاقة الاستيعابية",
-        "annexe": "الملحقة الإدارية",
-        "typeEtab": "نوع المؤسسة",
-        "cycle": "سلك التعليم",
-        "nbClasses": "عدد الفصول",
-        "nbEnseignants": "عدد المدرسين",
-        "nbCadres": "عدد الأطر الإدارية",
-        "elevesPrescolaire": "تلاميذ التعليم الأولي",
-        "elevesTotal": "العدد الإجمالي للتلاميذ",
-        "nouveauxInscrits": "المسجلون الجدد",
-        "tauxReussite": "نسبة النجاح (%)",
-        "sourcesFinancement": "مصادر التمويل",
-        "budgetAnnuel": "الميزانية السنوية (درهم)",
-        "partenaires": "الشركاء / المانحون",
-        "voie_acces": "مسلك الولوج",
-        "transport_public": "النقل العمومي",
-        "distance_chef_lieu": "المسافة عن مركز الجماعة (كلم)",
-        "elevesFilles": "مجموع الإناث",
-        "elevesPrescolaireFilles": "إناث التعليم الأولي",
-        "nouveauxInscritsFilles": "إناث المسجلين الجدد",
-        "fillesDerniereAnnee": "إناث السنة الختامية",
-        "remarques": "ملاحظات",
-        "besoinsUrgents": "احتياجات مستعجلة",
-        "projetsFuturs": "مشاريع مستقبلية"
-      },
-      "actions": {
-        "cancel": "إلغاء",
-        "save": "حفظ",
-        "success": "تم الحفظ بنجاح"
-      }
-    },
     "news": {
       "back_list": "العودة إلى القائمة",
       "create_title": "إضافة خبر جديد",
@@ -1403,55 +1330,6 @@
         "create_success": "تم إنشاء الأخبار بنجاح"
       }
     },
-    "articles_page": {
-      "title": "المقالات",
-      "subtitle": "إدارة المقالات والمحتوى",
-      "create": "مقال جديد",
-      "create_title": "مقال جديد",
-      "create_subtitle": "كتابة مقال جديد لمنصة مديونة",
-      "back_list": "العودة للمقالات",
-      "search": "بحث في المقالات...",
-      "filter_status": "الحالة",
-      "filter_sector": "القطاع",
-      "empty": {
-        "title": "لا توجد مقالات",
-        "create_first": "أنشئ مقالك الأول"
-      },
-      "sections": {
-        "image": "صورة الغلاف",
-        "content": "المحتوى",
-        "category": "التصنيف",
-        "publication": "النشر"
-      },
-      "form": {
-        "title": "عنوان المقال",
-        "summary": "ملخص",
-        "content": "المحتوى الكامل",
-        "image": "صورة الغلاف",
-        "select_image": "اختر صورة",
-        "image_help": "PGN, JPG حتى 5 ميجابايت",
-        "category": "الفئة",
-        "select_category": "اختر فئة",
-        "tags": "الوسوم",
-        "tags_placeholder": "تنمية, ابتكار...",
-        "publish_now": "نشر الآن"
-      },
-      "actions": {
-        "cancel": "إلغاء",
-        "save": "حفظ المقال",
-        "saving": "جاري الحفظ...",
-        "success": "تم حفظ المقال"
-      },
-      "table": {
-        "title": "العنوان",
-        "author": "الكاتب",
-        "status": "الحالة",
-        "date": "التاريخ",
-        "actions": "إجراءات"
-      },
-      "page": "صفحة",
-      "limit": "حد"
-    },
     "events": {
       "new_title": "حدث جديد",
       "new_subtitle": "قم بإنشاء حدث كامل لإعلام وتعبئة المواطنين.",
@@ -1506,6 +1384,21 @@
       "date_range_to": "إلى",
       "excel": "تصدير Excel",
       "no_data": "لا توجد بيانات متاحة لهذه الفترة"
+    },
+    "backups": {
+      "title": "نسخ النظام الاحتياطية",
+      "subtitle": "تاريخ نقاط استعادة قاعدة البيانات الخاصة بك.",
+      "create": "نسخة جديدة",
+      "restore": "استعادة",
+      "empty_title": "لا توجد نسخ احتياطية",
+      "empty_desc": "لم تقم بإنشاء أي نقاط استعادة للنظام بعد.",
+      "create_first": "إنشاء أول نسخة احتياطية",
+      "success_create": "تم إنشاء النسخة الاحتياطية بنجاح",
+      "success_restore": "تمت استعادة النظام بنجاح",
+      "messages": {
+        "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
+        "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه."
+      }
     }
   },
   "super_admin": {

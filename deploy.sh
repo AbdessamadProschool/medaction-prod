@@ -57,10 +57,15 @@ echo -e "${YELLOW}[6/6] Synchronisation du schéma de base de données...${NC}"
 echo -e "${YELLOW}  ⏳ Attente que PostgreSQL soit prêt (15 secondes)...${NC}"
 sleep 15
 
-if docker exec medaction-postgres psql -U medaction -d medaction -f - < scripts/db-migrate.sql > /dev/null 2>&1; then
-    echo -e "${GREEN}  ✅ Schéma synchronisé avec succès.${NC}"
+if docker exec medaction-app npx prisma db push --accept-data-loss > /dev/null 2>&1; then
+    echo -e "${GREEN}  ✅ Schéma Prisma synchronisé avec succès.${NC}"
 else
-    echo -e "${YELLOW}  ⚠️  Synchronisation schéma : vérifiez les logs si nécessaire.${NC}"
+    echo -e "${YELLOW}  ⚠️  Synchronisation schéma : vérifiez les logs.${NC}"
+fi
+
+# Exécution des scripts additionnels (données initiales) si présents
+if docker exec medaction-postgres psql -U medaction -d medaction -f - < scripts/db-migrate.sql > /dev/null 2>&1; then
+    echo -e "${GREEN}  ✅ Données de migration SQL appliquées.${NC}"
 fi
 
 # Nettoyage

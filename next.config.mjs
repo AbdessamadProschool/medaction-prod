@@ -63,7 +63,7 @@ const nextConfig = {
       { protocol: 'http', hostname: '192.168.1.83' },
       { protocol: 'https', hostname: 'bo.provincemediouna.ma' },
     ],
-    unoptimized: process.env.NODE_ENV === 'development',
+    unoptimized: true,
   },
   async headers() {
     return [

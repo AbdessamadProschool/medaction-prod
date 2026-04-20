@@ -144,17 +144,20 @@ export default function BilansPage() {
 
       if (evtRes.ok) {
         const evtData = await evtRes.json();
-        setEvenements(evtData.data || []);
+        const evts = evtData.data?.data || (Array.isArray(evtData.data) ? evtData.data : []);
+        setEvenements(evts);
       }
 
       if (actRes.ok) {
         const actData = await actRes.json();
-        setActivites(actData.data || []);
+        const acts = actData.data?.data || (Array.isArray(actData.data) ? actData.data : []);
+        setActivites(acts);
       }
 
       if (campRes.ok) {
         const campData = await campRes.json();
-        setCampagnes(campData.data || []);
+        const camps = campData.data?.data || (Array.isArray(campData.data) ? campData.data : []);
+        setCampagnes(camps);
       }
     } catch (error) {
       console.error('Erreur chargement bilans:', error);

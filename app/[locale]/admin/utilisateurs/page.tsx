@@ -102,7 +102,7 @@ export default function UsersPage() {
       const res = await fetch(`/api/users?${params}`);
       if (res.ok) {
         const data = await res.json();
-        setUsers(data.users);
+        setUsers(data.data || []);
         setPagination(prev => ({
           ...prev,
           total: data.pagination.total,

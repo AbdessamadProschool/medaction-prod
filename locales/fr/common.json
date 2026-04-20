@@ -1393,7 +1393,8 @@
       "login_rating": "Se connecter pour noter",
       "checking": "Chargement...",
       "subscribed": "Abonné",
-      "subscribed_full": "Abonné"
+      "subscribed_full": "Abonné",
+      "request_edit": "Demander une modification"
     },
     "notifications_hint": "Recevez des notifications pour les événements et actus",
     "tabs": {

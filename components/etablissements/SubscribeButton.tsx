@@ -46,7 +46,9 @@ export default function SubscribeButton({
       const res = await fetch(`/api/users/me/abonnements`);
       if (res.ok) {
         const data = await res.json();
-        const found = data.data?.find((a: Abonnement) => a.etablissementId === etablissementId);
+        const found = Array.isArray(data.data) 
+          ? data.data.find((a: Abonnement) => a.etablissementId === etablissementId)
+          : null;
         setAbonnement(found || null);
       }
     } catch (error) {

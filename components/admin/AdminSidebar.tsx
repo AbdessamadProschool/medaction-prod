@@ -126,15 +126,16 @@ export default function AdminSidebar() {
         const res = await fetch('/api/admin/pending-counts');
         if (res.ok) {
           const data = await res.json();
+          const counts = data?.data || data || {};
           setBadges({
-            reclamations: data.reclamations || 0,
-            suggestions: data.suggestions || 0,
-            activites: data.activites || 0,
-            validation: data.validation || 0,
-            evenements: data.evenements || 0,
-            utilisateurs: data.utilisateurs || 0,
-            messages: data.messages || 0,
-            etablissementsRequests: data.etablissementRequests || 0,
+            reclamations: counts.reclamations || 0,
+            suggestions: counts.suggestions || 0,
+            activites: counts.activites || 0,
+            validation: counts.validation || 0,
+            evenements: counts.evenements || 0,
+            utilisateurs: counts.utilisateurs || 0,
+            messages: counts.messages || 0,
+            etablissementsRequests: counts.etablissementRequests || counts.etablissementsRequests || 0,
           });
         }
       } catch (error) {

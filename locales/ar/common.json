@@ -401,6 +401,60 @@
       "help": "المساعدة والدعم",
       "logout": "تسجيل الخروج"
     },
+    "articles_page": {
+      "title": "المقالات",
+      "subtitle": "إدارة مقالات ومحتويات المنصة",
+      "create": "مقالة جديدة",
+      "create_title": "مقالة جديدة",
+      "create_subtitle": "اكتب مقالة لمنصة مدأكسيون.",
+      "back_list": "العودة إلى المقالات",
+      "search": "بحث عن مقالة...",
+      "filters": "تصفية",
+      "labels": {
+        "search_placeholder": "بحث...",
+        "all_statuses": "كل الحالات",
+        "reset": "إعادة تعيين",
+        "featured": "مميز",
+        "no_resume": "لا يوجد ملخص"
+      },
+      "stats": {
+        "total": "المجموع",
+        "published": "منشورة",
+        "pending": "قيد الانتظار",
+        "views": "المشاهدات"
+      },
+      "status": {
+        "draft": "مسودة",
+        "pending": "قيد الانتظار",
+        "published": "منشورة",
+        "rejected": "مرفوضة",
+        "archived": "مؤرشفة"
+      },
+      "empty": {
+        "title": "لا توجد مقالات",
+        "no_results": "لا توجد نتائج لبحثك",
+        "create_first": "قم بإنشاء أول مقالة"
+      },
+      "modal": {
+        "title": "تفاصيل المقالة",
+        "resume": "الملخص",
+        "views": "مشاهدة",
+        "likes": "إعجاب",
+        "author": "الكاتب",
+        "change_status": "تغيير الحالة",
+        "toggle_featured": "إضافة للمميز",
+        "toggle_featured_off": "إزالة من المميز",
+        "delete": "حذف المقالة"
+      },
+      "messages": {
+        "status_changed": "تم تغيير الحالة بنجاح",
+        "highlighted": "تمت الإضافة للمميز",
+        "unhighlighted": "تمت الإزالة من المميز",
+        "confirm_delete": "هل أنت متأكد من حذف هذه المقالة؟",
+        "deleted": "تم الحذف بنجاح"
+      }
+    },
+    },
     "dashboard": {
       "header": {
         "title": "لوحة القيادة",

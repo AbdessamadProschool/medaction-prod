@@ -85,13 +85,13 @@ export default function AdminDemandesPage() {
             {t('admin_validation.title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Arbitrage et validation du patrimoine provincial
+            {te('requests.subtitle')}
           </p>
         </div>
         <div className="flex gap-2">
            <Button variant="outline" onClick={fetchDemandes}>
              <History size={18} className="mr-2" />
-             Rafraîchir
+             {te('requests.refresh')}
            </Button>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function AdminDemandesPage() {
           ) : demandes.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 p-12 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
               <FileText className="mx-auto text-gray-300 mb-4" size={48} />
-              <p className="text-gray-500">Aucune demande en attente</p>
+              <p className="text-gray-500">{te('requests.no_requests')}</p>
             </div>
           ) : (
             demandes.map(d => (
@@ -346,8 +346,8 @@ export default function AdminDemandesPage() {
           ) : (
             <div className="h-full flex flex-col items-center justify-center bg-gray-50/50 dark:bg-gray-900/20 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 p-12 text-center text-gray-400">
                <Building2 size={64} strokeWidth={1} className="mb-6 opacity-20" />
-               <p className="text-lg">Sélectionnez une demande dans la liste pour l'examiner.</p>
-               <p className="text-sm mt-1">Vous pourrez valider ou rejeter les modifications après examen.</p>
+               <p className="text-lg">{te('requests.select_to_view')}</p>
+               <p className="text-sm mt-1">{te('requests.can_validate_reject')}</p>
             </div>
           )}
         </div>

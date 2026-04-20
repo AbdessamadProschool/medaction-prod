@@ -27,7 +27,7 @@ const STATUTS_LIST = ['BROUILLON', 'ACTIVE', 'TERMINEE'] as const;
 
 export default function AdminNouvelleCampagnePage() {
   const router = useRouter();
-  const t = useTranslations('admin_campaigns.new');
+  const t = useTranslations('admin.campagnes');
   const [loading, setLoading] = useState(false);
   
   // Image state
@@ -373,7 +373,7 @@ export default function AdminNouvelleCampagnePage() {
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-blue-500" />
-                Options d'organisation
+                {t('form.org_options')}
               </h3>
               
               <div className="space-y-4">
@@ -386,8 +386,8 @@ export default function AdminNouvelleCampagnePage() {
                     />
                   </div>
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">Organisée par la Province</span>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">La campagne sera directement rattachée à la Province de Médiouna</p>
+                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">{t('form.organized_by_province')}</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('form.organized_by_province_desc')}</p>
                   </div>
                 </label>
 
@@ -400,8 +400,8 @@ export default function AdminNouvelleCampagnePage() {
                     />
                   </div>
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">Sous le couvert de la Province</span>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Mention "Sous le couvert de Monsieur le Gouverneur" affichée</p>
+                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">{t('form.under_cover_province')}</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('form.under_cover_province_desc')}</p>
                   </div>
                 </label>
               </div>

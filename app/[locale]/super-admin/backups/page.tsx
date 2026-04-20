@@ -30,7 +30,7 @@ interface BackupFile {
 }
 
 export default function SuperAdminBackupsPage() {
-  const t = useTranslations('super_admin.backups');
+  const t = useTranslations('admin.backups');
   const locale = useLocale();
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -279,7 +279,7 @@ export default function SuperAdminBackupsPage() {
                   className={`flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-sm font-medium transition-all cursor-pointer w-full sm:w-auto ${restoring ? 'opacity-50 pointer-events-none' : ''}`}
                 >
                   {restoring ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
-                  {t('restore_btn')}
+                  {t('restore')}
                 </label>
              </div>
 
@@ -289,7 +289,7 @@ export default function SuperAdminBackupsPage() {
               className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 hover:shadow-lg disabled:opacity-50 font-medium transition-all transform active:scale-95 w-full sm:w-auto"
             >
               {creating ? <Loader2 size={18} className="animate-spin" /> : <Plus size={18} />}
-              {t('create_btn')}
+              {t('create')}
             </button>
           </div>
         </motion.div>
@@ -374,7 +374,7 @@ export default function SuperAdminBackupsPage() {
                     onClick={handleCreateBackup}
                     className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
                 >
-                    Créer ma première sauvegarde
+                    {t('create_first')}
                 </button>
               </motion.div>
             )}

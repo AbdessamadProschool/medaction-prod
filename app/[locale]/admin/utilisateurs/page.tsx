@@ -316,10 +316,10 @@ export default function UsersPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
-                          {user.prenom[0]}{user.nom[0]}
+                          {(user.prenom?.[0] || '')}{(user.nom?.[0] || '') || 'U'}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-white">{user.prenom} {user.nom}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{user.prenom || ''} {user.nom || ''}</p>
                           <p className="text-sm text-gray-500">{user.email}</p>
                         </div>
                       </div>

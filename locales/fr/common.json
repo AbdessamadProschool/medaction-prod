@@ -2463,7 +2463,8 @@
           "create_error": "Erreur de création",
           "server_error": "Erreur serveur"
         },
-        "success": "Utilisateur {name} créé"
+        "success": "Utilisateur {name} créé",
+        "loading_establishments": "Chargement des établissements..."
       },
       "edit_role_modal": {
         "title": "Modifier le Rôle",

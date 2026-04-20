@@ -14,7 +14,8 @@ const createUserSchema = z.object({
   email: SecurityValidation.schemas.email,
   telephone: z.string()
     .regex(/^(\+212|0)[5-7]\d{8}$/, "Numéro de téléphone marocain invalide")
-    .optional(),
+    .optional()
+    .nullable(),
   motDePasse: SecurityValidation.schemas.password,
   nom: SecurityValidation.schemas.name,
   prenom: SecurityValidation.schemas.name,
@@ -22,7 +23,7 @@ const createUserSchema = z.object({
   role: z.string().default('CITOYEN'),
   isActive: z.boolean().default(true),
   secteurResponsable: z.string().optional(),
-  communeResponsableId: SecurityValidation.schemas.id.optional(),
+  communeResponsableId: SecurityValidation.schemas.id.optional().nullable(),
   etablissementsGeres: z.array(z.number().int()).optional(),
 });
 
@@ -92,6 +93,8 @@ export const GET = withPermission('users.read', withErrorHandler(async (request:
           select: {
             evaluations: true,
             reclamationsCreees: true,
+            evenementsCrees: true,
+            actualiteCreees: true,
           }
         }
       },

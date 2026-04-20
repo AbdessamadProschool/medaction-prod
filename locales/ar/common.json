@@ -1227,7 +1227,8 @@
           "create_error": "خطأ في الإنشاء",
           "server_error": "خطأ في الخادم"
         },
-        "success": "تم إنشاء المستخدم {name}"
+        "success": "تم إنشاء المستخدم {name}",
+        "loading_establishments": "جاري التحميل..."
       },
       "edit_role_modal": {
         "title": "تعديل الدور",

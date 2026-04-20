@@ -2169,7 +2169,32 @@
       "last_login": "آخر تسجيل دخول",
       "first_login": "أول تسجيل دخول"
     },
+    "backups": {
+      "title": "نسخ النظام الاحتياطية",
+      "subtitle": "تاريخ نقاط استعادة قاعدة البيانات الخاصة بك.",
+      "create": "نسخة جديدة",
+      "restore": "استعادة",
+      "empty_title": "لا توجد نسخ احتياطية",
+      "empty_desc": "لم تقم بإنشاء أي نقاط استعادة للنظام بعد.",
+      "create_first": "إنشاء أول نسخة احتياطية",
+      "success_create": "تم إنشاء النسخة الاحتياطية بنجاح",
+      "success_restore": "تمت استعادة النظام بنجاح",
+      "messages": {
+        "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
+        "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه."
+      }
+    },
     "users_page": {
+      "page_title": "إدارة المستخدمين",
+      "total_users": "{count} مستخدمين",
+      "export": "تصدير",
+      "add": "إضافة",
+      "search_placeholder": "بحث...",
+      "filter_roles_all": "جميع الأدوار",
+      "filter_status_all": "جميع الحالات",
+      "reset_filters": "إعادة ضبط",
+      "no_users": "لا يوجد مستخدمون",
+      "pagination": "صفحة {start}-{end} من {total}",
       "roles": {
         "CITOYEN": "مواطن",
         "DELEGATION": "مندوبية",
@@ -2178,6 +2203,112 @@
         "ADMIN": "مسؤول",
         "SUPER_ADMIN": "مسؤول عام",
         "GOUVERNEUR": "عامل"
+      },
+      "role_descriptions": {
+        "CITOYEN": "وصول مواطن قياسي",
+        "DELEGATION": "ممثل إقليمي",
+        "AUTORITE_LOCALE": "إدارة ترابية",
+        "COORDINATEUR_ACTIVITES": "إشراف ميداني",
+        "ADMIN": "إدارة تقنية",
+        "SUPER_ADMIN": "وصول كامل",
+        "GOUVERNEUR": "إشراف شامل"
+      },
+      "sectors": {
+        "EDUCATION": "تعليم",
+        "SANTE": "صحة",
+        "SPORT": "رياضة",
+        "SOCIAL": "اجتماعي",
+        "CULTUREL": "ثقافي",
+        "AUTRE": "آخر"
+      },
+      "table": {
+        "user": "المستخدم",
+        "role": "الدور",
+        "status": "الحالة",
+        "sector_establishment": "القطاع / المؤسسة",
+        "activity": "النشاط",
+        "actions": "إجراءات",
+        "actions_count": "{count} إجراءات",
+        "estab_count": "{count} مؤسسات"
+      },
+      "statuses": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "activated": "مفعل",
+        "deactivated": "معطل"
+      },
+      "actions": {
+        "edit_role": "تعديل الدور",
+        "reset_password": "إعادة ضبط كلمة المرور",
+        "deactivate": "تعطيل",
+        "activate": "تفعيل",
+        "delete": "حذف"
+      },
+      "messages": {
+        "error": "حدث خطأ",
+        "status_changed": "الحالة {status}",
+        "delete_confirm": "حذف {name} ؟",
+        "user_deleted": "تم حذف المستخدم",
+        "reset_password_confirm": "إعادة التعيين لـ {name} ؟",
+        "reset_password_alert": "كلمة المرور الجديدة: {password}",
+        "reset_password_success": "تم إعادة التعيين"
+      },
+      "create_modal": {
+        "title": "مستخدم جديد",
+        "subtitle": "إنشاء حساب",
+        "fields": {
+          "first_name": "الاسم الشخصي",
+          "last_name": "الاسم العائلي",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "password": "كلمة المرور",
+          "confirm_password": "تأكيد",
+          "role": "الدور",
+          "sector": "القطاع",
+          "commune": "الجماعة",
+          "establishments": "المؤسسات ({count})",
+          "active_account": "حساب نشط"
+        },
+        "placeholders": {
+          "first_name": "الاسم الشخصي",
+          "last_name": "الاسم العائلي",
+          "email": "email@example.com",
+          "phone": "06XXXXXXXX",
+          "password": "كلمة المرور"
+        },
+        "helpers": {
+          "commune_helper": "الجماعة التابعة",
+          "establishments_helper": "المؤسسات المدارة (متعددة الخيارات)"
+        },
+        "select_option": {
+          "sector": "اختر قطاعا",
+          "commune": "اختر جماعة"
+        },
+        "cancel_btn": "إلغاء",
+        "submit_btn": "إنشاء",
+        "errors": {
+          "password_mismatch": "كلمتا المرور غير متطابقتين",
+          "password_length": "6 أحرف كحد أدنى",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "المؤسسة مطلوبة",
+          "create_error": "خطأ في الإنشاء",
+          "server_error": "خطأ في الخادم"
+        },
+        "success": "تم إنشاء حساب {name}"
+      },
+      "edit_role_modal": {
+        "title": "تعديل الدور",
+        "current_role": "الدور الحالي",
+        "new_role": "الدور الجديد",
+        "errors": {
+          "edit_error": "خطأ في التعديل",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "المؤسسة مطلوبة",
+          "server_error": "خطأ في الخادم"
+        },
+        "loading": "جاري التحميل..."
       }
     }
   },
@@ -4954,7 +5085,12 @@
         "image_hint": "PNG, JPG حتى 5 ميجابايت",
         "cancel": "إلغاء",
         "create": "إنشاء الحملة",
-        "creating": "جاري الإنشاء..."
+        "creating": "جاري الإنشاء...",
+        "org_options": "خيارات التنظيم",
+        "organized_by_province": "منظمة من قبل الإقليم",
+        "organized_by_province_desc": "ستكون الحملة مرتبطة مباشرة بإقليم مديونة",
+        "under_cover_province": "تحت غطاء الإقليم",
+        "under_cover_province_desc": "ظهور عبارة 'تحت غطاء السيد العامل'"
       },
       "types": {
         "SOLIDARITE": "تضامن",
@@ -5642,35 +5778,6 @@
       "diff": "التعديلات المطلوبة",
       "applied_success": "تم تطبيق التعديلات على المؤسسة بنجاح.",
       "rejected_success": "تم رفض الطلب بنجاح."
-    },
-    "backups": {
-      "title": "نسخ النظام الاحتياطية",
-      "subtitle": "تاريخ نقاط استعادة قاعدة البيانات الخاصة بك.",
-      "create": "نسخة جديدة",
-      "restore": "استعادة",
-      "empty_title": "لا توجد نسخ احتياطية",
-      "empty_desc": "لم تقم بإنشاء أي نقاط استعادة للنظام بعد.",
-      "create_first": "إنشاء أول نسخة احتياطية",
-      "success_create": "تم إنشاء النسخة الاحتياطية بنجاح",
-      "success_restore": "تمت استعادة النظام بنجاح"
-    },
-    "campagnes": {
-      "form": {
-        "status_title": "حالة الحملة",
-        "org_options": "خيارات التنظيم",
-        "organized_by_province": "منظمة من قبل الإقليم",
-        "organized_by_province_desc": "ستكون الحملة مرتبطة مباشرة بإقليم مديونة",
-        "under_cover_province": "تحت غطاء الإقليم",
-        "under_cover_province_desc": "ظهور عبارة \"تحت غطاء السيد العامل\"",
-        "status": {
-          "draft": "مسودة",
-          "draft_desc": "مرئي للمشرفين فقط",
-          "active": "نشطة",
-          "active_desc": "حملة جارية، مرئية للجمهور",
-          "finished": "منتهية",
-          "finished_desc": "حملة مغلقة"
-        }
-      }
     }
   }
 }

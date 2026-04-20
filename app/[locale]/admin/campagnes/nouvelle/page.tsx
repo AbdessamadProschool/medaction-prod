@@ -27,7 +27,7 @@ const STATUTS_LIST = ['BROUILLON', 'ACTIVE', 'TERMINEE'] as const;
 
 export default function AdminNouvelleCampagnePage() {
   const router = useRouter();
-  const t = useTranslations('admin.campagnes');
+  const t = useTranslations('admin_campaigns.new');
   const [loading, setLoading] = useState(false);
   
   // Image state

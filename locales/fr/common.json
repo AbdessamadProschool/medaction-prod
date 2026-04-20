@@ -2091,8 +2091,32 @@
       "create_subtitle": "Rédigez un article pour la plateforme MedAction.",
       "back_list": "Retour aux articles",
       "search": "Rechercher un article...",
-      "filter_status": "Statut",
-      "filter_sector": "Secteur",
+      "filters": "Filtres",
+      "labels": {
+        "search_placeholder": "Rechercher...",
+        "all_statuses": "Tous les statuts",
+        "reset": "Réinitialiser",
+        "featured": "Mis en avant",
+        "no_resume": "Aucun résumé"
+      },
+      "stats": {
+        "total": "Total",
+        "published": "Publiés",
+        "pending": "En attente",
+        "views": "Vues",
+        "views_desc": "Total des vues"
+      },
+      "filters_labels": {
+        "all": "Tous les articles",
+        "featured": "Mis en avant uniquement"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "pending": "En attente",
+        "published": "Publié",
+        "rejected": "Rejeté",
+        "archived": "Archivé"
+      },
       "empty": {
         "title": "Aucun article trouvé",
         "create_first": "Créer le premier article"
@@ -2304,6 +2328,21 @@
         "image_size": "L'image ne doit pas dépasser 5MB",
         "upload_error": "Erreur lors de l'upload de l'image",
         "create_error": "Erreur lors de la création"
+      }
+    },
+    "backups": {
+      "title": "Sauvegardes Système",
+      "subtitle": "Historique de vos points de restauration de base de données.",
+      "create": "Nouvelle sauvegarde",
+      "restore": "Restaurer",
+      "empty_title": "Aucune sauvegarde",
+      "empty_desc": "Vous n'avez pas encore créé de points de restauration système.",
+      "create_first": "Créer ma première sauvegarde",
+      "success_create": "Sauvegarde créée avec succès",
+      "success_restore": "Système restauré avec succès",
+      "messages": {
+        "confirm_restore": "Êtes-vous sûr de vouloir restaurer à partir de cette sauvegarde ? Cette action écrasera les données actuelles.",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
       }
     },
     "users_page": {
@@ -5158,7 +5197,12 @@
         "image_hint": "PNG, JPG jusqu'à 5MB",
         "cancel": "Annuler",
         "create": "Créer la campagne",
-        "creating": "Création..."
+        "creating": "Création...",
+        "org_options": "Options d'organisation",
+        "organized_by_province": "Organisée par la Province",
+        "organized_by_province_desc": "La campagne sera directement rattachée à la Province de Médiouna",
+        "under_cover_province": "Sous le couvert de la Province",
+        "under_cover_province_desc": "Mention 'Sous le couvert de Monsieur le Gouverneur' affichée"
       },
       "types": {
         "SOLIDARITE": "Solidarité",

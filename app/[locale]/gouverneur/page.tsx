@@ -182,6 +182,7 @@ export default function GouverneurDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   // State for Real Reports & Insights
   const [reportPeriod, setReportPeriod] = useState('Mois Dernier');
+  const [reportCommuneId, setReportCommuneId] = useState<number | undefined>(undefined);
   const [reportSector, setReportSector] = useState<string | undefined>(undefined);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedReclamationId, setSelectedReclamationId] = useState<number | null>(null);

@@ -1,8 +1,8 @@
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/auth-options";
-import prisma from "@/lib/prisma";
+import { authOptions } from "@/lib/auth/config";
+import prisma from "@/lib/db";
 
 export const GET = withErrorHandler(async (req: NextRequest) => {
     const session = await getServerSession(authOptions);

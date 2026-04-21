@@ -176,10 +176,10 @@ export default function GouverneurDashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   // State for Real Reports & Insights
   const [reportPeriod, setReportPeriod] = useState('Mois Dernier');
-  const [reportCommuneId, setReportCommuneId] = useState<number | undefined>(undefined);
   const [reportSector, setReportSector] = useState<string | undefined>(undefined);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedReclamationId, setSelectedReclamationId] = useState<number | null>(null);
+  const [performanceSector, setPerformanceSector] = useState('');
   const [notifications, setNotifications] = useState<any[]>([]);
   const [aiInsights, setAiInsights] = useState<any>(null);
   const [recentReports, setRecentReports] = useState<any[]>([]);
@@ -830,7 +830,10 @@ export default function GouverneurDashboard() {
                                      animate={{ opacity: 1, x: 0 }}
                                      transition={{ delay: idx * 0.1 }}
                                      whileHover={{ x: 4, scale: 1.01 }}
-                                     onClick={() => setActiveTab('performance')}
+                                     onClick={() => {
+                                        setPerformanceSector(sector.secteur);
+                                        setActiveTab('performance');
+                                     }}
                                      className="w-full group p-5 bg-slate-50 hover:bg-white rounded-3xl border border-gray-100 hover:border-gov-blue/30 hover:shadow-xl transition-all flex items-center gap-4 relative overflow-hidden cursor-pointer text-left"
                                    >
                                       {/* Rank badge */}
@@ -1417,7 +1420,7 @@ export default function GouverneurDashboard() {
                      exit={{ opacity: 0, x: -20 }}
                      transition={{ duration: 0.2 }}
                   >
-                     <PerformanceTab />
+                     <PerformanceTab initialSector={performanceSector} />
                   </motion.div>
                )}
 

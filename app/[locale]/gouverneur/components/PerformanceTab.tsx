@@ -35,12 +35,13 @@ interface PerformanceItem {
   };
 }
 
-export default function PerformanceTab() {
+export default function PerformanceTab({ initialSector = '' }: { initialSector?: string }) {
   const t = useTranslations('governor.performance_tab');
+  const locale = useTranslations('locale')('code') || 'fr'; // fallback safely
   const [data, setData] = useState<PerformanceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
-  const [selectedSector, setSelectedSector] = useState('');
+  const [selectedSector, setSelectedSector] = useState(initialSector);
   const [selectedCommune, setSelectedCommune] = useState('');
   const [selectedAnnexe, setSelectedAnnexe] = useState('');
   const [timeRange, setTimeRange] = useState('ALL'); 
@@ -143,7 +144,18 @@ export default function PerformanceTab() {
                 </select>
                 <select className="px-6 py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer" value={selectedCommune} onChange={(e) => { setSelectedCommune(e.target.value); setSelectedAnnexe(''); }}>
                     <option value="">{t('filters.all_communes')}</option>
-                    {communes.map(c => <option key={c as string} value={c as string}>{c as string}</option>)}
+                    {communes.map(c => {
+                       const cStr = c as string;
+                       const communeTranslations: any = {
+                          'MEDIOUNA': 'مديونة',
+                          'TIT MELLIL': 'تيط مليل',
+                          'LAHRAOUIYINE': 'الهراويين',
+                          'SIDI HAJJAJ OUED HASSAK': 'سيدي حجاج واد حصار',
+                          'MEJJATIA OULAD TALEB': 'المجاطية أولاد طالب'
+                       };
+                       const translatedName = locale === 'ar' ? (communeTranslations[cStr] || cStr) : cStr;
+                       return <option key={cStr} value={cStr} dir="auto">{translatedName}</option>;
+                    })}
                 </select>
                 <button 
                     onClick={() => { setFilter(''); setSelectedSector(''); setSelectedCommune(''); setSelectedAnnexe(''); }}
@@ -174,10 +186,10 @@ export default function PerformanceTab() {
                     <Building2 size={24} />
                  </div>
                  
-                 <div>
+                 <div dir="auto">
                     <span className="text-[8px] font-black uppercase text-blue-500 tracking-widest mb-1 block">{(item.secteur).toUpperCase()}</span>
-                    <h4 className="font-black text-slate-900 dark:text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-500 transition-colors">{item.nom}</h4>
-                    <p className="text-[10px] font-bold text-slate-600 mt-1 flex items-center gap-1.5"><MapPin size={10} /> {item.commune}</p>
+                    <h4 className="font-black text-slate-900 dark:text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-500 transition-colors" dir="auto">{item.nom}</h4>
+                    <p className="text-[10px] font-bold text-slate-600 mt-1 flex items-center gap-1.5" dir="auto"><MapPin size={10} /> {item.commune}</p>
                  </div>
 
                  {/* MINI STATS PREVIEW */}
@@ -217,15 +229,15 @@ export default function PerformanceTab() {
 
 function MiniCount({ icon: Icon, val, color, suffix }: any) {
     const colors: any = {
-        blue: 'text-blue-500 bg-blue-50',
-        purple: 'text-purple-500 bg-purple-50',
-        amber: 'text-amber-500 bg-amber-50',
-        emerald: 'text-emerald-500 bg-emerald-50'
+        blue: 'text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30',
+        purple: 'text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30',
+        amber: 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30',
+        emerald: 'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/30'
     };
     return (
-        <div className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-white/10 ${colors[color] || 'bg-slate-50 text-slate-700'}`}>
-            <Icon size={10} />
-            <span className="text-[10px] font-black tabular-nums">{val}{suffix}</span>
+        <div className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200/50 dark:border-white/10 shadow-sm ${colors[color] || 'bg-slate-100 text-slate-800'}`}>
+            <Icon size={12} className="opacity-80" />
+            <span className="text-[11px] font-black tabular-nums tracking-wide" dir="ltr">{val}{suffix}</span>
         </div>
     );
 }

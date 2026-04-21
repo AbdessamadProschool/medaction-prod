@@ -600,7 +600,13 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                           <div className="flex-1 bg-white dark:bg-slate-950 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:border-blue-500/30 transition-all shadow-sm relative">
                                                <div className="flex items-center justify-between mb-3">
                                                     <span className="text-[10px] font-black uppercase text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full">{new Date(item._date).toLocaleDateString(locale)}</span>
-                                                    {item.statut && <span className={`text-[10px] font-black px-3 py-1 rounded-full ${item.statut === 'CLOTUREE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{t(`status.${item.statut.toLowerCase()}`)}</span>}
+                                                    {item.statut && <span className={`text-[10px] font-black px-3 py-1 rounded-full ${item.statut === 'CLOTUREE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                                                        {item.statut === 'EN_ACTION' ? (locale === 'ar' ? 'جاري التنفيذ' : 'En cours') : 
+                                                         item.statut === 'CLOTUREE' ? (locale === 'ar' ? 'مغلق' : 'Clôturé') :
+                                                         item.statut === 'VALIDEE' ? (locale === 'ar' ? 'تم التحقق' : 'Validé') :
+                                                         item.statut === 'EN_ATTENTE' ? (locale === 'ar' ? 'قيد الانتظار' : 'En attente') :
+                                                         t(`status.${item.statut.toLowerCase()}`)}
+                                                    </span>}
                                                </div>
                                                <h4 className="text-sm font-black uppercase mb-2 tracking-tight">{item.titre || (item._tag === 'COMMENT' ? t('media.citizen_watch') : t('media.institutional_action'))}</h4>
                                                <p className="text-xs text-slate-500 dark:text-slate-400 italic font-medium leading-relaxed line-clamp-3">"{item.bilanDescription || item.description || item.commentaireDeroulement || item.commentaire || t('media.no_comment')}"</p>

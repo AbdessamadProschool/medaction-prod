@@ -141,6 +141,11 @@ export default function GouverneurDashboard() {
   
   // State
   const [activeTab, setActiveTab] = useState<'overview' | 'performance' | 'reclamations' | 'map' | 'reports' | 'activites'>('overview');
+
+  // Scroll to top on tab change for professional UX
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [alerts, setAlerts] = useState<AlertAction[]>([]);
   
@@ -160,10 +165,11 @@ export default function GouverneurDashboard() {
         setSelectedReclamationId(recId);
         setActiveTab('reclamations');
      } else if (alert.type === 'EVENT_CLOSURE' || alert.type === 'ACTIVITY_REPORT') {
-        setActiveTab('reports');
+        setActiveTab('activites');
      } else if (alert.type === 'EVENT_UPCOMING') {
         setActiveTab('map');
      }
+     setIsMobileNavOpen(false);
   };
 
   const [loading, setLoading] = useState(true);
@@ -937,15 +943,15 @@ export default function GouverneurDashboard() {
                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${style.bg} shrink-0`}>
                                                   <Icon size={18} />
                                                </div>
-                                               <div className="flex-1 min-w-0">
+                                               <div className="flex-1 min-w-0" dir="auto">
                                                   <div className="flex items-center justify-between mb-0.5">
-                                                     <p className="font-bold text-slate-800 text-sm truncate pr-2">{log.title}</p>
+                                                     <p className="font-bold text-slate-800 text-sm truncate pr-2" dir="auto">{log.title}</p>
                                                      <span className="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full shadow-sm border border-slate-100 whitespace-nowrap">
                                                          {new Date(log.date).toLocaleDateString(locale)}
                                                      </span>
                                                   </div>
                                                   <div className="flex items-center gap-2">
-                                                     <span className="text-xs text-slate-700 truncate">{log.subtitle}</span>
+                                                     <span className="text-xs text-slate-700 truncate" dir="auto">{log.subtitle}</span>
                                                      {log.status === 'EN_ATTENTE' && <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />}
                                                   </div>
                                                </div>
@@ -992,7 +998,7 @@ export default function GouverneurDashboard() {
                                                </div>
                                                <span className="text-slate-200">{item.label}</span>
                                             </div>
-                                            <span className="text-xl">{item.count} <span className="text-xs text-slate-700 font-bold align-top">/ {item.total}</span></span>
+                                            <span className="text-xl">{item.count}</span>
                                          </div>
                                          <div className="h-3 bg-slate-950 rounded-full overflow-hidden border border-white/5 p-0.5">
                                             <motion.div 
@@ -1047,8 +1053,8 @@ export default function GouverneurDashboard() {
                                                         {alert.date ? new Date(alert.date).toLocaleDateString(locale) : 'Just now'}
                                                      </span>
                                                   </div>
-                                                  <h6 className="text-[13px] font-black mb-1">{alert.titre}</h6>
-                                                  <p className="text-[11px] font-bold opacity-80 leading-relaxed">{alert.description}</p>
+                                                  <h6 className="text-[13px] font-black mb-1" dir="auto">{alert.titre}</h6>
+                                                  <p className="text-[11px] font-bold opacity-80 leading-relaxed" dir="auto">{alert.description}</p>
                                                   <div className="flex justify-end mt-2 opacity-0 group-hover/alert:opacity-100 transition-opacity">
                                                      <span className="text-[10px] font-black uppercase flex items-center gap-1">
                                                         {t('reclamations_tab.card.open')} <ChevronRight size={12} />

@@ -77,8 +77,17 @@ export async function checkPermission(userId: number, permissionCode: Permission
 
   // 1. Super Admin/Governor Bypass for read actions
   if (role === 'SUPER_ADMIN') return true;
-  if (role === 'GOUVERNEUR' && permissionCode.endsWith('.read')) return true;
-  if (role === 'GOUVERNEUR' && permissionCode.endsWith('.read.all')) return true;
+  
+  // GOUVERNEUR has global read access to stats, bilans and entity listings
+  if (role === 'GOUVERNEUR') {
+      if (permissionCode.endsWith('.read') || 
+          permissionCode.endsWith('.read.all') || 
+          permissionCode.startsWith('stats.view.') ||
+          permissionCode === 'bilans.read' ||
+          permissionCode === 'reports.export') {
+          return true;
+      }
+  }
 
   // 2. Check DB (UserPermission)
   const count = await prisma.userPermission.count({

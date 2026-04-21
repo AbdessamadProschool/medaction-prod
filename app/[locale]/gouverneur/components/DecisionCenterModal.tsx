@@ -122,12 +122,12 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
   if (!etablissement) return null;
 
   const counts = details?.data?._count || initialEtab.stats || {};
-  const events = counts.evenements || 0;
+  const events = counts.evenementsOrganises || counts.evenements || 0;
   const reclamations = counts.reclamations || 0;
   const abonnements = counts.abonnements || 0;
   const reviewsCount = counts.evaluations || 0;
   const news = counts.actualites || 0;
-  const activities = counts.programmesActivites || 0;
+  const activities = counts.activitesOrganisees || counts.programmesActivites || 0;
   const rating = etablissement.noteMoyenne || 0;
 
   const score = getEtabScore({
@@ -300,7 +300,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                    <div className="space-y-4">
                                        {(() => {
                                            const flow = [
-                                               ...(details?.data?.evenements || []).map((e: any) => ({ ...e, _type: 'EVENT' })),
+                                               ...(details?.data?.evenementsOrganises || details?.data?.evenements || []).map((e: any) => ({ ...e, _type: 'EVENT' })),
                                                ...(details?.data?.actualites || []).map((n: any) => ({ ...n, _type: 'NEWS' }))
                                            ].sort((a,b) => new Date(b.createdAt || b.dateDebut).getTime() - new Date(a.createdAt || a.dateDebut).getTime())
                                             .slice(0, 4);
@@ -504,7 +504,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                             <h3 className="text-2xl font-black mb-1 uppercase tracking-tighter">{t('performance.maturity_balance')}</h3>
                             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-10">{t('performance.indicators_5_pillars')}</p>
                             
-                            <div className="flex-1 w-full min-h-[400px]">
+                            <div className="flex-1 w-full relative min-h-[400px]">
                                 {(() => {
                                     const radarData = [
                                         { subject: t('radar.engagement'), A: Math.min(events * 10, 100), fullMark: 100 },
@@ -514,11 +514,11 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                         { subject: t('radar.news'), A: Math.min(news * 15, 100), fullMark: 100 },
                                     ];
                                     return (
-                                        <ResponsiveContainer width="100%" height="100%">
+                                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                                             <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                                                <PolarGrid stroke="#e2e8f0" strokeDasharray="4 4" />
-                                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: '900' }} />
-                                                <Radar name="Performance" dataKey="A" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} dot={{ r: 4, fill: '#3b82f6' }} />
+                                                <PolarGrid stroke="#cbd5e1" strokeDasharray="4 4" />
+                                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#1e293b', fontSize: 11, fontWeight: '900' }} />
+                                                <Radar name="Performance" dataKey="A" stroke="#2563eb" fill="#3b82f6" fillOpacity={0.4} dot={{ r: 4, fill: '#1d4ed8' }} />
                                                 <Tooltip content={<SimpleTooltip />} />
                                             </RadarChart>
                                         </ResponsiveContainer>
@@ -573,9 +573,9 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                   const combined: any[] = [];
                                   const data = details?.data || etablissement.presentation || {};
                                   
-                                  if (filterType === 'ALL' || filterType === 'EVENTS') (data.evenements || []).forEach((e: any) => combined.push({ ...e, _tag: 'EVENT', _date: new Date(e.dateDebut) }));
+                                  if (filterType === 'ALL' || filterType === 'EVENTS') (data.evenementsOrganises || data.evenements || []).forEach((e: any) => combined.push({ ...e, _tag: 'EVENT', _date: new Date(e.dateDebut) }));
                                   if (filterType === 'ALL' || filterType === 'NEWS') (data.actualites || []).forEach((n: any) => combined.push({ ...n, _tag: 'NEWS', _date: new Date(n.createdAt) }));
-                                  if (filterType === 'ALL' || filterType === 'ACTIVITIES') (data.activites || []).forEach((a: any) => combined.push({ ...a, _tag: 'ACTIVITY', _date: new Date(a.date) }));
+                                  if (filterType === 'ALL' || filterType === 'ACTIVITIES') (data.activitesOrganisees || data.activites || []).forEach((a: any) => combined.push({ ...a, _tag: 'ACTIVITY', _date: new Date(a.date) }));
                                   if (filterType === 'ALL' || filterType === 'RECLAMATIONS') (data.reclamations || []).forEach((r: any) => combined.push({ ...r, _tag: 'RECLAMATION', _date: new Date(r.createdAt) }));
                                   if (filterType === 'ALL' || filterType === 'COMMENTS') (data.evaluations || []).forEach((r: any) => combined.push({ ...r, _tag: 'COMMENT', _date: new Date(r.createdAt) }));
 

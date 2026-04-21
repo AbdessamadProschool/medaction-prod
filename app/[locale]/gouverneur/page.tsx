@@ -473,7 +473,7 @@ export default function GouverneurDashboard() {
                   {activeTab === 'reports' && t('header.titles.reports')}
                </h2>
                <div className="hidden md:flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-gray-100">
-                  <Clock size={14} className="text-slate-400" />
+                  <Clock size={14} className="text-slate-600" />
                   <span className="text-xs font-bold text-slate-600">
                      {currentTime.toLocaleDateString(isRTL ? 'ar-MA' : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                      <span className="mx-2 opacity-30">|</span>
@@ -485,7 +485,7 @@ export default function GouverneurDashboard() {
              <div className="flex items-center gap-3">
                <button 
                 onClick={fetchData}
-                className={`p-2.5 text-slate-400 hover:text-gov-blue hover:bg-gov-blue/5 rounded-xl transition-all ${refreshing ? 'animate-spin' : ''}`}
+                className={`p-2.5 text-slate-600 hover:text-gov-blue hover:bg-gov-blue/5 rounded-xl transition-all ${refreshing ? 'animate-spin' : ''}`}
                >
                  <RefreshCw size={20} />
                </button>
@@ -495,7 +495,7 @@ export default function GouverneurDashboard() {
                <div className="relative">
                   <button 
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className={`p-2.5 rounded-xl transition-all relative ${showNotifications ? 'bg-gov-blue/10 text-gov-blue' : 'text-slate-400 hover:text-gov-blue hover:bg-gov-blue/5'}`}
+                    className={`p-2.5 rounded-xl transition-all relative ${showNotifications ? 'bg-gov-blue/10 text-gov-blue' : 'text-slate-600 hover:text-gov-blue hover:bg-gov-blue/5'}`}
                   >
                     <Bell size={20} />
                     {alerts.length > 0 && (
@@ -518,7 +518,7 @@ export default function GouverneurDashboard() {
                           </div>
                           <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
                              {alerts.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                                <div className="flex flex-col items-center justify-center py-12 text-slate-600">
                                    <Bell size={40} className="mb-3 opacity-20" />
                                    <p className="text-sm font-medium">{t('header.notifications.none')}</p>
                                 </div>
@@ -531,8 +531,8 @@ export default function GouverneurDashboard() {
                                      }`} />
                                      <div>
                                         <p className="text-sm font-bold text-slate-800 mb-1 leading-snug">{alert.titre}</p>
-                                        <p className="text-xs text-slate-500 mb-2 line-clamp-2">{alert.description}</p>
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                        <p className="text-xs text-slate-700 mb-2 line-clamp-2">{alert.description}</p>
+                                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
                                           {new Date(alert.date).toLocaleDateString()} • {new Date(alert.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                         </p>
                                      </div>
@@ -541,7 +541,7 @@ export default function GouverneurDashboard() {
                             )}
                          </div>
                          <div className="p-2 border-t border-gray-50 bg-slate-50/50 text-center">
-                            <button className="text-xs font-bold text-slate-500 hover:text-gov-blue transition-colors uppercase tracking-wide">
+                            <button className="text-xs font-bold text-slate-700 hover:text-gov-blue transition-colors uppercase tracking-wide">
                                {t('header.notifications.view_all')}
                             </button>
                          </div>
@@ -567,7 +567,7 @@ export default function GouverneurDashboard() {
                     <div className="flex items-center justify-between">
                        <div>
                           <h3 className="text-2xl font-black text-slate-900">{t(`overview.greeting.${getGreetingKey()}`)}{t('overview.greeting.suffix')}</h3>
-                          <p className="text-slate-400 font-medium">{t('overview.greeting.subtitle')}</p>
+                          <p className="text-slate-600 font-medium">{t('overview.greeting.subtitle')}</p>
                        </div>
                        <Link 
                           href="/" 
@@ -642,7 +642,7 @@ export default function GouverneurDashboard() {
                             <div className="absolute inset-0 bg-gradient-to-br from-gov-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             
                             <div className="relative z-10">
-                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{kpi.label}</p>
+                               <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">{kpi.label}</p>
                                <div className="flex items-baseline gap-1">
                                   <motion.span 
                                     className="text-2xl font-black text-slate-900"
@@ -652,10 +652,10 @@ export default function GouverneurDashboard() {
                                   >
                                     {kpi.value}
                                   </motion.span>
-                                  <span className="text-xs font-bold text-slate-400">{kpi.sub}</span>
+                                  <span className="text-xs font-bold text-slate-600">{kpi.sub}</span>
                                </div>
                                {/* Contextual detail */}
-                               <p className="text-[9px] font-bold text-slate-400 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                               <p className="text-[9px] font-bold text-slate-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                   {kpi.detail}
                                </p>
                             </div>
@@ -684,7 +684,7 @@ export default function GouverneurDashboard() {
                               <h3 className="text-3xl font-black text-slate-900 mb-2">
                                  {t('overview.pulse.title')}
                               </h3>
-                              <p className="text-slate-500 font-medium max-w-lg leading-relaxed">
+                              <p className="text-slate-700 font-medium max-w-lg leading-relaxed">
                                  {t('overview.pulse.subtitle')}
                               </p>
                            </div>
@@ -695,21 +695,21 @@ export default function GouverneurDashboard() {
                            {/* Active Projects - Show only if explicitly defined or use 0 */}
                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
                               <FolderKanban size={24} className="text-indigo-500 mx-auto mb-2" />
-                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1">{t('stats.active_projects')}</p>
+                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.active_projects')}</p>
                               <p className="text-2xl font-black text-slate-900">{s.projects?.active || 0}</p>
                            </div>
 
                            {/* Satisfaction - Show real average */}
                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
                               <Star size={24} className="text-amber-500 mx-auto mb-2" />
-                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1">{t('stats.satisfaction')}</p>
-                              <p className="text-2xl font-black text-slate-900">{s.satisfaction?.moyenne ? s.satisfaction.moyenne.toFixed(1) : '0.0'}<span className="text-sm text-slate-400">/5</span></p>
+                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.satisfaction')}</p>
+                              <p className="text-2xl font-black text-slate-900">{s.satisfaction?.moyenne ? s.satisfaction.moyenne.toFixed(1) : '0.0'}<span className="text-sm text-slate-600">/5</span></p>
                            </div>
 
                            {/* Alerts - Real count */}
                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
                               <AlertTriangle size={24} className={`${alerts.length > 0 ? "text-red-500 animate-pulse" : "text-slate-300"} mx-auto mb-2`} />
-                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1">{t('stats.alerts')}</p>
+                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.alerts')}</p>
                               <p className={`text-2xl font-black ${alerts.length > 0 ? "text-red-600" : "text-slate-900"}`}>{alerts.length}</p>
                            </div>
                         </div>
@@ -727,7 +727,7 @@ export default function GouverneurDashboard() {
                                <h3 className="text-2xl font-black text-slate-900 leading-tight">
                                   {t('reports.ai_synthesis.title')}
                                </h3>
-                               <p className="text-slate-500 text-sm font-medium">
+                               <p className="text-slate-700 text-sm font-medium">
                                    {t('reports.ai_synthesis.subtitle')}
                                 </p>
                                <Link 
@@ -857,7 +857,7 @@ export default function GouverneurDashboard() {
                                           {/* Detailed stats grid - Clear Layout */}
                                           <div className="grid grid-cols-3 gap-3 mt-4">
                                              <div className="bg-slate-100 rounded-xl p-2 flex flex-col items-center justify-center">
-                                                <div className="flex items-center gap-1 text-slate-400 mb-1">
+                                                <div className="flex items-center gap-1 text-slate-600 mb-1">
                                                    <Building2 size={10} />
                                                    <span className="text-[9px] font-bold uppercase">{t('overview.territorial.establishments')}</span>
                                                 </div>
@@ -865,7 +865,7 @@ export default function GouverneurDashboard() {
                                              </div>
                                              
                                              <div className="bg-slate-100 rounded-xl p-2 flex flex-col items-center justify-center">
-                                                <div className="flex items-center gap-1 text-slate-400 mb-1">
+                                                <div className="flex items-center gap-1 text-slate-600 mb-1">
                                                    <Calendar size={10} />
                                                    <span className="text-[9px] font-bold uppercase">{t('overview.territorial.events')}</span>
                                                 </div>
@@ -924,7 +924,7 @@ export default function GouverneurDashboard() {
                                              if (color === 'red') return { bg: 'bg-red-50 text-red-500' };
                                              if (color === 'amber') return { bg: 'bg-amber-50 text-amber-500' };
                                              if (color === 'blue') return { bg: 'bg-blue-50 text-blue-500' };
-                                             return { bg: 'bg-slate-50 text-slate-500' };
+                                             return { bg: 'bg-slate-50 text-slate-700' };
                                          };
                                          const style = getStyles(log.color);
 
@@ -936,12 +936,12 @@ export default function GouverneurDashboard() {
                                                <div className="flex-1 min-w-0">
                                                   <div className="flex items-center justify-between mb-0.5">
                                                      <p className="font-bold text-slate-800 text-sm truncate pr-2">{log.title}</p>
-                                                     <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-full shadow-sm border border-slate-100 whitespace-nowrap">
+                                                     <span className="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full shadow-sm border border-slate-100 whitespace-nowrap">
                                                          {new Date(log.date).toLocaleDateString(locale)}
                                                      </span>
                                                   </div>
                                                   <div className="flex items-center gap-2">
-                                                     <span className="text-xs text-slate-500 truncate">{log.subtitle}</span>
+                                                     <span className="text-xs text-slate-700 truncate">{log.subtitle}</span>
                                                      {log.status === 'EN_ATTENTE' && <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />}
                                                   </div>
                                                </div>
@@ -950,11 +950,11 @@ export default function GouverneurDashboard() {
                                          );
                                      })
                                   ) : (
-                                     <div className="text-center py-8 text-slate-400 text-sm">
+                                     <div className="text-center py-8 text-slate-600 text-sm">
                                          {t('overview.activity_log.none')}
                                      </div>
                                   )}
-                               </div>   <p className="text-center text-slate-400 text-xs font-bold pt-2 cursor-pointer hover:text-gov-blue transition-colors">
+                               </div>   <p className="text-center text-slate-600 text-xs font-bold pt-2 cursor-pointer hover:text-gov-blue transition-colors">
                                     {t('overview.activity_log.view_reports')}
                                  </p>
                           </div>
@@ -968,7 +968,7 @@ export default function GouverneurDashboard() {
                               
                               <div className="relative z-10">
                                  <div className="flex items-center justify-between mb-8">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('overview.territorial.title')}</p>
+                                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{t('overview.territorial.title')}</p>
                                     <div className="p-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
                                        <MapPin size={14} className="text-gov-gold" />
                                     </div>
@@ -988,7 +988,7 @@ export default function GouverneurDashboard() {
                                                </div>
                                                <span className="text-slate-200">{item.label}</span>
                                             </div>
-                                            <span className="text-xl">{item.count} <span className="text-xs text-slate-500 font-bold align-top">/ {item.total}</span></span>
+                                            <span className="text-xl">{item.count} <span className="text-xs text-slate-700 font-bold align-top">/ {item.total}</span></span>
                                          </div>
                                          <div className="h-3 bg-slate-950 rounded-full overflow-hidden border border-white/5 p-0.5">
                                             <motion.div 
@@ -1097,10 +1097,10 @@ export default function GouverneurDashboard() {
                             >
                                <div className="flex items-start justify-between">
                                   <div>
-                                     <p className={`text-xs font-bold uppercase tracking-wider ${kpi.urgent ? 'text-red-100' : 'text-slate-400'}`}>{kpi.label}</p>
+                                     <p className={`text-xs font-bold uppercase tracking-wider ${kpi.urgent ? 'text-red-100' : 'text-slate-600'}`}>{kpi.label}</p>
                                      <p className={`text-4xl font-black mt-2 ${kpi.urgent ? 'text-white' : 'text-slate-900'}`}>{kpi.value}</p>
                                      {kpi.subLabel && (
-                                       <span className={`text-xs font-bold mt-1 inline-block px-2 py-0.5 rounded-full ${kpi.urgent ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                       <span className={`text-xs font-bold mt-1 inline-block px-2 py-0.5 rounded-full ${kpi.urgent ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>
                                           {kpi.subLabel}
                                        </span>
                                      )}
@@ -1154,7 +1154,7 @@ export default function GouverneurDashboard() {
                                      <button
                                        key={period}
                                        onClick={() => setChartPeriod(period)}
-                                       className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${chartPeriod === period ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}
+                                       className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${chartPeriod === period ? 'bg-white shadow text-slate-900' : 'text-slate-700 hover:text-slate-900'}`}
                                      >
                                        {t(`reports.filters.${period}`)}
                                      </button>
@@ -1184,7 +1184,7 @@ export default function GouverneurDashboard() {
                                 <h3 className="text-xl font-black text-slate-900 flex items-center gap-3">
                                    <PieChart className="text-emerald-500" /> {t('reports.compliance')}
                                 </h3>
-                                <button className="text-xs text-slate-400 font-bold hover:text-gov-blue transition-colors flex items-center gap-1">
+                                <button className="text-xs text-slate-600 font-bold hover:text-gov-blue transition-colors flex items-center gap-1">
                                    {t('reports.compliance_details.title')} <ChevronDown size={14} />
                                 </button>
                              </div>
@@ -1213,7 +1213,7 @@ export default function GouverneurDashboard() {
                                       <span className="text-3xl font-black text-slate-900">
                                          {Math.round((s.charts.compliance.find(c => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, s.etablissements.total) * 100)}%
                                       </span>
-                                       <span className="text-[10px] uppercase font-bold text-slate-400">{t('reports.index')}</span>
+                                       <span className="text-[10px] uppercase font-bold text-slate-600">{t('reports.index')}</span>
                                    </div>
                                 </div>
                                 
@@ -1231,11 +1231,11 @@ export default function GouverneurDashboard() {
                                            <div className="flex items-center justify-between mb-1">
                                               <div className="flex items-center gap-2">
                                                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                                                 <span className="text-xs font-bold uppercase text-slate-500">{item.name}</span>
+                                                 <span className="text-xs font-bold uppercase text-slate-700">{item.name}</span>
                                               </div>
                                               <span className="font-black text-slate-900">{item.value}</span>
                                            </div>
-                                           <div className="text-[10px] text-slate-400 pl-4.5 border-l-2 border-slate-100 group-hover:border-slate-200 transition-colors">
+                                           <div className="text-[10px] text-slate-600 pl-4.5 border-l-2 border-slate-100 group-hover:border-slate-200 transition-colors">
                                               {t(`reports.compliance_details.${descKey}`)}
                                            </div>
                                         </div>
@@ -1276,7 +1276,7 @@ export default function GouverneurDashboard() {
                                               </div>
                                               <div>
                                                   <h4 className="font-bold text-slate-900 leading-tight">{doc.title}</h4>
-                                                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-400 font-medium">
+                                                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-600 font-medium">
                                                       <span className="flex items-center gap-1"><Calendar size={10} /> {new Date(doc.date).toLocaleDateString(locale)}</span>
                                                       <span className="w-1 h-1 rounded-full bg-slate-300" />
                                                       <span className="flex items-center gap-1"><Users size={10} /> {t('reports.authors.system_ia')}</span>
@@ -1293,7 +1293,7 @@ export default function GouverneurDashboard() {
                                                     setReportPeriod(doc.periodValue || doc.subtitle); 
                                                     handleGenerateReport(); 
                                                  }}
-                                                 className="w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all flex items-center justify-center shadow-sm"
+                                                 className="w-10 h-10 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all flex items-center justify-center shadow-sm"
                                                  title={t('reports.download')}
                                               >
                                                   <ArrowDownToLine size={16} />

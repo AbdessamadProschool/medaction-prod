@@ -182,7 +182,7 @@ export default function EvenementsTab() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-gov-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         
         <div className="relative w-full group">
-          <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
+          <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-gov-blue transition-colors pointer-events-none">
              <Search size={22} />
           </div>
           <input
@@ -190,7 +190,7 @@ export default function EvenementsTab() {
             placeholder={isAr ? "البحث بالكلمات المفتاحية في الأحداث والمقالات..." : "Rechercher par titre, description, contenu..."}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-16 pr-8 py-5 bg-slate-50 hover:bg-white focus:bg-white border-2 border-transparent focus:border-gov-blue/20 rounded-[1.5rem] focus:ring-8 focus:ring-gov-blue/5 transition-all outline-none font-bold text-slate-800 placeholder:text-slate-500 text-lg shadow-sm"
+            className="w-full pl-16 pr-8 py-5 bg-slate-50 hover:bg-white focus:bg-white border-2 border-transparent focus:border-gov-blue/20 rounded-[1.5rem] focus:ring-8 focus:ring-gov-blue/5 transition-all outline-none font-bold text-slate-800 placeholder:text-slate-700 text-lg shadow-sm"
           />
         </div>
 
@@ -259,7 +259,7 @@ export default function EvenementsTab() {
 
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">
+              <span className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-600 tracking-[0.2em]">
                  <Zap size={14} className="text-gov-gold" />
                  {items.length} {isAr ? 'نتائج' : 'résultats trouvés'}
               </span>
@@ -341,7 +341,7 @@ export default function EvenementsTab() {
                         <div className="space-y-2 pt-4 border-t border-slate-100 mt-2">
                           <div className="flex items-center justify-between text-[10px] font-black text-slate-600">
                              <div className="flex items-center gap-2">
-                                <Calendar size={14} className="text-slate-500" />
+                                <Calendar size={14} className="text-slate-700" />
                                 <span>{item.date}</span>
                              </div>
                              {item.lieu && (
@@ -359,7 +359,7 @@ export default function EvenementsTab() {
             </AnimatePresence>
 
             {items.length === 0 && !loading && (
-              <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-400">
+              <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-600">
                  <Filter size={64} className="mb-4 opacity-20" />
                  <p className="text-xl font-black">{isAr ? 'لا توجد نتائج' : 'Aucun résultat trouvé'}</p>
                  <p className="text-sm font-bold opacity-70">Essayez de modifier vos filtres.</p>
@@ -458,10 +458,10 @@ export default function EvenementsTab() {
                    </div>
                    <div className="space-y-6">
                       <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-8 sticky top-0">
-                         <div className="flex gap-5"> <div className="w-14 h-14 bg-slate-50 flex items-center justify-center rounded-2xl text-slate-600 shadow-inner"> <Calendar size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isAr ? 'التاريخ' : 'Calendrier'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.date}</p> </div> </div>
-                         <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-gov-blue/5 flex items-center justify-center rounded-2xl text-gov-blue shadow-inner"> <MapPin size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isAr ? 'الموقع الجغرافي' : 'Localisation'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.lieu}</p> <p className="text-xs font-bold text-slate-600 mt-1 opacity-80">{selectedItem.lieuDetail}</p> </div> </div>
-                         {selectedItem.raw.capaciteMax && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-amber-50 flex items-center justify-center rounded-2xl text-amber-600 shadow-inner"> <Users size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isAr ? 'السعة' : 'Capacité Prévue'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.capaciteMax} {isAr ? 'فرد' : 'Personnes'}</p> </div> </div> )}
-                         {selectedItem.raw.nombreParticipations !== undefined && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-emerald-50 flex items-center justify-center rounded-2xl text-emerald-600 shadow-inner"> <Activity size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{isAr ? 'المستوى التفاعلي' : 'Engagement'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.nombreParticipations} {isAr ? 'تفاعل' : 'Actions'}</p> </div> </div> )}
+                         <div className="flex gap-5"> <div className="w-14 h-14 bg-slate-50 flex items-center justify-center rounded-2xl text-slate-600 shadow-inner"> <Calendar size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'التاريخ' : 'Calendrier'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.date}</p> </div> </div>
+                         <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-gov-blue/5 flex items-center justify-center rounded-2xl text-gov-blue shadow-inner"> <MapPin size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'الموقع الجغرافي' : 'Localisation'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.lieu}</p> <p className="text-xs font-bold text-slate-600 mt-1 opacity-80">{selectedItem.lieuDetail}</p> </div> </div>
+                         {selectedItem.raw.capaciteMax && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-amber-50 flex items-center justify-center rounded-2xl text-amber-600 shadow-inner"> <Users size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'السعة' : 'Capacité Prévue'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.capaciteMax} {isAr ? 'فرد' : 'Personnes'}</p> </div> </div> )}
+                         {selectedItem.raw.nombreParticipations !== undefined && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-emerald-50 flex items-center justify-center rounded-2xl text-emerald-600 shadow-inner"> <Activity size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'المستوى التفاعلي' : 'Engagement'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.nombreParticipations} {isAr ? 'تفاعل' : 'Actions'}</p> </div> </div> )}
                       </div>
                       <div className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center gap-4 shadow-xl"> <Shield size={24} className="text-gov-gold" /> <p className="text-[10px] font-black uppercase tracking-widest leading-tight"> {isAr ? 'نظام الحكامة الإقليمي لميديونة' : 'Governance System - Mediouna'} </p> </div>
                    </div>

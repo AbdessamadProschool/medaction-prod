@@ -122,7 +122,7 @@ export default function PerformanceTab() {
       <div className="sticky top-24 z-30 max-w-7xl mx-auto px-6">
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl p-3 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-white/5 flex flex-col md:flex-row gap-2">
             <div className="relative flex-1 group">
-                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
                 <input 
                   type="text" 
                   placeholder={t('filters.search_placeholder')}
@@ -177,7 +177,7 @@ export default function PerformanceTab() {
                  <div>
                     <span className="text-[8px] font-black uppercase text-blue-500 tracking-widest mb-1 block">{(item.secteur).toUpperCase()}</span>
                     <h4 className="font-black text-slate-900 dark:text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-500 transition-colors">{item.nom}</h4>
-                    <p className="text-[10px] font-bold text-slate-400 mt-1 flex items-center gap-1.5"><MapPin size={10} /> {item.commune}</p>
+                    <p className="text-[10px] font-bold text-slate-600 mt-1 flex items-center gap-1.5"><MapPin size={10} /> {item.commune}</p>
                  </div>
 
                  {/* MINI STATS PREVIEW */}
@@ -190,7 +190,7 @@ export default function PerformanceTab() {
 
                  <div className="pt-4 mt-2 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span className="text-[8px] font-black uppercase text-slate-400 tracking-widest">{t('card.maturity_score')}</span>
+                        <span className="text-[8px] font-black uppercase text-slate-600 tracking-widest">{t('card.maturity_score')}</span>
                         <span className="text-xl font-black text-slate-900 dark:text-white">{item.score}%</span>
                     </div>
                     <div className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest ${item.style.bgColor} ${item.style.color} border border-white/5 shadow-sm`}>
@@ -223,7 +223,7 @@ function MiniCount({ icon: Icon, val, color, suffix }: any) {
         emerald: 'text-emerald-500 bg-emerald-50'
     };
     return (
-        <div className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-white/10 ${colors[color] || 'bg-slate-50 text-slate-500'}`}>
+        <div className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-white/10 ${colors[color] || 'bg-slate-50 text-slate-700'}`}>
             <Icon size={10} />
             <span className="text-[10px] font-black tabular-nums">{val}{suffix}</span>
         </div>
@@ -245,7 +245,7 @@ function Top3Card({ item, rank, type, onClick, t }: any) {
         >
           <div className="relative mb-4">
              <div className={`w-20 h-20 md:w-28 md:h-28 bg-gradient-to-br rounded-full flex items-center justify-center border-4 border-white shadow-2xl relative overflow-hidden group-hover:scale-105 transition-transform ${colors[type]}`}>
-                {isGold ? <Trophy className="text-white w-10 md:w-14" /> : type === 'silver' ? <Medal className="text-slate-500 w-10 md:w-14" /> : <TrendingUp className="text-orange-600 w-10 md:w-14" />}
+                {isGold ? <Trophy className="text-white w-10 md:w-14" /> : type === 'silver' ? <Medal className="text-slate-700 w-10 md:w-14" /> : <TrendingUp className="text-orange-600 w-10 md:w-14" />}
                 <div className="absolute inset-x-0 bottom-0 py-1 bg-black/10 text-[9px] font-black text-white uppercase text-center">{rank === 1 ? t('levels.leader') : rank === 2 ? t('levels.excellence') : t('levels.hope')}</div>
              </div>
              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-slate-950 text-white rounded-full flex items-center justify-center font-black text-xs border-4 border-white shadow-xl">#{rank}</div>
@@ -255,9 +255,9 @@ function Top3Card({ item, rank, type, onClick, t }: any) {
             <p className="font-black text-slate-900 text-[13px] line-clamp-2 leading-none uppercase tracking-tight mb-2">{item.nom}</p>
             <div className="flex items-baseline gap-1">
                 <p className={`text-3xl font-black tracking-tighter ${isGold ? 'text-amber-500' : 'text-slate-600'}`}>{item.score}</p>
-                <span className="text-[9px] font-bold text-slate-400">{t('card.pts')}</span>
+                <span className="text-[9px] font-bold text-slate-600">{t('card.pts')}</span>
             </div>
-            <div className="mt-2 px-3 py-1 bg-slate-100 text-[8px] font-black uppercase text-slate-500 rounded-lg border border-slate-200/50">{(item.secteur).toUpperCase()}</div>
+            <div className="mt-2 px-3 py-1 bg-slate-100 text-[8px] font-black uppercase text-slate-700 rounded-lg border border-slate-200/50">{(item.secteur).toUpperCase()}</div>
           </div>
         </motion.div>
     );

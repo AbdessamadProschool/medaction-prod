@@ -156,7 +156,10 @@ export default function UsersPage() {
         fetchUsers();
       } else {
         const data = await res.json();
-        toast.error(data.error || t('messages.error'));
+        const errorMessage = typeof data.error === 'string'
+          ? data.error
+          : data.error?.message || t('messages.error');
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error('Erreur suppression:', error);
@@ -188,7 +191,10 @@ export default function UsersPage() {
         toast.success(t('messages.reset_password_success'));
       } else {
         const data = await res.json();
-        toast.error(data.error || t('messages.error'));
+        const errorMessage = typeof data.error === 'string'
+          ? data.error
+          : data.error?.message || t('messages.error');
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error('Erreur reset password:', error);

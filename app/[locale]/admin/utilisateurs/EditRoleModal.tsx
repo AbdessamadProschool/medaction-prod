@@ -113,7 +113,10 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
       if (res.ok) {
         onSuccess();
       } else {
-        setError(data.error || t('errors.edit_error'));
+        const errorMessage = typeof data.error === 'string' 
+          ? data.error 
+          : data.error?.message || t('errors.edit_error');
+        setError(errorMessage);
       }
     } catch (err) {
       setError(t('errors.server_error'));

@@ -128,8 +128,11 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
         toast.success(t('success', { name: `${formData.prenom} ${formData.nom}` }));
         onSuccess();
       } else {
-        setError(data.error || t('errors.create_error'));
-        toast.error(data.error || t('errors.create_error'));
+        const errorMessage = typeof data.error === 'string' 
+          ? data.error 
+          : data.error?.message || t('errors.create_error');
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (err) {
       setError(t('errors.server_error'));

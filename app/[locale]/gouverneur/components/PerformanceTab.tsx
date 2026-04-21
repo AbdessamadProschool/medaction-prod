@@ -144,7 +144,7 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
                 </select>
 
                 <select className="px-6 py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer" value={selectedCommune} onChange={(e) => { setSelectedCommune(e.target.value); setSelectedAnnexe(''); }}>
-                    <option value="">{t('filters.all_communes')}</option>ption>
+                    <option value="">{t('filters.all_communes')}</option>
                     {communes.map(c => {
                        const cStr = c as string;
                        const communeTranslations: any = {

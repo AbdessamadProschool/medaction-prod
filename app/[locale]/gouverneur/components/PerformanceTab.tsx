@@ -38,6 +38,7 @@ interface PerformanceItem {
 export default function PerformanceTab({ initialSector = '' }: { initialSector?: string }) {
   const t = useTranslations('governor.performance_tab');
   const locale = useTranslations('locale')('code') || 'fr'; // fallback safely
+  const isRTL = locale === 'ar';
   const [data, setData] = useState<PerformanceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');

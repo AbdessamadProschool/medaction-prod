@@ -55,7 +55,8 @@ export default function PerformanceTab() {
         const res = await fetch('/api/gouverneur/performance');
         if (res.ok) {
           const json = await res.json();
-          setData(json.data || json);
+          const performanceData = json?.data ?? json ?? [];
+          setData(Array.isArray(performanceData) ? performanceData : []);
         }
       } catch (err) {
         toast.error('Erreur lors du chargement des performances');
@@ -66,8 +67,8 @@ export default function PerformanceTab() {
     fetchPerformance();
   }, []);
 
-  const communes = Array.from(new Set(data.map(item => item.commune).filter(Boolean)));
-  const annexes = Array.from(new Set(data.filter(item => !selectedCommune || item.commune === selectedCommune).map(item => item.annexe).filter(Boolean)));
+  const communes = Array.from(new Set((Array.isArray(data) ? data : []).map(item => item?.commune).filter(Boolean)));
+  const annexes = Array.from(new Set((Array.isArray(data) ? data : []).filter(item => !selectedCommune || item?.commune === selectedCommune).map(item => item?.annexe).filter(Boolean)));
 
   const filteredData = data.filter(item => 
     (item.nom.toLowerCase().includes(filter.toLowerCase()) || 

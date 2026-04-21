@@ -287,7 +287,10 @@ export default function GouverneurDashboard() {
         fetch('/api/gouverneur/alerts') // New endpoint for alerts
       ]);
 
-      if (statsRes.ok) setStats(await statsRes.json());
+      if (statsRes.ok) {
+        const data = await statsRes.json();
+        setStats(data.data);
+      }
       if (alertsRes.ok) setAlerts((await alertsRes.json()).data || []);
       
     } catch (err) {
@@ -568,36 +571,36 @@ export default function GouverneurDashboard() {
                        {[
                          { 
                            label: t('overview.kpi.satisfaction'), 
-                           value: s.satisfaction.moyenne.toFixed(1), 
+                           value: s?.satisfaction?.moyenne?.toFixed(1) || '0.0', 
                            sub: '/ 5.0', 
                            icon: Star, 
                            color: 'text-amber-500', 
                            bg: 'bg-amber-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.satisfaction'),
-                           detail: s.etablissements.total > 0 ? t('overview.kpi.evaluations_count', {count: s.etablissements.total}) : t('overview.kpi.no_evaluations')
+                           detail: (s?.etablissements?.total || 0) > 0 ? t('overview.kpi.evaluations_count', {count: s.etablissements.total}) : t('overview.kpi.no_evaluations')
                          },
                          { 
                            label: t('overview.kpi.resolution_rate'), 
-                           value: `${s.reclamations.tauxResolution}%`, 
+                           value: `${s?.reclamations?.tauxResolution ?? 0}%`, 
                            sub: t('overview.kpi.sub.reclamations'), 
                            icon: CheckCircle, 
                            color: 'text-emerald-500', 
                            bg: 'bg-emerald-100',
                            action: () => setActiveTab('reclamations'),
                            tooltip: t('overview.kpi.tooltip.resolution') || 'Taux de résolution des réclamations',
-                           detail: `${s.reclamations.resolues}/${s.reclamations.total} résolues`
+                           detail: `${s?.reclamations?.resolues || 0}/${s?.reclamations?.total || 0} résolues`
                          },
                          { 
                            label: t('overview.kpi.participations'), 
-                           value: s.satisfaction.engagement >= 1000 ? `${(s.satisfaction.engagement / 1000).toFixed(1)}k` : s.satisfaction.engagement.toString(), 
+                           value: (s?.satisfaction?.engagement || 0) >= 1000 ? `${((s?.satisfaction?.engagement || 0) / 1000).toFixed(1)}k` : (s?.satisfaction?.engagement || 0).toString(), 
                            sub: t('overview.kpi.sub.engagement'), 
                            icon: Users, 
                            color: 'text-blue-500', 
                            bg: 'bg-blue-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.engagement') || 'Engagement citoyen (abonnements + participations)',
-                           detail: s.citoyens.total > 0 ? `${s.citoyens.actifsCeMois} actifs ce mois` : 'Données indisponibles'
+                           detail: (s?.citoyens?.total || 0) > 0 ? `${s?.citoyens?.actifsCeMois || 0} actifs ce mois` : 'Données indisponibles'
                          },
                          { 
                            label: t('overview.kpi.active_projects'), 
@@ -738,7 +741,7 @@ export default function GouverneurDashboard() {
                                      )}
 
                                      {/* Alerts */}
-                                     {aiInsights.alerts && aiInsights.alerts.map((alert: any, i:number) => (
+                                     {aiInsights?.alerts && Array.isArray(aiInsights.alerts) && aiInsights.alerts.map((alert: any, i:number) => (
                                        <div key={i} className="flex items-center gap-4 p-4 rounded-2xl border bg-red-50 border-red-100 text-red-800">
                                           <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm text-red-500">
                                              <AlertTriangle size={16} />
@@ -787,7 +790,7 @@ export default function GouverneurDashboard() {
                               </div>
 
                               <div className="space-y-4">
-                                 {(s.sectorRankings.length > 0 ? s.sectorRankings.slice(0, 5) : [
+                                 {((s?.sectorRankings?.length ?? 0) > 0 ? s.sectorRankings.slice(0, 5) : [
                                    { rank: 1, secteur: 'EDUCATION', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 },
                                    { rank: 2, secteur: 'SANTE', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 },
                                    { rank: 3, secteur: 'SPORT', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 }
@@ -1008,7 +1011,7 @@ export default function GouverneurDashboard() {
                                  </div>
 
                                   <div className="space-y-3">
-                                      {alerts.length > 0 ? (
+                                      {Array.isArray(alerts) && alerts.length > 0 ? (
                                          alerts.map((alert) => {
                                            const style = getAlertStyle(alert.priorite);
                                            return (
@@ -1185,7 +1188,7 @@ export default function GouverneurDashboard() {
                                             dataKey="value"
                                             stroke="none"
                                          >
-                                            {s.charts.compliance.map((entry, index) => (
+                                            {s?.charts?.compliance && Array.isArray(s.charts.compliance) && s.charts.compliance.map((entry: any, index: number) => (
                                                <Cell key={`cell-${index}`} fill={entry.color} />
                                             ))}
                                          </Pie>
@@ -1197,12 +1200,12 @@ export default function GouverneurDashboard() {
                                       <span className="text-3xl font-black text-slate-900">
                                          {Math.round((s.charts.compliance.find(c => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, s.etablissements.total) * 100)}%
                                       </span>
-                                      <span className="text-[10px] uppercase font-bold text-slate-400">{t('reports.index')}</span>
+                                       <span className="text-[10px] uppercase font-bold text-slate-400">{t('reports.index')}</span>
                                    </div>
                                 </div>
                                 
                                 <div className="w-full md:w-1/2 space-y-4">
-                                   {s.charts.compliance.map((item, i) => {
+                                   {(Array.isArray(s?.charts?.compliance) ? s.charts.compliance : []).map((item, i) => {
                                       let descKey = 'conforme_desc';
                                       const name = item.name.toLowerCase();
                                       const code = (item as any).code;
@@ -1246,7 +1249,7 @@ export default function GouverneurDashboard() {
                                  </Link>
                               </div>
                               <div className="space-y-3">
-                                  {recentReports.length > 0 ? recentReports.map((doc, i) => (
+                                  {Array.isArray(recentReports) && recentReports.length > 0 ? recentReports.map((doc, i) => (
                                       <motion.div 
                                          key={i} 
                                          initial={{ opacity: 0, x: -20 }}

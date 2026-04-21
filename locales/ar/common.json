@@ -457,6 +457,43 @@
         "pending": "قيد الانتظار",
         "views": "المشاهدات",
         "views_desc": "إجمالي مشاهدات المقالات"
+      },
+      "status": {
+        "draft": "مسودة",
+        "pending": "قيد الانتظار",
+        "published": "منشورة",
+        "rejected": "مرفوضة",
+        "archived": "مؤرشفة"
+      },
+      "labels": {
+        "featured": "مميز",
+        "search_placeholder": "بحث...",
+        "all_statuses": "جميع الحالات",
+        "reset": "إعادة تعيين",
+        "no_resume": "لا يوجد ملخص",
+        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟",
+        "deleted": "تم الحذف بنجاح",
+        "highlighted": "تم التمييز بنجاح",
+        "unhighlighted": "تم إلغاء التمييز",
+        "status_changed": "تم تغيير الحالة بنجاح"
+      },
+      "modal": {
+        "title": "تفاصيل المقال",
+        "resume": "الملخص",
+        "views": "المشاهدات",
+        "likes": "الإعجابات",
+        "author": "الكاتب",
+        "change_status": "تغيير الحالة",
+        "toggle_featured": "تمييز المقال",
+        "toggle_featured_off": "إلغاء التمييز",
+        "delete": "حذف المقال"
+      },
+      "messages": {
+        "status_changed": "تم تغيير الحالة بنجاح",
+        "highlighted": "تم التمييز بنجاح",
+        "unhighlighted": "تم إلغاء التمييز",
+        "deleted": "تم الحذف بنجاح",
+        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟"
       }
     },
     "dashboard": {
@@ -806,7 +843,9 @@
         "admin_response": "رد الإدارة",
         "response_placeholder": "أدخل رداً رسمياً...",
         "change_status": "تغيير الحالة"
-      }
+      },
+      "reset_filters": "إعادة تعيين",
+      "no_results": "لم يتم العثور على نتائج للبحث."
     },
     "establishments_page": {
       "page_title": "إدارة المؤسسات",
@@ -965,22 +1004,37 @@
       }
     },
     "news_page": {
-      "page_title": "الأخبار",
+      "page_title": "الأخبار والمستجدات",
       "total_news": "{count} خبر",
       "filters": "تصفية",
       "new_news": "خبر جديد",
-      "search_placeholder": "بحث...",
-      "all_sectors": "كل القطاعات",
+      "search_placeholder": "بحث في الأخبار...",
+      "all_sectors": "جميع القطاعات",
       "reset": "إعادة تعيين",
       "no_news": "لا توجد أخبار",
-      "no_results": "لا توجد نتائج",
-      "create_first": "قم بإنشاء أول خبر",
+      "no_results": "لم يتم العثور على نتائج",
+      "create_first": "كن أول من ينشر خبراً",
       "highlight": "مميز",
       "view_details": "عرض التفاصيل",
       "edit": "تعديل",
       "delete": "حذف",
       "views": "{count} مشاهدة",
-      "pagination": "صفحة {page} من {totalPages} ({total})",
+      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
+      "modal": {
+        "title": "تفاصيل الخبر",
+        "resume": "الملخص",
+        "no_resume": "لا يوجد ملخص",
+        "sector": "القطاع",
+        "views": "المشاهدات",
+        "establishment": "المؤسسة",
+        "commune": "الجماعة",
+        "created_on": "أنشئ في {date}",
+        "change_status": "تغيير الحالة",
+        "view_online": "عرض على الموقع",
+        "remove_highlight": "إزالة التمييز",
+        "add_highlight": "تمييز الخبر",
+        "delete": "حذف الخبر"
+      },
       "statuses": {
         "BROUILLON": "مسودة",
         "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
@@ -989,34 +1043,19 @@
         "DEPUBLIEE": "غير منشور",
         "ARCHIVEE": "مؤرشف"
       },
-      "modal": {
-        "title": "تفاصيل الخبر",
-        "resume": "ملخص",
-        "no_resume": "لا يوجد ملخص",
-        "sector": "القطاع",
-        "views": "المشاهدات",
-        "created_on": "أنشئ في {date}",
-        "change_status": "تغيير الحالة",
-        "view_online": "عرض على الموقع",
-        "add_highlight": "إضافة للمميز",
-        "remove_highlight": "إزالة من المميز",
-        "delete": "حذف الخبر"
-      },
       "messages": {
-        "loading_error": "خطأ في التحميل",
-        "status_changed": "تم تغيير الحالة إلى {status}",
-        "error": "حدث خطأ",
-        "highlight_removed": "تمت الإزالة من المميز",
-        "highlight_added": "تمت الإضافة للمميز",
-        "delete_confirm": "هل أنت متأكد من الحذف؟",
-        "deleted": "تم الحذف بنجاح"
-      },
-      "page": "صفحة",
-      "limit": "حد"
+        "loading_error": "خطأ أثناء التحميل",
+        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
+        "highlight_removed": "تمت إزالة التمييز بنجاح",
+        "highlight_added": "تم تمييز الخبر بنجاح",
+        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
+        "deleted": "تم الحذف بنجاح",
+        "error": "حدث خطأ غير متوقع"
+      }
     },
     "events_page": {
-      "title": "إدارة أحداث",
-      "subtitle": "إدارة الأحداث ({count})",
+      "title": "إدارة الأحداث",
+      "subtitle": "{count} حدث إجمالي",
       "filters": "تصفية",
       "create": "حدث جديد",
       "stats": {
@@ -1024,21 +1063,14 @@
         "pending": "قيد الانتظار",
         "published": "منشورة",
         "in_progress": "جارية",
-        "closed": "مغلقة"
+        "closed": "منتهية"
       },
       "filter_labels": {
-        "search": "بحث...",
-        "all_statuses": "كل الحالات",
-        "all_sectors": "كل القطاعات",
-        "all_muncipalities": "كل الجماعات",
+        "search": "بحث بالاسم...",
+        "all_statuses": "جميع الحالات",
+        "all_sectors": "جميع القطاعات",
+        "all_muncipalities": "جميع الجماعات",
         "reset": "إعادة تعيين"
-      },
-      "status": {
-        "pending": "قيد الانتظار",
-        "published": "منشورة",
-        "in_progress": "جارية",
-        "closed": "مغلقة",
-        "rejected": "مرفوضة"
       },
       "table": {
         "event": "الحدث",
@@ -1049,103 +1081,27 @@
         "registrations": "التسجيلات",
         "actions": "إجراءات"
       },
+      "status": {
+        "pending": "قيد الانتظار",
+        "published": "منشور",
+        "in_progress": "جارية",
+        "closed": "منتهية",
+        "rejected": "مرفوض"
+      },
       "actions": {
         "view": "عرض",
         "edit": "تعديل",
-        "validate": "تصديق",
+        "validate": "قبول",
         "reject": "رفض",
         "close": "إغلاق"
       },
-      "empty": "لا توجد أحداث",
+      "empty": "لا توجد أحداث مطابقة للبحث",
       "messages": {
-        "reject_reason": "سبب الرفض:",
-        "reject_error": "يرجى تقديم سبب للرفض (10 أحرف على الأقل)",
-        "validated": "تم التصديق بنجاح",
-        "rejected": "تم الرفض",
-        "error": "حدث خطأ"
-      },
-      "communeId": "الجماعة",
-      "dateDebut": "تاريخ البداية",
-      "dateFin": "تاريخ النهاية",
-      "page": "صفحة",
-      "limit": "حد",
-      "create_modal": {
-        "title": "فعالية جديدة",
-        "step_indicator": "المرحلة {current} من {total}",
-        "steps": {
-          "info": "المعلومات",
-          "location": "الموقع",
-          "participation": "المشاركة",
-          "media": "الوسائط"
-        },
-        "form": {
-          "title_label": "العنوان",
-          "title_placeholder": "مثال: دورة تكوينية...",
-          "desc_label": "الوصف",
-          "desc_placeholder": "تفاصيل الفعالية...",
-          "sector_label": "القطاع",
-          "category_label": "الفئة",
-          "select_placeholder": "اختر...",
-          "commune_label": "الجماعة",
-          "establishment_label": "المؤسسة (اختياري)",
-          "location_label": "المكان بدقة",
-          "location_placeholder": "مثال: القاعة المتعددة التخصصات، الملعب البلدي...",
-          "map_label": "الموقع على الخريطة",
-          "start_date": "تاريخ البدء",
-          "end_date": "تاريخ الانتهاء",
-          "start_time": "وقت البدء",
-          "end_time": "وقت الانتهاء",
-          "max_capacity": "الطاقة الاستيعابية القصوى",
-          "capacity_placeholder": "مثال: 100",
-          "is_free": "فعالية مجانية",
-          "price": "الثمن (درهم)",
-          "registration_link": "رابط التسجيل (خارجي)",
-          "photos_label": "صور الفعالية",
-          "upload_text": "انقر أو اسحب الصور هنا",
-          "upload_hint": "PNG, JPG حتى 10 ميجابايت",
-          "summary_title": "ملخص الفعالية",
-          "summary": {
-            "title": "العنوان",
-            "sector": "القطاع",
-            "date": "التاريخ",
-            "location": "المكان",
-            "price": "الثمن",
-            "photos": "الصور"
-          }
-        },
-        "buttons": {
-          "save_draft": "حفظ كمسودة",
-          "cancel": "إلغاء",
-          "prev": "السابق",
-          "next": "التالي",
-          "create": "إنشاء الفعالية"
-        },
-        "errors": {
-          "title_required": "العنوان مطلوب",
-          "desc_required": "الوصف مطلوب",
-          "category_required": "الفئة مطلوبة",
-          "commune_required": "الجماعة مطلوبة",
-          "location_required": "المكان مطلوب",
-          "date_required": "التاريخ مطلوب",
-          "price_required": "الثمن مطلوب"
-        },
-        "categories": {
-          "conf": "مؤتمر",
-          "formation": "تكوين",
-          "atelier": "ورشة عمل",
-          "festival": "مهرجان",
-          "competition": "مسابقة",
-          "spectacle": "عرض",
-          "exposition": "معرض",
-          "open_day": "أبواب مفتوحة",
-          "campaign": "حملة",
-          "rencontre": "لقاء",
-          "ceremony": "حفل",
-          "autre": "أخرى"
-        }
-      },
-      "form": {
-        "sector": "قطاع الحدث"
+        "reject_reason": "يرجى إدخال سبب الرفض (10 أحرف على الأقل)",
+        "reject_error": "سبب الرفض قصير جداً",
+        "validated": "تم قبول الحدث بنجاح",
+        "rejected": "تم رفض الحدث",
+        "error": "حدث خطأ أثناء العملية"
       }
     },
     "users_page": {
@@ -1182,8 +1138,8 @@
         "SANTE": "الصحة",
         "SPORT": "الرياضة",
         "SOCIAL": "الشؤون الاجتماعية",
-        "CULTUREL": "الثقافة",
-        "AUTRE": "آخر"
+        "CULTUREL": "ثقافي",
+        "AUTRE": "أخرى"
       },
       "create_modal": {
         "title": "مستخدم جديد",
@@ -3120,7 +3076,7 @@
   },
   "admin_campagnes": {
     "title": "إدارة الحملات",
-    "subtitle": "إدارة حملات التوعية ({count})",
+    "subtitle": "إدارة حملات التوعية ({total})",
     "filters": "تصفية",
     "new_campaign": "حملة جديدة",
     "reset": "إعادة تعيين",

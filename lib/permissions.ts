@@ -50,8 +50,9 @@ export async function getEffectiveUserPermissions(userId: number): Promise<Permi
 
   if (!user) return [];
 
-  // 2. Permissions implicites du rôle
-  const rolePermissions = ROLE_DEFAULT_PERMISSIONS[user.role] || [];
+  // 2. Permissions implicites du rôle normalization
+  const role = user.role?.trim().toUpperCase();
+  const rolePermissions = ROLE_DEFAULT_PERMISSIONS[role] || [];
 
   // 3. Fusionner et dédupliquer
   return Array.from(new Set([...rolePermissions, ...dbPermissions]));
@@ -71,8 +72,13 @@ export async function checkPermission(userId: number, permissionCode: Permission
 
   if (!user) return false;
 
-  // 1. Super Admin Bypass
-  if (user.role === 'SUPER_ADMIN') return true;
+  // 0. Normalize role for robust checking
+  const role = user.role?.trim().toUpperCase();
+
+  // 1. Super Admin/Governor Bypass for read actions
+  if (role === 'SUPER_ADMIN') return true;
+  if (role === 'GOUVERNEUR' && permissionCode.endsWith('.read')) return true;
+  if (role === 'GOUVERNEUR' && permissionCode.endsWith('.read.all')) return true;
 
   // 2. Check DB (UserPermission)
   const count = await prisma.userPermission.count({
@@ -93,10 +99,8 @@ export async function checkPermission(userId: number, permissionCode: Permission
   if (count > 0) return true;
 
   // 3. Check Role Default Permissions (Implicit)
-  const rolePermissions = ROLE_DEFAULT_PERMISSIONS[user.role] || [];
+  const rolePermissions = ROLE_DEFAULT_PERMISSIONS[role] || [];
   if (rolePermissions.includes(permissionCode)) return true;
-  
-
 
   return false;
 }

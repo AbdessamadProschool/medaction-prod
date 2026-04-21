@@ -630,7 +630,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                    <FileBadge size={18} className="text-blue-500" /> {t('labels.technical_dossier')}
                                </h3>
                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                   {etablissement.medias?.filter((m: any) => !['IMAGE', 'image'].includes(m.type)).map((doc: any, i: number) => (
+                                   {(Array.isArray(etablissement.medias) ? etablissement.medias : []).filter((m: any) => !['IMAGE', 'image'].includes(m.type)).map((doc: any, i: number) => (
                                        <div key={i} className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-900 rounded-[2rem] group cursor-pointer border border-transparent hover:border-blue-100 dark:hover:border-blue-500/20 hover:shadow-md transition-all" onClick={() => window.open(doc.urlPublique, '_blank')}>
                                            <div className="flex items-center gap-4 min-w-0">
                                                <div className="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all"><FileText size={20} /></div>
@@ -639,7 +639,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                            <Download size={18} className="text-slate-300 group-hover:text-blue-600 transition-colors shrink-0" />
                                        </div>
                                    ))}
-                                   {(etablissement.medias?.filter((m: any) => !['IMAGE', 'image'].includes(m.type)).length === 0) && (
+                                   {(Array.isArray(etablissement.medias) ? etablissement.medias : []).filter((m: any) => !['IMAGE', 'image'].includes(m.type)).length === 0 && (
                                        <p className="text-center col-span-full py-10 text-slate-300 italic text-sm">{t('media.no_docs')}</p>
                                    )}
                                </div>
@@ -984,7 +984,14 @@ function MetricsHero({ icon: Icon, label, value, color, sub }: any) {
 function MediaCard({ src, label }: any) {
     return (
         <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden relative group cursor-pointer shadow-sm">
-            <img src={src} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={label} />
+            <img 
+                src={src} 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                alt={label} 
+                onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/64748b?text=Image+Indisponible';
+                }}
+            />
             <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                 <Eye className="text-white" size={24} />
             </div>

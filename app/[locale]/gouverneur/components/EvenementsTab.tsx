@@ -71,7 +71,7 @@ export default function EvenementsTab() {
     }
     const fetchAnnexes = async () => {
         try {
-            const res = await fetch(`/api/communes/${communeFilter}/annexes`);
+            const res = await fetch(`/api/annexes?communeId=${communeFilter}`);
             if (res.ok) {
                 const data = await res.json();
                 setAnnexes(data.data || []);
@@ -309,6 +309,9 @@ export default function EvenementsTab() {
                         <img 
                           src={item.image} 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          onError={(e) => {
+                             (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/f1f5f9/64748b?text=Image+Indisponible';
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-slate-300">
@@ -406,7 +409,13 @@ export default function EvenementsTab() {
               {/* Header with High Contrast Background Image */}
               <div className="relative h-64 md:h-80 bg-slate-900 flex items-end p-10 overflow-hidden flex-shrink-0 shadow-inner">
                 {selectedItem.image && (
-                   <img src={selectedItem.image} className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay" />
+                   <img 
+                      src={selectedItem.image} 
+                      className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40" />
                 <div className="relative z-10 w-full">

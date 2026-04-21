@@ -322,7 +322,8 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     'bilans.read',
     'stats.view.global', 'stats.view.secteur', 'stats.view.commune', 'stats.view.etablissement',
     'reports.export',
-    'map.view.full'
+    'map.view.full',
+    'reclamations.read'
   ] as PermissionCode[]
 };
 

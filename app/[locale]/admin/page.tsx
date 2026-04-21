@@ -293,8 +293,8 @@ export default function AdminDashboard() {
       const res = await fetch('/api/admin/stats');
       if (res.ok) {
         const data = await res.json();
-        setStats(data.stats);
-        setChartData(data.charts);
+        setStats(data.data.stats);
+        setChartData(data.data.charts);
       }
     } catch (error) {
       console.error('Erreur chargement dashboard:', error);
@@ -406,7 +406,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Alerts Section */}
-      {stats?.evenements.aCloturer && stats.evenements.aCloturer > 0 && (
+      {stats?.evenements?.aCloturer && stats.evenements.aCloturer > 0 && (
         <motion.div variants={itemVariants} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
@@ -432,42 +432,42 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title={t('metrics.users')}
-          value={stats?.utilisateurs.total ?? 0}
-          change={stats?.utilisateurs.variation ?? 0}
-          changeType={stats?.utilisateurs.variation && stats.utilisateurs.variation > 0 ? 'up' : 'neutral'}
+          value={stats?.utilisateurs?.total ?? 0}
+          change={stats?.utilisateurs?.variation ?? 0}
+          changeType={stats?.utilisateurs?.variation && stats.utilisateurs.variation > 0 ? 'up' : 'neutral'}
           icon={Users}
           gradient="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
-          subValue={stats?.utilisateurs.nouveaux ?? 0}
+          subValue={stats?.utilisateurs?.nouveaux ?? 0}
           subLabel={t('metrics.new_this_month')}
         />
         <MetricCard
           title={t('metrics.establishments')}
-          value={stats?.etablissements.total ?? 0}
-          change={stats?.etablissements.variation ?? 0}
-          changeType={stats?.etablissements.variation && stats.etablissements.variation > 0 ? 'up' : 'neutral'}
+          value={stats?.etablissements?.total ?? 0}
+          change={stats?.etablissements?.variation ?? 0}
+          changeType={stats?.etablissements?.variation && stats.etablissements.variation > 0 ? 'up' : 'neutral'}
           icon={Building2}
           gradient="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
-          subValue={stats?.etablissements.valides ?? 0}
+          subValue={stats?.etablissements?.valides ?? 0}
           subLabel={t('metrics.validated')}
         />
         <MetricCard
           title={t('metrics.events')}
-          value={stats?.evenements.total ?? 0}
-          change={stats?.evenements.variation ?? 0}
-          changeType={stats?.evenements.variation && stats.evenements.variation > 0 ? 'up' : 'neutral'}
+          value={stats?.evenements?.total ?? 0}
+          change={stats?.evenements?.variation ?? 0}
+          changeType={stats?.evenements?.variation && stats.evenements.variation > 0 ? 'up' : 'neutral'}
           icon={Calendar}
           gradient="from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]"
-          subValue={stats?.evenements.enCours ?? 0}
+          subValue={stats?.evenements?.enCours ?? 0}
           subLabel={t('metrics.in_progress')}
         />
         <MetricCard
           title={t('metrics.reclamations')}
-          value={stats?.reclamations.total ?? 0}
+          value={stats?.reclamations?.total ?? 0}
           change={reclamationVariation}
           changeType={reclamationVariation > 0 ? 'up' : reclamationVariation < 0 ? 'down' : 'neutral'}
           icon={MessageSquare}
           gradient="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
-          subValue={stats?.reclamations.enAttente ?? 0}
+          subValue={stats?.reclamations?.enAttente ?? 0}
           subLabel={t('metrics.pending')}
         />
       </div>
@@ -485,8 +485,8 @@ export default function AdminDashboard() {
             icon={MessageSquare}
             href="/admin/reclamations"
             color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
-            count={stats?.reclamations.enAttente}
-            urgent={!!(stats?.reclamations.enAttente && stats.reclamations.enAttente > 0)}
+            count={stats?.reclamations?.enAttente}
+            urgent={!!(stats?.reclamations?.enAttente && stats.reclamations.enAttente > 0)}
           />
           <QuickActionCard
             title={t('quick_actions.validation')}

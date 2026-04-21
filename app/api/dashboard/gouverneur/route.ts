@@ -1,9 +1,6 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
-import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandler(async (req: NextRequest) => {
   try {
     const session = await getServerSession(authOptions);
     const { searchParams } = new URL(req.url);
@@ -321,7 +318,7 @@ export async function GET(req: NextRequest) {
         };
     }).sort((a,b) => b.total - a.total);
 
-    return NextResponse.json({
+    return successResponse({
         communes: { total: communesCount, actives: communesCount, details: communeStats },
       reclamations: {
         total: reclamationsTotal,
@@ -330,7 +327,7 @@ export async function GET(req: NextRequest) {
         resolues: reclamationsResolues,
         rejetees: reclamationsRejetees,
         tauxResolution,
-        urgentes: reclamationsEnAttente + reclamationsEnCours, // Generalized urgency
+        urgentes: reclamationsEnAttente + reclamationsEnCours,
         nouveauCetteSemaine: reclamationsNouvelles,
       },
       etablissements: {
@@ -346,7 +343,6 @@ export async function GET(req: NextRequest) {
       projects: {
         active: projectsCount,
       },
-      // NEW: Real KPIs for Governor Dashboard
       citoyens: {
         total: citoyensTotal,
         actifsCeMois: citoyensActifsCeMois,
@@ -364,12 +360,4 @@ export async function GET(req: NextRequest) {
       alerts: alerts,
       recentActivity: recentActivity
     });
-
-  } catch (error) {
-    console.error('Erreur dashboard gouverneur:', error);
-    return NextResponse.json(
-      { error: 'Une erreur interne est survenue lors du chargement du dashboard' },
-      { status: 500 }
-    );
-  }
-}
+});

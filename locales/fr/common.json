@@ -2069,7 +2069,9 @@
         "view_online": "Voir en ligne",
         "add_highlight": "Mettre à la une",
         "remove_highlight": "Retirer de la une",
-        "delete": "Supprimer l'actualité"
+        "delete": "Supprimer l'actualité",
+        "commune": "Commune",
+        "establishment": "Établissement"
       },
       "messages": {
         "loading_error": "Erreur de chargement",
@@ -2113,9 +2115,9 @@
       "status": {
         "draft": "Brouillon",
         "pending": "En attente",
-        "published": "Publié",
-        "rejected": "Rejeté",
-        "archived": "Archivé"
+        "published": "Publiée",
+        "rejected": "Rejetée",
+        "archived": "Archivée"
       },
       "empty": {
         "title": "Aucun article trouvé",
@@ -2154,7 +2156,25 @@
         "actions": "Actions"
       },
       "page": "Page",
-      "limit": "Limite"
+      "limit": "Limite",
+      "modal": {
+        "title": "Détails de l'article",
+        "resume": "Résumé",
+        "views": "Vues",
+        "likes": "Likes",
+        "author": "Auteur",
+        "change_status": "Changer le statut",
+        "toggle_featured": "Mettre en avant",
+        "toggle_featured_off": "Retirer de la une",
+        "delete": "Supprimer l'article"
+      },
+      "messages": {
+        "status_changed": "Statut mis à jour",
+        "highlighted": "Mis en avant avec succès",
+        "unhighlighted": "Retiré de la une",
+        "deleted": "Supprimé avec succès",
+        "confirm_delete": "Supprimer cet article ?"
+      }
     },
     "news": {
       "create_title": "Nouvelle Actualité",
@@ -2653,7 +2673,9 @@
         "admin_response": "Réponse de l'administration",
         "response_placeholder": "Saisir une réponse officielle...",
         "change_status": "Changer le statut"
-      }
+      },
+      "reset_filters": "Réinitialiser",
+      "no_results": "Aucun résultat pour votre recherche."
     },
     "establishments_page": {
       "page_title": "Gestion des Etablissements",

@@ -1,12 +1,4 @@
 {
-  "decision_center": {
-    "status": {
-      "en_action": "جاري التنفيذ",
-      "cloturee": "مغلق",
-      "validee": "تم التحقق",
-      "en_attente": "قيد الانتظار"
-    }
-  },
   "governor": {
     "sidebar": {
       "title": "منصة الحاكم",
@@ -5072,6 +5064,12 @@
     }
   },
   "decision_center": {
+    "status": {
+      "en_action": "جاري التنفيذ",
+      "cloturee": "مغلق",
+      "validee": "تم التحقق",
+      "en_attente": "قيد الانتظار"
+    },
     "tabs": {
       "overview": "نظرة عامة",
       "infos": "معلومات",

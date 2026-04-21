@@ -1191,23 +1191,25 @@ export default function GouverneurDashboard() {
                              
                              <div className="flex flex-col md:flex-row items-center gap-8">
                                 <div className="h-64 w-full md:w-1/2 relative">
-                                   <ResponsiveContainer width="100%" height="100%" minHeight={0}>
+                                   <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                       <RePieChart>
-                                         <Pie 
-                                            data={s.charts.compliance} 
-                                            innerRadius={65} 
-                                            outerRadius={85} 
-                                            paddingAngle={8} 
-                                            dataKey="value"
-                                            stroke="none"
-                                         >
-                                            {s?.charts?.compliance && Array.isArray(s.charts.compliance) && s.charts.compliance.map((entry: any, index: number) => (
-                                               <Cell key={`cell-${index}`} fill={entry.color} />
-                                            ))}
-                                         </Pie>
-                                         <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
-                                      </RePieChart>
-                                   </ResponsiveContainer>
+                                      <Pie
+                                        data={Array.isArray(s?.charts?.compliance) ? s.charts.compliance : []}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={70}
+                                        outerRadius={90}
+                                        paddingAngle={8} 
+                                        dataKey="value"
+                                        stroke="none"
+                                     >
+                                        {s?.charts?.compliance && Array.isArray(s.charts.compliance) && s.charts.compliance.map((entry: any, index: number) => (
+                                           <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                     </Pie>
+                                     <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none' }} />
+                                  </RePieChart>
+                               </ResponsiveContainer>
                                    {/* Center Key Metric */}
                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                       <span className="text-3xl font-black text-slate-900">

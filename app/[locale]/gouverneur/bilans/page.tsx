@@ -144,23 +144,27 @@ export default function GouverneurBilansPage() {
 
       if (evtRes.ok) {
         const evtData = await evtRes.json();
-        setEvenements(evtData.data || []);
-        setStats(evtData.stats);
+        const payloadData = evtData.data || {};
+        setEvenements(Array.isArray(payloadData) ? payloadData : (payloadData.data || []));
+        setStats(payloadData.stats || null);
       }
 
       if (actRes.ok) {
         const actData = await actRes.json();
-        setActivites(actData.data || []);
+        const payloadData = actData.data || {};
+        setActivites(Array.isArray(payloadData) ? payloadData : (payloadData.data || []));
       }
 
       if (campRes.ok) {
         const campData = await campRes.json();
-        setCampagnes(campData.data || []);
+        const payloadData = campData.data || {};
+        setCampagnes(Array.isArray(payloadData) ? payloadData : (payloadData.data || []));
       }
 
       if (newsRes.ok) {
         const newsData = await newsRes.json();
-        setActualites(newsData.data || []);
+        const payloadData = newsData.data || {};
+        setActualites(Array.isArray(payloadData) ? payloadData : (payloadData.data || []));
       }
     } catch (error) {
       console.error('Erreur chargement bilans:', error);

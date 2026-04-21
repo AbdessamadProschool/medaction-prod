@@ -1,12 +1,4 @@
 {
-  "decision_center": {
-    "status": {
-      "en_action": "En cours",
-      "cloturee": "Clôturé",
-      "validee": "Validé",
-      "en_attente": "En attente"
-    }
-  },
   "governor": {
     "sidebar": {
       "title": "Plateforme du Gouverneur",
@@ -3495,6 +3487,12 @@
     }
   },
   "decision_center": {
+    "status": {
+      "en_action": "En cours",
+      "cloturee": "Clôturé",
+      "validee": "Validé",
+      "en_attente": "En attente"
+    },
     "tabs": {
       "overview": "Vue Globale",
       "infos": "Informations",

@@ -407,35 +407,35 @@ export default function EvenementsTab() {
               className="bg-white rounded-[3rem] shadow-2xl max-w-5xl w-full max-h-full overflow-hidden flex flex-col"
             >
               {/* Header with High Contrast Background Image */}
-              <div className="relative h-64 md:h-80 bg-slate-900 flex items-end p-10 overflow-hidden flex-shrink-0 shadow-inner">
+              <div className="relative h-40 md:h-48 bg-slate-900 flex items-center justify-center p-8 overflow-hidden flex-shrink-0 shadow-inner text-center">
                 {selectedItem.image && (
                    <img 
                       src={selectedItem.image} 
-                      className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay" 
+                      className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay blur-[2px]" 
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
                    />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40" />
-                <div className="relative z-10 w-full">
-                  <div className="flex gap-3 mb-5">
-                    <span className="px-4 py-2 text-[10px] font-black rounded-xl bg-white/10 border border-white/20 text-white uppercase tracking-widest backdrop-blur-md">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-900/30" />
+                <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center">
+                  <div className="flex gap-3 mb-4 justify-center">
+                    <span className="px-4 py-1.5 text-[10px] font-black rounded-lg bg-white/10 border border-white/20 text-white uppercase tracking-widest backdrop-blur-md">
                         {STATUT_CONFIG[String(selectedItem.statut)]?.label || selectedItem.statut}
                     </span>
-                    <span className="px-4 py-2 text-[10px] font-black rounded-xl bg-gov-blue/90 border border-white/20 text-white uppercase tracking-widest shadow-lg shadow-gov-blue/40">
+                    <span className="px-4 py-1.5 text-[10px] font-black rounded-lg bg-gov-blue/90 border border-white/20 text-white uppercase tracking-widest shadow-lg shadow-gov-blue/40">
                         {selectedItem.tag}
                     </span>
                   </div>
-                  <h2 className="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-lg">{selectedItem.titre}</h2>
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white leading-snug drop-shadow-lg max-w-3xl">{selectedItem.titre}</h2>
                 </div>
-                <button onClick={() => setSelectedItem(null)} className="absolute top-8 right-8 w-14 h-14 bg-white/10 hover:bg-white/30 rounded-full flex items-center justify-center text-white backdrop-blur-md transition-all border border-white/20 shadow-xl">
-                  <X size={28} />
+                <button onClick={() => setSelectedItem(null)} className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/30 rounded-full flex items-center justify-center text-white backdrop-blur-md transition-all border border-white/20 shadow-xl">
+                  <X size={24} />
                 </button>
               </div>
 
               {/* Body with High Contrast Text */}
-              <div className="p-8 md:p-12 overflow-y-auto bg-slate-50 flex-1 grid md:grid-cols-3 gap-10 custom-scrollbar">
+              <div className="p-6 md:p-10 overflow-y-auto bg-slate-50 flex-1 grid md:grid-cols-3 gap-8 custom-scrollbar">
                    <div className="md:col-span-2 space-y-10">
                       <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 relative">
                          <div className="absolute top-10 -left-1.5 w-3 h-12 bg-gov-blue rounded-r-lg" />

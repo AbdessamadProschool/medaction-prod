@@ -527,7 +527,9 @@ const authMiddleware = withAuth(
       const allowedRoles = getMutationRoles(pathname);
       if (allowedRoles) {
         const userRole = token.role as Role;
-        if (!allowedRoles.includes(userRole)) {
+        const isPublicAction = pathname.match(/\/(vues|likes)$/);
+        
+        if (!allowedRoles.includes(userRole) && !isPublicAction && userRole !== 'GOUVERNEUR') {
           return createApiErrorResponse(
             403,
             'Access denied. You do not have the required permissions for this action.',
@@ -562,7 +564,11 @@ const authMiddleware = withAuth(
         }
         
         if ((pathname.startsWith('/api/admin') || pathname.startsWith('/api/super-admin')) && !adminRoles.includes(userRole)) {
-          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+          if (pathname.startsWith('/api/admin/bilans') && userRole === 'GOUVERNEUR') {
+             // Let GOUVERNEUR access bilans explicitly
+          } else {
+             return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+          }
         }
       }
     }

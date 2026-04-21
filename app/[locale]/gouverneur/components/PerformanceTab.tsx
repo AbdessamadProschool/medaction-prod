@@ -55,11 +55,15 @@ export default function PerformanceTab() {
         const res = await fetch('/api/gouverneur/performance');
         if (res.ok) {
           const json = await res.json();
-          const performanceData = json?.data ?? json ?? [];
+          // The API returns { success: true, data: { data: [...], pagination: { ... } } }
+          const performanceData = json?.data?.data || (Array.isArray(json?.data) ? json.data : (json?.data ?? []));
           setData(Array.isArray(performanceData) ? performanceData : []);
+        } else {
+          throw new Error(`API returned ${res.status}`);
         }
       } catch (err) {
-        toast.error('Erreur lors du chargement des performances');
+        console.error('Performance Tab Fetch Error:', err);
+        toast.error(t('errors.fetch_failed') || 'Erreur lors du chargement des performances');
       } finally {
         setLoading(false);
       }

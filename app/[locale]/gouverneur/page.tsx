@@ -289,12 +289,25 @@ export default function GouverneurDashboard() {
 
       if (statsRes.ok) {
         const data = await statsRes.json();
-        setStats(data.data);
+        if (data.success && data.data) {
+          setStats(data.data);
+        } else {
+          console.error('Invalid stats data format:', data);
+          toast.error(t('errors.invalid_data') || 'Données invalides reçues du serveur');
+        }
+      } else {
+        const errorData = await statsRes.json().catch(() => ({}));
+        console.error('Stats fetch failed:', statsRes.status, errorData);
+        toast.error(`${t('errors.fetch_failed')} (${statsRes.status})`);
       }
-      if (alertsRes.ok) setAlerts((await alertsRes.json()).data || []);
+
+      if (alertsRes.ok) {
+        setAlerts((await alertsRes.json()).data || []);
+      }
       
     } catch (err) {
-      console.error(err);
+      console.error('Dashboard Fetch Error:', err);
+      toast.error(t('errors.server_error') || 'Erreur de communication avec le serveur');
     } finally {
       setLoading(false);
       setRefreshing(false);

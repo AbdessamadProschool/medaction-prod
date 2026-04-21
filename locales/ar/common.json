@@ -1,4 +1,8 @@
 {
+  "locale": {
+    "code": "ar",
+    "dir": "rtl"
+  },
   "governor": {
     "sidebar": {
       "title": "منصة الحاكم",
@@ -138,6 +142,13 @@
         "resolution_rate": "نسبة المعالجة",
         "participations": "المشاركة المواطنة",
         "active_projects": "مشاريع نشطة",
+        "satisfaction_suffix": "/ 5.0",
+        "evaluations_count": "{count} تقييمات",
+        "no_evaluations": "لا توجد تقييمات",
+        "resolutions_count": "{resolues}/{total} محلولة",
+        "active_events_count": "{count} فعاليات نشطة",
+        "active_users": "{count} نشط هذا الشهر",
+        "no_data": "بيانات غير متوفرة",
         "sub": {
           "reclamations": "الشكايات",
           "engagement": "التفاعل",

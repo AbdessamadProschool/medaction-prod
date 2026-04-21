@@ -218,11 +218,11 @@ export default function EvenementsTab() {
               className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
             >
               <option value="">{isAr ? 'جميع القطاعات' : 'Tous les secteurs'}</option>
-              <option value="EDUCATION">EDUCATION</option>
-              <option value="SANTE">SANTE</option>
-              <option value="SPORT">SPORT</option>
-              <option value="CULTUREL">CULTUREL</option>
-              <option value="SOCIAL">SOCIAL</option>
+              <option value="EDUCATION">{isAr ? 'التعليم' : 'Éducation'}</option>
+              <option value="SANTE">{isAr ? 'الصحة' : 'Santé'}</option>
+              <option value="SPORT">{isAr ? 'الرياضة' : 'Sport'}</option>
+              <option value="CULTUREL">{isAr ? 'الثقافة' : 'Culturel'}</option>
+              <option value="SOCIAL">{isAr ? 'الاجتماعي' : 'Social'}</option>
             </select>
             <Tag className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
           </div>
@@ -374,7 +374,7 @@ export default function EvenementsTab() {
                 disabled={page === 1}
                 className="p-3 bg-slate-50 rounded-xl hover:bg-slate-900 hover:text-white disabled:opacity-30 transition-all shadow-sm"
               >
-                <ChevronLeft size={20} />
+                {isAr ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
               </button>
               <div className="text-xs font-black text-slate-900 tracking-[0.3em] uppercase">
                 {isAr ? `صفحة ${page} / ${totalPages}` : `Page ${page} / ${totalPages}`}
@@ -384,7 +384,7 @@ export default function EvenementsTab() {
                 disabled={page === totalPages}
                 className="p-3 bg-slate-50 rounded-xl hover:bg-slate-900 hover:text-white disabled:opacity-30 transition-all shadow-sm"
               >
-                <ChevronRight size={20} />
+                {isAr ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
               </button>
             </div>
           )}

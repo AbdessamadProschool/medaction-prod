@@ -838,7 +838,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                         <span className="text-[10px] font-black uppercase text-blue-500 bg-blue-500/10 px-3 py-1.5 rounded-full">{new Date(showBilan._date).toLocaleDateString(locale)}</span>
                                         {showBilan.statut && <span className={`text-[10px] font-black px-3 py-1.5 rounded-full ${showBilan.statut === 'CLOTUREE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-300'}`}>{showBilan.statut}</span>}
                                     </div>
-                                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900 dark:text-white break-words">{showBilan.titre || (showBilan._tag === 'COMMENT' ? t('media.citizen_watch') : t('media.institutional_action'))}</h3>
+                                    <h3 dir="auto" className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900 dark:text-white break-words">{showBilan.titre || (showBilan._tag === 'COMMENT' ? t('media.citizen_watch') : t('media.institutional_action'))}</h3>
                                 </div>
                                 <button onClick={() => setShowBilan(null)} className="w-10 h-10 bg-slate-200/50 hover:bg-red-500 hover:text-white dark:bg-white/5 rounded-full flex items-center justify-center transition-colors shrink-0">
                                     <X size={18} />
@@ -847,7 +847,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                             <div className="p-8 overflow-y-auto space-y-8 flex-1">
                                 <div>
                                     <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest flex items-center gap-2 mb-3"><AlignLeft size={14} /> {t('modal.description')}</h4>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{showBilan.bilanDescription || showBilan.description || showBilan.commentaireDeroulement || showBilan.commentaire || t('media.no_comment')}</p>
+                                    <p dir="auto" className="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{showBilan.bilanDescription || showBilan.description || showBilan.commentaireDeroulement || showBilan.commentaire || t('media.no_comment')}</p>
                                 </div>
                                 
                                 {showBilan.reponse && (

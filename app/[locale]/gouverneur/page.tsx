@@ -67,6 +67,10 @@ const InteractiveMap = dynamic(() => import('@/components/maps/InteractiveMap'),
 
 // Types
 interface Stats {
+  locale: {
+    code: string;
+    dir: 'ltr' | 'rtl';
+  };
   communes: { total: number; actives: number; details?: any[] };
   reclamations: { 
     total: number; 
@@ -593,7 +597,7 @@ export default function GouverneurDashboard() {
                          { 
                            label: t('overview.kpi.satisfaction'), 
                            value: s?.satisfaction?.moyenne?.toFixed(1) || '0.0', 
-                           sub: '/ 5.0', 
+                           sub: t('overview.kpi.satisfaction_suffix') || '/ 5.0', 
                            icon: Star, 
                            color: 'text-amber-500', 
                            bg: 'bg-amber-100',
@@ -610,7 +614,7 @@ export default function GouverneurDashboard() {
                            bg: 'bg-emerald-100',
                            action: () => setActiveTab('reclamations'),
                            tooltip: t('overview.kpi.tooltip.resolution') || 'Taux de résolution des réclamations',
-                           detail: `${s?.reclamations?.resolues || 0}/${s?.reclamations?.total || 0} résolues`
+                           detail: t('overview.kpi.resolutions_count', {resolues: s?.reclamations?.resolues || 0, total: s?.reclamations?.total || 0})
                          },
                          { 
                            label: t('overview.kpi.participations'), 
@@ -621,7 +625,7 @@ export default function GouverneurDashboard() {
                            bg: 'bg-blue-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.engagement') || 'Engagement citoyen (abonnements + participations)',
-                           detail: (s?.citoyens?.total || 0) > 0 ? `${s?.citoyens?.actifsCeMois || 0} actifs ce mois` : 'Données indisponibles'
+                           detail: (s?.citoyens?.total || 0) > 0 ? t('overview.kpi.active_users', {count: s?.citoyens?.actifsCeMois || 0}) : t('overview.kpi.no_data')
                          },
                          { 
                            label: t('overview.kpi.active_projects'), 
@@ -632,7 +636,7 @@ export default function GouverneurDashboard() {
                            bg: 'bg-purple-100',
                            action: () => setActiveTab('reports'),
                            tooltip: t('overview.kpi.tooltip.projects') || 'Campagnes et événements en cours',
-                           detail: `${s.evenements.enCours} événements actifs`
+                           detail: t('overview.kpi.active_events_count', {count: s.evenements.enCours})
                          },
                        ].map((kpi, i) => (
                          <motion.button 

@@ -117,19 +117,18 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
           {/* Rank 3 */}
           {top3[2] && <Top3Card item={top3[2]} rank={3} type="bronze" onClick={() => setSelectedItem(top3[2])} t={t} />}
         </div>
-      </div>
-
-      {/* 🚀 COMPACT FILTER BAR - Sticky */}
-      <div className="sticky top-24 z-30 max-w-7xl mx-auto px-6">
+      </div>      {/* 🚀 COMPACT FILTER BAR - Sticky */}
+      <div className="sticky top-24 z-20 max-w-7xl mx-auto px-6" dir="auto">
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl p-3 rounded-[2.5rem] shadow-2xl border border-white/50 dark:border-white/5 flex flex-col md:flex-row gap-2">
             <div className="relative flex-1 group">
-                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-500 transition-colors" />
+                <Search size={18} className={`${isRTL ? 'right-6' : 'left-6'} absolute top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-500 transition-colors`} />
                 <input 
                   type="text" 
                   placeholder={t('filters.search_placeholder')}
                   value={filter}
+                  dir="auto"
                   onChange={(e) => setFilter(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none font-bold text-sm"
+                  className={`w-full ${isRTL ? 'pr-14 pl-6' : 'pl-14 pr-6'} py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none font-bold text-sm`}
                 />
             </div>
             
@@ -142,8 +141,9 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
                     <option value="SOCIAL">{t('filters.sectors.SOCIAL')}</option>
                     <option value="CULTUREL">{t('filters.sectors.CULTUREL')}</option>
                 </select>
+
                 <select className="px-6 py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer" value={selectedCommune} onChange={(e) => { setSelectedCommune(e.target.value); setSelectedAnnexe(''); }}>
-                    <option value="">{t('filters.all_communes')}</option>
+                    <option value="">{t('filters.all_communes')}</option>ption>
                     {communes.map(c => {
                        const cStr = c as string;
                        const communeTranslations: any = {

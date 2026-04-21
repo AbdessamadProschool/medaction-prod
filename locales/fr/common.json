@@ -1,4 +1,8 @@
 {
+  "locale": {
+    "code": "fr",
+    "dir": "ltr"
+  },
   "governor": {
     "sidebar": {
       "title": "Plateforme du Gouverneur",
@@ -136,10 +140,17 @@
       },
       "public_portal_btn": "Voir le Portail Public",
       "kpi": {
-        "satisfaction": "Satisfaction Citoyenne",
+        "satisfaction": "Satisfaction",
         "resolution_rate": "Taux de Résolution",
-        "participations": "Participation Citoyenne",
-        "active_projects": "Projets Actifs",
+        "participations": "Engagement Citoyen",
+        "active_projects": "Actions Actives",
+        "satisfaction_suffix": "/ 5.0",
+        "evaluations_count": "{count} évaluations",
+        "no_evaluations": "Aucune évaluation",
+        "resolutions_count": "{resolues}/{total} résolues",
+        "active_events_count": "{count} événements actifs",
+        "active_users": "{count} actifs ce mois",
+        "no_data": "Données indisponibles",
         "sub": {
           "reclamations": "Réclamations",
           "engagement": "Engagement",

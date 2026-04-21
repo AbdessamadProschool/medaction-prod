@@ -453,6 +453,7 @@ export default function GouverneurDashboard() {
             <span className="font-bold">MÉDIOUNA ACTION</span>
          </div>
          <button 
+           onClick={() => setIsMobileNavOpen(true)}
            className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
          >
             <Menu size={24} />
@@ -1162,7 +1163,7 @@ export default function GouverneurDashboard() {
                                 </div>
                              </div>
                              <div className="h-64 w-full flex-1">
-                                <ResponsiveContainer width="100%" height="100%" minHeight={0}>
+                                <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                    <BarChart data={s.charts.auditTrends}>
                                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
@@ -1327,7 +1328,7 @@ export default function GouverneurDashboard() {
                           {/* Generator Card - Control Panel */}
                           <div className="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col border border-indigo-500/30 group">
                               <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay pointer-events-none"></div>
+                              <div className="absolute inset-0 bg-white/5 opacity-20 pointer-events-none"></div>
 
                               <div className="relative z-10 space-y-8">
                                   <div className="flex items-center gap-5">

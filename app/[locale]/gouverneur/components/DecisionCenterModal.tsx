@@ -514,7 +514,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                         { subject: t('radar.news'), A: Math.min(news * 15, 100), fullMark: 100 },
                                     ];
                                     return (
-                                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                             <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                                                 <PolarGrid stroke="#cbd5e1" strokeDasharray="4 4" />
                                                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#1e293b', fontSize: 11, fontWeight: '900' }} />
@@ -603,7 +603,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                                     {item.statut && <span className={`text-[10px] font-black px-3 py-1 rounded-full ${item.statut === 'CLOTUREE' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{t(`status.${item.statut.toLowerCase()}`)}</span>}
                                                </div>
                                                <h4 className="text-sm font-black uppercase mb-2 tracking-tight">{item.titre || (item._tag === 'COMMENT' ? t('media.citizen_watch') : t('media.institutional_action'))}</h4>
-                                               <p className="text-xs text-slate-500 dark:text-slate-400 italic font-medium leading-relaxed line-clamp-3">"{item.description || item.commentaire || t('media.no_comment')}"</p>
+                                               <p className="text-xs text-slate-500 dark:text-slate-400 italic font-medium leading-relaxed line-clamp-3">"{item.bilanDescription || item.description || item.commentaireDeroulement || item.commentaire || t('media.no_comment')}"</p>
                                                <div className="mt-4 text-[10px] font-black text-blue-400 uppercase flex items-center gap-2 group-hover:text-blue-600 transition-colors">
                                                     <BarChart3 size={14} /> {t('modal.open_details')}
                                                </div>
@@ -841,7 +841,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                             <div className="p-8 overflow-y-auto space-y-8 flex-1">
                                 <div>
                                     <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest flex items-center gap-2 mb-3"><AlignLeft size={14} /> {t('modal.description')}</h4>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{showBilan.description || showBilan.commentaire || t('media.no_comment')}</p>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{showBilan.bilanDescription || showBilan.description || showBilan.commentaireDeroulement || showBilan.commentaire || t('media.no_comment')}</p>
                                 </div>
                                 
                                 {showBilan.reponse && (

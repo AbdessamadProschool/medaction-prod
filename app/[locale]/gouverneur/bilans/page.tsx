@@ -348,7 +348,7 @@ export default function GouverneurBilansPage() {
         <div className="flex flex-wrap gap-2">
           {photos.map((photo, idx) => (
             <a key={idx} href={photo} target="_blank" rel="noopener noreferrer" className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 hover:border-emerald-500 transition-colors group">
-              <img src={photo} alt={`${title} - Photo ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+              <img src={photo} alt={`${title} - Photo ${idx + 1}`} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/64748b?text=Image+Indisponible'; }} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
             </a>
           ))}
         </div>
@@ -370,7 +370,7 @@ export default function GouverneurBilansPage() {
         <div className="flex flex-wrap gap-2">
           {images.map((media) => (
             <a key={media.id} href={media.urlPublique} target="_blank" rel="noopener noreferrer" className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 hover:border-emerald-500 transition-colors group">
-              <img src={media.urlPublique} alt={media.nomFichier} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+              <img src={media.urlPublique} alt={media.nomFichier} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/64748b?text=Image+Indisponible'; }} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
             </a>
           ))}
         </div>

@@ -450,7 +450,7 @@ export default function EvenementsTab() {
                            <h3 className="text-2xl font-black text-slate-900 mb-6">{isAr ? 'معرض الوسائط' : 'Galerie Médias'}</h3>
                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                               {selectedItem.raw.medias.slice(1).map((m: any, idx: number) => (
-                                 <img key={idx} src={m.urlPublique} className="rounded-2xl w-full aspect-square object-cover shadow-sm hover:scale-105 transition-transform" />
+                                 <img key={idx} src={m.urlPublique} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/64748b?text=Media+Indisponible'; }} className="rounded-2xl w-full aspect-square object-cover shadow-sm hover:scale-105 transition-transform" />
                               ))}
                            </div>
                         </div>

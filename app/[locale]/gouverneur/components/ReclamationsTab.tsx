@@ -359,7 +359,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                            <div className="grid grid-cols-2 gap-4">
                               {selectedRec.medias.map((m: any, idx: number) => (
                                 <div key={idx} className="group relative aspect-video rounded-2xl overflow-hidden border border-slate-200">
-                                   <img src={m.urlPublique || m.cheminFichier} alt="Preuve" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                   <img src={m.urlPublique || m.cheminFichier} alt="Preuve" onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/400x400/f1f5f9/64748b?text=Media+Indisponible'; }} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                       <a 
                                         href={m.urlPublique} 

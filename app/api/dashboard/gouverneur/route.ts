@@ -1,7 +1,10 @@
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/auth-options";
+import prisma from "@/lib/prisma";
 
 export const GET = withErrorHandler(async (req: NextRequest) => {
-  try {
     const session = await getServerSession(authOptions);
     const { searchParams } = new URL(req.url);
     const locale = searchParams.get('locale') || 'fr';
@@ -21,7 +24,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     const debutSemaine = new Date();
     debutSemaine.setDate(debutSemaine.getDate() - 7);
 
-    // --- 1. STATS GLOBALES (EXISTANTS) ---
+    // --- 1. STATS GLOBALES ---
     const communesCount = await prisma.commune.count();
     const etablissementsTotal = await prisma.etablissement.count();
 
@@ -49,19 +52,16 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     });
     const evenementsCeMois = await prisma.evenement.count({ where: { dateDebut: { gte: debutMois, lte: finMois } } });
     
-    // Projets Actifs (Proxy: Campagnes Actives + Événements En Cours)
+    // Projets Actifs
     const activeProjects = await prisma.campagne.count({ where: { isActive: true } });
     const projectsCount = activeProjects + evenementsEnCours;
 
-    // --- 1B. DONNÉES ADDITIONNELLES POUR KPIs RÉELS ---
-    
-    // Note moyenne globale de tous les établissements
+    // --- 1B. DONNÉES ADDITIONNELLES ---
     const avgRatingResult = await prisma.etablissement.aggregate({
       _avg: { noteMoyenne: true }
     });
     const averageSatisfaction = avgRatingResult._avg.noteMoyenne || 0;
     
-    // Statistiques citoyens
     const citoyensTotal = await prisma.user.count({ where: { role: 'CITOYEN' } });
     const citoyensActifsCeMois = await prisma.user.count({ 
       where: { role: 'CITOYEN', derniereConnexion: { gte: debutMois } } 
@@ -70,48 +70,46 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
       where: { role: 'CITOYEN', createdAt: { gte: debutSemaine } } 
     });
     
-    // Participations totales (abonnements + participations campagnes)
     const abonnementsTotal = await prisma.abonnementEtablissement.count();
     const participationsCampagnes = await prisma.participationCampagne.count();
     const totalEngagement = abonnementsTotal + participationsCampagnes;
     
-    // Performance par secteur (basée sur événements, évaluations, réclamations, actualités)
+    // Performance par secteur
     const secteurPerformance = await Promise.all(
       ['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL'].map(async (secteur) => {
-        const etabsInSecteur = await prisma.etablissement.count({ where: { secteur: secteur as import('@prisma/client').Secteur } });
+        const etabsInSecteur = await prisma.etablissement.count({ 
+            where: { secteur: secteur as any } 
+        });
         
-        // Count events including those in action or closed (for activity pulse)
         const eventsInSecteur = await prisma.evenement.count({ 
           where: { 
-            secteur: secteur as import('@prisma/client').Secteur, 
+            secteur: secteur as any, 
             statut: { in: ['PUBLIEE', 'EN_ACTION', 'CLOTUREE'] } 
           } 
         });
 
-        // Count published news for this sector
         const actualitesInSecteur = await prisma.actualite.count({
           where: { 
-            etablissement: { secteur: secteur as import('@prisma/client').Secteur },
+            etablissement: { secteur: secteur as any },
             isPublie: true 
           }
         });
 
         const reclamationsInSecteur = await prisma.reclamation.count({
-          where: { etablissement: { secteur: secteur as import('@prisma/client').Secteur } }
+          where: { etablissement: { secteur: secteur as any } }
         });
 
         const avgNoteInSecteur = await prisma.etablissement.aggregate({
-          where: { secteur: secteur as import('@prisma/client').Secteur },
+          where: { secteur: secteur as any },
           _avg: { noteMoyenne: true }
         });
         
-        // Score composite: (events * 10) + (actualites * 5) + (note * 15) - (reclamations * 2) 
         const score = Math.min(100, Math.max(0,
           (eventsInSecteur * 10) + 
           (actualitesInSecteur * 5) +
           ((avgNoteInSecteur._avg.noteMoyenne || 0) * 15) - 
           (reclamationsInSecteur * 2) +
-          50 // Base score
+          50 
         ));
         
         return {
@@ -126,21 +124,16 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
       })
     );
     
-    // Trier par score et ajouter le rang
     const sectorRankings = secteurPerformance
       .sort((a, b) => b.score - a.score)
       .map((s, idx) => ({ ...s, rank: idx + 1 }));
 
-    // --- 2. DATA POUR GRAPHIQUES (NEW) ---
-    
-    // A. Tendance des Audits (6 derniers mois)
-    // On compare les réclamations créées vs résolues par mois
+    // --- 2. DATA POUR GRAPHIQUES ---
     const monthNames = isAr 
        ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
        : ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     
     const auditTrends = [];
-    
     for (let i = 5; i >= 0; i--) {
         const d = new Date();
         d.setMonth(d.getMonth() - i);
@@ -156,21 +149,19 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
 
         auditTrends.push({
             name: monthNames[d.getMonth()],
-            audits: created,      // "Audits" as active issues identified
-            conformite: resolved, // "Conformité" as issues fixed
+            audits: created,      
+            conformite: resolved, 
         });
     }
 
-    // B. Conformité Globale (État Infrastructure)
     const infraStats = await prisma.etablissement.groupBy({
         by: ['etatInfrastructure'],
         _count: { id: true }
     });
     
-    // Map Prisma enum to chart categories
-    let infraConforme = 0; // EXCELLENT, BON
-    let infraAction = 0;   // MOYEN, A_RENOVER
-    let infraCritique = 0; // DEGRADE, DANGEREUX, null
+    let infraConforme = 0; 
+    let infraAction = 0;   
+    let infraCritique = 0; 
 
     infraStats.forEach(stat => {
         const c = stat._count.id;
@@ -183,8 +174,6 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
             case 'A_RENOVER':
                 infraAction += c;
                 break;
-            case 'DEGRADE':
-            case 'DANGEREUX':
             default:
                 infraCritique += c;
                 break;
@@ -197,10 +186,9 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         { name: isAr ? 'غير مطابق' : 'Non Conforme', code: 'NON_CONFORME', value: infraCritique, color: '#ef4444' },
     ];
 
-    // --- 3. ALERTES & FLASH INFO (NEW) ---
-    // Top 5 urgencies: Reclamations NON_AFFECTEE or Upcoming Events without details
+    // --- 3. ALERTES ---
     const recentAlertsRaw = await prisma.reclamation.findMany({
-        where: { statut: 'ACCEPTEE', affectationReclamation: 'NON_AFFECTEE' },
+        where: { statut: 'ACCEPTEE' },
         orderBy: { createdAt: 'desc' },
         take: 3,
         select: { id: true, titre: true, createdAt: true, categorie: true }
@@ -232,7 +220,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    // --- 4. RECENT ACTIVITY LOG (NEW: Mixed Timeline) ---
+    // --- 4. RECENT ACTIVITY LOG ---
     const recentReclamations = await prisma.reclamation.findMany({
         orderBy: { createdAt: 'desc' },
         take: 3,
@@ -260,7 +248,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
             subtitle: isAr ? `شكاية (${r.categorie || 'عامة'})` : `Réclamation (${r.categorie || 'Générale'})`,
             date: r.createdAt,
             status: r.statut || 'EN_ATTENTE',
-            icon: 'AlertTriangle', // icon name to map on frontend
+            icon: 'AlertTriangle',
             color: 'red'
         })),
         ...recentEvaluations.map(e => ({
@@ -286,11 +274,11 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 6);
 
 
-    // --- 5. COMMUNE BREAKDOWN (NEW: For territorial precision) ---
+    // --- 5. COMMUNE BREAKDOWN ---
     const reclamationsByCommune = await prisma.reclamation.groupBy({
         by: ['communeId'],
         _count: { id: true },
-        where: { statut: { not: 'REJETEE' } } // Only count active/accepted
+        where: { statut: { not: 'REJETEE' } }
     });
 
     const resolvedByCommune = await prisma.reclamation.groupBy({
@@ -306,7 +294,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     const communeStats = allCommunes.map(c => {
         const total = reclamationsByCommune.find(r => r.communeId === c.id)?._count.id || 0;
         const resolved = resolvedByCommune.find(r => r.communeId === c.id)?._count.id || 0;
-        const rate = total > 0 ? Math.round((resolved / total) * 100) : 100; // 100% if no issues
+        const rate = total > 0 ? Math.round((resolved / total) * 100) : 100;
 
         return {
             id: c.id,
@@ -320,44 +308,44 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
 
     return successResponse({
         communes: { total: communesCount, actives: communesCount, details: communeStats },
-      reclamations: {
-        total: reclamationsTotal,
-        enAttente: reclamationsEnAttente,
-        enCours: reclamationsEnCours,
-        resolues: reclamationsResolues,
-        rejetees: reclamationsRejetees,
-        tauxResolution,
-        urgentes: reclamationsEnAttente + reclamationsEnCours,
-        nouveauCetteSemaine: reclamationsNouvelles,
-      },
-      etablissements: {
-        total: etablissementsTotal,
-        parSecteur,
-      },
-      evenements: {
-        total: evenementsTotal,
-        aVenir: evenementsAVenir,
-        enCours: evenementsEnCours,
-        cetMois: evenementsCeMois,
-      },
-      projects: {
-        active: projectsCount,
-      },
-      citoyens: {
-        total: citoyensTotal,
-        actifsCeMois: citoyensActifsCeMois,
-        nouveauxCetteSemaine: citoyensNouveaux,
-      },
-      satisfaction: {
-        moyenne: Number(averageSatisfaction.toFixed(1)),
-        engagement: totalEngagement,
-      },
-      sectorRankings,
-      charts: {
-        auditTrends,
-        compliance: complianceData
-      },
-      alerts: alerts,
-      recentActivity: recentActivity
+        reclamations: {
+            total: reclamationsTotal,
+            enAttente: reclamationsEnAttente,
+            enCours: reclamationsEnCours,
+            resolues: reclamationsResolues,
+            rejetees: reclamationsRejetees,
+            tauxResolution,
+            urgentes: reclamationsEnAttente + reclamationsEnCours,
+            nouveauCetteSemaine: reclamationsNouvelles,
+        },
+        etablissements: {
+            total: etablissementsTotal,
+            parSecteur,
+        },
+        evenements: {
+            total: evenementsTotal,
+            aVenir: evenementsAVenir,
+            enCours: evenementsEnCours,
+            cetMois: evenementsCeMois,
+        },
+        projects: {
+            active: projectsCount,
+        },
+        citoyens: {
+            total: citoyensTotal,
+            actifsCeMois: citoyensActifsCeMois,
+            nouveauxCetteSemaine: citoyensNouveaux,
+        },
+        satisfaction: {
+            moyenne: Number(averageSatisfaction.toFixed(1)),
+            engagement: totalEngagement,
+        },
+        sectorRankings,
+        charts: {
+            auditTrends,
+            compliance: complianceData
+        },
+        alerts: alerts,
+        recentActivity: recentActivity
     });
 });

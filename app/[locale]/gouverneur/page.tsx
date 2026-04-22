@@ -163,12 +163,14 @@ export default function GouverneurDashboard() {
   };
 
   const handleAlertClick = (alert: AlertAction) => {
+     const idStr = String(alert.id);
+     const numericId = parseInt(idStr.includes('-') ? idStr.split('-')[1] : idStr);
+
      if (alert.type === 'RECLAMATION_ASSIGN') {
-        const idStr = String(alert.id);
-        const recId = parseInt(idStr.includes('-') ? idStr.split('-')[1] : idStr);
-        setSelectedReclamationId(recId);
+        setSelectedReclamationId(numericId);
         setActiveTab('reclamations');
      } else if (alert.type === 'EVENT_CLOSURE' || alert.type === 'ACTIVITY_REPORT') {
+        setHighlightedEventId(numericId);
         setActiveTab('activites');
      } else if (alert.type === 'EVENT_UPCOMING') {
         setActiveTab('map');
@@ -194,6 +196,7 @@ export default function GouverneurDashboard() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [aiInsights, setAiInsights] = useState<any>(null);
   const [recentReports, setRecentReports] = useState<any[]>([]);
+  const [highlightedEventId, setHighlightedEventId] = useState<number | null>(null);
 
   // Fetch Real Data on Mount
   useEffect(() => {
@@ -769,7 +772,7 @@ export default function GouverneurDashboard() {
                                 </div>
                              ) : (
                                alerts.map((alert, idx) => (
-                                  <button key={idx} className="w-full text-left p-4 border-b border-gray-50 hover:bg-slate-50 transition-colors flex items-start gap-3 relative group">
+                                  <button key={idx} onClick={() => handleAlertClick(alert)} className="w-full text-left p-4 border-b border-gray-50 hover:bg-slate-50 transition-colors flex items-start gap-3 relative group">
                                      <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
                                        alert.priorite === 'HAUTE' ? 'bg-red-500' : 
                                        alert.priorite === 'MOYENNE' ? 'bg-amber-500' : 'bg-blue-500'
@@ -1694,7 +1697,7 @@ export default function GouverneurDashboard() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                     <EvenementsTab />
+                     <EvenementsTab highlightId={highlightedEventId || undefined} />
                   </motion.div>
                )}
 

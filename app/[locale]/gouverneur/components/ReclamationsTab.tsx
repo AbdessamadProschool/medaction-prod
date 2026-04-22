@@ -127,6 +127,11 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
     if (initialSelectedId && reclamations.length > 0) {
       const found = reclamations.find(r => r.id === initialSelectedId);
       if (found) setSelectedRec(found);
+      
+      const element = document.getElementById(`rec-${initialSelectedId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
   }, [initialSelectedId, reclamations]);
 
@@ -218,7 +223,10 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => setSelectedRec(rec)}
-                className="group bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 hover:shadow-2xl hover:border-gov-blue/20 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full"
+                id={`rec-${rec.id}`}
+                className={`group bg-white rounded-[2.5rem] p-8 shadow-xl border transition-all cursor-pointer relative overflow-hidden flex flex-col h-full ${
+                   initialSelectedId === rec.id ? 'ring-4 ring-gov-blue ring-offset-4 border-gov-blue animate-pulse' : 'border-slate-100 hover:shadow-2xl hover:border-gov-blue/20'
+                }`}
               >
                 {/* Decorative Pattern */}
                 <div className="absolute top-0 right-0 w-48 h-48 bg-[url('/patterns/grid.png')] opacity-[0.03] rotate-12 pointer-events-none" />

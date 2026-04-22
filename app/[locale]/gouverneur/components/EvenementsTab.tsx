@@ -10,7 +10,7 @@ import {
 import { useTranslations, useLocale } from 'next-intl';
 import { SafeHTML } from '@/components/ui/SafeHTML';
 
-export default function EvenementsTab() {
+export default function EvenementsTab({ highlightId }: { highlightId?: number }) {
   const t = useTranslations('governor');
   const locale = useLocale();
   const isAr = locale === 'ar';
@@ -125,6 +125,16 @@ export default function EvenementsTab() {
     }, 500);
     return () => clearTimeout(timer);
   }, [search]);
+129:
+130:   // Highlight effect
+131:   useEffect(() => {
+132:     if (highlightId && items.length > 0) {
+133:       const element = document.getElementById(`item-${highlightId}`);
+134:       if (element) {
+135:         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+136:       }
+137:     }
+138:   }, [highlightId, items]);
 
   // Adapter les données indifféremment de leur type
   const getCardProps = (item: any) => {
@@ -298,22 +308,26 @@ export default function EvenementsTab() {
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
-              {items.map((rawItem, i) => {
-                const item = getCardProps(rawItem);
+              {items.map((item, i) => {
+                const p = getCardProps(item);
+                const isHighlighted = highlightId === p.id;
                 return (
                   <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, scale: 0.98, y: 15 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: i * 0.04 }}
-                    onClick={() => setSelectedItem(item)}
-                    className="group bg-white rounded-[2rem] shadow-lg border border-slate-100 hover:shadow-2xl hover:border-gov-blue/20 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full"
+                    key={p.id}
+                    id={`item-${p.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                    onClick={() => setSelectedItem(p)}
+                    className={`group bg-white rounded-[2.5rem] overflow-hidden border transition-all cursor-pointer flex flex-col relative h-full shadow-sm hover:shadow-2xl hover:-translate-y-2 ${
+                      isHighlighted ? 'ring-4 ring-gov-blue ring-offset-4 border-gov-blue animate-pulse' : 'border-slate-100 hover:border-gov-blue/20'
+                    }`}
                   >
                     <div className="h-40 w-full bg-slate-100 relative overflow-hidden flex-shrink-0">
-                      {item.image ? (
+                      {p.image ? (
                         <img 
-                          src={item.image} 
+                          src={p.image} 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           onError={(e) => {
                              (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/f1f5f9/64748b?text=Image+Indisponible';

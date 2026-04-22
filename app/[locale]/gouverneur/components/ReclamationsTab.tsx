@@ -32,6 +32,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
 
   const STATUT_CONFIG: any = {
     null: { label: t('filters.pending'), color: 'bg-slate-100 text-slate-600 border-slate-200' },
+    'NOUVELLE': { label: t('filters.pending'), color: 'bg-slate-100 text-slate-600 border-slate-200' },
     'ACCEPTEE': { label: t('filters.processing'), color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
     'REJETEE': { label: t('filters.rejected'), color: 'bg-red-100 text-red-700 border-red-200' },
   };

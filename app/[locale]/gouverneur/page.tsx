@@ -1108,7 +1108,7 @@ export default function GouverneurDashboard() {
                                  </div>
 
                                  <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-1 gap-4">
-                                    {(stats?.communes.details || []).map((commune: any) => (
+                                     {(stats?.communes?.details || []).map((commune: any) => (
                                        <div key={commune.id} className="flex flex-col gap-2 group/c">
                                           <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-tight text-slate-400 group-hover:text-white transition-colors">
                                               <span className="flex items-center gap-2">
@@ -1220,7 +1220,7 @@ export default function GouverneurDashboard() {
                       </div>
 
                       {/* 🚨 CRITICAL ALERTS - Immediate Action Required */}
-                      {(stats?.reclamations?.urgentes > 0 || stats?.reclamations?.enAttente > 5) && (
+                      {((stats?.reclamations?.urgentes || 0) > 0 || (stats?.reclamations?.enAttente || 0) > 5) && (
                          <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -1318,7 +1318,7 @@ export default function GouverneurDashboard() {
                                    {/* Center Key Metric */}
                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                       <span className="text-3xl font-black text-slate-900">
-                                         {Math.round((stats?.charts?.compliance.find((c: any) => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, stats?.etablissements?.total || 1) * 100)}%
+                                         {Math.round(((Array.isArray(stats?.charts?.compliance) ? stats?.charts.compliance : []).find((c: any) => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, stats?.etablissements?.total || 1) * 100)}%
                                       </span>
                                        <span className="text-[10px] uppercase font-bold text-slate-600">{t('reports.index')}</span>
                                    </div>

@@ -218,6 +218,11 @@ export async function generateGovernorReport(
                 actualites: { total: totalActu },
                 campagnes: { total: totalCamp },
                 satisfaction: { moyenne: satisfaction._avg.noteGlobale || 0 },
+                alerts: enAttenteRec > 10 ? [{ message: `Attention : ${enAttenteRec} réclamations sont en attente de traitement.` }] : [],
+                recommendations: [
+                    tauxResolution < 50 ? "Prioriser le traitement des réclamations en attente." : "Maintenir le rythme de résolution actuel.",
+                    etablissementsList.length < 5 ? "Augmenter la couverture des établissements dans la province." : "Optimiser la performance des établissements existants."
+                ],
                 communes: communesList.map(c => ({
                     nom: c.nom,
                     nomArabe: c.nomArabe,

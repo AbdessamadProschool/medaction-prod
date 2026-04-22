@@ -196,7 +196,12 @@ model User {
   // Tokens de sécurité (reset password, verification, etc.)
   securityTokens          SecurityToken[]
   
+  // === RÉCLAMATIONS AFFECTATIONS ===
+  reclamationsAffectees   Reclamation[] @relation("AutoriteAssignee")
+  reclamationsAssigneesParAdmin Reclamation[] @relation("AdminAffectant")
+
   // === PROFIL COORDINATEUR ACTIVITÉS ===
+
   // Établissements gérés par ce coordinateur (IDs stockés directement)
   etablissementsGeres     Int[]     @default([])
   // Programmes d'activités créés par ce coordinateur
@@ -623,9 +628,14 @@ model Reclamation {
   
   // === AFFECTATION PAR ADMIN (si ACCEPTEE) ===
   affecteeParAdminId      Int?      // Admin qui affecte
+  affecteeParAdmin        User?     @relation("AdminAffectant", fields: [affecteeParAdminId], references: [id])
+  
   affecteeAAutoriteId     Int?      // Autorité locale (User)
+  affecteeAAutorite       User?     @relation("AutoriteAssignee", fields: [affecteeAAutoriteId], references: [id])
+  
   secteurAffecte          Secteur?  // Secteur de responsabilité
   serviceInterneProvince  String?   // Service interne si province
+
   dateAffectation         DateTime?
   
   // === SUIVI ===

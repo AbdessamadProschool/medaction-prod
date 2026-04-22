@@ -853,7 +853,7 @@ export default function GouverneurDashboard() {
                          },
                          { 
                            label: t('overview.kpi.participations'), 
-                           value: (s?.satisfaction?.engagement || 0) >= 1000 ? `${((s?.satisfaction?.engagement || 0) / 1000).toFixed(1)}k` : (s?.satisfaction?.engagement || 0).toString(), 
+                           value: (stats?.satisfaction?.engagement || 0) >= 1000 ? `${((stats?.satisfaction?.engagement || 0) / 1000).toFixed(1)}k` : (stats?.satisfaction?.engagement || 0).toString(), 
                            sub: t('overview.kpi.sub.engagement'), 
                            icon: Users, 
                            color: 'text-blue-500', 

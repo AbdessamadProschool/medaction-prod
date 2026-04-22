@@ -347,7 +347,7 @@ async function checkRateLimit(
   // Si Upstash Redis est configuré
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
-      const { Redis } = await import('@upstash/redis');
+      const { Redis } = await import('@upstash/redis/cloudflare');
       const redis = new Redis({
         url: process.env.UPSTASH_REDIS_REST_URL!,
         token: process.env.UPSTASH_REDIS_REST_TOKEN!,

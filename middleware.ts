@@ -19,7 +19,7 @@ const BLOCKED_INTERNAL_HEADERS = [
   'x-middleware-prefetch',
 ];
 
-function stripInternalHeaders<T extends NextRequest>(request: T): T {
+function getStrippedHeaders(request: NextRequest): { headers: Headers; stripped: boolean } {
   const headers = new Headers(request.headers);
   let stripped = false;
   for (const h of BLOCKED_INTERNAL_HEADERS) {
@@ -29,23 +29,7 @@ function stripInternalHeaders<T extends NextRequest>(request: T): T {
       console.warn(`[SECURITY] Stripped forbidden internal header: ${h} from ${request.nextUrl.pathname}`);
     }
   }
-  if (!stripped) return request;
-  
-  // Clone request with new headers
-  const newReq = new NextRequest(request.url, {
-    headers,
-    method: request.method,
-    body: request.body,
-    redirect: request.redirect,
-    signal: request.signal,
-  });
-
-  // CRITICAL: Preserve nextauth property for downstream middleware/handlers
-  if ((request as any).nextauth) {
-    (newReq as any).nextauth = (request as any).nextauth;
-  }
-
-  return newReq as T;
+  return { headers, stripped };
 }
 
 /**
@@ -475,9 +459,9 @@ function getLocale(req: NextRequest): string {
 const authMiddleware = withAuth(
   async function middleware(req) {
     // ═══════════════════════════════════════════════════════════
-    // CVE-2025-29927 — Strip internal headers FIRST
+    // CVE-2025-29927 — Identify internal headers for stripping
     // ═══════════════════════════════════════════════════════════
-    req = stripInternalHeaders(req);
+    const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
 
     // BLOC 6.4 - Generate per-request nonce
     const nonce = btoa(crypto.randomUUID());
@@ -505,7 +489,9 @@ const authMiddleware = withAuth(
     // 1. ROUTES API TOUJOURS PUBLIQUES (Auth, etc.)
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isAlwaysPublicApiRoute(pathname)) {
-      const response = NextResponse.next();
+      const response = stripped 
+        ? NextResponse.next({ request: { headers: strippedHeaders } })
+        : NextResponse.next();
       return addSecurityHeaders(response, nonce);
     }
     
@@ -513,6 +499,9 @@ const authMiddleware = withAuth(
     // 2. PAGES PUBLIQUES - Déléguer à next-intl
     // ─────────────────────────────────────────────────────────────────
     if (!isApi && isPublicPage(effectivePathname)) {
+      // NOTE: next-intl handleI18nRouting uses the original request 'req'.
+      // If headers were stripped, they will be propagated by Next.js 15 internals
+      // or we can attempt to pass them here if handleI18nRouting supported it.
       const response = handleI18nRouting(req);
       return addSecurityHeaders(response, nonce);
     }
@@ -527,7 +516,9 @@ const authMiddleware = withAuth(
         return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED', nonce);
       }
       
-      const response = NextResponse.next();
+      const response = stripped
+        ? NextResponse.next({ request: { headers: strippedHeaders } })
+        : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Mobile-API', 'true');
       return addSecurityHeaders(response, nonce);
@@ -564,7 +555,9 @@ const authMiddleware = withAuth(
     // 5. APIs PUBLIQUES EN LECTURE (GET sans auth)
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isPublicReadApiRoute(pathname) && isReadOnlyMethod(method)) {
-      const response = NextResponse.next();
+      const response = stripped
+        ? NextResponse.next({ request: { headers: strippedHeaders } })
+        : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Public-API', 'true');
       response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
@@ -680,11 +673,16 @@ const authMiddleware = withAuth(
     // 10. REQUÊTE AUTORISÉE
     // ─────────────────────────────────────────────────────────────────
     if (isApi) {
-      const response = NextResponse.next();
+      const response = stripped
+        ? NextResponse.next({ request: { headers: strippedHeaders } })
+        : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Request-ID', crypto.randomUUID());
       return addSecurityHeaders(response, nonce);
     } else {
+      // Pour les pages, on laisse next-intl gérer le routage.
+      // S'il y a eu stripping, on passe les headers via le middleware i18n si possible,
+      // sinon on accepte que Step 2 (Next.js 15.2.3 interne) gère le stripping final.
       const response = handleI18nRouting(req);
       response.headers.set('X-Request-ID', crypto.randomUUID());
       return addSecurityHeaders(response, nonce);

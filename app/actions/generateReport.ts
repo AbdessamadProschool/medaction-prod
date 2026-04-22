@@ -207,6 +207,10 @@ export async function generateGovernorReport(
                     programmes: detailedActivites,
                     totalGlobal: totalEv + totalActu + totalCamp
                 },
+                evenements: { total: totalEv, clotures: cloturesEv },
+                actualites: { total: totalActu },
+                campagnes: { total: totalCamp },
+                satisfaction: { moyenne: satisfaction._avg.noteMoyenne || 0 },
                 communes: communesList.map(c => ({
                     nom: c.nom,
                     nomArabe: c.nomArabe,

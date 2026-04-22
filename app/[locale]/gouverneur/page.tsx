@@ -1025,7 +1025,7 @@ export default function GouverneurDashboard() {
                                           <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm text-amber-500">
                                              <Target size={16} />
                                           </div>
-                                          <p className="font-bold text-sm leading-snug">{alert.message || t('reports.ai_synthesis.recommendation_ready')}</p>
+                                          <p className="font-bold text-sm leading-snug">{aiInsights.recommendation.message || t('reports.ai_synthesis.recommendation_ready')}</p>
                                        </div>
                                      )}
                                    </>

@@ -379,34 +379,38 @@ async function checkRateLimit(
 }
 
 function addSecurityHeaders(response: NextResponse, nonce?: string): NextResponse {
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
-  if (nonce) {
-    // BLOC 6.4 - Strict CSP with Nonce (CWE-79 mitigation)
-    const isDev = process.env.NODE_ENV === 'development';
-    const cspValue = `
-      default-src 'self';
-      script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
-      img-src 'self' blob: data: https: http:;
-      font-src 'self' https://fonts.gstatic.com data:;
-      connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;
-      object-src 'none';
-      base-uri 'self';
-      form-action 'self';
-      frame-ancestors 'none';
-      upgrade-insecure-requests;
-    `.replace(/\s{2,}/g, ' ').trim();
+  // Use try-catch to prevent entire middleware failure on header issues
+  try {
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     
-    response.headers.set('Content-Security-Policy', cspValue);
-    response.headers.set('x-nonce', nonce);
-  }
+    // In Next.js 15, we only apply CSP if it's a "clean" response
+    if (nonce) {
+      const isDev = process.env.NODE_ENV === 'development';
+      const cspValue = `
+        default-src 'self';
+        script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
+        img-src 'self' blob: data: https: http:;
+        font-src 'self' https://fonts.gstatic.com data:;
+        connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        frame-ancestors 'none';
+        upgrade-insecure-requests;
+      `.replace(/\s{2,}/g, ' ').trim();
+      
+      response.headers.set('Content-Security-Policy', cspValue);
+      response.headers.set('x-nonce', nonce);
+    }
 
-  response.headers.delete('X-Powered-By');
-  response.headers.delete('Server');
+    response.headers.delete('X-Powered-By');
+    response.headers.delete('Server');
+  } catch (e) {
+    console.warn('Error adding security headers', e);
+  }
   return response;
 }
 
@@ -499,11 +503,7 @@ const authMiddleware = withAuth(
     // 2. PAGES PUBLIQUES - Déléguer à next-intl
     // ─────────────────────────────────────────────────────────────────
     if (!isApi && isPublicPage(effectivePathname)) {
-      // NOTE: next-intl handleI18nRouting uses the original request 'req'.
-      // If headers were stripped, they will be propagated by Next.js 15 internals
-      // or we can attempt to pass them here if handleI18nRouting supported it.
-      const response = handleI18nRouting(req);
-      return addSecurityHeaders(response, nonce);
+      return handleI18nRouting(req);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -677,15 +677,19 @@ const authMiddleware = withAuth(
         ? NextResponse.next({ request: { headers: strippedHeaders } })
         : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
-      response.headers.set('X-Request-ID', crypto.randomUUID());
+      try {
+        response.headers.set('X-Request-ID', crypto.randomUUID());
+      } catch (e) {}
       return addSecurityHeaders(response, nonce);
     } else {
-      // Pour les pages, on laisse next-intl gérer le routage.
-      // S'il y a eu stripping, on passe les headers via le middleware i18n si possible,
-      // sinon on accepte que Step 2 (Next.js 15.2.3 interne) gère le stripping final.
+      // 🔴 RECOVERY: Return the raw response from next-intl with minimal tampering
+      // Next.js 15 RSC hydration is very sensitive to modified responses.
       const response = handleI18nRouting(req);
-      response.headers.set('X-Request-ID', crypto.randomUUID());
-      return addSecurityHeaders(response, nonce);
+      try {
+        response.headers.set('X-XSS-Protection', '1; mode=block');
+        response.headers.set('X-Content-Type-Options', 'nosniff');
+      } catch (e) {}
+      return response;
     }
   },
   {

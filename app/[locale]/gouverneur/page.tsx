@@ -642,7 +642,7 @@ export default function GouverneurDashboard() {
                 <div className="w-10 h-10 bg-gov-gold rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-gov-gold/20">
                    <Shield size={24} />
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">{t('sidebar.title')}</h1>
+                 <h1 className="text-xl font-bold tracking-tight text-white">{t('sidebar.title')}</h1>
              </div>
              <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">{t('sidebar.subtitle')}</p>
           </div>
@@ -749,9 +749,11 @@ export default function GouverneurDashboard() {
                     className={`p-2.5 rounded-xl transition-all relative ${showNotifications ? 'bg-gov-blue/10 text-gov-blue' : 'text-slate-600 hover:text-gov-blue hover:bg-gov-blue/5'}`}
                   >
                     <Bell size={20} />
-                    {alerts.length > 0 && (
-                      <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-                    )}
+                     {alerts.length > 0 && (
+                       <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-white text-[10px] font-black text-white flex items-center justify-center animate-bounce shadow-md">
+                          {alerts.length}
+                       </span>
+                     )}
                   </button>
 
                   {/* Notification Dropdown */}
@@ -792,7 +794,13 @@ export default function GouverneurDashboard() {
                             )}
                          </div>
                          <div className="p-2 border-t border-gray-50 bg-slate-50/50 text-center">
-                            <button className="text-xs font-bold text-slate-700 hover:text-gov-blue transition-colors uppercase tracking-wide">
+                            <button 
+                               onClick={() => {
+                                 setActiveTab('reports');
+                                 setShowNotifications(false);
+                               }}
+                               className="text-xs font-bold text-slate-700 hover:text-gov-blue transition-colors uppercase tracking-wide"
+                             >
                                {t('header.notifications.view_all')}
                             </button>
                          </div>

@@ -465,8 +465,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
              className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-slate-900/95 backdrop-blur-md"
              onClick={() => setSelectedItem(null)}
           >
-            <motion.div 
-                className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative border border-slate-100"
+              <motion.div 
+                className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative border border-slate-100 flex flex-col"
                 layoutId={`card-${selectedItem.id}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -520,8 +520,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                         </div>
                       )}
                    </div>
-                   <div className="space-y-6">
-                      <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-8 sticky top-0">
+                   <div className="space-y-6 flex flex-col">
+                      <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-8">
                          <div className="flex gap-5"> <div className="w-14 h-14 bg-slate-50 flex items-center justify-center rounded-2xl text-slate-600 shadow-inner"> <Calendar size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'التاريخ' : 'Calendrier'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.date}</p> </div> </div>
                          <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-gov-blue/5 flex items-center justify-center rounded-2xl text-gov-blue shadow-inner"> <MapPin size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'الموقع الجغرافي' : 'Localisation'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.lieu}</p> <p className="text-xs font-bold text-slate-600 mt-1 opacity-80">{selectedItem.lieuDetail}</p> </div> </div>
                          {selectedItem.raw.capaciteMax && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-amber-50 flex items-center justify-center rounded-2xl text-amber-600 shadow-inner"> <Users size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'السعة' : 'Capacité Prévue'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.capaciteMax} {isAr ? 'فرد' : 'Personnes'}</p> </div> </div> )}

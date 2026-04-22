@@ -10,8 +10,15 @@ import type { Metadata } from 'next';
 import GovHeader from "@/components/layout/GovHeader";
 import GovFooter from "@/components/layout/GovFooter";
 import { setRequestLocale } from 'next-intl/server';
-
+import { locales } from '@/i18n/routing';
 import WelcomeModal from '@/components/home/WelcomeModal';
+
+// ✅ CRITICAL for Next.js 15 standalone: ensures page_client-reference-manifest.js
+// is generated and resolvable at runtime for each locale.
+// Without this, `clientModules` is undefined → 500 on the home page.
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   title: 'PORTAIL MEDIOUNA - Province de Médiouna | بوابة مديونة',

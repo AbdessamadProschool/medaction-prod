@@ -815,7 +815,7 @@ export default function GouverneurDashboard() {
                                      >
                                         <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-red-500 group-hover/item:text-white transition-colors"><AlertTriangle size={20} /></div>
                                         <div>
-                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.reclamations?.urgentAssignation || 0}</p>
+                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.reclamations?.enAttente || 0}</p>
                                            <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار التعيين' : 'Réclamations sans affectation'}</p>
                                         </div>
                                      </button>

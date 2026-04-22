@@ -1188,10 +1188,10 @@ export default function GouverneurDashboard() {
                       {/* 🎯 EXECUTIVE KPIs - Decision Triggers */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                          {[
-                           { label: t('reports.kpi.pending_decisions'), value: stats?.reclamations?.enAttente || 0, icon: AlertCircle, color: 'bg-red-500', subLabel: stats?.reclamations?.nouveauCetteSemaine > 0 ? `+${stats?.reclamations.nouveauCetteSemaine} ${t('reports.kpi.this_week') || 'cette sem.'}` : null, urgent: (stats?.reclamations?.enAttente || 0) > 0 },
-                           { label: t('reports.kpi.resolution_rate'), value: `${stats?.reclamations?.tauxResolution || 0}%`, icon: CheckCircle, color: 'bg-emerald-500', subLabel: stats?.reclamations?.resolues > 0 ? `${stats?.reclamations.resolues} résolues` : null },
-                           { label: t('reports.kpi.active_projects'), value: stats?.projects?.active || 0, icon: Target, color: 'bg-blue-500', subLabel: stats?.evenements?.enCours > 0 ? `${stats?.evenements.enCours} en cours` : null },
-                           { label: t('reports.kpi.monthly_events'), value: stats?.evenements?.cetMois || 0, icon: Calendar, color: 'bg-purple-500', subLabel: stats?.evenements?.aVenir > 0 ? t('reports.kpi.upcoming', {count: stats?.evenements.aVenir}) : null },
+                           { label: t('reports.kpi.pending_decisions'), value: stats?.reclamations?.enAttente || 0, icon: AlertCircle, color: 'bg-red-500', subLabel: (stats?.reclamations?.nouveauCetteSemaine || 0) > 0 ? `+${stats?.reclamations?.nouveauCetteSemaine} ${t('reports.kpi.this_week') || 'cette sem.'}` : null, urgent: (stats?.reclamations?.enAttente || 0) > 0 },
+                           { label: t('reports.kpi.resolution_rate'), value: `${stats?.reclamations?.tauxResolution || 0}%`, icon: CheckCircle, color: 'bg-emerald-500', subLabel: (stats?.reclamations?.resolues || 0) > 0 ? `${stats?.reclamations?.resolues} résolues` : null },
+                           { label: t('reports.kpi.active_projects'), value: stats?.projects?.active || 0, icon: Target, color: 'bg-blue-500', subLabel: (stats?.evenements?.enCours || 0) > 0 ? `${stats?.evenements?.enCours} en cours` : null },
+                           { label: t('reports.kpi.monthly_events'), value: stats?.evenements?.cetMois || 0, icon: Calendar, color: 'bg-purple-500', subLabel: (stats?.evenements?.aVenir || 0) > 0 ? t('reports.kpi.upcoming', {count: stats?.evenements?.aVenir}) : null },
                          ].map((kpi, i) => (
                             <motion.div 
                                key={i}

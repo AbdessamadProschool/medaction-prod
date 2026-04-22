@@ -1052,7 +1052,7 @@ export default function GouverneurDashboard() {
                                         <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                                         <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
                                         <div>
-                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.evenements?.enCours || 0}</p>
+                                           <p className="font-black text-slate-900 text-lg leading-tight">{stats?.evenements?.enCours || 0}</p>
                                            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
                                         </div>
                                      </button>

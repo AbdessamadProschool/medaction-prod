@@ -225,14 +225,242 @@ export default function GouverneurDashboard() {
       if (result.success && result.data) {
         toast.dismiss();
         toast.success(t('reports.generated'));
-        const reportWindow = window.open('', '_blank');
-        if (reportWindow) {
-          const d = result.data;
-          const ref = `GOV-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase().slice(-6)}`;
-          const SL: Record<string,string>={EDUCATION:'Education',SANTE:'Sante',SPORT:'Sport',SOCIAL:'Social',CULTUREL:'Culturel',AUTRE:'Autre'};
-          const sc=(s:string)=>s==='EXCELLENT'?'#10b981':s==='BON'?'#3b82f6':s==='MOYEN'?'#f59e0b':'#ef4444';
-          const acl=(sev:string)=>sev==='CRITIQUE'?'background:#fff1f2;border-color:#fecaca;color:#991b1b':'background:#fffbeb;border-color:#fcd34d;color:#92400e';
-          const html=`<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'><title>Rapport Provincial - ${d.period}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f0f4f8;color:#0f172a;font-size:13px}.page{background:#fff;max-width:1050px;margin:0 auto;padding:48px 56px}.hdr{border-bottom:3px solid #1e3a8a;padding-bottom:22px;margin-bottom:28px}.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.badge-conf{background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:99px;font-weight:800;font-size:9px;border:1px solid #fca5a5}.ref{font-size:9px;color:#94a3b8;margin-top:5px;font-weight:600}.title-center{text-align:center;padding-top:20px}.title-center h1{font-size:22px;font-weight:900;color:#1e3a8a;text-transform:uppercase}.title-center .sub{font-size:12px;color:#475569;margin-top:4px}.period-b{display:inline-block;background:#1e3a8a;color:#fff;padding:3px 16px;border-radius:99px;font-size:11px;font-weight:700;margin-top:8px}.sec{margin-top:30px}.sec-hdr{display:flex;align-items:center;gap:8px;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:14px}.sec-num{background:#1e3a8a;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}.sec-hdr h2{font-size:14px;font-weight:800;color:#1e3a8a}.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}.kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--c,#3b82f6)}.kpi.r{--c:#ef4444}.kpi.g{--c:#10b981}.kpi.o{--c:#f59e0b}.kpi.p{--c:#8b5cf6}.kpi.b{--c:#3b82f6}.kpi-l{font-size:8px;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}.kpi-v{font-size:26px;font-weight:900;color:#0f172a;line-height:1}.kpi-s{font-size:9px;color:#64748b;margin-top:4px}.tw{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}table{width:100%;border-collapse:collapse}th{background:#f1f5f9;padding:9px 12px;font-size:9px;font-weight:800;text-transform:uppercase;color:#475569;text-align:left}td{padding:9px 12px;font-size:11px;border-top:1px solid #f1f5f9;vertical-align:middle}.pill{padding:2px 8px;border-radius:99px;font-weight:700;font-size:9px;display:inline-block}.pr{background:#fee2e2;color:#991b1b}.po{background:#fef3c7;color:#92400e}.pg{background:#dcfce7;color:#166534}.pb{background:#dbeafe;color:#1e40af}.al{border:1px solid;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}.al-sev{font-size:8px;font-weight:900;text-transform:uppercase;margin-bottom:1px}.al-msg{font-size:11px;font-weight:600}.rl{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:600;color:#166534;display:flex;gap:6px;margin-bottom:6px}.foot{margin-top:40px;padding-top:20px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start}@media print{body{background:#fff}.page{padding:24px 32px}@page{size:A4;margin:8mm}}</style></head><body><div class='page'><div class='hdr'><div class='hdr-top'><div><strong style='font-size:14px;color:#1e3a8a'>Royaume du Maroc</strong><div style='font-size:10px;color:#64748b'>Ministere de l Interior - Province de Mediouna</div></div><div style='text-align:right'><span class='badge-conf'>CONFIDENTIEL</span><div class='ref'>Ref: ${ref} | ${new Date().toLocaleDateString('fr-FR')}</div></div></div><div class='title-center'><h1>Rapport Provincial de Pilotage Strategique</h1><div class='sub'>Tableau de bord analytique - Plateforme MedAction</div><span class='period-b'>Periode: ${d.period}</span></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>1</div><h2>Performance Territoriale (Annexes)</h2></div><div class='tw'><table><thead><tr><th>Commune</th><th>Annexe</th><th>Etablissements</th><th>Activites</th></tr></thead><tbody>${d.annexes.map((a:any)=>'<tr><td style=font-weight:800;color:#1e3a8a>'+a.commune+'</td><td>'+a.nom+'</td><td style=text-align:center;font-weight:800>'+a.etablissements+'</td><td style=text-align:center><span class=pill pb>Actif</span></td></tr>').join('')}</tbody></table></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>2</div><h2>Reclamations Citoyennes</h2></div><div class='kpi4'><div class='kpi r'><div class='kpi-l'>Total Dossiers</div><div class='kpi-v'>${d.reclamations.total}</div><div class='kpi-s'>Soumis sur la periode</div></div><div class='kpi o'><div class='kpi-l'>En Attente</div><div class='kpi-v'>${d.reclamations.enAttente}</div><div class='kpi-s'>${d.reclamations.urgentes} urgentes +72h</div></div><div class='kpi g'><div class='kpi-l'>Taux Resolution</div><div class='kpi-v'>${d.reclamations.tauxResolution}%</div><div class='kpi-s'>${d.reclamations.resolues} clotures</div></div><div class='kpi b'><div class='kpi-l'>Acceptation</div><div class='kpi-v'>${d.reclamations.tauxAcceptation}%</div><div class='kpi-s'>${d.reclamations.acceptees} acc / ${d.reclamations.rejetees} rej</div></div></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>3</div><h2>Activites et Publications</h2></div><div class='kpi4'><div class='kpi b'><div class='kpi-l'>Evenements</div><div class='kpi-v'>${d.evenements.total}</div><div class='kpi-s'>${d.evenements.publies} publies</div></div><div class='kpi p'><div class='kpi-l'>Actualites</div><div class='kpi-v'>${d.actualites.total}</div><div class='kpi-s'>Articles publies</div></div><div class='kpi g'><div class='kpi-l'>Campagnes</div><div class='kpi-v'>${d.campagnes.total}</div><div class='kpi-s'>Campagnes actives</div></div><div class='kpi o'><div class='kpi-l'>Satisfaction</div><div class='kpi-v'>${d.satisfaction.moyenne}/5</div><div class='kpi-s' style=color:${sc(d.satisfaction.status)};font-weight:700>${d.satisfaction.status} - ${d.satisfaction.totalEvaluations} avis</div></div></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>4</div><h2>Classement Dynamisme Etablissements</h2></div><div class='tw'><table><thead><tr><th>#</th><th>Etablissement</th><th>Commune/Annexe</th><th>Secteur</th><th>Evenements</th><th>Daily Act.</th><th>Recl.</th><th>Performance</th></tr></thead><tbody>${d.etablissements.ranking.map((e:any,i:number)=>'<tr><td style=font-weight:900>#'+(i+1)+'</td><td><div style=font-weight:800;color:#1e3a8a>'+e.nom+'</div></td><td><div style=font-size:9px;font-weight:700>'+e.commune+'</div><div style=font-size:8px;color:#94a3b8>'+e.annexe+'</div></td><td><span class=pill pb>'+(SL[e.secteur]||e.secteur)+'</span></td><td style=text-align:center;color:#3b82f6;font-weight:800>'+e.details.evenements+'</td><td style=text-align:center;color:#10b981;font-weight:800>'+e.details.programmes+'</td><td style=text-align:center;font-weight:700;color:'+(e.details.reclamations>5?'#ef4444':e.details.reclamations>0?'#f59e0b':'#10b981')+'>'+e.details.reclamations+'</td><td style=text-align:right><span style=background:'+(e.activityScore>20?'#1e3a8a':e.activityScore>0?'#3b82f6':'#94a3b8')+';color:#fff;padding:2px 10px;border-radius:5px;font-weight:900;font-size:10px>'+e.activityScore+'</span></td></tr>').join('')}</tbody></table></div></div><div class='sec'><div class='sec-hdr'><div class='sec-num'>5</div><h2>Alertes et Recommandations</h2></div>${d.alerts?.length>0?d.alerts.map((a:any)=>'<div class=al style='+acl(a.severity)+'><strong>['+a.severity+']</strong> '+a.message+'</div>').join(''):''}${d.recommendations.map((r:string)=>'<div class=rl><span>-></span><span>'+r+'</span></div>').join('')}</div><div class='foot'><div><strong>M. le Gouverneur - Province de Mediouna</strong><br/>Rapport MedAction - Pilotage Strategique</div><div style=text-align:right;font-size:9px;color:#94a3b8><div>Ref: ${ref}</div><div>Par: ${d.generatedBy}</div><div>${new Date().toLocaleString('fr-FR')}</div></div></div></div><script>window.onload=function(){window.print()}</script></body></html>`;
+          const html=`<!DOCTYPE html>
+<html lang='fr'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Rapport Provincial - ${d.period}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;600;800&display=swap');
+        
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter', sans-serif;background:#f8fafc;color:#1e293b;line-height:1.5;font-size:12px}
+        .page{background:#fff;max-width:1000px;margin:20px auto;padding:60px 80px;box-shadow:0 0 40px rgba(0,0,0,0.05);position:relative;overflow:hidden}
+        
+        /* Watermark Background */
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 150px;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.02);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-transform: uppercase;
+        }
+
+        .hdr-gov{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;border-bottom:2px solid #1e3a8a;padding-bottom:20px;position:relative;z-index:1}
+        .hdr-left{display:flex;align-items:center;gap:20px}
+        .armoiries{width:60px;height:auto}
+        .hdr-txt h1{font-family:'Cinzel', serif;font-size:16px;color:#1e3a8a;margin-bottom:2px}
+        .hdr-txt p{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px}
+        
+        .badge-conf{background:#fef2f2;color:#991b1b;padding:6px 16px;border-radius:6px;font-weight:800;font-size:10px;border:1px solid #fecaca;display:inline-block;margin-bottom:8px}
+        .ref-box{text-align:right}
+        .ref-txt{font-size:9px;color:#94a3b8;font-weight:600}
+
+        .report-title{text-align:center;margin:40px 0;position:relative;z-index:1}
+        .report-title h2{font-size:28px;font-weight:900;color:#1e3a8a;text-transform:uppercase;letter-spacing:-0.5px;margin-bottom:10px}
+        .report-title .sub-title{font-size:14px;color:#475569;font-weight:600}
+        .meta-period{display:inline-block;margin-top:15px;background:#1e3a8a;color:#fff;padding:4px 20px;border-radius:99px;font-size:11px;font-weight:700}
+
+        .section{margin-top:45px;position:relative;z-index:1}
+        .section-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+        .section-num{background:#1e3a8a;color:#fff;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+        .section-hdr h3{font-size:16px;font-weight:800;color:#1e3a8a;text-transform:uppercase}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px}
+        .stat-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;position:relative}
+        .stat-card.urgent{border-color:#fecaca;background:#fff1f2}
+        .stat-label{font-size:9px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+        .stat-value{font-size:24px;font-weight:900;color:#0f172a}
+        .stat-sub{font-size:9px;color:#475569;margin-top:5px;font-weight:600}
+
+        .table-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-top:15px}
+        table{width:100%;border-collapse:collapse}
+        th{background:#f1f5f9;padding:12px 15px;font-size:10px;font-weight:800;color:#475569;text-align:left;text-transform:uppercase;border-bottom:1px solid #e2e8f0}
+        td{padding:12px 15px;font-size:11px;border-bottom:1px solid #f1f5f9;font-weight:500}
+        tr:last-child td{border-bottom:none}
+        .td-bold{font-weight:800;color:#1e3a8a}
+
+        .alert-item{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+        .alert-icon{color:#b45309;font-size:16px}
+        .alert-content p{font-size:11px;font-weight:700;color:#92400e}
+
+        .signature-area{margin-top:60px;display:flex;justify-content:space-between;align-items:flex-end;padding-top:30px;border-top:1px dashed #e2e8f0}
+        .stamp-box{width:120px;height:120px;border:2px dashed #cbd5e1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:10px;font-weight:800;text-transform:uppercase;transform:rotate(-15deg)}
+        .sig-block{text-align:center;width:250px}
+        .sig-title{font-size:12px;font-weight:900;color:#1e3a8a;margin-bottom:60px}
+        .sig-name{font-size:11px;font-weight:700;color:#475569}
+
+        @media print{
+            body{background:#fff}
+            .page{margin:0;box-shadow:none;padding:20px}
+            .meta-period{background:#1e3a8a !important;color:#fff !important;print-color-adjust:exact}
+            @page{size:A4;margin:10mm}
+        }
+    </style>
+</head>
+<body>
+    <div class='page'>
+        <!-- Header -->
+        <div class='hdr-gov'>
+            <div class='hdr-left'>
+                <img src='/images/armoiries.png' class='armoiries' alt='Royaume du Maroc'>
+                <div class='hdr-txt'>
+                    <h1>Royaume du Maroc</h1>
+                    <p>Ministère de l'Intérieur</p>
+                    <p>Province de Médiouna</p>
+                </div>
+            </div>
+            <div class='ref-box'>
+                <span class='badge-conf'>CONFIDENTIEL</span>
+                <div class='ref-txt'>Réf: ${ref}</div>
+                <div class='ref-txt'>Édité le: ${new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'long', year:'numeric'})}</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <div class='report-title'>
+            <h2>Rapport Provincial de Pilotage Stratégique</h2>
+            <div class='sub-title'>Tableau de Bord Analytique des Équipements et Services</div>
+            <div class='meta-period'>Période : ${d.period}</div>
+        </div>
+
+        <!-- Section 1: Réclamations -->
+        <div class='section'>
+            <div class='section-hdr'>
+                <div class='section-num'>01</div>
+                <h3>Situation des Réclamations Citoyennes</h3>
+            </div>
+            <div class='stats-grid'>
+                <div class='stat-card'>
+                    <p class='stat-label'>Total Soumises</p>
+                    <p class='stat-value'>${d.reclamations.total}</p>
+                    <p class='stat-sub'>Sur l'ensemble de la province</p>
+                </div>
+                <div class='stat-card urgent'>
+                    <p class='stat-label'>Critiques / +72h</p>
+                    <p class='stat-value'>${d.reclamations.urgentes}</p>
+                    <p class='stat-sub'>Priorité de traitement absolue</p>
+                </div>
+                <div class='stat-card'>
+                    <p class='stat-label'>Taux de Résolution</p>
+                    <p class='stat-value'>${d.reclamations.tauxResolution}%</p>
+                    <p class='stat-sub'>Objectif cible : > 85%</p>
+                </div>
+                <div class='stat-card'>
+                    <p class='stat-label'>Taux d'Acceptation</p>
+                    <p class='stat-value'>${d.reclamations.tauxAcceptation}%</p>
+                    <p class='stat-sub'>Validité des signalements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Performances Territoriales -->
+        <div class='section'>
+            <div class='section-hdr'>
+                <div class='section-num'>02</div>
+                <h3>Performance par Commune et Annexe</h3>
+            </div>
+            <div class='table-wrap'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Commune</th>
+                            <th>Annexe / Quartier</th>
+                            <th style='text-align:center'>Équipements</th>
+                            <th style='text-align:center'>Statut Operational</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${d.annexes.map((a:any)=>`
+                            <tr>
+                                <td class='td-bold'>${a.commune}</td>
+                                <td>${a.nom}</td>
+                                <td style='text-align:center;font-weight:700'>${a.etablissements}</td>
+                                <td style='text-align:center'><span style='color:#16a34a;font-weight:800'>ACTIF</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 3: Classement Dynamisme -->
+        <div class='section'>
+            <div class='section-hdr'>
+                <div class='section-num'>03</div>
+                <h3>Indice de Dynamisme des Établissements (Top 5)</h3>
+            </div>
+            <div class='table-wrap'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Établissement</th>
+                            <th>Secteur</th>
+                            <th style='text-align:center'>Événements</th>
+                            <th style='text-align:right'>Score Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${d.etablissements.ranking.slice(0, 5).map((e:any, i:number)=>`
+                            <tr>
+                                <td style='font-weight:900;color:#94a3b8'>#${i+1}</td>
+                                <td class='td-bold'>${e.nom}</td>
+                                <td style='font-weight:700;color:#475569;font-size:9px'>${SL[e.secteur]||e.secteur}</td>
+                                <td style='text-align:center;font-weight:800'>${e.details.evenements}</td>
+                                <td style='text-align:right'><span style='background:#1e3a8a;color:#fff;padding:2px 10px;border-radius:4px;font-weight:900'>${e.activityScore}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 4: Alertes et Synthèse IA -->
+        <div class='section'>
+            <div class='section-hdr'>
+                <div class='section-num'>04</div>
+                <h3>Alertes et Recommandations Stratégiques</h3>
+            </div>
+            ${d.alerts.map((a:any)=>`
+                <div class='alert-item'>
+                    <div class='alert-icon'>⚠️</div>
+                    <div class='alert-content'>
+                        <p>${a.message}</p>
+                    </div>
+                </div>
+            `).join('')}
+            ${d.recommendations.map((r:string)=>`
+                <div style='margin-left:5px;padding:8px 0;border-bottom:1px solid #f1f5f9;font-weight:600;display:flex;gap:10px'>
+                    <span style='color:#1e3a8a'>•</span> ${r}
+                </div>
+            `).join('')}
+        </div>
+
+        <!-- Signature -->
+        <div class='signature-area'>
+            <div class='stamp-box'>Sceau de la<br/>Province</div>
+            <div class='sig-block'>
+                <div class='sig-title'>M. le Gouverneur de la Province de Médiouna</div>
+                <div class='sig-name'>Génération Automatique - Plateforme MedAction</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style='margin-top:20px;text-align:center;font-size:8px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:10px'>
+            Généré par le Système Intelligent de Pilotage - Province de Médiouna | ID Document : ${ref}
+        </div>
+    </div>
+    <script>window.onload=function(){setTimeout(()=>window.print(), 500);}</script>
+</body>
+</html>`;
           reportWindow.document.write(html);
           reportWindow.document.close();
         }
@@ -1052,61 +1280,14 @@ export default function GouverneurDashboard() {
                               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gov-blue/20 rounded-full blur-[80px] pointer-events-none" />
                           </div>
 
-                           <div className="bg-gradient-to-br from-rose-600 to-red-700 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden border border-red-500/50 group">
-                              {/* Background Watermark */}
-                              <AlertTriangle className="absolute -bottom-10 -right-10 w-48 h-48 text-black/10 rotate-12 group-hover:rotate-0 transition-transform duration-700" />
-                              
-                              <div className="relative z-10">
-                                 <div className="flex items-center justify-between mb-6">
-                                    <h5 className="font-black text-lg flex items-center gap-3">
-                                       <div className="p-2 bg-white/20 rounded-xl backdrop-blur-md">
-                                          <AlertTriangle size={20} className="text-white" /> 
-                                       </div>
-                                       {t('overview.alerts.title')}
-                                    </h5>
-                                    <span className="flex h-3 w-3 relative">
-                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                       <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-                                    </span>
-                                 </div>
-
-                                  <div className="space-y-3">
-                                      {Array.isArray(alerts) && alerts.length > 0 ? (
-                                         alerts.map((alert) => {
-                                           const style = getAlertStyle(alert.priorite);
-                                           return (
-                                              <motion.div 
-                                                key={alert.id} 
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                onClick={() => handleAlertClick(alert)}
-                                                className="bg-black/20 backdrop-blur-sm p-4 rounded-2xl border border-white/10 hover:bg-black/30 transition-all cursor-pointer group/alert"
-                                              >
-                                                  <div className="flex items-center justify-between mb-2">
-                                                     <span className={`text-[10px] font-black px-2 py-1 rounded-lg uppercase inline-block shadow-sm ${style.bg} ${style.text}`}>
-                                                         {style.label}
-                                                     </span>
-                                                     <span className="text-[10px] font-bold opacity-60">
-                                                        {alert.date ? new Date(alert.date).toLocaleDateString(locale) : 'Just now'}
-                                                     </span>
-                                                  </div>
-                                                  <h6 className="text-[13px] font-black mb-1" dir="auto">{alert.titre}</h6>
-                                                  <p className="text-[11px] font-bold opacity-80 leading-relaxed" dir="auto">{alert.description}</p>
-                                                  <div className="flex justify-end mt-2 opacity-0 group-hover/alert:opacity-100 transition-opacity">
-                                                     <span className="text-[10px] font-black uppercase flex items-center gap-1">
-                                                        {t('reclamations_tab.card.open')} <ChevronRight size={12} />
-                                                     </span>
-                                                  </div>
-                                              </motion.div>
-                                           );
-                                         })
-                                      ) : (
-                                          <div className="text-center py-10 text-white/60 text-sm font-bold border-2 border-dashed border-white/10 rounded-3xl bg-white/5">
-                                             {t('overview.alerts.none')}
-                                          </div>
-                                      )}
-                                  </div>
-                              </div>
+                            {/* Integration of real activity feed instead of separate box */}
+                           <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 uppercase tracking-tight">
+                              <h5 className="font-black text-slate-800 text-sm mb-4 flex items-center gap-2">
+                                <History size={16} className="text-gov-blue" /> {t('overview.activity_log.view_reports')}
+                              </h5>
+                              <p className="text-[10px] text-slate-500 font-bold leading-relaxed">
+                                {locale === 'ar' ? 'تتم مزامنة جميع التنبيهات الآن في مركز الإجراءات العاجلة لقراءة أسرع' : 'Toutes les alertes sont désormais synchronisées dans le centre d\'actions urgentes pour une lecture plus rapide.'}
+                              </p>
                            </div>
 
 

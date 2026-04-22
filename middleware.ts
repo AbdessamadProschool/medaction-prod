@@ -1,6 +1,6 @@
 import {withAuth} from 'next-auth/middleware';
 import createMiddleware from 'next-intl/middleware';
-import {NextRequest, NextResponse} from 'next/server';
+import {NextRequest, NextResponse, NextFetchEvent} from 'next/server';
 // Use global crypto available in Next.js Edge Runtime
 import {routing} from './i18n/routing';
 

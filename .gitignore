@@ -101,9 +101,13 @@ next-env.d.ts
 .swc/
 
 # =============================================================================
-# Backups & Temporary
+# Backups & Temporary — SECURITY CRITICAL (BLOC 2.1)
+# NEVER commit database backups — they contain hashed passwords and PII
 # =============================================================================
 /backups/
+backup.json
+backup-*.json
+*-backup.json
 *.bak
 *.backup
 *.sql
@@ -112,6 +116,7 @@ temp/
 *.tar
 *.tar.gz
 *.zip
+/postgres_data/
 
 # =============================================================================
 # Lock Files (npm only - remove pnpm)

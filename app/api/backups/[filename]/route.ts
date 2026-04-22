@@ -1,4 +1,4 @@
-﻿
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -23,12 +23,20 @@ export async function GET(
 
     const { filename } = params;
     
-    // Sécurité : valider le nom de fichier pour éviter le directory traversal
+    // Security layer 1: strict allowlist regex
     if (!filename.match(/^backup-[\w.-]+\.json$/)) {
       return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 });
     }
 
     const filePath = join(BACKUP_DIR, filename);
+
+    // Security layer 2: path traversal via path.resolve()
+    // Ensures the resolved absolute path stays inside BACKUP_DIR
+    const resolvedPath = require('path').resolve(filePath);
+    const resolvedBase = require('path').resolve(BACKUP_DIR);
+    if (!resolvedPath.startsWith(resolvedBase + require('path').sep) && resolvedPath !== resolvedBase) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
 
     if (!fs.existsSync(filePath)) {
       return NextResponse.json({ error: 'Fichier non trouvé' }, { status: 404 });
@@ -64,12 +72,19 @@ export async function DELETE(
 
     const { filename } = params;
 
-    // Sécurité
+    // Security layer 1: strict allowlist regex
     if (!filename.match(/^backup-[\w.-]+\.json$/)) {
       return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 });
     }
 
     const filePath = join(BACKUP_DIR, filename);
+
+    // Security layer 2: path traversal via path.resolve()
+    const resolvedPath = require('path').resolve(filePath);
+    const resolvedBase = require('path').resolve(BACKUP_DIR);
+    if (!resolvedPath.startsWith(resolvedBase + require('path').sep) && resolvedPath !== resolvedBase) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
 
     if (!fs.existsSync(filePath)) {
       return NextResponse.json({ error: 'Fichier non trouvé' }, { status: 404 });

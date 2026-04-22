@@ -3,7 +3,12 @@ import { Client } from 'pg';
 import fs from 'fs';
 import path from 'path';
 
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://medaction:medaction_secure_2024@localhost:5433/medaction";
+// SECURITY: never hardcode credentials. Run with DATABASE_URL set in environment.
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  console.error('❌ DATABASE_URL is not set. Aborting to prevent credential exposure.');
+  process.exit(1);
+}
 
 async function restore() {
   const filePath = process.argv[2];

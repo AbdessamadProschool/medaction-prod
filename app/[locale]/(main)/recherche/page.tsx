@@ -75,10 +75,12 @@ function highlightText(text: string, query: string): React.ReactNode {
   if (!query || query.length < 2) return text;
   
   try {
-    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // BLOC 6.2 — ReDoS mitigation: cap query length before RegExp construction
+    const safeQuery = query.slice(0, 200);
+    const escapedQuery = safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
     return parts.map((part, index) => 
-      part.toLowerCase() === query.toLowerCase() ? (
+      part.toLowerCase() === safeQuery.toLowerCase() ? (
         <mark key={index} className="bg-[hsl(45,93%,47%)]/40 text-gray-900 rounded px-0.5 font-medium">
           {part}
         </mark>

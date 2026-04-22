@@ -3,6 +3,41 @@ import createMiddleware from 'next-intl/middleware';
 import {NextRequest, NextResponse} from 'next/server';
 import {routing} from './i18n/routing';
 
+// ═══════════════════════════════════════════════════════════
+// CVE-2025-29927 MITIGATION — Defence-in-depth layer 1
+// Strip x-middleware-subrequest before ANY processing to prevent
+// authentication bypass. Next.js 15.2.3 (layer 2) also patches this.
+// ═══════════════════════════════════════════════════════════
+const BLOCKED_INTERNAL_HEADERS = [
+  'x-middleware-subrequest',
+  'x-middleware-invoke',
+  'x-invoke-path',
+  'x-invoke-query',
+  'x-invoke-status',
+  'x-invoke-output',
+  'x-middleware-prefetch',
+];
+
+function stripInternalHeaders(request: NextRequest): NextRequest {
+  const headers = new Headers(request.headers);
+  let stripped = false;
+  for (const h of BLOCKED_INTERNAL_HEADERS) {
+    if (headers.has(h)) {
+      headers.delete(h);
+      stripped = true;
+      console.warn(`[SECURITY] Stripped forbidden internal header: ${h} from ${request.nextUrl.pathname}`);
+    }
+  }
+  if (!stripped) return request;
+  return new NextRequest(request.url, {
+    headers,
+    method: request.method,
+    body: request.body,
+    redirect: request.redirect,
+    signal: request.signal,
+  });
+}
+
 /**
  * ════════════════════════════════════════════════════════════════════════════
  * MIDDLEWARE DE SÉCURITÉ ULTRA-PROFESSIONNEL - MEDACTION
@@ -402,6 +437,11 @@ function getLocale(req: NextRequest): string {
 
 const authMiddleware = withAuth(
   async function middleware(req) {
+    // ═══════════════════════════════════════════════════════════
+    // CVE-2025-29927 — Strip internal headers FIRST before any other logic
+    // ═══════════════════════════════════════════════════════════
+    req = stripInternalHeaders(req);
+
     const { pathname } = req.nextUrl;
     const method = req.method;
 

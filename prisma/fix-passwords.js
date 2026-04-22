@@ -1,10 +1,15 @@
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 
-// Config de connexion au conteneur DB depuis l'hôte
-const client = new Client({
-  connectionString: 'postgresql://medaction:medaction_secure_2024@localhost:5433/medaction',
-});
+// SECURITY: credentials must come from the environment — never hardcoded.
+// Run with: DATABASE_URL="postgresql://user:pass@host:port/db" node prisma/fix-passwords.js
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error('❌ DATABASE_URL environment variable is not set. Aborting.');
+  process.exit(1);
+}
+
+const client = new Client({ connectionString });
 
 async function main() {
   await client.connect();

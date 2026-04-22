@@ -5,7 +5,12 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import fs from 'fs';
 import path from 'path';
 
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://medaction:medaction_secure_2024@127.0.0.1:5434/medaction";
+// SECURITY: never hardcode credentials. Run with DATABASE_URL set in environment.
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  console.error('❌ DATABASE_URL is not set. Aborting to prevent credential exposure.');
+  process.exit(1);
+}
 
 const pool = new Pool({ connectionString: DATABASE_URL });
 const adapter = new PrismaPg(pool);

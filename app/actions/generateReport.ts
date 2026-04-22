@@ -122,7 +122,9 @@ export async function generateGovernorReport(
                 prisma.actualite.count({ where: { createdAt: dateFilter, statut: 'PUBLIEE', ...(filters?.communeId && { etablissement: { communeId: filters.communeId } }) } }),
                 prisma.campagne.count({ where: { createdAt: dateFilter } }),
                 prisma.evaluation.aggregate({ where: etablissementWhere, _avg: { noteGlobale: true }, _count: true }),
+                prisma.etablissement.groupBy({ by: ['secteur'], _count: { id: true }, where: etablissementWhere }),
             ]),
+
             // 4. Géo & Annexes
             Promise.all([
                 prisma.commune.findMany({ select: { id: true, nom: true, nomArabe: true, population: true }, orderBy: { nom: 'asc' } }),
@@ -160,7 +162,7 @@ export async function generateGovernorReport(
 
         // ─── Processing Stats ──────────────────────────────────────────────────
         const [totalRec, accepteesRec, rejeteesRec, enAttenteRec, urgentesRec, resoluesRec, affecteesRec] = reclamationsStats;
-        const [totalEv, cloturesEv, totalActu, totalCamp, satisfaction] = eventsStats;
+        const [totalEv, cloturesEv, totalActu, totalCamp, satisfaction, etabsParSecteur] = eventsStats;
         const [communesList, annexesList, recParCommune] = geoData;
         const [detailedEvents, detailedActivites, detailedReclamations, detailedReviews] = detailedData;
 
@@ -200,17 +202,22 @@ export async function generateGovernorReport(
                 etablissements: {
                     total: etablissementsList.length,
                     ranking: ranking.slice(0, 10),
-                    reviews: detailedReviews
+                    reviews: detailedReviews,
+                    parSecteur: etabsParSecteur.map(s => ({ secteur: s.secteur, count: s._count.id }))
                 },
                 activites: {
                     evenements: detailedEvents,
                     programmes: detailedActivites,
                     totalGlobal: totalEv + totalActu + totalCamp
                 },
-                evenements: { total: totalEv, clotures: cloturesEv },
+                evenements: { 
+                    total: totalEv, 
+                    clotures: cloturesEv,
+                    parSecteur: etabsParSecteur.map(s => ({ secteur: s.secteur, count: s._count.id }))
+                },
                 actualites: { total: totalActu },
                 campagnes: { total: totalCamp },
-                satisfaction: { moyenne: satisfaction._avg.noteMoyenne || 0 },
+                satisfaction: { moyenne: satisfaction._avg.noteGlobale || 0 },
                 communes: communesList.map(c => ({
                     nom: c.nom,
                     nomArabe: c.nomArabe,

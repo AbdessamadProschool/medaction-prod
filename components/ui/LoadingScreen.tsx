@@ -166,8 +166,8 @@ export default function LoadingScreen({
           className="text-center mb-8"
         >
           <h1 className="text-3xl font-bold tracking-wider mb-2">
-            <span className="text-white">{t('portal_name').split(' ')[0]} </span>
-            <span className="text-[hsl(45,93%,47%)]">{t('portal_name').split(' ').slice(1).join(' ')}</span>
+            <span className="text-white">{(t('portal_name') || 'Portail Mediouna').split(' ')[0]} </span>
+            <span className="text-[hsl(45,93%,47%)]">{(t('portal_name') || 'Portail Mediouna').split(' ').slice(1).join(' ')}</span>
           </h1>
           <p className="text-white/50 text-sm">{t('province_name')}</p>
         </motion.div>

@@ -5300,7 +5300,9 @@
       "UPDATE_PERMISSIONS": "Mise à jour Permissions",
       "CREATE_BACKUP": "Création Sauvegarde",
       "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe",
-      "ACCESS_DENIED": "Accès Refusé"
+      "ACCESS_DENIED": "Accès Refusé",
+      "ENABLE_2FA": "Activation 2FA",
+      "DISABLE_2FA": "Désactivation 2FA"
     },
     "modal": {
       "title": "Détails du Log #{id}",

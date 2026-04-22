@@ -406,7 +406,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Alerts Section */}
-      {stats?.evenements?.aCloturer && stats.evenements.aCloturer > 0 && (
+      {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
         <motion.div variants={itemVariants} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
@@ -415,7 +415,7 @@ export default function AdminDashboard() {
             <div>
                <h3 className="font-semibold text-amber-900">{t('alerts.events_action_required')}</h3>
                <p className="text-sm text-amber-700">
-                 {t('alerts.events_pending_closure', { count: stats.evenements.aCloturer })}
+                 {t('alerts.events_pending_closure', { count: stats?.evenements?.aCloturer })}
                </p>
             </div>
           </div>
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
           title={t('metrics.users')}
           value={stats?.utilisateurs?.total ?? 0}
           change={stats?.utilisateurs?.variation ?? 0}
-          changeType={stats?.utilisateurs?.variation && stats.utilisateurs.variation > 0 ? 'up' : 'neutral'}
+          changeType={stats?.utilisateurs?.variation && stats?.utilisateurs?.variation > 0 ? 'up' : 'neutral'}
           icon={Users}
           gradient="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
           subValue={stats?.utilisateurs?.nouveaux ?? 0}
@@ -444,7 +444,7 @@ export default function AdminDashboard() {
           title={t('metrics.establishments')}
           value={stats?.etablissements?.total ?? 0}
           change={stats?.etablissements?.variation ?? 0}
-          changeType={stats?.etablissements?.variation && stats.etablissements.variation > 0 ? 'up' : 'neutral'}
+          changeType={stats?.etablissements?.variation && stats?.etablissements?.variation > 0 ? 'up' : 'neutral'}
           icon={Building2}
           gradient="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
           subValue={stats?.etablissements?.valides ?? 0}
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
           title={t('metrics.events')}
           value={stats?.evenements?.total ?? 0}
           change={stats?.evenements?.variation ?? 0}
-          changeType={stats?.evenements?.variation && stats.evenements.variation > 0 ? 'up' : 'neutral'}
+          changeType={stats?.evenements?.variation && stats?.evenements?.variation > 0 ? 'up' : 'neutral'}
           icon={Calendar}
           gradient="from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]"
           subValue={stats?.evenements?.enCours ?? 0}
@@ -486,7 +486,7 @@ export default function AdminDashboard() {
             href="/admin/reclamations"
             color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
             count={stats?.reclamations?.enAttente}
-            urgent={!!(stats?.reclamations?.enAttente && stats.reclamations.enAttente > 0)}
+            urgent={!!(stats?.reclamations?.enAttente && stats?.reclamations?.enAttente > 0)}
           />
           <QuickActionCard
             title={t('quick_actions.validation')}

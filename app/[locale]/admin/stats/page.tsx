@@ -62,27 +62,27 @@ export default function AdminStatsPage() {
         // Mapping de la réponse API (format { stats, charts, details }) vers le format attendu par le composant
         const formattedData: StatsData = {
           reclamations: {
-            total: data.stats.reclamations.total,
-            ceMois: data.stats.reclamations.ceMois,
-            moisDernier: data.stats.reclamations.moisDernier,
-            parStatut: data.details.reclamations.parStatut,
-            parCategorie: data.details.reclamations.parCategorie,
-            parCommune: data.details.reclamations.parCommune,
+            total: data?.stats?.reclamations?.total ?? 0,
+            ceMois: data?.stats?.reclamations?.ceMois ?? 0,
+            moisDernier: data?.stats?.reclamations?.moisDernier ?? 0,
+            parStatut: data?.details?.reclamations?.parStatut ?? [],
+            parCategorie: data?.details?.reclamations?.parCategorie ?? [],
+            parCommune: data?.details?.reclamations?.parCommune ?? [],
           },
           etablissements: {
-            total: data.stats.etablissements.total,
-            parSecteur: data.details.etablissements.parSecteur,
-            noteMoyenne: data.stats.etablissements.noteMoyenne
+            total: data?.stats?.etablissements?.total ?? 0,
+            parSecteur: data?.details?.etablissements?.parSecteur ?? [],
+            noteMoyenne: data?.stats?.etablissements?.noteMoyenne ?? 0
           },
           evenements: {
-            total: data.stats.evenements.total,
-            ceMois: data.stats.evenements.ceMois,
-            parSecteur: data.details.evenements.parSecteur
+            total: data?.stats?.evenements?.total ?? 0,
+            ceMois: data?.stats?.evenements?.ceMois ?? 0,
+            parSecteur: data?.details?.evenements?.parSecteur ?? []
           },
           utilisateurs: {
-            total: data.stats.utilisateurs.total,
-            nouveauxCeMois: data.stats.utilisateurs.nouveaux,
-            parRole: data.details.utilisateurs.parRole
+            total: data?.stats?.utilisateurs?.total ?? 0,
+            nouveauxCeMois: data?.stats?.utilisateurs?.nouveaux ?? 0,
+            parRole: data?.details?.utilisateurs?.parRole ?? []
           }
         };
         setStats(formattedData);

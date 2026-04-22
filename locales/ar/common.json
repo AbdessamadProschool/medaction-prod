@@ -5,7 +5,7 @@
   },
   "governor": {
     "sidebar": {
-      "title": "منصة السيد العامل",
+      "title": "منصة الوالي",
       "subtitle": "لوحة القيادة الإقليمية",
       "logout": "تسجيل الخروج",
       "nav": {
@@ -134,7 +134,7 @@
         "morning": "صباح الخير",
         "afternoon": "طاب يومك",
         "evening": "مساء الخير",
-        "suffix": "، السيد العامل",
+        "suffix": "، السيد الوالي",
         "subtitle": "رؤية استراتيجية حول نشاط إقليم مديونة"
       },
       "quick_actions": {
@@ -5010,7 +5010,9 @@
       "UPDATE_PERMISSIONS": "تحديث الصلاحيات",
       "CREATE_BACKUP": "إنشاء نسخة احتياطية",
       "PASSWORD_RESET_BY_ADMIN": "إعادة تعيين كلمة المرور",
-      "ACCESS_DENIED": "تم رفض الوصول"
+      "ACCESS_DENIED": "تم رفض الوصول",
+      "ENABLE_2FA": "تفعيل المصادقة الثنائية",
+      "DISABLE_2FA": "تعطيل المصادقة الثنائية"
     },
     "modal": {
       "title": "تفاصيل السجل #{id}",

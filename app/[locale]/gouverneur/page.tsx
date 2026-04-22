@@ -578,19 +578,7 @@ export default function GouverneurDashboard() {
     );
   }
 
-  const s = stats || {
-    communes: { total: 0, actives: 0, details: [] },
-    reclamations: { total: 0, enAttente: 0, enCours: 0, resolues: 0, rejetees: 0, tauxResolution: 0, urgentes: 0, nouveauCetteSemaine: 0 },
-    etablissements: { total: 0, parSecteur: {} },
-    evenements: { total: 0, aVenir: 0, enCours: 0, cetMois: 0 },
-    projects: { active: 0 },
-    charts: { auditTrends: [], compliance: [] },
-    alerts: [],
-    recentActivity: [],
-    citoyens: { total: 0, actifsCeMois: 0, nouveauxCetteSemaine: 0 },
-    satisfaction: { moyenne: 0, engagement: 0 },
-    sectorRankings: []
-  };
+
 
   const getGreetingKey = () => {
     const hour = currentTime.getHours();
@@ -843,25 +831,25 @@ export default function GouverneurDashboard() {
                        {[
                          { 
                            label: t('overview.kpi.satisfaction'), 
-                           value: s?.satisfaction?.moyenne?.toFixed(1) || '0.0', 
+                           value: stats?.satisfaction?.moyenne?.toFixed(1) || '0.0', 
                            sub: t('overview.kpi.satisfaction_suffix') || '/ 5.0', 
                            icon: Star, 
                            color: 'text-amber-500', 
                            bg: 'bg-amber-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.satisfaction'),
-                           detail: (s?.etablissements?.total || 0) > 0 ? t('overview.kpi.evaluations_count', {count: s.etablissements.total}) : t('overview.kpi.no_evaluations')
+                           detail: (stats?.etablissements?.total || 0) > 0 ? t('overview.kpi.evaluations_count', {count: s.etablissements.total}) : t('overview.kpi.no_evaluations')
                          },
                          { 
                            label: t('overview.kpi.resolution_rate'), 
-                           value: `${s?.reclamations?.tauxResolution ?? 0}%`, 
+                           value: `${stats?.reclamations?.tauxResolution ?? 0}%`, 
                            sub: t('overview.kpi.sub.reclamations'), 
                            icon: CheckCircle, 
                            color: 'text-emerald-500', 
                            bg: 'bg-emerald-100',
                            action: () => setActiveTab('reclamations'),
                            tooltip: t('overview.kpi.tooltip.resolution') || 'Taux de résolution des réclamations',
-                           detail: t('overview.kpi.resolutions_count', {resolues: s?.reclamations?.resolues || 0, total: s?.reclamations?.total || 0})
+                           detail: t('overview.kpi.resolutions_count', {resolues: stats?.reclamations?.resolues || 0, total: stats?.reclamations?.total || 0})
                          },
                          { 
                            label: t('overview.kpi.participations'), 
@@ -872,19 +860,19 @@ export default function GouverneurDashboard() {
                            bg: 'bg-blue-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.engagement') || 'Engagement citoyen (abonnements + participations)',
-                           detail: (s?.citoyens?.total || 0) > 0 ? t('overview.kpi.active_users', {count: s?.citoyens?.actifsCeMois || 0}) : t('overview.kpi.no_data')
+                           detail: (stats?.citoyens?.total || 0) > 0 ? t('overview.kpi.active_users', {count: stats?.citoyens?.actifsCeMois || 0}) : t('overview.kpi.no_data')
                          },
                          { 
                            label: t('overview.kpi.active_projects'), 
-                           value: ((s.evenements?.enCours || 0) + (s.projects?.active || 0)).toString(), 
+                           value: ((stats?.evenements?.enCours || 0) + (stats?.projects?.active || 0)).toString(), 
                            sub: t('overview.kpi.sub.ongoing'), 
                            icon: Activity, 
                            color: 'text-purple-500', 
                            bg: 'bg-purple-100',
                            action: () => setActiveTab('activites'),
                            tooltip: t('overview.kpi.tooltip.projects'),
-                           detail: (s.evenements?.enCours || 0) + (s.projects?.active || 0) > 0 
-                                      ? `${s.evenements?.enCours || 0} ${t('common.events')} • ${s.projects?.active || 0} ${t('common.campaigns')}`
+                           detail: (stats?.evenements?.enCours || 0) + (stats?.projects?.active || 0) > 0 
+                                      ? `${stats?.evenements?.enCours || 0} ${t('common.events')} • ${stats?.projects?.active || 0} ${t('common.campaigns')}`
                                       : t('overview.kpi.no_data')
                          },
                        ].map((kpi, i) => (
@@ -1052,7 +1040,7 @@ export default function GouverneurDashboard() {
                                         <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                                         <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-red-500 group-hover/item:text-white transition-colors"><AlertTriangle size={20} /></div>
                                         <div>
-                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.reclamations?.enAttente || 0}</p>
+                                           <p className="font-black text-slate-900 text-lg leading-tight">{stats?.reclamations?.enAttente || 0}</p>
                                            <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار التعيين' : 'Réclamations sans affectation'}</p>
                                         </div>
                                      </button>
@@ -1093,9 +1081,9 @@ export default function GouverneurDashboard() {
                                  
                                  <div className="space-y-8">
                                     {[
-                                      { label: t('overview.territorial.communes'), count: s.communes.total, total: 5, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
-                                      { label: t('overview.territorial.establishments'), count: s.etablissements.total, total: 200, color: 'from-emerald-400 to-emerald-600', icon: Building2, bg: 'bg-emerald-500/20' },
-                                      { label: t('overview.territorial.events'), count: s.evenements.total, total: Math.max(s.evenements.total, 50), color: 'from-blue-400 to-blue-600', icon: Calendar, bg: 'bg-blue-500/20' },
+                                      { label: t('overview.territorial.communes'), count: stats?.communes.total, total: 5, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
+                                      { label: t('overview.territorial.establishments'), count: stats?.etablissements?.total, total: 200, color: 'from-emerald-400 to-emerald-600', icon: Building2, bg: 'bg-emerald-500/20' },
+                                      { label: t('overview.territorial.events'), count: stats?.evenements.total, total: Math.max(stats?.evenements.total, 50), color: 'from-blue-400 to-blue-600', icon: Calendar, bg: 'bg-blue-500/20' },
                                     ].map(item => (
                                       <div key={item.label} className="group/item">
                                          <div className="flex justify-between items-center text-sm font-black mb-3">
@@ -1120,7 +1108,7 @@ export default function GouverneurDashboard() {
                                  </div>
 
                                  <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-1 gap-4">
-                                    {(s.communes.details || []).map((commune: any) => (
+                                    {(stats?.communes.details || []).map((commune: any) => (
                                        <div key={commune.id} className="flex flex-col gap-2 group/c">
                                           <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-tight text-slate-400 group-hover:text-white transition-colors">
                                               <span className="flex items-center gap-2">
@@ -1150,8 +1138,8 @@ export default function GouverneurDashboard() {
                                   {t('overview.activity_log.title')}
                                </h4>
                                 <div className="space-y-3">
-                                   {s.recentActivity && s.recentActivity.length > 0 ? (
-                                      s.recentActivity.slice(0, 8).map((log, i) => {
+                                   {stats?.recentActivity && stats?.recentActivity.length > 0 ? (
+                                      stats?.recentActivity.slice(0, 8).map((log, i) => {
                                           const Icon = log.icon === 'AlertTriangle' ? AlertTriangle : (log.icon === 'Star' ? Star : (log.icon === 'Calendar' ? Calendar : FileText));
                                           const style = log.color === 'red' ? 'bg-red-50 text-red-500' : (log.color === 'amber' ? 'bg-amber-50 text-amber-500' : 'bg-blue-50 text-blue-500');
 
@@ -1200,10 +1188,10 @@ export default function GouverneurDashboard() {
                       {/* 🎯 EXECUTIVE KPIs - Decision Triggers */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                          {[
-                           { label: t('reports.kpi.pending_decisions'), value: s.reclamations?.enAttente || 0, icon: AlertCircle, color: 'bg-red-500', subLabel: s.reclamations?.nouveauCetteSemaine > 0 ? `+${s.reclamations.nouveauCetteSemaine} ${t('reports.kpi.this_week') || 'cette sem.'}` : null, urgent: (s.reclamations?.enAttente || 0) > 0 },
-                           { label: t('reports.kpi.resolution_rate'), value: `${s.reclamations?.tauxResolution || 0}%`, icon: CheckCircle, color: 'bg-emerald-500', subLabel: s.reclamations?.resolues > 0 ? `${s.reclamations.resolues} résolues` : null },
-                           { label: t('reports.kpi.active_projects'), value: s.projects?.active || 0, icon: Target, color: 'bg-blue-500', subLabel: s.evenements?.enCours > 0 ? `${s.evenements.enCours} en cours` : null },
-                           { label: t('reports.kpi.monthly_events'), value: s.evenements?.cetMois || 0, icon: Calendar, color: 'bg-purple-500', subLabel: s.evenements?.aVenir > 0 ? t('reports.kpi.upcoming', {count: s.evenements.aVenir}) : null },
+                           { label: t('reports.kpi.pending_decisions'), value: stats?.reclamations?.enAttente || 0, icon: AlertCircle, color: 'bg-red-500', subLabel: stats?.reclamations?.nouveauCetteSemaine > 0 ? `+${stats?.reclamations.nouveauCetteSemaine} ${t('reports.kpi.this_week') || 'cette sem.'}` : null, urgent: (stats?.reclamations?.enAttente || 0) > 0 },
+                           { label: t('reports.kpi.resolution_rate'), value: `${stats?.reclamations?.tauxResolution || 0}%`, icon: CheckCircle, color: 'bg-emerald-500', subLabel: stats?.reclamations?.resolues > 0 ? `${stats?.reclamations.resolues} résolues` : null },
+                           { label: t('reports.kpi.active_projects'), value: stats?.projects?.active || 0, icon: Target, color: 'bg-blue-500', subLabel: stats?.evenements?.enCours > 0 ? `${stats?.evenements.enCours} en cours` : null },
+                           { label: t('reports.kpi.monthly_events'), value: stats?.evenements?.cetMois || 0, icon: Calendar, color: 'bg-purple-500', subLabel: stats?.evenements?.aVenir > 0 ? t('reports.kpi.upcoming', {count: stats?.evenements.aVenir}) : null },
                          ].map((kpi, i) => (
                             <motion.div 
                                key={i}
@@ -1232,7 +1220,7 @@ export default function GouverneurDashboard() {
                       </div>
 
                       {/* 🚨 CRITICAL ALERTS - Immediate Action Required */}
-                      {(s.reclamations?.urgentes > 0 || s.reclamations?.enAttente > 5) && (
+                      {(stats?.reclamations?.urgentes > 0 || stats?.reclamations?.enAttente > 5) && (
                          <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -1245,7 +1233,7 @@ export default function GouverneurDashboard() {
                                   </div>
                                   <div>
                                      <h4 className="text-xl font-black">{t('reports.alert.title')}</h4>
-                                     <p className="text-red-100 text-sm">{s.reclamations?.urgentes || 0} {t('reports.alert.urgent')} • {s.reclamations?.enAttente || 0} {t('reports.alert.pending')}</p>
+                                     <p className="text-red-100 text-sm">{stats?.reclamations?.urgentes || 0} {t('reports.alert.urgent')} • {stats?.reclamations?.enAttente || 0} {t('reports.alert.pending')}</p>
                                   </div>
                                </div>
                                <button 
@@ -1280,7 +1268,7 @@ export default function GouverneurDashboard() {
                              </div>
                              <div className="h-64 w-full flex-1">
                                 <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                                   <BarChart data={s.charts.auditTrends}>
+                                   <BarChart data={stats?.charts.auditTrends}>
                                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
                                       <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
@@ -1311,7 +1299,7 @@ export default function GouverneurDashboard() {
                                    <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                                       <RePieChart>
                                       <Pie
-                                        data={Array.isArray(s?.charts?.compliance) ? s.charts.compliance : []}
+                                        data={Array.isArray(stats?.charts?.compliance) ? stats?.charts.compliance : []}
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={70}
@@ -1320,7 +1308,7 @@ export default function GouverneurDashboard() {
                                         dataKey="value"
                                         stroke="none"
                                      >
-                                        {s?.charts?.compliance && Array.isArray(s.charts.compliance) && s.charts.compliance.map((entry: any, index: number) => (
+                                        {stats?.charts?.compliance && Array.isArray(stats?.charts.compliance) && stats?.charts.compliance.map((entry: any, index: number) => (
                                            <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                      </Pie>
@@ -1330,14 +1318,14 @@ export default function GouverneurDashboard() {
                                    {/* Center Key Metric */}
                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                                       <span className="text-3xl font-black text-slate-900">
-                                         {Math.round((s.charts.compliance.find(c => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, s.etablissements.total) * 100)}%
+                                         {Math.round((stats?.charts?.compliance.find((c: any) => c.name.toLowerCase().includes('conforme'))?.value || 0) / Math.max(1, stats?.etablissements?.total || 1) * 100)}%
                                       </span>
                                        <span className="text-[10px] uppercase font-bold text-slate-600">{t('reports.index')}</span>
                                    </div>
                                 </div>
                                 
                                 <div className="w-full md:w-1/2 space-y-4">
-                                   {(Array.isArray(s?.charts?.compliance) ? s.charts.compliance : []).map((item, i) => {
+                                   {(Array.isArray(stats?.charts?.compliance) ? stats?.charts.compliance : []).map((item, i) => {
                                       let descKey = 'conforme_desc';
                                       const name = item.name.toLowerCase();
                                       const code = (item as any).code;

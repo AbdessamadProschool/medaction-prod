@@ -798,9 +798,41 @@ export default function GouverneurDashboard() {
                       
                      </div>
 
-                     {/* ACTION CENTER & ALERTS */}
-                     <div className="grid lg:grid-cols-12 gap-8">
-                       <div className="lg:col-span-8 space-y-8">
+                      <div className="grid lg:grid-cols-12 gap-8">
+                        <div className="lg:col-span-8 space-y-8">
+                           {/* 🚨 CRITICAL ACTIONS CENTER - High Attention */}
+                           <div className="bg-red-50 dark:bg-red-950/20 p-8 rounded-[2.5rem] border-2 border-red-100 dark:border-red-900/30 overflow-hidden relative group/alerts">
+                              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover/alerts:scale-110 transition-transform"><Activity size={120} className="text-red-600" /></div>
+                              <div className="relative z-10">
+                                 <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-3 h-3 bg-red-500 rounded-full animate-ping" />
+                                    <h4 className="text-xl font-black text-red-900 dark:text-red-100 uppercase tracking-tight">{locale === 'ar' ? 'إجراءات عاجلة مطلوبة' : 'Actions Urgentes Requises'}</h4>
+                                 </div>
+                                 <div className="grid sm:grid-cols-2 gap-4">
+                                     <button 
+                                       onClick={() => { setActiveTab('reclamations'); setSelectedReclamationId(null); }}
+                                       className="flex items-center gap-4 p-5 bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-red-200 dark:border-red-900/50 group/item text-left"
+                                     >
+                                        <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-red-500 group-hover/item:text-white transition-colors"><AlertTriangle size={20} /></div>
+                                        <div>
+                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.reclamations?.urgentAssignation || 0}</p>
+                                           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار التعيين' : 'Réclamations sans affectation'}</p>
+                                        </div>
+                                     </button>
+                                     
+                                     <button 
+                                       onClick={() => setActiveTab('activites')}
+                                       className="flex items-center gap-4 p-5 bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-amber-200 dark:border-amber-900/50 group/item text-left"
+                                     >
+                                        <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
+                                        <div>
+                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.evenements?.enCours || 0}</p>
+                                           <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
+                                        </div>
+                                     </button>
+                                 </div>
+                              </div>
+                           </div>
                           {/* CRITICAL ALERTS */}
                           {/* GAMIFIED SECTOR LEADERBOARD */}
                           <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
@@ -991,7 +1023,7 @@ export default function GouverneurDashboard() {
                                  
                                  <div className="space-y-8">
                                     {[
-                                      { label: t('overview.territorial.communes'), count: s.communes.total, total: 6, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
+                                      { label: t('overview.territorial.communes'), count: s.communes.total, total: 5, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
                                       { label: t('overview.territorial.establishments'), count: s.etablissements.total, total: 200, color: 'from-emerald-400 to-emerald-600', icon: Building2, bg: 'bg-emerald-500/20' },
                                       { label: t('overview.territorial.events'), count: s.evenements.total, total: Math.max(s.evenements.total, 50), color: 'from-blue-400 to-blue-600', icon: Calendar, bg: 'bg-blue-500/20' },
                                     ].map(item => (

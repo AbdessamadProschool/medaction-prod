@@ -234,8 +234,14 @@ export default function EvenementsTab() {
               className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
             >
               <option value="">{isAr ? 'جميع الجماعات' : 'Toutes les communes'}</option>
-              {communes.map((c) => (
-                <option key={c.id} value={c.id}>{isAr && c.nomArabe ? c.nomArabe : c.nom}</option>
+              {[
+                { id: 'MEDIOUNA', fr: 'MÉDIOUNA', ar: 'مديونة' },
+                { id: 'TIT MELLIL', fr: 'TIT MELLIL', ar: 'تيط مليل' },
+                { id: 'LAHRAOUIYINE', fr: 'LAHRAOUIYINE', ar: 'الهراويين' },
+                { id: 'SIDI HAJJAJ OUED HASSAK', fr: 'SIDI HAJJAJ OUED HASSAK', ar: 'سيدي حجاج واد حصار' },
+                { id: 'MEJJATIA OULAD TALEB', fr: 'MEJJATIA OULAD TALEB', ar: 'المجاطية أولاد طالب' }
+              ].map((c) => (
+                <option key={c.id} value={c.id} dir="auto">{isAr ? c.ar : c.fr}</option>
               ))}
             </select>
             <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
@@ -367,7 +373,7 @@ export default function EvenementsTab() {
             )}
           </div>
 
-          {totalPages > 1 && (
+          {totalPages >= 1 && (
             <div className="flex justify-center items-center gap-6 mt-12 bg-white px-8 py-4 rounded-2xl border border-slate-100 w-fit mx-auto shadow-xl">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}

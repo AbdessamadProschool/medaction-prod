@@ -145,18 +145,17 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
 
                 <select className="px-6 py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer" value={selectedCommune} onChange={(e) => { setSelectedCommune(e.target.value); setSelectedAnnexe(''); }}>
                     <option value="">{t('filters.all_communes')}</option>
-                    {communes.map(c => {
-                       const cStr = c as string;
-                       const communeTranslations: any = {
-                          'MEDIOUNA': 'مديونة',
-                          'TIT MELLIL': 'تيط مليل',
-                          'LAHRAOUIYINE': 'الهراويين',
-                          'SIDI HAJJAJ OUED HASSAK': 'سيدي حجاج واد حصار',
-                          'MEJJATIA OULAD TALEB': 'المجاطية أولاد طالب'
-                       };
-                       const translatedName = locale === 'ar' ? (communeTranslations[cStr] || cStr) : cStr;
-                       return <option key={cStr} value={cStr} dir="auto">{translatedName}</option>;
-                    })}
+                    {[
+                      { id: 'MEDIOUNA', fr: 'MÉDIOUNA', ar: 'مديونة' },
+                      { id: 'TIT MELLIL', fr: 'TIT MELLIL', ar: 'تيط مليل' },
+                      { id: 'LAHRAOUIYINE', fr: 'LAHRAOUIYINE', ar: 'الهراويين' },
+                      { id: 'SIDI HAJJAJ OUED HASSAK', fr: 'SIDI HAJJAJ OUED HASSAK', ar: 'سيدي حجاج واد حصار' },
+                      { id: 'MEJJATIA OULAD TALEB', fr: 'MEJJATIA OULAD TALEB', ar: 'المجاطية أولاد طالب' }
+                    ].map(c => (
+                        <option key={c.id} value={c.id} dir="auto">
+                           {locale === 'ar' ? c.ar : c.fr}
+                        </option>
+                    ))}
                 </select>
                 <button 
                     onClick={() => { setFilter(''); setSelectedSector(''); setSelectedCommune(''); setSelectedAnnexe(''); }}

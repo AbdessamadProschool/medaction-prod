@@ -276,9 +276,17 @@ export async function getGovernorInsights(locale: string = 'fr') {
         return {
             success: true,
             data: {
-                growth: { value: currentMonthCount, label: `${currentMonthCount}`, period: isAr ? 'هذا الشهر' : 'ce mois' },
+                growth: { 
+                    value: currentMonthCount, 
+                    label: `${currentMonthCount}`, 
+                    period: isAr ? 'مبادرة هذا الشهر' : 'initiatives ce mois' 
+                },
                 alerts,
-                recommendation: { message: isAr ? "متابعة معالجة الشكايات العالقة" : "Suivre la résolution des réclamations en attente." }
+                recommendation: { 
+                    message: isAr 
+                        ? "تحسين مؤشرات الأداء من خلال تسريع وتيرة إغلاق الأحداث المنتهية." 
+                        : "Optimiser les indicateurs de performance en accélérant la clôture des événements terminés." 
+                }
             }
         };
     } catch (error) {

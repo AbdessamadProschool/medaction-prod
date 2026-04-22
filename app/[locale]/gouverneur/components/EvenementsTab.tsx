@@ -43,6 +43,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
   const [secteurFilter, setSecteurFilter] = useState('');
   const [communeFilter, setCommuneFilter] = useState('');
   const [annexeFilter, setAnnexeFilter] = useState('');
+  const [dateDebut, setDateDebut] = useState('');
+  const [dateFin, setDateFin] = useState('');
   const [communes, setCommunes] = useState<any[]>([]);
   const [annexes, setAnnexes] = useState<any[]>([]);
 
@@ -96,6 +98,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
       if (secteurFilter) params.append('secteur', secteurFilter);
       if (communeFilter) params.append('communeId', communeFilter);
       if (annexeFilter) params.append('annexeId', annexeFilter);
+      if (dateDebut) params.append('dateDebut', dateDebut);
+      if (dateFin) params.append('dateFin', dateFin);
 
       const res = await fetch(`/api/${typeContenu}?${params}`);
       if (res.ok) {
@@ -116,7 +120,7 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
 
   useEffect(() => {
     fetchData();
-  }, [page, statutFilter, secteurFilter, communeFilter, annexeFilter, typeContenu]);
+  }, [page, statutFilter, secteurFilter, communeFilter, annexeFilter, typeContenu, dateDebut, dateFin]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -271,6 +275,29 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
             </select>
             <Shield className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
           </div>
+
+          {/* New Date Filters */}
+          <div className="relative">
+            <input
+              type="date"
+              value={dateDebut}
+              onChange={(e) => { setDateDebut(e.target.value); setPage(1); }}
+              className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
+            />
+            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-black pointer-events-none opacity-40">{isAr ? 'من' : 'Du'}</div>
+          </div>
+
+          <div className="relative">
+            <input
+              type="date"
+              value={dateFin}
+              onChange={(e) => { setDateFin(e.target.value); setPage(1); }}
+              className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
+            />
+            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-black pointer-events-none opacity-40">{isAr ? 'إلى' : 'Au'}</div>
+          </div>
         </div>
 
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
@@ -288,6 +315,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                setSecteurFilter('');
                setCommuneFilter('');
                setAnnexeFilter('');
+               setDateDebut('');
+               setDateFin('');
              }}
              className="text-[10px] font-black uppercase text-gov-blue hover:text-blue-700 transition-colors flex items-center gap-2 tracking-widest"
            >

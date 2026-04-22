@@ -798,7 +798,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
 
                  {/* Footer Security */}
                  <div className="fixed bottom-10 left-10 right-10 flex justify-between items-center text-[7px] font-bold uppercase text-slate-300 border-t border-slate-100 pt-4">
-                     <p>Province de Médiouna - Système de Gestion Intégré des Équipements</p>
+                     <p>{isRTL ? 'إقليم مديونة - نظام التدبير المندمج للخدمات الترابية' : 'Province de Médiouna - Système de Gestion Intégré des Services Territoriaux'}</p>
                      <p>Généré par @Antigravity - ID Session: {Math.random().toString(36).substring(7).toUpperCase()}</p>
                      <p>Page 1 / 1 - Confidentiel</p>
                  </div>

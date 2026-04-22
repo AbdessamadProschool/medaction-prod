@@ -338,7 +338,7 @@ export default function GouverneurDashboard() {
         <!-- Title -->
         <div class='report-title'>
             <h2>Rapport Provincial de Pilotage Stratégique</h2>
-            <div class='sub-title'>Tableau de Bord Analytique des Équipements et Services</div>
+            <div class='sub-title'>Suivi Stratégique des Activités et Établissements Territoriaux</div>
             <div class='meta-period'>Période : ${d.period}</div>
         </div>
 
@@ -1044,38 +1044,77 @@ export default function GouverneurDashboard() {
 
                       <div className="grid lg:grid-cols-12 gap-8">
                         <div className="lg:col-span-8 space-y-8">
-                           {/* 🚨 CRITICAL ACTIONS CENTER - High Attention */}
-                           <div className="bg-red-50/80 backdrop-blur-xl p-8 rounded-[2.5rem] border-2 border-red-100 overflow-hidden relative group/alerts shadow-lg shadow-red-500/5">
-                              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover/alerts:scale-110 transition-transform"><Activity size={120} className="text-red-600" /></div>
-                              <div className="relative z-10">
-                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-3 h-3 bg-red-500 rounded-full animate-ping" />
-                                    <h4 className="text-xl font-black text-red-900 uppercase tracking-tight">{locale === 'ar' ? 'إجراءات عاجلة مطلوبة' : 'Actions Urgentes Requises'}</h4>
+                        <div className="lg:col-span-8 space-y-8">
+                           {/* Activity Audit Matrix (Professional replacement) */}
+                           <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white shadow-sm overflow-hidden relative group/audit">
+                              <div className="flex items-center justify-between mb-8">
+                                 <div>
+                                    <h4 className="text-xl font-black text-slate-900 uppercase tracking-tight">{locale === 'ar' ? 'مصفوفة الرصد الإقليمي' : 'Matrice de Suivi Provincial'}</h4>
+                                    <p className="text-xs font-bold text-slate-500">{locale === 'ar' ? 'تحليل الأداء حسب القطاعات والجماعات' : 'Audit analytique par secteur et territoire'}</p>
                                  </div>
-                                 <div className="grid sm:grid-cols-2 gap-4">
-                                     <button 
-                                       onClick={() => { setActiveTab('reclamations'); setSelectedReclamationId(null); }}
-                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-red-200 group/item text-start hover:border-red-500 overflow-hidden relative"
-                                     >
-                                        <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                        <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-red-500 group-hover/item:text-white transition-colors"><AlertTriangle size={20} /></div>
-                                        <div>
-                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.reclamations?.enAttente || 0}</p>
-                                           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار التعيين' : 'Réclamations sans affectation'}</p>
-                                        </div>
-                                     </button>
-                                     
-                                     <button 
-                                       onClick={() => setActiveTab('activites')}
-                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-amber-200 group/item text-start hover:border-amber-500 overflow-hidden relative"
-                                     >
-                                        <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                        <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
-                                        <div>
-                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.evenements?.enCours || 0}</p>
-                                           <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
-                                        </div>
-                                     </button>
+                                 <div className="flex gap-2">
+                                    <div className="px-3 py-1 bg-gov-blue/10 text-gov-blue rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                                       <Activity size={12} /> {locale === 'ar' ? 'مباشر' : 'LIVE'}
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                 {/* Sectors Performance */}
+                                 <div className="space-y-4">
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locale === 'ar' ? 'الأداء حسب القطاع' : 'Performance Secteurs'}</h5>
+                                    <div className="space-y-3">
+                                       {s.sectorRankings?.slice(0, 4).map((sr: any) => (
+                                          <div key={sr.secteur} className="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50/50 border border-slate-100 hover:border-gov-blue/20 transition-all">
+                                             <div className="flex justify-between items-center text-xs font-black">
+                                                <span className="text-slate-800">{sr.secteur}</span>
+                                                <span className="text-gov-blue">{sr.score}%</span>
+                                             </div>
+                                             <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                                <div className="h-full bg-gov-blue rounded-full" style={{ width: `${sr.score}%` }} />
+                                             </div>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 </div>
+
+                                 {/* Commune Highlights */}
+                                 <div className="space-y-4">
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locale === 'ar' ? 'مؤشر أداء الجماعات' : 'Indice de Performance Communes'}</h5>
+                                    <div className="space-y-3">
+                                       {s.communes?.details?.slice(0, 5).map((c: any) => (
+                                          <div key={c.id} className="flex justify-between items-center p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                             <span className="text-xs font-bold text-slate-700 truncate max-w-[100px]">{c.nom}</span>
+                                             <div className="flex items-center gap-2">
+                                                <span className="text-xs font-black text-slate-900">{c.total}</span>
+                                                <div className={`w-2 h-2 rounded-full ${c.rate < 50 ? 'bg-red-500' : 'bg-emerald-500'}`} />
+                                             </div>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 </div>
+
+                                 {/* Quick Insights */}
+                                 <div className="space-y-4">
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locale === 'ar' ? 'ملخص العمليات' : 'Synthèse Opérationnelle'}</h5>
+                                    <div className="grid grid-cols-2 gap-3">
+                                       <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-3xl text-center">
+                                          <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">{locale === 'ar' ? 'محلولة' : 'Résolues'}</p>
+                                          <p className="text-xl font-black text-emerald-700">{s.reclamations?.resolues || 0}</p>
+                                       </div>
+                                       <div className="p-4 bg-amber-50 border border-amber-100 rounded-3xl text-center">
+                                          <p className="text-[10px] font-black text-amber-600 uppercase mb-1">{locale === 'ar' ? 'جارية' : 'En cours'}</p>
+                                          <p className="text-xl font-black text-amber-700">{s.reclamations?.enCours || 0}</p>
+                                       </div>
+                                       <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-center">
+                                          <p className="text-[10px] font-black text-blue-600 uppercase mb-1">{locale === 'ar' ? 'أحداث' : 'Événements'}</p>
+                                          <p className="text-xl font-black text-blue-700">{s.evenements?.cetMois || 0}</p>
+                                       </div>
+                                       <div className="p-4 bg-slate-900 rounded-3xl text-center">
+                                          <p className="text-[10px] font-black text-slate-400 uppercase mb-1">{locale === 'ar' ? 'تفاعل' : 'Impact'}</p>
+                                          <p className="text-xl font-black text-white">{s.satisfaction?.engagement || 0}</p>
+                                       </div>
+                                    </div>
                                  </div>
                               </div>
                            </div>

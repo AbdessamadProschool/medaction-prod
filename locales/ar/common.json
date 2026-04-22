@@ -5,22 +5,27 @@
   },
   "governor": {
     "sidebar": {
-      "title": "منصة الحاكم",
+      "title": "منصة الوالي",
       "subtitle": "لوحة القيادة الإقليمية",
       "logout": "تسجيل الخروج",
       "nav": {
         "overview": "نظرة عامة",
         "performance": "لوحة الشرف",
         "reclamations": "الشكايات",
+        "evenements": "الفعاليات",
         "map": "خريطة القرار",
         "reports": "التقارير والتدقيق"
       },
       "loading": "جاري تحميل مركز القيادة...",
-      "role_label": "العامل",
+      "role_label": "الوالي",
       "compliant_label": "مطابق",
       "values": {
         "compliant": "مطابق"
       }
+    },
+    "common": {
+      "events": "الفعاليات",
+      "campaigns": "الحملات"
     },
     "reclamations_tab": {
       "filters": {

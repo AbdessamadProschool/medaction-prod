@@ -23,6 +23,10 @@
         "compliant": "Conforme"
       }
     },
+    "common": {
+      "events": "Événements",
+      "campaigns": "Campagnes"
+    },
     "reclamations_tab": {
       "filters": {
         "search_placeholder": "Rechercher une réclamation par mots-clés...",

@@ -78,7 +78,7 @@ function validateFileType(buffer: Buffer, filename: string): { ok: boolean; erro
 }
 
 // ─── EXCEL PARSING WITH EXCELJS (no prototype pollution risk) ─────────────
-async function parseExcel(buffer: Buffer): Promise<Record<string, any>[]> {
+async function parseExcel(buffer: any): Promise<Record<string, any>[]> {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
   const worksheet = workbook.worksheets[0];

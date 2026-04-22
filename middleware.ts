@@ -406,7 +406,7 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     const cspValue = `
       default-src 'self';
       script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
-      style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
       img-src 'self' blob: data: https: http:;
       font-src 'self' https://fonts.gstatic.com data:;
       connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;
@@ -480,7 +480,7 @@ const authMiddleware = withAuth(
     req = stripInternalHeaders(req);
 
     // BLOC 6.4 - Generate per-request nonce
-    const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+    const nonce = btoa(crypto.randomUUID());
 
     const { pathname } = req.nextUrl;
     const method = req.method;

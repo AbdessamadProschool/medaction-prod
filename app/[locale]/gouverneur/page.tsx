@@ -943,32 +943,14 @@ export default function GouverneurDashboard() {
                            </div>
                         </div>
 
-                        {/* Real Metrics Grid - No Fake Data */}
-                        <div className="flex gap-4">
-                           {/* Active Projects - Dynamic Detail */}
-                           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center group cursor-help relative">
-                              <FolderKanban size={24} className="text-indigo-500 mx-auto mb-2" />
-                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.active_projects')}</p>
-                              <p className="text-2xl font-black text-slate-900">{s.projects?.active || 0}</p>
-                              
-                              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] py-1 px-3 rounded-lg whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 font-bold">
-                                 {s.evenements?.enCours || 0} {locale === 'ar' ? 'فعاليات' : 'Événements'} • {s.projects?.active - (s.evenements?.enCours || 0)} {locale === 'ar' ? 'حملات' : 'Campagnes'}
+                        {/* Live Status indicator Only - Simplified */}
+                        <div className="flex items-center justify-center p-8 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200 min-w-[200px]">
+                           <div className="text-center">
+                              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter mb-1">{t('overview.pulse.system_active')}</p>
+                              <div className="flex items-center justify-center gap-2">
+                                <Activity size={16} className="text-emerald-500" />
+                                <span className="text-lg font-black text-slate-800">ONLINE</span>
                               </div>
-                           </div>
-
-
-                           {/* Satisfaction - Show real average */}
-                           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
-                              <Star size={24} className="text-amber-500 mx-auto mb-2" />
-                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.satisfaction')}</p>
-                              <p className="text-2xl font-black text-slate-900">{s.satisfaction?.moyenne ? s.satisfaction.moyenne.toFixed(1) : '0.0'}<span className="text-sm text-slate-600">/5</span></p>
-                           </div>
-
-                           {/* Alerts - Real count */}
-                           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
-                              <AlertTriangle size={24} className={`${alerts.length > 0 ? "text-red-500 animate-pulse" : "text-slate-300"} mx-auto mb-2`} />
-                              <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.alerts')}</p>
-                              <p className={`text-2xl font-black ${alerts.length > 0 ? "text-red-600" : "text-slate-900"}`}>{alerts.length}</p>
                            </div>
                         </div>
                      </div>

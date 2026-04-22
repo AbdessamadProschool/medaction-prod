@@ -182,13 +182,6 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
             key={btn.id}
             onClick={() => {
               setTypeContenu(btn.id as any);
-              setStatutFilter('');
-              setSearch('');
-              setSecteurFilter('');
-              setCommuneFilter('');
-              setAnnexeFilter('');
-              setDateDebut('');
-              setDateFin('');
               setPage(1);
             }}
             className={`flex-1 flex items-center justify-center gap-2.5 py-3 px-6 rounded-xl font-black transition-all whitespace-nowrap text-sm ${
@@ -472,13 +465,11 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
              className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-slate-900/95 backdrop-blur-md"
              onClick={() => setSelectedItem(null)}
           >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 30 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 30 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-[3rem] shadow-2xl max-w-5xl w-full max-h-full overflow-hidden flex flex-col"
-            >
+            <motion.div 
+                className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative border border-slate-100"
+                layoutId={`card-${selectedItem.id}`}
+                onClick={(e) => e.stopPropagation()}
+              >
               {/* Header with High Contrast Background Image */}
               <div className="relative h-40 md:h-48 bg-slate-900 flex items-center justify-center p-8 overflow-hidden flex-shrink-0 shadow-inner text-center">
                 {selectedItem.image && (
@@ -550,8 +541,9 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                                    if (selectedItem.raw.rapportClotureUrl) {
                                       window.open(selectedItem.raw.rapportClotureUrl, '_blank');
                                    } else {
-                                      // If no URL but description exists, maybe it's already shown or we can trigger a detail view
-                                      alert(isAr ? 'التقرير متوفر في تفاصيل السجل.' : 'Le rapport est disponible dans les détails ci-dessous.');
+                                      // Scroll directly to the report section in the modal
+                                      const el = document.getElementById('report-details-section');
+                                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                    }
                                  }}
                                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200"
@@ -562,7 +554,7 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                             </div>
                           </div>
                        )}
-                       <div className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center gap-4 shadow-xl"> <Shield size={24} className="text-gov-gold" /> <p className="text-[10px] font-black uppercase tracking-widest leading-tight"> {isAr ? 'نظام الحكامة الإقليمي لميديونة' : 'Governance System - Mediouna'} </p> </div>
+                       <div id="report-details-section" className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center gap-4 shadow-xl"> <Shield size={24} className="text-gov-gold" /> <p className="text-[10px] font-black uppercase tracking-widest leading-tight"> {isAr ? 'نظام الحكامة الإقليمي لميديونة' : 'Governance System - Mediouna'} </p> </div>
                    </div>
               </div>
             </motion.div>

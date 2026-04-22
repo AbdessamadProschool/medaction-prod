@@ -166,8 +166,6 @@
           "projects": "Événements, campagnes et activités en cours",
           "satisfaction": "Moyenne des évaluations des établissements"
         },
-        "evaluations_count": "{count} évaluations",
-        "no_evaluations": "Aucune évaluation",
         "citizens": "Citoyens Actifs"
       },
       "sectors": {
@@ -256,7 +254,7 @@
       "kpi": {
         "pending_decisions": "Décisions en attente",
         "resolution_rate": "Taux de Résolution",
-        "active_projects": "Projets Actifs",
+        "active_projects": "Activités en cours",
         "monthly_events": "Événements du mois",
         "this_week": "Cette semaine",
         "upcoming": "{count} à venir"
@@ -3503,10 +3501,15 @@
   },
   "decision_center": {
     "status": {
-      "en_action": "En cours",
+      "nominal": "L'établissement est en phase nominale.",
+      "no_emergency": "Aucun besoin urgent remonté par les autorités locales.",
+      "urgent_alert": "Alerte Terrain",
+      "normal_ops": "Opérations Normales",
+      "active": "Actif",
+      "not_available": "N/A",
+      "publiee": "Publié",
       "cloturee": "Clôturé",
-      "validee": "Validé",
-      "en_attente": "En attente"
+      "en_cours": "En cours"
     },
     "tabs": {
       "overview": "Vue Globale",
@@ -3570,17 +3573,6 @@
       "prescolaire": "Préscolaire",
       "filles": "Filles",
       "capacite": "Capacité d'Accueil"
-    },
-    "status": {
-      "nominal": "L'établissement est en phase nominale.",
-      "no_emergency": "Aucun besoin urgent remonté par les autorités locales.",
-      "urgent_alert": "Alerte Terrain",
-      "normal_ops": "Opérations Normales",
-      "active": "Actif",
-      "not_available": "N/A",
-      "publiee": "Publié",
-      "cloturee": "Clôturé",
-      "en_cours": "En cours"
     },
     "rank": {
       "s": "Elite",

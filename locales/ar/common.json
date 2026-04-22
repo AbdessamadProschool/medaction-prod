@@ -146,7 +146,7 @@
         "satisfaction": "رضا المواطنين",
         "resolution_rate": "نسبة المعالجة",
         "participations": "المشاركة المواطنة",
-        "active_projects": "أنشطة جارية",
+        "active_projects": "الأنشطة الجارية",
         "satisfaction_suffix": "/ 5.0",
         "evaluations_count": "{count} تقييمات",
         "no_evaluations": "لا توجد تقييمات",
@@ -253,7 +253,7 @@
       "kpi": {
         "pending_decisions": "قرارات معلقة",
         "resolution_rate": "نسبة الحل",
-        "active_projects": "مشاريع نشطة",
+        "active_projects": "الأنشطة الجارية",
         "monthly_events": "أحداث الشهر",
         "this_week": "هذا الأسبوع",
         "upcoming": "{count} قادمة"
@@ -5080,10 +5080,15 @@
   },
   "decision_center": {
     "status": {
-      "en_action": "جاري التنفيذ",
+      "nominal": "المؤسسة حالياً في المرحلة العادية.",
+      "no_emergency": "لم تبلغ السلطات المحلية عن أي احتياج عاجل.",
+      "urgent_alert": "تنبيه ميداني",
+      "normal_ops": "عمليات عادية",
+      "active": "نشط",
+      "not_available": "غير متوفر",
+      "publiee": "منشور",
       "cloturee": "مغلق",
-      "validee": "تم التحقق",
-      "en_attente": "قيد الانتظار"
+      "en_cours": "في طور المعالجة"
     },
     "tabs": {
       "overview": "نظرة عامة",
@@ -5147,17 +5152,6 @@
       "prescolaire": "التعليم الأولي",
       "filles": "الإناث",
       "capacite": "القدرة الاستيعابية"
-    },
-    "status": {
-      "nominal": "المؤسسة حالياً في المرحلة العادية.",
-      "no_emergency": "لم تبلغ السلطات المحلية عن أي احتياج عاجل.",
-      "urgent_alert": "تنبيه ميداني",
-      "normal_ops": "عمليات عادية",
-      "active": "نشط",
-      "not_available": "غير متوفر",
-      "publiee": "منشور",
-      "cloturee": "مغلق",
-      "en_cours": "في طور المعالجة"
     },
     "rank": {
       "s": "نخبة",
@@ -5256,7 +5250,7 @@
       "satisfaction": "مؤشر الرضا",
       "resolution_rate": "معدل القرار",
       "participations": "المشاركات",
-      "active_projects": "المشاريع النشطة",
+      "active_projects": "الأنشطة الجارية",
       "sub": {
         "reclamations": "المطالبات",
         "engagement": "التزام",
@@ -5316,7 +5310,7 @@
     "kpi": {
       "pending_decisions": "القرارات المعلقة",
       "resolution_rate": "معدل القرار",
-      "active_projects": "المشاريع النشطة",
+      "active_projects": "الأنشطة الجارية",
       "monthly_events": "أحداث هذا الشهر",
       "this_week": ".هذا الاسبوع",
       "upcoming": "{count} قريبا"

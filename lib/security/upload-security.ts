@@ -453,10 +453,11 @@ export function generateSecureFilename(originalName: string): string {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function logSecurityEvent(
-  type: 'UPLOAD_BLOCKED' | 'UPLOAD_WARNING' | 'UPLOAD_SUCCESS',
+  type: 'UPLOAD_BLOCKED' | 'UPLOAD_WARNING' | 'UPLOAD_SUCCESS' | 'PATH_TRAVERSAL_ATTEMPT',
   details: {
     userId: string;
-    filename: string;
+    filename?: string;
+    attemptedPath?: string;
     reason?: string;
     warnings?: string[];
     ip?: string;

@@ -87,7 +87,7 @@ async function parseExcel(buffer: any): Promise<Record<string, any>[]> {
   const rows: Record<string, any>[] = [];
   let headers: string[] = [];
 
-  worksheet.eachRow((row, rowNumber) => {
+  worksheet.eachRow((row: any, rowNumber: number) => {
     const values = (row.values as any[]).slice(1); // exceljs is 1-indexed, index 0 is null
     if (rowNumber === 1) {
       headers = values.map((v: any) => {

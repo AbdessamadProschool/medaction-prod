@@ -19,7 +19,7 @@ const BLOCKED_INTERNAL_HEADERS = [
   'x-middleware-prefetch',
 ];
 
-function stripInternalHeaders(request: NextRequest): NextRequest {
+function stripInternalHeaders<T extends NextRequest>(request: T): T {
   const headers = new Headers(request.headers);
   let stripped = false;
   for (const h of BLOCKED_INTERNAL_HEADERS) {
@@ -30,13 +30,22 @@ function stripInternalHeaders(request: NextRequest): NextRequest {
     }
   }
   if (!stripped) return request;
-  return new NextRequest(request.url, {
+  
+  // Clone request with new headers
+  const newReq = new NextRequest(request.url, {
     headers,
     method: request.method,
     body: request.body,
     redirect: request.redirect,
     signal: request.signal,
   });
+
+  // CRITICAL: Preserve nextauth property for downstream middleware/handlers
+  if ((request as any).nextauth) {
+    (newReq as any).nextauth = (request as any).nextauth;
+  }
+
+  return newReq as T;
 }
 
 /**

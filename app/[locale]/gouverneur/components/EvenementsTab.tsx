@@ -125,16 +125,16 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
     }, 500);
     return () => clearTimeout(timer);
   }, [search]);
-129:
-130:   // Highlight effect
-131:   useEffect(() => {
-132:     if (highlightId && items.length > 0) {
-133:       const element = document.getElementById(`item-${highlightId}`);
-134:       if (element) {
-135:         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-136:       }
-137:     }
-138:   }, [highlightId, items]);
+
+  // Highlight effect
+  useEffect(() => {
+    if (highlightId && items.length > 0) {
+      const element = document.getElementById(`item-${highlightId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [highlightId, items]);
 
   // Adapter les données indifféremment de leur type
   const getCardProps = (item: any) => {

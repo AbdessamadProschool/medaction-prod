@@ -870,11 +870,11 @@ export default function GouverneurDashboard() {
                            label: t('overview.kpi.active_projects'), 
                            value: ((s.evenements?.enCours || 0) + (s.projects?.active || 0)).toString(), 
                            sub: t('overview.kpi.sub.ongoing'), 
-                           icon: FolderKanban, 
+                           icon: Activity, 
                            color: 'text-purple-500', 
                            bg: 'bg-purple-100',
                            action: () => setActiveTab('activites'),
-                           tooltip: t('overview.kpi.tooltip.projects') || 'Activités et événements en cours de réalisation',
+                           tooltip: t('overview.kpi.tooltip.projects'),
                            detail: (s.evenements?.enCours || 0) + (s.projects?.active || 0) > 0 
                                       ? `${s.evenements?.enCours || 0} ${t('common.events')} • ${s.projects?.active || 0} ${t('common.campaigns')}`
                                       : t('overview.kpi.no_data')

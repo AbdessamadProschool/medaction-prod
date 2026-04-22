@@ -211,6 +211,17 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     andConditions.push({ dateDebut: { gte: now } });
   }
 
+  const dateDebutRaw = searchParams.get('dateDebut');
+  const dateFinRaw = searchParams.get('dateFin');
+  if (dateDebutRaw) {
+    andConditions.push({ dateDebut: { gte: new Date(dateDebutRaw) } });
+  }
+  if (dateFinRaw) {
+    const dFin = new Date(dateFinRaw);
+    dFin.setHours(23, 59, 59, 999);
+    andConditions.push({ dateDebut: { lte: dFin } });
+  }
+
   const where = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const [evenements, total] = await Promise.all([

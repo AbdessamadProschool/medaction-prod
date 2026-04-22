@@ -5,7 +5,7 @@
   },
   "governor": {
     "sidebar": {
-      "title": "منصة الوالي",
+      "title": "منصة السيد العامل",
       "subtitle": "لوحة القيادة الإقليمية",
       "logout": "تسجيل الخروج",
       "nav": {
@@ -146,7 +146,7 @@
         "satisfaction": "رضا المواطنين",
         "resolution_rate": "نسبة المعالجة",
         "participations": "المشاركة المواطنة",
-        "active_projects": "مشاريع نشطة",
+        "active_projects": "أنشطة جارية",
         "satisfaction_suffix": "/ 5.0",
         "evaluations_count": "{count} تقييمات",
         "no_evaluations": "لا توجد تقييمات",
@@ -157,12 +157,12 @@
         "sub": {
           "reclamations": "الشكايات",
           "engagement": "التفاعل",
-          "ongoing": "قيد الإنجاز"
+          "ongoing": "جارية"
         },
         "tooltip": {
           "resolution": "نسبة الشكايات المحلولة من الإجمالي",
           "engagement": "إجمالي الاشتراكات + المشاركات في الحملات",
-          "projects": "الحملات النشطة + الأحداث الجارية",
+          "projects": "إجمالي الأنشطة والفعاليات الجارية",
           "satisfaction": "متوسط تقييم المؤسسات"
         },
         "citizens": "مواطنون نشطون"
@@ -208,7 +208,7 @@
       }
     },
     "stats": {
-      "active_projects": "المشاريع النشطة",
+      "active_projects": "الأنشطة الجارية",
       "satisfaction": "الرضا",
       "alerts": "التنبيهات",
       "actualites": "الأخبار",

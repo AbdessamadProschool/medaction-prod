@@ -147,7 +147,7 @@
         "satisfaction": "Satisfaction",
         "resolution_rate": "Taux de Résolution",
         "participations": "Engagement Citoyen",
-        "active_projects": "Actions Actives",
+        "active_projects": "Activités en cours",
         "satisfaction_suffix": "/ 5.0",
         "evaluations_count": "{count} évaluations",
         "no_evaluations": "Aucune évaluation",
@@ -163,7 +163,7 @@
         "tooltip": {
           "resolution": "Part des réclamations résolues sur le total",
           "engagement": "Total des inscriptions + participations aux campagnes",
-          "projects": "Campagnes actives + Événements en cours",
+          "projects": "Événements, campagnes et activités en cours",
           "satisfaction": "Moyenne des évaluations des établissements"
         },
         "evaluations_count": "{count} évaluations",
@@ -211,7 +211,7 @@
       }
     },
     "stats": {
-      "active_projects": "Projets Actifs",
+      "active_projects": "Activités Actives",
       "satisfaction": "Satisfaction",
       "alerts": "Alertes",
       "actualites": "Actualités",

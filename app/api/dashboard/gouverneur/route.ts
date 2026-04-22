@@ -52,9 +52,20 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     });
     const evenementsCeMois = await prisma.evenement.count({ where: { dateDebut: { gte: debutMois, lte: finMois } } });
     
-    // Projets Actifs
+    // Activités et Événements en cours
     const activeProjects = await prisma.campagne.count({ where: { isActive: true } });
-    const projectsCount = activeProjects + evenementsEnCours;
+    const activeProgrammes = await prisma.programmeActivite.count({ 
+      where: { statut: { in: ['PLANIFIEE', 'EN_COURS'] } } 
+    });
+    const projectsCount = activeProjects + evenementsEnCours + activeProgrammes; 
+
+    // Retourner les stats détaillées pour éviter la redondance
+    const statsDetail = {
+        campagnesActives: activeProjects,
+        evenementsEnCours: evenementsEnCours,
+        programmesActivites: activeProgrammes,
+        total: projectsCount
+    };
 
     // --- 1B. DONNÉES ADDITIONNELLES ---
     const avgRatingResult = await prisma.etablissement.aggregate({
@@ -331,6 +342,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         },
         projects: {
             active: projectsCount,
+            details: statsDetail,
         },
         citoyens: {
             total: citoyensTotal,

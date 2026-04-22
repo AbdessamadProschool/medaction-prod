@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, ChevronLeft, ChevronRight, Eye, 
   MapPin, Calendar, Clock, Image as ImageIcon, Users,
-  Building2, Tag, ArrowRight, Activity, X, Target, FileText, Zap, Shield
+  Building2, Tag, ArrowRight, Activity, X, Target, FileText, Zap, Shield,
+  ClipboardList, FileCheck, AlertCircle, FileSearch
 } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { SafeHTML } from '@/components/ui/SafeHTML';
@@ -150,6 +151,10 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
     const lieu1 = item.commune?.nom || item.etablissement?.commune?.nom || (item.etablissement?.nom ? item.etablissement.nom : '');
     const lieu2 = item.etablissement?.nom || '';
     
+    const isFinished = item.dateFin ? new Date(item.dateFin) < new Date() : false;
+    const hasReport = !!(item.bilanDescription || item.rapportClotureUrl || item.rapportComplete || item.photosRapport?.length > 0);
+    const needsClosure = (item.statut === 'EN_ACTION' || item.statut === 'TERMINEE' || item.statut === 'PUBLIEE') && isFinished && !hasReport;
+    
     return {
       id: item.id,
       titre: item.titre,
@@ -161,6 +166,8 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
       dateFinObj: item.dateFin,
       lieu: lieu1,
       lieuDetail: lieu2,
+      needsClosure,
+      hasReport,
       raw: item,
     };
   };
@@ -177,6 +184,11 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
               setTypeContenu(btn.id as any);
               setStatutFilter('');
               setSearch('');
+              setSecteurFilter('');
+              setCommuneFilter('');
+              setAnnexeFilter('');
+              setDateDebut('');
+              setDateFin('');
               setPage(1);
             }}
             className={`flex-1 flex items-center justify-center gap-2.5 py-3 px-6 rounded-xl font-black transition-all whitespace-nowrap text-sm ${
@@ -367,10 +379,22 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                           <ImageIcon size={40} />
                         </div>
                       )}
-                      <div className="absolute top-4 left-4 z-10">
+                      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                         <div className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest leading-none border shadow-md backdrop-blur-md ${STATUT_CONFIG[String(item.statut)]?.color || 'bg-white text-slate-800'}`}>
                             {STATUT_CONFIG[String(item.statut)]?.label || item.statut}
                         </div>
+                        {p.needsClosure && (
+                          <div className="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest leading-none bg-red-500 text-white border-red-600 shadow-md flex items-center gap-1.5 animate-pulse">
+                            <AlertCircle size={10} />
+                            {isAr ? 'بانتظار تقرير الإغلاق' : 'Rapport Requis'}
+                          </div>
+                        )}
+                        {p.hasReport && (
+                          <div className="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest leading-none bg-emerald-500 text-white border-emerald-600 shadow-md flex items-center gap-1.5">
+                            <FileCheck size={10} />
+                            {isAr ? 'تقرير متوفر' : 'Rapport Disponible'}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -512,7 +536,33 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                          {selectedItem.raw.capaciteMax && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-amber-50 flex items-center justify-center rounded-2xl text-amber-600 shadow-inner"> <Users size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'السعة' : 'Capacité Prévue'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.capaciteMax} {isAr ? 'فرد' : 'Personnes'}</p> </div> </div> )}
                          {selectedItem.raw.nombreParticipations !== undefined && ( <div className="flex gap-5 pt-6 border-t border-slate-50"> <div className="w-14 h-14 bg-emerald-50 flex items-center justify-center rounded-2xl text-emerald-600 shadow-inner"> <Activity size={28} /> </div> <div> <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">{isAr ? 'المستوى التفاعلي' : 'Engagement'}</p> <p className="font-black text-slate-900 text-lg leading-none">{selectedItem.raw.nombreParticipations} {isAr ? 'تفاعل' : 'Actions'}</p> </div> </div> )}
                       </div>
-                      <div className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center gap-4 shadow-xl"> <Shield size={24} className="text-gov-gold" /> <p className="text-[10px] font-black uppercase tracking-widest leading-tight"> {isAr ? 'نظام الحكامة الإقليمي لميديونة' : 'Governance System - Mediouna'} </p> </div>
+                       {selectedItem.hasReport && (
+                          <div className="p-1.5 bg-emerald-50 rounded-3xl border border-emerald-100 mb-6">
+                            <div className="bg-white p-6 rounded-[2rem] shadow-sm flex flex-col gap-4">
+                               <div className="flex items-center gap-3 text-emerald-700">
+                                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                     <FileCheck size={20} />
+                                  </div>
+                                  <span className="font-black text-sm uppercase tracking-widest">{isAr ? 'التقرير الختامي متوفر' : 'Rapport de Clôture Disponible'}</span>
+                               </div>
+                               <button 
+                                 onClick={() => {
+                                   if (selectedItem.raw.rapportClotureUrl) {
+                                      window.open(selectedItem.raw.rapportClotureUrl, '_blank');
+                                   } else {
+                                      // If no URL but description exists, maybe it's already shown or we can trigger a detail view
+                                      alert(isAr ? 'التقرير متوفر في تفاصيل السجل.' : 'Le rapport est disponible dans les détails ci-dessous.');
+                                   }
+                                 }}
+                                 className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200"
+                               >
+                                  <FileSearch size={18} />
+                                  {isAr ? 'الاطلاع على التقرير' : 'Consulter le Rapport'}
+                               </button>
+                            </div>
+                          </div>
+                       )}
+                       <div className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center gap-4 shadow-xl"> <Shield size={24} className="text-gov-gold" /> <p className="text-[10px] font-black uppercase tracking-widest leading-tight"> {isAr ? 'نظام الحكامة الإقليمي لميديونة' : 'Governance System - Mediouna'} </p> </div>
                    </div>
               </div>
             </motion.div>

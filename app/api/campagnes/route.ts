@@ -47,6 +47,17 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     where.isActive = true; 
   }
 
+  const dateDebutRaw = searchParams.get('dateDebut');
+  const dateFinRaw = searchParams.get('dateFin');
+  if (dateDebutRaw) {
+    where.dateDebut = { gte: new Date(dateDebutRaw) };
+  }
+  if (dateFinRaw) {
+    const dFin = new Date(dateFinRaw);
+    dFin.setHours(23, 59, 59, 999);
+    where.dateDebut = { ...where.dateDebut, lte: dFin };
+  }
+
   const [campagnes, total, types] = await Promise.all([
     prisma.campagne.findMany({
       where,

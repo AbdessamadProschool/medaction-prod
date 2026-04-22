@@ -54,6 +54,18 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     where.categorie = categorie;
   }
 
+  const dateDebutRaw = searchParams.get('dateDebut');
+  const dateFinRaw = searchParams.get('dateFin');
+  if (dateDebutRaw || dateFinRaw) {
+    where.createdAt = {};
+    if (dateDebutRaw) where.createdAt.gte = new Date(dateDebutRaw);
+    if (dateFinRaw) {
+        const dFin = new Date(dateFinRaw);
+        dFin.setHours(23, 59, 59, 999);
+        where.createdAt.lte = dFin;
+    }
+  }
+
   const [articles, total, categories] = await Promise.all([
     prisma.article.findMany({
       where,

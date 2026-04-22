@@ -6,6 +6,8 @@ const ar = JSON.parse(fs.readFileSync('locales/ar/common.json', 'utf8'));
 
 function getNestedValue(obj, keyPath) {
     return keyPath.split('.').reduce((acc, key) => {
+        // BLOC 6.1 - Prototype Pollution Protection (CWE-1321)
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') return undefined;
         if (!acc || typeof acc !== 'object') return undefined;
         return acc[key];
     }, obj);

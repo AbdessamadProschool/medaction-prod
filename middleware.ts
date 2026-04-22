@@ -1,6 +1,7 @@
 import {withAuth} from 'next-auth/middleware';
 import createMiddleware from 'next-intl/middleware';
 import {NextRequest, NextResponse} from 'next/server';
+import {crypto} from 'next/dist/compiled/@edge-runtime/primitives'; // Nonce generation support in Edge
 import {routing} from './i18n/routing';
 
 // ═══════════════════════════════════════════════════════════
@@ -347,7 +348,11 @@ async function checkRateLimit(
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
       const { Redis } = await import('@upstash/redis');
-      const redis = Redis.fromEnv();
+      const redis = new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+        enableTelemetry: false, // Prevents "process.version" usage in Edge Runtime
+      });
       
       const requests = await redis.incr(key);
       if (requests === 1) {
@@ -380,11 +385,33 @@ async function checkRateLimit(
   return { allowed: true, remaining: maxRequests - entry.count };
 }
 
-function addSecurityHeaders(response: NextResponse): NextResponse {
+function addSecurityHeaders(response: NextResponse, nonce?: string): NextResponse {
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  if (nonce) {
+    // BLOC 6.4 - Strict CSP with Nonce (CWE-79 mitigation)
+    const isDev = process.env.NODE_ENV === 'development';
+    const cspValue = `
+      default-src 'self';
+      script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
+      style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com https://api.mapbox.com;
+      img-src 'self' blob: data: https: http:;
+      font-src 'self' https://fonts.gstatic.com data:;
+      connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests;
+    `.replace(/\s{2,}/g, ' ').trim();
+    
+    response.headers.set('Content-Security-Policy', cspValue);
+    response.headers.set('x-nonce', nonce);
+  }
+
   response.headers.delete('X-Powered-By');
   response.headers.delete('Server');
   return response;
@@ -393,7 +420,8 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 function createApiErrorResponse(
   status: number, 
   message: string, 
-  code: string = 'ERROR'
+  code: string = 'ERROR',
+  nonce?: string
 ): NextResponse {
   const response = NextResponse.json(
     { 
@@ -406,7 +434,7 @@ function createApiErrorResponse(
     },
     { status }
   );
-  return addSecurityHeaders(response);
+  return addSecurityHeaders(response, nonce);
 }
 
 function stripLocaleFromPath(pathname: string): string {
@@ -438,9 +466,12 @@ function getLocale(req: NextRequest): string {
 const authMiddleware = withAuth(
   async function middleware(req) {
     // ═══════════════════════════════════════════════════════════
-    // CVE-2025-29927 — Strip internal headers FIRST before any other logic
+    // CVE-2025-29927 — Strip internal headers FIRST
     // ═══════════════════════════════════════════════════════════
     req = stripInternalHeaders(req);
+
+    // BLOC 6.4 - Generate per-request nonce
+    const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
     const { pathname } = req.nextUrl;
     const method = req.method;
@@ -450,7 +481,7 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     const forbiddenMethods = ['TRACE', 'TRACK', 'CONNECT'];
     if (forbiddenMethods.includes(method)) {
-      return createApiErrorResponse(405, 'HTTP method not allowed', 'METHOD_NOT_ALLOWED');
+      return createApiErrorResponse(405, 'HTTP method not allowed', 'METHOD_NOT_ALLOWED', nonce);
     }
 
     const token = req.nextauth.token;
@@ -466,7 +497,7 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isAlwaysPublicApiRoute(pathname)) {
       const response = NextResponse.next();
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -474,7 +505,7 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     if (!isApi && isPublicPage(effectivePathname)) {
       const response = handleI18nRouting(req);
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -484,13 +515,13 @@ const authMiddleware = withAuth(
       const rateLimit = await checkRateLimit(clientIP, 'api');
       
       if (!rateLimit.allowed) {
-        return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');
+        return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED', nonce);
       }
       
       const response = NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Mobile-API', 'true');
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -498,7 +529,7 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     if (pathname.startsWith('/api/dev') || pathname.startsWith('/api/test-db')) {
       if (process.env.NODE_ENV === 'production') {
-        return createApiErrorResponse(404, 'Not Found', 'NOT_FOUND');
+        return createApiErrorResponse(404, 'Not Found', 'NOT_FOUND', nonce);
       }
     }
 
@@ -515,7 +546,7 @@ const authMiddleware = withAuth(
     
     if (!rateLimit.allowed) {
       if (isApi) {
-        return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED');
+        return createApiErrorResponse(429, 'Too many requests. Please try again later.', 'RATE_LIMIT_EXCEEDED', nonce);
       }
       return NextResponse.redirect(new URL(`/${locale}/erreur?code=429`, req.url));
     }
@@ -528,7 +559,7 @@ const authMiddleware = withAuth(
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Public-API', 'true');
       response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -544,7 +575,7 @@ const authMiddleware = withAuth(
       }
       
       if (!token.isActive) {
-        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
+        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED', nonce);
       }
     }
     
@@ -561,7 +592,7 @@ const authMiddleware = withAuth(
       }
       
       if (!token.isActive) {
-        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
+        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED', nonce);
       }
       
       const allowedRoles = getMutationRoles(pathname);
@@ -584,11 +615,11 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     if (isApi && !isPublicReadApiRoute(pathname) && !isAlwaysPublicApiRoute(pathname)) {
       if (!token) {
-        return createApiErrorResponse(401, 'Authentication required.', 'AUTHENTICATION_REQUIRED');
+        return createApiErrorResponse(401, 'Authentication required.', 'AUTHENTICATION_REQUIRED', nonce);
       }
       
       if (!token.isActive) {
-        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED');
+        return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED', nonce);
       }
 
       // Hardening: Si c'est un segment sensible non listé explicitement
@@ -600,14 +631,14 @@ const authMiddleware = withAuth(
         const gouverneurRoles: Role[] = ['GOUVERNEUR', 'SUPER_ADMIN'];
         
         if (pathname.startsWith('/api/gouverneur') && !gouverneurRoles.includes(userRole)) {
-          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
         }
         
         if ((pathname.startsWith('/api/admin') || pathname.startsWith('/api/super-admin')) && !adminRoles.includes(userRole)) {
           if (pathname.startsWith('/api/admin/bilans') && userRole === 'GOUVERNEUR') {
              // Let GOUVERNEUR access bilans explicitly
           } else {
-             return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED');
+             return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
           }
         }
       }
@@ -643,11 +674,11 @@ const authMiddleware = withAuth(
       const response = NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Request-ID', crypto.randomUUID());
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     } else {
       const response = handleI18nRouting(req);
       response.headers.set('X-Request-ID', crypto.randomUUID());
-      return addSecurityHeaders(response);
+      return addSecurityHeaders(response, nonce);
     }
   },
   {

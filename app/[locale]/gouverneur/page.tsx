@@ -838,7 +838,7 @@ export default function GouverneurDashboard() {
                            bg: 'bg-amber-100',
                            action: () => setActiveTab('performance'),
                            tooltip: t('overview.kpi.tooltip.satisfaction'),
-                           detail: (stats?.etablissements?.total || 0) > 0 ? t('overview.kpi.evaluations_count', {count: s.etablissements.total}) : t('overview.kpi.no_evaluations')
+                           detail: (stats?.etablissements?.total || 0) > 0 ? t('overview.kpi.evaluations_count', {count: stats?.etablissements?.total || 0}) : t('overview.kpi.no_evaluations')
                          },
                          { 
                            label: t('overview.kpi.resolution_rate'), 

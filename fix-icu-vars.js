@@ -29,8 +29,13 @@ if (flatKeys.length > 0) {
         const parts = k.split('.');
         let obj = eventDetails;
         for (let i = 0; i < parts.length - 1; i++) {
-            if (!obj[parts[i]]) obj[parts[i]] = {};
-            obj = obj[parts[i]];
+            const part = parts[i];
+            // BLOC 6.1 - Prototype Pollution Protection (CWE-1321)
+            if (part === '__proto__' || part === 'constructor' || part === 'prototype') {
+                continue;
+            }
+            if (!obj[part]) obj[part] = {};
+            obj = obj[part];
         }
         obj[parts[parts.length - 1]] = v;
     }
@@ -68,10 +73,15 @@ if (frEventDetails) {
         for (const [k, v] of Object.entries(frFlatValues)) {
             const parts = k.split('.');
             let obj = frEventDetails;
-            for (let i = 0; i < parts.length - 1; i++) {
-                if (!obj[parts[i]]) obj[parts[i]] = {};
-                obj = obj[parts[i]];
+        for (let i = 0; i < parts.length - 1; i++) {
+            const part = parts[i];
+            // BLOC 6.1 - Prototype Pollution Protection (CWE-1321)
+            if (part === '__proto__' || part === 'constructor' || part === 'prototype') {
+                continue;
             }
+            if (!obj[part]) obj[part] = {};
+            obj = obj[part];
+        }
             obj[parts[parts.length - 1]] = v;
         }
     }

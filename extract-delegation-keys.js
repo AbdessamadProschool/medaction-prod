@@ -63,6 +63,7 @@ function getNestedValue(obj, path) {
     const parts = path.split('.');
     let current = obj;
     for (const part of parts) {
+        if (part === '__proto__' || part === 'constructor' || part === 'prototype') return undefined; // BLOC 6.1 fix
         if (current === undefined || current === null) return undefined;
         current = current[part];
     }
@@ -90,6 +91,10 @@ for (const [ns, keys] of Object.entries(namespaceMap)) {
     const nsParts = ns.split('.');
     let nsObj = arCommon;
     for (const part of nsParts) {
+        if (part === '__proto__' || part === 'constructor' || part === 'prototype') { // BLOC 6.1 fix
+           nsObj = undefined;
+           break;
+        }
         nsObj = nsObj?.[part];
     }
 

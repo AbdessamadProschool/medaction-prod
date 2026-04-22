@@ -219,9 +219,21 @@ export async function POST(request: Request) {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 7. CREATE SECURE UPLOAD DIRECTORY
+    // 7. CREATE SECURE UPLOAD DIRECTORY (BLOC 3.2 FIX)
     // ═══════════════════════════════════════════════════════════════════
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'reclamations', String(reclamationIdNum));
+    const BASE_RECLAMATION_DIR = path.resolve(process.cwd(), 'public', 'uploads', 'reclamations');
+    const uploadDir = path.resolve(BASE_RECLAMATION_DIR, String(reclamationIdNum));
+
+    // Security check: ensure the resolved path is inside the BASE_RECLAMATION_DIR
+    if (!uploadDir.startsWith(BASE_RECLAMATION_DIR + path.sep)) {
+       logSecurityEvent('PATH_TRAVERSAL_ATTEMPT', {
+          userId,
+          attemptedPath: uploadDir,
+          ip: userIp
+       });
+       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
+
     await mkdir(uploadDir, { recursive: true });
 
     // ═══════════════════════════════════════════════════════════════════
@@ -272,10 +284,15 @@ export async function POST(request: Request) {
         }
 
         // ─────────────────────────────────────────────────────────────────
-        // 8.2 GENERATE SECURE FILENAME
+        // 8.2 GENERATE SECURE FILENAME (BLOC 3.2 FIX)
         // ─────────────────────────────────────────────────────────────────
         const secureFilename = generateSecureFilename(file.name);
-        const filePath = path.join(uploadDir, secureFilename);
+        // Using path.resolve() again to be absolutely sure
+        const filePath = path.resolve(uploadDir, secureFilename);
+        
+        if (!filePath.startsWith(uploadDir + path.sep)) {
+            throw new Error('Nom de fichier malformé');
+        }
 
         // ─────────────────────────────────────────────────────────────────
         // 8.3 SAVE FILE

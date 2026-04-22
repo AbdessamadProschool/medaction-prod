@@ -59,6 +59,7 @@ function getNested(obj, nsPath) {
     const parts = nsPath.split('.');
     let current = obj;
     for (const part of parts) {
+        if (part === '__proto__' || part === 'constructor' || part === 'prototype') return undefined; // BLOC 6.1 fix
         if (current === undefined || current === null) return undefined;
         current = current[part];
     }
@@ -69,6 +70,7 @@ function getKey(nsObj, key) {
     const parts = key.split('.');
     let current = nsObj;
     for (const part of parts) {
+        if (part === '__proto__' || part === 'constructor' || part === 'prototype') return undefined; // BLOC 6.1 fix
         if (current === undefined || current === null) return undefined;
         current = current[part];
     }

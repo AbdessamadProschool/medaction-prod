@@ -42,8 +42,9 @@ const EXPOSED_HEADERS = [
  * Générer les headers CORS
  */
 export function getCorsHeaders(origin: string | null): Record<string, string> {
+  // BLOC 6.3 - Strict CORS Validation (CWE-942 mitigation)
   const isAllowed = !origin || ALLOWED_ORIGINS.includes(origin) || 
-    origin.endsWith('.mediouna-action.gov.ma');
+    /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*mediouna-action\.gov\.ma$/.test(origin);
   
   if (!isAllowed) {
     return {};
@@ -65,7 +66,7 @@ export function getCorsHeaders(origin: string | null): Record<string, string> {
 export function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return true; // Same-origin requests
   return ALLOWED_ORIGINS.includes(origin) || 
-    origin.endsWith('.mediouna-action.gov.ma');
+    /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*mediouna-action\.gov\.ma$/.test(origin);
 }
 
 // ============================================

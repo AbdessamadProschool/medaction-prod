@@ -1,4 +1,4 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -63,8 +63,17 @@ export async function PATCH(
       }, { status: 400 });
     }
 
-    // Créer le dossier uploads pour les bilans
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'evenements', id.toString(), 'bilan');
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. CREATE SECURE UPLOAD DIRECTORY (BLOC 3.3 FIX)
+    // ═══════════════════════════════════════════════════════════════════
+    const BASE_EVENT_DIR = path.resolve(process.cwd(), 'public', 'uploads', 'evenements');
+    const uploadDir = path.resolve(BASE_EVENT_DIR, id.toString(), 'bilan');
+
+    // Security check: ensure the resolved path is inside the BASE_EVENT_DIR
+    if (!uploadDir.startsWith(BASE_EVENT_DIR + path.sep)) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
+
     await mkdir(uploadDir, { recursive: true });
 
     const savedMedias = [];
@@ -89,8 +98,15 @@ export async function PATCH(
       const timestamp = Date.now();
       const randomStr = Math.random().toString(36).substring(7);
       const extension = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
-      const fileName = `${timestamp}-${randomStr}.${extension}`;
-      const filePath = path.join(uploadDir, fileName);
+      
+      // Sanitisation basique du nom de fichier généré (même s'il est semi-aléatoire)
+      const fileName = `${timestamp}-${randomStr}.${extension}`.replace(/[^a-zA-Z0-9.-]/g, '');
+      const filePath = path.resolve(uploadDir, fileName);
+
+      // Vérification path traversal sur le fichier final
+      if (!filePath.startsWith(uploadDir + path.sep)) {
+         continue;
+      }
 
       // Sauvegarder le fichier
       const bytes = await file.arrayBuffer();

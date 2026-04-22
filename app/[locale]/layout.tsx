@@ -13,6 +13,7 @@ import { LicenseProvider } from "@/components/providers/LicenseProvider";
 // import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { Toaster } from "@/components/ui/sonner";
 import GlobalAnnouncement from "@/components/GlobalAnnouncement";
+import { headers } from "next/headers";
 
 import { Inter, Outfit, Cairo } from "next/font/google";
 
@@ -73,6 +74,7 @@ export default async function RootLayout({
 
   const messages = await getMessages();
   const direction = getDirection(locale as any);
+  const nonce = (await headers()).get('x-nonce') || undefined;
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
@@ -89,6 +91,7 @@ export default async function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
+            nonce={nonce}
           >
             <NextIntlClientProvider messages={messages} locale={locale}>
               <LicenseProvider>

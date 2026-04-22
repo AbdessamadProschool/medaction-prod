@@ -405,8 +405,8 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     const isDev = process.env.NODE_ENV === 'development';
     const cspValue = `
       default-src 'self';
-      script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
-      style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com https://api.mapbox.com;
+      script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
+      style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
       img-src 'self' blob: data: https: http:;
       font-src 'self' https://fonts.gstatic.com data:;
       connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;

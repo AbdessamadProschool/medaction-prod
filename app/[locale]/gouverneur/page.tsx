@@ -225,6 +225,11 @@ export default function GouverneurDashboard() {
       if (result.success && result.data) {
         toast.dismiss();
         toast.success(t('reports.generated'));
+        const reportWindow = window.open('', '_blank');
+        if (reportWindow) {
+          const d = result.data;
+          const ref = `GOV-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+          const SL: Record<string,string>={EDUCATION:'Education',SANTE:'Sante',SPORT:'Sport',SOCIAL:'Social',CULTUREL:'Culturel',AUTRE:'Autre'};
           const html=`<!DOCTYPE html>
 <html lang='fr'>
 <head>

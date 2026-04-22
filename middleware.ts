@@ -463,7 +463,7 @@ function getLocale(req: NextRequest): string {
 const authMiddleware = withAuth(
   async function middleware(req) {
     // ═══════════════════════════════════════════════════════════
-    // CVE-2025-29927 — Identify internal headers for stripping
+    // Re-calculer les headers pour le callback (indépendant du wrapper)
     // ═══════════════════════════════════════════════════════════
     const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
 
@@ -682,14 +682,11 @@ const authMiddleware = withAuth(
       } catch (e) {}
       return addSecurityHeaders(response, nonce);
     } else {
-      // 🔴 RECOVERY: Return the raw response from next-intl with minimal tampering
-      // Next.js 15 RSC hydration is very sensitive to modified responses.
       const response = handleI18nRouting(req);
       try {
-        response.headers.set('X-XSS-Protection', '1; mode=block');
-        response.headers.set('X-Content-Type-Options', 'nosniff');
+        response.headers.set('X-Request-ID', crypto.randomUUID());
       } catch (e) {}
-      return response;
+      return addSecurityHeaders(response, nonce);
     }
   },
   {
@@ -703,7 +700,37 @@ const authMiddleware = withAuth(
 // EXPORT DU MIDDLEWARE
 // ═══════════════════════════════════════════════════════════════════
 
-export default authMiddleware;
+export default async function middleware(req: NextRequest, event: NextFetchEvent) {
+  const { pathname } = req.nextUrl;
+  
+  // 1. CVE-2025-29927 — Strip internal headers FIRST
+  const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
+
+  // 2. Identification des segments
+  const isApi = isApiRoute(pathname);
+  const effectivePathname = isApi ? pathname : stripLocaleFromPath(pathname);
+
+  // 3. Cas particulier : Racine (Redirection I18N immédiate)
+  if (pathname === '/') {
+    return handleI18nRouting(req);
+  }
+
+  // 4. PAGES PUBLIQUES (Performance : bypass auth middleware)
+  if (!isApi && isPublicPage(effectivePathname)) {
+    return handleI18nRouting(req);
+  }
+
+  // 5. APIs TOUJOURS PUBLIQUES
+  if (isApi && isAlwaysPublicApiRoute(pathname)) {
+    const response = stripped 
+      ? NextResponse.next({ request: { headers: strippedHeaders } })
+      : NextResponse.next();
+    return addSecurityHeaders(response);
+  }
+
+  // 6. TOUT LE RESTE -> Protection avec Auth & RBAC
+  return (authMiddleware as any)(req, event);
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // CONFIGURATION DU MATCHER

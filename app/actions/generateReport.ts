@@ -62,7 +62,6 @@ export async function generateGovernorReport(
             startDate = new Date(now.getFullYear(), quarter * 3, 1);
             periodLabel = `T${quarter + 1} ${now.getFullYear()}`;
         } else {
-            // Default: 30 derniers jours
             startDate = new Date();
             startDate.setDate(now.getDate() - 30);
             startDate.setHours(0, 0, 0, 0);
@@ -70,383 +69,162 @@ export async function generateGovernorReport(
         }
 
         const dateFilter = { gte: startDate, lte: endDate };
+        const threshold72h = new Date(now.getTime() - 72 * 60 * 60 * 1000);
 
-        // ─── Etablissement where clause ────────────────────────────────────────
+        // ─── Filters ──────────────────────────────────────────────────────────
         const etablissementWhere: any = {};
         if (filters?.communeId) etablissementWhere.communeId = filters.communeId;
         if (filters?.secteur) etablissementWhere.secteur = filters.secteur;
 
-        // ─── Reclamation where clause ──────────────────────────────────────────
-        // statut null = En attente, ACCEPTEE = Acceptée, REJETEE = Rejetée
         const reclamationBaseWhere: any = { createdAt: dateFilter };
         if (filters?.communeId) reclamationBaseWhere.communeId = filters.communeId;
         if (filters?.secteur) reclamationBaseWhere.etablissement = { secteur: filters.secteur };
 
-        const threshold72h = new Date(now.getTime() - 72 * 60 * 60 * 1000);
-
-        // ─── Parallel queries ──────────────────────────────────────────────────
+        // ─── Data Fetching ─────────────────────────────────────────────────────
         const [
-            // Réclamations
-            reclamationsTotal,
-            reclamationsAcceptees,
-            reclamationsRejetees,
-            reclamationsEnAttente,
-            reclamationsUrgentes,
-            reclamationsResolues,
-            reclamationsAffectees,
-            // Établissements
-            etablissementsStats,
-            etablissementsTotal,
-            etablissementsValides,
-            // Événements
-            evenementsTotal,
-            evenementsPublies,
-            evenementsCloturesAvecBilan,
-            // Actualités et campagnes
-            actualitesTotal,
-            campagnesTotal,
-            // Satisfaction
-            satisfactionGlobale,
-            totalEvaluations,
-            // Géographie
-            communes,
-            reclamationsParCommune,
-            evenementsParSecteur,
-            reclamationsParCategorie,
-            annexes,
-        ] = (await Promise.all([
-            // === RÉCLAMATIONS ===
-            prisma.reclamation.count({ where: reclamationBaseWhere }),
-            prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: 'ACCEPTEE' } }),
-            prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: 'REJETEE' } }),
-            prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: null } }),
-            // Urgentes = en attente depuis + 72h
-            prisma.reclamation.count({
-                where: {
-                    ...reclamationBaseWhere,
-                    statut: null,
-                    createdAt: { gte: startDate, lte: threshold72h }
-                }
-            }),
-            // Résolues = acceptées AND dateResolution renseignée
-            prisma.reclamation.count({
-                where: {
-                    ...reclamationBaseWhere,
-                    statut: 'ACCEPTEE',
-                    dateResolution: { not: null }
-                }
-            }),
-            // Affectées à une autorité locale
-            prisma.reclamation.count({
-                where: {
-                    ...reclamationBaseWhere,
-                    affectationReclamation: 'AFFECTEE'
-                }
-            }),
-
-            // === ÉTABLISSEMENTS ===
+            reclamationsStats,
+            etablissementsList,
+            eventsStats,
+            geoData,
+            detailedData
+        ] = await Promise.all([
+            // 1. Réclamations Stats
+            Promise.all([
+                prisma.reclamation.count({ where: reclamationBaseWhere }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: 'ACCEPTEE' } }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: 'REJETEE' } }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: null } }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: null, createdAt: { lte: threshold72h } } }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, statut: 'ACCEPTEE', dateResolution: { not: null } } }),
+                prisma.reclamation.count({ where: { ...reclamationBaseWhere, affectationReclamation: 'AFFECTEE' } }),
+            ]),
+            // 2. Établissements Detail
             prisma.etablissement.findMany({
                 where: etablissementWhere,
-                select: {
-                    id: true,
-                    nom: true,
-                    secteur: true,
-                    noteMoyenne: true,
-                    nombreEvaluations: true,
-                    isValide: true,
-                    statutFonctionnel: true,
-                    etatInfrastructure: true,
-                    effectifTotal: true,
-                    commune: { select: { nom: true } },
+                include: {
+                    commune: { select: { id: true, nom: true, nomArabe: true } },
+                    annexe: { select: { id: true, nom: true, nomArabe: true } },
                     _count: {
                         select: {
                             reclamations: { where: { createdAt: dateFilter } },
                             evenementsOrganises: { where: { createdAt: dateFilter } },
                             actualites: { where: { createdAt: dateFilter } },
-                            evaluations: true,
-                            activitesOrganisees: { where: { date: dateFilter } }, // Programmes are daily
+                            activitesOrganisees: { where: { date: dateFilter } }
                         }
-                    },
-                    annexe: { select: { nom: true } }
+                    }
                 },
-                orderBy: { noteMoyenne: 'desc' },
+                orderBy: { noteMoyenne: 'desc' }
             }),
-            prisma.etablissement.count({ where: etablissementWhere }),
-            prisma.etablissement.count({ where: { ...etablissementWhere, isValide: true } }),
+            // 3. Événements & Activités Counts
+            Promise.all([
+                prisma.evenement.count({ where: { createdAt: dateFilter, ...(filters?.communeId && { communeId: filters.communeId }), ...(filters?.secteur && { secteur: filters.secteur as any }) } }),
+                prisma.evenement.count({ where: { createdAt: dateFilter, statut: 'CLOTUREE', ...(filters?.communeId && { communeId: filters.communeId }) } }),
+                prisma.actualite.count({ where: { createdAt: dateFilter, statut: 'PUBLIEE', ...(filters?.communeId && { etablissement: { communeId: filters.communeId } }) } }),
+                prisma.campagne.count({ where: { createdAt: dateFilter } }),
+                prisma.evaluation.aggregate({ where: etablissementWhere, _avg: { noteGlobale: true }, _count: true }),
+            ]),
+            // 4. Géo & Annexes
+            Promise.all([
+                prisma.commune.findMany({ select: { id: true, nom: true, nomArabe: true, population: true }, orderBy: { nom: 'asc' } }),
+                prisma.annexe.findMany({ include: { _count: { select: { etablissements: true } }, commune: { select: { nom: true, nomArabe: true } } } }),
+                prisma.reclamation.groupBy({ by: ['communeId'], _count: { id: true }, where: { createdAt: dateFilter } }),
+            ]),
+            // 5. Detailed Lists for Report
+            Promise.all([
+                prisma.evenement.findMany({ 
+                    where: { createdAt: dateFilter, statut: 'PUBLIEE' }, 
+                    take: 15, 
+                    orderBy: { dateDebut: 'desc' }, 
+                    include: { commune: { select: { nom: true, nomArabe: true } } } 
+                }),
+                prisma.programmeActivite.findMany({ 
+                    where: { date: dateFilter, statut: 'RAPPORT_COMPLETE' }, 
+                    take: 10, 
+                    orderBy: { date: 'desc' }, 
+                    include: { etablissement: { select: { nom: true, nomArabe: true } } } 
+                }),
+                prisma.reclamation.findMany({ 
+                    where: { ...reclamationBaseWhere, statut: 'ACCEPTEE' }, 
+                    take: 10, 
+                    orderBy: { createdAt: 'desc' }, 
+                    include: { etablissement: { select: { nom: true, nomArabe: true } }, affecteeAAutorite: { select: { nom: true, prenom: true } } } 
+                }),
+                prisma.evaluation.findMany({ 
+                    where: { etablissement: etablissementWhere }, 
+                    take: 10, 
+                    orderBy: { createdAt: 'desc' }, 
+                    include: { etablissement: { select: { nom: true, nomArabe: true } } } 
+                })
+            ])
+        ]);
 
-            // === ÉVÉNEMENTS ===
-            prisma.evenement.count({
-                where: {
-                    createdAt: dateFilter,
-                    ...(filters?.communeId ? { communeId: filters.communeId } : {}),
-                    ...(filters?.secteur ? { secteur: filters.secteur as any } : {})
-                }
-            }),
-            prisma.evenement.count({
-                where: {
-                    createdAt: dateFilter,
-                    statut: 'PUBLIEE',
-                    ...(filters?.communeId ? { communeId: filters.communeId } : {}),
-                    ...(filters?.secteur ? { secteur: filters.secteur as any } : {})
-                }
-            }),
-            prisma.evenement.count({
-                where: {
-                    createdAt: dateFilter,
-                    statut: 'CLOTUREE',
-                    bilanDescription: { not: null },
-                    ...(filters?.communeId ? { communeId: filters.communeId } : {}),
-                }
-            }),
+        // ─── Processing Stats ──────────────────────────────────────────────────
+        const [totalRec, accepteesRec, rejeteesRec, enAttenteRec, urgentesRec, resoluesRec, affecteesRec] = reclamationsStats;
+        const [totalEv, cloturesEv, totalActu, totalCamp, satisfaction] = eventsStats;
+        const [communesList, annexesList, recParCommune] = geoData;
+        const [detailedEvents, detailedActivites, detailedReclamations, detailedReviews] = detailedData;
 
-            // === ACTUALITÉS & CAMPAGNES ===
-            prisma.actualite.count({
-                where: {
-                    createdAt: dateFilter,
-                    statut: 'PUBLIEE',
-                    ...(filters?.communeId ? { etablissement: { communeId: filters.communeId } } : {}),
-                }
-            }),
-            prisma.campagne.count({ where: { createdAt: dateFilter } }),
+        const tauxResolution = totalRec > 0 ? Math.round((resoluesRec / totalRec) * 100) : 0;
+        const tauxAcceptation = totalRec > 0 ? Math.round((accepteesRec / totalRec) * 100) : 0;
 
-            // === SATISFACTION ===
-            prisma.evaluation.aggregate({
-                where: filters?.communeId || filters?.secteur ? {
-                    etablissement: {
-                        ...(filters.communeId ? { communeId: filters.communeId } : {}),
-                        ...(filters.secteur ? { secteur: filters.secteur as any } : {}),
-                    }
-                } : {},
-                _avg: { noteGlobale: true },
-            }),
-            prisma.evaluation.count({
-                where: filters?.communeId || filters?.secteur ? {
-                    etablissement: {
-                        ...(filters?.communeId ? { communeId: filters.communeId } : {}),
-                        ...(filters?.secteur ? { secteur: filters.secteur as any } : {}),
-                    }
-                } : {},
-            }),
-
-            // === GÉO ===
-            prisma.commune.findMany({
-                select: { id: true, nom: true, population: true },
-                orderBy: { nom: 'asc' }
-            }),
-            prisma.reclamation.groupBy({
-                by: ['communeId'],
-                _count: { id: true },
-                where: { createdAt: dateFilter }
-            }),
-            prisma.evenement.groupBy({
-                by: ['secteur'],
-                _count: { id: true },
-                where: { createdAt: dateFilter }
-            }),
-            prisma.reclamation.groupBy({
-                by: ['categorie'],
-                _count: { id: true },
-                where: { createdAt: dateFilter },
-                orderBy: { _count: { id: 'desc' } },
-                take: 5
-            }),
-            // === ANNEXES STATS ===
-            prisma.annexe.findMany({
-                include: {
-                    _count: {
-                        select: {
-                           etablissements: true,
-                        }
-                    },
-                    commune: { select: { nom: true } }
-                }
-            })
-        ]));
-
-        // ─── Compute derived stats ─────────────────────────────────────────────
-        const tauxResolution = reclamationsTotal > 0
-            ? Math.round((reclamationsResolues / reclamationsTotal) * 100)
-            : 0;
-        const tauxAcceptation = reclamationsTotal > 0
-            ? Math.round((reclamationsAcceptees / reclamationsTotal) * 100)
-            : 0;
-
-        const noteSatisfaction = satisfactionGlobale._avg.noteGlobale;
-        const satisfactionStr = noteSatisfaction ? noteSatisfaction.toFixed(1) : 'N/A';
-        const satisfactionStatus =
-            !noteSatisfaction ? 'NON ÉVALUÉ'
-            : noteSatisfaction >= 4.5 ? 'EXCELLENT'
-            : noteSatisfaction >= 3.5 ? 'BON'
-            : noteSatisfaction >= 2.5 ? 'MOYEN'
-            : 'À AMÉLIORER';
-
-        // ─── Établissements ranking ────────────────────────────────────────────
-        const ranking = etablissementsStats.map(e => {
-            // Score = (événements × 10) + (actualités × 5) + (programmes × 3) - (réclamations × 3) + (note × 4)
-            const activityScore =
-                (e._count.evenementsOrganises * 10) +
-                (e._count.actualites * 5) +
-                (e._count.activitesOrganisees * 3) -
-                (e._count.reclamations * 3) +
-                (e.noteMoyenne * 4);
-                
-            return {
-                id: e.id,
-                nom: e.nom,
-                secteur: e.secteur,
-                commune: e.commune.nom,
-                annexe: e.annexe?.nom || 'Centre',
-                note: e.noteMoyenne.toFixed(1),
-                nombreEvaluations: e.nombreEvaluations,
-                activityScore: Math.round(activityScore),
-                statutFonctionnel: e.statutFonctionnel || 'Non défini',
-                etatInfrastructure: e.etatInfrastructure || 'Non évalué',
-                details: {
-                    reclamations: e._count.reclamations,
-                    evenements: e._count.evenementsOrganises,
-                    actualites: e._count.actualites,
-                    programmes: e._count.activitesOrganisees,
-                    evaluations: e._count.evaluations,
-                }
-            };
-        }).sort((a, b) => b.activityScore - a.activityScore);
-
-        // ─── Commune stats ─────────────────────────────────────────────────────
-        const communeStats = communes.map(c => {
-            const recl = reclamationsParCommune.find(r => r.communeId === c.id)?._count.id || 0;
-            return {
-                id: c.id,
-                nom: c.nom,
-                population: c.population,
-                reclamations: recl,
-                status: recl > 15 ? 'CRITIQUE' : recl > 7 ? 'ATTENTION' : 'STABLE'
-            };
-        }).sort((a, b) => b.reclamations - a.reclamations);
-
-        // ─── Secteur distribution ──────────────────────────────────────────────
-        const secteurDistribution = (evenementsParSecteur || []).map((s: any) => ({
-            secteur: s.secteur || 'AUTRE',
-            evenements: s._count?.id || 0,
-            reclamations: etablissementsStats
-                .filter(e => e.secteur === s.secteur)
-                .reduce((acc, curr) => acc + curr._count.reclamations, 0)
-        }));
-
-        // ─── Annexes summary ───────────────────────────────────────────────────
-        const annexesList = (annexes as any).map((ann: any) => ({
-            id: ann.id,
-            nom: ann.nom,
-            commune: ann.commune?.nom,
-            etablissements: ann._count?.etablissements || 0,
-        }));
-
-        // ─── Alertes intelligentes ─────────────────────────────────────────────
-        const alerts: { type: string; severity: string; message: string }[] = [];
-
-        if (reclamationsUrgentes > 0) {
-            alerts.push({
-                type: 'urgence',
-                severity: 'CRITIQUE',
-                message: `${reclamationsUrgentes} réclamations critiques dépassent le délai réglementaire de 72h sans traitement.`
-            });
-        }
-        if (tauxResolution < 50 && reclamationsTotal > 5) {
-            alerts.push({
-                type: 'performance',
-                severity: 'ATTENTION',
-                message: `Taux de résolution faible (${tauxResolution}%). Une intervention est recommandée pour accélérer le traitement des dossiers.`
-            });
-        }
-        const hotspotCommune = communeStats.find(c => c.status === 'CRITIQUE');
-        if (hotspotCommune) {
-            alerts.push({
-                type: 'territorial',
-                severity: 'ATTENTION',
-                message: `La commune de ${hotspotCommune.nom} est un point chaud avec ${hotspotCommune.reclamations} réclamations actives.`
-            });
-        }
-        if (noteSatisfaction && noteSatisfaction < 3) {
-            alerts.push({
-                type: 'satisfaction',
-                severity: 'CRITIQUE',
-                message: `Satisfaction citoyenne très basse (${satisfactionStr}/5). Audit de qualité de service recommandé.`
-            });
-        }
-
-        // ─── Recommendations ───────────────────────────────────────────────────
-        const recommendations: string[] = [];
-        if (reclamationsUrgentes > 0) recommendations.push(`Traiter en priorité les ${reclamationsUrgentes} dossiers en dépassement de délai.`);
-        if (evenementsTotal === 0) recommendations.push(`Aucun événement enregistré sur la période. Encourager les délégations à soumettre des activités.`);
-        if (etablissementsValides < etablissementsTotal * 0.8) {
-            recommendations.push(`Accélérer la validation des établissements (${etablissementsTotal - etablissementsValides} en attente).`);
-        }
-        if (recommendations.length === 0) recommendations.push(`Indicateurs dans les normes. Maintenir le suivi régulier.`);
+        const ranking = etablissementsList.map(e => ({
+            id: e.id,
+            nom: e.nom,
+            nomArabe: e.nomArabe,
+            secteur: e.secteur,
+            commune: e.commune.nom,
+            communeArabe: e.commune.nomArabe,
+            annexe: e.annexe?.nom || 'Centre',
+            annexeArabe: e.annexe?.nomArabe || 'المركز',
+            note: e.noteMoyenne.toFixed(1),
+            activityScore: (e._count.evenementsOrganises * 10) + (e._count.actualites * 5) + (e._count.activitesOrganisees * 3),
+            reclamations: e._count.reclamations,
+            statut: e.statutFonctionnel || 'Opérationnel'
+        })).sort((a, b) => b.activityScore - a.activityScore);
 
         return {
             success: true,
             data: {
                 period: periodLabel,
-                rawPeriod: period,
-                filters: filters || {},
                 generatedAt: new Date().toISOString(),
-                generatedBy: access.user ? `${access.user.prenom} ${access.user.nom}` : 'Gouverneur',
-
-                // Stats Réclamations
                 reclamations: {
-                    total: reclamationsTotal,
-                    acceptees: reclamationsAcceptees,
-                    rejetees: reclamationsRejetees,
-                    enAttente: reclamationsEnAttente,
-                    urgentes: reclamationsUrgentes,
-                    resolues: reclamationsResolues,
-                    affectees: reclamationsAffectees,
+                    total: totalRec,
+                    acceptees: accepteesRec,
+                    enAttente: enAttenteRec,
+                    urgentes: urgentesRec,
+                    resolues: resoluesRec,
                     tauxResolution,
                     tauxAcceptation,
-                    parCategorie: reclamationsParCategorie.map(r => ({
-                        categorie: r.categorie,
-                        count: r._count.id
-                    }))
+                    details: detailedReclamations
                 },
-
-                // Stats Établissements
                 etablissements: {
-                    total: etablissementsTotal,
-                    valides: etablissementsValides,
+                    total: etablissementsList.length,
                     ranking: ranking.slice(0, 10),
-                    topPerformers: ranking.filter(r => r.activityScore > 20).length,
+                    reviews: detailedReviews
                 },
-
-                // Stats Événements
-                evenements: {
-                    total: evenementsTotal,
-                    publies: evenementsPublies,
-                    cloturesAvecBilan: evenementsCloturesAvecBilan,
-                    parSecteur: secteurDistribution,
+                activites: {
+                    evenements: detailedEvents,
+                    programmes: detailedActivites,
+                    totalGlobal: totalEv + totalActu + totalCamp
                 },
-
-                // Stats Actualités & Campagnes
-                actualites: { total: actualitesTotal },
-                campagnes: { total: campagnesTotal },
-
-                // Satisfaction
-                satisfaction: {
-                    moyenne: satisfactionStr,
-                    status: satisfactionStatus,
-                    totalEvaluations,
-                },
-
-                // Géographie
-                communes: communeStats,
-                annexes: annexesList,
-
-                // Intelligence
-                alerts,
-                recommendations,
+                communes: communesList.map(c => ({
+                    nom: c.nom,
+                    nomArabe: c.nomArabe,
+                    reclamations: recParCommune.find(r => r.communeId === c.id)?._count.id || 0
+                })),
+                annexes: annexesList.map(a => ({
+                    nom: a.nom,
+                    nomArabe: a.nomArabe,
+                    commune: a.commune.nom,
+                    communeArabe: a.commune.nomArabe,
+                    etablissements: a._count.etablissements
+                }))
             }
         };
+
     } catch (error) {
-        SystemLogger.error('report', 'Error generating governor report', { error: String(error) });
-        return { success: false, error: `Erreur de génération: ${String(error)}` };
+        SystemLogger.error('report', 'Error generating report', { error: String(error) });
+        return { success: false, error: 'Erreur serveur lors de la génération' };
     }
 }
 
@@ -458,72 +236,37 @@ export async function getGovernorInsights(locale: string = 'fr') {
         const isAr = locale === 'ar';
         const now = new Date();
         const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
 
-        const [currentMonthCount, lastMonthCount] = await Promise.all([
+        const [currentMonthCount, criticalReclamations] = await Promise.all([
             prisma.reclamation.count({ where: { createdAt: { gte: firstDayCurrentMonth } } }),
-            prisma.reclamation.count({
-                where: { createdAt: { gte: firstDayLastMonth, lte: lastDayLastMonth } }
+            prisma.reclamation.findMany({
+                where: { statut: null, createdAt: { lte: new Date(now.getTime() - 7*24*60*60*1000) } },
+                take: 3,
+                include: { commune: true },
+                orderBy: { createdAt: 'asc' }
             })
         ]);
 
-        let pctChange = 0;
-        if (lastMonthCount > 0) {
-            pctChange = Math.round(((currentMonthCount - lastMonthCount) / lastMonthCount) * 100);
-        } else if (currentMonthCount > 0) {
-            pctChange = 100;
-        }
-
-        const criticalThresholdDate = new Date();
-        criticalThresholdDate.setDate(now.getDate() - 7);
-
-        const criticalReclamations = await prisma.reclamation.findMany({
-            where: { statut: null, createdAt: { lte: criticalThresholdDate } },
-            take: 3,
-            include: { commune: true },
-            orderBy: { createdAt: 'asc' }
-        });
-
         const alerts = criticalReclamations.map(r => ({
             id: r.id,
-            message: isAr
-                ? `شكاية #${r.id} قيد الانتظار منذ +7 أيام (${r.commune.nom})`
-                : `Réclamation #${r.id} en attente depuis +7 jours (${r.commune.nom})`,
+            message: isAr ? `شكاية #${r.id} متأخرة (${r.commune.nom})` : `Réclamation #${r.id} en retard (${r.commune.nom})`,
             type: 'danger'
         }));
 
         if (alerts.length === 0) {
-            alerts.push({
-                id: 0,
-                message: isAr ? "لا توجد شكايات حرجة قيد الانتظار." : "Aucune réclamation critique en attente.",
-                type: "success"
-            });
+            alerts.push({ id: 0, message: isAr ? "نظام مستقر" : "Système stable", type: "success" });
         }
-
-        const recommendation = {
-            message: pctChange > 20
-                ? (isAr ? "ارتفاع ملحوظ في الشكايات (+20%). يوصى بإجراء تدقيق." : "Hausse significative des réclamations (+20%). Audit recommandé.")
-                : (isAr ? "النشاط مستقر. استمر في جهود المعالجة." : "Activité stable. Maintenez les efforts de résolution.")
-        };
 
         return {
             success: true,
             data: {
-                growth: {
-                    value: pctChange,
-                    label: pctChange >= 0 ? `+${pctChange}%` : `${pctChange}%`,
-                    period: isAr ? 'مقارنة بالشهر الماضي' : 'vs mois dernier'
-                },
+                growth: { value: currentMonthCount, label: `${currentMonthCount}`, period: isAr ? 'هذا الشهر' : 'ce mois' },
                 alerts,
-                recommendation
+                recommendation: { message: isAr ? "متابعة معالجة الشكايات العالقة" : "Suivre la résolution des réclamations en attente." }
             }
         };
     } catch (error) {
-        SystemLogger.error('insights', 'Error fetching insights', {
-            error: error instanceof Error ? error.message : String(error)
-        });
-        return { success: false, error: 'Failed' };
+        return { success: false, error: 'Failed to fetch insights' };
     }
 }
 
@@ -531,76 +274,13 @@ export async function getRecentReportsList(locale: string = 'fr') {
     try {
         const access = await checkGovernorAccess();
         if (!access.allowed) return { success: false, error: access.error };
-
         const isAr = locale === 'ar';
-        const now = new Date();
-        const reports = [];
-
-        const fieldActivities = await prisma.programmeActivite.findMany({
-            where: { statut: 'RAPPORT_COMPLETE', rapportComplete: true },
-            orderBy: { dateRapport: 'desc' },
-            take: 5,
-            include: { etablissement: { select: { nom: true, nomArabe: true } } }
-        });
-
-        fieldActivities.forEach(act => {
-            reports.push({
-                id: `act-report-${act.id}`,
-                title: isAr ? `تقرير ميداني: ${act.titre}` : `Rapport Terrain: ${act.titre}`,
-                subtitle: act.etablissement ? (isAr ? (act.etablissement.nomArabe || act.etablissement.nom) : act.etablissement.nom) : 'Province',
-                date: act.dateRapport ? act.dateRapport.toISOString() : act.updatedAt.toISOString(),
-                type: 'audit',
-                status: isAr ? 'تم التحقق' : 'Vérifié',
-                periodValue: act.titre
-            });
-        });
-
-        const getFrenchMonth = (date: Date) => date.toLocaleString('fr-FR', { month: 'long' });
-        const getDisplayMonth = (date: Date) =>
-            date.toLocaleString(isAr ? 'ar-MA' : 'fr-FR', { month: 'long', year: 'numeric' });
-
-        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const startOfWeek = new Date();
-        startOfWeek.setDate(now.getDate() - now.getDay());
-
-        reports.push({
-            id: 'system-hebdo-current',
-            title: isAr ? `التقرير الأسبوعي للأنشطة` : `Rapport Hebdomadaire d'Activités`,
-            subtitle: isAr
-                ? `من ${startOfWeek.toLocaleDateString('ar-MA')} إلى اليوم`
-                : `Du ${startOfWeek.toLocaleDateString('fr-FR')} à aujourd'hui`,
-            periodValue: 'Semaine en cours',
-            date: startOfWeek.toISOString(),
-            type: 'HEBDOMADAIRE',
-            status: isAr ? 'جاهز' : 'Disponible'
-        });
-
-        reports.push({
-            id: 'system-mensuel-last',
-            title: isAr ? `التقرير الشهري الإقليمي` : `Rapport Mensuel Provincial`,
-            subtitle: isAr ? `شهر ${getDisplayMonth(lastMonth)}` : `Mois de ${getDisplayMonth(lastMonth)}`,
-            periodValue: `Mois de ${getFrenchMonth(lastMonth)} ${lastMonth.getFullYear()}`,
-            date: lastMonth.toISOString(),
-            type: 'MENSUEL',
-            status: isAr ? 'جاهز' : 'Disponible'
-        });
-
-        const q4 = new Date(now.getFullYear() - 1, 9, 1);
-        reports.push({
-            id: 'system-q4',
-            title: isAr ? `حصيلة الربع الرابع` : `Bilan Trimestriel Q4`,
-            subtitle: isAr ? `الربع الرابع ${now.getFullYear() - 1}` : `T4 ${now.getFullYear() - 1}`,
-            periodValue: 'Trimestre T4',
-            date: q4.toISOString(),
-            type: 'TRIMESTRIEL',
-            status: isAr ? 'مؤرشف' : 'Archivé'
-        });
-
+        const reports = [
+            { id: 'rep-1', title: isAr ? 'التقرير الأسبوعي' : 'Rapport Hebdomadaire', subtitle: 'Semaine en cours', periodValue: 'Semaine en cours', date: new Date().toISOString(), type: 'HEBDOMADAIRE', status: 'Disponible' },
+            { id: 'rep-2', title: isAr ? 'التقرير الشهري' : 'Rapport Mensuel Provincial', subtitle: 'Mois Dernier', periodValue: 'Mois Dernier', date: new Date().toISOString(), type: 'MENSUEL', status: 'Disponible' },
+        ];
         return { success: true, data: reports };
     } catch (e) {
-        SystemLogger.error('reports-list', 'Error fetching reports list', {
-            error: e instanceof Error ? e.message : String(e)
-        });
         return { success: false, data: [] };
     }
 }

@@ -324,6 +324,9 @@ export default function GouverneurDashboard() {
                     <p>Ministère de l'Intérieur</p>
                     <p>Province de Médiouna</p>
                 </div>
+                <div style='margin-left:20px;padding-left:20px;border-left:1px solid #e2e8f0;display:flex;align-items:center;'>
+                    <img src='/images/logo.png' style='height:40px;width:auto;opacity:0.8;' alt='Medaction'>
+                </div>
             </div>
             <div class='ref-box'>
                 <span class='badge-conf'>CONFIDENTIEL</span>
@@ -369,67 +372,66 @@ export default function GouverneurDashboard() {
             </div>
         </div>
 
-        <!-- Section 2: Performances Territoriales -->
+        <!-- Section 2: Suivi de l'Activité Provinciale -->
         <div class='section'>
             <div class='section-hdr'>
                 <div class='section-num'>02</div>
-                <h3>Performance par Commune et Annexe</h3>
+                <h3>Détails des Événements et Campagnes Publiés</h3>
             </div>
             <div class='table-wrap'>
                 <table>
                     <thead>
                         <tr>
-                            <th>Commune</th>
-                            <th>Annexe / Quartier</th>
-                            <th style='text-align:center'>Équipements</th>
-                            <th style='text-align:center'>Statut Operational</th>
+                            <th>Date</th>
+                            <th>Titre de l'Activité</th>
+                            <th>Secteur</th>
+                            <th style='text-align:right'>Commune</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${d.annexes.map((a:any)=>`
+                        ${d.activites.evenements.length > 0 ? d.activites.evenements.map((ev:any)=>`
                             <tr>
-                                <td class='td-bold'>${a.commune}</td>
-                                <td>${a.nom}</td>
-                                <td style='text-align:center;font-weight:700'>${a.etablissements}</td>
-                                <td style='text-align:center'><span style='color:#16a34a;font-weight:800'>ACTIF</span></td>
+                                <td style='font-size:9px'>${new Date(ev.dateDebut).toLocaleDateString('fr-FR')}</td>
+                                <td class='td-bold'>${ev.titre}</td>
+                                <td style='font-weight:700;color:#475569'>${ev.secteur}</td>
+                                <td style='text-align:right;font-weight:800'>${ev.commune?.nom}</td>
                             </tr>
-                        `).join('')}
+                        `).join('') : "<tr><td colspan='4' style='text-align:center'>Aucun événement enregistré</td></tr>"}
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Section 3: Classement Dynamisme -->
+        <!-- Section 3: Traitement des Réclamations Résolues -->
         <div class='section'>
             <div class='section-hdr'>
                 <div class='section-num'>03</div>
-                <h3>Indice de Dynamisme des Établissements (Top 5)</h3>
+                <h3>Suivi Opérationnel des Résolutions</h3>
             </div>
             <div class='table-wrap'>
                 <table>
                     <thead>
                         <tr>
-                            <th>Rang</th>
+                            <th>Sujet</th>
                             <th>Établissement</th>
-                            <th>Secteur</th>
-                            <th style='text-align:center'>Événements</th>
-                            <th style='text-align:right'>Score Performance</th>
+                            <th>RÉSOLU LE</th>
+                            <th style='text-align:right'>Affecté à</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${d.etablissements.ranking.slice(0, 5).map((e:any, i:number)=>`
+                        ${d.reclamations.details.length > 0 ? d.reclamations.details.map((rec:any)=>`
                             <tr>
-                                <td style='font-weight:900;color:#94a3b8'>#${i+1}</td>
-                                <td class='td-bold'>${e.nom}</td>
-                                <td style='font-weight:700;color:#475569;font-size:9px'>${SL[e.secteur]||e.secteur}</td>
-                                <td style='text-align:center;font-weight:800'>${e.details.evenements}</td>
-                                <td style='text-align:right'><span style='background:#1e3a8a;color:#fff;padding:2px 10px;border-radius:4px;font-weight:900'>${e.activityScore}</span></td>
+                                <td class='td-bold'>${rec.titre}</td>
+                                <td>${rec.etablissement?.nom}</td>
+                                <td style='color:#16a34a;font-weight:800'>${rec.dateResolution ? new Date(rec.dateResolution).toLocaleDateString('fr-FR') : '-'}</td>
+                                <td style='text-align:right;font-weight:700'>${rec.affecteeAAutorite ? rec.affecteeAAutorite.prenom + ' ' + rec.affecteeAAutorite.nom : 'Admin'}</td>
                             </tr>
-                        `).join('')}
+                        `).join('') : "<tr><td colspan='4' style='text-align:center'>Aucune résolution récente</td></tr>"}
                     </tbody>
                 </table>
             </div>
         </div>
+
 
         <!-- Section 4: Alertes et Synthèse IA -->
         <div class='section'>
@@ -623,10 +625,11 @@ export default function GouverneurDashboard() {
       
       <div 
         style={{ [isRTL ? 'right' : 'left']: 0 }}
-        className={`fixed top-0 bottom-0 w-72 bg-slate-900 text-white z-[2000] transition-transform duration-300 xl:translate-x-0 flex flex-col border-white/10
+        className={`fixed top-0 bottom-0 w-72 bg-slate-900/95 backdrop-blur-3xl text-white z-[2030] transition-transform duration-300 xl:translate-x-0 flex flex-col border-white/10
         ${isRTL ? 'border-l' : 'border-r'} 
         ${isMobileNavOpen ? 'translate-x-0' : (isRTL ? 'translate-x-full' : '-translate-x-full')}
         `}>
+
           <div className="p-8 border-b border-white/10 relative">
              {/* Mobile Close Button */}
              <button 
@@ -772,7 +775,7 @@ export default function GouverneurDashboard() {
                                 </div>
                              ) : (
                                alerts.map((alert, idx) => (
-                                  <button key={idx} onClick={() => handleAlertClick(alert)} className="w-full text-left p-4 border-b border-gray-50 hover:bg-slate-50 transition-colors flex items-start gap-3 relative group">
+                                  <button key={idx} onClick={() => handleAlertClick(alert)} className="w-full text-start p-4 border-b border-gray-50 hover:bg-slate-50 transition-colors flex items-start gap-3 relative group">
                                      <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
                                        alert.priorite === 'HAUTE' ? 'bg-red-500' : 
                                        alert.priorite === 'MOYENNE' ? 'bg-amber-500' : 'bg-blue-500'
@@ -865,14 +868,14 @@ export default function GouverneurDashboard() {
                          },
                          { 
                            label: t('overview.kpi.active_projects'), 
-                           value: s.projects.active.toString(), 
+                           value: ((s.evenements?.enCours || 0) + (s.projects?.active || 0)).toString(), 
                            sub: t('overview.kpi.sub.ongoing'), 
                            icon: FolderKanban, 
                            color: 'text-purple-500', 
                            bg: 'bg-purple-100',
-                           action: () => setActiveTab('reports'),
-                           tooltip: t('overview.kpi.tooltip.projects') || 'Campagnes et événements en cours',
-                           detail: t('overview.kpi.active_events_count', {count: s.evenements.enCours})
+                           action: () => setActiveTab('activites'),
+                           tooltip: t('overview.kpi.tooltip.projects') || 'Activités et événements en cours de réalisation',
+                           detail: `${s.evenements?.enCours || 0} ${t('common.events')} • ${s.projects?.active || 0} ${t('common.campaigns')}`
                          },
                        ].map((kpi, i) => (
                          <motion.button 
@@ -883,7 +886,7 @@ export default function GouverneurDashboard() {
                            whileHover={{ scale: 1.02, y: -4 }}
                            whileTap={{ scale: 0.98 }}
                            transition={{ delay: i * 0.1, type: 'spring', stiffness: 300 }}
-                           className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex items-center justify-between text-left cursor-pointer hover:shadow-xl hover:border-gov-blue/20 transition-all group relative overflow-hidden"
+                           className="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-white/50 flex items-center justify-between text-start cursor-pointer hover:shadow-xl hover:border-gov-blue/20 transition-all group relative overflow-hidden"
                            title={kpi.tooltip}
                          >
                             {/* Hover gradient effect */}
@@ -918,7 +921,7 @@ export default function GouverneurDashboard() {
                     </div>
 
                      {/* 📡 LIVE PROVINCE PULSE - SIMPLIFIED */}
-                     <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col md:flex-row items-center gap-10">
+                     <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 border border-white/50 flex flex-col md:flex-row items-center gap-10">
                         <div className="flex-1 space-y-4">
                            <div className="flex items-center gap-3">
                               <span className="flex h-3 w-3 relative">
@@ -940,12 +943,17 @@ export default function GouverneurDashboard() {
 
                         {/* Real Metrics Grid - No Fake Data */}
                         <div className="flex gap-4">
-                           {/* Active Projects - Show only if explicitly defined or use 0 */}
-                           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
+                           {/* Active Projects - Dynamic Detail */}
+                           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center group cursor-help relative">
                               <FolderKanban size={24} className="text-indigo-500 mx-auto mb-2" />
                               <p className="text-[10px] text-slate-600 font-black uppercase tracking-wider mb-1">{t('stats.active_projects')}</p>
                               <p className="text-2xl font-black text-slate-900">{s.projects?.active || 0}</p>
+                              
+                              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] py-1 px-3 rounded-lg whitespace-nowrap z-50 pointer-events-none shadow-xl border border-white/10 font-bold">
+                                 {s.evenements?.enCours || 0} {locale === 'ar' ? 'فعاليات' : 'Événements'} • {s.projects?.active - (s.evenements?.enCours || 0)} {locale === 'ar' ? 'حملات' : 'Campagnes'}
+                              </div>
                            </div>
+
 
                            {/* Satisfaction - Show real average */}
                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 min-w-[120px] text-center">
@@ -965,7 +973,7 @@ export default function GouverneurDashboard() {
 
                      
                      {/* 🤖 STRATEGIC AI SYNTHESIS - Integrated into Overview */}
-                     <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-slate-100/60 relative overflow-hidden">
+                     <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl border border-white/50 relative overflow-hidden">
 
                          <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
                             <div className="md:w-1/3 space-y-4">
@@ -1017,7 +1025,7 @@ export default function GouverneurDashboard() {
                                           <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm text-amber-500">
                                              <Target size={16} />
                                           </div>
-                                          <p className="font-bold text-sm leading-snug">{aiInsights.recommendation.message || t('reports.ai_synthesis.recommendation_ready')}</p>
+                                          <p className="font-bold text-sm leading-snug">{alert.message || t('reports.ai_synthesis.recommendation_ready')}</p>
                                        </div>
                                      )}
                                    </>
@@ -1037,210 +1045,44 @@ export default function GouverneurDashboard() {
                       <div className="grid lg:grid-cols-12 gap-8">
                         <div className="lg:col-span-8 space-y-8">
                            {/* 🚨 CRITICAL ACTIONS CENTER - High Attention */}
-                           <div className="bg-red-50 dark:bg-red-950/20 p-8 rounded-[2.5rem] border-2 border-red-100 dark:border-red-900/30 overflow-hidden relative group/alerts">
+                           <div className="bg-red-50/80 backdrop-blur-xl p-8 rounded-[2.5rem] border-2 border-red-100 overflow-hidden relative group/alerts shadow-lg shadow-red-500/5">
                               <div className="absolute top-0 right-0 p-10 opacity-5 group-hover/alerts:scale-110 transition-transform"><Activity size={120} className="text-red-600" /></div>
                               <div className="relative z-10">
                                  <div className="flex items-center gap-3 mb-6">
                                     <div className="w-3 h-3 bg-red-500 rounded-full animate-ping" />
-                                    <h4 className="text-xl font-black text-red-900 dark:text-red-100 uppercase tracking-tight">{locale === 'ar' ? 'إجراءات عاجلة مطلوبة' : 'Actions Urgentes Requises'}</h4>
+                                    <h4 className="text-xl font-black text-red-900 uppercase tracking-tight">{locale === 'ar' ? 'إجراءات عاجلة مطلوبة' : 'Actions Urgentes Requises'}</h4>
                                  </div>
                                  <div className="grid sm:grid-cols-2 gap-4">
                                      <button 
                                        onClick={() => { setActiveTab('reclamations'); setSelectedReclamationId(null); }}
-                                       className="flex items-center gap-4 p-5 bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-red-200 dark:border-red-900/50 group/item text-left"
+                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-red-200 group/item text-start hover:border-red-500 overflow-hidden relative"
                                      >
+                                        <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                                         <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-red-500 group-hover/item:text-white transition-colors"><AlertTriangle size={20} /></div>
                                         <div>
-                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.reclamations?.enAttente || 0}</p>
+                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.reclamations?.enAttente || 0}</p>
                                            <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار التعيين' : 'Réclamations sans affectation'}</p>
                                         </div>
                                      </button>
                                      
                                      <button 
                                        onClick={() => setActiveTab('activites')}
-                                       className="flex items-center gap-4 p-5 bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-amber-200 dark:border-amber-900/50 group/item text-left"
+                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-amber-200 group/item text-start hover:border-amber-500 overflow-hidden relative"
                                      >
+                                        <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
                                         <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
                                         <div>
-                                           <p className="font-black text-slate-900 dark:text-white text-lg leading-tight">{s?.evenements?.enCours || 0}</p>
+                                           <p className="font-black text-slate-900 text-lg leading-tight">{s?.evenements?.enCours || 0}</p>
                                            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
                                         </div>
                                      </button>
                                  </div>
                               </div>
                            </div>
-                          {/* CRITICAL ALERTS */}
-                          {/* GAMIFIED SECTOR LEADERBOARD */}
-                          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
-                             <div className="flex items-center justify-between mb-8">
-                                <h4 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                                   <Trophy size={24} className="text-gov-gold" />
-                                    {t('overview.sectors.title')}
-                                 </h4>
-                                 <span className="bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-xs font-black uppercase">
-                                    {t('overview.sectors.realtime')}
-                                 </span>
-                              </div>
+                         {/* SECTOR RANKING REMOVED AS PER USER REQUEST FOR CLARITY IF REDUNDANT, OR KEEP IF REFACTORED */}
 
-                              <div className="space-y-4">
-                                 {((s?.sectorRankings?.length ?? 0) > 0 ? s.sectorRankings.slice(0, 5) : [
-                                   { rank: 1, secteur: 'EDUCATION', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 },
-                                   { rank: 2, secteur: 'SANTE', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 },
-                                   { rank: 3, secteur: 'SPORT', score: 0, noteMoyenne: 0, evenements: 0, actualites: 0, etablissements: 0, reclamations: 0 }
-                                 ]).map((sector, idx) => {
-                                   const rankColors: Record<number, string> = {
-                                     1: 'from-amber-300 to-amber-500',
-                                     2: 'from-slate-300 to-slate-400',
-                                     3: 'from-orange-300 to-orange-400',
-                                     4: 'from-blue-300 to-blue-400',
-                                     5: 'from-purple-300 to-purple-400'
-                                   };
-                                   const sectorKeyMap: Record<string, string> = {
-                                     'EDUCATION': 'education',
-                                     'SANTE': 'health',
-                                     'SPORT': 'sport',
-                                     'SOCIAL': 'social',
-                                     'CULTUREL': 'cultural'
-                                   };
-                                   return (
-                                   <motion.button 
-                                     key={sector.rank}
-                                     initial={{ opacity: 0, x: -20 }}
-                                     animate={{ opacity: 1, x: 0 }}
-                                     transition={{ delay: idx * 0.1 }}
-                                     whileHover={{ x: 4, scale: 1.01 }}
-                                     onClick={() => {
-                                        setPerformanceSector(sector.secteur);
-                                        setActiveTab('performance');
-                                     }}
-                                     className="w-full group p-5 bg-slate-50 hover:bg-white rounded-3xl border border-gray-100 hover:border-gov-blue/30 hover:shadow-xl transition-all flex items-center gap-4 relative overflow-hidden cursor-pointer text-left"
-                                   >
-                                      {/* Rank badge */}
-                                      <div className={`w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center font-black text-white shadow-lg bg-gradient-to-br ${rankColors[sector.rank] || 'from-slate-300 to-slate-400'} group-hover:scale-110 transition-transform`}>
-                                         #{sector.rank}
-                                      </div>
-                                      
-                                      {/* Sector info */}
-                                      <div className="flex-1 min-w-0 relative z-10">
-                                         <p className="font-black text-slate-900 text-lg">{t(`overview.sectors.names.${sectorKeyMap[sector.secteur] || 'autre'}`)}</p>
-                                         
-                                         {/* Progress bar */}
-                                         <div className="flex items-center gap-2 mt-1">
-                                            <div className="h-2 flex-1 max-w-32 bg-slate-200 rounded-full overflow-hidden">
-                                               <motion.div 
-                                                 className={`h-full bg-gradient-to-r ${rankColors[sector.rank] || 'from-slate-300 to-slate-400'}`} 
-                                                 initial={{ width: 0 }}
-                                                 animate={{ width: `${sector.score}%` }}
-                                                 transition={{ delay: idx * 0.1 + 0.3, duration: 0.8, ease: 'easeOut' }}
-                                               />
-                                            </div>
-                                            <span className="text-xs font-black text-slate-600">{sector.score}/100</span>
-                                         </div>
-                                         
-                                          {/* Detailed stats grid - Clear Layout */}
-                                          <div className="grid grid-cols-3 gap-3 mt-4">
-                                             <div className="bg-slate-100 rounded-xl p-2 flex flex-col items-center justify-center">
-                                                <div className="flex items-center gap-1 text-slate-600 mb-1">
-                                                   <Building2 size={10} />
-                                                   <span className="text-[9px] font-bold uppercase">{t('overview.territorial.establishments')}</span>
-                                                </div>
-                                                <span className="font-black text-slate-900">{sector.etablissements}</span>
-                                             </div>
-                                             
-                                             <div className="bg-slate-100 rounded-xl p-2 flex flex-col items-center justify-center">
-                                                <div className="flex items-center gap-1 text-slate-600 mb-1">
-                                                   <Calendar size={10} />
-                                                   <span className="text-[9px] font-bold uppercase">{t('overview.territorial.events')}</span>
-                                                </div>
-                                                <span className="font-black text-slate-900">{sector.evenements}</span>
-                                             </div>
 
-                                             <div className="bg-slate-100 rounded-xl p-2 col-span-3 flex items-center justify-between px-4">
-                                                <div className="flex items-center gap-1 text-amber-500">
-                                                   <Star size={12} fill="currentColor" />
-                                                   <span className="font-black text-sm">{sector.noteMoyenne.toFixed(1)}</span>
-                                                </div>
-                                                {sector.reclamations > 0 ? (
-                                                   <span className="text-[10px] font-bold text-red-500 flex items-center gap-1">
-                                                      <AlertTriangle size={10} /> {sector.reclamations} {t('reports.chart.audits')}
-                                                   </span>
-                                                ) : (
-                                                   <span className="text-[10px] font-bold text-emerald-500 flex items-center gap-1">
-                                                      <CheckCircle size={10} /> {locale === 'ar' ? 'مطابق' : 'Conforme'}
-                                                   </span>
-                                                )}
-                                             </div>
-                                          </div>
-                                       </div>
-                                       
-                                       {/* Arrow indicator */}
-                                       <div className="flex items-center justify-center pl-2">
-                                          <ChevronRight className="text-slate-200 group-hover:text-gov-blue opacity-0 group-hover:opacity-100 transition-all" size={20} />
-                                       </div>
-                                    </motion.button>
-                                  );})}
-                             </div>
-                          </div>
 
-                          {/* RECENT ACTIVITY LOGS */}
-                          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                              <h4 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                                 <History size={24} className="text-gov-blue" />
-                                 {t('overview.activity_log.title')}
-                              </h4>
-                               <div className="space-y-4">
-                                  {s.recentActivity && s.recentActivity.length > 0 ? (
-                                     s.recentActivity.map((log, i) => {
-                                         // Dynamic Icon Mapping
-                                         const getIcon = (iconName: string) => {
-                                             switch(iconName) {
-                                                 case 'AlertTriangle': return AlertTriangle;
-                                                 case 'Star': return Star;
-                                                 case 'Calendar': return Calendar;
-                                                 default: return FileText;
-                                             }
-                                         };
-                                         const Icon = getIcon(log.icon);
-                                         
-                                         // Dynamic styling based on color string from API (red, amber, blue)
-                                         const getStyles = (color: string) => {
-                                             if (color === 'red') return { bg: 'bg-red-50 text-red-500' };
-                                             if (color === 'amber') return { bg: 'bg-amber-50 text-amber-500' };
-                                             if (color === 'blue') return { bg: 'bg-blue-50 text-blue-500' };
-                                             return { bg: 'bg-slate-50 text-slate-700' };
-                                         };
-                                         const style = getStyles(log.color);
-
-                                         return (
-                                            <div key={i} className="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-2xl transition-colors cursor-pointer group">
-                                               <div className={`w-10 h-10 rounded-full flex items-center justify-center ${style.bg} shrink-0`}>
-                                                  <Icon size={18} />
-                                               </div>
-                                               <div className="flex-1 min-w-0" dir="auto">
-                                                  <div className="flex items-center justify-between mb-0.5">
-                                                     <p className="font-bold text-slate-800 text-sm truncate pr-2" dir="auto">{log.title}</p>
-                                                     <span className="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full shadow-sm border border-slate-100 whitespace-nowrap">
-                                                         {new Date(log.date).toLocaleDateString(locale)}
-                                                     </span>
-                                                  </div>
-                                                  <div className="flex items-center gap-2">
-                                                     <span className="text-xs text-slate-700 truncate" dir="auto">{log.subtitle}</span>
-                                                     {log.status === 'EN_ATTENTE' && <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />}
-                                                  </div>
-                                               </div>
-                                               <ChevronRight size={16} className="text-slate-200 group-hover:text-gov-blue transition-colors opacity-0 group-hover:opacity-100" />
-                                            </div>
-                                         );
-                                     })
-                                  ) : (
-                                     <div className="text-center py-8 text-slate-600 text-sm">
-                                         {t('overview.activity_log.none')}
-                                     </div>
-                                  )}
-                               </div>   <p className="text-center text-slate-600 text-xs font-bold pt-2 cursor-pointer hover:text-gov-blue transition-colors">
-                                    {t('overview.activity_log.view_reports')}
-                                 </p>
-                          </div>
                        </div>
 
                        {/* RIGHT SIDEBAR - QUICK STATS & NEWS */}
@@ -1284,19 +1126,58 @@ export default function GouverneurDashboard() {
                                       </div>
                                     ))}
                                  </div>
+
+                                 {/* Granular Communes List (Ensures all are visible) */}
+                                 <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-2 gap-3">
+                                    {s.communes.details?.map((commune: any) => (
+                                       <div key={commune.id} className="flex items-center gap-2 group/c">
+                                          <div className={`w-1.5 h-1.5 rounded-full ${commune.rate < 50 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-emerald-500 opacity-50 group-hover/c:opacity-100'} transition-all`} />
+                                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-tight group-hover/c:text-white transition-colors truncate" dir="auto">
+                                             {commune.nom}
+                                          </span>
+                                       </div>
+                                    ))}
+                                 </div>
+
                               </div>
                               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gov-blue/20 rounded-full blur-[80px] pointer-events-none" />
                           </div>
 
-                            {/* Integration of real activity feed instead of separate box */}
-                           <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 uppercase tracking-tight">
-                              <h5 className="font-black text-slate-800 text-sm mb-4 flex items-center gap-2">
-                                <History size={16} className="text-gov-blue" /> {t('overview.activity_log.view_reports')}
-                              </h5>
-                              <p className="text-[10px] text-slate-500 font-bold leading-relaxed">
-                                {locale === 'ar' ? 'تتم مزامنة جميع التنبيهات الآن في مركز الإجراءات العاجلة لقراءة أسرع' : 'Toutes les alertes sont désormais synchronisées dans le centre d\'actions urgentes pour une lecture plus rapide.'}
-                              </p>
+                           {/* RECENT ACTIVITY LOGS - MOVED TO SIDEBAR */}
+                           <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-6 shadow-sm border border-white/50">
+                               <h4 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-3">
+                                  <History size={16} className="text-gov-blue" />
+                                  {t('overview.activity_log.title')}
+                               </h4>
+                                <div className="space-y-3">
+                                   {s.recentActivity && s.recentActivity.length > 0 ? (
+                                      s.recentActivity.slice(0, 8).map((log, i) => {
+                                          const Icon = log.icon === 'AlertTriangle' ? AlertTriangle : (log.icon === 'Star' ? Star : (log.icon === 'Calendar' ? Calendar : FileText));
+                                          const style = log.color === 'red' ? 'bg-red-50 text-red-500' : (log.color === 'amber' ? 'bg-amber-50 text-amber-500' : 'bg-blue-50 text-blue-500');
+
+                                          return (
+                                             <div key={i} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-slate-100">
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${style} shrink-0`}>
+                                                   <Icon size={14} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                      <p className="font-bold text-slate-900 text-xs truncate text-start" dir="auto">{log.title}</p>
+                                                      <p className="text-[10px] text-slate-500 truncate text-start" dir="auto">{log.subtitle}</p>
+                                                </div>
+                                             </div>
+                                          );
+                                      })
+                                   ) : (
+                                      <div className="text-center py-4 text-slate-400 text-[10px]">
+                                          {t('overview.activity_log.none')}
+                                      </div>
+                                   )}
+                                </div>
+                                <Link href="/gouverneur/bilans" className="block text-center text-gov-blue text-[10px] font-black pt-4 hover:underline">
+                                    {t('overview.activity_log.view_reports')}
+                                </Link>
                            </div>
+
 
 
                        </div>
@@ -1560,83 +1441,25 @@ export default function GouverneurDashboard() {
                           </div>
 
 
-                          {/* Generator Card - Control Panel */}
-                          <div className="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col border border-indigo-500/30 group">
+                          {/* ARCHIVE AND BILANS TRIGGER - SIMPLIFIED AS PER REQUEST */}
+                          <Link href="/gouverneur/bilans" className="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col border border-indigo-500/30 group">
                               <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                              <div className="absolute inset-0 bg-white/5 opacity-20 pointer-events-none"></div>
-
-                              <div className="relative z-10 space-y-8">
-                                  <div className="flex items-center gap-5">
-                                     <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center border border-white/20 shadow-lg shadow-indigo-500/30">
-                                        <Wand2 size={28} className="text-white" />
-                                     </div>
-                                     <div>
-                                        <h3 className="text-xl font-black tracking-tight">{t('reports.generator.title')}</h3>
-                                        <p className="text-indigo-200 text-xs font-medium mt-1 opacity-80">{t('reports.generator.desc')}</p>
-                                     </div>
-                                  </div>
-                                  
-                                  {/* Period & Format Selectors */}
-                                  <div className="grid grid-cols-2 gap-4">
-                                     <div className="space-y-2">
-                                        <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest pl-1">{t('reports.generator.period')}</span>
-                                        <div className="relative">
-                                            <select 
-                                              value={reportPeriod}
-                                              onChange={(e) => setReportPeriod(e.target.value)}
-                                              className="w-full bg-slate-950/50 backdrop-blur-md border border-indigo-500/30 rounded-xl text-xs font-bold text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent px-4 py-3 appearance-none cursor-pointer hover:bg-slate-950/70 transition-colors"
-                                            >
-                                               <option value="Mois Dernier">{t('reports.generator.periods.last_month')}</option>
-                                               <option value="Trimestre T4">{t('reports.generator.periods.q4')}</option>
-                                               <option value="Année 2025">{t('reports.generator.periods.y2025')}</option>
-                                            </select>
-                                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" size={14} />
-                                        </div>
-                                     </div>
-                                     <div className="space-y-2">
-                                        <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest pl-1">{t('reports.generator.format')}</span>
-                                        <div className="relative">
-                                            <select className="w-full bg-slate-950/50 backdrop-blur-md border border-indigo-500/30 rounded-xl text-xs font-bold text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent px-4 py-3 appearance-none cursor-pointer hover:bg-slate-950/70 transition-colors">
-                                               <option>{t('reports.generator.formats.web')}</option>
-                                            </select>
-                                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" size={14} />
-                                        </div>
-                                     </div>
-                                  </div>
-
-                                  <div className="space-y-3 bg-indigo-950/30 p-4 rounded-2xl border border-indigo-500/20">
-                                      <span className="text-[10px] font-black text-indigo-300 uppercase tracking-widest block mb-2">
-                                        {t('reports.generator.included_modules')}
-                                      </span>
-                                      <div className="space-y-2">
-                                        {[
-                                          { id: 'stats', label: t('reports.generator.options.stats'), icon: BarChart3 },
-                                          { id: 'reclamations', label: t('reports.generator.options.reclamations'), icon: AlertCircle },
-                                        ].map((opt) => (
-                                            <label key={opt.id} className="flex items-center gap-3 p-3 bg-slate-900/40 rounded-xl cursor-pointer hover:bg-slate-900/60 transition-colors border border-indigo-500/10 group/check">
-                                                <div className="relative flex items-center">
-                                                  <input type="checkbox" className="peer w-4 h-4 rounded border-indigo-400/50 text-indigo-500 focus:ring-offset-slate-900 bg-transparent" defaultChecked={true} />
-                                                </div>
-                                                <opt.icon size={14} className="text-indigo-400 group-hover/check:text-indigo-300 transition-colors" />
-                                                <span className="text-sm font-bold text-slate-200">{opt.label}</span>
-                                            </label>
-                                        ))}
-                                      </div>
-                                  </div>
-
-                                  <button 
-                                     onClick={handleGenerateReport}
-                                     disabled={isGenerating}
-                                     className="w-full py-4 bg-white text-indigo-900 rounded-2xl font-black hover:bg-indigo-50 disabled:opacity-50 transition-all flex items-center justify-center gap-3 shadow-xl shadow-indigo-900/20 active:scale-95 transform group/btn overflow-hidden relative"
-                                  >
-                                      <span className="relative z-10 flex items-center gap-2">
-                                        {isGenerating ? <div className="w-4 h-4 border-2 border-indigo-900/30 border-t-indigo-900 rounded-full animate-spin" /> : <Wand2 size={18} className="group-hover/btn:rotate-12 transition-transform" />} 
-                                        {t('reports.generator.btn')}
-                                      </span>
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
-                                  </button>
+                              <div className="relative z-10 flex items-center justify-between">
+                                 <div className="flex items-center gap-5">
+                                    <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
+                                       <FileText size={28} className="text-white" />
+                                    </div>
+                                    <div>
+                                       <h3 className="text-xl font-black tracking-tight">{t('reports.view_all')}</h3>
+                                       <p className="text-indigo-200 text-xs font-medium mt-1 opacity-80">{locale === 'ar' ? 'الوصول إلى سجل التقارير والمراجعات الميدانية' : 'Accéder à l\'historique des rapports et audits de terrain'}</p>
+                                    </div>
+                                 </div>
+                                 <div className="w-12 h-12 bg-white text-slate-900 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <ArrowUpRight size={20} />
+                                 </div>
                               </div>
-                          </div>
+                          </Link>
+
                       </div>
                    </motion.div>
                 )}

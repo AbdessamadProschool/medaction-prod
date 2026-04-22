@@ -209,7 +209,8 @@
       "satisfaction": "الرضا",
       "alerts": "التنبيهات",
       "actualites": "الأخبار",
-      "campagnes": "الحملات"
+      "campagnes": "الحملات",
+      "evenements": "الفعاليات"
     },
     "reports": {
       "generating": "جاري إنشاء التقرير...",

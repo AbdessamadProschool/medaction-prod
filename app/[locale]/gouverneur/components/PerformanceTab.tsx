@@ -129,8 +129,9 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
                   value={filter}
                   dir="auto"
                   onChange={(e) => setFilter(e.target.value)}
-                  className={`w-full ${isRTL ? 'pr-14 pl-6' : 'pl-14 pr-6'} py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none font-bold text-sm`}
+                  className={`w-full ${isRTL ? 'pr-14 pl-6 text-right' : 'pl-14 pr-6 text-left'} py-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none font-bold text-sm`}
                 />
+
             </div>
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
@@ -186,11 +187,12 @@ export default function PerformanceTab({ initialSector = '' }: { initialSector?:
                     <Building2 size={24} />
                  </div>
                  
-                 <div dir="auto">
+                 <div className="text-start">
                     <span className="text-[8px] font-black uppercase text-blue-500 tracking-widest mb-1 block">{(item.secteur).toUpperCase()}</span>
                     <h4 className="font-black text-slate-900 dark:text-white line-clamp-2 leading-tight uppercase group-hover:text-blue-500 transition-colors" dir="auto">{item.nom}</h4>
                     <p className="text-[10px] font-bold text-slate-600 mt-1 flex items-center gap-1.5" dir="auto"><MapPin size={10} /> {item.commune}</p>
                  </div>
+
 
                  {/* MINI STATS PREVIEW */}
                  <div className="grid grid-cols-2 gap-2 mt-2">
@@ -263,8 +265,8 @@ function Top3Card({ item, rank, type, onClick, t }: any) {
              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-slate-950 text-white rounded-full flex items-center justify-center font-black text-xs border-4 border-white shadow-xl">#{rank}</div>
           </div>
           
-          <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[2.5rem] shadow-xl border border-white/50 text-center w-full min-h-[140px] flex flex-col items-center justify-center group-hover:-translate-y-2 transition-transform">
-            <p className="font-black text-slate-900 text-[13px] line-clamp-2 leading-none uppercase tracking-tight mb-2">{item.nom}</p>
+          <div className="bg-white/80 backdrop-blur-xl p-5 rounded-[2.5rem] shadow-2xl border border-white/50 text-center w-full min-h-[140px] flex flex-col items-center justify-center group-hover:-translate-y-2 transition-transform">
+            <p className="font-black text-slate-900 text-[13px] line-clamp-2 leading-none uppercase tracking-tight mb-2" dir="auto">{item.nom}</p>
             <div className="flex items-baseline gap-1">
                 <p className={`text-3xl font-black tracking-tighter ${isGold ? 'text-amber-500' : 'text-slate-600'}`}>{item.score}</p>
                 <span className="text-[9px] font-bold text-slate-600">{t('card.pts')}</span>

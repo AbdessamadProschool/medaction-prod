@@ -143,7 +143,7 @@ export const POST = withPermission('system.import', withErrorHandler(async (req:
   // 3. Magic bytes + extension validation (BLOC 1.2 CVE fix)
   const typeCheck = validateFileType(buffer, file.name);
   if (!typeCheck.ok) {
-    SystemLogger.warn('admin-import', `Import bloqué - type invalide: ${typeCheck.error}`, {
+    SystemLogger.warning('admin-import', `Import bloqué - type invalide: ${typeCheck.error}`, {
       userId: session.user.id,
       fileName: file.name,
     });

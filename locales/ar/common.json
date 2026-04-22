@@ -165,8 +165,6 @@
           "projects": "الحملات النشطة + الأحداث الجارية",
           "satisfaction": "متوسط تقييم المؤسسات"
         },
-        "evaluations_count": "{count} تقييمات",
-        "no_evaluations": "لا يوجد تقييم",
         "citizens": "مواطنون نشطون"
       },
       "sectors": {
@@ -182,7 +180,7 @@
         }
       },
       "territorial": {
-        "title": "التوزيع المجالي",
+        "title": "مصفوفة التتبع الإقليمي",
         "communes": "الجماعات",
         "establishments": "المؤسسات",
         "events": "الفعاليات"

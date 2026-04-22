@@ -183,7 +183,7 @@
         }
       },
       "territorial": {
-        "title": "Répartition Territoriale",
+        "title": "Matrice de Suivi Provincial",
         "communes": "Communes",
         "establishments": "Établissements",
         "events": "Événements"

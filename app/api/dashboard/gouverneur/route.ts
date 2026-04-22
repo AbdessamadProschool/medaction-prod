@@ -302,6 +302,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
             total,
             resolved,
             rate,
+            performance: rate > 80 ? 'HIGH' : (rate > 50 ? 'MEDIUM' : 'LOW'),
             status: rate < 50 ? 'CRITICAL' : (rate < 80 ? 'WARNING' : 'STABLE')
         };
     }).sort((a,b) => b.total - a.total);

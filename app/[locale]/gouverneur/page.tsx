@@ -1081,9 +1081,9 @@ export default function GouverneurDashboard() {
                                  
                                  <div className="space-y-8">
                                     {[
-                                      { label: t('overview.territorial.communes'), count: stats?.communes.total, total: 5, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
-                                      { label: t('overview.territorial.establishments'), count: stats?.etablissements?.total, total: 200, color: 'from-emerald-400 to-emerald-600', icon: Building2, bg: 'bg-emerald-500/20' },
-                                      { label: t('overview.territorial.events'), count: stats?.evenements.total, total: Math.max(stats?.evenements.total, 50), color: 'from-blue-400 to-blue-600', icon: Calendar, bg: 'bg-blue-500/20' },
+                                      { label: t('overview.territorial.communes'), count: stats?.communes?.total || 0, total: 5, color: 'from-amber-400 to-amber-600', icon: MapPin, bg: 'bg-amber-500/20' },
+                                      { label: t('overview.territorial.establishments'), count: stats?.etablissements?.total || 0, total: 200, color: 'from-emerald-400 to-emerald-600', icon: Building2, bg: 'bg-emerald-500/20' },
+                                      { label: t('overview.territorial.events'), count: stats?.evenements?.total || 0, total: Math.max(stats?.evenements?.total || 0, 50), color: 'from-blue-400 to-blue-600', icon: Calendar, bg: 'bg-blue-500/20' },
                                     ].map(item => (
                                       <div key={item.label} className="group/item">
                                          <div className="flex justify-between items-center text-sm font-black mb-3">

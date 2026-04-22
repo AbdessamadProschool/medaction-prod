@@ -668,17 +668,17 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-6">
             <div className="text-center">
-              <p className="text-2xl font-bold">{stats?.utilisateurs.nouveaux ?? 0}</p>
+              <p className="text-2xl font-bold">{stats?.utilisateurs?.nouveaux ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.new_users')}</p>
             </div>
             <div className="w-px h-10 bg-white/20" />
             <div className="text-center">
-              <p className="text-2xl font-bold">{stats?.reclamations.enAttente ?? 0}</p>
+              <p className="text-2xl font-bold">{stats?.reclamations?.enAttente ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.to_process')}</p>
             </div>
             <div className="w-px h-10 bg-white/20" />
             <div className="text-center">
-              <p className="text-2xl font-bold">{stats?.evenements.enCours ?? 0}</p>
+              <p className="text-2xl font-bold">{stats?.evenements?.enCours ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.active_events')}</p>
             </div>
           </div>

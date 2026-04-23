@@ -1,4 +1,4 @@
-﻿import { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -9,11 +9,11 @@ import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptio
 import { getSafeId } from '@/lib/utils/parse';
 
 async function coordinateurGeresEtablissement(userId: number, etablissementId: number) {
-  const link = await prisma.userEtablissement.findFirst({
-    where: { userId, etablissementId },
-    select: { userId: true },
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { etablissementsGeres: true },
   });
-  return !!link;
+  return user?.etablissementsGeres.includes(etablissementId) || false;
 }
 
 // Schéma de mise à jour partielle

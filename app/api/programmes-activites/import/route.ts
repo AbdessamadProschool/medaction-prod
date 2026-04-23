@@ -63,14 +63,14 @@ export async function POST(request: NextRequest) {
     const successfulImports: any[] = [];
     const userId = parseInt(session.user.id);
     const isCoordinator = session.user.role === 'COORDINATEUR_ACTIVITES';
-    const authorizedEtablissementIds = isCoordinator
-      ? new Set(
-          (await prisma.userEtablissement.findMany({
-            where: { userId },
-            select: { etablissementId: true },
-          })).map((item) => item.etablissementId)
-        )
-      : null;
+    let authorizedEtablissementIds: Set<number> | null = null;
+    if (isCoordinator) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { etablissementsGeres: true },
+      });
+      authorizedEtablissementIds = new Set(user?.etablissementsGeres || []);
+    }
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(';').map(v => v.trim().replace(/"/g, ''));

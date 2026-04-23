@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Building2, 
   MapPin, 
@@ -13,11 +13,19 @@ import {
   Loader2,
   Info,
   Layers,
-  ArrowRight
+  ArrowRight,
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle2,
+  GraduationCap,
+  Coins,
+  History,
+  FileText
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { soumettreDemandeEtablissement } from '@/app/actions/etablissementWorkflow';
 
 interface DemandeFormProps {
@@ -26,14 +34,23 @@ interface DemandeFormProps {
   etablissementId?: number;
 }
 
+const STEPS = [
+  { id: 'general', icon: Building2 },
+  { id: 'location', icon: MapPin },
+  { id: 'infra', icon: Layers },
+  { id: 'sector', icon: GraduationCap },
+  { id: 'final', icon: Save }
+];
+
 export default function DemandeForm({ initialData, type, etablissementId }: DemandeFormProps) {
   const t = useTranslations('establishments_workflow');
   const te = useTranslations('admin.establishments');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    // Identification
+    // Step 1: Identification
     nom: initialData?.nom || '',
     nomArabe: initialData?.nomArabe || '',
     code: initialData?.code || '',
@@ -47,7 +64,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     anneeCreation: initialData?.anneeCreation || '',
     anneeOuverture: initialData?.anneeOuverture || '',
     
-    // Localisation
+    // Step 2: Localisation
     communeId: initialData?.communeId || '',
     annexeId: initialData?.annexeId || '',
     quartierDouar: initialData?.quartierDouar || '',
@@ -55,13 +72,16 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     latitude: initialData?.latitude || '',
     longitude: initialData?.longitude || '',
     altitude: initialData?.altitude || '',
+    distanceChefLieu: initialData?.distanceChefLieu || '',
+    transportPublic: initialData?.transportPublic || '',
+    voieAcces: initialData?.voieAcces || '',
     
-    // Contact
+    // Step 3: Contact
     telephone: initialData?.telephone || '',
     email: initialData?.email || '',
     siteWeb: initialData?.siteWeb || '',
     
-    // Infrastructure
+    // Step 3: Infrastructure & RH
     etatInfrastructure: initialData?.etatInfrastructure || 'BON',
     statutFonctionnel: initialData?.statutFonctionnel || 'FONCTIONNEL',
     surfaceTotale: initialData?.surfaceTotale || '',
@@ -69,14 +89,12 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     disponibiliteElectricite: initialData?.disponibiliteElectricite ?? true,
     connexionInternet: initialData?.connexionInternet ?? true,
     nombreSalles: initialData?.nombreSalles || '',
-    
-    // RH & Capacité
     effectifTotal: initialData?.effectifTotal || '',
     nombrePersonnel: initialData?.nombrePersonnel || '',
     cadre: initialData?.cadre || '',
     capaciteAccueil: initialData?.capaciteAccueil || '',
     
-    // Secteur Éducation
+    // Step 4: Secteur Éducation
     cycle: initialData?.cycle || '',
     nbClasses: initialData?.nbClasses || '',
     nbEnseignants: initialData?.nbEnseignants || '',
@@ -90,21 +108,13 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     tauxReussite: initialData?.tauxReussite || '',
     fillesDerniereAnnee: initialData?.fillesDerniereAnnee || '',
 
-    // Financement
+    // Step 5: Financement & Finalisation
     sourcesFinancement: initialData?.sourcesFinancement || '',
     budgetAnnuel: initialData?.budgetAnnuel || '',
     partenaires: initialData?.partenaires || '',
-
-    // Observations & Besoins
     remarques: initialData?.remarques || '',
     besoinsUrgents: initialData?.besoinsUrgents || '',
     projetsFuturs: initialData?.projetsFuturs || '',
-    
-    // Localisation Extra
-    distanceChefLieu: initialData?.distanceChefLieu || '',
-    transportPublic: initialData?.transportPublic || '',
-    voieAcces: initialData?.voieAcces || '',
-    
     justification: '',
   });
 
@@ -118,22 +128,52 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     return [];
   });
 
-  const addField = () => {
-    setComplementaryFields([...complementaryFields, { key: '', value: '' }]);
-  };
-
-  const removeField = (index: number) => {
-    setComplementaryFields(complementaryFields.filter((_, i) => i !== index));
-  };
-
+  const addField = () => setComplementaryFields([...complementaryFields, { key: '', value: '' }]);
+  const removeField = (index: number) => setComplementaryFields(complementaryFields.filter((_, i) => i !== index));
   const updateField = (index: number, keyOrValue: 'key' | 'value', text: string) => {
     const updated = [...complementaryFields];
     updated[index][keyOrValue] = text;
     setComplementaryFields(updated);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const nextStep = () => {
+    // Validation minimale
+    if (currentStep === 0) {
+      if (!formData.nom || !formData.code) {
+        toast.error("Veuillez remplir les champs obligatoires (Nom et Code)");
+        return;
+      }
+    }
+    if (currentStep === 1) {
+      if (!formData.communeId || !formData.latitude || !formData.longitude) {
+        toast.error("Veuillez remplir les données de localisation (Commune, Lat, Long)");
+        return;
+      }
+    }
+    
+    // Skip Step 4 if not EDUCATION
+    if (currentStep === 2 && formData.secteur !== 'EDUCATION') {
+      setCurrentStep(4);
+    } else {
+      setCurrentStep(prev => Math.min(prev + 1, STEPS.length - 1));
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep === 4 && formData.secteur !== 'EDUCATION') {
+      setCurrentStep(2);
+    } else {
+      setCurrentStep(prev => Math.max(prev - 1, 0));
+    }
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.justification) {
+      toast.error("Veuillez fournir une justification pour cette demande");
+      return;
+    }
+    
     setLoading(true);
 
     const extraFields: Record<string, string> = {};
@@ -141,13 +181,11 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
       if (f.key.trim()) extraFields[f.key.trim()] = f.value;
     });
 
-    // Helper pour parser proprement les nombres
     const parseNum = (val: any, isFloat = false) => {
       if (val === '' || val === null || val === undefined) return null;
       return isFloat ? parseFloat(String(val)) : parseInt(String(val));
     };
 
-    // On retire justification de donneesModifiees pour éviter les erreurs Prisma (car c'est un champ séparé)
     const { justification, ...cleanDonnees } = formData;
 
     const res = await soumettreDemandeEtablissement({
@@ -167,7 +205,6 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
         effectifTotal: parseNum(formData.effectifTotal),
         nombrePersonnel: parseNum(formData.nombrePersonnel),
         capaciteAccueil: parseNum(formData.capaciteAccueil),
-        // Éducation
         nbClasses: parseNum(formData.nbClasses),
         nbEnseignants: parseNum(formData.nbEnseignants),
         nbCadres: parseNum(formData.nbCadres),
@@ -179,9 +216,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
         nouveauxInscritsFilles: parseNum(formData.nouveauxInscritsFilles),
         tauxReussite: parseNum(formData.tauxReussite, true),
         fillesDerniereAnnee: parseNum(formData.fillesDerniereAnnee),
-        // Localisation Extra
         distanceChefLieu: parseNum(formData.distanceChefLieu, true),
-        // Financement
         budgetAnnuel: parseNum(formData.budgetAnnuel, true),
       },
       champsComplementaires: extraFields,
@@ -190,7 +225,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
 
     if (res.success) {
       toast.success(t('submit_success'));
-      router.back();
+      router.push('/admin/etablissements/demandes');
     } else {
       toast.error(res.error || 'Erreur');
     }
@@ -198,668 +233,550 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10 max-w-5xl mx-auto pb-20">
-      {/* Header Info */}
-      <div className="bg-emerald-50 dark:bg-emerald-950/20 p-8 rounded-3xl border border-emerald-100 dark:border-emerald-900/50 flex gap-6 shadow-sm">
-        <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
-          <Info size={26} />
-        </div>
-        <div>
-          <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100">
-            {type === 'CREATION' ? t('request_creation') : t('request_edit')}
-          </h3>
-          <p className="text-emerald-700 dark:text-emerald-300 opacity-90 mt-1">
-            {t('subtitle')}
-          </p>
+    <div className="max-w-6xl mx-auto pb-20 px-4">
+      {/* Header Premium */}
+      <div className="mb-10 text-center">
+         <motion.div 
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+           className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full text-sm font-bold mb-4"
+         >
+           <History size={16} />
+           {type === 'CREATION' ? t('request_creation') : t('request_edit')}
+         </motion.div>
+         <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-2">
+           {type === 'CREATION' ? "Nouvel Établissement" : "Modification d'Établissement"}
+         </h1>
+         <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+           {t('subtitle')}
+         </p>
+      </div>
+
+      {/* Stepper Logic Visual */}
+      <div className="relative mb-12 px-4">
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-800 -translate-y-1/2 z-0 rounded-full" />
+        <div 
+          className="absolute top-1/2 left-0 h-1 bg-emerald-500 -translate-y-1/2 z-0 rounded-full transition-all duration-500" 
+          style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
+        />
+        
+        <div className="relative z-10 flex justify-between">
+          {STEPS.map((step, idx) => {
+            const Icon = step.icon;
+            const isActive = currentStep === idx;
+            const isCompleted = currentStep > idx;
+            
+            // Skip step 4 visually if not Education
+            if (idx === 3 && formData.secteur !== 'EDUCATION') return null;
+
+            return (
+              <div key={step.id} className="flex flex-col items-center">
+                <button
+                  onClick={() => idx <= currentStep && setCurrentStep(idx)}
+                  disabled={idx > currentStep}
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
+                    isActive 
+                      ? 'bg-emerald-500 border-emerald-500 text-white scale-110 shadow-lg shadow-emerald-200 dark:shadow-none' 
+                      : isCompleted
+                        ? 'bg-emerald-50 border-emerald-500 text-emerald-500'
+                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-400'
+                  }`}
+                >
+                  {isCompleted ? <CheckCircle2 size={20} /> : <Icon size={20} />}
+                </button>
+                <span className={`mt-2 text-xs font-bold uppercase tracking-wider ${isActive ? 'text-emerald-600' : 'text-gray-400'}`}>
+                  {te(`sections.${step.id}`)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-10">
-        {/* SECTION 1: IDENTIFICATION & LOCALISATION (Essentiel) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <section className="space-y-4">
-            <h2 className="text-xl font-bold flex items-center gap-2 px-2">
-              <Building2 className="text-emerald-500" size={24} />
-              {te('sections.general')}
-            </h2>
-            <div className="space-y-5 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700">
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.name')}</label>
-                <input
-                  required
-                  value={formData.nom}
-                  onChange={e => setFormData({ ...formData, nom: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.nameArabe')}</label>
-                <input
-                  value={formData.nomArabe}
-                  onChange={e => setFormData({ ...formData, nomArabe: e.target.value })}
-                  dir="rtl"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all font-arabic text-lg"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.code')}</label>
-                  <input
-                    required
-                    value={formData.code}
-                    onChange={e => setFormData({ ...formData, code: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all font-mono"
-                  />
+      {/* Form Content */}
+      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 md:p-12 relative overflow-hidden">
+        
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-8"
+          >
+            {/* STEP 1: GÉNÉRAL */}
+            {currentStep === 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                   <SectionTitle icon={Building2} title={te('sections.general')} color="text-emerald-500" />
+                   <FormField label={te('form.name')} required>
+                      <input
+                        required
+                        value={formData.nom}
+                        onChange={e => setFormData({ ...formData, nom: e.target.value })}
+                        className="input-premium"
+                        placeholder="Ex: École Al Manar"
+                      />
+                   </FormField>
+                   <FormField label={te('form.nameArabe')}>
+                      <input
+                        value={formData.nomArabe}
+                        onChange={e => setFormData({ ...formData, nomArabe: e.target.value })}
+                        dir="rtl"
+                        className="input-premium font-arabic text-lg"
+                        placeholder="اسم المؤسسة بالعربية"
+                      />
+                   </FormField>
+                   <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.code')} required>
+                        <input
+                          required
+                          value={formData.code}
+                          onChange={e => setFormData({ ...formData, code: e.target.value })}
+                          className="input-premium font-mono"
+                          placeholder="CODE123"
+                        />
+                      </FormField>
+                      <FormField label={te('form.sector')}>
+                        <select
+                          value={formData.secteur}
+                          onChange={e => setFormData({ ...formData, secteur: e.target.value })}
+                          className="input-premium"
+                        >
+                          <option value="EDUCATION">Éducation</option>
+                          <option value="SANTE">Santé</option>
+                          <option value="SPORT">Sport</option>
+                          <option value="SOCIAL">Social</option>
+                          <option value="CULTUREL">Culturel</option>
+                          <option value="AUTRE">Autre</option>
+                        </select>
+                      </FormField>
+                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.sector')}</label>
-                  <select
-                    value={formData.secteur}
-                    onChange={e => setFormData({ ...formData, secteur: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
-                  >
-                    <option value="EDUCATION">Éducation</option>
-                    <option value="SANTE">Santé</option>
-                    <option value="SPORT">Sport</option>
-                    <option value="SOCIAL">Social</option>
-                    <option value="CULTUREL">Culturel</option>
-                    <option value="AUTRE">Autre</option>
-                  </select>
+                <div className="space-y-6">
+                   <SectionTitle icon={Info} title="Détails Administratifs" color="text-blue-500" />
+                   <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.nature')}>
+                        <select
+                          value={formData.nature}
+                          onChange={e => setFormData({ ...formData, nature: e.target.value })}
+                          className="input-premium"
+                        >
+                          <option value="PUBLIC">Public</option>
+                          <option value="PRIVE">Privé</option>
+                        </select>
+                      </FormField>
+                      <FormField label={te('form.typeEtab')}>
+                        <input
+                          value={formData.typeEtablissement}
+                          onChange={e => setFormData({ ...formData, typeEtablissement: e.target.value })}
+                          className="input-premium"
+                          placeholder="Ex: École Primaire"
+                        />
+                      </FormField>
+                   </div>
+                   <FormField label={te('form.tutelle')}>
+                      <input
+                        value={formData.tutelle}
+                        onChange={e => setFormData({ ...formData, tutelle: e.target.value })}
+                        className="input-premium"
+                        placeholder="Ex: Ministère de l'Éducation"
+                      />
+                   </FormField>
+                   <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.anneeCreation')}>
+                        <input
+                          type="number"
+                          value={formData.anneeCreation}
+                          onChange={e => setFormData({ ...formData, anneeCreation: e.target.value })}
+                          className="input-premium"
+                          placeholder="YYYY"
+                        />
+                      </FormField>
+                      <FormField label={te('form.statutJuridique')}>
+                        <input
+                          value={formData.statutJuridique}
+                          onChange={e => setFormData({ ...formData, statutJuridique: e.target.value })}
+                          className="input-premium"
+                          placeholder="Ex: Établissement Public"
+                        />
+                      </FormField>
+                   </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.nature')}</label>
-                  <select
-                    value={formData.nature}
-                    onChange={e => setFormData({ ...formData, nature: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all"
-                  >
-                    <option value="PUBLIC">Public</option>
-                    <option value="PRIVE">Privé</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{te('form.typeEtab')}</label>
-                  <input
-                    placeholder="Ex: École Primaire, Dispensaire..."
-                    value={formData.typeEtablissement}
-                    onChange={e => setFormData({ ...formData, typeEtablissement: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="text-xl font-bold flex items-center gap-2 px-2">
-              <MapPin className="text-emerald-500" size={24} />
-              {te('sections.localization')}
-            </h2>
-            <div className="space-y-5 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700">{te('form.commune')}</label>
-                  <select
-                    required
-                    value={formData.communeId}
-                    onChange={e => setFormData({ ...formData, communeId: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all"
-                  >
-                    <option value="">{te('form.select_commune')}</option>
-                    <option value="1">Médiouna</option>
-                    <option value="2">Tit Mellil</option>
-                    <option value="3">Lahraouyine</option>
-                    <option value="4">Sidi Hajjaj Oued Hassar</option>
-                    <option value="5">Mejatia Oulad Taleb</option>
-                    <option value="6">Al Majat</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold text-gray-700">{te('form.quartier')}</label>
-                  <input
-                    value={formData.quartierDouar}
-                    onChange={e => setFormData({ ...formData, quartierDouar: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all"
-                  />
-                </div>
-              </div>
-              <input
-                placeholder={te('form.adresse_complete')}
-                value={formData.adresseComplete}
-                onChange={e => setFormData({ ...formData, adresseComplete: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all"
-              />
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{te('form.latitude')}</label>
-                  <input
-                    type="number" step="any" required
-                    value={formData.latitude}
-                    onChange={e => setFormData({ ...formData, latitude: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all text-sm font-mono"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{te('form.longitude')}</label>
-                  <input
-                    type="number" step="any" required
-                    value={formData.longitude}
-                    onChange={e => setFormData({ ...formData, longitude: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all text-sm font-mono"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{te('form.altitude')}</label>
-                  <input
-                    type="number" step="any"
-                    value={formData.altitude}
-                    onChange={e => setFormData({ ...formData, altitude: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 transition-all text-sm font-mono"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div className="space-y-1.5">
-                    <label className="text-sm font-semibold">{te('form.voie_acces') || 'Voie d\'accès'}</label>
-                    <input
-                      value={formData.voieAcces}
-                      onChange={e => setFormData({ ...formData, voieAcces: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500"
-                    />
-                 </div>
-                 <div className="space-y-1.5">
-                    <label className="text-sm font-semibold">{te('form.transport_public') || 'Transport Public'}</label>
-                    <input
-                      value={formData.transportPublic}
-                      onChange={e => setFormData({ ...formData, transportPublic: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500"
-                    />
-                 </div>
-              </div>
-              <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.distance_chef_lieu') || 'Distance au Chef-lieu (km)'}</label>
-                  <input
-                    type="number" step="any"
-                    value={formData.distanceChefLieu}
-                    onChange={e => setFormData({ ...formData, distanceChefLieu: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500"
-                  />
-               </div>
-            </div>
-          </section>
-        </div>
-
-        {/* SECTION 2: ADMINISTRATIF & CONTACT */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold px-2 flex items-center gap-2">
-            <Info className="text-blue-500" size={24} />
-            Administratif & Contact
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white dark:bg-gray-800 p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl shadow-gray-200/40">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.tutelle')}</label>
-              <input
-                value={formData.tutelle}
-                onChange={e => setFormData({ ...formData, tutelle: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.manager')}</label>
-              <input
-                value={formData.responsableNom}
-                onChange={e => setFormData({ ...formData, responsableNom: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.statut_fonctionnel') || 'Statut Opérationnel'}</label>
-              <select
-                value={formData.statutFonctionnel}
-                onChange={e => setFormData({ ...formData, statutFonctionnel: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="FONCTIONNEL">Fonctionnel</option>
-                <option value="PARTIEL">Fonctionnement Partiel</option>
-                <option value="RENOVATION">En Rénovation</option>
-                <option value="FERME">Fermé / Inactif</option>
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold flex items-center gap-2"><Phone size={14} className="text-gray-400" /> {te('form.phone')}</label>
-              <input
-                type="tel"
-                value={formData.telephone}
-                onChange={e => setFormData({ ...formData, telephone: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold flex items-center gap-2"><Mail size={14} className="text-gray-400" /> {te('form.email')}</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={e => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold flex items-center gap-2"><Globe size={14} className="text-gray-400" /> {te('form.website')}</label>
-              <input
-                value={formData.siteWeb}
-                onChange={e => setFormData({ ...formData, siteWeb: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 3: INFRASTRUCTURE & ÉQUIPEMENTS */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold px-2 flex items-center gap-2">
-            <Layers className="text-indigo-500" size={24} />
-            {te('sections.infra') || 'Infrastructure & Équipements'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-white dark:bg-gray-800 p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.infra_status')}</label>
-              <select
-                value={formData.etatInfrastructure}
-                onChange={e => setFormData({ ...formData, etatInfrastructure: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="EXCELLENT">Excellent</option>
-                <option value="BON">Bon</option>
-                <option value="MOYEN">Moyen</option>
-                <option value="DEGRADE">Dégradé</option>
-                <option value="A_RENOVER">À rénover</option>
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.surfaceTotale')}</label>
-              <input
-                type="number"
-                value={formData.surfaceTotale}
-                onChange={e => setFormData({ ...formData, surfaceTotale: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.nombreSalles')}</label>
-              <input
-                type="number"
-                value={formData.nombreSalles}
-                onChange={e => setFormData({ ...formData, nombreSalles: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="space-y-1.5 flex flex-col justify-center gap-3">
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={formData.disponibiliteEau}
-                  onChange={e => setFormData({ ...formData, disponibiliteEau: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-sm font-medium group-hover:text-indigo-600 transition-colors">{te('form.disponibiliteEau')}</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={formData.disponibiliteElectricite}
-                  onChange={e => setFormData({ ...formData, disponibiliteElectricite: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-sm font-medium group-hover:text-indigo-600 transition-colors">{te('form.disponibiliteElectricite')}</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={formData.connexionInternet}
-                  onChange={e => setFormData({ ...formData, connexionInternet: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-sm font-medium group-hover:text-indigo-600 transition-colors">{te('form.connexionInternet') || 'Internet'}</span>
-              </label>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 4: SECTOR-SPECIFIC (Conditionnelle) */}
-        {formData.secteur === 'EDUCATION' && (
-          <section className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-500">
-            <h2 className="text-xl font-bold px-2 flex items-center gap-2 text-orange-600">
-              <Layers size={24} />
-              {te('sections.education') || 'Données Pédagogiques (Éducation)'}
-            </h2>
-            <div className="bg-orange-50/30 dark:bg-orange-950/10 p-8 rounded-3xl border border-orange-100 dark:border-orange-900/40 shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.cycle')}</label>
-                  <select
-                    value={formData.cycle}
-                    onChange={e => setFormData({ ...formData, cycle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  >
-                    <option value="">Sélectionner...</option>
-                    <option value="PRIMAIRE">Primaire</option>
-                    <option value="COLLEGE">Collège</option>
-                    <option value="LYCEE">Lycée</option>
-                    <option value="PRE-SCOLAIRE">Préscolaire</option>
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.nbClasses')}</label>
-                  <input
-                    type="number"
-                    value={formData.nbClasses}
-                    onChange={e => setFormData({ ...formData, nbClasses: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.nbEnseignants')}</label>
-                  <input
-                    type="number"
-                    value={formData.nbEnseignants}
-                    onChange={e => setFormData({ ...formData, nbEnseignants: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.nbCadres')}</label>
-                  <input
-                    type="number"
-                    value={formData.nbCadres}
-                    onChange={e => setFormData({ ...formData, nbCadres: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.elevesTotal')}</label>
-                  <input
-                    type="number"
-                    value={formData.elevesTotal}
-                    onChange={e => setFormData({ ...formData, elevesTotal: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.elevesFilles') || 'Total Filles'}</label>
-                  <input
-                    type="number"
-                    value={formData.elevesFilles}
-                    onChange={e => setFormData({ ...formData, elevesFilles: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.elevesPrescolaire')}</label>
-                  <input
-                    type="number"
-                    value={formData.elevesPrescolaire}
-                    onChange={e => setFormData({ ...formData, elevesPrescolaire: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.elevesPrescolaireFilles') || 'Filles Préscolaire'}</label>
-                  <input
-                    type="number"
-                    value={formData.elevesPrescolaireFilles}
-                    onChange={e => setFormData({ ...formData, elevesPrescolaireFilles: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.nouveauxInscrits')}</label>
-                  <input
-                    type="number"
-                    value={formData.nouveauxInscrits}
-                    onChange={e => setFormData({ ...formData, nouveauxInscrits: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-semibold">{te('form.nouveauxInscritsFilles') || 'Filles Nvx Inscrits'}</label>
-                  <input
-                    type="number"
-                    value={formData.nouveauxInscritsFilles}
-                    onChange={e => setFormData({ ...formData, nouveauxInscritsFilles: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold">{te('form.tauxReussite')}</label>
-                    <input
-                      type="number" step="0.01"
-                      value={formData.tauxReussite}
-                      onChange={e => setFormData({ ...formData, tauxReussite: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold">{te('form.fillesDerniereAnnee') || 'Filles Dern. Année'}</label>
-                    <input
-                      type="number"
-                      value={formData.fillesDerniereAnnee}
-                      onChange={e => setFormData({ ...formData, fillesDerniereAnnee: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-orange-200 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* SECTION 5: RH & CAPACITÉ (Shared) */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold px-2 flex items-center gap-2">
-            <Info className="text-teal-500" size={24} />
-            {te('sections.staff') || 'Ressources Humaines & Capacité'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-white dark:bg-gray-800 p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.capaciteAccueil')}</label>
-              <input
-                type="number"
-                value={formData.capaciteAccueil}
-                onChange={e => setFormData({ ...formData, capaciteAccueil: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-teal-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.effectifTotal')}</label>
-              <input
-                type="number"
-                value={formData.effectifTotal}
-                onChange={e => setFormData({ ...formData, effectifTotal: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-teal-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.nombrePersonnel')}</label>
-              <input
-                type="number"
-                value={formData.nombrePersonnel}
-                onChange={e => setFormData({ ...formData, nombrePersonnel: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-teal-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold">{te('form.cadre')}</label>
-              <input
-                value={formData.cadre}
-                onChange={e => setFormData({ ...formData, cadre: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-teal-500"
-                placeholder="Ex: Médical, Enseignant..."
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 6: FINANCEMENT & OBSERVATIONS */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold px-2 flex items-center gap-2">
-            <Save className="text-amber-500" size={24} />
-            {te('sections.financial') || 'Financement & Observations'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white dark:bg-gray-800 p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl">
-             <div className="space-y-1.5">
-                <label className="text-sm font-semibold">{te('form.budgetAnnuel')}</label>
-                <input
-                  type="number"
-                  value={formData.budgetAnnuel}
-                  onChange={e => setFormData({ ...formData, budgetAnnuel: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500"
-                  placeholder="DH / an"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold">{te('form.sourcesFinancement')}</label>
-                <input
-                  value={formData.sourcesFinancement}
-                  onChange={e => setFormData({ ...formData, sourcesFinancement: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500"
-                  placeholder="Ex: État, Partenaires..."
-                />
-              </div>
-              <div className="col-span-full space-y-1.5">
-                <label className="text-sm font-semibold">{te('form.partenaires')}</label>
-                <textarea
-                  rows={2}
-                  value={formData.partenaires}
-                  onChange={e => setFormData({ ...formData, partenaires: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500 resize-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                 <label className="text-sm font-semibold">{te('form.remarques') || 'Remarques'}</label>
-                 <textarea
-                   rows={2}
-                   value={formData.remarques}
-                   onChange={e => setFormData({ ...formData, remarques: e.target.value })}
-                   className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500 resize-none"
-                 />
-              </div>
-              <div className="space-y-1.5">
-                 <label className="text-sm font-semibold">{te('form.besoinsUrgents') || 'Besoins Urgents'}</label>
-                 <textarea
-                   rows={2}
-                   value={formData.besoinsUrgents}
-                   onChange={e => setFormData({ ...formData, besoinsUrgents: e.target.value })}
-                   className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500 resize-none"
-                 />
-              </div>
-              <div className="col-span-full space-y-1.5">
-                 <label className="text-sm font-semibold">{te('form.projetsFuturs') || 'Projets Futurs'}</label>
-                 <textarea
-                   rows={2}
-                   value={formData.projetsFuturs}
-                   onChange={e => setFormData({ ...formData, projetsFuturs: e.target.value })}
-                   className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-amber-500 resize-none"
-                 />
-              </div>
-          </div>
-        </section>
-
-        {/* SECTION 7: CHAMPS COMPLÉMENTAIRES (JSON FLEXIBLE) */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between px-2">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Plus className="text-gray-400" size={24} />
-              {t('complementary_fields')}
-            </h2>
-            <button
-              type="button"
-              onClick={addField}
-              className="px-4 py-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-xl text-sm font-bold flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-lg"
-            >
-              <Plus size={16} /> {t('add_field')}
-            </button>
-          </div>
-          
-          <div className="bg-gray-50 dark:bg-gray-900/50 p-8 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-800 space-y-4 min-h-[150px]">
-            <p className="text-sm text-gray-500 mb-4 px-2 italic">
-              {t('complementary_fields_desc')}
-            </p>
-            
-            {complementaryFields.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
-                <Layers size={40} strokeWidth={1} className="opacity-20" />
-                <p className="text-sm mt-3 font-medium">Aucun champ personnalisé</p>
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {complementaryFields.map((field, idx) => (
-                <div key={idx} className="flex gap-2 group items-start animate-in zoom-in-95 duration-200">
-                  <div className="flex-1 grid grid-cols-2 gap-2 bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 shadow-sm">
-                    <input
-                      placeholder={t('field_name')}
-                      value={field.key}
-                      onChange={e => updateField(idx, 'key', e.target.value)}
-                      className="px-3 py-2 text-sm rounded-lg border-none bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500"
-                    />
-                    <input
-                      placeholder={t('field_value')}
-                      value={field.value}
-                      onChange={e => updateField(idx, 'value', e.target.value)}
-                      className="px-3 py-2 text-sm rounded-lg border-none bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500"
-                    />
+            {/* STEP 2: LOCALISATION */}
+            {currentStep === 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-6">
+                  <SectionTitle icon={MapPin} title={te('sections.localization')} color="text-red-500" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField label={te('form.commune')} required>
+                      <select
+                        required
+                        value={formData.communeId}
+                        onChange={e => setFormData({ ...formData, communeId: e.target.value })}
+                        className="input-premium"
+                      >
+                        <option value="">Sélectionner...</option>
+                        <option value="1">Médiouna</option>
+                        <option value="2">Tit Mellil</option>
+                        <option value="3">Lahraouyine</option>
+                        <option value="4">Sidi Hajjaj Oued Hassar</option>
+                        <option value="5">Mejatia Oulad Taleb</option>
+                        <option value="6">Al Majat</option>
+                      </select>
+                    </FormField>
+                    <FormField label={te('form.quartier')}>
+                      <input
+                        value={formData.quartierDouar}
+                        onChange={e => setFormData({ ...formData, quartierDouar: e.target.value })}
+                        className="input-premium"
+                        placeholder="Quartier / Douar"
+                      />
+                    </FormField>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeField(idx)}
-                    className="p-3 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <FormField label={te('form.adresse_complete')}>
+                    <textarea
+                      rows={2}
+                      value={formData.adresseComplete}
+                      onChange={e => setFormData({ ...formData, adresseComplete: e.target.value })}
+                      className="input-premium resize-none"
+                      placeholder="Adresse précise..."
+                    />
+                  </FormField>
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField label={te('form.latitude')} required>
+                      <input type="number" step="any" value={formData.latitude} onChange={e => setFormData({...formData, latitude: e.target.value})} className="input-premium text-sm font-mono" />
+                    </FormField>
+                    <FormField label={te('form.longitude')} required>
+                      <input type="number" step="any" value={formData.longitude} onChange={e => setFormData({...formData, longitude: e.target.value})} className="input-premium text-sm font-mono" />
+                    </FormField>
+                    <FormField label={te('form.altitude')}>
+                      <input type="number" step="any" value={formData.altitude} onChange={e => setFormData({...formData, altitude: e.target.value})} className="input-premium text-sm font-mono" />
+                    </FormField>
+                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="space-y-6">
+                   <SectionTitle icon={ArrowRight} title="Accessibilité" color="text-amber-500" />
+                   <FormField label={te('form.voieAcces')}>
+                      <input value={formData.voieAcces} onChange={e => setFormData({...formData, voieAcces: e.target.value})} className="input-premium" placeholder="Ex: Route Goudronnée" />
+                   </FormField>
+                   <FormField label={te('form.transportPublic')}>
+                      <input value={formData.transportPublic} onChange={e => setFormData({...formData, transportPublic: e.target.value})} className="input-premium" placeholder="Bus, Grands Taxis..." />
+                   </FormField>
+                   <FormField label={te('form.distanceChefLieu')}>
+                      <input type="number" step="any" value={formData.distanceChefLieu} onChange={e => setFormData({...formData, distanceChefLieu: e.target.value})} className="input-premium" placeholder="Km" />
+                   </FormField>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: INFRA & RH */}
+            {currentStep === 2 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-6">
+                  <SectionTitle icon={Layers} title={te('sections.infra')} color="text-indigo-500" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField label={te('form.etatInfrastructure')}>
+                      <select value={formData.etatInfrastructure} onChange={e => setFormData({...formData, etatInfrastructure: e.target.value})} className="input-premium">
+                        <option value="EXCELLENT">Excellent</option>
+                        <option value="BON">Bon</option>
+                        <option value="MOYEN">Moyen</option>
+                        <option value="DEGRADE">Dégradé</option>
+                        <option value="A_RENOVER">À rénover</option>
+                      </select>
+                    </FormField>
+                    <FormField label={te('form.statutFonctionnel')}>
+                      <select value={formData.statutFonctionnel} onChange={e => setFormData({...formData, statutFonctionnel: e.target.value})} className="input-premium">
+                        <option value="FONCTIONNEL">Fonctionnel</option>
+                        <option value="PARTIEL">Partiel</option>
+                        <option value="RENOVATION">Rénovation</option>
+                        <option value="FERME">Fermé</option>
+                      </select>
+                    </FormField>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField label={te('form.surfaceTotale')}>
+                      <input type="number" value={formData.surfaceTotale} onChange={e => setFormData({...formData, surfaceTotale: e.target.value})} className="input-premium" placeholder="m²" />
+                    </FormField>
+                    <FormField label={te('form.nombreSalles')}>
+                      <input type="number" value={formData.nombreSalles} onChange={e => setFormData({...formData, nombreSalles: e.target.value})} className="input-premium" />
+                    </FormField>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 pt-4">
+                    <CheckItem label={te('form.disponibiliteEau')} checked={formData.disponibiliteEau} onChange={v => setFormData({...formData, disponibiliteEau: v})} />
+                    <CheckItem label={te('form.disponibiliteElectricite')} checked={formData.disponibiliteElectricite} onChange={v => setFormData({...formData, disponibiliteElectricite: v})} />
+                    <CheckItem label={te('form.connexionInternet')} checked={formData.connexionInternet} onChange={v => setFormData({...formData, connexionInternet: v})} />
+                  </div>
+                </div>
+                <div className="space-y-6">
+                   <SectionTitle icon={Plus} title={te('sections.staff')} color="text-teal-500" />
+                   <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.capaciteAccueil')}>
+                        <input type="number" value={formData.capaciteAccueil} onChange={e => setFormData({...formData, capaciteAccueil: e.target.value})} className="input-premium" />
+                      </FormField>
+                      <FormField label={te('form.effectifTotal')}>
+                        <input type="number" value={formData.effectifTotal} onChange={e => setFormData({...formData, effectifTotal: e.target.value})} className="input-premium" />
+                      </FormField>
+                   </div>
+                   <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.nombrePersonnel')}>
+                        <input type="number" value={formData.nombrePersonnel} onChange={e => setFormData({...formData, nombrePersonnel: e.target.value})} className="input-premium" />
+                      </FormField>
+                      <FormField label={te('form.cadre')}>
+                        <input value={formData.cadre} onChange={e => setFormData({...formData, cadre: e.target.value})} className="input-premium" placeholder="Ex: Médical / Enseignant" />
+                      </FormField>
+                   </div>
+                   <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                      <SectionTitle icon={Phone} title="Contact & Responsable" color="text-blue-500" />
+                      <FormField label={te('form.manager')}>
+                         <input value={formData.responsableNom} onChange={e => setFormData({...formData, responsableNom: e.target.value})} className="input-premium" />
+                      </FormField>
+                      <div className="grid grid-cols-2 gap-4">
+                         <FormField label={te('form.phone')}>
+                            <input type="tel" value={formData.telephone} onChange={e => setFormData({...formData, telephone: e.target.value})} className="input-premium" />
+                         </FormField>
+                         <FormField label={te('form.email')}>
+                            <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="input-premium" />
+                         </FormField>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4: SECTEUR ÉDUCATION (Optionnel) */}
+            {currentStep === 3 && formData.secteur === 'EDUCATION' && (
+              <div className="space-y-8">
+                <SectionTitle icon={GraduationCap} title={te('sections.education')} color="text-orange-500" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <FormField label={te('form.cycle')}>
+                    <select value={formData.cycle} onChange={e => setFormData({...formData, cycle: e.target.value})} className="input-premium">
+                      <option value="">Choisir...</option>
+                      <option value="PRIMAIRE">Primaire</option>
+                      <option value="COLLEGE">Collège</option>
+                      <option value="LYCEE">Lycée</option>
+                      <option value="PRE-SCOLAIRE">Préscolaire</option>
+                    </select>
+                  </FormField>
+                  <FormField label={te('form.nbClasses')}>
+                    <input type="number" value={formData.nbClasses} onChange={e => setFormData({...formData, nbClasses: e.target.value})} className="input-premium" />
+                  </FormField>
+                  <FormField label={te('form.nbEnseignants')}>
+                    <input type="number" value={formData.nbEnseignants} onChange={e => setFormData({...formData, nbEnseignants: e.target.value})} className="input-premium" />
+                  </FormField>
+                  <FormField label={te('form.nbCadres')}>
+                    <input type="number" value={formData.nbCadres} onChange={e => setFormData({...formData, nbCadres: e.target.value})} className="input-premium" />
+                  </FormField>
+                  
+                  <FormField label={te('form.elevesTotal')}>
+                    <input type="number" value={formData.elevesTotal} onChange={e => setFormData({...formData, elevesTotal: e.target.value})} className="input-premium" />
+                  </FormField>
+                  <FormField label={te('form.elevesFilles')}>
+                    <input type="number" value={formData.elevesFilles} onChange={e => setFormData({...formData, elevesFilles: e.target.value})} className="input-premium" />
+                  </FormField>
+                  <FormField label={te('form.elevesPrescolaire')}>
+                    <input type="number" value={formData.elevesPrescolaire} onChange={e => setFormData({...formData, elevesPrescolaire: e.target.value})} className="input-premium" />
+                  </FormField>
+                  <FormField label={te('form.tauxReussite')}>
+                    <input type="number" step="0.01" value={formData.tauxReussite} onChange={e => setFormData({...formData, tauxReussite: e.target.value})} className="input-premium" placeholder="%" />
+                  </FormField>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 5: FINALISATION */}
+            {currentStep === 4 && (
+              <div className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
+                    <SectionTitle icon={Coins} title={te('sections.financial')} color="text-amber-500" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField label={te('form.budgetAnnuel')}>
+                        <input type="number" value={formData.budgetAnnuel} onChange={e => setFormData({...formData, budgetAnnuel: e.target.value})} className="input-premium" placeholder="DH" />
+                      </FormField>
+                      <FormField label={te('form.sourcesFinancement')}>
+                        <input value={formData.sourcesFinancement} onChange={e => setFormData({...formData, sourcesFinancement: e.target.value})} className="input-premium" />
+                      </FormField>
+                    </div>
+                    <FormField label={te('form.partenaires')}>
+                       <textarea value={formData.partenaires} onChange={e => setFormData({...formData, partenaires: e.target.value})} className="input-premium h-24" />
+                    </FormField>
+                  </div>
+                  <div className="space-y-6">
+                    <SectionTitle icon={FileText} title="Observations & Besoins" color="text-purple-500" />
+                    <FormField label={te('form.remarques')}>
+                       <textarea value={formData.remarques} onChange={e => setFormData({...formData, remarques: e.target.value})} className="input-premium h-20" />
+                    </FormField>
+                    <FormField label={te('form.besoinsUrgents')}>
+                       <textarea value={formData.besoinsUrgents} onChange={e => setFormData({...formData, besoinsUrgents: e.target.value})} className="input-premium h-20" />
+                    </FormField>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <SectionTitle icon={Plus} title={t('complementary_fields')} color="text-gray-400" />
+                    <button type="button" onClick={addField} className="btn-add">
+                      <Plus size={16} /> {t('add_field')}
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {complementaryFields.map((field, idx) => (
+                      <div key={idx} className="flex gap-2 group items-start animate-in zoom-in-95">
+                        <div className="flex-1 grid grid-cols-2 gap-2 bg-gray-50 dark:bg-gray-800 p-2 rounded-xl border border-gray-100 dark:border-gray-700">
+                          <input placeholder={t('field_name')} value={field.key} onChange={e => updateField(idx, 'key', e.target.value)} className="bg-transparent border-none focus:ring-0 text-sm" />
+                          <input placeholder={t('field_value')} value={field.value} onChange={e => updateField(idx, 'value', e.target.value)} className="bg-transparent border-none focus:ring-0 text-sm" />
+                        </div>
+                        <button type="button" onClick={() => removeField(idx)} className="p-2 text-gray-400 hover:text-red-500">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
+                   <SectionTitle icon={Info} title={t('justification')} color="text-emerald-500" />
+                   <textarea
+                     required
+                     rows={4}
+                     value={formData.justification}
+                     onChange={e => setFormData({ ...formData, justification: e.target.value })}
+                     className="w-full mt-4 p-6 rounded-3xl border-2 border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-900/10 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg"
+                     placeholder={t('justification_placeholder')}
+                   />
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Buttons Container */}
+        <div className="mt-16 flex items-center justify-between pt-8 border-t border-gray-50 dark:border-gray-800">
+          <button
+            type="button"
+            onClick={currentStep === 0 ? () => router.back() : prevStep}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+          >
+            {currentStep === 0 ? <ChevronLeft size={20} /> : <ChevronLeft size={20} />}
+            {currentStep === 0 ? te('actions.cancel') : "Précédent"}
+          </button>
+
+          <div className="flex items-center gap-4">
+            {currentStep < STEPS.length - 1 ? (
+              <button
+                type="button"
+                onClick={nextStep}
+                className="flex items-center gap-2 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black shadow-xl hover:scale-105 active:scale-95 transition-all"
+              >
+                Suivant
+                <ChevronRight size={20} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleSubmit()}
+                className="flex items-center gap-3 px-12 py-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="animate-spin" /> : <Save size={24} />}
+                {t('soumettre', { defaultValue: 'Soumettre la demande' })}
+              </button>
+            )}
           </div>
-        </section>
-
-        {/* SECTION 8: JUSTIFICATION (REQUIS) */}
-        <section className="space-y-4 pt-4">
-          <h2 className="text-xl font-bold flex items-center gap-2 px-2 text-amber-600">
-            <ArrowRight size={24} />
-            {t('justification')}
-          </h2>
-          <textarea
-            required
-            rows={5}
-            value={formData.justification}
-            onChange={e => setFormData({ ...formData, justification: e.target.value })}
-            className="w-full px-6 py-5 rounded-3xl border-2 border-amber-200 dark:border-amber-900/40 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 shadow-xl shadow-amber-500/5 transition-all text-lg"
-            placeholder={t('justification_placeholder')}
-          />
-        </section>
+        </div>
       </div>
 
-      <div className="sticky bottom-8 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-100 dark:border-gray-800 flex justify-end gap-6 shadow-2xl shadow-emerald-500/10">
-        <button
-          type="button"
-          disabled={loading}
-          onClick={() => router.back()}
-          className="px-8 py-4 text-gray-600 dark:text-gray-400 font-bold hover:bg-gray-100 dark:hover:bg-gray-800 rounded-2xl transition-all"
-        >
-          {te('actions.cancel')}
-        </button>
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-12 py-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white font-black text-lg rounded-2xl shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="animate-spin" /> : <Save size={24} />}
-          {t('soumettre', { defaultValue: 'Soumettre la demande' })}
-        </button>
+      <style jsx global>{`
+        .input-premium {
+          width: 100%;
+          padding: 0.875rem 1.25rem;
+          border-radius: 1.25rem;
+          border: 1px solid #e5e7eb;
+          background-color: #f9fafb;
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+        .dark .input-premium {
+          border-color: #374151;
+          background-color: #111827;
+          color: white;
+        }
+        .input-premium:focus {
+          outline: none;
+          border-color: #10b981;
+          background-color: white;
+          box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+        .dark .input-premium:focus {
+          background-color: #1f2937;
+        }
+        .btn-add {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1.25rem;
+          background-color: #111827;
+          color: white;
+          border-radius: 1rem;
+          font-size: 0.875rem;
+          font-weight: 700;
+          transition: all 0.2s;
+        }
+        .dark .btn-add {
+          background-color: white;
+          color: #111827;
+        }
+        .btn-add:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function SectionTitle({ icon: Icon, title, color }: { icon: any, title: string, color: string }) {
+  return (
+    <h2 className={`text-xl font-black flex items-center gap-3 ${color}`}>
+      <div className={`p-2 rounded-xl bg-current bg-opacity-10`}>
+        <Icon size={20} />
       </div>
-    </form>
+      {title}
+    </h2>
+  );
+}
+
+function FormField({ label, children, required }: { label: string, children: any, required?: boolean }) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function CheckItem({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) {
+  return (
+    <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+      checked 
+        ? 'border-emerald-500 bg-emerald-50/30 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-300' 
+        : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500'
+    }`}>
+      <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${
+        checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-300 dark:border-gray-700'
+      }`}>
+        {checked && <CheckCircle2 size={12} />}
+      </div>
+      <input type="checkbox" className="hidden" checked={checked} onChange={e => onChange(e.target.checked)} />
+      <span className="text-xs font-bold leading-tight">{label}</span>
+    </label>
   );
 }

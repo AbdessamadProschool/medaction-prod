@@ -15,22 +15,37 @@ import {
   MoreVertical,
   Search,
   Filter,
-  Layers
+  Layers,
+  ChevronRight,
+  ShieldCheck,
+  Calendar,
+  ExternalLink,
+  MapPin,
+  ClipboardList
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { getDemandesEtablissement, traiterDemandeEtablissement } from '@/app/actions/etablissementWorkflow';
 import { format as formatDate } from 'date-fns';
+import { fr, ar } from 'date-fns/locale';
+import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { motion, AnimatePresence } from 'framer-motion';
+
 export default function AdminDemandesPage() {
   const t = useTranslations('establishments_workflow');
   const te = useTranslations('admin.establishments');
+  const params = useParams();
+  const locale = params.locale as string;
+  const dateLocale = locale === 'ar' ? ar : fr;
+
   const [demandes, setDemandes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDemande, setSelectedDemande] = useState<any>(null);
   const [motifRejet, setMotifRejet] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchDemandes();
@@ -65,6 +80,7 @@ export default function AdminDemandesPage() {
       if (res.success) {
         toast.success(action === 'APPROUVER' ? t('admin_validation.applied_success') : t('admin_validation.rejected_success'));
         setSelectedDemande(null);
+        setMotifRejet('');
         fetchDemandes();
       } else {
         toast.error(res.error || 'Erreur');
@@ -76,282 +92,357 @@ export default function AdminDemandesPage() {
     }
   };
 
+  const filteredDemandes = demandes.filter(d => 
+    (d.donneesModifiees.nom || d.etablissement?.nom || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (d.soumisPar.prenom + ' ' + d.soumisPar.nom).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3">
-            <Building2 className="text-emerald-500" size={32} />
-            {t('admin_validation.title')}
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
-            {te('requests.subtitle')}
-          </p>
-        </div>
-        <div className="flex gap-2">
-           <Button variant="outline" onClick={fetchDemandes}>
-             <History size={18} className="mr-2" />
-             {te('requests.refresh')}
-           </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Liste des demandes */}
-        <div className="xl:col-span-4 space-y-4 overflow-y-auto max-h-[calc(100vh-250px)] pr-2 custom-scrollbar">
-          {loading ? (
-            <div className="flex justify-center py-12">
-               <Clock className="animate-spin text-emerald-500" size={32} />
+    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950/50 p-4 md:p-8">
+      <div className="max-w-[1600px] mx-auto space-y-8">
+        
+        {/* Header Header Premium */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-gray-900 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-200 dark:shadow-none">
+              <ShieldCheck size={32} />
             </div>
-          ) : demandes.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 p-12 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-              <FileText className="mx-auto text-gray-300 mb-4" size={48} />
-              <p className="text-gray-500">{te('requests.no_requests')}</p>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+                {t('admin_validation.title')}
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium">
+                {te('requests.subtitle')}
+              </p>
             </div>
-          ) : (
-            demandes.map(d => (
-              <div 
-                key={d.id}
-                onClick={() => setSelectedDemande(d)}
-                className={`p-5 rounded-2xl border transition-all cursor-pointer group hover:scale-[1.01] ${
-                  selectedDemande?.id === d.id 
-                    ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-500' 
-                    : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 hover:border-emerald-200 shadow-sm'
-                }`}
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <Badge variant={d.statut === 'EN_ATTENTE_VALIDATION' ? 'secondary' : d.statut === 'APPROUVEE' ? 'default' : 'destructive'} className={d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-amber-100 text-amber-800 hover:bg-amber-100 border-none' : d.statut === 'APPROUVEE' ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-none' : ''}>
-                    {t(`status.${d.statut}`)}
-                  </Badge>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-                    #{d.id}
-                  </span>
-                </div>
-                
-                <h3 className="font-bold text-gray-900 dark:text-white truncate">
-                  {d.type === 'CREATION' ? "Création : " : "Modif : "}
-                  {d.donneesModifiees.nom || d.etablissement?.nom}
-                </h3>
-                
-                <div className="flex items-center gap-2 mt-4 text-xs text-gray-500">
-                  <div className="w-6 h-6 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                     <UserIcon size={12} />
-                  </div>
-                  <span className="font-medium">{d.soumisPar.prenom} {d.soumisPar.nom}</span>
-                  <span className="ml-auto opacity-70">{formatDate(d.createdAt, 'dd MMM HH:mm')}</span>
-                </div>
-              </div>
-            ))
-          )}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" size={18} />
+              <input 
+                type="text" 
+                placeholder="Rechercher une demande..." 
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-12 pr-6 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl w-full md:w-64 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
+              />
+            </div>
+            <Button variant="outline" onClick={fetchDemandes} className="rounded-2xl h-12 px-6 border-gray-200 dark:border-gray-700 font-bold">
+              <History size={18} className="mr-2" />
+              {te('requests.refresh')}
+            </Button>
+          </div>
         </div>
 
-        {/* Détails de la demande sélectionnée */}
-        <div className="xl:col-span-8">
-          {selectedDemande ? (
-            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden sticky top-8">
-              <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white relative">
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                   <Building2 size={120} />
-                </div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Badge className="bg-white/20 text-white backdrop-blur-md border-white/20">
-                      {selectedDemande.type}
-                    </Badge>
-                    <span className="text-gray-400 text-sm">{formatDate(selectedDemande.createdAt, 'PPpp')}</span>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+          
+          {/* Sidebar: Liste des demandes */}
+          <div className="xl:col-span-4 space-y-4">
+            <div className="flex items-center justify-between px-2 mb-2">
+               <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                 <ClipboardList size={16} />
+                 Demandes ({filteredDemandes.length})
+               </h3>
+            </div>
+            
+            <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-280px)] pr-2 custom-scrollbar">
+              {loading ? (
+                Array(5).fill(0).map((_, i) => (
+                  <div key={i} className="h-32 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 animate-pulse" />
+                ))
+              ) : filteredDemandes.length === 0 ? (
+                <div className="bg-white dark:bg-gray-900 p-12 rounded-[2rem] border border-dashed border-gray-200 dark:border-gray-800 text-center">
+                  <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-300">
+                    <FileText size={32} />
                   </div>
-                  <h2 className="text-3xl font-black tracking-tight mt-2">
-                    {selectedDemande.donneesModifiees.nom || selectedDemande.etablissement?.nom}
-                  </h2>
-                  <p className="text-gray-400 mt-2 flex items-center gap-2">
-                    <UserIcon size={16} />
-                    {t('admin_validation.soumis_par')} : <span className="text-white font-bold">{selectedDemande.soumisPar.prenom} {selectedDemande.soumisPar.nom}</span>
-                  </p>
+                  <p className="text-gray-500 font-bold">{te('requests.no_requests')}</p>
                 </div>
-              </div>
+              ) : (
+                filteredDemandes.map(d => (
+                  <motion.div 
+                    layoutId={`card-${d.id}`}
+                    key={d.id}
+                    onClick={() => setSelectedDemande(d)}
+                    className={`p-6 rounded-[1.75rem] border-2 transition-all cursor-pointer relative overflow-hidden group ${
+                      selectedDemande?.id === d.id 
+                        ? 'border-emerald-500 bg-emerald-50/30 dark:bg-emerald-500/10 shadow-lg shadow-emerald-500/5' 
+                        : 'border-white dark:border-gray-900 bg-white dark:bg-gray-900 hover:border-gray-200 dark:hover:border-gray-700 shadow-sm'
+                    }`}
+                  >
+                    {selectedDemande?.id === d.id && (
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-[2rem] flex items-center justify-center text-emerald-500">
+                         <ChevronRight size={24} />
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                        d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-amber-100 text-amber-700' : 
+                        d.statut === 'APPROUVEE' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                      }`}>
+                        {t(`status.${d.statut}`)}
+                      </div>
+                      <span className="text-[10px] text-gray-400 font-bold ml-auto tracking-tighter">
+                        #{d.id}
+                      </span>
+                    </div>
+                    
+                    <h3 className="font-bold text-gray-900 dark:text-white leading-tight">
+                      <span className="opacity-40 font-medium mr-1">
+                        {d.type === 'CREATION' ? "CRÉATION" : "MODIF"} :
+                      </span>
+                      {d.donneesModifiees.nom || d.etablissement?.nom}
+                    </h3>
+                    
+                    <div className="flex items-center gap-3 mt-5 pt-4 border-t border-gray-50 dark:border-gray-800/50">
+                      <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-500">
+                         <UserIcon size={14} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-gray-900 dark:text-gray-100">{d.soumisPar.prenom} {d.soumisPar.nom}</span>
+                        <span className="text-[10px] text-gray-400">{formatDate(d.createdAt, 'dd MMM yyyy à HH:mm', { locale: dateLocale })}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </div>
 
-              <div className="p-8 space-y-8">
-                {/* Justification */}
-                <div className="bg-amber-50 dark:bg-amber-950/20 p-6 rounded-2xl border border-amber-100 dark:border-amber-900/50">
-                  <h4 className="text-amber-800 dark:text-amber-200 font-bold flex items-center gap-2 mb-3">
-                    <AlertCircle size={18} />
-                    {t('justification')}
-                  </h4>
-                  <p className="text-amber-900/80 dark:text-amber-100/80 leading-relaxed italic">
-                    "{selectedDemande.justification || 'Pas de justification fournie'}"
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Données Modifiées (Groupées) */}
-                  <div className="space-y-6">
-                    {[
-                      { id: 'general', label: te('sections.general'), fields: ['nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture'] },
-                      { id: 'location', label: te('sections.localization'), fields: ['communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces'] },
-                      { id: 'infra', label: te('sections.infra'), fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
-                      { id: 'staff', label: te('sections.staff'), fields: ['effectifTotal', 'nombrePersonnel', 'cadre', 'capaciteAccueil'] },
-                      { id: 'education', label: te('sections.education'), fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
-                      { id: 'financial', label: te('sections.financial'), fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
-                      { id: 'observations', label: 'Observations', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
-                    ].map(group => {
-                      const groupFields = Object.entries(selectedDemande.donneesModifiees)
-                        .filter(([k]) => group.fields.includes(k));
-
-                      if (groupFields.length === 0) return null;
-
-                      return (
-                        <div key={group.id} className="space-y-4">
-                          <h4 className="font-bold flex items-center gap-2 text-gray-900 dark:text-white uppercase text-[10px] tracking-widest border-b border-gray-100 dark:border-gray-800 pb-2">
-                             {group.label}
-                          </h4>
-                          <div className="bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl p-4 divide-y divide-gray-100 dark:divide-gray-800">
-                            {groupFields.map(([k, v]: [string, any]) => (
-                              <div key={k} className="flex justify-between items-center py-2.5 px-1 hover:bg-white dark:hover:bg-gray-800 transition-colors rounded-lg">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter w-1/3 truncate">
-                                  {te(`form.${k}`) || k}
-                                </span>
-                                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">
-                                  {v === null || v === undefined || v === '' ? (
-                                    <em className="opacity-30">Vide</em>
-                                  ) : typeof v === 'boolean' ? (
-                                    v ? 'Oui' : 'Non'
-                                  ) : typeof v === 'number' && k === 'budgetAnnuel' ? (
-                                    v.toLocaleString() + ' DH'
-                                  ) : String(v)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
+          {/* Main Content: Détails de la demande */}
+          <div className="xl:col-span-8">
+            <AnimatePresence mode="wait">
+              {selectedDemande ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden"
+                >
+                  {/* Banner Detail */}
+                  <div className="bg-gray-900 dark:bg-black p-10 text-white relative">
+                    <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                       <Building2 size={200} />
+                    </div>
+                    <div className="relative z-10 space-y-4">
+                      <div className="flex items-center gap-4">
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none py-1.5 px-4 rounded-full text-xs font-black tracking-widest">
+                          {selectedDemande.type}
+                        </Badge>
+                        <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+                          <Calendar size={14} />
+                          {formatDate(selectedDemande.createdAt, 'PPPPpp', { locale: dateLocale })}
                         </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Données Complémentaires + Autres */}
-                  <div className="space-y-8">
-                    {/* Autres Champs Standard non groupés */}
-                    {(() => {
-                      const allKnownFields = [
-                        'nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture',
-                        'communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces',
-                        'etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles',
-                        'effectifTotal', 'nombrePersonnel', 'cadre', 'capaciteAccueil',
-                        'cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee',
-                        'budgetAnnuel', 'sourcesFinancement', 'partenaires',
-                        'remarques', 'besoinsUrgents', 'projetsFuturs', 'justification'
-                      ];
-                      const remainingFields = Object.entries(selectedDemande.donneesModifiees)
-                        .filter(([k]) => !allKnownFields.includes(k));
-
-                      if (remainingFields.length === 0) return null;
-
-                      return (
-                        <div className="space-y-4">
-                          <h4 className="font-bold flex items-center gap-2 text-gray-900 dark:text-white uppercase text-[10px] tracking-widest border-b border-gray-100 dark:border-gray-800 pb-2">
-                             Champs Additionnels
-                          </h4>
-                          <div className="bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl p-4 divide-y divide-gray-100 dark:divide-gray-800">
-                            {remainingFields.map(([k, v]: [string, any]) => (
-                               <div key={k} className="flex justify-between items-center py-2.5 px-1 hover:bg-white dark:hover:bg-gray-800 transition-colors rounded-lg">
-                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter w-1/3 truncate">{k}</span>
-                                 <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 text-right">{String(v)}</span>
-                               </div>
-                            ))}
-                          </div>
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black tracking-tight">
+                        {selectedDemande.donneesModifiees.nom || selectedDemande.etablissement?.nom}
+                      </h2>
+                      <div className="flex items-center gap-6 pt-2">
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center">
+                              <UserIcon size={18} className="text-emerald-400" />
+                           </div>
+                           <div>
+                              <p className="text-[10px] uppercase font-bold text-gray-500 tracking-widest">{t('admin_validation.soumis_par')}</p>
+                              <p className="text-sm font-bold text-white">{selectedDemande.soumisPar.prenom} {selectedDemande.soumisPar.nom}</p>
+                           </div>
                         </div>
-                      );
-                    })()}
-
-                    {/* Données Complémentaires (JSON) */}
-                    <div className="space-y-4">
-                      <h4 className="font-bold flex items-center gap-2 text-gray-900 dark:text-white uppercase text-[10px] tracking-widest border-b border-blue-100 dark:border-blue-900/50 pb-2">
-                         <Layers size={14} className="text-blue-500" />
-                         Données Complémentaires (Libres)
-                      </h4>
-                      <div className="bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl p-4 min-h-[100px] divide-y divide-gray-100 dark:divide-gray-800">
-                        {Object.keys(selectedDemande.champsComplementaires || {}).length > 0 ? (
-                          Object.entries(selectedDemande.champsComplementaires).map(([k, v]: [string, any]) => (
-                            <div key={k} className="flex justify-between items-center py-2.5 px-1 hover:bg-white dark:hover:bg-gray-800 transition-colors rounded-lg">
-                              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{k}</span>
-                              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{String(v)}</span>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="flex flex-col items-center justify-center py-10 opacity-30">
-                             <Layers size={24} strokeWidth={1} />
-                             <p className="text-[10px] uppercase font-bold mt-2 tracking-widest">Aucun champ personnalisé</p>
-                          </div>
+                        {selectedDemande.etablissementId && (
+                           <a 
+                             href={`/${locale}/etablissements/${selectedDemande.etablissementId}`} 
+                             target="_blank"
+                             className="ml-auto flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20 transition-colors py-2 px-4 rounded-xl backdrop-blur-md"
+                           >
+                             Voir fiche actuelle <ExternalLink size={14} />
+                           </a>
                         )}
                       </div>
                     </div>
                   </div>
+
+                  <div className="p-8 md:p-12 space-y-12">
+                    {/* Justification Box Premium */}
+                    <div className="bg-amber-50/50 dark:bg-amber-950/10 p-8 rounded-[2rem] border-2 border-amber-100 dark:border-amber-900/30 flex gap-6 shadow-sm">
+                      <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-amber-200 dark:shadow-none">
+                        <AlertCircle size={28} />
+                      </div>
+                      <div>
+                        <h4 className="text-amber-800 dark:text-amber-300 font-black text-lg mb-2 uppercase tracking-wide">
+                          {t('justification')}
+                        </h4>
+                        <p className="text-amber-900/70 dark:text-amber-100/70 leading-relaxed text-lg italic font-medium">
+                          "{selectedDemande.justification || 'Pas de justification fournie'}"
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Data Comparison Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      {[
+                        { id: 'general', label: te('sections.general'), icon: Building2, color: 'text-emerald-500', fields: ['nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture'] },
+                        { id: 'location', label: te('sections.localization'), icon: MapPin, color: 'text-red-500', fields: ['communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces'] },
+                        { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-indigo-500', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
+                        { id: 'education', label: te('sections.education'), icon: GraduationCap, color: 'text-orange-500', fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
+                        { id: 'financial', label: te('sections.financial'), icon: Coins, color: 'text-amber-500', fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
+                        { id: 'observations', label: 'Observations', icon: FileText, color: 'text-purple-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
+                      ].map(group => {
+                        const groupFields = Object.entries(selectedDemande.donneesModifiees)
+                          .filter(([k]) => group.fields.includes(k));
+
+                        if (groupFields.length === 0) return null;
+
+                        return (
+                          <div key={group.id} className="space-y-5">
+                            <h4 className={`font-black flex items-center gap-3 ${group.color} uppercase text-xs tracking-[0.2em] px-2`}>
+                               <group.icon size={18} />
+                               {group.label}
+                            </h4>
+                            <div className="bg-gray-50/50 dark:bg-gray-800/40 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800/50">
+                              {groupFields.map(([k, v]: [string, any]) => (
+                                <div key={k} className="flex justify-between items-center py-4 first:pt-0 last:pb-0">
+                                  <div className="flex flex-col">
+                                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                      {te(`form.${k}`) || k}
+                                    </span>
+                                    <span className={`text-sm font-bold ${v === null || v === '' ? 'text-gray-300 italic' : 'text-gray-900 dark:text-gray-100'}`}>
+                                      {v === null || v === undefined || v === '' ? 'N/A' : 
+                                       typeof v === 'boolean' ? (v ? '✅ Oui' : '❌ Non') : 
+                                       k === 'budgetAnnuel' ? v.toLocaleString() + ' DH' : String(v)}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Données Libres / Complémentaires Section */}
+                    <div className="pt-10 border-t border-gray-100 dark:border-gray-800">
+                        <h4 className="font-black text-gray-400 uppercase text-xs tracking-[0.2em] mb-6 flex items-center gap-2">
+                           <Layers size={18} />
+                           {t('complementary_fields')}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                           {Object.keys(selectedDemande.champsComplementaires || {}).length > 0 ? (
+                             Object.entries(selectedDemande.champsComplementaires).map(([k, v]: [string, any]) => (
+                               <div key={k} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4 rounded-2xl shadow-sm">
+                                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter mb-1">{k}</p>
+                                  <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{String(v)}</p>
+                               </div>
+                             ))
+                           ) : (
+                             <div className="col-span-full py-12 flex flex-col items-center justify-center opacity-20 grayscale">
+                                <Layers size={48} strokeWidth={1} />
+                                <p className="text-xs font-black uppercase mt-4 tracking-widest">Aucun champ personnalisé</p>
+                             </div>
+                           )}
+                        </div>
+                    </div>
+
+                    {/* Footer Actions Sticky for Selection */}
+                    {selectedDemande.statut === 'EN_ATTENTE_VALIDATION' && (
+                      <div className="pt-10 border-t border-gray-100 dark:border-gray-800 space-y-8 animate-in slide-in-from-bottom-5 duration-700">
+                        <div className="space-y-4">
+                           <label className="text-sm font-black text-gray-900 dark:text-white flex items-center gap-2">
+                             <XCircle size={18} className="text-red-500" />
+                             {t('admin_validation.motif_rejet')}
+                           </label>
+                           <textarea 
+                            value={motifRejet}
+                            onChange={e => setMotifRejet(e.target.value)}
+                            placeholder={t('admin_validation.motif_placeholder')}
+                            className="w-full px-6 py-4 rounded-3xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-gray-700 dark:text-white font-medium"
+                            rows={3}
+                           />
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          <button 
+                            disabled={processing}
+                            onClick={() => handleAction('REJETER')}
+                            className="flex-1 h-16 rounded-2xl font-black text-lg bg-gray-100 dark:bg-gray-800 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-3 group"
+                          >
+                            <XCircle size={22} className="group-hover:scale-110 transition-transform" />
+                            {t('admin_validation.reject')}
+                          </button>
+                          <button 
+                            disabled={processing}
+                            onClick={() => handleAction('APPROUVER')}
+                            className="flex-1 h-16 rounded-2xl font-black text-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-gray-900/20 flex items-center justify-center gap-3 group"
+                          >
+                            {processing ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={22} className="group-hover:scale-110 transition-transform" />}
+                            {t('admin_validation.approve')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Status Summary if already processed */}
+                    {selectedDemande.statut !== 'EN_ATTENTE_VALIDATION' && (
+                      <div className={`mt-10 p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-8 ${
+                        selectedDemande.statut === 'APPROUVEE' 
+                          ? 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-900 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/30' 
+                          : 'bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-300 border border-red-100 dark:border-red-900/30'
+                      }`}>
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center shrink-0 ${
+                          selectedDemande.statut === 'APPROUVEE' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-red-500 text-white shadow-xl shadow-red-500/20'
+                        }`}>
+                          {selectedDemande.statut === 'APPROUVEE' ? <CheckCircle2 size={40} /> : <XCircle size={40} />}
+                        </div>
+                        <div className="text-center md:text-left space-y-2">
+                          <h4 className="text-2xl font-black tracking-tight">
+                            Demande traitée le {formatDate(selectedDemande.dateValidation || selectedDemande.updatedAt, 'PPP à HH:mm', { locale: dateLocale })}
+                          </h4>
+                          <p className="font-bold opacity-75 text-lg">
+                            Statut final : <span className="underline decoration-2 underline-offset-4 uppercase tracking-widest">{t(`status.${selectedDemande.statut}`)}</span>
+                          </p>
+                          {selectedDemande.statut === 'REJETEE' && (
+                            <div className="mt-4 p-4 bg-white/50 dark:bg-black/20 rounded-2xl border border-current border-opacity-10 italic">
+                               Motif de rejet : {selectedDemande.motifRejet || 'Non spécifié'}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="h-full min-h-[600px] flex flex-col items-center justify-center bg-white dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-gray-800 p-12 text-center">
+                   <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center mb-8 text-gray-200">
+                      <Building2 size={64} strokeWidth={1} />
+                   </div>
+                   <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{te('requests.select_to_view')}</h3>
+                   <p className="text-gray-400 font-medium max-w-sm mx-auto">{te('requests.can_validate_reject')}</p>
+                   <div className="mt-8 flex gap-2">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                   </div>
                 </div>
-
-                {/* Actions de validation */}
-                {selectedDemande.statut === 'EN_ATTENTE_VALIDATION' && (
-                  <div className="pt-8 border-t border-gray-100 dark:border-gray-700 space-y-6">
-                    <div className="space-y-2">
-                       <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                         {t('admin_validation.motif_rejet')}
-                       </label>
-                       <textarea 
-                        value={motifRejet}
-                        onChange={e => setMotifRejet(e.target.value)}
-                        placeholder={t('admin_validation.motif_placeholder')}
-                        className="w-full px-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-emerald-500 shadow-sm"
-                       />
-                    </div>
-                    
-                    <div className="flex gap-4">
-                      <Button 
-                        variant="destructive" 
-                        size="lg" 
-                        className="flex-1 rounded-2xl font-bold py-6 group"
-                        onClick={() => handleAction('REJETER')}
-                        disabled={processing}
-                      >
-                        <XCircle size={20} className="mr-2 group-hover:scale-110 transition-transform" />
-                        {t('admin_validation.reject')}
-                      </Button>
-                      <Button 
-                        variant="default" 
-                        size="lg" 
-                        className="flex-1 rounded-2xl font-bold py-6 group bg-emerald-600 hover:bg-emerald-700 text-white"
-                        onClick={() => handleAction('APPROUVER')}
-                        disabled={processing}
-                      >
-                        <CheckCircle2 size={20} className="mr-2 group-hover:scale-110 transition-transform" />
-                        {t('admin_validation.approve')}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Info de traitement si déjà fait */}
-                {selectedDemande.statut !== 'EN_ATTENTE_VALIDATION' && (
-                  <div className={`mt-8 p-6 rounded-2xl flex items-center gap-4 ${
-                    selectedDemande.statut === 'APPROUVEE' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
-                  }`}>
-                    {selectedDemande.statut === 'APPROUVEE' ? <CheckCircle2 /> : <XCircle />}
-                    <div>
-                      <p className="font-bold">Demande déjà traitée le {formatDate(selectedDemande.dateValidation, 'PPP')}</p>
-                      {selectedDemande.statut === 'REJETEE' && (
-                        <p className="mt-1 text-sm opacity-90">Motif : {selectedDemande.motifRejet}</p>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center bg-gray-50/50 dark:bg-gray-900/20 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 p-12 text-center text-gray-400">
-               <Building2 size={64} strokeWidth={1} className="mb-6 opacity-20" />
-               <p className="text-lg">{te('requests.select_to_view')}</p>
-               <p className="text-sm mt-1">{te('requests.can_validate_reject')}</p>
-            </div>
-          )}
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
+      
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #e5e7eb;
+          border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #374151;
+        }
+      `}</style>
     </div>
   );
 }

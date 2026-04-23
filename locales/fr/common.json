@@ -2256,7 +2256,8 @@
         "staff": "Ressources Humaines & Capacité",
         "education": "Données Pédagogiques",
         "financial": "Financement & Projets",
-        "description": "Description détaillée"
+        "description": "Description détaillée",
+        "final": "Finalisation & Justification"
       },
       "form": {
         "name": "Nom de l'établissement",
@@ -2307,7 +2308,18 @@
         "tauxReussite": "Taux de réussite (%)",
         "sourcesFinancement": "Sources de financement",
         "budgetAnnuel": "Budget annuel (DH)",
-        "partenaires": "Partenaires / Donateurs"
+        "partenaires": "Partenaires / Donateurs",
+        "etatInfrastructure": "État de l'Infrastructure",
+        "transportPublic": "Transport Public",
+        "distanceChefLieu": "Distance au Chef-lieu (km)",
+        "voieAcces": "Voie d'accès",
+        "remarques": "Remarques",
+        "besoinsUrgents": "Besoins Urgents",
+        "projetsFuturs": "Projets Futurs",
+        "elevesFilles": "Total Filles",
+        "elevesPrescolaireFilles": "Filles Préscolaire",
+        "nouveauxInscritsFilles": "Filles Nvx Inscrits",
+        "fillesDerniereAnnee": "Filles Dern. Année"
       },
       "actions": {
         "cancel": "Annuler",

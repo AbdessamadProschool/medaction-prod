@@ -68,9 +68,17 @@ export async function soumettreDemandeEtablissement(params: {
 
     revalidatePath('/admin/etablissements/demandes');
     return { success: true, demandeId: demande.id };
-  } catch (error) {
+  } catch (error: any) {
     SystemLogger.error('establishment_workflow', "Échec de soumission de la demande", { error, params });
-    return { success: false, error: "Une erreur est survenue lors de la soumission de la demande" };
+    
+    let errorMessage = "Une erreur est survenue lors de la soumission de la demande";
+    if (error.code === 'P2002') {
+      errorMessage = "Une demande similaire est déjà en cours de traitement.";
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -107,7 +115,8 @@ export async function traiterDemandeEtablissement(params: {
         await prisma.etablissement.create({
           data: {
             ...dataToApply,
-            champsComplementaires: extraFields,
+            champsComplementaires: extraFields || {},
+            donneesSpecifiques: dataToApply.donneesSpecifiques ?? {},
             isValide: true, // Automatiquement validé puisqu'approuvé
           }
         });
@@ -161,9 +170,21 @@ export async function traiterDemandeEtablissement(params: {
     revalidatePath('/admin/etablissements/demandes');
     revalidatePath('/etablissements');
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     SystemLogger.error('establishment_workflow', "Échec du traitement de la demande", { error, params });
-    return { success: false, error: "Erreur lors du traitement de la demande" };
+    
+    // Gestion professionnelle des erreurs
+    let errorMessage = "Une erreur est survenue lors du traitement de la demande";
+    
+    if (error.code === 'P2002') {
+      errorMessage = "Un établissement avec ce code ou ce nom existe déjà.";
+    } else if (error.name === 'PrismaClientValidationError') {
+      errorMessage = "Données invalides ou manquantes. Veuillez vérifier le formulaire.";
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return { success: false, error: errorMessage };
   }
 }
 

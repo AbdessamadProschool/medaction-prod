@@ -603,7 +603,8 @@
         "staff": "الموارد البشرية والقدرة",
         "education": "البيانات البيداغوجية",
         "financial": "التمويل والمشاريع",
-        "description": "وصف مفصل"
+        "description": "وصف مفصل",
+        "final": "الخاتمة والتبرير"
       },
       "form": {
         "name": "اسم المؤسسة",
@@ -613,6 +614,8 @@
         "nature": "النوع (عام/خاص)",
         "manager": "اسم المسؤول",
         "infra_status": "حالة البنية التحتية",
+        "etatInfrastructure": "حالة البنية التحتية",
+
         "capacity": "الطاقة الاستيعابية",
         "commune": "الجماعة",
         "select_commune": "اختر الجماعة",
@@ -658,7 +661,10 @@
         "partenaires": "الشركاء / المانحون",
         "voie_acces": "مسلك الولوج",
         "transport_public": "النقل العمومي",
+        "transportPublic": "النقل العمومي",
         "distance_chef_lieu": "المسافة عن مركز الجماعة (كلم)",
+        "distanceChefLieu": "المسافة عن مركز الجماعة (كلم)",
+
         "elevesFilles": "مجموع الإناث",
         "elevesPrescolaireFilles": "إناث التعليم الأولي",
         "nouveauxInscritsFilles": "إناث المسجلين الجدد",
@@ -2782,6 +2788,7 @@
       "rooms": "قاعات / مساحات",
       "surface": "المساحة الإجمالية",
       "infra_status": "حالة البنية التحتية",
+
       "internet_available": "الإنترنت متاح",
       "electricity_available": "الكهرباء متاحة",
       "water_available": "الماء الصالح للشرب متاح",

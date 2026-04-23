@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { requireRoles } from '@/lib/auth/role-guard';
 
 interface ImportRow {
   date: string;
@@ -24,19 +23,9 @@ interface ImportError {
 // POST - Importer des programmes d'activités en masse
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
-
-    // Vérifier les permissions
-    const allowedRoles = ['COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN'];
-    if (!allowedRoles.includes(session.user.role)) {
-      return NextResponse.json({ 
-        error: 'Seuls les coordinateurs et administrateurs peuvent importer des programmes' 
-      }, { status: 403 });
-    }
+    const auth = await requireRoles(['COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN']);
+    if ('error' in auth) return auth.error;
+    const { session } = auth;
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -73,6 +62,15 @@ export async function POST(request: NextRequest) {
     const errors: ImportError[] = [];
     const successfulImports: any[] = [];
     const userId = parseInt(session.user.id);
+    const isCoordinator = session.user.role === 'COORDINATEUR_ACTIVITES';
+    const authorizedEtablissementIds = isCoordinator
+      ? new Set(
+          (await prisma.userEtablissement.findMany({
+            where: { userId },
+            select: { etablissementId: true },
+          })).map((item) => item.etablissementId)
+        )
+      : null;
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(';').map(v => v.trim().replace(/"/g, ''));
@@ -121,6 +119,10 @@ export async function POST(request: NextRequest) {
 
         // Vérifier que l'établissement existe
         const etablissementId = parseInt(row.etablissementId);
+        if (isCoordinator && authorizedEtablissementIds && !authorizedEtablissementIds.has(etablissementId)) {
+          errors.push({ row: rowNumber, message: `Établissement ${etablissementId} non autorisé pour ce coordinateur` });
+          continue;
+        }
         const etablissement = await prisma.etablissement.findUnique({
           where: { id: etablissementId },
           select: { id: true }

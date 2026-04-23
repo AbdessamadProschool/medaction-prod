@@ -3,6 +3,28 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 
+async function getArticleWithOwnershipCheck(articleId: number, session: any) {
+  const article = await prisma.article.findUnique({
+    where: { id: articleId },
+    include: {
+      createdByUser: { select: { id: true, nom: true, prenom: true } },
+    }
+  });
+
+  if (!article) {
+    return { article: null, error: NextResponse.json({ error: 'Article non trouvé' }, { status: 404 }) };
+  }
+
+  const isOwner = Number(article.createdById) === Number(session.user.id);
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
+
+  if (!isOwner && !isAdmin) {
+    return { article: null, error: NextResponse.json({ error: 'Accès refusé' }, { status: 403 }) };
+  }
+
+  return { article, error: null };
+}
+
 // GET - Récupérer un article par ID
 export async function GET(
   request: NextRequest,
@@ -21,16 +43,8 @@ export async function GET(
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
 
-    const article = await prisma.article.findUnique({
-      where: { id: articleId },
-      include: {
-        createdByUser: { select: { id: true, nom: true, prenom: true } },
-      }
-    });
-
-    if (!article) {
-      return NextResponse.json({ error: 'Article non trouvé' }, { status: 404 });
-    }
+    const { article, error } = await getArticleWithOwnershipCheck(articleId, session);
+    if (error) return error;
 
     return NextResponse.json({ success: true, data: article });
   } catch (error) {
@@ -60,6 +74,9 @@ export async function PATCH(
     if (isNaN(articleId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
+
+    const { error } = await getArticleWithOwnershipCheck(articleId, session);
+    if (error) return error;
 
     const body = await request.json();
     const { titre, description, contenu, categorie, tags, imagePrincipale, isPublie } = body;
@@ -106,6 +123,9 @@ export async function DELETE(
     if (isNaN(articleId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
+
+    const { error } = await getArticleWithOwnershipCheck(articleId, session);
+    if (error) return error;
 
     await prisma.article.delete({
       where: { id: articleId }

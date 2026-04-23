@@ -1,15 +1,12 @@
 import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { requireRoles } from '@/lib/auth/role-guard';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+    const auth = await requireRoles(['SUPER_ADMIN']);
+    if ('error' in auth) return auth.error;
 
     const { searchParams } = new URL(request.url);
     const limit = safeParseInt(searchParams.get('limit') || '20', 0);

@@ -5,8 +5,16 @@ import { prisma } from '@/lib/db';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptions';
 import { getSafeId } from '@/lib/utils/parse';
+
+async function coordinateurGeresEtablissement(userId: number, etablissementId: number) {
+  const link = await prisma.userEtablissement.findFirst({
+    where: { userId, etablissementId },
+    select: { userId: true },
+  });
+  return !!link;
+}
 
 // Schéma de mise à jour partielle
 const updateActivitySchema = z.object({
@@ -88,6 +96,13 @@ export const GET = withErrorHandler(async (
     return successResponse(publicData);
   }
 
+  if (isCoordinator && activite.etablissementId) {
+    const canAccess = await coordinateurGeresEtablissement(Number(session?.user?.id), activite.etablissementId);
+    if (!canAccess) {
+      throw new ForbiddenError('Vous ne gérez pas cet établissement');
+    }
+  }
+
   return successResponse(activite);
 });
 
@@ -122,12 +137,7 @@ export const PATCH = withErrorHandler(async (
   const isCoordinator = session.user.role === 'COORDINATEUR_ACTIVITES';
 
   if (isCoordinator) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { etablissementsGeres: true }
-    });
-
-    if (!activite.etablissementId || !user?.etablissementsGeres.includes(activite.etablissementId)) {
+    if (!activite.etablissementId || !(await coordinateurGeresEtablissement(userId, activite.etablissementId))) {
       throw new ForbiddenError('Vous ne gérez pas cet établissement');
     }
   } else if (!isAdmin) {
@@ -195,12 +205,7 @@ export const DELETE = withErrorHandler(async (
   const isCoordinator = session.user.role === 'COORDINATEUR_ACTIVITES';
 
   if (isCoordinator) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { etablissementsGeres: true }
-    });
-
-    if (!activite.etablissementId || !user?.etablissementsGeres.includes(activite.etablissementId)) {
+    if (!activite.etablissementId || !(await coordinateurGeresEtablissement(userId, activite.etablissementId))) {
       throw new ForbiddenError('Vous ne gérez pas cet établissement');
     }
   } else if (!isAdmin) {

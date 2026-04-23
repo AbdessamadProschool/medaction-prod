@@ -604,7 +604,7 @@ export default function GouverneurDashboard() {
       />
       
       {/* 🏛️ MODERN SIDEBAR / NAVIGATION */}
-      <div className="relative z-10">
+      <div className="relative z-[3000]">
       {/* Mobile Backdrop */}
       {isMobileNavOpen && (
         <div 

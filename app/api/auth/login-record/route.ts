@@ -14,6 +14,11 @@ const schema = z.object({
  */
 export async function POST(request: NextRequest) {
   try {
+    const internalSecret = request.headers.get('x-internal-secret');
+    if (!process.env.INTERNAL_API_SECRET || internalSecret !== process.env.INTERNAL_API_SECRET) {
+      return NextResponse.json({ success: false, error: 'Accès interdit' }, { status: 403 });
+    }
+
     const clientIP = getClientIP(request);
     const body = await request.json();
     

@@ -6,6 +6,19 @@ import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 import { z } from 'zod';
 
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  EN_ATTENTE_VALIDATION: ['VALIDEE', 'ANNULEE'],
+  VALIDEE: ['PUBLIEE', 'ANNULEE'],
+  PUBLIEE: ['EN_ACTION', 'ANNULEE'],
+  EN_ACTION: ['CLOTUREE', 'ANNULEE'],
+  CLOTUREE: [],
+  ANNULEE: [],
+};
+
+function isValidTransition(from: string, to: string): boolean {
+  return VALID_TRANSITIONS[from]?.includes(to) ?? false;
+}
+
 // GET - Détails d'un événement
 export const GET = withErrorHandler(async (
   request: NextRequest,
@@ -135,7 +148,12 @@ export const PUT = withErrorHandler(async (
   if (isAdmin) {
     if (data.isOrganiseParProvince !== undefined) updateData.isOrganiseParProvince = data.isOrganiseParProvince;
     if (data.sousCouvertProvince !== undefined) updateData.sousCouvertProvince = data.sousCouvertProvince;
-    if (data.statut) updateData.statut = data.statut;
+    if (data.statut) {
+      if (!isValidTransition(evenement.statut, data.statut)) {
+        throw new ValidationError(`Transition invalide : ${evenement.statut} -> ${data.statut}`);
+      }
+      updateData.statut = data.statut;
+    }
   } else if (data.isOrganiseParProvince !== undefined || data.sousCouvertProvince !== undefined || data.statut !== undefined) {
     // Si un non-admin essaie de modifier ces champs, on les ignore silencieusement ou on pourrait lever une erreur.
     // Pour une UX fluide, on ignore généralement, mais ici on va s'assurer de ne pas les injecter.

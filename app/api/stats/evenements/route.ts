@@ -1,10 +1,15 @@
 import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireRoles } from '@/lib/auth/role-guard';
 
 // GET /api/stats/evenements - Statistiques détaillées des événements
 export async function GET(request: NextRequest) {
   try {
+    const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION']);
+    if ('error' in auth) return auth.error;
+    const { session } = auth;
+
     const { searchParams } = new URL(request.url);
     const periode = searchParams.get('periode') || '30'; // jours
     const communeId = searchParams.get('communeId');
@@ -17,6 +22,9 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (communeId) where.communeId = safeParseInt(communeId, 0);
     if (secteur) where.secteur = secteur;
+    if (session.user.role === 'DELEGATION') {
+      where.secteur = session.user.secteurResponsable;
+    }
 
     // Requêtes parallèles optimisées
     const [

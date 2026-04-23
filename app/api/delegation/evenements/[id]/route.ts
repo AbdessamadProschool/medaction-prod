@@ -10,6 +10,31 @@ interface RouteParams {
   }>;
 }
 
+async function canAccessEvenement(session: any, evenement: any): Promise<boolean> {
+  const role = session.user.role;
+  const userId = Number(session.user.id);
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(role || '');
+  const isCreator = Number(evenement.createdBy) === userId;
+
+  if (isAdmin || isCreator) {
+    return true;
+  }
+
+  if (role !== 'DELEGATION') {
+    return false;
+  }
+
+  const delegationUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { secteurResponsable: true },
+  });
+
+  return Boolean(
+    delegationUser?.secteurResponsable &&
+    evenement.etablissement?.secteur === delegationUser.secteurResponsable
+  );
+}
+
 // GET - Récupérer un événement
 export async function GET(request: NextRequest, segmentData: RouteParams) {
   try {
@@ -28,7 +53,7 @@ export async function GET(request: NextRequest, segmentData: RouteParams) {
     const evenement = await prisma.evenement.findUnique({
       where: { id },
       include: {
-        etablissement: { select: { id: true, nom: true } },
+        etablissement: { select: { id: true, nom: true, secteur: true } },
         commune: { select: { id: true, nom: true } },
         medias: {
           orderBy: { createdAt: 'asc' },
@@ -38,6 +63,11 @@ export async function GET(request: NextRequest, segmentData: RouteParams) {
 
     if (!evenement) {
       return NextResponse.json({ error: 'Événement non trouvé' }, { status: 404 });
+    }
+
+    const allowed = await canAccessEvenement(session, evenement);
+    if (!allowed) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 
     return NextResponse.json({ success: true, data: evenement });
@@ -72,7 +102,7 @@ export async function DELETE(request: NextRequest, segmentData: RouteParams) {
       return NextResponse.json({ error: 'Introuvable' }, { status: 404 });
     }
 
-    if (evenement.createdBy !== userId && session.user.role !== 'ADMIN') {
+    if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
       return NextResponse.json({ error: 'Action non autorisée sur cet événement' }, { status: 403 });
     }
 
@@ -118,7 +148,7 @@ export async function PUT(request: NextRequest, segmentData: RouteParams) {
         return NextResponse.json({ error: 'Introuvable' }, { status: 404 });
       }
   
-      if (evenement.createdBy !== userId && session.user.role !== 'ADMIN') {
+      if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
         return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
       }
   

@@ -149,6 +149,11 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
 // POST /api/suggestions - Soumettre une nouvelle suggestion
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  const contentType = request.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    return NextResponse.json({ error: 'Content-Type invalide' }, { status: 415 });
+  }
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -196,7 +201,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     categorie: z.string().max(50).optional().transform(v => v ? SecurityValidation.sanitizeString(v) : undefined),
   });
 
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'JSON invalide' }, { status: 400 });
+  }
   const validation = suggestionSchema.safeParse(body);
   
   if (!validation.success) {

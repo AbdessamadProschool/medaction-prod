@@ -1,22 +1,13 @@
 import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { requireRoles } from '@/lib/auth/role-guard';
 
 // GET - Liste des logs d'activité
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
-
-    // Seuls les admins peuvent voir les logs
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+    const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
+    if ('error' in auth) return auth.error;
 
     const { searchParams } = new URL(request.url);
     const page = safeParseInt(searchParams.get('page') || '1', 0);
@@ -126,6 +117,9 @@ export async function GET(request: NextRequest) {
 // POST - Créer un log d'activité (usage interne)
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
+    if ('error' in auth) return auth.error;
+
     const body = await request.json();
     
     const log = await prisma.activityLog.create({

@@ -1,5 +1,4 @@
-﻿import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+﻿import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
@@ -50,11 +49,17 @@ export const GET = withErrorHandler(async (
     throw new NotFoundError('Réclamation non trouvée');
   }
 
-  // Vérification des permissions (Admin, Propriétaire ou Affecté) - IDOR Protection
-  const canAccess = 
-    ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(role) || 
-    reclamation.userId === userId ||
-    reclamation.affecteeAAutoriteId === userId;
+  let canAccess =
+    ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(role) ||
+    reclamation.userId === userId;
+
+  if (!canAccess && role === 'AUTORITE_LOCALE') {
+    const autorite = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { communeResponsableId: true },
+    });
+    canAccess = autorite?.communeResponsableId === reclamation.communeId;
+  }
 
   if (!canAccess) {
     throw new ForbiddenError('Accès refusé à cette réclamation');

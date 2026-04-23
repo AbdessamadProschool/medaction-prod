@@ -3,6 +3,29 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 
+async function getActualiteWithOwnershipCheck(actualiteId: number, session: any) {
+  const actualite = await prisma.actualite.findUnique({
+    where: { id: actualiteId },
+    include: {
+      createdByUser: { select: { id: true, nom: true, prenom: true } },
+      etablissement: { select: { id: true, nom: true } },
+      medias: { take: 1, select: { urlPublique: true } },
+    }
+  });
+
+  if (!actualite) {
+    return { actualite: null, error: NextResponse.json({ error: 'Actualité non trouvée' }, { status: 404 }) };
+  }
+
+  const isOwner = Number(actualite.createdById) === Number(session.user.id);
+  const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
+  if (!isOwner && !isAdmin) {
+    return { actualite: null, error: NextResponse.json({ error: 'Accès refusé' }, { status: 403 }) };
+  }
+
+  return { actualite, error: null };
+}
+
 // GET - Récupérer une actualité par ID
 export async function GET(
   request: NextRequest,
@@ -21,18 +44,8 @@ export async function GET(
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
 
-    const actualite = await prisma.actualite.findUnique({
-      where: { id: actualiteId },
-      include: {
-        createdByUser: { select: { id: true, nom: true, prenom: true } },
-        etablissement: { select: { id: true, nom: true } },
-        medias: { take: 1, select: { urlPublique: true } },
-      }
-    });
-
-    if (!actualite) {
-      return NextResponse.json({ error: 'Actualité non trouvée' }, { status: 404 });
-    }
+    const { actualite, error } = await getActualiteWithOwnershipCheck(actualiteId, session);
+    if (error) return error;
 
     // Ajouter imagePrincipale depuis medias
     const data = {
@@ -69,6 +82,9 @@ export async function PATCH(
     if (isNaN(actualiteId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
+
+    const { error } = await getActualiteWithOwnershipCheck(actualiteId, session);
+    if (error) return error;
 
     const body = await request.json();
     const { titre, description, contenu, categorie, etablissementId, imagePrincipale } = body;
@@ -140,6 +156,9 @@ export async function DELETE(
     if (isNaN(actualiteId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
+
+    const { error } = await getActualiteWithOwnershipCheck(actualiteId, session);
+    if (error) return error;
 
     await prisma.actualite.delete({
       where: { id: actualiteId }

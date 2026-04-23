@@ -293,19 +293,43 @@ export const authOptions: NextAuthOptions = {
      */
     async session({ session, token }) {
       const authToken = token as AuthToken;
+      const userId = Number(authToken.id);
+
+      const dbUser = Number.isFinite(userId)
+        ? await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              id: true,
+              email: true,
+              nom: true,
+              prenom: true,
+              role: true,
+              photo: true,
+              secteurResponsable: true,
+              communeResponsableId: true,
+              etablissementsGeres: true,
+              isActive: true,
+              isEmailVerifie: true,
+            },
+          })
+        : null;
+
+      if (!dbUser || !dbUser.isActive) {
+        return null as any;
+      }
 
       session.user = {
-        id: authToken.id,
-        email: authToken.email!,
-        nom: authToken.nom,
-        prenom: authToken.prenom,
-        role: authToken.role,
-        photo: authToken.photo,
-        secteurResponsable: authToken.secteurResponsable,
-        communeResponsableId: authToken.communeResponsableId,
-        etablissementsGeres: authToken.etablissementsGeres,
-        isActive: authToken.isActive,
-        isEmailVerifie: authToken.isEmailVerifie,
+        id: String(dbUser.id),
+        email: dbUser.email,
+        nom: dbUser.nom,
+        prenom: dbUser.prenom,
+        role: dbUser.role,
+        photo: dbUser.photo,
+        secteurResponsable: dbUser.secteurResponsable,
+        communeResponsableId: dbUser.communeResponsableId,
+        etablissementsGeres: dbUser.etablissementsGeres,
+        isActive: dbUser.isActive,
+        isEmailVerifie: dbUser.isEmailVerifie,
       } as AuthUser;
 
       return session;

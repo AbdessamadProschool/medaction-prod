@@ -541,7 +541,7 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                                <button 
                                  type="button"
                                  onClick={() => {
-                                   window.open(`/${locale}/${typeContenu}/${selectedItem.id}`, '_blank');
+                                   window.location.href = `/${locale}/gouverneur/bilans?id=${selectedItem.id}`;
                                  }}
                                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200"
                                >

@@ -39,11 +39,14 @@ export async function GET(request: NextRequest) {
     const searchTerm = query.trim().toLowerCase();
 
     const results: SearchResult[] = [];
+    const session = await getServerSession(authOptions);
+    const isAdmin = !!session?.user && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
 
     // Recherche dans les établissements
     if (type === 'all' || type === 'etablissements') {
       const etablissements = await prisma.etablissement.findMany({
         where: {
+          ...(isAdmin ? {} : { isPublie: true }),
           OR: [
             { nom: { contains: searchTerm, mode: 'insensitive' } },
             { adresseComplete: { contains: searchTerm, mode: 'insensitive' } },
@@ -153,8 +156,7 @@ export async function GET(request: NextRequest) {
 
     // Recherche dans les utilisateurs (citoyens)
     // Sécurisé : visible seulement pour les rôles administratifs
-    const session = await getServerSession(authOptions);
-    const canViewUsers = session?.user && ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION', 'AUTORITE_LOCALE'].includes(session.user.role);
+    const canViewUsers = isAdmin;
 
     if ((type === 'all' || type === 'users') && canViewUsers) {
       const users = await prisma.user.findMany({
@@ -190,7 +192,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Recherche dans les réclamations (admin uniquement - à protéger côté UI)
-    if (type === 'reclamations') {
+    if (type === 'reclamations' && isAdmin) {
       const reclamations = await prisma.reclamation.findMany({
         where: {
           OR: [

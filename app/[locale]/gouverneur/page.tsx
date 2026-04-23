@@ -1033,6 +1033,20 @@ export default function GouverneurDashboard() {
                                     <h4 className="text-xl font-black text-red-900 uppercase tracking-tight">{locale === 'ar' ? 'إجراءات عاجلة مطلوبة' : 'Actions Urgentes Requises'}</h4>
                                  </div>
                                  <div className="grid sm:grid-cols-2 gap-4">
+                                     {/* Pending Validation Card (New) */}
+                                     <button 
+                                       onClick={() => { setActiveTab('reclamations'); setSelectedReclamationId(null); }}
+                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-amber-200 group/item text-start hover:border-amber-500 overflow-hidden relative"
+                                     >
+                                        <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                                        <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Clock size={20} /></div>
+                                        <div>
+                                           <p className="font-black text-slate-900 text-lg leading-tight">{stats?.reclamations?.enAttenteValidation || 0}</p>
+                                           <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'شكايات بانتظار المصادقة' : 'Réclamations en attente de validation'}</p>
+                                        </div>
+                                     </button>
+
+                                     {/* Pending Assignment Card (Accepted) */}
                                      <button 
                                        onClick={() => { setActiveTab('reclamations'); setSelectedReclamationId(null); }}
                                        className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-red-200 group/item text-start hover:border-red-500 overflow-hidden relative"
@@ -1047,13 +1061,13 @@ export default function GouverneurDashboard() {
                                      
                                      <button 
                                        onClick={() => setActiveTab('activites')}
-                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-amber-200 group/item text-start hover:border-amber-500 overflow-hidden relative"
+                                       className="flex items-center gap-4 p-5 bg-white rounded-3xl shadow-sm hover:shadow-2xl transition-all border border-purple-200 group/item text-start hover:border-purple-500 overflow-hidden relative"
                                      >
-                                        <div className="absolute inset-0 bg-amber-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                        <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-amber-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
+                                        <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                                        <div className="w-12 h-12 bg-purple-500/10 text-purple-600 rounded-2xl flex items-center justify-center shrink-0 group-hover/item:bg-purple-500 group-hover/item:text-white transition-colors"><Calendar size={20} /></div>
                                         <div>
                                            <p className="font-black text-slate-900 text-lg leading-tight">{stats?.evenements?.enCours || 0}</p>
-                                           <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
+                                           <p className="text-[10px] font-black text-purple-600 uppercase tracking-widest">{locale === 'ar' ? 'أحداث تتطلب الإغلاق' : 'Événements à clôturer'}</p>
                                         </div>
                                      </button>
                                  </div>

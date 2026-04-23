@@ -258,6 +258,7 @@ export async function getGovernorInsights(locale: string = 'fr') {
 
         const isAr = locale === 'ar';
         const now = new Date();
+        const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const firstDayPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         
         const [currentMonthCount, prevMonthCount, criticalReclamations] = await Promise.all([
@@ -288,9 +289,14 @@ export async function getGovernorInsights(locale: string = 'fr') {
 
         // Real-time logic for recommendation
         const unassignedCount = await prisma.reclamation.count({ where: { statut: 'ACCEPTEE', affectationReclamation: 'NON_AFFECTEE' } });
+        const pendingValidationCount = await prisma.reclamation.count({ where: { statut: null } });
         const avgSatisfaction = await prisma.etablissement.aggregate({ _avg: { noteMoyenne: true } });
         
-        if (unassignedCount > 5) {
+        if (pendingValidationCount > 10) {
+            recommendationMsg = isAr 
+                ? `تراكم في الشكايات الجديدة (${pendingValidationCount}). يرجى تفعيل خلية المصادقة لتسريع المعالجة.`
+                : `Accumulation de nouvelles réclamations (${pendingValidationCount}). Veuillez activer la cellule de validation pour accélérer le traitement.`;
+        } else if (unassignedCount > 5) {
             recommendationMsg = isAr 
                 ? `هناك ${unassignedCount} شكاوى مقبولة لم يتم تعيينها بعد. يرجى تسريع عملية التكليف.` 
                 : `Il y a ${unassignedCount} réclamations acceptées non assignées. Accélérer le processus d'affectation.`;

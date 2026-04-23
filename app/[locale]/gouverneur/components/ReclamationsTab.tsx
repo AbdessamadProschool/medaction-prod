@@ -94,8 +94,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         page: page.toString(),
         limit: '9',
         search: search,
-        statut: 'ACCEPTEE', // Force only accepted reclamations for Governor
-        ...(statutFilter && { affectation: statutFilter }),
+        ...(statutFilter ? { statut: statutFilter } : { statut: 'ACCEPTEE' }), // Default to ACCEPTEE but allow filter
       });
       
       const res = await fetch(`/api/reclamations?${params}`);
@@ -189,7 +188,8 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         
         <div className="flex gap-2 w-full lg:w-auto p-1.5 bg-slate-100/80 rounded-[2rem] overflow-x-auto custom-scrollbar">
           {[
-            { id: '', label: isAr ? 'الكل (المقبولة)' : 'Toutes (Validées)' },
+            { id: '', label: isAr ? 'الكل' : 'Toutes' },
+            { id: 'EN_ATTENTE', label: isAr ? 'بانتظار المصادقة' : 'En attente' },
             { id: 'NON_AFFECTEE', label: isAr ? 'بانتظار التعيين' : 'À affecter' },
             { id: 'AFFECTEE', label: isAr ? 'قيد المعالجة' : 'En cours' },
           ].map(f => (

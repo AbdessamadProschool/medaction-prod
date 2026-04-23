@@ -5304,7 +5304,9 @@
       "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe",
       "ACCESS_DENIED": "Accès Refusé",
       "ENABLE_2FA": "Activation 2FA",
-      "DISABLE_2FA": "Désactivation 2FA"
+      "DISABLE_2FA": "Désactivation 2FA",
+      "VERIFY_2FA_SUCCESS": "Vérification 2FA réussie",
+      "VERIFY_2FA_FAILED": "Échec vérification 2FA"
     },
     "modal": {
       "title": "Détails du Log #{id}",

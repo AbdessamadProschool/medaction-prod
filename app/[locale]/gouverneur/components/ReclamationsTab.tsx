@@ -321,7 +321,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
              exit={{ opacity: 0 }}
-             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md"
+             className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md"
              onClick={() => setSelectedRec(null)}
           >
             <motion.div
@@ -339,7 +339,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                     <span className={`px-4 py-1 text-[10px] font-black rounded-full border border-white/20 uppercase tracking-[0.2em] bg-white/5`}>
                         {STATUT_CONFIG[String(selectedRec.statut)].label}
                     </span>
-                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
+                    <span className="text-[10px] font-black text-white/70 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
                   </div>
                   <h2 className="text-3xl font-black">{selectedRec.titre}</h2>
                 </div>

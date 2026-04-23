@@ -609,7 +609,7 @@ export default function GouverneurDashboard() {
       {isMobileNavOpen && (
         <div 
           onClick={() => setIsMobileNavOpen(false)}
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[1900] xl:hidden"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[2045] xl:hidden"
         />
       )}
       
@@ -753,7 +753,7 @@ export default function GouverneurDashboard() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 p-0 z-[100] overflow-hidden"
+                        className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-gray-100 p-0 z-[3100] overflow-hidden"
                       >
                           <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-slate-50/50">
                              <h4 className="font-black text-slate-800 text-sm uppercase tracking-wide">{t('header.notifications.title')}</h4>
@@ -1126,7 +1126,7 @@ export default function GouverneurDashboard() {
                                  <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-1 gap-4">
                                      {(stats?.communes?.details || []).map((commune: any) => (
                                        <div key={commune.id} className="flex flex-col gap-2 group/c">
-                                          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-tight text-slate-400 group-hover:text-white transition-colors">
+                                          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-tight text-slate-300 group-hover:text-white transition-colors">
                                               <span className="flex items-center gap-2">
                                                  <div className={`w-1.5 h-1.5 rounded-full ${commune.rate < 50 ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : (commune.rate < 80 ? 'bg-amber-500' : 'bg-emerald-500')} transition-all`} />
                                                  {commune.nom}

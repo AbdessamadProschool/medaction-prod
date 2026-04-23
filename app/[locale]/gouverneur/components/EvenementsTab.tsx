@@ -464,7 +464,7 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
         {selectedItem && (
           <motion.div
              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-             className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-slate-900/95 backdrop-blur-md"
+             className="fixed inset-0 z-[3000] flex items-center justify-center p-4 md:p-10 bg-slate-900/95 backdrop-blur-md"
              onClick={() => setSelectedItem(null)}
           >
               <motion.div 
@@ -477,7 +477,7 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                 {selectedItem.image && (
                    <img 
                       src={selectedItem.image} 
-                      className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay blur-[2px]" 
+                      className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay blur-[1px]" 
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
@@ -539,8 +539,9 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                                   <span className="font-black text-sm uppercase tracking-widest">{isAr ? 'التقرير الختامي متوفر' : 'Rapport de Clôture Disponible'}</span>
                                </div>
                                <button 
+                                 type="button"
                                  onClick={() => {
-                                   router.push(`/${typeContenu}/${selectedItem.id}`);
+                                   window.open(`/${locale}/${typeContenu}/${selectedItem.id}`, '_blank');
                                  }}
                                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200"
                                >

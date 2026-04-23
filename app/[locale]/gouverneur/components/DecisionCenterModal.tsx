@@ -164,7 +164,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
            initial={{ opacity: 0 }}
            animate={{ opacity: 1 }}
            exit={{ opacity: 0 }}
-           className="fixed inset-0 z-[2000] flex items-center justify-center p-2 sm:p-4 bg-slate-950/90 backdrop-blur-xl"
+           className="fixed inset-0 z-[3000] flex items-center justify-center p-2 sm:p-4 bg-slate-950/90 backdrop-blur-xl"
            onClick={onClose}
         >
           <motion.div

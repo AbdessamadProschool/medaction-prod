@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify';
 interface SafeHTMLProps {
   html: string;
   className?: string;
-  tag?: keyof JSX.IntrinsicElements;
+  tag?: React.ElementType;
 }
 
 /**

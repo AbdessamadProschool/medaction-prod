@@ -6,8 +6,6 @@ import NewsSection from '@/components/home/NewsSection';
 import StatsSection from '@/components/home/StatsSection';
 import CTASection from '@/components/home/CTASection';
 import type { Metadata } from 'next';
-import GovHeader from "@/components/layout/GovHeader";
-import GovFooter from "@/components/layout/GovFooter";
 import { setRequestLocale } from 'next-intl/server';
 import { locales } from '@/i18n/routing';
 import WelcomeModal from '@/components/home/WelcomeModal';
@@ -64,46 +62,41 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      <GovHeader />
-      <main className="min-h-screen gov-pattern relative">
-        {/* Standard Design Background Pattern */}
-        <div 
-          className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none"
-          style={{
-            backgroundImage: "url('/images/zellige-bg.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        />
+      <div 
+        className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none"
+        style={{
+          backgroundImage: "url('/images/zellige-bg.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      />
 
-        {/* Content Wrapper */}
-        <div className="relative z-10">
-          <WelcomeModal />
-          {/* Hero avec carousel fullscreen */}
-          <HeroSection />
+      {/* Content Wrapper */}
+      <div className="relative z-10">
+        <WelcomeModal />
+        {/* Hero avec carousel fullscreen */}
+        <HeroSection />
 
-          {/* Filtres rapides par secteur/commune */}
-          <QuickFiltersSection />
+        {/* Filtres rapides par secteur/commune */}
+        <QuickFiltersSection />
 
-          {/* Événements à venir - carousel infini */}
-          <EventsSection />
+        {/* Événements à venir - carousel infini */}
+        <EventsSection />
 
-          {/* Campagnes actives avec progress bars */}
-          <CampaignsSection />
+        {/* Campagnes actives avec progress bars */}
+        <CampaignsSection />
 
-          {/* Actualités récentes */}
-          <NewsSection />
+        {/* Actualités récentes */}
+        <NewsSection />
 
-          {/* Statistiques animées */}
-          <StatsSection />
+        {/* Statistiques animées */}
+        <StatsSection />
 
-          {/* CTA finale */}
-          <CTASection />
-        </div>
-      </main>
-      <GovFooter />
+        {/* CTA finale */}
+        <CTASection />
+      </div>
     </>
   );
 }

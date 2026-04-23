@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import {
   MapPin,
@@ -18,7 +18,29 @@ import {
 export default function GovFooter() {
   const t = useTranslations();
   const locale = useLocale();
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Routes sans footer pour maximiser l'espace de la carte/liste et éviter le scroll
+  const hiddenRoutes = [
+    '/etablissements',
+    '/evenements',
+    '/carte',
+    '/actualites',
+    '/campagnes',
+    '/articles',
+    '/reclamations/nouvelle',
+    '/mes-reclamations',
+    '/suggestions',
+    '/profil'
+  ];
+
+  const shouldHide = hiddenRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+
+  if (shouldHide) return null;
+
 
   const quickLinks = [
     { href: '/etablissements', labelKey: 'nav.etablissements' },

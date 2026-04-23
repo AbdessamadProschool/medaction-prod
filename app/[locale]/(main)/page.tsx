@@ -3,10 +3,18 @@ import QuickFiltersSection from '@/components/home/QuickFiltersSection';
 import EventsSection from '@/components/home/EventsSection';
 import CampaignsSection from '@/components/home/CampaignsSection';
 import NewsSection from '@/components/home/NewsSection';
-
 import StatsSection from '@/components/home/StatsSection';
 import CTASection from '@/components/home/CTASection';
 import type { Metadata } from 'next';
+import GovHeader from "@/components/layout/GovHeader";
+import GovFooter from "@/components/layout/GovFooter";
+import { setRequestLocale } from 'next-intl/server';
+import { locales } from '@/i18n/routing';
+import WelcomeModal from '@/components/home/WelcomeModal';
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   title: 'PORTAIL MEDIOUNA - Province de Médiouna | بوابة مديونة',
@@ -50,31 +58,52 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <>
-      {/* Hero avec carousel fullscreen */}
-      <HeroSection />
+      <GovHeader />
+      <main className="min-h-screen gov-pattern relative">
+        {/* Standard Design Background Pattern */}
+        <div 
+          className="absolute inset-0 z-0 opacity-[0.12] pointer-events-none"
+          style={{
+            backgroundImage: "url('/images/zellige-bg.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        />
 
-      {/* Filtres rapides par secteur/commune */}
-      <QuickFiltersSection />
+        {/* Content Wrapper */}
+        <div className="relative z-10">
+          <WelcomeModal />
+          {/* Hero avec carousel fullscreen */}
+          <HeroSection />
 
+          {/* Filtres rapides par secteur/commune */}
+          <QuickFiltersSection />
 
+          {/* Événements à venir - carousel infini */}
+          <EventsSection />
 
-      {/* Événements à venir - carousel infini */}
-      <EventsSection />
+          {/* Campagnes actives avec progress bars */}
+          <CampaignsSection />
 
-      {/* Campagnes actives avec progress bars */}
-      <CampaignsSection />
+          {/* Actualités récentes */}
+          <NewsSection />
 
-      {/* Actualités récentes */}
-      <NewsSection />
+          {/* Statistiques animées */}
+          <StatsSection />
 
-      {/* Statistiques animées */}
-      <StatsSection />
-
-      {/* CTA finale */}
-      <CTASection />
+          {/* CTA finale */}
+          <CTASection />
+        </div>
+      </main>
+      <GovFooter />
     </>
   );
 }

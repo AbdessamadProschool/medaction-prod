@@ -47,6 +47,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   const [etablissements, setEtablissements] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
 
   // Charger les communes et établissements
   useEffect(() => {
@@ -75,30 +76,34 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
 
-    // Validation
+    // Validation locale
+    const newFieldErrors: Record<string, string[]> = {};
+
     if (formData.motDePasse !== formData.confirmMotDePasse) {
-      setError(t('errors.password_mismatch'));
-      return;
+      newFieldErrors.confirmMotDePasse = [t('errors.password_mismatch')];
     }
 
     if (formData.motDePasse.length < 6) {
-      setError(t('errors.password_length'));
-      return;
+      newFieldErrors.motDePasse = [t('errors.password_length')];
     }
 
     if (formData.role === 'DELEGATION' && !formData.secteurResponsable) {
-      setError(t('errors.sector_required'));
-      return;
+      newFieldErrors.secteurResponsable = [t('errors.sector_required')];
     }
 
     if (formData.role === 'AUTORITE_LOCALE' && !formData.communeResponsableId) {
-      setError(t('errors.commune_required'));
-      return;
+      newFieldErrors.communeResponsableId = [t('errors.commune_required')];
     }
 
     if (formData.role === 'COORDINATEUR_ACTIVITES' && formData.etablissementsGeres.length === 0) {
-      setError(t('errors.establishment_required'));
+      newFieldErrors.etablissementsGeres = [t('errors.establishment_required')];
+    }
+
+    if (Object.keys(newFieldErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      setError(t('errors.create_error'));
       return;
     }
 
@@ -128,11 +133,25 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
         toast.success(t('success', { name: `${formData.prenom} ${formData.nom}` }));
         onSuccess();
       } else {
-        const errorMessage = typeof data.error === 'string' 
-          ? data.error 
-          : data.error?.message || t('errors.create_error');
-        setError(errorMessage);
-        toast.error(errorMessage);
+        // Gestion des erreurs structurées de l'API
+        if (data.error) {
+          if (data.error.fieldErrors) {
+            setFieldErrors(data.error.fieldErrors);
+          }
+          if (data.error.field) {
+            setFieldErrors(prev => ({
+              ...prev,
+              [data.error.field]: [data.error.message]
+            }));
+          }
+          
+          const errorMessage = data.error.message || t('errors.create_error');
+          setError(errorMessage);
+          toast.error(errorMessage);
+        } else {
+          setError(t('errors.create_error'));
+          toast.error(t('errors.create_error'));
+        }
       }
     } catch (err) {
       setError(t('errors.server_error'));
@@ -193,6 +212,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.first_name')}
                 />
               </div>
+              {fieldErrors.prenom && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.prenom[0]}</p>
+              )}
             </div>
 
             {/* Nom */}
@@ -211,6 +233,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.last_name')}
                 />
               </div>
+              {fieldErrors.nom && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.nom[0]}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -229,6 +254,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.email')}
                 />
               </div>
+              {fieldErrors.email && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.email[0]}</p>
+              )}
             </div>
 
             {/* Téléphone */}
@@ -246,6 +274,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.phone')}
                 />
               </div>
+              {fieldErrors.telephone && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.telephone[0]}</p>
+              )}
             </div>
 
             {/* Mot de passe */}
@@ -264,6 +295,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.password')}
                 />
               </div>
+              {fieldErrors.motDePasse && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.motDePasse[0]}</p>
+              )}
             </div>
 
             {/* Confirmer mot de passe */}
@@ -282,6 +316,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   placeholder={t('placeholders.password')}
                 />
               </div>
+              {fieldErrors.confirmMotDePasse && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.confirmMotDePasse[0]}</p>
+              )}
             </div>
 
             {/* Rôle */}
@@ -319,6 +356,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   </label>
                 ))}
               </div>
+              {fieldErrors.role && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.role[0]}</p>
+              )}
             </div>
 
             {/* Secteur (pour DELEGATION) */}
@@ -338,6 +378,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                     <option key={s} value={s}>{tSectors(s)}</option>
                   ))}
                 </select>
+                {fieldErrors.secteurResponsable && (
+                  <p className="mt-1 text-xs text-red-500">{fieldErrors.secteurResponsable[0]}</p>
+                )}
               </div>
             )}
 
@@ -363,6 +406,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                     ))}
                   </select>
                 </div>
+                {fieldErrors.communeResponsableId && (
+                  <p className="mt-1 text-xs text-red-500">{fieldErrors.communeResponsableId[0]}</p>
+                )}
                 <p className="mt-1 text-xs text-gray-500">
                   {t('helpers.commune_helper')}
                 </p>
@@ -402,6 +448,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                     ))
                   )}
                 </div>
+                {fieldErrors.etablissementsGeres && (
+                  <p className="mt-1 text-xs text-red-500">{fieldErrors.etablissementsGeres[0]}</p>
+                )}
                 <p className="mt-1 text-xs text-gray-500">
                   {t('helpers.establishments_helper')}
                 </p>

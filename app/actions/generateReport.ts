@@ -258,10 +258,11 @@ export async function getGovernorInsights(locale: string = 'fr') {
 
         const isAr = locale === 'ar';
         const now = new Date();
-        const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-        const [currentMonthCount, criticalReclamations] = await Promise.all([
+        const firstDayPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        
+        const [currentMonthCount, prevMonthCount, criticalReclamations] = await Promise.all([
             prisma.reclamation.count({ where: { createdAt: { gte: firstDayCurrentMonth } } }),
+            prisma.reclamation.count({ where: { createdAt: { gte: firstDayPrevMonth, lt: firstDayCurrentMonth } } }),
             prisma.reclamation.findMany({
                 where: { statut: null, createdAt: { lte: new Date(now.getTime() - 7*24*60*60*1000) } },
                 take: 3,
@@ -270,29 +271,46 @@ export async function getGovernorInsights(locale: string = 'fr') {
             })
         ]);
 
+        const growthPercentage = prevMonthCount > 0 
+            ? Math.round(((currentMonthCount - prevMonthCount) / prevMonthCount) * 100) 
+            : (currentMonthCount > 0 ? 100 : 0);
+
         const alerts = criticalReclamations.map(r => ({
             id: r.id,
             message: isAr ? `شكاية #${r.id} متأخرة (${r.commune.nom})` : `Réclamation #${r.id} en retard (${r.commune.nom})`,
             type: 'danger'
         }));
 
-        if (alerts.length === 0) {
-            alerts.push({ id: 0, message: isAr ? "نظام مستقر" : "Système stable", type: "success" });
+        // ─── Dynamic Strategic Analysis ─────────────────────────────────────────
+        let recommendationMsg = isAr 
+            ? "تحسين مؤشرات الأداء من خلال تسريع وتيرة إغلاق الأحداث المنتهية." 
+            : "Optimiser les indicateurs de performance en accélérant la clôture des événements terminés.";
+
+        // Real-time logic for recommendation
+        const unassignedCount = await prisma.reclamation.count({ where: { statut: 'ACCEPTEE', affectationReclamation: 'NON_AFFECTEE' } });
+        const avgSatisfaction = await prisma.etablissement.aggregate({ _avg: { noteMoyenne: true } });
+        
+        if (unassignedCount > 5) {
+            recommendationMsg = isAr 
+                ? `هناك ${unassignedCount} شكاوى مقبولة لم يتم تعيينها بعد. يرجى تسريع عملية التكليف.` 
+                : `Il y a ${unassignedCount} réclamations acceptées non assignées. Accélérer le processus d'affectation.`;
+        } else if ((avgSatisfaction._avg.noteMoyenne || 0) < 3.5) {
+            recommendationMsg = isAr
+                ? "معدل الرضا العام منخفض في بعض القطاعات. يوصى بإجراء تدقيق في جودة الخدمات."
+                : "Le taux de satisfaction est bas dans certains secteurs. Audit de qualité recommandé.";
         }
 
         return {
             success: true,
             data: {
                 growth: { 
-                    value: currentMonthCount, 
-                    label: `${currentMonthCount}`, 
-                    period: isAr ? 'مبادرة هذا الشهر' : 'initiatives ce mois' 
+                    value: growthPercentage, 
+                    label: `${growthPercentage}%`, 
+                    period: isAr ? 'مقارنة بالشهر الماضي' : 'vs mois dernier' 
                 },
                 alerts,
                 recommendation: { 
-                    message: isAr 
-                        ? "تحسين مؤشرات الأداء من خلال تسريع وتيرة إغلاق الأحداث المنتهية." 
-                        : "Optimiser les indicateurs de performance en accélérant la clôture des événements terminés." 
+                    message: recommendationMsg 
                 }
             }
         };

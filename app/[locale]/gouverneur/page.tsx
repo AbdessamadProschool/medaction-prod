@@ -613,7 +613,7 @@ export default function GouverneurDashboard() {
       
       <div 
         style={{ [isRTL ? 'right' : 'left']: 0 }}
-        className={`fixed top-0 bottom-0 w-72 bg-slate-900/95 backdrop-blur-3xl text-white z-[2030] transition-transform duration-300 xl:translate-x-0 flex flex-col border-white/10
+        className={`fixed top-0 bottom-0 w-72 bg-slate-900/95 backdrop-blur-3xl text-white z-[2050] transition-transform duration-300 xl:translate-x-0 flex flex-col border-white/10
         ${isRTL ? 'border-l' : 'border-r'} 
         ${isMobileNavOpen ? 'translate-x-0' : (isRTL ? 'translate-x-full' : '-translate-x-full')}
         `}>
@@ -685,7 +685,7 @@ export default function GouverneurDashboard() {
       </div>
 
       {/* 📱 MOBILE HEADER */}
-      <div className="xl:hidden bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-[60]">
+      <div className="xl:hidden bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-[2040]">
          <div className="flex items-center gap-2">
             <Shield className="text-gov-gold" />
             <span className="font-bold">MÉDIOUNA ACTION</span>

@@ -9,11 +9,13 @@ import {
   ClipboardList, FileCheck, AlertCircle, FileSearch
 } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { SafeHTML } from '@/components/ui/SafeHTML';
 
 export default function EvenementsTab({ highlightId }: { highlightId?: number }) {
   const t = useTranslations('governor');
   const locale = useLocale();
+  const router = useRouter();
   const isAr = locale === 'ar';
 
   const STATUT_CONFIG: any = {
@@ -538,18 +540,12 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
                                </div>
                                <button 
                                  onClick={() => {
-                                   if (selectedItem.raw.rapportClotureUrl) {
-                                      window.open(selectedItem.raw.rapportClotureUrl, '_blank');
-                                   } else {
-                                      // Scroll directly to the report section in the modal
-                                      const el = document.getElementById('report-details-section');
-                                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                   }
+                                   router.push(`/${typeContenu}/${selectedItem.id}`);
                                  }}
                                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-200"
                                >
                                   <FileSearch size={18} />
-                                  {isAr ? 'الاطلاع على التقرير' : 'Consulter le Rapport'}
+                                  {isAr ? 'الاطلاع على التفاصيل الكاملة' : 'Consulter les détails & rapport'}
                                </button>
                             </div>
                           </div>

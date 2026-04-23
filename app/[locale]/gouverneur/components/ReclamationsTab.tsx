@@ -7,7 +7,7 @@ import {
   MapPin, Calendar, Clock, AlertTriangle, CheckCircle, 
   FileText, X, Building2, User, Activity, ShieldCheck
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 // Interface updated with full details
 interface Reclamation {
@@ -29,6 +29,8 @@ interface Reclamation {
 export default function ReclamationsTab({ initialSelectedId }: { initialSelectedId?: number }) {
   const t = useTranslations('governor.reclamations_tab');
   const tSectors = useTranslations('sectors');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
 
   const STATUT_CONFIG: any = {
     null: { label: t('filters.pending'), color: 'bg-slate-100 text-slate-600 border-slate-200' },
@@ -92,7 +94,8 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         page: page.toString(),
         limit: '9',
         search: search,
-        ...(statutFilter && { statut: statutFilter }),
+        statut: 'ACCEPTEE', // Force only accepted reclamations for Governor
+        ...(statutFilter && { affectation: statutFilter }),
       });
       
       const res = await fetch(`/api/reclamations?${params}`);
@@ -186,10 +189,9 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         
         <div className="flex gap-2 w-full lg:w-auto p-1.5 bg-slate-100/80 rounded-[2rem] overflow-x-auto custom-scrollbar">
           {[
-            { id: '', label: t('filters.all') },
-            { id: 'en_attente', label: t('filters.pending') },
-            { id: 'ACCEPTEE', label: t('filters.processing') },
-            { id: 'REJETEE', label: t('filters.rejected') },
+            { id: '', label: isAr ? 'الكل (المقبولة)' : 'Toutes (Validées)' },
+            { id: 'NON_AFFECTEE', label: isAr ? 'بانتظار التعيين' : 'À affecter' },
+            { id: 'AFFECTEE', label: isAr ? 'قيد المعالجة' : 'En cours' },
           ].map(f => (
             <button
               key={f.id}

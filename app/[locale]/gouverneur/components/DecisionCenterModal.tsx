@@ -189,10 +189,10 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                             </span>
                             <span className="text-slate-600 text-[10px] font-black uppercase">ID: {etablissement.id}</span>
                         </div>
-                        <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase truncate max-w-[300px] sm:max-w-xl">{etablissement.nom}</h2>
-                        <div className="flex items-center gap-4 text-slate-500 text-xs font-bold">
-                            <span className="flex items-center gap-1.5"><MapPin size={14} /> {etablissement.communeNom || etablissement.commune?.nom}</span>
-                            <span className="flex items-center gap-1.5"><Users size={14} /> {abonnements} {t('labels.subscribers')}</span>
+                        <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase truncate max-w-[300px] sm:max-w-xl leading-tight">{etablissement.nom}</h2>
+                        <div className="flex items-center gap-4 text-slate-400 text-xs font-bold mt-1">
+                            <span className="flex items-center gap-1.5"><MapPin size={14} className="text-blue-500" /> {etablissement.communeNom || etablissement.commune?.nom}</span>
+                            <span className="flex items-center gap-1.5"><Users size={14} className="text-gov-gold" /> {abonnements} {t('labels.subscribers')}</span>
                         </div>
                     </div>
                 </div>
@@ -255,10 +255,10 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                   <div className="relative z-10">
                                       <div className="px-3 py-1 bg-white/20 rounded-md text-[10px] font-black uppercase w-fit mb-3 tracking-widest">{t('labels.emergency_diag')}</div>
                                       <h3 className="text-xl font-black mb-2 uppercase">{etablissement.besoinsUrgents ? t('status.urgent_alert') : t('status.normal_ops')}</h3>
-                                      <p className="text-[10px] text-white/70 font-bold leading-relaxed mb-4 italic pl-3 border-l-2 border-white/20">
+                                      <p className="text-[10px] text-white/80 font-black leading-relaxed mb-4 italic pl-3 border-l-2 border-white/20">
                                           {t('labels.decision_report_desc')}
                                       </p>
-                                      <p className="text-xs text-white/90 font-bold leading-relaxed line-clamp-2 pl-3 border-l-2 border-white/20">
+                                      <p className="text-xs text-white font-black leading-relaxed line-clamp-3 pl-3 border-l-2 border-white/20">
                                           {etablissement.besoinsUrgents || t('status.nominal') + " " + t('status.no_emergency')}
                                       </p>
                                   </div>
@@ -532,7 +532,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                 <Sparkles className="absolute -top-12 -right-12 opacity-5 text-blue-500" size={200} />
                                 <div className="relative z-10">
                                     <h3 className="text-2xl font-black mb-6 uppercase tracking-tight text-blue-400 drop-shadow-sm">{t('performance.strategic_analysis')}</h3>
-                                    <p className="text-sm text-white/80 font-bold leading-relaxed italic border-l-4 border-blue-500 pl-6 mb-8">
+                                    <p className="text-sm text-white font-black leading-relaxed italic border-l-4 border-blue-500 pl-6 mb-8">
                                         {score > 75 ? t('performance.high_efficiency_msg') : t('performance.stable_performance_msg')}
                                     </p>
                                     <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">

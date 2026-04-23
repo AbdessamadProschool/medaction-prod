@@ -511,6 +511,17 @@
         "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟"
       }
     },
+    "news": {
+      "form": {
+        "select_image": "اختر صورة",
+        "summary": "ملخص",
+        "general_category": "الفئة العامة"
+      },
+      "categories": {
+        "PARTENARIAT": "شراكة",
+        "SUCCESS_STORY": "قصة نجاح"
+      }
+    },
     "dashboard": {
       "header": {
         "title": "لوحة القيادة",
@@ -815,14 +826,6 @@
       "messages": {
         "reject_reason_required": "يرجى ذكر سبب الرفض"
       }
-    },
-    "history_actions": {
-      "CREATION": "إنشاء",
-      "VALIDATION": "تصديق",
-      "REJET": "رفض",
-      "AFFECTATION": "تعيين",
-      "RESOLUTION": "حل",
-      "UPDATE": "تحديث"
     },
     "suggestions_page": {
       "page_title": "المقترحات",
@@ -4740,6 +4743,8 @@
     "Personnel": "موظفون",
     "Accessibilité": "ولوجية",
     "education": "التعليم",
+    "sport": "الرياضة",
+    "eclairage": "الإضاءة العمومية",
     "Autre": "أخرى"
   },
   "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
@@ -5646,5 +5651,13 @@
       "applied_success": "تم تطبيق التعديلات على المؤسسة بنجاح.",
       "rejected_success": "تم رفض الطلب بنجاح."
     }
+  },
+  "history_actions": {
+    "CREATION": "إنشاء",
+    "VALIDATION": "تصديق",
+    "REJET": "رفض",
+    "AFFECTATION": "تعيين",
+    "RESOLUTION": "حل",
+    "UPDATE": "تحديث"
   }
 }

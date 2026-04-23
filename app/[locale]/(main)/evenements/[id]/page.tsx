@@ -582,19 +582,26 @@ export default function EvenementDetailPage() {
              </motion.div>
 
              {/* Downloads / Reports (Protected) */}
-             {isEnded && event.bilanDescription && (
+             {isEnded && (event.bilanDescription || event.compteRenduUrl) && (
                 <PermissionGuard permission="evenements.report">
                    <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 border border-emerald-100 shadow-sm"
+                      className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4"
                    >
-                      <h3 className="text-lg font-bold text-emerald-900 mb-2 flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-emerald-900 flex items-center gap-2">
                          <CheckCircle className="w-5 h-5" />
                          {t('labels.report')}
                       </h3>
-                      <p className="text-emerald-700/80 text-sm mb-4">
+                      
+                      {event.bilanDescription && (
+                         <div className="bg-white/50 p-4 rounded-xl text-emerald-800 text-sm font-medium leading-relaxed border border-emerald-100/50">
+                            {event.bilanDescription}
+                         </div>
+                      )}
+
+                      <p className="text-emerald-700/80 text-xs italic">
                          {t('labels.report_hint')}
                       </p>
                       
@@ -603,7 +610,7 @@ export default function EvenementDetailPage() {
                            href={event.compteRenduUrl}
                            target="_blank" 
                            rel="noopener noreferrer"
-                           className="flex items-center justify-center gap-2 w-full py-2 bg-white text-emerald-700 font-bold rounded-xl shadow-sm hover:shadow-md transition-all text-sm border border-emerald-200"
+                           className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-md hover:bg-emerald-700 transition-all text-sm"
                          >
                             <Download className="w-4 h-4" />
                             {t('buttons.download_report')}

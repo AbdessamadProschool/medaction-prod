@@ -37,7 +37,13 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
 
     // Reclamations Stats
     const reclamationsTotal = await prisma.reclamation.count();
-    const reclamationsEnAttente = await prisma.reclamation.count({ where: { statut: null } });
+    const reclamationsEnAttenteValidation = await prisma.reclamation.count({ where: { statut: null } });
+    const reclamationsEnAttenteAffectation = await prisma.reclamation.count({ 
+        where: { 
+            statut: 'ACCEPTEE', 
+            affectationReclamation: 'NON_AFFECTEE' 
+        } 
+    });
     const reclamationsEnCours = await prisma.reclamation.count({ where: { statut: 'ACCEPTEE', dateResolution: null } });
     const reclamationsResolues = await prisma.reclamation.count({ where: { dateResolution: { not: null } } });
     const reclamationsRejetees = await prisma.reclamation.count({ where: { statut: 'REJETEE' } });
@@ -322,12 +328,13 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         communes: { total: communesCount, actives: communesCount, details: communeStats },
         reclamations: {
             total: reclamationsTotal,
-            enAttente: reclamationsEnAttente,
+            enAttente: reclamationsEnAttenteAffectation, // This is what the Governor sees as "To Assign"
+            enAttenteValidation: reclamationsEnAttenteValidation,
             enCours: reclamationsEnCours,
             resolues: reclamationsResolues,
             rejetees: reclamationsRejetees,
             tauxResolution,
-            urgentes: reclamationsEnAttente + reclamationsEnCours,
+            urgentes: reclamationsEnAttenteAffectation + reclamationsEnCours,
             nouveauCetteSemaine: reclamationsNouvelles,
         },
         etablissements: {

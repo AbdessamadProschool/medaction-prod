@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -17,7 +17,7 @@ async function getActualiteWithOwnershipCheck(actualiteId: number, session: any)
     return { actualite: null, error: NextResponse.json({ error: 'Actualité non trouvée' }, { status: 404 }) };
   }
 
-  const isOwner = Number(actualite.createdById) === Number(session.user.id);
+  const isOwner = Number(actualite.createdBy) === Number(session.user.id);
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
   if (!isOwner && !isAdmin) {
     return { actualite: null, error: NextResponse.json({ error: 'Accès refusé' }, { status: 403 }) };

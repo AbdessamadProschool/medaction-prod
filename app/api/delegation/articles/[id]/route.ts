@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -15,7 +15,7 @@ async function getArticleWithOwnershipCheck(articleId: number, session: any) {
     return { article: null, error: NextResponse.json({ error: 'Article non trouvé' }, { status: 404 }) };
   }
 
-  const isOwner = Number(article.createdById) === Number(session.user.id);
+  const isOwner = Number(article.createdBy) === Number(session.user.id);
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
 
   if (!isOwner && !isAdmin) {

@@ -80,6 +80,7 @@ interface Stats {
     resolues: number; 
     rejetees: number;
     tauxResolution: number;
+    tauxAcceptation?: number;
     urgentes: number;
     nouveauCetteSemaine: number;
   };

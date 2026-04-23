@@ -648,23 +648,30 @@ const authMiddleware = withAuth(
     
     // ─────────────────────────────────────────────────────────────────
     // 9. PAGES PROTÉGÉES (vérification RBAC)
+    //    Les pages publiques passent directement au rendu (pas de redirection login)
     // ─────────────────────────────────────────────────────────────────
     if (!isApi) {
-      if (!token) {
-        const loginUrl = new URL(`/${locale}/login`, req.url);
-        loginUrl.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(loginUrl);
-      }
-      
-      if (!token.isActive) {
-        return NextResponse.redirect(new URL(`/${locale}/compte-desactive`, req.url));
-      }
-      
-      const allowedRoles = getProtectedRouteRoles(effectivePathname);
-      if (allowedRoles) {
-        const userRole = token.role as Role;
-        if (!allowedRoles.includes(userRole)) {
-          return NextResponse.redirect(new URL(`/${locale}/acces-refuse`, req.url));
+      // Pages publiques : pas besoin d'authentification
+      if (isPublicPage(effectivePathname)) {
+        // Laisser passer — le rendu i18n est géré en étape 10
+      } else {
+        // Pages protégées : vérification auth + RBAC
+        if (!token) {
+          const loginUrl = new URL(`/${locale}/login`, req.url);
+          loginUrl.searchParams.set('callbackUrl', pathname);
+          return NextResponse.redirect(loginUrl);
+        }
+        
+        if (!token.isActive) {
+          return NextResponse.redirect(new URL(`/${locale}/compte-desactive`, req.url));
+        }
+        
+        const allowedRoles = getProtectedRouteRoles(effectivePathname);
+        if (allowedRoles) {
+          const userRole = token.role as Role;
+          if (!allowedRoles.includes(userRole)) {
+            return NextResponse.redirect(new URL(`/${locale}/acces-refuse`, req.url));
+          }
         }
       }
     }
@@ -708,19 +715,13 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
 
   // 2. Identification des segments
   const isApi = isApiRoute(pathname);
-  const effectivePathname = isApi ? pathname : stripLocaleFromPath(pathname);
 
-  // 3. Cas particulier : Racine (Redirection I18N immédiate)
+  // 3. Cas particulier : Racine "/" → redirection i18n simple
   if (pathname === '/') {
     return handleI18nRouting(req);
   }
 
-  // 4. PAGES PUBLIQUES (Performance : bypass auth middleware)
-  if (!isApi && isPublicPage(effectivePathname)) {
-    return handleI18nRouting(req);
-  }
-
-  // 5. APIs TOUJOURS PUBLIQUES
+  // 4. APIs TOUJOURS PUBLIQUES (seules routes court-circuitées)
   if (isApi && isAlwaysPublicApiRoute(pathname)) {
     const response = stripped 
       ? NextResponse.next({ request: { headers: strippedHeaders } })
@@ -728,7 +729,10 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     return addSecurityHeaders(response);
   }
 
-  // 6. TOUT LE RESTE -> Protection avec Auth & RBAC
+  // 5. TOUTES LES PAGES (publiques et protégées) passent par authMiddleware
+  //    → authorized: () => true → ne bloque personne
+  //    → la logique RBAC/publique est gérée DANS le callback du withAuth
+  //    → le wrapper withAuth initialise le contexte RSC nécessaire au rendu
   return (authMiddleware as any)(req, event);
 }
 

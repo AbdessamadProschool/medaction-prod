@@ -75,6 +75,7 @@ interface Stats {
   reclamations: { 
     total: number; 
     enAttente: number; 
+    enAttenteValidation: number;
     enCours: number; 
     resolues: number; 
     rejetees: number;

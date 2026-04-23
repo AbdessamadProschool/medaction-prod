@@ -79,7 +79,7 @@ export default function GlobalSearch({
   const [popularSearches, setPopularSearches] = useState<string[]>([]);
 
   // Debounce la recherche
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Recherche avec debounce
   const performSearch = useCallback(async (searchQuery: string) => {

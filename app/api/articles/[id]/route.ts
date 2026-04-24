@@ -99,9 +99,10 @@ export const PUT = withErrorHandler(async (
       contenu: body.contenu,
       categorie: body.categorie,
       tags: body.tags,
+      statut: body.isPublie ? 'PUBLIE' : 'BROUILLON',
       isPublie: body.isPublie,
       isMisEnAvant: body.isMisEnAvant,
-      datePublication: body.datePublication ? new Date(body.datePublication) : undefined,
+      datePublication: body.isPublie ? new Date() : (body.datePublication ? new Date(body.datePublication) : undefined),
     },
   });
 
@@ -146,6 +147,7 @@ export const PATCH = withErrorHandler(async (
     where: { id: articleId },
     data: {
       statut: body.statut,
+      isPublie: body.statut === 'PUBLIE',
       isMisEnAvant: body.isMisEnAvant,
     },
   });

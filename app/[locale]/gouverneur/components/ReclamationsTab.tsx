@@ -32,11 +32,9 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
   const locale = useLocale();
   const isAr = locale === 'ar';
 
-  const STATUT_CONFIG: any = {
-    null: { label: t('filters.pending'), color: 'bg-slate-100 text-slate-600 border-slate-200' },
-    'NOUVELLE': { label: t('filters.pending'), color: 'bg-slate-100 text-slate-600 border-slate-200' },
-    'ACCEPTEE': { label: t('filters.processing'), color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-    'REJETEE': { label: t('filters.rejected'), color: 'bg-red-100 text-red-700 border-red-200' },
+  const AFFECTATION_CONFIG: any = {
+    'NON_AFFECTEE': { label: isAr ? 'بانتظار التعيين' : 'À affecter', color: 'bg-amber-50 text-amber-600 border-amber-100', icon: AlertTriangle },
+    'AFFECTEE': { label: isAr ? 'قيد المعالجة' : 'En cours', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: ShieldCheck },
   };
   const [reclamations, setReclamations] = useState<Reclamation[]>([]);
   const [stats, setStats] = useState<any>(null);
@@ -187,11 +185,11 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
           />
         </div>
         
-        <div className="flex gap-2 w-full lg:w-auto p-1.5 bg-slate-100/80 rounded-[2rem] overflow-x-auto custom-scrollbar">
+        <div className="flex gap-2 w-full lg:w-auto p-1.5 bg-slate-100/80 rounded-[2rem] overflow-x-auto custom-scrollbar no-scrollbar">
           {[
-            { id: '', label: isAr ? 'الكل' : 'Toutes' },
-            { id: 'NON_AFFECTEE', label: isAr ? 'بانتظار التعيين' : 'À affecter' },
-            { id: 'AFFECTEE', label: isAr ? 'قيد المعالجة' : 'En cours' },
+            { id: '', label: isAr ? 'الكل' : 'Tout afficher' },
+            { id: 'NON_AFFECTEE', label: isAr ? 'بانتظار التعيين' : 'Non assignées' },
+            { id: 'AFFECTEE', label: isAr ? 'قيد المعالجة' : 'Assignées' },
           ].map(f => (
             <button
               key={f.id}
@@ -236,9 +234,16 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-slate-50 to-transparent pointer-events-none rounded-bl-[4rem] group-hover:from-gov-blue/5 transition-colors" />
 
                 <div className="flex justify-between items-start mb-6 relative z-10">
-                   <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[String(rec.statut)].color}`}>
-                      {STATUT_CONFIG[String(rec.statut)].label}
-                   </div>
+                   {(() => {
+                      const config = AFFECTATION_CONFIG[rec.affectationReclamation] || AFFECTATION_CONFIG.NON_AFFECTEE;
+                      const Icon = config.icon;
+                      return (
+                        <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-sm flex items-center gap-2 ${config.color}`}>
+                           <Icon size={12} />
+                           {config.label}
+                        </div>
+                      );
+                   })()}
                    <div className="text-[10px] font-black text-slate-300 font-mono tracking-widest group-hover:text-gov-blue/30 transition-colors">
                       ID-{rec.id}
                    </div>
@@ -336,9 +341,14 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gov-blue/10 skew-x-12 translate-x-1/4" />
                 <div className="relative z-10 space-y-2">
                   <div className="flex items-center gap-3">
-                    <span className={`px-4 py-1 text-[10px] font-black rounded-full border border-white/20 uppercase tracking-[0.2em] bg-white/5`}>
-                        {STATUT_CONFIG[String(selectedRec.statut)].label}
-                    </span>
+                    {(() => {
+                        const config = AFFECTATION_CONFIG[selectedRec.affectationReclamation] || AFFECTATION_CONFIG.NON_AFFECTEE;
+                        return (
+                          <span className={`px-4 py-1 text-[10px] font-black rounded-full border uppercase tracking-[0.2em] ${config.color}`}>
+                              {config.label}
+                          </span>
+                        );
+                    })()}
                     <span className="text-[10px] font-black text-white/70 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
                   </div>
                   <h2 className="text-xl md:text-3xl font-black text-white break-words overflow-wrap-anywhere" style={{ wordBreak: 'break-word' }}>{selectedRec.titre}</h2>

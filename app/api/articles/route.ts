@@ -38,9 +38,14 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const search = searchParams.get('search') || '';
   const categorie = searchParams.get('categorie') || '';
 
-  const where: Record<string, any> = {
-    isPublie: true,
-  };
+  const statut = searchParams.get('statut');
+  const where: Record<string, any> = {};
+
+  if (statut) {
+    where.statut = statut;
+  } else {
+    where.isPublie = true;
+  }
 
   if (search) {
     where.OR = [
@@ -79,6 +84,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         datePublication: true,
         createdAt: true,
         isPublie: true,
+        statut: true,
         createdByUser: {
           select: {
             id: true,
@@ -110,7 +116,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     datePublication: a.datePublication,
     createdAt: a.createdAt,
     auteur: a.createdByUser,
-    statut: a.isPublie ? 'PUBLIE' : 'EN_ATTENTE',
+    statut: a.statut,
   }));
 
   return NextResponse.json({
@@ -166,6 +172,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       categorie: data.categorie,
       imagePrincipale: data.imageCouverture || data.imagePrincipale,
       tags: data.tags || [],
+      statut: data.isPublie ? 'PUBLIE' : 'BROUILLON',
       isPublie: data.isPublie || false,
       datePublication: data.isPublie ? new Date() : null,
       createdBy: userId,

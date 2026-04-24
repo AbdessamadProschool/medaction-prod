@@ -82,6 +82,14 @@ enum StatutSuggestion {
   IMPLEMENTEE
 }
 
+enum StatutArticle {
+  BROUILLON
+  EN_ATTENTE
+  PUBLIE
+  REJETE
+  ARCHIVE
+}
+
 enum TypeZone {
   URBAINE
   RURALE
@@ -883,6 +891,7 @@ model Article {
   
   imagePrincipale         String?
   
+  statut                  StatutArticle @default(BROUILLON)
   isPublie                Boolean   @default(false)
   isMisEnAvant            Boolean   @default(false)
   datePublication         DateTime?
@@ -898,6 +907,7 @@ model Article {
   // === RELATIONS ===
   medias                  Media[]
   
+  @@index([statut])
   @@index([isPublie])
   @@index([datePublication])
   @@index([createdBy])

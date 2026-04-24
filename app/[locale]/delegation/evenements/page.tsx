@@ -153,7 +153,7 @@ export default function MesEvenementsPage() {
                     {t('header_title')} ({t('count_label', { count: total })})
                 </h1>
                    <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">
-                       نظم وتابع جميع الفعاليات والأنشطة الخاصة بقطاعك. تتبع المشاركة والتفاعل في الوقت الفعلي.
+                       {t('header_description')}
                    </p>
                 </div>
             </div>

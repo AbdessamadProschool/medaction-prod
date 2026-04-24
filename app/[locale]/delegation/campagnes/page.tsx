@@ -124,7 +124,7 @@ export default function MesCampagnesPage() {
                        {t('header_title')} ({t('count_label', { count: total })})
                    </h1>
                    <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">
-                       أطلق حملات توعوية ومبادرات مجتمعية فعالة. تتبع المشاركة والتفاعل لتحقيق أهدافك.
+                       {t('header_description')}
                    </p>
                 </div>
             </div>

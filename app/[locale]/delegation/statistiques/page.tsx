@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
   BarChart3,
@@ -74,6 +75,8 @@ const SECTEUR_CONFIG: Record<string, { label: string; icon: LucideIcon; color: s
 };
 
 export default function StatistiquesPage() {
+  const t = useTranslations('delegation.statistics');
+  const tSectors = useTranslations('delegation.sectors');
   const { data: session } = useSession();
   const [stats, setStats] = useState<DetailedStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -109,7 +112,7 @@ export default function StatistiquesPage() {
 
   const contentTypes = [
     {
-      title: 'الفعاليات',
+      title: t('tabs.events') || 'الفعاليات',
       icon: Calendar,
       color: 'hsl(280,60%,50%)',
       bgColor: 'bg-purple-50',
@@ -117,15 +120,15 @@ export default function StatistiquesPage() {
       published: stats?.evenements.publies || 0,
       drafts: stats?.evenements.brouillons || 0,
       metric: {
-        label: 'المسجلون',
+        label: t('registered') || 'المسجلون',
         value: stats?.evenements.inscrits || 0,
         icon: Users,
       },
-      viewsLabel: 'المشاهدات',
+      viewsLabel: t('views') || 'المشاهدات',
       views: stats?.evenements.vues || 0,
     },
     {
-      title: 'المستجدات',
+      title: t('tabs.news') || 'المستجدات',
       icon: Newspaper,
       color: 'hsl(25,95%,53%)',
       bgColor: 'bg-orange-50',
@@ -133,11 +136,11 @@ export default function StatistiquesPage() {
       published: stats?.actualites.publiees || 0,
       drafts: stats?.actualites.brouillons || 0,
       metric: null,
-      viewsLabel: 'المشاهدات',
+      viewsLabel: t('views') || 'المشاهدات',
       views: stats?.actualites.vues || 0,
     },
     {
-      title: 'المقالات',
+      title: t('tabs.articles') || 'المقالات',
       icon: FileText,
       color: 'hsl(213,80%,28%)',
       bgColor: 'bg-blue-50',
@@ -145,11 +148,11 @@ export default function StatistiquesPage() {
       published: stats?.articles.publies || 0,
       drafts: stats?.articles.brouillons || 0,
       metric: null,
-      viewsLabel: 'المشاهدات',
+      viewsLabel: t('views') || 'المشاهدات',
       views: stats?.articles.vues || 0,
     },
     {
-      title: 'الحملات',
+      title: t('tabs.campaigns') || 'الحملات',
       icon: Megaphone,
       color: 'hsl(145,63%,32%)',
       bgColor: 'bg-green-50',
@@ -157,11 +160,11 @@ export default function StatistiquesPage() {
       published: stats?.campagnes.actives || 0,
       drafts: stats?.campagnes.inactives || 0,
       metric: {
-        label: 'المشاركات',
+        label: t('participations') || 'المشاركات',
         value: stats?.campagnes.participations || 0,
         icon: Target,
       },
-      viewsLabel: 'الهدف',
+      viewsLabel: t('objective') || 'الهدف',
       views: stats?.campagnes.objectifTotal || 0,
     },
   ];
@@ -187,13 +190,13 @@ export default function StatistiquesPage() {
             <div className="space-y-4">
                 <div className="flex items-center gap-3 text-indigo-600 font-medium bg-indigo-50 w-fit px-4 py-1.5 rounded-full border border-indigo-100 text-sm">
                     <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
-                    <span>الإحصائيات العامة</span>
+                    <span>{t('badge') || 'الإحصائيات العامة'}</span>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-gray-900">
-                   تحليل الأداء الرقمي
+                   {t('header_title') || 'تحليل الأداء الرقمي'}
                 </h1>
                 <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
-                    تابع تطور محتواك وتفاعل المواطنين مع مبادرات قطاع {secteurConfig.label}.
+                    {t('header_description', { sector: tSectors(secteurConfig.labelKey as any) || secteurConfig.label })}
                 </p>
             </div>
             
@@ -202,8 +205,8 @@ export default function StatistiquesPage() {
                   {(() => { const SIcon = secteurConfig.icon; return <SIcon size={28} strokeWidth={2} />; })()}
                 </span>
                 <div className="text-start">
-                    <p className="text-xs text-gray-400">القطاع</p>
-                    <p className="font-bold text-lg text-gray-800">{secteurConfig.label}</p>
+                    <p className="text-xs text-gray-400">{t('sector_label') || 'القطاع'}</p>
+                    <p className="font-bold text-lg text-gray-800">{tSectors(secteurConfig.labelKey as any) || secteurConfig.label}</p>
                 </div>
             </div>
         </div>
@@ -218,7 +221,7 @@ export default function StatistiquesPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-bold text-gray-500 mb-2">إجمالي المحتوى</p>
+              <p className="text-sm font-bold text-gray-500 mb-2">{t('total_content') || 'إجمالي المحتوى'}</p>
               <p className="text-4xl font-black text-gray-900 group-hover:text-indigo-600 transition-colors">{totalContent}</p>
             </div>
             <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
@@ -235,7 +238,7 @@ export default function StatistiquesPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-bold text-gray-500 mb-2">إجمالي المشاهدات</p>
+              <p className="text-sm font-bold text-gray-500 mb-2">{t('total_views') || 'إجمالي المشاهدات'}</p>
               <p className="text-4xl font-black text-gray-900 group-hover:text-orange-600 transition-colors">{totalViews.toLocaleString()}</p>
             </div>
             <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
@@ -252,7 +255,7 @@ export default function StatistiquesPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-bold text-gray-500 mb-2">المشاركات</p>
+              <p className="text-sm font-bold text-gray-500 mb-2">{t('participations') || 'المشاركات'}</p>
               <p className="text-4xl font-black text-gray-900 group-hover:text-green-600 transition-colors">{totalParticipations.toLocaleString()}</p>
             </div>
             <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
@@ -288,14 +291,14 @@ export default function StatistiquesPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900">{type.title}</h3>
-                      <p className="text-sm font-medium text-gray-500">{type.total} عنصر</p>
+                      <p className="text-sm font-medium text-gray-500">{type.total} {t('items') || 'عنصر'}</p>
                     </div>
                   </div>
                   <div className="text-end">
                     <p className="text-3xl font-black" style={{ color: type.color }}>
                       {publishedPercentage}%
                     </p>
-                    <p className="text-xs font-bold text-gray-400">نسبة النشر</p>
+                    <p className="text-xs font-bold text-gray-400">{t('publication_rate') || 'نسبة النشر'}</p>
                   </div>
                 </div>
 
@@ -314,11 +317,11 @@ export default function StatistiquesPage() {
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
                     <p className="text-xl font-black text-gray-900">{type.published}</p>
-                    <p className="text-xs font-bold text-gray-500 mt-1">منشور</p>
+                    <p className="text-xs font-bold text-gray-500 mt-1">{t('published') || 'منشور'}</p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
                     <p className="text-xl font-black text-gray-900">{type.drafts}</p>
-                    <p className="text-xs font-bold text-gray-500 mt-1">مسودة</p>
+                    <p className="text-xs font-bold text-gray-500 mt-1">{t('drafts') || 'مسودة'}</p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
                     <p className="text-xl font-black text-gray-900">
@@ -346,34 +349,34 @@ export default function StatistiquesPage() {
           <div className="p-2 bg-yellow-100 rounded-lg text-yellow-600">
              <TrendingUp size={24} />
           </div>
-          نصائح لتحسين ظهورك
+          {t('tips.title') || 'نصائح لتحسين ظهورك'}
         </h3>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="p-6 bg-white rounded-2xl shadow-sm border border-yellow-100/50 hover:shadow-md transition-all">
             <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-yellow-500" />
-                انشر بانتظام
+                {t('tips.regular.title') || 'انشر بانتظام'}
             </p>
             <p className="text-sm font-medium text-gray-600 leading-relaxed">
-              الخوارزميات تفضل المحتوى المتجدد. حاول نشر خبر واحد على الأقل أسبوعياً.
+              {t('tips.regular.desc') || 'الخوارزميات تفضل المحتوى المتجدد. حاول نشر خبر واحد على الأقل أسبوعياً.'}
             </p>
           </div>
           <div className="p-6 bg-white rounded-2xl shadow-sm border border-yellow-100/50 hover:shadow-md transition-all">
             <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-yellow-500" />
-                تفاعل مع المواطنين
+                {t('tips.interact.title') || 'تفاعل مع المواطنين'}
             </p>
             <p className="text-sm font-medium text-gray-600 leading-relaxed">
-              أنشئ حملات وفعاليات تشجع على المشاركة والتسجيل لزيادة التفاعل.
+              {t('tips.interact.desc') || 'أنشئ حملات وفعاليات تشجع على المشاركة والتسجيل لزيادة التفاعل.'}
             </p>
           </div>
           <div className="p-6 bg-white rounded-2xl shadow-sm border border-yellow-100/50 hover:shadow-md transition-all">
             <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-yellow-500" />
-                حسن عناوينك
+                {t('tips.titles.title') || 'حسن عناوينك'}
             </p>
             <p className="text-sm font-medium text-gray-600 leading-relaxed">
-              استخدم عناوين جذابة وقصيرة. أضف صوراً عالية الجودة لكل منشور.
+              {t('tips.titles.desc') || 'استخدم عناوين جذابة وقصيرة. أضف صوراً عالية الجودة لكل منشور.'}
             </p>
           </div>
         </div>

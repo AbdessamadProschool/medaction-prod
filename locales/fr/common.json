@@ -4735,11 +4735,13 @@
         "page": "Page",
         "limit": "Limite",
         "search": "Rechercher",
-        "statut": "Statut"
+        "statut": "Statut",
+        "header_description": "Organisez et suivez tous les événements et activités de votre secteur. Suivez la participation et l'interaction en temps réel."
       },
       "my_news": {
         "title": "Mes Actualités",
         "header_title": "Gestion des Actualités",
+        "header_description": "Gérez toutes les actualités et nouveautés de votre secteur en un seul endroit. Communiquez efficacement avec les citoyens.",
         "create_new": "Nouvelle Actualité",
         "search_placeholder": "Rechercher une actualité...",
         "status_filter": "Filtrer par statut",
@@ -4761,6 +4763,7 @@
       "articles": {
         "title": "Bibliothèque",
         "header_title": "Gestion des Articles",
+        "header_description": "Parcourez et gérez tous vos articles publiés et brouillons en un seul endroit. Partagez vos connaissances et vos actualités avec tous.",
         "count_label": "{count, plural, =0 {aucun article} =1 {un article} other {{count} articles}}",
         "new_article": "Nouvel Article",
         "search_placeholder": "Rechercher un article...",
@@ -4863,6 +4866,7 @@
       "campaigns": {
         "title": "Mes Campagnes",
         "header_title": "Gestion des Campagnes",
+        "header_description": "Lancez des campagnes de sensibilisation et des initiatives communautaires efficaces. Suivez la participation et l'interaction pour atteindre vos objectifs.",
         "count_label": "{count, plural, =0 {aucune campagne} =1 {une campagne} other {{count} campagnes}}",
         "new_campaign": "Nouvelle Campagne",
         "search_placeholder": "Rechercher une campagne...",
@@ -5165,6 +5169,43 @@
       "social": "Social",
       "environment": "Environnement",
       "administration": "Administration"
+    },
+    "statistics": {
+      "header_title": "Analyse de Performance",
+      "header_description": "Analysez l'impact de vos publications et suivez l'engagement des citoyens envers votre secteur.",
+      "badge": "Statistiques Générales",
+      "total_content": "Total Contenu",
+      "total_views": "Vues Totales",
+      "participations": "Participations",
+      "sector_label": "Secteur",
+      "publication_rate": "Taux de publication",
+      "items": "éléments",
+      "published": "publiés",
+      "drafts": "brouillons",
+      "views": "vues",
+      "registered": "inscrits",
+      "objective": "Objectif",
+      "tips": {
+        "title": "Conseils pour améliorer votre visibilité",
+        "regular": {
+          "title": "Publiez régulièrement",
+          "desc": "Les algorithmes préfèrent le contenu frais. Essayez de publier au moins une actualité par semaine."
+        },
+        "interact": {
+          "title": "Interagissez avec les citoyens",
+          "desc": "Créez des campagnes et des événements qui encouragent la participation et l'inscription."
+        },
+        "titles": {
+          "title": "Optimisez vos titres",
+          "desc": "Utilisez des titres accrocheurs et courts. Ajoutez des images de haute qualité."
+        }
+      },
+      "tabs": {
+        "events": "Événements",
+        "news": "Actualités",
+        "articles": "Articles",
+        "campaigns": "Campagnes"
+      }
     }
   },
   "reclamation_rate_limit": "Le quota de réclamations autorisé est atteint. Vous pourrez en créer une nouvelle à partir du {date}.",

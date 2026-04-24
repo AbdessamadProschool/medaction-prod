@@ -114,7 +114,7 @@ export default function MesActualitesPage() {
                        {t('header_title') || t('title')}
                    </h1>
                    <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">
-                       قم بإدارة جميع الأخبار والمستجدات الخاصة بقطاعك في مكان واحد. تواصل مع المواطنين بفعالية.
+                       {t('header_description')}
                    </p>
                 </div>
             </div>

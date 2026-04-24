@@ -105,7 +105,7 @@ export default function MesArticlesPage() {
                        {t('header_title')} ({t('count_label', { count: total })})
                    </h1>
                    <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">
-                       تصفح وأدر جميع مقالاتك المنشورة والمسودات في مكان واحد. شارك المعرفة والأخبار مع الجميع.
+                       {t('header_description')}
                    </p>
                 </div>
             </div>

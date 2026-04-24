@@ -25,8 +25,8 @@ export async function GET(request: NextRequest) {
 
     const userId = parseInt(session.user.id);
     const { searchParams } = new URL(request.url);
-    const page = safeParseInt(searchParams.get('page') || '1', 0);
-    const limit = safeParseInt(searchParams.get('limit') || '12', 0);
+    const page = Math.max(1, safeParseInt(searchParams.get('page') || '1', 1));
+    const limit = Math.max(1, safeParseInt(searchParams.get('limit') || '12', 1));
     const search = searchParams.get('search') || '';
     const statut = searchParams.get('statut') || '';
 

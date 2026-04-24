@@ -20,8 +20,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   const { searchParams } = new URL(request.url);
   
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '12'), 100);
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1') || 1);
+  const limit = Math.max(1, Math.min(parseInt(searchParams.get('limit') || '12') || 12, 100));
   const search = searchParams.get('search') || '';
   const statut = searchParams.get('statut') || '';
 

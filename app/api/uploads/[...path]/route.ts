@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
  * ║          MEDACTION - SECURE FILE SERVING API                                ║
  * ║          Serves uploaded files from external storage (Docker-ready)         ║
@@ -88,45 +88,57 @@ export async function GET(
     const storagePath = getStoragePath();
     const filePath = normalize(join(storagePath, requestedPath));
     
+    // Debug log for Proxmox/Production (Only in dev or if specific log enabled)
+    // console.log(`[FILE-SERVE] Trying: ${filePath} (Storage: ${storagePath})`);
+
     // Security: Ensure resolved path is still within storage directory
-    if (!filePath.startsWith(normalize(storagePath))) {
-      console.warn(`[FILE-SERVE] ⚠️ Path escape attempt: ${filePath}`);
+    const normalizedStoragePath = normalize(storagePath);
+    if (!filePath.startsWith(normalizedStoragePath)) {
+      console.warn(`[FILE-SERVE] ⚠️ Path escape attempt: ${filePath} (Storage: ${normalizedStoragePath})`);
       return new NextResponse('Forbidden', { status: 403 });
     }
 
     // ═══════════════════════════════════════════════════════════════
     // 4. CHECK FILE EXISTS
     // ═══════════════════════════════════════════════════════════════
-    if (!existsSync(filePath)) {
-      // Fallback: try public/uploads for backward compatibility
-      const publicPath = join(process.cwd(), 'public', 'uploads', requestedPath);
-      if (existsSync(publicPath)) {
-        const fileBuffer = await readFile(publicPath);
-        const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
-        
-        return new NextResponse(fileBuffer, {
-          status: 200,
-          headers: {
-            'Content-Type': mimeType,
-            'Content-Length': String(fileBuffer.length),
-            'Cache-Control': 'public, max-age=86400, stale-while-revalidate=43200',
-            'X-Content-Type-Options': 'nosniff',
-          },
-        });
+    let finalPath = filePath;
+    let exists = existsSync(filePath);
+
+    if (!exists) {
+      // Fallback 1: Try with reversed slashes (Windows/Linux compatibility)
+      const altPath = filePath.includes('/') ? filePath.replace(/\//g, '\\') : filePath.replace(/\\/g, '/');
+      if (altPath !== filePath && existsSync(altPath)) {
+        finalPath = altPath;
+        exists = true;
       }
+    }
+
+    if (!exists) {
+      // Fallback 2: try public/uploads directly relative to CWD
+      const publicPath = join(process.cwd(), 'public', 'uploads', requestedPath);
+      if (publicPath !== filePath && existsSync(publicPath)) {
+        finalPath = publicPath;
+        exists = true;
+      }
+    }
+
+    if (!exists) {
+      console.warn(`[FILE-SERVE] ❌ File not found after fallbacks: ${filePath}`);
+      // Log more context for Proxmox troubleshooting
+      console.log(`[DEBUG] CWD: ${process.cwd()}, STORAGE_PATH: ${process.env.STORAGE_PATH || 'Not set'}`);
       
-      console.warn(`[FILE-SERVE] ❌ File not found: ${filePath}`);
-      return new NextResponse(JSON.stringify({ error: 'File Not Found', path: requestedPath }), { 
+      return new NextResponse(JSON.stringify({ 
+        error: 'File Not Found', 
+        path: requestedPath,
+        resolved: filePath 
+      }), { 
         status: 404,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // 5. READ AND SERVE FILE
-    // ═══════════════════════════════════════════════════════════════
-    const fileBuffer = await readFile(filePath);
-    const fileStat = await stat(filePath);
+    const fileBuffer = await readFile(finalPath);
+    const fileStat = await stat(finalPath);
     const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
     const lastModified = fileStat.mtime.toUTCString();
 

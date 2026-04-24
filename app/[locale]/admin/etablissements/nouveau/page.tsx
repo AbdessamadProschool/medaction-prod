@@ -320,6 +320,55 @@ export default function NouveauEtablissementPage() {
             </div>
           </section>
 
+          {/* SECTION 3: CONTACT & WEB */}
+          <section className="space-y-6">
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+               <div className="w-2 h-8 bg-purple-500 rounded-full" />
+               {t('sections.contact')}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-50/50 dark:bg-gray-900/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
+               <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">{t('form.telephone')}</label>
+                <div className="relative">
+                  <Phone className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="tel"
+                    value={formData.telephone}
+                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    placeholder="+212 ..."
+                  />
+                </div>
+               </div>
+               <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">{t('form.email')}</label>
+                <div className="relative">
+                  <Mail className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    placeholder="contact@etablissement.ma"
+                  />
+                </div>
+               </div>
+               <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700">{t('form.siteWeb')}</label>
+                <div className="relative">
+                  <Globe className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="url"
+                    value={formData.siteWeb}
+                    onChange={(e) => setFormData({ ...formData, siteWeb: e.target.value })}
+                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    placeholder="https://..."
+                  />
+                </div>
+               </div>
+            </div>
+          </section>
+
           {/* SECTION 3: SECTOR-SPECIFIC (Conditionnelle) */}
           {formData.secteur === 'EDUCATION' && (
             <section className="space-y-6 animate-in zoom-in-95 duration-500">

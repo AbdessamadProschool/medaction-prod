@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
@@ -8,6 +8,24 @@ import { useTranslations } from 'next-intl';
 export default function Footer() {
   const t = useTranslations('footer');
   const tContact = useTranslations('contact_page');
+  const pathname = usePathname();
+
+  const hiddenPages = [
+    '/etablissements',
+    '/evenements',
+    '/carte',
+    '/actualites',
+    '/campagnes',
+    '/articles',
+    '/reclamations/nouvelle',
+    '/mes-reclamations',
+    '/suggestions',
+    '/profil'
+  ];
+
+  const isHidden = hiddenPages.some(page => pathname === page || pathname.startsWith(`${page}/`));
+
+  if (isHidden) return null;
 
   const navigation = {
     discover: [

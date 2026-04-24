@@ -22,7 +22,7 @@ const createUserSchema = z.object({
   photo: z.string().url().optional(),
   role: z.string().default('CITOYEN'),
   isActive: z.boolean().default(true),
-  secteurResponsable: z.string().optional(),
+  secteurResponsable: z.string().optional().nullable(),
   communeResponsableId: SecurityValidation.schemas.id.optional().nullable(),
   etablissementsGeres: z.array(z.number().int()).optional(),
 });

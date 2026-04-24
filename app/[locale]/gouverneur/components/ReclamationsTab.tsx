@@ -158,7 +158,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
 
              <div>
                 <div className="flex items-center gap-2 mb-2">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">{s.label}</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{s.label}</span>
                 </div>
                 <p className="text-3xl font-black text-slate-900 tracking-tight">{s.count}</p>
              </div>
@@ -181,7 +181,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
             placeholder={t('filters.search_placeholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-16 pr-6 py-4 bg-slate-50/80 hover:bg-white focus:bg-white border-2 border-transparent focus:border-gov-blue/20 rounded-2xl focus:ring-4 focus:ring-gov-blue/5 transition-all outline-none font-bold text-slate-700 placeholder:text-slate-300 group-hover:shadow-inner"
+            className="w-full pl-16 pr-6 py-4 bg-slate-50/80 hover:bg-white focus:bg-white border-2 border-transparent focus:border-gov-blue/20 rounded-2xl focus:ring-4 focus:ring-gov-blue/5 transition-all outline-none font-bold text-slate-700 placeholder:text-slate-400 group-hover:shadow-inner"
           />
         </div>
         
@@ -197,7 +197,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
               className={`px-6 py-3 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 statutFilter === f.id 
                 ? 'bg-slate-900 text-white shadow-lg transform scale-105' 
-                : 'bg-transparent text-slate-300 hover:text-slate-600 hover:bg-white/50'
+                : 'bg-transparent text-slate-500 hover:text-slate-700 hover:bg-white/50'
               }`}
             >
               {f.label}
@@ -244,7 +244,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                         </div>
                       );
                    })()}
-                   <div className="text-[10px] font-black text-slate-300 font-mono tracking-widest group-hover:text-gov-blue/30 transition-colors">
+                   <div className="text-[10px] font-black text-slate-400 font-mono tracking-widest group-hover:text-gov-blue/50 transition-colors">
                       ID-{rec.id}
                    </div>
                 </div>
@@ -282,7 +282,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 </div>
 
                 <div className="mt-4 flex justify-between items-center relative z-10">
-                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-300 uppercase tracking-wide">
+                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-wide">
                       <Calendar size={12} />
                       {new Date(rec.createdAt).toLocaleDateString()}
                    </div>
@@ -349,7 +349,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                           </span>
                         );
                     })()}
-                    <span className="text-[10px] font-black text-white/70 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
+                    <span className="text-[10px] font-black text-white/90 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
                   </div>
                   <h2 className="text-xl md:text-3xl font-black text-white break-words overflow-wrap-anywhere" style={{ wordBreak: 'break-word' }}>{selectedRec.titre}</h2>
                 </div>
@@ -474,9 +474,9 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                     </div>
                 </div>
 
-                 <div className="pt-10 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                 <div className="pt-10 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest">
                     <div>{t('modal.footer')}</div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-slate-500">
                        <Clock size={12} />
                        {t('modal.created_at')} {new Date(selectedRec.createdAt).toLocaleString()}
                     </div>

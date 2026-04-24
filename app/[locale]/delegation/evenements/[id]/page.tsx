@@ -63,6 +63,7 @@ export default function EvenementDetailPage() {
   // Language based content selection
   const displayTitle = (locale === 'ar' && evenement?.titreAr) ? evenement.titreAr : evenement?.titre;
   const displayDescription = (locale === 'ar' && evenement?.descriptionAr) ? evenement.descriptionAr : evenement?.description;
+  const isDescriptionArabic = (locale === 'ar' && evenement?.descriptionAr);
 
   const organisateurNom = evenement?.organisateur || evenement?.etablissement?.nom || null;
   const organisateurTel = evenement?.contactOrganisateur || null;
@@ -326,7 +327,7 @@ export default function EvenementDetailPage() {
              </div>
              {t('description')}
           </h2>
-          <div className={`prose prose-sm max-w-none text-gray-700 leading-relaxed font-cairo text-base font-medium whitespace-pre-line ${direction === 'rtl' ? 'prose-rtl text-right' : 'text-left'}`}>
+          <div className={`prose prose-sm max-w-none text-gray-700 leading-relaxed font-cairo text-base font-medium whitespace-pre-line ${isDescriptionArabic ? 'prose-rtl text-right' : 'text-left'}`} dir={isDescriptionArabic ? 'rtl' : 'ltr'}>
             {displayDescription}
           </div>
 

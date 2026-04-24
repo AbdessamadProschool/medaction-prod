@@ -409,43 +409,61 @@ export default function DelegationDashboard() {
               {t('todo.title')}
             </h2>
             <div className="space-y-4">
-              {stats?.evenements.aCloturer && stats.evenements.aCloturer > 0 && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 text-red-900 rounded-2xl text-sm border border-red-100 shadow-sm">
-                  <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
-                  <div className="flex-1">
-                    <span className="font-bold block mb-1">{t('todo.to_close', { count: stats.evenements.aCloturer })}</span>
-                    <Link href="/delegation/evenements?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-red-200 hover:bg-red-50 transition-colors mt-2 text-red-700 no-underline">
-                      {t('todo.manage_now')} &rarr;
-                    </Link>
-                  </div>
-                </div>
-              )}
-              {stats?.campagnes.aCloturer && stats.campagnes.aCloturer > 0 && (
-                <div className="flex items-start gap-3 p-4 bg-emerald-50 text-emerald-900 rounded-2xl text-sm border border-emerald-100 shadow-sm">
-                  <Megaphone size={18} className="mt-0.5 shrink-0 text-emerald-600" />
-                  <div className="flex-1">
-                    <span className="font-bold block mb-1">{t('todo.to_close_campaigns', { count: stats.campagnes.aCloturer })}</span>
-                    <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-emerald-200 hover:bg-emerald-50 transition-colors mt-2 text-emerald-700 no-underline">
-                      {t('todo.manage_now')} &rarr;
-                    </Link>
-                  </div>
-                </div>
-              )}
-              {stats?.evenements.enAttente ? (
-                <div className="flex items-start gap-3 p-4 bg-orange-50 text-orange-900 rounded-2xl text-sm border border-orange-100 shadow-sm">
-                  <CheckCircle size={18} className="mt-0.5 shrink-0 text-orange-600" />
-                  <div>
-                    <span className="font-bold">{t('todo.pending_validation', { count: stats.evenements.enAttente })}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-sm font-medium text-gray-500 flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100/50">
-                  <div className="bg-green-100 p-1.5 rounded-full">
-                    <CheckCircle size={14} className="text-green-600" />
-                  </div>
-                  {t('todo.all_good')}
-                </div>
-              )}
+              {(() => {
+                const toCloseEvents = stats?.evenements.aCloturer || 0;
+                const toCloseCampaigns = stats?.campagnes.aCloturer || 0;
+                const pendingValidation = stats?.evenements.enAttente || 0;
+                
+                const hasTasks = toCloseEvents > 0 || toCloseCampaigns > 0 || pendingValidation > 0;
+
+                if (!hasTasks) {
+                  return (
+                    <div className="text-sm font-medium text-gray-500 flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100/50">
+                      <div className="bg-green-100 p-1.5 rounded-full">
+                        <CheckCircle size={14} className="text-green-600" />
+                      </div>
+                      {t('todo.all_good')}
+                    </div>
+                  );
+                }
+
+                return (
+                  <>
+                    {toCloseEvents > 0 && (
+                      <div className="flex items-start gap-3 p-4 bg-red-50 text-red-900 rounded-2xl text-sm border border-red-100 shadow-sm">
+                        <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
+                        <div className="flex-1 text-start">
+                          <span className="font-bold block mb-1">{t('todo.to_close', { count: toCloseEvents })}</span>
+                          <Link href="/delegation/evenements?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-red-200 hover:bg-red-50 transition-colors mt-2 text-red-700 no-underline">
+                            {t('todo.manage_now')} &rarr;
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {toCloseCampaigns > 0 && (
+                      <div className="flex items-start gap-3 p-4 bg-emerald-50 text-emerald-900 rounded-2xl text-sm border border-emerald-100 shadow-sm">
+                        <Megaphone size={18} className="mt-0.5 shrink-0 text-emerald-600" />
+                        <div className="flex-1 text-start">
+                          <span className="font-bold block mb-1">{t('todo.to_close_campaigns', { count: toCloseCampaigns })}</span>
+                          <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-emerald-200 hover:bg-emerald-50 transition-colors mt-2 text-emerald-700 no-underline">
+                            {t('todo.manage_now')} &rarr;
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {pendingValidation > 0 && (
+                      <div className="flex items-start gap-3 p-4 bg-orange-50 text-orange-900 rounded-2xl text-sm border border-orange-100 shadow-sm">
+                        <CheckCircle size={18} className="mt-0.5 shrink-0 text-orange-600" />
+                        <div className="text-start">
+                          <span className="font-bold">{t('todo.pending_validation', { count: pendingValidation })}</span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>

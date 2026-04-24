@@ -176,35 +176,34 @@ export default function StatistiquesPage() {
 
   return (
     <div className="space-y-10">
-      {/* Premium Header Section */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white shadow-xl shadow-indigo-500/20 px-8 py-10 md:px-12 md:py-14">
+      {/* Premium Header Section - White Version */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-white text-gray-900 shadow-sm border border-gray-100 px-8 py-10 md:px-12 md:py-14">
         {/* Background Patterns */}
-        <div className="absolute top-0 right-0 p-12 opacity-10">
-            <BarChart3 className="w-64 h-64 transform rotate-12" />
+        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+            <BarChart3 className="w-64 h-64 transform rotate-12 text-indigo-600" />
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
-                <div className="flex items-center gap-3 text-indigo-100 font-medium bg-black/10 w-fit px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/10 text-sm">
+                <div className="flex items-center gap-3 text-indigo-600 font-medium bg-indigo-50 w-fit px-4 py-1.5 rounded-full border border-indigo-100 text-sm">
                     <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
                     <span>الإحصائيات العامة</span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-gray-900">
                    تحليل الأداء الرقمي
                 </h1>
-                <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
+                <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
                     تابع تطور محتواك وتفاعل المواطنين مع مبادرات قطاع {secteurConfig.label}.
                 </p>
             </div>
             
-             <div className="flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white shadow-lg">
+             <div className="flex items-center gap-3 px-6 py-3 bg-gray-50 rounded-2xl border border-gray-200 text-gray-900 shadow-sm">
                 <span className="text-3xl" style={{ color: secteurConfig.color }}>
                   {(() => { const SIcon = secteurConfig.icon; return <SIcon size={28} strokeWidth={2} />; })()}
                 </span>
                 <div className="text-start">
-                    <p className="text-xs text-indigo-200">القطاع</p>
-                    <p className="font-bold text-lg">{secteurConfig.label}</p>
+                    <p className="text-xs text-gray-400">القطاع</p>
+                    <p className="font-bold text-lg text-gray-800">{secteurConfig.label}</p>
                 </div>
             </div>
         </div>

@@ -96,25 +96,24 @@ export default function MesActualitesPage() {
   return (
     <div className="space-y-10">
       
-      {/* Premium Header Section - Compacted */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 text-white shadow-lg shadow-orange-500/10 px-6 py-6 md:px-8 md:py-10">
+      {/* Premium Header Section - White Version */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-white text-gray-900 shadow-sm border border-gray-100 px-6 py-6 md:px-8 md:py-10">
         {/* Background Patterns */}
-        <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-            <Newspaper className="w-48 h-48 transform rotate-12" />
+        <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+            <Newspaper className="w-48 h-48 transform rotate-12 text-orange-600" />
         </div>
-        <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent)] pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3">
-                <div className="flex items-center gap-2.5 text-orange-100 font-bold bg-white/10 w-fit px-3 py-1 rounded-xl backdrop-blur-md border border-white/10 text-xs uppercase tracking-wider">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                <div className="flex items-center gap-2.5 text-orange-600 font-bold bg-orange-50 w-fit px-3 py-1 rounded-xl border border-orange-100 text-xs uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                     <span>{t('title')}</span>
                 </div>
                 <div>
-                   <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-1">
+                   <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-1 text-gray-900">
                        {t('header_title') || t('title')}
                    </h1>
-                   <p className="text-orange-100/80 text-sm md:text-base max-w-xl font-medium leading-relaxed">
+                   <p className="text-gray-500 text-sm md:text-base max-w-xl font-medium leading-relaxed">
                        قم بإدارة جميع الأخبار والمستجدات الخاصة بقطاعك في مكان واحد. تواصل مع المواطنين بفعالية.
                    </p>
                 </div>
@@ -122,13 +121,10 @@ export default function MesActualitesPage() {
             
             <Link
                 href="/delegation/actualites/nouvelle"
-                className="group relative px-6 py-3 bg-white text-orange-700 rounded-xl font-black text-sm shadow-xl hover:shadow-orange-500/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
+                className="group relative px-6 py-3 bg-orange-600 text-white rounded-xl font-black text-sm shadow-xl shadow-orange-500/20 hover:bg-orange-700 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
             >
-                <div className="absolute inset-0 bg-orange-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative flex items-center gap-2">
-                    <Plus size={18} className="stroke-[4px]" />
-                    <span>{t('create_new')}</span>
-                </div>
+                <Plus size={18} className="stroke-[4px]" />
+                <span>{t('create_new')}</span>
             </Link>
         </div>
       </div>

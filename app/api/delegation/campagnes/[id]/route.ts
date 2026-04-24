@@ -19,6 +19,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
+    const userId = parseInt(session.user.id);
     const id = safeParseInt(idParam, 0);
     const campagne = await prisma.campagne.findUnique({
       where: { id },
@@ -30,6 +31,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (!campagne) {
       return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Vérification ownership (alignement avec PUT/DELETE)
+    const isOwner = campagne.createdBy === userId;
+    const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
+    const isGouverneur = session.user.role === 'GOUVERNEUR';
+
+    if (!isOwner && !isAdmin && !isGouverneur) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 
     return NextResponse.json({ 

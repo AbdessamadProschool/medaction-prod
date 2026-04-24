@@ -1,4 +1,4 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -156,14 +156,14 @@ export async function HEAD(
     }
 
     const id = safeParseInt(params.id, 0);
+    const userId = parseInt(session.user.id);
+    const role = session.user.role;
 
     const reclamation = await prisma.reclamation.findUnique({
       where: { id },
-      include: {
-        medias: {
-          where: { type: 'IMAGE' },
-          select: { id: true, tailleMo: true }
-        }
+      select: {
+        userId: true,
+        affecteeAAutoriteId: true,
       }
     });
 
@@ -171,8 +171,26 @@ export async function HEAD(
       return new NextResponse(null, { status: 404 });
     }
 
-    const photoCount = reclamation.medias.length;
-    const totalSizeMb = reclamation.medias.reduce((sum, m) => sum + (m.tailleMo || 0), 0);
+    // SECURITY FIX: Même logique d'autorisation que le GET
+    const canAccess = 
+      role === 'ADMIN' || 
+      role === 'SUPER_ADMIN' || 
+      role === 'GOUVERNEUR' ||
+      reclamation.userId === userId ||
+      reclamation.affecteeAAutoriteId === userId;
+
+    if (!canAccess) {
+      return new NextResponse(null, { status: 403 });
+    }
+
+    // Compter les photos avec autorisation confirmée
+    const photos = await prisma.media.findMany({
+      where: { reclamationId: id, type: 'IMAGE' },
+      select: { id: true, tailleMo: true }
+    });
+
+    const photoCount = photos.length;
+    const totalSizeMb = photos.reduce((sum, m) => sum + (m.tailleMo || 0), 0);
 
     return new NextResponse(null, {
       status: 200,

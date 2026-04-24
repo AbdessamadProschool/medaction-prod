@@ -122,9 +122,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.suggestion.count({ where }),
   ]);
 
-  // Stats par statut
+  // Stats par statut — SECURITY FIX: Appliquer le même filtre de visibilité
   const statsParStatut = await prisma.suggestion.groupBy({
     by: ['statut'],
+    where, // ← Même filtre que la query principale
     _count: { id: true },
   });
 

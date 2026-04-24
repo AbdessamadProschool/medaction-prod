@@ -71,10 +71,9 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     }
   }
 
-  // Pour le public, seules les établissements publiés et validés
-  // Admin et Délégation peuvent voir les non-publiés (pour gestion)
-  // Coordinateur voit ses établissements (même non publiés ?) -> Oui, pour pouvoir gérer
-  if (!isAdmin && !isDelegation && !isCoordinateur && !idsParam) {
+  // SECURITY FIX: Le filtre de visibilité doit TOUJOURS s'appliquer aux non-admins
+  // Retrait de la condition `!idsParam` qui permettait de contourner le filtre
+  if (!isAdmin && !isDelegation && !isCoordinateur) {
     where.isPublie = true;
     where.isValide = true;
   } else if (isAdmin) {

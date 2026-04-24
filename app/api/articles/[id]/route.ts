@@ -34,13 +34,28 @@ export const GET = withErrorHandler(async (
     return NextResponse.json({ error: 'Article non trouvé' }, { status: 404 });
   }
 
-  // Incrémenter les vues
-  await prisma.article.update({
-    where: { id: articleId },
-    data: { nombreVues: { increment: 1 } },
-  });
+  // SECURITY FIX: Vérification de visibilité
+  // Les articles non publiés ne sont accessibles qu'aux admins et à l'auteur
+  if (!article.isPublie) {
+    const session = await getServerSession(authOptions);
+    const isAdmin = session && ['ADMIN', 'SUPER_ADMIN'].includes(session.user?.role || '');
+    const isAuthor = session && String(article.createdBy) === String(session.user?.id);
 
-  // Récupérer les articles connexes
+    if (!isAdmin && !isAuthor) {
+      // Ne pas révéler l'existence de l'article → 404
+      return NextResponse.json({ error: 'Article non trouvé' }, { status: 404 });
+    }
+  }
+
+  // Incrémenter les vues (uniquement pour les articles publiés)
+  if (article.isPublie) {
+    await prisma.article.update({
+      where: { id: articleId },
+      data: { nombreVues: { increment: 1 } },
+    });
+  }
+
+  // Récupérer les articles connexes (toujours filtrés par isPublie)
   const articlesConnexes = await prisma.article.findMany({
     where: {
       isPublie: true,
@@ -64,7 +79,7 @@ export const GET = withErrorHandler(async (
     data: {
       ...article,
       auteur: article.createdByUser,
-      vues: (article.nombreVues || 0) + 1,
+      vues: (article.nombreVues || 0) + (article.isPublie ? 1 : 0),
       resume: article.description,
       imageCouverture: article.imagePrincipale,
     },

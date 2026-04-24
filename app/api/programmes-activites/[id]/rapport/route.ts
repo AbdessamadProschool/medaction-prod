@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -162,6 +162,7 @@ export async function GET(
         recommandations: true,
         rapportComplete: true,
         dateRapport: true,
+        etablissementId: true,
         etablissement: {
           select: { id: true, nom: true, secteur: true },
         },
@@ -170,6 +171,21 @@ export async function GET(
 
     if (!activite) {
       return NextResponse.json({ error: 'Activité non trouvée' }, { status: 404 });
+    }
+
+    // SECURITY FIX: Vérification des permissions (alignement avec POST)
+    const userRole = session.user.role;
+    const etablissementsGeres = session.user.etablissementsGeres || [];
+    
+    const canAccess = 
+      ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(userRole) ||
+      userRole === 'DELEGATION' ||
+      (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId 
+        ? etablissementsGeres.includes(activite.etablissementId) 
+        : false);
+
+    if (!canAccess) {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 
     return NextResponse.json({ data: activite });

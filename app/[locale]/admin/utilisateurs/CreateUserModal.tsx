@@ -4,13 +4,25 @@ import { useState, useEffect } from 'react';
 import { X, User, Mail, Phone, Lock, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { useSession } from 'next-auth/react';
 
 interface CreateUserModalProps {
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const ROLES = [
+// SECURITY FIX: Hiérarchie des niveaux de rôle
+const ROLE_LEVEL: Record<string, number> = {
+  CITOYEN: 1,
+  DELEGATION: 2,
+  COORDINATEUR_ACTIVITES: 3,
+  AUTORITE_LOCALE: 4,
+  ADMIN: 5,
+  GOUVERNEUR: 6,
+  SUPER_ADMIN: 7,
+};
+
+const ALL_ROLES = [
   { value: 'CITOYEN' },
   { value: 'DELEGATION' },
   { value: 'AUTORITE_LOCALE' },
@@ -29,6 +41,11 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   const tRolesMain = useTranslations('admin.users_page.roles');
   const tSectors = useTranslations('admin.users_page.sectors');
   const locale = useLocale();
+  const { data: currentSession } = useSession();
+
+  // SECURITY FIX: Filtrer les rôles disponibles selon le niveau du caller
+  const callerLevel = ROLE_LEVEL[currentSession?.user?.role ?? ''] ?? 0;
+  const ROLES = ALL_ROLES.filter(role => ROLE_LEVEL[role.value] < callerLevel);
 
   const [formData, setFormData] = useState({
     nom: '',

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
+import { useSession } from 'next-auth/react';
 
 interface User {
   id: number;
@@ -21,7 +22,18 @@ interface EditRoleModalProps {
   onSuccess: () => void;
 }
 
-const ROLES = [
+// SECURITY FIX: Hiérarchie des niveaux de rôle
+const ROLE_LEVEL: Record<string, number> = {
+  CITOYEN: 1,
+  DELEGATION: 2,
+  COORDINATEUR_ACTIVITES: 3,
+  AUTORITE_LOCALE: 4,
+  ADMIN: 5,
+  GOUVERNEUR: 6,
+  SUPER_ADMIN: 7,
+};
+
+const ALL_ROLES = [
   { value: 'CITOYEN' },
   { value: 'DELEGATION' },
   { value: 'AUTORITE_LOCALE' },
@@ -41,6 +53,11 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
   const tSectors = useTranslations('admin.users_page.sectors');
   const tCreate = useTranslations('admin.users_page.create_modal');
   const locale = useLocale();
+  const { data: currentSession } = useSession();
+
+  // SECURITY FIX: Filtrer les rôles disponibles selon le niveau du caller
+  const callerLevel = ROLE_LEVEL[currentSession?.user?.role ?? ''] ?? 0;
+  const ROLES = ALL_ROLES.filter(role => ROLE_LEVEL[role.value] < callerLevel);
 
   const [selectedRole, setSelectedRole] = useState(user.role);
   const [secteurResponsable, setSecteurResponsable] = useState(user.secteurResponsable || '');

@@ -1,4 +1,4 @@
-﻿import { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -25,6 +25,10 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   'CLOTUREE': [],
   'ANNULEE': ['EN_ATTENTE_VALIDATION'],
 };
+
+// SECURITY FIX: Transitions réservées aux administrateurs
+// Un créateur ne peut PAS auto-valider ni auto-publier son propre événement
+const ADMIN_ONLY_TRANSITIONS: string[] = ['VALIDEE', 'PUBLIEE'];
 
 // PATCH - Changer le statut d'un événement
 export const PATCH = withErrorHandler(async (
@@ -82,6 +86,14 @@ export const PATCH = withErrorHandler(async (
       `Transition de "${STATUT_LABELS[evenement.statut]}" vers "${STATUT_LABELS[nouveauStatut]}" non autorisée`,
       'VALIDATION_ERROR',
       400
+    );
+  }
+
+  // SECURITY FIX: Les transitions de validation/publication sont réservées aux admins
+  // Un créateur ne peut PAS auto-valider ni auto-publier
+  if (ADMIN_ONLY_TRANSITIONS.includes(nouveauStatut) && !isAdmin) {
+    throw new ForbiddenError(
+      'Cette transition requiert une validation par un administrateur'
     );
   }
 

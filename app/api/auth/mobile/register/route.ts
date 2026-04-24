@@ -198,7 +198,8 @@ export async function POST(request: NextRequest) {
     // 8. Hash password
     const hashedPassword = await hashPassword(password);
 
-    // 9. Create user
+    // 9. Create user — SECURITY FIX: isActive = false (alignement avec route web)
+    // Le compte doit attendre validation admin avant activation
     const newUser = await prisma.user.create({
       data: {
         email,
@@ -207,7 +208,7 @@ export async function POST(request: NextRequest) {
         prenom,
         telephone: telephone || null,
         role: 'CITOYEN',
-        isActive: true,
+        isActive: false, // SECURITY FIX: Doit attendre validation admin
         isEmailVerifie: false,
         isTelephoneVerifie: false,
       },
@@ -227,12 +228,14 @@ export async function POST(request: NextRequest) {
       email: newUser.email,
       userId: newUser.id,
       userAgent,
+      details: { source: 'MOBILE', requiresApproval: true },
     });
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Compte créé avec succès',
+        message: 'Votre compte a été créé. Vous recevrez une confirmation après validation par l\'administrateur.',
+        requiresApproval: true,
         data: {
           user: {
             id: newUser.id,

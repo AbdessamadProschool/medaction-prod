@@ -624,24 +624,27 @@ const authMiddleware = withAuth(
         return createApiErrorResponse(403, 'Your account has been deactivated.', 'ACCOUNT_DEACTIVATED', nonce);
       }
 
-      // Hardening: Si c'est un segment sensible non listé explicitement
-      const sensitiveSegments = ['/api/admin', '/api/super-admin', '/api/gouverneur', '/api/logs', '/api/audit', '/api/settings'];
+      // SECURITY FIX: Protection RBAC des segments sensibles via lookup map
+      const ROUTE_ROLE_MAP: Record<string, Role[]> = {
+        '/api/super-admin': ['SUPER_ADMIN'],
+        '/api/admin': ['ADMIN', 'SUPER_ADMIN'],
+        '/api/gouverneur': ['GOUVERNEUR', 'ADMIN', 'SUPER_ADMIN'],
+        '/api/audit': ['SUPER_ADMIN'],
+        '/api/logs': ['ADMIN', 'SUPER_ADMIN'],
+        '/api/settings': ['ADMIN', 'SUPER_ADMIN'],
+      };
       const userRole = token.role as Role;
       
-      if (sensitiveSegments.some(seg => pathname.startsWith(seg))) {
-        const adminRoles: Role[] = ['ADMIN', 'SUPER_ADMIN'];
-        const gouverneurRoles: Role[] = ['GOUVERNEUR', 'SUPER_ADMIN'];
-        
-        if (pathname.startsWith('/api/gouverneur') && !gouverneurRoles.includes(userRole)) {
-          return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
-        }
-        
-        if ((pathname.startsWith('/api/admin') || pathname.startsWith('/api/super-admin')) && !adminRoles.includes(userRole)) {
-          if (pathname.startsWith('/api/admin/bilans') && userRole === 'GOUVERNEUR') {
-             // Let GOUVERNEUR access bilans explicitly
-          } else {
-             return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
+      for (const [prefix, allowedRoles] of Object.entries(ROUTE_ROLE_MAP)) {
+        if (pathname.startsWith(prefix)) {
+          // Exception: GOUVERNEUR peut accéder aux bilans admin
+          if (prefix === '/api/admin' && pathname.startsWith('/api/admin/bilans') && userRole === 'GOUVERNEUR') {
+            break;
           }
+          if (!allowedRoles.includes(userRole)) {
+            return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
+          }
+          break;
         }
       }
     }

@@ -1,10 +1,21 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 
 // Rôles valides
 const VALID_ROLES = ['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
+
+// SECURITY FIX: Hiérarchie des niveaux de rôle
+const ROLE_LEVEL: Record<string, number> = {
+  CITOYEN: 1,
+  DELEGATION: 2,
+  COORDINATEUR_ACTIVITES: 3,
+  AUTORITE_LOCALE: 4,
+  ADMIN: 5,
+  GOUVERNEUR: 6,
+  SUPER_ADMIN: 7,
+};
 
 // PATCH /api/users/[id]/role - Modifier le rôle d'un utilisateur
 export async function PATCH(
@@ -49,20 +60,31 @@ export async function PATCH(
       return NextResponse.json({ error: "Utilisateur non trouvé" }, { status: 404 });
     }
 
-    // === RÈGLES DE PERMISSION ===
-    
-    // 1. ADMIN ne peut pas modifier le rôle d'un SUPER_ADMIN
-    if (existingUser.role === 'SUPER_ADMIN' && currentUserRole !== 'SUPER_ADMIN') {
+    // === RÈGLES DE PERMISSION (SECURITY FIX) ===
+    const callerLevel = ROLE_LEVEL[currentUserRole] ?? 0;
+    const targetLevel = ROLE_LEVEL[role] ?? 0;
+    const existingUserLevel = ROLE_LEVEL[existingUser.role] ?? 0;
+
+    // SECURITY FIX: On ne peut pas promouvoir vers un niveau >= au sien
+    if (targetLevel >= callerLevel) {
       return NextResponse.json(
-        { error: "Seul un Super Admin peut modifier un Super Admin" },
+        { error: `Vous ne pouvez pas attribuer le rôle ${role}. Niveau insuffisant.` },
         { status: 403 }
       );
     }
 
-    // 2. ADMIN ne peut pas promouvoir quelqu'un en ADMIN ou SUPER_ADMIN
-    if (['ADMIN', 'SUPER_ADMIN'].includes(role) && currentUserRole !== 'SUPER_ADMIN') {
+    // SECURITY FIX: On ne peut pas modifier un utilisateur de niveau >= au sien
+    if (existingUserLevel >= callerLevel) {
       return NextResponse.json(
-        { error: "Seul un Super Admin peut attribuer le rôle Admin ou Super Admin" },
+        { error: "Vous ne pouvez pas modifier un utilisateur de rang égal ou supérieur" },
+        { status: 403 }
+      );
+    }
+
+    // SECURITY FIX: GOUVERNEUR et ADMIN ne peuvent être assignés que par SUPER_ADMIN
+    if (['GOUVERNEUR', 'ADMIN'].includes(role) && currentUserRole !== 'SUPER_ADMIN') {
+      return NextResponse.json(
+        { error: "Seul un Super Admin peut attribuer le rôle Admin ou Gouverneur" },
         { status: 403 }
       );
     }

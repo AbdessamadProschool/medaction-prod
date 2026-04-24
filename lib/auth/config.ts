@@ -262,6 +262,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     /**
      * Callback JWT : appelé à chaque création/mise à jour de token
+     * SECURITY FIX: Whitelist stricte — aucun spread aveugle de session
      */
     async jwt({ token, user, trigger, session }) {
       // Premier login : ajouter les données utilisateur au token
@@ -278,11 +279,77 @@ export const authOptions: NextAuthOptions = {
         token.etablissementsGeres = authUser.etablissementsGeres;
         token.isActive = authUser.isActive;
         token.isEmailVerifie = authUser.isEmailVerifie;
+        token.lastDbCheck = Math.floor(Date.now() / 1000);
       }
 
-      // Mise à jour de session (useSession().update())
+      // SECURITY FIX: Mise à jour de session (useSession().update())
+      // WHITELIST STRICTE — Seuls les champs non-sensibles sont autorisés
+      // JAMAIS: id, role, email, isActive (ces champs sont contrôlés par la DB uniquement)
       if (trigger === 'update' && session) {
-        return { ...token, ...session };
+        const ALLOWED_UPDATE_FIELDS = ['photo', 'nom', 'prenom'];
+        for (const field of ALLOWED_UPDATE_FIELDS) {
+          if (session[field] !== undefined) {
+            (token as any)[field] = session[field];
+          }
+        }
+
+        // Si l'appelant demande un refresh depuis la DB (ex: après changement de rôle par admin)
+        if (session.refreshFromDb === true) {
+          const userId = Number(token.id);
+          if (Number.isFinite(userId)) {
+            const freshUser = await prisma.user.findUnique({
+              where: { id: userId },
+              select: {
+                id: true, role: true, email: true, isActive: true,
+                nom: true, prenom: true, photo: true,
+                secteurResponsable: true, communeResponsableId: true,
+                etablissementsGeres: true, isEmailVerifie: true,
+              }
+            });
+            if (freshUser && freshUser.isActive) {
+              token.role = freshUser.role;
+              token.email = freshUser.email;
+              token.nom = freshUser.nom;
+              token.prenom = freshUser.prenom;
+              token.photo = freshUser.photo;
+              token.secteurResponsable = freshUser.secteurResponsable;
+              token.communeResponsableId = freshUser.communeResponsableId;
+              token.etablissementsGeres = freshUser.etablissementsGeres;
+              token.isEmailVerifie = freshUser.isEmailVerifie;
+              token.lastDbCheck = Math.floor(Date.now() / 1000);
+            } else {
+              // Compte désactivé ou introuvable → forcer déconnexion
+              token.error = 'account_disabled';
+            }
+          }
+        }
+        return token;
+      }
+
+      // SECURITY: Vérification périodique du compte en DB (toutes les 15 minutes)
+      // Anti-session-hijack: détecte les comptes désactivés ou les changements de rôle
+      const now = Math.floor(Date.now() / 1000);
+      const DB_CHECK_INTERVAL = 15 * 60; // 15 minutes
+      const lastCheck = (token.lastDbCheck as number) || 0;
+      if (now - lastCheck > DB_CHECK_INTERVAL) {
+        const userId = Number(token.id);
+        if (Number.isFinite(userId)) {
+          try {
+            const dbUser = await prisma.user.findUnique({
+              where: { id: userId },
+              select: { isActive: true, role: true }
+            });
+            if (!dbUser || !dbUser.isActive) {
+              token.error = 'account_disabled';
+            } else {
+              token.role = dbUser.role; // Synchroniser le rôle depuis la DB
+            }
+            token.lastDbCheck = now;
+          } catch {
+            // En cas d'erreur DB, on ne bloque pas mais on log
+            console.warn('[AUTH] DB check failed during JWT refresh');
+          }
+        }
       }
 
       return token;

@@ -4484,7 +4484,9 @@
         "new_event": "Nouvel Événement",
         "new_event_desc": "Planifier un événement",
         "new_news": "Nouvelle Actualité",
-        "new_news_desc": "Publier une info"
+        "new_news_desc": "Publier une info",
+        "establishments": "Établissements",
+        "establishments_desc": "Proposer des mises à jour"
       },
       "todo": {
         "title": "À Faire",
@@ -4576,7 +4578,11 @@
             "phone": "Téléphone",
             "phone_placeholder": "0600000000",
             "email": "Email de contact",
-            "email_placeholder": "contact@exemple.ma"
+            "email_placeholder": "contact@exemple.ma",
+            "is_organise_par_province": "Organisé par la Province",
+            "is_organise_par_province_desc": "L'événement sera directement lié à la Province de Médiouna",
+            "sous_couvert_province": "Sous le couvert de la Province",
+            "sous_couvert_province_desc": "Afficher la mention 'Sous le couvert de Monsieur le Gouverneur'"
           },
           "participation": {
             "title": "Participation & Inscription",

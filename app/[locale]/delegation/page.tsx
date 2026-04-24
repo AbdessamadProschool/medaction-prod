@@ -394,8 +394,8 @@ export default function DelegationDashboard() {
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <span className="block font-bold text-sm">Établissements</span>
-                  <span className="text-xs text-blue-200 opacity-80">Proposer des mises à jour</span>
+                  <span className="block font-bold text-sm">{t('quick_actions.establishments')}</span>
+                  <span className="text-xs text-blue-200 opacity-80">{t('quick_actions.establishments_desc')}</span>
                 </div>
                 <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
               </Link>

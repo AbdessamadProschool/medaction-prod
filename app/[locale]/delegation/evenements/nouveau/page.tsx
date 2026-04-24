@@ -32,6 +32,7 @@ import { toast } from 'sonner';
 
 export default function NouveauEventPage() {
   const t = useTranslations('delegation.dashboard.event_creation');
+  const tSectors = useTranslations('delegation.sectors');
   const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -572,12 +573,12 @@ export default function NouveauEventPage() {
                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">{t('sections.datetime.all_sectors')}</option>
-                        <option value="EDUCATION">Éducation</option>
-                        <option value="SANTE">Santé</option>
-                        <option value="SPORT">Sport</option>
-                        <option value="SOCIAL">Social</option>
-                        <option value="CULTUREL">Culturel</option>
-                        <option value="AUTRE">Autre</option>
+                        <option value="EDUCATION">{tSectors('education')}</option>
+                        <option value="SANTE">{tSectors('health')}</option>
+                        <option value="SPORT">{tSectors('sport')}</option>
+                        <option value="SOCIAL">{tSectors('social')}</option>
+                        <option value="CULTUREL">{tSectors('culture')}</option>
+                        <option value="AUTRE">{tSectors('administration')}</option>
                       </select>
                     </div>
                     <div className="space-y-3">
@@ -692,8 +693,8 @@ export default function NouveauEventPage() {
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
-                    <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحدث مباشرة بعمالة مديونة</p>
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">{t('sections.organizer.is_organise_par_province')}</span>
+                    <p className="text-[10px] text-gray-500 mt-1">{t('sections.organizer.is_organise_par_province_desc')}</p>
                   </div>
                 </label>
 
@@ -706,8 +707,8 @@ export default function NouveauEventPage() {
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
-                    <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
+                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">{t('sections.organizer.sous_couvert_province')}</span>
+                    <p className="text-[10px] text-gray-500 mt-1">{t('sections.organizer.sous_couvert_province_desc')}</p>
                   </div>
                 </label>
               </div>

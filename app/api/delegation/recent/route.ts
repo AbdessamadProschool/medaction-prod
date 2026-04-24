@@ -16,7 +16,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Accès réservé aux délégations' }, { status: 403 });
     }
 
-    const userId = parseInt(session.user.id);
+    const userIdStr = session.user.id;
+    const userId = parseInt(userIdStr);
+    
+    if (!userIdStr || isNaN(userId)) {
+      return NextResponse.json({ error: 'ID utilisateur invalide' }, { status: 400 });
+    }
 
     // Récupérer les contenus récents
     const [evenements, actualites, articles, campagnes] = await Promise.all([

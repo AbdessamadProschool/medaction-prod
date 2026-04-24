@@ -641,6 +641,10 @@ const authMiddleware = withAuth(
           if (prefix === '/api/admin' && pathname.startsWith('/api/admin/bilans') && userRole === 'GOUVERNEUR') {
             break;
           }
+          // Exception: Les annonces de settings sont accessibles à tous les personnels
+          if (prefix === '/api/settings' && pathname === '/api/settings/announcement') {
+            break;
+          }
           if (!allowedRoles.includes(userRole)) {
             return createApiErrorResponse(403, 'Access denied.', 'ACCESS_DENIED', nonce);
           }

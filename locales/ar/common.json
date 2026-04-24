@@ -3912,7 +3912,7 @@
   },
   "delegation": {
     "dashboard": {
-      "title": "تفويض {sector}",
+      "title": "مندوبية {sector}",
       "welcome": "فضاء الإدارة - {name}",
       "content_summary": "محتويات",
       "total_views": "إجمالي المشاهدات",
@@ -3957,7 +3957,9 @@
         "new_event": "حدث جديد",
         "new_event_desc": "خطط لحدث ما",
         "new_news": "أخبار جديدة",
-        "new_news_desc": "نشر المعلومات"
+        "new_news_desc": "نشر المعلومات",
+        "establishments": "المؤسسات",
+        "establishments_desc": "اقتراح تحديثات"
       },
       "todo": {
         "title": "للقيام به",
@@ -4047,7 +4049,11 @@
             "phone": "الهاتف",
             "phone_placeholder": "0600000000",
             "email": "البريد الإلكتروني للاتصال",
-            "email_placeholder": "contact@example.ma"
+            "email_placeholder": "contact@example.ma",
+            "is_organise_par_province": "منظمة من طرف العمالة",
+            "is_organise_par_province_desc": "سيتم ربط الحدث مباشرة بعمالة مديونة",
+            "sous_couvert_province": "تحت غطاء العمالة",
+            "sous_couvert_province_desc": "إظهار عبارة 'تحت غطاء السيد العامل'"
           },
           "participation": {
             "title": "المشاركة والتسجيل",

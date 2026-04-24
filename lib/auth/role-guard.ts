@@ -1,11 +1,11 @@
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import type { Session } from 'next-auth';
-import type { UserRole } from '@prisma/client';
+import type { Role } from '@prisma/client';
 import { authOptions } from '@/lib/auth/config';
 
 export async function requireRoles(
-  allowedRoles: UserRole[]
+  allowedRoles: Role[]
 ): Promise<{ session: Session } | { error: NextResponse }> {
   const session = await getServerSession(authOptions);
 
@@ -13,7 +13,7 @@ export async function requireRoles(
     return { error: NextResponse.json({ error: 'Non authentifié' }, { status: 401 }) };
   }
 
-  if (!allowedRoles.includes(session.user.role as UserRole)) {
+  if (!allowedRoles.includes(session.user.role as Role)) {
     return { error: NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 }) };
   }
 

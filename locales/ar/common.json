@@ -882,7 +882,9 @@
           "accept_desc": "الشكاية صالحة وستتم معالجتها",
           "reject_btn": "رفض الشكاية",
           "reject_desc": "الشكاية غير صالحة أو مكررة",
-          "reject_reason_placeholder": "سبب الرفض (مطلوب)"
+          "reject_reason_placeholder": "سبب الرفض (مطلوب)",
+          "reject_placeholder": "سبب الرفض (مطلوب)",
+          "confirm_reject": "تأكيد الرفض"
         },
         "delete": {
           "title": "حذف الشكاية",
@@ -4896,6 +4898,7 @@
     "Services": "خدمات",
     "Propreté": "نظافة",
     "Sécurité": "أمن",
+    "securite": "أمن",
     "Personnel": "موظفون",
     "Accessibilité": "ولوجية",
     "education": "التعليم",

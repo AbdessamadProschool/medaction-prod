@@ -104,8 +104,24 @@ export async function GET(
     let finalPath = filePath;
     let exists = existsSync(filePath);
 
+    // Fallback 1: Plural/Singular folder names (e.g., 'evenements' vs 'evenement')
     if (!exists) {
-      // Fallback 1: Try with reversed slashes (Windows/Linux compatibility)
+      const parts = requestedPath.split(/[\\\/]/);
+      if (parts.length > 1) {
+        const folder = parts[0];
+        const rest = parts.slice(1).join('/');
+        const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
+        const alternativePath = normalize(join(storagePath, alternativeFolder, rest));
+        
+        if (existsSync(alternativePath)) {
+          finalPath = alternativePath;
+          exists = true;
+        }
+      }
+    }
+
+    if (!exists) {
+      // Fallback 2: Try with reversed slashes (Windows/Linux compatibility)
       const altPath = filePath.includes('/') ? filePath.replace(/\//g, '\\') : filePath.replace(/\\/g, '/');
       if (altPath !== filePath && existsSync(altPath)) {
         finalPath = altPath;
@@ -114,11 +130,24 @@ export async function GET(
     }
 
     if (!exists) {
-      // Fallback 2: try public/uploads directly relative to CWD
-      const publicPath = join(process.cwd(), 'public', 'uploads', requestedPath);
+      // Fallback 3: try public/uploads directly relative to CWD
+      const publicPath = normalize(join(process.cwd(), 'public', 'uploads', requestedPath));
       if (publicPath !== filePath && existsSync(publicPath)) {
         finalPath = publicPath;
         exists = true;
+      } else {
+        // Also try plural/singular in publicPath
+        const parts = requestedPath.split(/[\\\/]/);
+        if (parts.length > 1) {
+          const folder = parts[0];
+          const rest = parts.slice(1).join('/');
+          const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
+          const altPublicPath = normalize(join(process.cwd(), 'public', 'uploads', alternativeFolder, rest));
+          if (existsSync(altPublicPath)) {
+            finalPath = altPublicPath;
+            exists = true;
+          }
+        }
       }
     }
 

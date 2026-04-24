@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 function slugify(text: string) {
   return text.toString().toLowerCase()
@@ -15,63 +17,66 @@ function slugify(text: string) {
 }
 
 // GET - Liste des campagnes
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id || session.user.role !== 'DELEGATION') {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
-    }
-
-    const userId = parseInt(session.user.id);
-    const { searchParams } = new URL(request.url);
-    const page = Math.max(1, safeParseInt(searchParams.get('page') || '1', 1));
-    const limit = Math.max(1, safeParseInt(searchParams.get('limit') || '12', 1));
-    const search = searchParams.get('search') || '';
-    const statut = searchParams.get('statut') || '';
-
-    const where: Record<string, unknown> = {
-      createdBy: userId,
-    };
-
-    if (search) {
-      where.OR = [
-        { titre: { contains: search, mode: 'insensitive' } },
-        { nom: { contains: search, mode: 'insensitive' } },
-      ];
-    }
-
-    if (statut === 'ACTIVE') {
-      where.isActive = true;
-    } else if (statut === 'INACTIVE') {
-      where.isActive = false;
-    }
-
-    const [campagnes, total] = await Promise.all([
-      prisma.campagne.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.campagne.count({ where }),
-    ]);
-
-    return NextResponse.json({
-      success: true,
-      data: campagnes,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    });
-  } catch (error) {
-    console.error('Erreur campagnes:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Vous devez être connecté');
   }
-}
+
+  if (session.user.role !== 'DELEGATION') {
+    throw new ForbiddenError('Accès réservé aux délégations');
+  }
+
+  const userId = parseInt(session.user.id);
+  if (isNaN(userId)) {
+    throw new ValidationError('ID utilisateur invalide');
+  }
+
+  const { searchParams } = new URL(request.url);
+  const page = Math.max(1, safeParseInt(searchParams.get('page') || '1', 1));
+  const limit = Math.max(1, safeParseInt(searchParams.get('limit') || '12', 12));
+  const search = searchParams.get('search') || '';
+  const statut = searchParams.get('statut') || '';
+
+  const where: any = {
+    createdBy: userId,
+  };
+
+  if (search) {
+    where.OR = [
+      { titre: { contains: search, mode: 'insensitive' } },
+      { nom: { contains: search, mode: 'insensitive' } },
+    ];
+  }
+
+  if (statut === 'ACTIVE') {
+    where.isActive = true;
+  } else if (statut === 'INACTIVE') {
+    where.isActive = false;
+  }
+
+  const [campagnes, total] = await Promise.all([
+    prisma.campagne.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.campagne.count({ where }),
+  ]);
+
+  return NextResponse.json({
+    success: true,
+    data: campagnes,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  });
+});
 
 // POST - Créer une campagne
 export async function POST(request: NextRequest) {

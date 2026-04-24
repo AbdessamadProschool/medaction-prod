@@ -164,7 +164,7 @@ export default function ActualiteDetailPage() {
           <div className="absolute inset-0">
              <OptimizedImage
                 src={images[0].urlPublique}
-                alt={actualite.titre}
+                alt={locale === 'ar' && actualite.titreAr ? actualite.titreAr : actualite.titre}
                 fill
                 className="object-cover"
                 priority
@@ -211,7 +211,7 @@ export default function ActualiteDetailPage() {
                </div>
 
                <h1 className={`text-3xl md:text-5xl font-black mb-6 drop-shadow-lg !text-white text-shadow-md ${locale === 'ar' ? 'font-cairo leading-normal md:leading-relaxed' : 'leading-tight'}`}>
-                 {actualite.titre}
+                 {locale === 'ar' && actualite.titreAr ? actualite.titreAr : actualite.titre}
                </h1>
 
                <div className="flex items-center gap-4 text-sm text-blue-100/90 font-medium">
@@ -269,7 +269,7 @@ export default function ActualiteDetailPage() {
               {/* Lead Text / Description */}
               {actualite.description && (
                 <div className={`text-xl md:text-2xl font-medium text-gray-900 mb-8 max-w-3xl ${locale === 'ar' ? 'leading-loose' : 'leading-relaxed'}`}>
-                   {actualite.description}
+                   {locale === 'ar' && actualite.descriptionAr ? actualite.descriptionAr : actualite.description}
                 </div>
               )}
 
@@ -279,7 +279,7 @@ export default function ActualiteDetailPage() {
                  prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-[hsl(213,80%,28%)]
                  prose-a:text-[hsl(45,93%,47%)] prose-a:no-underline hover:prose-a:underline
                  prose-blockquote:border-l-4 prose-blockquote:border-[hsl(45,93%,47%)] prose-blockquote:bg-amber-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-r-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
-                 html={actualite.contenu}
+                 html={locale === 'ar' && actualite.contenuAr ? actualite.contenuAr : actualite.contenu}
               />
 
               {/* Tags */}

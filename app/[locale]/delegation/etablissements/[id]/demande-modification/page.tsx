@@ -59,7 +59,7 @@ export default function DemandeModificationPage({ params: paramsPromise }: { par
         className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-bold text-sm"
       >
         <ChevronLeft size={16} />
-        Retour à la liste
+        {t('back_list')}
       </Link>
 
       <div className="flex flex-col gap-1">
@@ -67,7 +67,7 @@ export default function DemandeModificationPage({ params: paramsPromise }: { par
            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none rounded-lg px-3 py-1">#{etablissement.code}</Badge>
            <h1 className="text-3xl font-black text-gray-900 dark:text-white">{t('request_edit')}</h1>
         </div>
-        <p className="text-gray-500 mt-2">Mise à jour de l'établissement: <span className="text-emerald-600 font-bold">{etablissement.nom}</span></p>
+        <p className="text-gray-500 mt-2">{t('update_etab')}: <span className="text-emerald-600 font-bold">{etablissement.nom}</span></p>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 p-8 pt-10 relative">

@@ -420,13 +420,13 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         onChange={e => setFormData({ ...formData, communeId: e.target.value })}
                         className="input-premium"
                       >
-                        <option value="">Sélectionner...</option>
-                        <option value="1">Médiouna</option>
-                        <option value="2">Tit Mellil</option>
-                        <option value="3">Lahraouyine</option>
-                        <option value="4">Sidi Hajjaj Oued Hassar</option>
-                        <option value="5">Mejatia Oulad Taleb</option>
-                        <option value="6">Al Majat</option>
+                        <option value="">{te('common.select') || 'Sélectionner...'}</option>
+                        <option value="1">{te('options.communes.1')}</option>
+                        <option value="2">{te('options.communes.2')}</option>
+                        <option value="3">{te('options.communes.3')}</option>
+                        <option value="4">{te('options.communes.4')}</option>
+                        <option value="5">{te('options.communes.5')}</option>
+                        <option value="6">{te('options.communes.6')}</option>
                       </select>
                     </FormField>
                     <FormField label={te('form.quartier')}>
@@ -482,19 +482,19 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                   <div className="grid grid-cols-2 gap-4">
                     <FormField label={te('form.etatInfrastructure')}>
                       <select value={formData.etatInfrastructure} onChange={e => setFormData({...formData, etatInfrastructure: e.target.value})} className="input-premium">
-                        <option value="EXCELLENT">Excellent</option>
-                        <option value="BON">Bon</option>
-                        <option value="MOYEN">Moyen</option>
-                        <option value="DEGRADE">Dégradé</option>
-                        <option value="A_RENOVER">À rénover</option>
+                        <option value="EXCELLENT">{te('options.infra_status.EXCELLENT')}</option>
+                        <option value="BON">{te('options.infra_status.BON')}</option>
+                        <option value="MOYEN">{te('options.infra_status.MOYEN')}</option>
+                        <option value="DEGRADE">{te('options.infra_status.DEGRADE')}</option>
+                        <option value="A_RENOVER">{te('options.infra_status.A_RENOVER')}</option>
                       </select>
                     </FormField>
                     <FormField label={te('form.statutFonctionnel')}>
                       <select value={formData.statutFonctionnel} onChange={e => setFormData({...formData, statutFonctionnel: e.target.value})} className="input-premium">
-                        <option value="FONCTIONNEL">Fonctionnel</option>
-                        <option value="PARTIEL">Partiel</option>
-                        <option value="RENOVATION">Rénovation</option>
-                        <option value="FERME">Fermé</option>
+                        <option value="FONCTIONNEL">{te('options.functional_status.FONCTIONNEL')}</option>
+                        <option value="PARTIEL">{te('options.functional_status.PARTIEL')}</option>
+                        <option value="RENOVATION">{te('options.functional_status.RENOVATION')}</option>
+                        <option value="FERME">{te('options.functional_status.FERME')}</option>
                       </select>
                     </FormField>
                   </div>
@@ -555,11 +555,11 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <FormField label={te('form.cycle')}>
                     <select value={formData.cycle} onChange={e => setFormData({...formData, cycle: e.target.value})} className="input-premium">
-                      <option value="">Choisir...</option>
-                      <option value="PRIMAIRE">Primaire</option>
-                      <option value="COLLEGE">Collège</option>
-                      <option value="LYCEE">Lycée</option>
-                      <option value="PRE-SCOLAIRE">Préscolaire</option>
+                      <option value="">{te('common.choose') || 'Choisir...'}</option>
+                      <option value="PRIMAIRE">{te('options.cycles.PRIMAIRE')}</option>
+                      <option value="COLLEGE">{te('options.cycles.COLLEGE')}</option>
+                      <option value="LYCEE">{te('options.cycles.LYCEE')}</option>
+                      <option value="PRE-SCOLAIRE">{te('options.cycles.PRE-SCOLAIRE')}</option>
                     </select>
                   </FormField>
                   <FormField label={te('form.nbClasses')}>

@@ -210,7 +210,7 @@ export default function EvenementDetailPage() {
           <div className="absolute inset-0 z-0">
              <OptimizedImage
                 src={images[0].urlPublique}
-                alt={event.titre}
+                alt={locale === 'ar' && event.titreAr ? event.titreAr : event.titre}
                 fill
                 type="evenement"
                 className="object-cover"
@@ -290,7 +290,7 @@ export default function EvenementDetailPage() {
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-8 max-w-5xl leading-tight text-shadow-sm"
             >
-              {event.titre}
+              {locale === 'ar' && event.titreAr ? event.titreAr : event.titre}
             </motion.h1>
 
             {/* Key Info Grid */}
@@ -376,7 +376,7 @@ export default function EvenementDetailPage() {
                    <h2 className="text-2xl font-bold text-gray-900">{t('labels.about')}</h2>
                 </div>
                 <div className="prose prose-lg text-gray-600 leading-relaxed whitespace-pre-wrap">
-                   {event.description}
+                   {locale === 'ar' && event.descriptionAr ? event.descriptionAr : event.description}
                 </div>
 
                 {/* Tags */}

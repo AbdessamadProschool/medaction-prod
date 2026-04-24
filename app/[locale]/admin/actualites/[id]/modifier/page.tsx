@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { 
   ArrowLeft, 
   Save, 
@@ -49,6 +50,8 @@ export default function ModifierActualitePage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const t = useTranslations('news_page');
+  const tCommon = useTranslations('common');
   
   const [actualite, setActualite] = useState<Actualite | null>(null);
   const [loading, setLoading] = useState(true);
@@ -195,9 +198,9 @@ export default function ModifierActualitePage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900">Actualité introuvable</h2>
+          <h2 className="text-xl font-bold text-gray-900">{t('detail.not_found')}</h2>
           <Link href="/admin/actualites" className="text-emerald-600 hover:underline mt-4 inline-block">
-            Retour à la liste
+            {t('detail.back_to_list')}
           </Link>
         </div>
       </div>

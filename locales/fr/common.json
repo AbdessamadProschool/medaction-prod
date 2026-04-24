@@ -2357,6 +2357,35 @@
         "no_requests": "Aucune demande en attente",
         "select_to_view": "Sélectionnez une demande pour voir les détails",
         "can_validate_reject": "Vous pouvez valider ou rejeter les modifications proposées"
+      },
+      "options": {
+        "cycles": {
+          "PRIMAIRE": "Primaire",
+          "COLLEGE": "Collège",
+          "LYCEE": "Lycée",
+          "PRE-SCOLAIRE": "Préscolaire"
+        },
+        "communes": {
+          "1": "Médiouna",
+          "2": "Tit Mellil",
+          "3": "Lahraouyine",
+          "4": "Sidi Hajjaj Oued Hassar",
+          "5": "Mejatia Oulad Taleb",
+          "6": "Al Majat"
+        },
+        "infra_status": {
+          "EXCELLENT": "Excellent",
+          "BON": "Bon",
+          "MOYEN": "Moyen",
+          "DEGRADE": "Dégradé",
+          "A_RENOVER": "À rénover"
+        },
+        "functional_status": {
+          "FONCTIONNEL": "Fonctionnel",
+          "PARTIEL": "Partiel",
+          "RENOVATION": "Rénovation",
+          "FERME": "Fermé"
+        }
       }
     },
     "events": {
@@ -5707,7 +5736,9 @@
     "details_title": "Détails de la demande",
     "rejection_reason": "Motif du rejet",
     "processing_admin": "Votre demande est en cours d'examen par l'administration.",
-    "processed_on": "Demande traitée le {date}"
+    "processed_on": "Demande traitée le {date}",
+    "back_list": "Retour à la liste",
+    "update_etab": "Mise à jour de l'établissement"
   },
   "history_actions": {
     "CREATION": "Création",

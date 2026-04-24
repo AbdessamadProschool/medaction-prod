@@ -752,6 +752,35 @@
         "no_requests": "لا توجد طلبات معلقة",
         "select_to_view": "اختر طلباً من القائمة لعرض التفاصيل",
         "can_validate_reject": "يمكنك قبول أو رفض التعديلات المقترحة"
+      },
+      "options": {
+        "cycles": {
+          "PRIMAIRE": "ابتدائي",
+          "COLLEGE": "إعدادي",
+          "LYCEE": "تأهيلي",
+          "PRE-SCOLAIRE": "أولي"
+        },
+        "communes": {
+          "1": "مديونة",
+          "2": "تيط مليل",
+          "3": "الهراويين",
+          "4": "سيدي حجاج واد حصار",
+          "5": "مجاطية أولاد طالب",
+          "6": "المجاط"
+        },
+        "infra_status": {
+          "EXCELLENT": "ممتاز",
+          "BON": "جيد",
+          "MOYEN": "متوسط",
+          "DEGRADE": "متدهور",
+          "A_RENOVER": "يحتاج ترميم"
+        },
+        "functional_status": {
+          "FONCTIONNEL": "وظيفي",
+          "PARTIEL": "جزئي",
+          "RENOVATION": "في طور الترميم",
+          "FERME": "مغلق"
+        }
       }
     },
     "header": {
@@ -5708,7 +5737,9 @@
     "details_title": "تفاصيل الطلب",
     "rejection_reason": "سبب الرفض",
     "processing_admin": "طلبك قيد المراجعة من قبل الإدارة.",
-    "processed_on": "تمت معالجة الطلب في {date}"
+    "processed_on": "تمت معالجة الطلب في {date}",
+    "back_list": "العودة إلى القائمة",
+    "update_etab": "تحديث المؤسسة"
   },
   "history_actions": {
     "CREATION": "إنشاء",

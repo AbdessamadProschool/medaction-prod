@@ -30,8 +30,11 @@ const getCategoryKey = (cat: string) => {
 interface Article {
   id: number;
   titre: string;
+  titreAr?: string;
   contenu: string;
+  contenuAr?: string;
   resume?: string;
+  resumeAr?: string;
   categorie?: string;
   imageCouverture?: string;
   tags?: string[];
@@ -131,7 +134,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         {article.imageCouverture ? (
           <OptimizedImage
             src={article.imageCouverture}
-            alt={article.titre}
+            alt={locale === 'ar' && article.titreAr ? article.titreAr : article.titre}
             fill
             className="object-cover"
             priority
@@ -185,7 +188,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Title */}
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
-              {article.titre}
+              {locale === 'ar' && article.titreAr ? article.titreAr : article.titre}
             </h1>
 
             {/* Author & Meta */}
@@ -227,7 +230,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             {article.resume && (
                <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-4 border-[hsl(45,93%,47%)]">
                   <p className="text-lg text-gray-700 italic leading-relaxed font-medium">
-                     {article.resume}
+                     {locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume}
                   </p>
                </div>
             )}
@@ -235,7 +238,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             {/* Main Content */}
             <SafeHTML 
               className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-[hsl(213,80%,28%)] prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
-              html={article.contenu}
+              html={locale === 'ar' && article.contenuAr ? article.contenuAr : article.contenu}
             />
 
             {/* Tags Footer */}

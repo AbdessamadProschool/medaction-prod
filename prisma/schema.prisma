@@ -884,8 +884,11 @@ model Article {
   id                      Int       @id @default(autoincrement())
   
   titre                   String
+  titreAr                 String?   // Traduction Arabe
   description             String?
+  descriptionAr           String?   // Traduction Arabe
   contenu                 String    @db.Text
+  contenuAr               String?   @db.Text // Traduction Arabe
   categorie               String?
   tags                    String[]
   
@@ -917,7 +920,9 @@ model Video {
   id                      Int       @id @default(autoincrement())
   
   titre                   String
+  titreAr                 String?   // Traduction Arabe
   description             String?   @db.Text
+  descriptionAr           String?   @db.Text // Traduction Arabe
   urlYoutube              String
   thumbnail               String?
   
@@ -946,10 +951,15 @@ model Talent {
   id                      Int       @id @default(autoincrement())
   
   nom                     String
+  nomAr                   String?   // Traduction Arabe
   prenom                  String
+  prenomAr                String?   // Traduction Arabe
   nomArtistique           String?
+  nomArtistiqueAr         String?   // Traduction Arabe
   bio                     String?   @db.Text
+  bioAr                   String?   @db.Text // Traduction Arabe
   domaine                 String
+  domaineAr               String?   // Traduction Arabe
   
   photo                   String?
   reseauxSociaux          Json?
@@ -988,8 +998,11 @@ model Campagne {
   nom                     String
   slug                    String    @unique
   titre                   String
+  titreAr                 String?   // Traduction Arabe
   description             String?   @db.Text
+  descriptionAr           String?   @db.Text // Traduction Arabe
   contenu                 String    @db.Text
+  contenuAr               String?   @db.Text // Traduction Arabe
   
   type                    String    // "Je suis Médiouna", "Bouge Médiouna"
   

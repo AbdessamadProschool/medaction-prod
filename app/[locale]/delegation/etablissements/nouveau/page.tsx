@@ -15,7 +15,7 @@ export default function NouvelleDemandeCreationPage() {
         className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-bold text-sm"
       >
         <ChevronLeft size={16} />
-        Retour à la liste
+        {t('back_list')}
       </Link>
 
       <div className="flex flex-col gap-1">

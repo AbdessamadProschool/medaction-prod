@@ -24,6 +24,7 @@ import {
   UserCheck,
   Handshake,
   Landmark,
+  Leaf,
   type LucideIcon
 } from 'lucide-react';
 
@@ -64,14 +65,15 @@ interface DetailedStats {
   }[];
 }
 
-const SECTEUR_CONFIG: Record<string, { label: string; icon: LucideIcon; color: string }> = {
-  SANTE: { label: 'الصحة', icon: Heart, color: 'hsl(348,83%,47%)' },
-  EDUCATION: { label: 'التعليم', icon: GraduationCap, color: 'hsl(213,80%,28%)' },
-  SPORT: { label: 'الرياضة', icon: Dumbbell, color: 'hsl(145,63%,32%)' },
-  CULTURE: { label: 'الثقافة', icon: Palette, color: 'hsl(280,60%,50%)' },
-  JEUNESSE: { label: 'الشباب', icon: UserCheck, color: 'hsl(45,93%,47%)' },
-  SOCIAL: { label: 'الشؤون الاجتماعية', icon: Handshake, color: 'hsl(180,60%,40%)' },
-  ADMINISTRATION: { label: 'الإدارة', icon: Landmark, color: 'hsl(220,20%,40%)' },
+const SECTEUR_CONFIG: Record<string, { label: string; labelKey: string; icon: LucideIcon; color: string }> = {
+  SANTE: { label: 'الصحة', labelKey: 'health', icon: Heart, color: 'hsl(348,83%,47%)' },
+  EDUCATION: { label: 'التعليم', labelKey: 'education', icon: GraduationCap, color: 'hsl(213,80%,28%)' },
+  SPORT: { label: 'الرياضة', labelKey: 'sport', icon: Dumbbell, color: 'hsl(145,63%,32%)' },
+  CULTURE: { label: 'الثقافة', labelKey: 'culture', icon: Palette, color: 'hsl(280,60%,50%)' },
+  JEUNESSE: { label: 'الشباب', labelKey: 'youth', icon: UserCheck, color: 'hsl(45,93%,47%)' },
+  SOCIAL: { label: 'الشؤون الاجتماعية', labelKey: 'social', icon: Handshake, color: 'hsl(180,60%,40%)' },
+  ENVIRONNEMENT: { label: 'البيئة', labelKey: 'environment', icon: Leaf, color: 'hsl(120,50%,40%)' },
+  ADMINISTRATION: { label: 'الإدارة', labelKey: 'administration', icon: Landmark, color: 'hsl(220,20%,40%)' },
 };
 
 export default function StatistiquesPage() {

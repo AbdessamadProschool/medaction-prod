@@ -91,12 +91,12 @@ interface SystemStats {
 }
 
 // Safe rendering helper
-const renderUser = (user: any) => {
-  if (!user) return 'Système';
+const renderUser = (user: any, t: any) => {
+  if (!user) return t('super_admin.recent_activity.system') || 'Système';
   if (typeof user === 'string') return user;
   if (typeof user === 'object') {
      const name = `${user.prenom || ''} ${user.nom || ''}`.trim();
-     return name || user.email || 'Utilisateur';
+     return name || user.email || t('super_admin.recent_activity.user') || 'Utilisateur';
   }
   return 'Utilisateur';
 };
@@ -384,14 +384,14 @@ export default function SuperAdminDashboard() {
                 <Link
                   href="/"
                   className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  title="Page d'accueil"
+                  title={t('super_admin.home')}
                 >
                   <Home size={20} />
                 </Link>
                 <Link
                   href="/admin"
                   className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  title="Dashboard Admin"
+                  title={t('super_admin.dashboard_admin')}
                 >
                   <ArrowLeft size={20} />
                 </Link>
@@ -650,7 +650,7 @@ export default function SuperAdminDashboard() {
                           {log.action || 'Action'}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
-                          {renderUser(log.user)} • {log.entity || ''}
+                          {renderUser(log.user, t)} • {log.entity || ''}
                         </p>
                       </div>
                       <span className="text-xs text-gray-400 flex-shrink-0">

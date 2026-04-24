@@ -2186,7 +2186,10 @@
         "highlighted": "Mis en avant avec succès",
         "unhighlighted": "Retiré de la une",
         "deleted": "Supprimé avec succès",
-        "confirm_delete": "Supprimer cet article ?"
+        "confirm_delete": "Supprimer cet article ?",
+        "load_error": "Erreur lors du chargement de l'article",
+        "save_error": "Erreur lors de la sauvegarde de l'article",
+        "delete_error": "Erreur lors de la suppression de l'article"
       }
     },
     "news": {
@@ -2388,12 +2391,62 @@
         "open_registration": "Ouvrir les inscriptions",
         "open_registration_hint": "Permet aux citoyens de s'inscrire en ligne",
         "external_link": "Lien d'inscription externe",
-        "sector": "Secteur de l'événement"
+        "sector": "Secteur de l'événement",
+        "category": "Catégorie d'événement",
+        "organization": "Organisation & Établissement",
+        "organized_by_province": "Organisé par la Province",
+        "organized_by_province_hint": "L'événement sera rattaché à la Province de Médiouna",
+        "under_province_patronage": "Sous le couvert de la Province",
+        "under_province_patronage_hint": "Affichage \"Sous le couvert de Monsieur le Gouverneur\"",
+        "location_type": "Type de lieu d'événement",
+        "manual_entry": "Saisie Manuelle",
+        "existing_establishment": "Établissement Existant",
+        "venue_sector": "Secteur du lieu (optionnel)",
+        "all_sectors": "Tous les secteurs",
+        "establishment_venue": "Établissement (Emplacement)",
+        "venue_name": "Lieu exact ou Nom de la salle",
+        "map_position": "Position sur la carte",
+        "map_hint": "Glissez le marqueur pour définir l'emplacement exact",
+        "is_free": "Participation gratuite",
+        "price": "Prix d'entrée (DH)",
+        "event_photos": "Photos de l'événement",
+        "add_photo": "Ajouter"
       },
       "errors": {
         "image_size": "L'image ne doit pas dépasser 5MB",
         "upload_error": "Erreur lors de l'upload de l'image",
         "create_error": "Erreur lors de la création"
+      },
+      "steps": {
+        "info": "Informations",
+        "location": "Lieu & Organisation",
+        "participation": "Participation",
+        "media": "Médias"
+      },
+      "placeholders": {
+        "title": "Ex: Nettoyage de la plage",
+        "category": "Ex: Concours de dessin",
+        "description": "Détails de l'événement...",
+        "venue": "Ex: Grande Salle du Conseil",
+        "capacity": "Ex: 500",
+        "price": "Ex: 50"
+      },
+      "summary": {
+        "title": "Résumé de l'événement",
+        "field_title": "Titre",
+        "field_sector": "Secteur",
+        "field_location": "Lieu",
+        "field_date": "Date",
+        "field_org": "Organisation",
+        "province_org": "Province de Médiouna",
+        "establishment_org": "Établissement"
+      },
+      "buttons": {
+        "draft": "Brouillon",
+        "prev": "Retour",
+        "next": "Suivant",
+        "create": "Créer l'événement",
+        "save_draft_success": "Brouillon enregistré"
       }
     },
     "backups": {
@@ -5132,7 +5185,9 @@
     "recent_activity": {
       "title": "Activité Récente",
       "view_all": "Voir tout",
-      "no_activity": "Aucune activité récente"
+      "no_activity": "Aucune activité récente",
+      "system": "Système",
+      "user": "Utilisateur"
     },
     "rbac": {
       "title": "Rôles & Permissions",
@@ -5246,7 +5301,9 @@
       "active_sessions": "Sessions Actives",
       "database_size": "Taille BDD",
       "server_status": "État du Serveur"
-    }
+    },
+    "home": "Accueil",
+    "dashboard_admin": "Tableau de bord Admin"
   },
   "admin_campaigns": {
     "new": {

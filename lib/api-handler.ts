@@ -112,7 +112,7 @@ export function withErrorHandler(handler: ApiHandler): (req: NextRequest, contex
         return NextResponse.json(
           createErrorResponse('VALIDATION_ERROR', message, {
             details: process.env.NODE_ENV === 'development' 
-              ? [{ field: 'general', message: error.message.split('\n').pop() || error.message }]
+              ? [{ field: 'general', message: (error.message || '').split('\n').pop() || error.message || 'Erreur inconnue' }]
               : undefined,
           }),
           { status: 400 }

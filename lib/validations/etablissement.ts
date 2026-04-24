@@ -203,7 +203,7 @@ export const etablissementFilterSchema = z.object({
     limit: z.coerce.number()
       .int("La limite doit être un nombre entier")
       .positive("La limite doit être positive")
-      .max(100, "La limite maximale est de 100 éléments par page")
+      .max(1000, "La limite maximale est de 1000 éléments par page")
       .default(4),
     
     search: z.string()

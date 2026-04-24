@@ -108,9 +108,10 @@ function formatZodIssueMessage(issue: any): string {
   const fieldLabel = getFieldLabel(String(lastField));
   
   // Utiliser directement le message Zod s'il existe (personnalisé dans le schéma)
-  if (issue.message && !issue.message.includes('Expected') && !issue.message.includes('Required')) {
+  const message = issue.message || '';
+  if (message && !message.includes('Expected') && !message.includes('Required')) {
     // Si c'est un message personnalisé, l'utiliser
-    return issue.message;
+    return message;
   }
   
   const code = issue.code;

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
@@ -25,8 +25,8 @@ export async function PATCH(
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    // Vérifier les permissions (admin seulement)
-    const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
+    // Vérifier les permissions (admin, gouverneur ou autorité locale)
+    const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'];
     if (!allowedRoles.includes(session.user.role)) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
     }
@@ -39,11 +39,18 @@ export async function PATCH(
     // Vérifier que la réclamation existe
     const reclamation = await prisma.reclamation.findUnique({
       where: { id: reclamationId },
-      select: { id: true, titre: true, affecteeAAutoriteId: true, affectationReclamation: true },
+      select: { id: true, titre: true, statut: true, affecteeAAutoriteId: true, affectationReclamation: true },
     });
 
     if (!reclamation) {
       return NextResponse.json({ error: "Réclamation non trouvée" }, { status: 404 });
+    }
+
+    // Le gouverneur ne peut affecter que les réclamations déjà acceptées/validées par l'admin
+    if (session.user.role === 'GOUVERNEUR' && reclamation.statut !== 'ACCEPTEE') {
+      return NextResponse.json({ 
+        error: "Le gouverneur ne peut affecter que les réclamations acceptées par l'administration" 
+      }, { status: 403 });
     }
 
     // Valider les données

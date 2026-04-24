@@ -94,7 +94,8 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         page: page.toString(),
         limit: '9',
         search: search,
-        ...(statutFilter ? { statut: statutFilter } : { statut: 'ACCEPTEE' }), // Default to ACCEPTEE but allow filter
+        statut: 'ACCEPTEE', // Le gouverneur ne voit que les réclamations acceptées par l'admin
+        ...(statutFilter ? { affectation: statutFilter } : {}), 
       });
       
       const res = await fetch(`/api/reclamations?${params}`);
@@ -139,7 +140,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
   }, [initialSelectedId, reclamations]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       
       {/* 📊 GLOBAL MONITORING BAR - COMMAND MODULES */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -172,7 +173,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
       </div>
 
       {/* 🔍 SEARCH & FLOW CONTROL - GLASS PANEL */}
-      <div className="sticky top-24 z-30 bg-white/80 backdrop-blur-xl p-4 md:p-5 rounded-[2.5rem] shadow-xl border border-white/50 flex flex-col lg:flex-row gap-5 items-center ring-1 ring-black/5">
+      <div className="sticky top-24 z-30 bg-white/80 backdrop-blur-xl p-3 md:p-4 rounded-[2rem] shadow-xl border border-white/50 flex flex-col lg:flex-row gap-4 items-center ring-1 ring-black/5">
         <div className="relative flex-1 w-full group">
           <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-gov-blue transition-colors pointer-events-none">
              <Search size={22} />
@@ -189,7 +190,6 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
         <div className="flex gap-2 w-full lg:w-auto p-1.5 bg-slate-100/80 rounded-[2rem] overflow-x-auto custom-scrollbar">
           {[
             { id: '', label: isAr ? 'الكل' : 'Toutes' },
-            { id: 'EN_ATTENTE', label: isAr ? 'بانتظار المصادقة' : 'En attente' },
             { id: 'NON_AFFECTEE', label: isAr ? 'بانتظار التعيين' : 'À affecter' },
             { id: 'AFFECTEE', label: isAr ? 'قيد المعالجة' : 'En cours' },
           ].map(f => (
@@ -227,8 +227,8 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 transition={{ delay: i * 0.05 }}
                 onClick={() => setSelectedRec(rec)}
                 id={`rec-${rec.id}`}
-                className={`group bg-white rounded-[2.5rem] p-8 shadow-xl border transition-all cursor-pointer relative overflow-hidden flex flex-col h-full ${
-                   initialSelectedId === rec.id ? 'ring-4 ring-gov-blue ring-offset-4 border-gov-blue animate-pulse' : 'border-slate-100 hover:shadow-2xl hover:border-gov-blue/20'
+                className={`group bg-white rounded-[2rem] p-6 shadow-lg border transition-all cursor-pointer relative overflow-hidden flex flex-col h-full ${
+                   initialSelectedId === rec.id ? 'ring-4 ring-gov-blue ring-offset-4 border-gov-blue animate-pulse' : 'border-slate-100 hover:shadow-xl hover:border-gov-blue/20'
                 }`}
               >
                 {/* Decorative Pattern */}
@@ -245,16 +245,16 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                 </div>
 
                 <div className="mb-auto">
-                    <h3 className="text-lg font-black text-slate-900 mb-3 group-hover:text-gov-blue transition-colors leading-tight line-clamp-2">
+                    <h3 className="text-base font-black text-slate-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight line-clamp-2">
                       {rec.titre}
                     </h3>
                     
-                    <p className="text-slate-500 text-xs font-medium mb-8 line-clamp-3 leading-relaxed">
+                    <p className="text-slate-500 text-[11px] font-medium mb-4 line-clamp-3 leading-relaxed">
                       {rec.description}
                     </p>
                 </div>
 
-                <div className="space-y-3 pt-6 border-t border-slate-50 relative z-10">
+                <div className="space-y-2 pt-4 border-t border-slate-50 relative z-10">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-white group-hover:shadow-sm transition-all">
                         <User size={14} />
@@ -276,7 +276,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                   )}
                 </div>
 
-                <div className="mt-6 flex justify-between items-center relative z-10">
+                <div className="mt-4 flex justify-between items-center relative z-10">
                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-300 uppercase tracking-wide">
                       <Calendar size={12} />
                       {new Date(rec.createdAt).toLocaleDateString()}
@@ -332,7 +332,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
               className="bg-white rounded-[3rem] shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col"
             >
               {/* Header */}
-              <div className="bg-slate-900 p-10 text-white flex items-center justify-between relative overflow-hidden">
+              <div className="bg-slate-900 p-6 md:p-8 text-white flex items-center justify-between relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gov-blue/10 skew-x-12 translate-x-1/4" />
                 <div className="relative z-10 space-y-2">
                   <div className="flex items-center gap-3">
@@ -341,7 +341,7 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                     </span>
                     <span className="text-[10px] font-black text-white/70 uppercase tracking-widest">{t('card.id')}: {selectedRec.id}</span>
                   </div>
-                  <h2 className="text-3xl font-black">{selectedRec.titre}</h2>
+                  <h2 className="text-xl md:text-3xl font-black text-white break-words overflow-wrap-anywhere" style={{ wordBreak: 'break-word' }}>{selectedRec.titre}</h2>
                 </div>
                 <button 
                   onClick={() => setSelectedRec(null)}
@@ -352,14 +352,14 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
               </div>
 
               {/* Body */}
-              <div className="p-10 overflow-y-auto space-y-12">
-                <div className="grid md:grid-cols-2 gap-10">
+              <div className="p-6 md:p-10 overflow-y-auto space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
                    <div className="space-y-6">
                       <h3 className="text-lg font-black text-slate-900 flex items-center gap-3">
                          <div className="w-1.5 h-6 bg-gov-blue rounded-full" />
                          {t('modal.details_title')}
                        </h3>
-                      <div className="bg-slate-50 p-8 rounded-[2rem] text-slate-600 font-medium text-sm leading-relaxed border border-slate-100">
+                      <div className="bg-slate-50 p-6 rounded-[1.5rem] text-slate-600 font-medium text-sm leading-relaxed border border-slate-100 break-words overflow-wrap-anywhere" style={{ wordBreak: 'break-word' }}>
                         {selectedRec.description}
                       </div>
 
@@ -395,47 +395,47 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                        </h3>
                       
                       <div className="space-y-4">
-                        <div className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex items-center gap-5">
-                           <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300">
-                              <User size={28} />
+                        <div className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4">
+                           <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                              <User size={20} />
                            </div>
                            <div>
-                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">{t('modal.citizen_sender')}</p>
-                              <p className="font-bold text-slate-900">{selectedRec.user?.prenom} {selectedRec.user?.nom}</p>
-                              <p className="text-xs text-slate-500">{selectedRec.user?.email}</p>
+                              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-tight">{t('modal.citizen_sender')}</p>
+                              <p className="font-bold text-sm text-slate-900">{selectedRec.user?.prenom} {selectedRec.user?.nom}</p>
+                              <p className="text-[10px] text-slate-500">{selectedRec.user?.email}</p>
                            </div>
                         </div>
 
-                        <div className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex items-center gap-5">
-                           <div className="w-14 h-14 bg-gov-blue/10 rounded-2xl flex items-center justify-center text-gov-blue">
-                              {selectedRec.affecteeAAutorite ? <ShieldCheck size={28} /> : <AlertTriangle size={28} className="text-amber-500" />}
+                        <div className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4">
+                           <div className="w-12 h-12 bg-gov-blue/5 rounded-xl flex items-center justify-center text-gov-blue">
+                              {selectedRec.affecteeAAutorite ? <ShieldCheck size={20} /> : <AlertTriangle size={20} className="text-amber-500" />}
                            </div>
                            <div>
-                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">{t('modal.assigned_authority')}</p>
-                              <p className="font-black text-slate-900 uppercase">
+                              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-tight">{t('modal.assigned_authority')}</p>
+                              <p className="font-black text-sm text-slate-900 uppercase">
                                  {selectedRec.affecteeAAutorite ? `${selectedRec.affecteeAAutorite.prenom} ${selectedRec.affecteeAAutorite.nom}` : t('modal.waiting_assignment')}
                               </p>
-                              <p className="text-xs text-slate-500">{selectedRec.affecteeAAutorite ? selectedRec.affecteeAAutorite.role : t('modal.action_required')}</p>
+                              <p className="text-[10px] text-slate-500">{selectedRec.affecteeAAutorite ? selectedRec.affecteeAAutorite.role : t('modal.action_required')}</p>
                            </div>
                         </div>
 
-                         <div className="p-6 bg-slate-900 rounded-[2rem] text-white flex items-center justify-between group overflow-hidden relative">
+                        <div className="p-5 bg-slate-800 rounded-[2rem] text-white flex items-center justify-between group overflow-hidden relative border border-white/10 shadow-lg">
                            <div className="absolute inset-0 bg-blue-500 opacity-0 group-hover:opacity-5 transition-opacity" />
                            <div className="flex items-center gap-5 relative z-10">
-                              <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
+                              <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
                                  <MapPin size={28} />
                               </div>
                               <div>
                                  <p className="text-[10px] font-black text-white/80 uppercase tracking-widest leading-tight">{t('modal.admin_zone')}</p>
-                                 <p className="font-bold">{selectedRec.commune?.nom}</p>
+                                 <p className="font-bold text-lg">{selectedRec.commune?.nom}</p>
                                  <p className="text-xs text-white/60">{selectedRec.etablissement?.nom} • {selectedRec.etablissement?.secteur ? tSectors(selectedRec.etablissement.secteur.toLowerCase()) : ''}</p>
                               </div>
                            </div>
-                         </div>
+                        </div>
 
                          {/* Quick Decision / Assignment Tool */}
                          {!selectedRec.affecteeAAutorite && selectedRec.statut === 'ACCEPTEE' && (
-                            <div className="p-8 bg-amber-50 rounded-[2.5rem] border border-amber-100 shadow-inner space-y-5 animate-in slide-in-from-right-10 duration-500">
+                            <div className="p-6 bg-amber-50 rounded-[2rem] border border-amber-100 shadow-inner space-y-4 animate-in slide-in-from-right-10 duration-500">
                                <div className="flex items-center gap-3">
                                   <div className="p-2 bg-amber-500 text-white rounded-lg shadow-lg">
                                      <ShieldCheck size={18} />
@@ -460,8 +460,8 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
                                </div>
                             </div>
                          )}
-                      </div>
-                   </div>
+                       </div>
+                    </div>
                 </div>
 
                  <div className="pt-10 border-t border-slate-100 flex items-center justify-between text-[10px] font-black text-slate-300 uppercase tracking-widest">

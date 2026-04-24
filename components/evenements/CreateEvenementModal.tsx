@@ -130,7 +130,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
     try {
       const [communesRes, etablissementsRes] = await Promise.all([
         fetch('/api/map/communes'),
-        fetch('/api/etablissements?limit=1000')
+        fetch('/api/etablissements?limit=200')
       ]);
       
       if (communesRes.ok) {
@@ -214,7 +214,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/evenements', {
+      const res = await fetch('/api/evenements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

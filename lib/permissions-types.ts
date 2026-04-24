@@ -274,7 +274,9 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     'actualites.read', 'campagnes.read', 'evenements.read', 'etablissements.read',
 
     // Métier
+    'users.read',
     'reclamations.read.assigned', 'reclamations.resolve', 'reclamations.comment.internal',
+    'reclamations.assign',
     'evenements.report',
     'stats.view.commune', 'stats.view.etablissement'
   ] as PermissionCode[],
@@ -323,7 +325,8 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
     'stats.view.global', 'stats.view.secteur', 'stats.view.commune', 'stats.view.etablissement',
     'reports.export',
     'map.view.full',
-    'reclamations.read'
+    'reclamations.read',
+    'reclamations.assign'
   ] as PermissionCode[]
 };
 

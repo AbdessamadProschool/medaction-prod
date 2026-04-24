@@ -508,7 +508,10 @@
         "highlighted": "تم التمييز بنجاح",
         "unhighlighted": "تم إلغاء التمييز",
         "deleted": "تم الحذف بنجاح",
-        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟"
+        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟",
+        "load_error": "خطأ أثناء تحميل المقال",
+        "save_error": "خطأ أثناء حفظ المقال",
+        "delete_error": "خطأ أثناء حذف المقال"
       }
     },
     "news": {
@@ -1357,12 +1360,62 @@
         "open_registration": "فتح التسجيل",
         "open_registration_hint": "يسمح للمواطنين التسجيل عبر الإنترنت",
         "external_link": "رابط تسجيل خارجي",
-        "sector": "قطاع الحدث"
+        "sector": "قطاع الحدث",
+        "category": "فئة الحدث",
+        "organization": "التنظيم والمؤسسة",
+        "organized_by_province": "منظم من طرف العمالة",
+        "organized_by_province_hint": "سيتم ربط الحدث بعمالة مديونة",
+        "under_province_patronage": "تحت غطاء العمالة",
+        "under_province_patronage_hint": "عرض \"تحت غطاء السيد العامل\"",
+        "location_type": "نوع مكان الحدث",
+        "manual_entry": "إدخال يدوي",
+        "existing_establishment": "مؤسسة موجودة",
+        "venue_sector": "قطاع المكان (اختياري)",
+        "all_sectors": "جميع القطاعات",
+        "establishment_venue": "المؤسسة (الموقع)",
+        "venue_name": "المكان بالضبط أو اسم القاعة",
+        "map_position": "الموقع على الخريطة",
+        "map_hint": "قم بسحب العلامة لتحديد الموقع بالضبط",
+        "is_free": "مشاركة مجانية",
+        "price": "سعر الدخول (درهم)",
+        "event_photos": "صور الحدث",
+        "add_photo": "إضافة"
       },
       "errors": {
         "image_size": "يجب ألا تتجاوز الصورة 5 ميجابايت",
         "upload_error": "خطأ في تحميل الصورة",
         "create_error": "خطأ في الإنشاء"
+      },
+      "steps": {
+        "info": "المعلومات",
+        "location": "المكان والتنظيم",
+        "participation": "المشاركة",
+        "media": "الوسائط"
+      },
+      "placeholders": {
+        "title": "مثال: حملة تنظيف الشاطئ",
+        "category": "مثال: مسابقة الرسم",
+        "description": "تفاصيل الحدث...",
+        "venue": "مثال: القاعة الكبرى للمجلس",
+        "capacity": "مثال: 500",
+        "price": "مثال: 50"
+      },
+      "summary": {
+        "title": "ملخص الحدث",
+        "field_title": "العنوان",
+        "field_sector": "القطاع",
+        "field_location": "المكان",
+        "field_date": "التاريخ",
+        "field_org": "المنظمة",
+        "province_org": "عمالة مديونة",
+        "establishment_org": "المؤسسة"
+      },
+      "buttons": {
+        "draft": "مسودة",
+        "prev": "رجوع",
+        "next": "التالي",
+        "create": "إنشاء الحدث",
+        "save_draft_success": "تم حفظ المسودة"
       }
     },
     "reports_page": {
@@ -1447,7 +1500,9 @@
     "recent_activity": {
       "title": "النشاط الأخير",
       "view_all": "عرض الكل",
-      "no_activity": "لا يوجد نشاط حديث"
+      "no_activity": "لا يوجد نشاط حديث",
+      "system": "النظام",
+      "user": "مستخدم"
     },
     "rbac": {
       "title": "الأدوار والصلاحيات",
@@ -1561,7 +1616,9 @@
       "active_sessions": "الجلسات النشطة",
       "database_size": "حجم قاعدة البيانات",
       "server_status": "حالة الخادم"
-    }
+    },
+    "home": "الرئيسية",
+    "dashboard_admin": "لوحة تحكم المسؤول"
   },
   "maintenance": {
     "title": "الموقع في وضع الصيانة",

@@ -27,7 +27,9 @@ const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
 interface Evenement {
   id: number;
   titre: string;
+  titreAr?: string;
   description: string;
+  descriptionAr?: string;
   typeCategorique: string;
   categorie?: string;
   secteur: string;

@@ -17,8 +17,11 @@ import { SafeHTML } from '@/components/ui/SafeHTML';
 interface Actualite {
   id: number;
   titre: string;
+  titreAr?: string;
   description: string | null;
+  descriptionAr?: string;
   contenu: string;
+  contenuAr?: string;
   categorie: string | null;
   tags: string[];
   nombreVues: number;

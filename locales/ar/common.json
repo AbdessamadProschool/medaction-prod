@@ -656,7 +656,13 @@
         "education": "البيانات البيداغوجية",
         "financial": "التمويل والمشاريع",
         "description": "وصف مفصل",
-        "final": "الخاتمة والتبرير"
+        "final": "الخاتمة والتبرير",
+        "location": "الموقع الجغرافي والجماعة",
+        "sector": "البيانات البيداغوجية",
+        "admin_details": "التفاصيل الإدارية",
+        "accessibility": "سهولة الولوج",
+        "contact_manager": "الاتصال والمسؤول",
+        "observations": "الملاحظات والاحتياجات"
       },
       "form": {
         "name": "اسم المؤسسة",
@@ -736,7 +742,9 @@
       "actions": {
         "cancel": "إلغاء",
         "save": "حفظ",
-        "success": "تم الحفظ بنجاح"
+        "success": "تم الحفظ بنجاح",
+        "next": "التالي",
+        "previous": "السابق"
       },
       "requests": {
         "subtitle": "مركز تحكيم وفض نزاعات البيانات التقنية للمؤسسات",
@@ -3934,7 +3942,7 @@
         "empty": "لا يوجد نشاط حديث",
         "columns": {
           "title": "عنوان",
-          "type": "عطوف",
+          "type": "نوع",
           "date": "تاريخ",
           "status": "حالة",
           "performance": "أداء"
@@ -3942,7 +3950,7 @@
         "types": {
           "evenement": "حدث",
           "actualite": "أخبار",
-          "article": "شرط",
+          "article": "مقال",
           "campagne": "حملة"
         },
         "status": {
@@ -5690,13 +5698,23 @@
       "diff": "التعديلات المطلوبة",
       "applied_success": "تم تطبيق التعديلات على المؤسسة بنجاح.",
       "rejected_success": "تم رفض الطلب بنجاح."
-    }
+    },
+    "mes_demandes_title": "سجل طلباتي",
+    "mes_demandes_subtitle": "تابع حالة طلبات التعديل والإنشاء الخاصة بك",
+    "submitted_on": "تم التقديم في {date}",
+    "select_demande": "اختر طلباً",
+    "select_demande_desc": "انقر على طلب في القائمة لعرض التفاصيل وحالة التحقق.",
+    "no_justification": "لم يتم تقديم أي تبرير",
+    "details_title": "تفاصيل الطلب",
+    "rejection_reason": "سبب الرفض",
+    "processing_admin": "طلبك قيد المراجعة من قبل الإدارة.",
+    "processed_on": "تمت معالجة الطلب في {date}"
   },
   "history_actions": {
     "CREATION": "إنشاء",
-    "VALIDATION": "تصديق",
+    "VALIDATION": "تحقق",
     "REJET": "رفض",
-    "AFFECTATION": "تعيين",
+    "AFFECTATION": "إسناد",
     "RESOLUTION": "حل",
     "UPDATE": "تحديث",
     "ACCEPTATION": "قبول"

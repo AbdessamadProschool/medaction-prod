@@ -2259,13 +2259,19 @@
       "sections": {
         "general": "Identification & Secteur",
         "localization": "Géolocalisation & Commune",
+        "location": "Géolocalisation & Commune",
         "contact": "Contact & Web",
         "infra": "Infrastructure & Équipements",
         "staff": "Ressources Humaines & Capacité",
         "education": "Données Pédagogiques",
+        "sector": "Données Pédagogiques",
         "financial": "Financement & Projets",
         "description": "Description détaillée",
-        "final": "Finalisation & Justification"
+        "final": "Finalisation & Justification",
+        "admin_details": "Détails Administratifs",
+        "accessibility": "Accessibilité",
+        "contact_manager": "Contact & Responsable",
+        "observations": "Observations & Besoins"
       },
       "form": {
         "name": "Nom de l'établissement",
@@ -2341,7 +2347,9 @@
       "actions": {
         "cancel": "Annuler",
         "save": "Enregistrer l'établissement",
-        "success": "Établissement créé avec succès"
+        "success": "Établissement créé avec succès",
+        "next": "Suivant",
+        "previous": "Précédent"
       },
       "requests": {
         "subtitle": "Centre d'arbitrage et de validation des données techniques",
@@ -5689,7 +5697,17 @@
       "diff": "Modifications demandées",
       "applied_success": "Modifications appliquées à l'établissement avec succès.",
       "rejected_success": "Demande rejetée avec succès."
-    }
+    },
+    "mes_demandes_title": "Historique de mes demandes",
+    "mes_demandes_subtitle": "Suivez l'état de vos demandes de modification et de création",
+    "submitted_on": "Soumis le {date}",
+    "select_demande": "Sélectionnez une demande",
+    "select_demande_desc": "Cliquez sur une demande dans la liste pour voir les détails et le statut de validation.",
+    "no_justification": "Aucune justification fournie",
+    "details_title": "Détails de la demande",
+    "rejection_reason": "Motif du rejet",
+    "processing_admin": "Votre demande est en cours d'examen par l'administration.",
+    "processed_on": "Demande traitée le {date}"
   },
   "history_actions": {
     "CREATION": "Création",

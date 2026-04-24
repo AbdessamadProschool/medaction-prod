@@ -36,9 +36,9 @@ interface DemandeFormProps {
 
 const STEPS = [
   { id: 'general', icon: Building2 },
-  { id: 'location', icon: MapPin },
+  { id: 'localization', icon: MapPin },
   { id: 'infra', icon: Layers },
-  { id: 'sector', icon: GraduationCap },
+  { id: 'education', icon: GraduationCap },
   { id: 'final', icon: Save }
 ];
 
@@ -225,7 +225,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
 
     if (res.success) {
       toast.success(t('submit_success'));
-      router.push('/admin/etablissements/demandes');
+      router.push('/delegation/etablissements/mes-demandes');
     } else {
       toast.error(res.error || 'Erreur');
     }
@@ -245,7 +245,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
            {type === 'CREATION' ? t('request_creation') : t('request_edit')}
          </motion.div>
          <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-2">
-           {type === 'CREATION' ? "Nouvel Établissement" : "Modification d'Établissement"}
+           {type === 'CREATION' ? te('create_title') : t('request_edit')}
          </h1>
          <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
            {t('subtitle')}
@@ -355,7 +355,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                    </div>
                 </div>
                 <div className="space-y-6">
-                   <SectionTitle icon={Info} title="Détails Administratifs" color="text-blue-500" />
+                   <SectionTitle icon={Info} title={te('sections.admin_details')} color="text-blue-500" />
                    <div className="grid grid-cols-2 gap-4">
                       <FormField label={te('form.nature')}>
                         <select
@@ -460,7 +460,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                   </div>
                 </div>
                 <div className="space-y-6">
-                   <SectionTitle icon={ArrowRight} title="Accessibilité" color="text-amber-500" />
+                   <SectionTitle icon={ArrowRight} title={te('sections.accessibility')} color="text-amber-500" />
                    <FormField label={te('form.voieAcces')}>
                       <input value={formData.voieAcces} onChange={e => setFormData({...formData, voieAcces: e.target.value})} className="input-premium" placeholder="Ex: Route Goudronnée" />
                    </FormField>
@@ -531,7 +531,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                       </FormField>
                    </div>
                    <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                      <SectionTitle icon={Phone} title="Contact & Responsable" color="text-blue-500" />
+                      <SectionTitle icon={Phone} title={te('sections.contact_manager')} color="text-blue-500" />
                       <FormField label={te('form.manager')}>
                          <input value={formData.responsableNom} onChange={e => setFormData({...formData, responsableNom: e.target.value})} className="input-premium" />
                       </FormField>
@@ -607,7 +607,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                     </FormField>
                   </div>
                   <div className="space-y-6">
-                    <SectionTitle icon={FileText} title="Observations & Besoins" color="text-purple-500" />
+                    <SectionTitle icon={FileText} title={te('sections.observations')} color="text-purple-500" />
                     <FormField label={te('form.remarques')}>
                        <textarea value={formData.remarques} onChange={e => setFormData({...formData, remarques: e.target.value})} className="input-premium h-20" />
                     </FormField>
@@ -662,8 +662,8 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
             onClick={currentStep === 0 ? () => router.back() : prevStep}
             className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
           >
-            {currentStep === 0 ? <ChevronLeft size={20} /> : <ChevronLeft size={20} />}
-            {currentStep === 0 ? te('actions.cancel') : "Précédent"}
+            <ChevronLeft size={20} />
+            {currentStep === 0 ? te('actions.cancel') : te('actions.previous')}
           </button>
 
           <div className="flex items-center gap-4">
@@ -673,7 +673,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                 onClick={nextStep}
                 className="flex items-center gap-2 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black shadow-xl hover:scale-105 active:scale-95 transition-all"
               >
-                Suivant
+                {te('actions.next')}
                 <ChevronRight size={20} />
               </button>
             ) : (

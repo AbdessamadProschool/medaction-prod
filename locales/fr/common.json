@@ -2212,7 +2212,10 @@
         "status": "Statut",
         "select_sector": "Sélectionner un secteur...",
         "select_category": "Sélectionner une catégorie...",
-        "select_status": "Sélectionner un statut..."
+        "select_status": "Sélectionner un statut...",
+        "select_image": "Sélectionner une image",
+        "summary": "Résumé",
+        "general_category": "Catégorie Générale"
       },
       "actions": {
         "cancel": "Annuler",
@@ -2233,7 +2236,9 @@
         "ANNONCE": "Annonce",
         "PROJET": "Projet",
         "URGENCE": "Urgence",
-        "TRAVAUX": "Travaux"
+        "TRAVAUX": "Travaux",
+        "PARTENARIAT": "Partenariat",
+        "SUCCESS_STORY": "Success Story"
       },
       "status": {
         "BROUILLON": "Brouillon",
@@ -2671,7 +2676,8 @@
       "REJET": "Rejet",
       "AFFECTATION": "Affectation",
       "RESOLUTION": "Résolution",
-      "UPDATE": "Mise à jour"
+      "UPDATE": "Mise à jour",
+      "ACCEPTATION": "Acceptation"
     },
     "suggestions_page": {
       "page_title": "Suggestions",
@@ -2995,7 +3001,8 @@
       "suggestions": "Suggestions",
       "reports": "Rapports",
       "map": "Carte",
-      "system": "Système"
+      "system": "Système",
+      "bilans": "Bilans"
     }
   },
   "admin_settings": {
@@ -3106,7 +3113,11 @@
       "delete": "Supprimer établissement",
       "validate": "Valider établissement",
       "publish": "Publier établissement",
-      "subscribe": "S'abonner établissement"
+      "subscribe": "S'abonner établissement",
+      "request": {
+        "create": "Créer une demande d'établissement",
+        "edit": "Modifier une demande d'établissement"
+      }
     },
     "evaluations": {
       "read": "Lire évaluations",
@@ -3169,6 +3180,9 @@
     },
     "communes": {
       "manage": "Gérer communes"
+    },
+    "bilans": {
+      "read": "Voir les bilans"
     }
   },
   "admin_announcement": {
@@ -5613,5 +5627,14 @@
       "applied_success": "Modifications appliquées à l'établissement avec succès.",
       "rejected_success": "Demande rejetée avec succès."
     }
+  },
+  "history_actions": {
+    "CREATION": "Création",
+    "VALIDATION": "Validation",
+    "REJET": "Rejet",
+    "AFFECTATION": "Affectation",
+    "RESOLUTION": "Résolution",
+    "UPDATE": "Mise à jour",
+    "ACCEPTATION": "Acceptation"
   }
 }

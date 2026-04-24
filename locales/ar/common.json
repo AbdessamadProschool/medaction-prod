@@ -512,14 +512,63 @@
       }
     },
     "news": {
+      "back_list": "العودة إلى القائمة",
+      "create_title": "إضافة خبر جديد",
+      "create_subtitle": "نشر مقال أو إعلان جديد",
+      "sections": {
+        "image": "الصورة الرئيسية",
+        "content": "المحتوى",
+        "sector": "القطاع المعني",
+        "category": "التصنيف",
+        "status": "حالة النشر"
+      },
       "form": {
+        "image_help": "صيغ مدعومة: JPG, PNG. الحد الأقصى: 5MB",
+        "title": "العنوان",
+        "content": "نص المقال",
+        "select_sector": "تحديد القطاع",
+        "description": "وصف قصير",
+        "image": "صورة الغلاف",
+        "date": "تاريخ النشر",
+        "sector": "قطاع",
+        "category": "فئة",
+        "status": "حالة",
+        "select_category": "اختر فئة...",
+        "select_status": "حدد الحالة...",
         "select_image": "اختر صورة",
         "summary": "ملخص",
         "general_category": "الفئة العامة"
       },
       "categories": {
+        "TRAVAUX": "أشغال",
+        "ANNONCE": "إعلان",
+        "EVENEMENT": "حدث",
+        "PROJET": "مشروع",
+        "URGENCE": "طارئ",
         "PARTENARIAT": "شراكة",
         "SUCCESS_STORY": "قصة نجاح"
+      },
+      "status": {
+        "BROUILLON": "مسودة",
+        "BROUILLON_DESC": "محفوظ وغير مرئي للعموم",
+        "EN_ATTENTE_VALIDATION": "قيد المراجعة",
+        "EN_ATTENTE_VALIDATION_DESC": "في انتظار موافقة المسؤول",
+        "PUBLIEE": "منشور",
+        "PUBLIEE_DESC": "مرئي لجميع المستخدمين"
+      },
+      "sectors": {
+        "EDUCATION": "التعليم",
+        "SANTE": "الصحة",
+        "SPORT": "الرياضة",
+        "CULTUREL": "الثقافة",
+        "SOCIAL": "الاجتماعي",
+        "AUTRE": "آخر"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "create": "إنشاء الخبر",
+        "creating": "جاري الإنشاء...",
+        "create_success": "تم إنشاء الأخبار بنجاح"
       }
     },
     "dashboard": {
@@ -619,7 +668,6 @@
         "responsableNom": "اسم المسؤول",
         "infra_status": "حالة البنية التحتية",
         "etatInfrastructure": "حالة البنية التحتية",
-
         "capacity": "الطاقة الاستيعابية",
         "commune": "الجماعة",
         "communeId": "الجماعة",
@@ -674,7 +722,6 @@
         "transportPublic": "النقل العمومي",
         "distance_chef_lieu": "المسافة عن مركز الجماعة (كلم)",
         "distanceChefLieu": "المسافة عن مركز الجماعة (كلم)",
-
         "elevesFilles": "مجموع الإناث",
         "elevesPrescolaireFilles": "إناث التعليم الأولي",
         "nouveauxInscritsFilles": "إناث المسجلين الجدد",
@@ -1268,61 +1315,6 @@
         "reset_password_confirm": "تغيير كلمة مرور {name}؟",
         "reset_password_alert": "كلمة المرور الجديدة: {password}",
         "reset_password_success": "تم تغيير كلمة المرور"
-      }
-    },
-    "news": {
-      "back_list": "العودة إلى القائمة",
-      "create_title": "إضافة خبر جديد",
-      "create_subtitle": "نشر مقال أو إعلان جديد",
-      "sections": {
-        "image": "الصورة الرئيسية",
-        "content": "المحتوى",
-        "sector": "القطاع المعني",
-        "category": "التصنيف",
-        "status": "حالة النشر"
-      },
-      "form": {
-        "image_help": "صيغ مدعومة: JPG, PNG. الحد الأقصى: 5MB",
-        "title": "العنوان",
-        "content": "نص المقال",
-        "select_sector": "تحديد القطاع",
-        "description": "وصف قصير",
-        "image": "صورة الغلاف",
-        "date": "تاريخ النشر",
-        "sector": "قطاع",
-        "category": "فئة",
-        "status": "حالة",
-        "select_category": "اختر فئة...",
-        "select_status": "حدد الحالة..."
-      },
-      "categories": {
-        "TRAVAUX": "أشغال",
-        "ANNONCE": "إعلان",
-        "EVENEMENT": "حدث",
-        "PROJET": "مشروع",
-        "URGENCE": "طارئ"
-      },
-      "status": {
-        "BROUILLON": "مسودة",
-        "BROUILLON_DESC": "محفوظ وغير مرئي للعموم",
-        "EN_ATTENTE_VALIDATION": "قيد المراجعة",
-        "EN_ATTENTE_VALIDATION_DESC": "في انتظار موافقة المسؤول",
-        "PUBLIEE": "منشور",
-        "PUBLIEE_DESC": "مرئي لجميع المستخدمين"
-      },
-      "sectors": {
-        "EDUCATION": "التعليم",
-        "SANTE": "الصحة",
-        "SPORT": "الرياضة",
-        "CULTUREL": "الثقافة",
-        "SOCIAL": "الاجتماعي",
-        "AUTRE": "آخر"
-      },
-      "actions": {
-        "cancel": "إلغاء",
-        "create": "إنشاء الخبر",
-        "creating": "جاري الإنشاء...",
-        "create_success": "تم إنشاء الأخبار بنجاح"
       }
     },
     "events": {
@@ -2798,7 +2790,6 @@
       "rooms": "قاعات / مساحات",
       "surface": "المساحة الإجمالية",
       "infra_status": "حالة البنية التحتية",
-
       "internet_available": "الإنترنت متاح",
       "electricity_available": "الكهرباء متاحة",
       "water_available": "الماء الصالح للشرب متاح",
@@ -3275,7 +3266,8 @@
       "suggestions": "الاقتراحات",
       "reports": "التقارير",
       "map": "الخريطة",
-      "system": "النظام"
+      "system": "النظام",
+      "bilans": "الحصائل"
     }
   },
   "admin_settings": {
@@ -3284,42 +3276,42 @@
     "save": "حفظ",
     "saving": "جاري الحفظ...",
     "saved": "تم الحفظ !",
-    "super_admin_only": "يمكن للمسؤول المتميز فقط تعديل الإعدادات.",
+    "super_admin_only": "يمكن للمسؤول العام فقط تعديل الإعدادات.",
     "tabs": {
       "general": "عام",
-      "notifications": "الإشعارات",
+      "notifications": "التنبيهات",
       "security": "الأمان",
       "email": "البريد الإلكتروني"
     },
     "general": {
-      "title": "إعدادات عامة",
+      "title": "الإعدادات العامة",
       "platform_name": "اسم المنصة",
       "description": "الوصف",
       "maintenance_mode": "وضع الصيانة",
       "enable_maintenance": "تفعيل وضع الصيانة"
     },
     "notifications": {
-      "title": "إعدادات الإشعارات",
+      "title": "إعدادات التنبيهات",
       "new_reclamation": "شكاية جديدة",
-      "new_reclamation_desc": "إشعار المسؤولين",
+      "new_reclamation_desc": "تنبيه المسؤولين",
       "new_user": "مستخدم جديد",
-      "new_user_desc": "إشعار عند التسجيل",
+      "new_user_desc": "تنبيه عند التسجيل",
       "daily_report": "تقرير يومي",
-      "daily_report_desc": "ملخص عبر البريد الإلكتروني كل يوم"
+      "daily_report_desc": "ملخص بالبريد الإلكتروني كل يوم"
     },
     "security": {
       "title": "إعدادات الأمان",
       "session_duration": "مدة الجلسة (ساعات)",
-      "max_attempts": "الحد الأقصى لمحاولات الاتصال",
-      "enable_2fa": "تفعيل المصادقة الثنائية للمسؤولين"
+      "max_attempts": "أقصى محاولات تسجيل الدخول",
+      "enable_2fa": "تفعيل التحقق بخطوتين للمسؤولين"
     },
     "email": {
       "title": "تكوين البريد الإلكتروني",
-      "sender_email": "البريد المرسل (From)",
-      "contact_email": "بريد الاتصال",
+      "sender_email": "بريد الإرسال (من)",
+      "contact_email": "بريد التواصل",
       "smtp_note": "ملاحظة: يجب تكوين SMTP في متغيرات بيئة الخادم."
     },
-    "info": "يتم تطبيق التغييرات بعد الحفظ. تتطلب بعض الإعدادات إعادة تشغيل الخادم."
+    "info": "يتم تطبيق التغييرات بعد الحفظ. بعض الإعدادات تتطلب إعادة تشغيل الخادم."
   },
   "admin_announcement": {
     "title": "نافذة الإعلان العامة",
@@ -4773,7 +4765,7 @@
   "permissions": {
     "auth": {
       "login": "تسجيل الدخول",
-      "register": "إنشاء حساب",
+      "register": "التسجيل",
       "logout": "تسجيل الخروج",
       "reset-password": "إعادة تعيين كلمة المرور"
     },
@@ -4793,32 +4785,32 @@
       }
     },
     "reclamations": {
-      "read": "عرض الشكايات",
-      "read_all": "عرض كل الشكايات",
-      "read_assigned": "عرض الشكايات المسندة",
+      "read": "عرض شكاياتي",
+      "read_all": "عرض جميع الشكايات",
+      "read_assigned": "عرض الشكايات المعينة",
       "create": "إنشاء شكاية",
       "edit": "تعديل شكاية",
       "delete": "حذف شكاية",
       "archive": "أرشفة شكاية",
-      "assign": "إسناد شكاية",
-      "validate": "المصادقة على القرار",
-      "resolve": "تحديد كمحلوة",
+      "assign": "تعيين شكاية",
+      "validate": "قبول/رفض القرار",
+      "resolve": "تحديد كمحلولة",
       "comment": {
         "internal": "إضافة تعليق داخلي"
       }
     },
     "evenements": {
-      "read": "عرض الفعاليات",
-      "read_all": "عرض كل الفعاليات",
-      "create": "إنشاء فعالية",
-      "edit": "تعديل فعالية",
-      "edit_all": "تعديل كل الفعاليات",
-      "delete": "حذف فعالية",
-      "validate": "المصادقة على فعالية",
-      "feature": "تمييز فعالية",
-      "subscribe": "الاشتراك في فعالية",
-      "participate": "المشاركة في فعالية",
-      "report": "عرض تقرير الفعالية"
+      "read": "عرض الأحداث",
+      "read_all": "عرض جميع الأحداث (مسؤول)",
+      "create": "إنشاء حدث",
+      "edit": "تعديل الحدث الخاص",
+      "edit_all": "تعديل جميع الأحداث",
+      "delete": "حذف حدث",
+      "validate": "المصادقة على حدث",
+      "feature": "تمييز حدث",
+      "subscribe": "التسجيل في حدث",
+      "participate": "المشاركة في حدث",
+      "report": "عرض تقرير الحدث"
     },
     "actualites": {
       "read": "قراءة الأخبار",
@@ -4835,69 +4827,31 @@
       "delete": "حذف مؤسسة",
       "validate": "المصادقة على مؤسسة",
       "publish": "نشر مؤسسة",
-      "subscribe": "الاشتراك في مؤسسة"
+      "subscribe": "الاشتراك في مؤسسة",
+      "request": {
+        "create": "إنشاء طلب مؤسسة",
+        "edit": "تعديل طلب مؤسسة"
+      }
     },
     "evaluations": {
       "read": "قراءة التقييمات",
       "create": "تقييم",
       "edit": "تعديل تقييم",
       "delete": "حذف تقييم",
-      "validate": "إدارة التقييمات",
+      "validate": "مراقبة تقييم",
       "report": "الإبلاغ عن تقييم"
     },
     "campagnes": {
       "read": "عرض الحملات",
-      "create": "إنشاء حملة",
-      "edit": "تعديل حملة",
-      "delete": "حذف حملة",
-      "activate": "تغيير حالة الحملة",
-      "participate": "المشاركة في حملة"
+      "create": "إنشاء حملة"
     },
-    "programmes": {
-      "read": "عرض البرامج",
-      "create": "إنشاء برنامج",
-      "edit": "تعديل برنامج",
-      "delete": "حذف برنامج",
-      "validate": "المصادقة على برنامج",
-      "report": "ملء تقرير النشاط"
-    },
-    "suggestions": {
-      "create": "إنشاء اقتراح",
-      "read": {
-        "own": "عرض اقتراحاتي"
-      }
-    },
-    "stats": {
-      "view": {
-        "global": "عرض إحصائيات عامة",
-        "secteur": "عرض إحصائيات القطاع",
-        "commune": "عرض إحصائيات الجماعة",
-        "etablissement": "عرض إحصائيات المؤسسة"
-      }
-    },
-    "reports": {
-      "export": "تصدير التقارير"
+    "bilans": {
+      "read": "عرض الحصائل"
     },
     "map": {
-      "view": "عرض الخريطة",
-      "view_full": "عرض الخريطة المتقدمة"
-    },
-    "system": {
-      "settings": {
-        "read": "عرض الإعدادات",
-        "edit": "تعديل الإعدادات"
-      },
-      "logs": {
-        "view": "عرض السجلات"
-      },
-      "backup": "إدارة النسخ الاحتياطي",
-      "restore": "استعادة النظام"
-    },
-    "permissions": {
-      "manage": "إدارة الصلاحيات"
-    },
-    "communes": {
-      "manage": "إدارة الجماعات"
+      "view": {
+        "full": "عرض كامل للخريطة"
+      }
     }
   },
   "contact_page": {
@@ -5681,129 +5635,7 @@
     "REJET": "رفض",
     "AFFECTATION": "تعيين",
     "RESOLUTION": "حل",
-    "UPDATE": "تحديث"
-  },
-  "admin_settings": {
-    "title": "الإعدادات",
-    "subtitle": "تكوين المنصة",
-    "save": "حفظ",
-    "saving": "جاري الحفظ...",
-    "saved": "تم الحفظ !",
-    "super_admin_only": "يمكن للمسؤول العام فقط تعديل الإعدادات.",
-    "tabs": {
-      "general": "عام",
-      "notifications": "التنبيهات",
-      "security": "الأمان",
-      "email": "البريد الإلكتروني"
-    },
-    "general": {
-      "title": "الإعدادات العامة",
-      "platform_name": "اسم المنصة",
-      "description": "الوصف",
-      "maintenance_mode": "وضع الصيانة",
-      "enable_maintenance": "تفعيل وضع الصيانة"
-    },
-    "notifications": {
-      "title": "إعدادات التنبيهات",
-      "new_reclamation": "شكاية جديدة",
-      "new_reclamation_desc": "تنبيه المسؤولين",
-      "new_user": "مستخدم جديد",
-      "new_user_desc": "تنبيه عند التسجيل",
-      "daily_report": "تقرير يومي",
-      "daily_report_desc": "ملخص بالبريد الإلكتروني كل يوم"
-    },
-    "security": {
-      "title": "إعدادات الأمان",
-      "session_duration": "مدة الجلسة (ساعات)",
-      "max_attempts": "أقصى محاولات تسجيل الدخول",
-      "enable_2fa": "تفعيل التحقق بخطوتين للمسؤولين"
-    },
-    "email": {
-      "title": "تكوين البريد الإلكتروني",
-      "sender_email": "بريد الإرسال (من)",
-      "contact_email": "بريد التواصل",
-      "smtp_note": "ملاحظة: يجب تكوين SMTP في متغيرات بيئة الخادم."
-    },
-    "info": "يتم تطبيق التغييرات بعد الحفظ. بعض الإعدادات تتطلب إعادة تشغيل الخادم."
-  },
-  "permissions": {
-    "auth": {
-      "login": "تسجيل الدخول",
-      "register": "التسجيل",
-      "logout": "تسجيل الخروج",
-      "reset-password": "إعادة تعيين كلمة المرور"
-    },
-    "users": {
-      "read": "عرض المستخدمين (أساسي)",
-      "read_full": "عرض المستخدمين (كامل)",
-      "create": "إنشاء مستخدم",
-      "edit": "تعديل مستخدم",
-      "edit_role": "تغيير الدور",
-      "delete": "حذف مستخدم (مؤقت)",
-      "hard-delete": "حذف نهائي",
-      "activate": "تفعيل/تعطيل الحساب",
-      "security": "عرض معلومات الأمان",
-      "me": {
-        "read": "عرض ملفي الشخصي",
-        "edit": "تعديل ملفي الشخصي"
-      }
-    },
-    "reclamations": {
-      "read": "عرض شكاياتي",
-      "read_all": "عرض جميع الشكايات",
-      "read_assigned": "عرض الشكايات المعينة",
-      "create": "إنشاء شكاية",
-      "edit": "تعديل شكاية",
-      "delete": "حذف شكاية",
-      "archive": "أرشفة شكاية",
-      "assign": "تعيين شكاية",
-      "validate": "قبول/رفض القرار",
-      "resolve": "تحديد كمحلولة",
-      "comment": {
-        "internal": "إضافة تعليق داخلي"
-      }
-    },
-    "evenements": {
-      "read": "عرض الأحداث",
-      "read_all": "عرض جميع الأحداث (مسؤول)",
-      "create": "إنشاء حدث",
-      "edit": "تعديل الحدث الخاص",
-      "edit_all": "تعديل جميع الأحداث",
-      "delete": "حذف حدث",
-      "validate": "المصادقة على حدث",
-      "feature": "تمييز حدث",
-      "subscribe": "التسجيل في حدث",
-      "participate": "المشاركة في حدث",
-      "report": "عرض تقرير الحدث"
-    },
-    "actualites": {
-      "read": "قراءة الأخبار",
-      "create": "إنشاء خبر",
-      "edit": "تعديل خبر",
-      "delete": "حذف خبر",
-      "publish": "نشر خبر",
-      "validate": "المصادقة على خبر"
-    },
-    "etablissements": {
-      "read": "عرض المؤسسات",
-      "create": "إنشاء مؤسسة",
-      "edit": "تعديل مؤسسة",
-      "delete": "حذف مؤسسة",
-      "validate": "المصادقة على مؤسسة",
-      "publish": "نشر مؤسسة",
-      "subscribe": "الاشتراك في مؤسسة"
-    },
-    "evaluations": {
-      "read": "قراءة التقييمات",
-      "create": "تقييم",
-      "edit": "تعديل تقييم",
-      "delete": "حذف تقييم",
-      "validate": "مراقبة تقييم",
-      "report": "الإبلاغ عن تقييم"
-    },
-    "campagnes": {
-      "read": "عرض الحملات",
-      "create": "إنشاء حملة"
-    }
+    "UPDATE": "تحديث",
+    "ACCEPTATION": "قبول"
   }
 }

@@ -54,10 +54,10 @@ export default function ReclamationsTab({ initialSelectedId }: { initialSelected
 
   const fetchAuthorities = async () => {
     try {
-      const res = await fetch('/api/users?role=AUTORITE&limit=100');
+      const res = await fetch('/api/users?role=AUTORITE_LOCALE&isActive=true&limit=100');
       if (res.ok) {
         const data = await res.json();
-        setAuthorities(data.users || []);
+        setAuthorities(data.data || []);
       }
     } catch (e) {
       console.error(e);

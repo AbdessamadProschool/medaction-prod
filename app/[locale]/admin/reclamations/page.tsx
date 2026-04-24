@@ -154,7 +154,7 @@ export default function AdminReclamationsPage() {
           const data = await agentsRes.json();
           // Filtrer pour garder uniquement les rôles pouvant traiter des réclamations
           const eligibleRoles = ['AUTORITE_LOCALE', 'DELEGATION', 'ADMIN', 'SUPER_ADMIN'];
-          const filteredAgents = (data.users || []).filter(
+          const filteredAgents = (data.data || []).filter(
             (u: any) => eligibleRoles.includes(u.role)
           );
           setAgents(filteredAgents);

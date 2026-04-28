@@ -39,7 +39,7 @@ export async function PATCH(
     // Vérifier que la réclamation existe
     const reclamation = await prisma.reclamation.findUnique({
       where: { id: reclamationId },
-      select: { id: true, titre: true, statut: true, affecteeAAutoriteId: true, affectationReclamation: true },
+      select: { id: true, titre: true, statut: true, communeId: true, affecteeAAutoriteId: true, affectationReclamation: true },
     });
 
     if (!reclamation) {
@@ -51,6 +51,20 @@ export async function PATCH(
       return NextResponse.json({ 
         error: "Le gouverneur ne peut affecter que les réclamations acceptées par l'administration" 
       }, { status: 403 });
+    }
+
+    // ✅ SECURITY FIX: AUTORITE_LOCALE — vérification de juridiction territoriale
+    if (session.user.role === 'AUTORITE_LOCALE') {
+      const autorite = await prisma.user.findUnique({
+        where: { id: parseInt(session.user.id as string) },
+        select: { communeResponsableId: true },
+      });
+
+      if (reclamation.communeId !== autorite?.communeResponsableId) {
+        return NextResponse.json({
+          error: "Vous ne pouvez gérer que les réclamations de votre commune"
+        }, { status: 403 });
+      }
     }
 
     // Valider les données
@@ -71,11 +85,24 @@ export async function PATCH(
     if (affecteAId) {
       agent = await prisma.user.findUnique({
         where: { id: affecteAId, isActive: true },
-        select: { id: true, nom: true, prenom: true, role: true },
+        select: { id: true, nom: true, prenom: true, role: true, communeResponsableId: true },
       });
 
       if (!agent) {
         return NextResponse.json({ error: "Agent non trouvé ou inactif" }, { status: 404 });
+      }
+
+      // ✅ SECURITY FIX: AUTORITE_LOCALE ne peut affecter qu'à un agent de sa commune
+      if (session.user.role === 'AUTORITE_LOCALE') {
+        const autorite = await prisma.user.findUnique({
+          where: { id: parseInt(session.user.id as string) },
+          select: { communeResponsableId: true },
+        });
+        if (agent.communeResponsableId !== autorite?.communeResponsableId) {
+          return NextResponse.json({
+            error: "Vous ne pouvez affecter qu'à un agent de votre commune"
+          }, { status: 403 });
+        }
       }
     }
 

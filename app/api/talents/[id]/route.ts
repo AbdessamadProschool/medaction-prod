@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -13,15 +13,25 @@ export async function GET(
   const params = await _p;
   try {
     const id = parseInt(params.id);
-    if (isNaN(id)) {
+    if (isNaN(id) || id <= 0) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
     }
+
+    // Check if caller is admin (can see unpublished)
+    const session = await getServerSession(authOptions);
+    const isAdmin = session && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
 
     const talent = await prisma.talent.findUnique({
       where: { id },
     });
 
     if (!talent) {
+      return NextResponse.json({ error: 'Talent non trouvé' }, { status: 404 });
+    }
+
+    // ✅ SECURITY FIX: Non-admins cannot see unpublished talents
+    // Return 404 (not 403) to avoid revealing existence of draft
+    if (!talent.isPublie && !isAdmin) {
       return NextResponse.json({ error: 'Talent non trouvé' }, { status: 404 });
     }
 

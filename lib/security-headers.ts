@@ -9,11 +9,11 @@
 
 /** Origines autorisées pour CORS */
 const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'https://mediouna-action.gov.ma', // Production
-  'https://www.mediouna-action.gov.ma',
-  'https://api.mediouna-action.gov.ma',
+  'https://bo.provincemediouna.ma', // Production — domaine officiel
+  ...(process.env.NODE_ENV === 'development' ? [
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ] : []),
 ];
 
 /** Méthodes HTTP autorisées */
@@ -44,7 +44,7 @@ const EXPOSED_HEADERS = [
 export function getCorsHeaders(origin: string | null): Record<string, string> {
   // BLOC 6.3 - Strict CORS Validation (CWE-942 mitigation)
   const isAllowed = !origin || ALLOWED_ORIGINS.includes(origin) || 
-    /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*mediouna-action\.gov\.ma$/.test(origin);
+    /^https:\/\/(?:[a-zA-Z0-9-]+\.)*provincemediouna\.ma$/.test(origin);
   
   if (!isAllowed) {
     return {};
@@ -66,7 +66,7 @@ export function getCorsHeaders(origin: string | null): Record<string, string> {
 export function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return true; // Same-origin requests
   return ALLOWED_ORIGINS.includes(origin) || 
-    /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*mediouna-action\.gov\.ma$/.test(origin);
+    /^https:\/\/(?:[a-zA-Z0-9-]+\.)*provincemediouna\.ma$/.test(origin);
 }
 
 // ============================================
@@ -120,7 +120,7 @@ export function getCSPHeader(isDev: boolean = false): string {
     "font-src 'self' https://fonts.gstatic.com data:",
     
     // Connexions (APIs)
-    `connect-src 'self' https://api.mediouna-action.gov.ma ${isDev ? 'http://localhost:* ws://localhost:*' : ''}`,
+    `connect-src 'self' https://bo.provincemediouna.ma ${isDev ? 'http://localhost:* ws://localhost:*' : ''}`,
     
     // Frames
     "frame-src 'self' https://www.google.com",

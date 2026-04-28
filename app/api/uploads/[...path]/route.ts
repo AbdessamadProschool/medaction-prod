@@ -3,7 +3,7 @@
  * ║          MEDACTION - SECURE FILE SERVING API                                ║
  * ║          Serves uploaded files from external storage (Docker-ready)         ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
- * ║  Security: Path traversal protection, MIME validation, caching             ║
+ * ║  Security: Auth + ACL + Path traversal protection + MIME validation        ║
  * ║  Docker: Reads from STORAGE_PATH env (volume mount)                        ║
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
@@ -12,6 +12,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFile, stat } from 'fs/promises';
 import { join, normalize, extname } from 'path';
 import { existsSync } from 'fs';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/config';
+import { prisma } from '@/lib/db';
 
 // MIME type mapping (OWASP: Always set correct Content-Type)
 const MIME_TYPES: Record<string, string> = {
@@ -28,6 +31,36 @@ const MIME_TYPES: Record<string, string> = {
 
 // Allowed extensions for serving (security whitelist)
 const ALLOWED_EXTENSIONS = new Set(Object.keys(MIME_TYPES));
+
+// ═══════════════════════════════════════════════════════════════
+// ACCESS CONTROL RULES PER UPLOAD TYPE (Zero-Trust)
+// ═══════════════════════════════════════════════════════════════
+type Role = string;
+
+interface AccessRule {
+  /** If true, accessible without authentication */
+  public: boolean;
+  /** Roles that can access private resources (beyond ownership) */
+  adminRoles?: Role[];
+  /** If true, check if the user owns the resource (e.g. reclamation owner) */
+  needsOwnerCheck?: boolean;
+}
+
+const ACCESS_RULES: Record<string, AccessRule> = {
+  // Public assets — no auth required
+  'avatars':        { public: true },
+  'etablissements': { public: true },
+  'actualites':     { public: true },
+  'articles':       { public: true },
+  'evenements':     { public: true },
+  'campagnes':      { public: true },
+  'talents':        { public: true },
+  // Private assets — auth + authorization required
+  'reclamations':         { public: false, needsOwnerCheck: true, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'] },
+  'bilan':                { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION'] },
+  'programmes-activites': { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION', 'COORDINATEUR_ACTIVITES'] },
+  'documents':            { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN'] },
+};
 
 // Storage configuration
 function getStoragePath(): string {
@@ -83,13 +116,74 @@ export async function GET(
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 3. RESOLVE FILE PATH
+    // 3. ACCESS CONTROL (Auth + Authorization) — SECURITY FIX
+    // ═══════════════════════════════════════════════════════════════
+    const prefix = pathSegments[0] || '';
+    const rule = ACCESS_RULES[prefix] ?? { public: false }; // Default: PRIVATE
+
+    if (!rule.public) {
+      const session = await getServerSession(authOptions);
+      
+      if (!session?.user) {
+        return NextResponse.json(
+          { error: 'Non authentifié', code: 'AUTHENTICATION_REQUIRED' },
+          { status: 401 }
+        );
+      }
+
+      const userRole = session.user.role;
+      const userId = parseInt(session.user.id);
+      const isAdmin = rule.adminRoles?.includes(userRole) ?? false;
+
+      // Ownership check for reclamations
+      if (rule.needsOwnerCheck && !isAdmin && prefix === 'reclamations') {
+        const reclamationId = parseInt(pathSegments[1] || '0');
+        if (reclamationId > 0) {
+          try {
+            const rec = await prisma.reclamation.findUnique({
+              where: { id: reclamationId },
+              select: { userId: true, communeId: true },
+            });
+
+            if (!rec) {
+              return new NextResponse('Not Found', { status: 404 });
+            }
+
+            const isOwner = rec.userId === userId;
+
+            // AUTORITE_LOCALE: can access reclamations of their commune
+            let isLocalAuth = false;
+            if (userRole === 'AUTORITE_LOCALE') {
+              const autorite = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { communeResponsableId: true },
+              });
+              isLocalAuth = autorite?.communeResponsableId === rec.communeId;
+            }
+
+            if (!isOwner && !isLocalAuth) {
+              return NextResponse.json(
+                { error: 'Accès refusé', code: 'ACCESS_DENIED' },
+                { status: 403 }
+              );
+            }
+          } catch {
+            return new NextResponse('Forbidden', { status: 403 });
+          }
+        }
+      } else if (!isAdmin) {
+        return NextResponse.json(
+          { error: 'Accès refusé', code: 'ACCESS_DENIED' },
+          { status: 403 }
+        );
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 4. RESOLVE FILE PATH
     // ═══════════════════════════════════════════════════════════════
     const storagePath = getStoragePath();
     const filePath = normalize(join(storagePath, requestedPath));
-    
-    // Debug log for Proxmox/Production (Only in dev or if specific log enabled)
-    // console.log(`[FILE-SERVE] Trying: ${filePath} (Storage: ${storagePath})`);
 
     // Security: Ensure resolved path is still within storage directory
     const normalizedStoragePath = normalize(storagePath);
@@ -99,12 +193,12 @@ export async function GET(
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 4. CHECK FILE EXISTS
+    // 5. CHECK FILE EXISTS (with fallbacks)
     // ═══════════════════════════════════════════════════════════════
     let finalPath = filePath;
     let exists = existsSync(filePath);
 
-    // Fallback 1: Plural/Singular folder names (e.g., 'evenements' vs 'evenement')
+    // Fallback 1: Plural/Singular folder names
     if (!exists) {
       const parts = requestedPath.split(/[\\\/]/);
       if (parts.length > 1) {
@@ -120,23 +214,13 @@ export async function GET(
       }
     }
 
+    // Fallback 2: Try public/uploads directly relative to CWD
     if (!exists) {
-      // Fallback 2: Try with reversed slashes (Windows/Linux compatibility)
-      const altPath = filePath.includes('/') ? filePath.replace(/\//g, '\\') : filePath.replace(/\\/g, '/');
-      if (altPath !== filePath && existsSync(altPath)) {
-        finalPath = altPath;
-        exists = true;
-      }
-    }
-
-    if (!exists) {
-      // Fallback 3: try public/uploads directly relative to CWD
       const publicPath = normalize(join(process.cwd(), 'public', 'uploads', requestedPath));
       if (publicPath !== filePath && existsSync(publicPath)) {
         finalPath = publicPath;
         exists = true;
       } else {
-        // Also try plural/singular in publicPath
         const parts = requestedPath.split(/[\\\/]/);
         if (parts.length > 1) {
           const folder = parts[0];
@@ -152,18 +236,7 @@ export async function GET(
     }
 
     if (!exists) {
-      console.warn(`[FILE-SERVE] ❌ File not found after fallbacks: ${filePath}`);
-      // Log more context for Proxmox troubleshooting
-      console.log(`[DEBUG] CWD: ${process.cwd()}, STORAGE_PATH: ${process.env.STORAGE_PATH || 'Not set'}`);
-      
-      return new NextResponse(JSON.stringify({ 
-        error: 'File Not Found', 
-        path: requestedPath,
-        resolved: filePath 
-      }), { 
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new NextResponse('Not Found', { status: 404 });
     }
 
     const fileBuffer = await readFile(finalPath);
@@ -180,20 +253,21 @@ export async function GET(
     // ═══════════════════════════════════════════════════════════════
     // 6. RETURN WITH SECURITY HEADERS
     // ═══════════════════════════════════════════════════════════════
+    const isPublicResource = ACCESS_RULES[prefix]?.public ?? false;
+
     return new NextResponse(fileBuffer, {
       status: 200,
       headers: {
         'Content-Type': mimeType,
         'Content-Length': String(fileBuffer.length),
         'Last-Modified': lastModified,
-        // Cache for 24h, allow stale for 12h while revalidating
-        'Cache-Control': 'public, max-age=86400, stale-while-revalidate=43200',
+        'Cache-Control': isPublicResource
+          ? 'public, max-age=86400, stale-while-revalidate=43200'
+          : 'private, no-store',
         // Security headers
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'DENY',
-        // Prevent scripts in uploaded files from executing
         'Content-Security-Policy': "default-src 'none'; img-src 'self'; style-src 'none'; script-src 'none';",
-        // Files should be displayed inline (images) not downloaded
         'Content-Disposition': mimeType.startsWith('image/') ? 'inline' : 'attachment',
       },
     });

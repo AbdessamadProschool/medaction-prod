@@ -90,7 +90,7 @@ const nextConfig = {
           {
             key: 'Access-Control-Allow-Origin',
             value: process.env.NODE_ENV === 'production'
-              ? process.env.NEXTAUTH_URL || 'https://mediouna-action.gov.ma'
+              ? process.env.NEXTAUTH_URL || 'https://bo.provincemediouna.ma'
               : 'http://localhost:3000',
           },
           { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,PATCH,DELETE,OPTIONS' },

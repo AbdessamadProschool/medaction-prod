@@ -110,7 +110,24 @@ export async function GET(request: NextRequest) {
 
     // Filtres additionnels
     if (etablissementId) {
-      where.etablissementId = safeParseInt(etablissementId, 0);
+      const requestedEtabId = safeParseInt(etablissementId, 0);
+
+      // ✅ SECURITY FIX: Si coordinateur, vérifier que l'établissement demandé
+      // est dans sa liste autorisée AVANT d'écraser le filtre
+      if (userRole === 'COORDINATEUR_ACTIVITES' && userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { etablissementsGeres: true }
+        });
+        const managedIds = user?.etablissementsGeres || [];
+        if (!managedIds.includes(requestedEtabId)) {
+          return NextResponse.json({
+            error: 'Vous ne gérez pas cet établissement'
+          }, { status: 403 });
+        }
+      }
+
+      where.etablissementId = requestedEtabId;
     }
 
     if (dateDebut && dateFin) {

@@ -683,9 +683,9 @@ const authMiddleware = withAuth(
       }
     }
     
-    // ─────────────────────────────────────────────────────────────────
-    // 10. REQUÊTE AUTORISÉE
-    // ─────────────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------
+    // 10. REQUETE AUTORISEE
+    // ---------------------------------------------------------------
     if (isApi) {
       const response = stripped
         ? NextResponse.next({ request: { headers: strippedHeaders } })
@@ -700,35 +700,36 @@ const authMiddleware = withAuth(
       try {
         response.headers.set('X-Request-ID', crypto.randomUUID());
       } catch (e) {}
+
+      // PDF#2 FIX: Secure the NEXT_LOCALE cookie
+      const localeCookieValue = response.cookies.get('NEXT_LOCALE')?.value || locale;
+      response.cookies.set('NEXT_LOCALE', localeCookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+      });
+
       return addSecurityHeaders(response, nonce);
     }
   },
   {
     callbacks: {
-      authorized: () => true, // Gestion manuelle dans le middleware
+      authorized: () => true,
     },
   }
 );
 
-// ═══════════════════════════════════════════════════════════════════
-// EXPORT DU MIDDLEWARE
-// ═══════════════════════════════════════════════════════════════════
-
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
   const { pathname } = req.nextUrl;
-  
-  // 1. CVE-2025-29927 — Strip internal headers FIRST
   const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
-
-  // 2. Identification des segments
   const isApi = isApiRoute(pathname);
 
-  // 3. Cas particulier : Racine "/" → redirection i18n simple
   if (pathname === '/') {
     return handleI18nRouting(req);
   }
 
-  // 4. APIs TOUJOURS PUBLIQUES (seules routes court-circuitées)
   if (isApi && isAlwaysPublicApiRoute(pathname)) {
     const response = stripped 
       ? NextResponse.next({ request: { headers: strippedHeaders } })
@@ -736,21 +737,11 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     return addSecurityHeaders(response);
   }
 
-  // 5. TOUTES LES PAGES (publiques et protégées) passent par authMiddleware
-  //    → authorized: () => true → ne bloque personne
-  //    → la logique RBAC/publique est gérée DANS le callback du withAuth
-  //    → le wrapper withAuth initialise le contexte RSC nécessaire au rendu
   return (authMiddleware as any)(req, event);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// CONFIGURATION DU MATCHER
-// ═══════════════════════════════════════════════════════════════════
-
 export const config = {
-  // Match all pathnames except:
-  // - API routes starting with /api (handled separately)
-  // - Next.js internals (_next)
-  // - Static files with extensions
-  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
+  ],
 };

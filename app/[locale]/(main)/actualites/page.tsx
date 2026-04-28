@@ -42,6 +42,7 @@ interface Actualite {
 
 function ActualitesContent() {
   const t = useTranslations('news_page');
+  const tCommon = useTranslations('common');
   const tPagination = useTranslations('pagination');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -159,7 +160,7 @@ function ActualitesContent() {
               >
                 <span className="flex items-center gap-2">
                   <Filter className="w-5 h-5 text-[hsl(213,80%,28%)]" />
-                  {t('filter_mobile')}
+                  {tCommon('filters.title')}
                 </span>
             </button>
           </div>
@@ -176,14 +177,14 @@ function ActualitesContent() {
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="font-bold text-gray-900 flex items-center gap-2">
                       <Search className="w-5 h-5 text-gray-400" />
-                      {t('search_title')}
+                      {tCommon('filters.title')}
                     </h2>
                     {(search || categorie) && (
                       <button
                         onClick={() => router.push('/actualites')}
                         className="text-xs font-medium text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors"
                       >
-                        {t('reset')}
+                        {tCommon('filters.reset')}
                       </button>
                     )}
                   </div>
@@ -191,7 +192,7 @@ function ActualitesContent() {
                   {/* Search Input Premium */}
                   <div className="mb-8 group">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block px-1">
-                      {t('search_title')}
+                      {tCommon('filters.search_placeholder')}
                     </label>
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
@@ -200,7 +201,7 @@ function ActualitesContent() {
                         value={search}
                         onChange={(e) => updateFilter('search', e.target.value)}
                         className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
-                        placeholder={t('search_placeholder')}
+                        placeholder={tCommon('filters.search_placeholder')}
                       />
                     </div>
                   </div>

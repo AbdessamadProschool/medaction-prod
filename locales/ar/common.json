@@ -1728,6 +1728,19 @@
       "participation_error": "خطأ أثناء المشاركة",
       "connection_error": "خطأ في الاتصال"
     },
+    "showing": "عرض {start}-{end} من أصل {total} مبادرة",
+    "filter_title": "تصفية المبادرات",
+    "badge": "حملات",
+    "featured": "حملة مميزة",
+    "objective_progress": "تقدم الهدف",
+    "participants_required": "مشاركون مطلوبون",
+    "confirm_participation": "تأكيد مشاركتي",
+    "participating": "جاري المشاركة...",
+    "campaign_ended": "الحملة منتهية",
+    "login_to_participate": "سجل الدخول للمشاركة",
+    "success_title": "تمت العملية بنجاح",
+    "success_message": "شكراً لمشاركتك في هذه المبادرة !",
+    "close": "إغلاق",
     "participate": "شارك",
     "detail": {
       "back": "رجوع",
@@ -1970,7 +1983,9 @@
       "ECOLOGIE": "بيئة"
     },
     "read": "اقرأ",
-    "tags": "الوسوم"
+    "tags": "الوسوم",
+    "showing": "عرض {start}-{end} من أصل {total} مقال",
+    "filter_title": "تصفية المقالات"
   },
   "about_page": {
     "title": "حول مديونة أكشن",
@@ -2395,7 +2410,51 @@
     "error": "خطأ",
     "success": "نجاح",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "sectors": {
+      "title": "قطاعات النشاط",
+      "filter": "تصفية حسب القطاع",
+      "filter_by": "تصفية حسب قطاع {sector}",
+      "education": "التعليم والتكوين",
+      "sante": "الصحة والحماية الاجتماعية",
+      "sport": "الرياضة والشباب",
+      "culture": "الثقافة والتراث",
+      "social": "الرعاية الإجتماعية",
+      "jeunesse": "الشباب والطفولة",
+      "etablissements": "مؤسسة",
+      "infrastructure": "البنية التحتية والطرق",
+      "proprete": "النظافة والبيئة",
+      "eclairage": "الإنارة العمومية",
+      "eau": "الماء والتطهير",
+      "securite": "الأمن والسلامة",
+      "autre": "أخرى",
+      "culturel": "ثقافي"
+    },
+    "filters": {
+      "title": "تصفية",
+      "annexe": "الملحقة",
+      "all_annexes": "جميع الملحقات",
+      "search_label": "التصفية والبحث",
+      "active": "نشط",
+      "reset": "إعادة تعيين",
+      "clear": "مسح الكل",
+      "search_placeholder": "بحث...",
+      "search_etablissement": "بحث عن مؤسسة...",
+      "sector": "القطاع",
+      "location": "الموقع",
+      "note": "أدنى تقييم",
+      "status": "الحالة",
+      "all_communes": "جميع الجماعات",
+      "all_sectors": "جميع القطاعات",
+      "all_notes": "جميع التقييمات",
+      "excellent": "ممتاز (4+)",
+      "very_good": "جيد جداً (3+)",
+      "good": "جيد (2+)",
+      "all_status": "الكل",
+      "upcoming": "قادمة",
+      "in_progress": "جارية",
+      "completed": "منتهية"
+    }
   },
   "directory": {
     "title": "دليل المؤسسات",

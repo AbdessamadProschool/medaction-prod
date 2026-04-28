@@ -52,6 +52,7 @@ const STATUS_TABS = [
 
 function EvenementsContent() {
   const t = useTranslations();
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -194,7 +195,7 @@ function EvenementsContent() {
                 </span>
                 {hasActiveFilters && (
                   <span className="bg-[hsl(45,93%,47%)] text-[hsl(213,80%,28%)] text-xs font-bold px-2 py-0.5 rounded-full">
-                    {t('filters.active')}
+                    {tCommon('filters.active')}
                   </span>
                 )}
            </button>
@@ -212,14 +213,14 @@ function EvenementsContent() {
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="font-bold text-gray-900 flex items-center gap-2">
                       <Filter className="w-5 h-5 text-gray-400" />
-                      {t('filters.title')}
+                      {tCommon('filters.title')}
                     </h2>
                     {hasActiveFilters && (
                       <button
                         onClick={resetFilters}
                         className="text-xs font-medium text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors"
                       >
-                        {t('filters.reset')}
+                        {tCommon('filters.reset')}
                       </button>
                     )}
                   </div>
@@ -227,7 +228,7 @@ function EvenementsContent() {
                   {/* Search Input Premium */}
                   <div className="mb-8 group">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block px-1">
-                      {t('filters.search_label')}
+                      {tCommon('filters.search_label')}
                     </label>
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
@@ -235,7 +236,7 @@ function EvenementsContent() {
                         type="text"
                         value={search}
                         onChange={(e) => updateFilter('search', e.target.value)}
-                        placeholder={t('filters.search_placeholder')}
+                        placeholder={tCommon('filters.search_placeholder')}
                         className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
                       />
                     </div>
@@ -243,7 +244,7 @@ function EvenementsContent() {
 
                   {/* Status Tabs */}
                   <div className="mb-8">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{t('filters.status')}</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{tCommon('filters.status')}</label>
                     <div className="space-y-1.5">
                       {STATUS_TABS.map(tab => {
                         const labelKey = tab.id === 'all' ? 'all_status' : 
@@ -260,7 +261,7 @@ function EvenementsContent() {
                             }`}
                           >
                             <tab.icon className={`w-4 h-4 transition-colors ${statusParam === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-[hsl(213,80%,28%)]'}`} />
-                            {t(`filters.${labelKey}`)}
+                            {tCommon(`filters.${labelKey}`)}
                             {statusParam === tab.id && <motion.div layoutId="statusDot" className="ml-auto w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                           </button>
                         );
@@ -270,7 +271,7 @@ function EvenementsContent() {
 
                   {/* Secteurs */}
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{t('filters.sector')}</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{tCommon('filters.sector')}</label>
                     <div className="space-y-1.5">
                       {SECTEURS.map(s => (
                         <button
@@ -283,7 +284,7 @@ function EvenementsContent() {
                           }`}
                         >
                           <s.icon className={`w-4 h-4 transition-colors ${secteur === s.id ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`} />
-                          {s.id === '' ? t('filters.all_sectors') : t(`sectors.${s.id === 'CULTUREL' ? 'culture' : s.id.toLowerCase()}`)}
+                          {s.id === '' ? tCommon('filters.all_sectors') : tCommon(`sectors.${s.id === 'CULTUREL' ? 'culture' : s.id.toLowerCase()}`)}
                         </button>
                       ))}
                     </div>

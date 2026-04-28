@@ -60,7 +60,8 @@ function getStatusBadge(statut: string, dateDebut: string, dateFin?: string) {
 }
 
 export default function EventCard({ event, index, view = 'grid' }: EventCardProps) {
-  const t = useTranslations();
+  const t = useTranslations('events_page');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const secteurConfig = secteurColors[event.secteur] || secteurColors.AUTRE;
   const statusBadge = getStatusBadge(event.statut, event.dateDebut, event.dateFin);
@@ -101,17 +102,17 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex items-center gap-2">
-           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs shadow-lg backdrop-blur-md ${statusBadge.className}`}>
-             <statusBadge.icon className="w-3.5 h-3.5" />
-             {t(`filters.${statusBadge.labelKey}`)}
-           </span>
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs shadow-lg backdrop-blur-md ${statusBadge.className}`}>
+              <statusBadge.icon className="w-3.5 h-3.5" />
+              {tCommon(`filters.${statusBadge.labelKey}`)}
+            </span>
         </div>
 
         <div className="absolute top-4 right-4">
-           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md text-xs font-bold text-gray-700 shadow-sm border border-white/20">
-              <secteurConfig.icon className={`w-3.5 h-3.5 ${secteurConfig.text}`} />
-              {t(`sectors.${event.secteur.toLowerCase()}`)}
-           </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md text-xs font-bold text-gray-700 shadow-sm border border-white/20">
+               <secteurConfig.icon className={`w-3.5 h-3.5 ${secteurConfig.text}`} />
+               {tCommon(`sectors.${event.secteur.toLowerCase()}`)}
+            </span>
         </div>
 
         {/* Date Tiles */}

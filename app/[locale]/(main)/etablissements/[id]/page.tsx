@@ -441,13 +441,13 @@ export default function EtablissementDetailPage() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`
-                    relative flex items-center justify-center gap-2 px-5 py-2.5 text-base font-bold transition-all whitespace-nowrap rounded-xl mx-1
+                    relative flex items-center justify-center gap-2.5 px-6 py-3.5 text-lg font-bold transition-all whitespace-nowrap rounded-xl mx-1
                     ${isActive 
-                      ? 'bg-[hsl(213,80%,28%)] text-white shadow-md' 
-                      : 'text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 border border-transparent'}
+                      ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg ring-2 ring-[hsl(213,80%,28%)]/20 ring-offset-2' 
+                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200 hover:text-[hsl(213,80%,28%)] border border-gray-200 shadow-sm'}
                   `}
                 >
-                  <tab.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                  <tab.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[hsl(213,80%,28%)]/60'}`} />
                   {tab.label}
                   
                   {hasCount && (

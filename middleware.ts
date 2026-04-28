@@ -477,7 +477,10 @@ const authMiddleware = withAuth(
     // ASSETS FIX: Rediriger /ar/images/* vers /images/* et /ar/uploads/* vers /uploads/*
     // ─────────────────────────────────────────────────────────────────
     if (pathname.match(/^\/(fr|ar)\/(images|uploads|fonts|assets)\//)) {
-      const strippedPath = pathname.replace(/^\/(fr|ar)/, '');
+      let strippedPath = pathname.replace(/^\/(fr|ar)/, '');
+      if (strippedPath.startsWith('/uploads/')) {
+        strippedPath = '/api' + strippedPath;
+      }
       const url = new URL(strippedPath, req.url);
       return NextResponse.rewrite(url);
     }

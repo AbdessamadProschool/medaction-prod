@@ -377,7 +377,10 @@ export default function EvenementDetailPage() {
                    </div>
                    <h2 className="text-2xl font-bold text-gray-900">{t('labels.about')}</h2>
                 </div>
-                <div className="prose prose-lg text-gray-600 leading-relaxed whitespace-pre-wrap">
+                <div 
+                  className="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-wrap text-justify"
+                  dir="auto"
+                >
                    {locale === 'ar' && event.descriptionAr ? event.descriptionAr : event.description}
                 </div>
 
@@ -476,18 +479,18 @@ export default function EvenementDetailPage() {
                 <motion.div
                    initial={{ opacity: 0, x: 20 }}
                    animate={{ opacity: 1, x: 0 }}
-                   className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 sticky top-24"
+                   className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 sticky top-24 text-center"
                 >
-                   <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                   <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center justify-center gap-2">
                        <Ticket className="w-5 h-5 text-[hsl(45,93%,47%)]" />
                        {t('labels.participation')}
                    </h3>
 
                    {event.capaciteMax && (
                       <div className="mb-6">
-                         <div className="flex justify-between text-sm mb-2 font-medium">
-                            <span className="text-gray-500">{t('labels.reserved_places')}</span>
-                            <span className="text-gray-900">{event.nombreInscrits} / {event.capaciteMax}</span>
+                         <div className="flex justify-between items-center text-sm mb-2 font-bold">
+                            <span className="text-gray-600">{t('labels.reserved_places')}</span>
+                            <span className="text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">{event.nombreInscrits} / {event.capaciteMax}</span>
                          </div>
                          <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
                             <div 
@@ -496,7 +499,7 @@ export default function EvenementDetailPage() {
                             />
                          </div>
                          {(event.nombreInscrits >= event.capaciteMax) && (
-                            <p className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1">
+                            <p className="text-red-600 text-xs font-bold mt-2 flex items-center justify-center gap-1">
                                <X className="w-3 h-3" /> {t('labels.full')}
                             </p>
                          )}
@@ -526,7 +529,7 @@ export default function EvenementDetailPage() {
                          </a>
                       </PermissionGuard>
                     ) : (
-                       <div className="w-full py-3 bg-gray-100 text-gray-400 font-bold text-center rounded-xl cursor-not-allowed">
+                       <div className="w-full py-3.5 bg-gray-100 text-gray-600 font-bold text-center rounded-xl cursor-not-allowed border border-gray-200">
                           {t('labels.closed')}
                        </div>
                     )}
@@ -540,13 +543,13 @@ export default function EvenementDetailPage() {
                 transition={{ delay: 0.1 }}
                 className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100"
              >
-                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                 <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center justify-center gap-2 border-b border-gray-100 pb-4">
                     <Building2 className="w-5 h-5 text-gray-400" />
                     {t('labels.organization')}
                  </h3>
                 
-                <div className="flex items-center gap-4 mb-4">
-                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-400 text-lg">
+                <div className="flex flex-col items-center gap-4 mb-6">
+                   <div className="w-14 h-14 bg-[hsl(213,80%,28%)]/5 rounded-2xl flex items-center justify-center font-bold text-[hsl(213,80%,28%)] text-xl border border-[hsl(213,80%,28%)]/10 shadow-inner">
                       {(event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe?.[0] || event.etablissement.nom?.[0]) : event.etablissement.nom?.[0]) : 'M') || '?'}
                    </div>
                    <div>
@@ -567,15 +570,15 @@ export default function EvenementDetailPage() {
                    </div>
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-gray-100">
+                <div className="flex flex-col items-center justify-center space-y-3 pt-5 border-t border-gray-100">
                    {event.contactOrganisateur && (
-                      <a href={`tel:${event.contactOrganisateur}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-lg">
+                      <a href={`tel:${event.contactOrganisateur}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
                          <Phone className="w-4 h-4" />
                          {event.contactOrganisateur}
                       </a>
                    )}
                    {event.emailContact && (
-                      <a href={`mailto:${event.emailContact}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-lg">
+                      <a href={`mailto:${event.emailContact}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
                          <Mail className="w-4 h-4" />
                          {t('buttons.contact_email')}
                       </a>

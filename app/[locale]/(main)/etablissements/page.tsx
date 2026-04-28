@@ -155,9 +155,10 @@ function EtablissementsContent() {
     } else {
       params.delete(key);
     }
-    // If commune changed, ensure annexe is cleared from URL if needed
-    if (key === 'communeId' && !value) {
+    // Si la commune change, on doit TOUJOURS réinitialiser l'annexe car elle dépend de la commune
+    if (key === 'communeId') {
         params.delete('annexeId');
+        setAnnexeId(''); // Mettre à jour l'état local aussi si nécessaire
     }
     router.replace(`?${params.toString()}`, { scroll: false });
   };

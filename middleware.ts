@@ -742,6 +742,9 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
+    // SECURITY & STATIC FIX: 
+    // 1. Exclure les assets statiques du middleware pour éviter le préfixe de locale (next-intl)
+    // 2. Maintenir la protection sur les autres routes
+    '/((?!_next/static|_next/image|images/|uploads/|fonts/|assets/|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
   ],
 };

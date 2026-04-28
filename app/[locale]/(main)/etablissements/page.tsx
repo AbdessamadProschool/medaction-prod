@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import EtablissementCard from '@/components/etablissements/EtablissementCard';
 import { Building2, GraduationCap, Hospital, Trophy, HeartHandshake, Drama, Search, Filter, X, LayoutGrid, List } from 'lucide-react';
+import { getLocalizedCommuneName } from '@/lib/utils/territory-mapper';
 
 interface Etablissement {
   id: number;
@@ -338,7 +339,7 @@ function EtablissementsContent() {
                     <option value="">{t('filters.all_communes')}</option>
                     {communes.map(c => (
                       <option key={c.id} value={c.id}>
-                        {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                        {getLocalizedCommuneName(c, locale)}
                       </option>
                     ))}
                   </select>
@@ -356,7 +357,7 @@ function EtablissementsContent() {
                     <option value="">{t('filters.all_annexes') || 'Toutes les annexes'}</option>
                     {annexes.map(a => (
                       <option key={a.id} value={a.id}>
-                        {locale === 'ar' ? (a.nomArabe || a.nom) : a.nom}
+                        {getLocalizedCommuneName(a, locale)}
                       </option>
                     ))}
                   </select>

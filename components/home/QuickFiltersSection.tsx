@@ -18,6 +18,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { getLocalizedCommuneName } from '@/lib/utils/territory-mapper';
 
 interface Secteur {
   id: string;
@@ -50,12 +51,24 @@ export default function QuickFiltersSection() {
   const [selectedCommune, setSelectedCommune] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [communes, setCommunes] = useState<Commune[]>([]);
+  const [secteursCounts, setSecteursCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
+    // Charger les communes
     fetch('/api/communes')
       .then(res => res.json())
       .then(data => setCommunes(data.data || []))
       .catch(err => console.error('Erreur chargement communes:', err));
+
+    // Charger les stats des secteurs
+    fetch('/api/public/stats')
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          setSecteursCounts(res.data);
+        }
+      })
+      .catch(err => console.error('Erreur chargement stats secteurs:', err));
   }, []);
 
   return (
@@ -156,7 +169,7 @@ export default function QuickFiltersSection() {
                     {label}
                   </h4>
                   <span className={`text-sm font-medium transition-colors ${isSelected ? 'text-gov-blue' : 'text-gray-500 group-hover:text-gray-600'}`}>
-                    {secteur.count} {t('sectors.etablissements')}
+                    {secteursCounts[secteur.id] || 0} {t('sectors.etablissements')}
                   </span>
 
                   {/* Selected Indicator */}
@@ -207,7 +220,7 @@ export default function QuickFiltersSection() {
                   <option value="">{t('search.all_communes')}</option>
                   {communes.map((commune) => (
                     <option key={commune.id} value={commune.id}>
-                      {locale === 'ar' ? (commune.nomArabe || commune.nom) : commune.nom}
+                      {getLocalizedCommuneName(commune, locale)}
                     </option>
                   ))}
                 </select>

@@ -266,8 +266,25 @@ export default function NouvelleReclamationPage() {
         });
 
         if (!uploadResponse.ok) {
-          console.error('Erreur upload photos');
+          const uploadErrorData = await uploadResponse.json().catch(() => ({}));
+          // Annuler la réclamation car les photos sont obligatoires/importantes et ont échoué
+          await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
+          throw new Error(`Erreur lors de l'envoi des photos: ${uploadErrorData.error || uploadErrorData.message || 'Fichiers non valides ou rejetés par la sécurité'}`);
         }
+
+        const uploadResult = await uploadResponse.json().catch(() => ({}));
+        if (uploadResult.errors && uploadResult.errors.length > 0) {
+          const errorMessages = uploadResult.errors.map((e: any) => `${e.filename}: ${e.error}`).join(', ');
+          // Annuler la réclamation si certaines photos sont rejetées
+          await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
+          throw new Error(`Certaines photos ont été rejetées: ${errorMessages}`);
+        }
+        
+        if (uploadResult.success === false) {
+           await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
+           throw new Error("L'envoi des photos a échoué. Veuillez vérifier le format et la taille des fichiers.");
+        }
+        
         setUploadProgress(90);
       }
 
@@ -278,7 +295,7 @@ export default function NouvelleReclamationPage() {
 
     } catch (error) {
       console.error('Erreur:', error);
-      toast.error(error instanceof Error ? error.message : t('reclamation.errors.generic'));
+      toast.error(error instanceof Error ? error.message : t('reclamation.errors.generic'), { duration: 6000 });
       setIsSubmitting(false);
       setUploadProgress(0);
     }

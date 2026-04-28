@@ -179,7 +179,7 @@ export default function PreuvesSection({ photos, setPhotos }: PreuvesSectionProp
               >
                 <img
                   src={URL.createObjectURL(photo)}
-                  alt={`Photo ${index + 1}`}
+                  alt={t('reclamation.form.photo_alt', { number: index + 1 })}
                   className="w-full h-full object-cover"
                 />
                 <button

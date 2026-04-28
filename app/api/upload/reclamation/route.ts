@@ -101,7 +101,10 @@ export async function POST(request: Request) {
     // 3. PARSE AND VALIDATE REQUEST
     // ═══════════════════════════════════════════════════════════════════
     const formData = await request.formData();
-    const files = formData.getAll('files') as File[];
+    let files = formData.getAll('files') as File[];
+    if (files.length === 0) {
+      files = formData.getAll('photos') as File[];
+    }
     const reclamationId = formData.get('reclamationId') as string;
 
     // Validate reclamationId
@@ -219,13 +222,19 @@ export async function POST(request: Request) {
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // 7. CREATE SECURE UPLOAD DIRECTORY (BLOC 3.2 FIX)
+    // 7. CREATE SECURE UPLOAD DIRECTORY (BLOC 3.2 FIX - Docker Ready)
     // ═══════════════════════════════════════════════════════════════════
-    const BASE_RECLAMATION_DIR = path.resolve(process.cwd(), 'public', 'uploads', 'reclamations');
-    const uploadDir = path.resolve(BASE_RECLAMATION_DIR, String(reclamationIdNum));
+    const STORAGE_PATH = process.env.STORAGE_PATH;
+    const UPLOAD_BASE = STORAGE_PATH 
+      ? (STORAGE_PATH.startsWith('/') || /^[a-zA-Z]:[\\\/]/.test(STORAGE_PATH)) 
+        ? STORAGE_PATH 
+        : path.join(process.cwd(), STORAGE_PATH)
+      : path.join(process.cwd(), 'public', 'uploads');
 
-    // Security check: ensure the resolved path is inside the BASE_RECLAMATION_DIR
-    if (!uploadDir.startsWith(BASE_RECLAMATION_DIR + path.sep)) {
+    const uploadDir = path.resolve(UPLOAD_BASE, 'reclamations', String(reclamationIdNum));
+
+    // Security check: ensure the resolved path is inside the UPLOAD_BASE
+    if (!uploadDir.startsWith(path.normalize(UPLOAD_BASE))) {
        logSecurityEvent('PATH_TRAVERSAL_ATTEMPT', {
           userId,
           attemptedPath: uploadDir,
@@ -304,7 +313,7 @@ export async function POST(request: Request) {
         // ─────────────────────────────────────────────────────────────────
         // 8.4 CREATE DATABASE RECORD
         // ─────────────────────────────────────────────────────────────────
-        const urlPublique = `/uploads/reclamations/${reclamationIdNum}/${secureFilename}`;
+        const urlPublique = `/api/uploads/reclamations/${reclamationIdNum}/${secureFilename}`;
         
         const media = await prisma.media.create({
           data: {

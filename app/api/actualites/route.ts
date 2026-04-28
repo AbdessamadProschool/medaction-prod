@@ -1,4 +1,5 @@
 import { safeParseInt } from '@/lib/utils/parse';
+import { SecurityValidation } from '@/lib/security/validation';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -130,8 +131,11 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 // GET - Liste des actualités
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
-  const page = safeParseInt(searchParams.get('page') || '1', 0);
-  const limit = Math.min(safeParseInt(searchParams.get('limit') || '10', 0), 100);
+  
+  const { page, limit } = SecurityValidation.validatePagination(
+    searchParams.get('page'),
+    searchParams.get('limit')
+  );
   const categorie = searchParams.get('categorie');
   const etablissementId = searchParams.get('etablissementId');
   const search = searchParams.get('search');
@@ -163,7 +167,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
   // Filtres optionnels
   if (categorie) andConditions.push({ categorie });
-  if (etablissementId) andConditions.push({ etablissementId: safeParseInt(etablissementId, 0) });
+  if (etablissementId) {
+    const validId = SecurityValidation.validateId(etablissementId);
+    if (validId) andConditions.push({ etablissementId: validId });
+  }
   if (search) {
     andConditions.push({
       OR: [

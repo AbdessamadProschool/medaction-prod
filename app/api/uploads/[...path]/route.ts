@@ -34,7 +34,7 @@ function getStoragePath(): string {
   const storagePath = process.env.STORAGE_PATH;
   if (storagePath) {
     // Absolute path (Linux or Windows)
-    if (storagePath.startsWith('/') || /^[a-zA-Z]:\\/.test(storagePath)) {
+    if (storagePath.startsWith('/') || /^[a-zA-Z]:[\\\/]/.test(storagePath)) {
       return storagePath;
     }
     // Relative path

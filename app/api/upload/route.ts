@@ -258,7 +258,7 @@ export async function POST(request: NextRequest) {
 
         uploadedFiles.push({
           filename: secureFilename,
-          url: `/uploads/${sanitizedType}/${secureFilename}`,
+          url: `/api/uploads/${sanitizedType}/${secureFilename}`,
           originalName: validation.sanitizedFilename || file.name,
           size: file.size,
           type: validation.detectedType || file.type,

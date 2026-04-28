@@ -5783,13 +5783,106 @@
     "back_list": "Retour à la liste",
     "update_etab": "Mise à jour de l'établissement"
   },
+  "reclamation": {
+    "steps": {
+      "location": "Localisation",
+      "desc_location": "Où se situe le problème ?",
+      "details": "Description",
+      "desc_details": "Détails de votre demande",
+      "proofs": "Preuves",
+      "desc_proofs": "Photos et justificatifs"
+    },
+    "disclaimer": {
+      "title": "Engagement de Responsabilité",
+      "service_name": "Province de Médiouna - Service Citoyen",
+      "warning": "Avertissement Légal",
+      "warning_text": "Toute fausse déclaration ou utilisation abusive de ce service expose son auteur à des poursuites judiciaires conformément à la réglementation en vigueur.",
+      "text_verified": "Identité Vérifiée",
+      "sub_verified": "Votre compte est lié à votre identité réelle",
+      "text_photos": "Preuves Authentiques",
+      "sub_photos": "Les photos doivent être prises sur le lieu même",
+      "text_official": "Traitement Officiel",
+      "sub_official": "Chaque réclamation est suivie par les autorités",
+      "legal_warning": "En cliquant sur Accepter, vous reconnaissez avoir pris connaissance des conditions d'utilisation et de votre responsabilité juridique quant aux informations fournies.",
+      "cancel": "Annuler",
+      "accept": "J'accepte et je continue"
+    },
+    "new": {
+      "error_required": "Veuillez remplir les champs obligatoires",
+      "error_all_required": "Veuillez remplir toutes les étapes",
+      "success_sent": "Réclamation envoyée avec succès !"
+    },
+    "progress": {
+      "creating": "Création du dossier...",
+      "uploading": "Envoi des photos...",
+      "finalizing": "Finalisation..."
+    },
+    "actions": {
+      "prev": "Précédent",
+      "next": "Suivant",
+      "submit": "Envoyer ma réclamation",
+      "sending": "Envoi en cours...",
+      "back": "Retour",
+      "restricted": "Accès restreint",
+      "no_permission": "Vous n'avez pas la permission de créer une réclamation"
+    },
+    "ready": {
+      "title": "Votre réclamation est prête",
+      "desc": "Vous avez fourni tous les détails nécessaires. Cliquez sur <strong>Envoyer</strong> pour transmettre votre demande aux autorités compétentes."
+    },
+    "trust": {
+      "secure": "Connexion Sécurisée SSL",
+      "compliance": "Conforme aux Normes Gouvernementales",
+      "tracking": "Suivi en Temps Réel"
+    },
+    "form": {
+      "photos_title": "Pièces jointes & Photos",
+      "photos_subtitle": "Ajoutez des photos pour appuyer votre demande",
+      "drag_drop": "Glissez-déposez vos photos ici",
+      "click_select": "ou cliquez pour sélectionner",
+      "photos_limits": "Max {max} photos, {size}MB par fichier",
+      "error_type": "Fichier non supporté (images uniquement)",
+      "error_size": "Le fichier est trop lourd (max {size}MB)",
+      "error_max": "Nombre maximum de photos atteint ({max})",
+      "photo_alt": "Photo réclamation n°{number}"
+    }
+  },
+  "reclamation_categories": {
+    "Infrastructure": "Infrastructures",
+    "Services": "Services Publics",
+    "Propreté": "Hygiène & Propreté",
+    "Sécurité": "Sécurité",
+    "securite": "Sécurité",
+    "Personnel": "Comportement du Personnel",
+    "Accessibilité": "Accessibilité",
+    "education": "Éducation",
+    "sport": "Sport",
+    "eclairage": "Éclairage Public",
+    "DECHETS": "Gestion des déchets",
+    "ECLAIRAGE": "Éclairage public",
+    "VOIRIE": "Voirie et routes",
+    "EAU_ASSAINISSEMENT": "Eau et assainissement",
+    "ESPACES_VERTS": "Espaces verts",
+    "TRANSPORT": "Transport urbain",
+    "NUISANCES": "Nuisances",
+    "SECURITE": "Sécurité publique",
+    "Autre": "Autre",
+    "AUTRE": "Autres demandes"
+  },
+  "download_photos": {
+    "title": "Télécharger les photos",
+    "count": "{count} photo(s)",
+    "zip_ready": "Archive ZIP prête",
+    "downloading": "Téléchargement..."
+  },
   "history_actions": {
-    "CREATION": "Création",
-    "VALIDATION": "Validation",
-    "REJET": "Rejet",
-    "AFFECTATION": "Affectation",
-    "RESOLUTION": "Résolution",
-    "UPDATE": "Mise à jour",
-    "ACCEPTATION": "Acceptation"
+    "CREATION": "Création de la réclamation",
+    "VALIDATION": "Validation administrative",
+    "REJET": "Rejet de la réclamation",
+    "AFFECTATION": "Affectation à une autorité",
+    "RESOLUTION": "Réclamation résolue",
+    "UPDATE": "Mise à jour du dossier",
+    "ACCEPTATION": "Acceptation de la réclamation",
+    "AJOUT_MEDIA": "Ajout de pièces jointes"
   }
 }

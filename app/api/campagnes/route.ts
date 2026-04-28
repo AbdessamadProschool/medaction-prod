@@ -1,4 +1,5 @@
 import { safeParseInt } from '@/lib/utils/parse';
+import { SecurityValidation } from '@/lib/security/validation';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -13,8 +14,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
   const { searchParams } = new URL(request.url);
   
-  const page = safeParseInt(searchParams.get('page') || '1', 0);
-  const limit = Math.min(safeParseInt(searchParams.get('limit') || '12', 0), 100); // Max 100
+  const { page, limit } = SecurityValidation.validatePagination(
+    searchParams.get('page'),
+    searchParams.get('limit')
+  );
   const search = searchParams.get('search') || '';
   const type = searchParams.get('type') || '';
   const featured = searchParams.get('featured') === 'true';

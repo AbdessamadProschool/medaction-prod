@@ -85,12 +85,24 @@ export async function GET(
 
     // Ajouter les fichiers à l'archive
     for (const media of reclamation.medias) {
-      // Enlever le slash initial pour le path.join
-      const relativePath = media.cheminFichier.startsWith('/') 
-        ? media.cheminFichier.slice(1) 
-        : media.cheminFichier;
+      // Résolution sécurisée du chemin (compatible Docker/STORAGE_PATH)
+      const STORAGE_PATH = process.env.STORAGE_PATH;
+      const UPLOAD_BASE = STORAGE_PATH 
+        ? (STORAGE_PATH.startsWith('/') || STORAGE_PATH.match(/^[a-zA-Z]:\\/)) 
+          ? STORAGE_PATH 
+          : path.join(process.cwd(), STORAGE_PATH)
+        : path.join(process.cwd(), 'public', 'uploads');
 
-      const filePath = path.join(process.cwd(), 'public', relativePath);
+      // Si le chemin en base est déjà absolu ou contient 'uploads', on nettoie
+      let cleanSubPath = media.cheminFichier;
+      if (cleanSubPath.includes('uploads')) {
+        cleanSubPath = cleanSubPath.split('uploads')[1];
+      } else if (cleanSubPath.includes('reclamations')) {
+         // Fallback si 'uploads' n'est pas dans le chemin mais 'reclamations' oui
+         cleanSubPath = cleanSubPath.substring(cleanSubPath.indexOf('reclamations') - 1);
+      }
+      
+      const filePath = path.normalize(path.join(UPLOAD_BASE, cleanSubPath));
       
       if (existsSync(filePath)) {
         // Ajouter le fichier avec un nom lisible

@@ -3,6 +3,11 @@
     "code": "ar",
     "dir": "rtl"
   },
+  "pagination": {
+    "prev": "السابق",
+    "next": "التالي",
+    "page_info": "الصفحة {page} من {total}"
+  },
   "governor": {
     "sidebar": {
       "title": "منصة الوالي",

@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { Pagination } from '@/components/ui';
 import {
   Megaphone, Search, Users, Target, ChevronLeft, ChevronRight,
   Loader2, X, Calendar, CheckCircle, ArrowRight, Sparkles, Heart, Filter
@@ -137,7 +138,7 @@ function CampagnesContent() {
   const setPageParam = (p: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', p.toString());
-    router.push(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   // Carousel Logic
@@ -414,27 +415,11 @@ function CampagnesContent() {
                </div>
 
                {/* Pagination */}
-               {totalPages > 1 && (
-                  <div className="flex justify-center mt-12 gap-2">
-                     <button
-                        onClick={() => setPageParam(page - 1)}
-                        disabled={page <= 1}
-                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                     >
-                        <ChevronLeft className="w-5 h-5" />
-                     </button>
-                     <span className="flex items-center px-4 font-medium text-gray-600">
-                        {t('page_info', { page, totalPages })}
-                     </span>
-                     <button
-                        onClick={() => setPageParam(page + 1)}
-                        disabled={page >= totalPages}
-                        className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                     >
-                        <ChevronRight className="w-5 h-5" />
-                     </button>
-                  </div>
-               )}
+               <Pagination 
+                  currentPage={page} 
+                  totalPages={totalPages} 
+                  onPageChange={setPageParam} 
+               />
             </>
          )}
 

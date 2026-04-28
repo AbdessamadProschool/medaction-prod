@@ -3,6 +3,11 @@
     "code": "fr",
     "dir": "ltr"
   },
+  "pagination": {
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page_info": "Page {page} sur {total}"
+  },
   "governor": {
     "sidebar": {
       "title": "Plateforme du Gouverneur",

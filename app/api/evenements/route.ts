@@ -168,14 +168,41 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   // 2. Filtres optionnels
-  if (statut && isAdminOrGouv) {
+  if (statut) {
     if (statut === 'EN_ACTION') {
-      andConditions.push({ statut: 'EN_ACTION' });
-      andConditions.push({ OR: [{ dateFin: null }, { dateFin: { gte: now } }] });
-    } else if (statut === 'A_CLOTURER') {
+      // Un événement est "en cours" s'il a le statut EN_ACTION 
+      // OU s'il est PUBLIE et que nous sommes entre la date de début et la date de fin
+      andConditions.push({
+        OR: [
+          { statut: 'EN_ACTION' },
+          {
+            AND: [
+              { statut: 'PUBLIEE' },
+              { dateDebut: { lte: now } },
+              { OR: [{ dateFin: null }, { dateFin: { gte: now } }] }
+            ]
+          }
+        ]
+      });
+    } else if (statut === 'CLOTUREE') {
+      // Un événement est "terminé" s'il a le statut CLOTUREE
+      // OU s'il est PUBLIE et que la date de fin est passée
+      andConditions.push({
+        OR: [
+          { statut: 'CLOTUREE' },
+          {
+            AND: [
+              { statut: 'PUBLIEE' },
+              { dateFin: { not: null } },
+              { dateFin: { lt: now } }
+            ]
+          }
+        ]
+      });
+    } else if (statut === 'A_CLOTURER' && isAdminOrGouv) {
       andConditions.push({ dateFin: { lt: now } });
       andConditions.push({ statut: { not: 'CLOTUREE' } });
-    } else {
+    } else if (statut !== 'all' && statut !== 'upcoming' && statut !== 'A_CLOTURER') {
       andConditions.push({ statut });
     }
   }

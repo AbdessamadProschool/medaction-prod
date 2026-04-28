@@ -153,7 +153,7 @@ function ArticlesContent() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-bold text-gray-900 flex items-center gap-2">
                   <Filter className="w-5 h-5 text-gray-400" />
-                  {tCommon('filters')}
+                  {tCommon('filters.title')}
                 </h2>
                 {(search || selectedCategorie) && (
                   <button

@@ -5637,7 +5637,8 @@
       "SYSTEM": "النظام",
       "EVENT_CREATION": "إنشاء فعالية",
       "ACTUALITE_CREATION": "إنشاء خبر",
-      "CAMPAGNE_CREATION": "إنشاء حملة"
+      "CAMPAGNE_CREATION": "إنشاء حملة",
+      "SUGGESTION_STATUT": "تحديث حالة الاقتراح"
     },
     "actions": {
       "view": "عرض التفاصيل",

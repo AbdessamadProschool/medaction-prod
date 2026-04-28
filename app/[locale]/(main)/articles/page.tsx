@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import {
-  FileText, Search, Loader2, BookOpen, Filter, X
+  FileText, Search, BookOpen, Filter, X
 } from 'lucide-react';
 import ArticleCard from '@/components/articles/ArticleCard';
 import { Pagination } from '@/components/ui';
@@ -40,7 +40,6 @@ const getCategoryKey = (cat: string) => {
 function ArticlesContent() {
   const t = useTranslations('articles_page');
   const tCommon = useTranslations('common');
-  const tPagination = useTranslations('pagination');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -119,7 +118,6 @@ function ArticlesContent() {
       <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] overflow-hidden">
         {/* Pattern & Overlay */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-
         
         {/* Bande Tricolore Top */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] shadow-md z-10" />
@@ -146,8 +144,6 @@ function ArticlesContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           
@@ -243,19 +239,48 @@ function ArticlesContent() {
                   </div>
                </div>
             </div>
-              {articles.map((article, index) => (
-                <ArticleCard key={article.id} article={article} index={index} />
-              ))}
-            </div>
 
-            {/* Pagination */}
-               <Pagination 
-                  currentPage={page} 
-                  totalPages={totalPages} 
-                  onPageChange={setPage} 
-               />
-            </>
-         )}
+            {loading ? (
+                 <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                   {[1,2,3,4,5,6].map(i => (
+                      <div key={i} className="bg-white rounded-2xl h-96 animate-pulse border border-gray-100 shadow-sm p-4">
+                         <div className="w-full h-48 bg-gray-100 rounded-xl mb-4" />
+                         <div className="w-3/4 h-6 bg-gray-100 rounded mb-3" />
+                         <div className="w-full h-4 bg-gray-100 rounded mb-2" />
+                         <div className="w-2/3 h-4 bg-gray-100 rounded" />
+                      </div>
+                   ))}
+                </div>
+            ) : articles.length === 0 ? (
+               <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                   <FileText className="w-8 h-8 text-gray-400" />
+                 </div>
+                 <h3 className="text-xl font-bold text-gray-900 mb-2">{t('no_articles')}</h3>
+                 <p className="text-gray-500 max-w-sm mx-auto mb-6">{t('no_articles_desc')}</p>
+                 <button 
+                      onClick={() => { updateFilter('search', ''); updateFilter('categorie', ''); }}
+                      className="px-5 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2"
+                 >
+                    <X className="w-4 h-4" />
+                    {t('reset_filters')}
+                 </button>
+               </div>
+            ) : (
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                  {articles.map((article, index) => (
+                    <ArticleCard key={article.id} article={article} index={index} />
+                  ))}
+                </div>
+
+                <Pagination 
+                   currentPage={page} 
+                   totalPages={totalPages} 
+                   onPageChange={setPage} 
+                />
+              </>
+            )}
           </main>
         </div>
       </div>

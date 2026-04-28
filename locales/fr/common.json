@@ -5591,7 +5591,8 @@
       "SYSTEM": "Système",
       "EVENT_CREATION": "Création d'Événement",
       "ACTUALITE_CREATION": "Création d'Actualité",
-      "CAMPAGNE_CREATION": "Création de Campagne"
+      "CAMPAGNE_CREATION": "Création de Campagne",
+      "SUGGESTION_STATUT": "Statut de suggestion mis à jour"
     },
     "actions": {
       "view": "Voir les détails",

@@ -474,6 +474,15 @@ const authMiddleware = withAuth(
     const method = req.method;
 
     // ─────────────────────────────────────────────────────────────────
+    // ASSETS FIX: Rediriger /ar/images/* vers /images/* et /ar/uploads/* vers /uploads/*
+    // ─────────────────────────────────────────────────────────────────
+    if (pathname.match(/^\/(fr|ar)\/(images|uploads|fonts|assets)\//)) {
+      const strippedPath = pathname.replace(/^\/(fr|ar)/, '');
+      const url = new URL(strippedPath, req.url);
+      return NextResponse.rewrite(url);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
     // 0. BLOCAGE DES VERBES HTTP DANGEREUX (Verb Tampering)
     // ─────────────────────────────────────────────────────────────────
     const forbiddenMethods = ['TRACE', 'TRACK', 'CONNECT'];
@@ -743,8 +752,8 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
 export const config = {
   matcher: [
     // SECURITY & STATIC FIX: 
-    // 1. Exclure les assets statiques du middleware pour éviter le préfixe de locale (next-intl)
-    // 2. Maintenir la protection sur les autres routes
-    '/((?!_next/static|_next/image|images/|uploads/|fonts/|assets/|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
+    // 1. Exclure les assets statiques évidents du middleware
+    // 2. Le reste est géré dynamiquement dans la fonction middleware (ASSETS FIX)
+    '/((?!_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
   ],
 };

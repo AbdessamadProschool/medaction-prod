@@ -128,6 +128,8 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: '/uploads/:path*', destination: '/api/uploads/:path*' },
+      { source: '/:locale(fr|ar)/uploads/:path*', destination: '/api/uploads/:path*' },
+      { source: '/:locale(fr|ar)/images/:path*', destination: '/images/:path*' },
     ];
   },
   serverExternalPackages: ['prisma', '@prisma/client', 'bcryptjs', 'puppeteer', 'sharp'],

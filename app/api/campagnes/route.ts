@@ -17,10 +17,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     const { searchParams } = new URL(request.url);
     
-    const { page, limit } = SecurityValidation.validatePagination(
-      searchParams.get('page'),
-      searchParams.get('limit')
-    );
+    const limit = Math.min(safeParseInt(searchParams.get('limit'), 10), 50);
+    const page = Math.max(safeParseInt(searchParams.get('page'), 1), 1);
+    
     const search = searchParams.get('search') || '';
     const type = searchParams.get('type') || '';
     const featured = searchParams.get('featured') === 'true';
@@ -43,24 +42,23 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     // GESTION DES DROITS D'ACCÈS ET STATUTS
     if (isAdminOrDelegation) {
-      // Admin/Délégation : Peut voir tout, ou filtrer par statut spécifique
-      if (statutParam) {
-        where.statut = statutParam;
-      }
+      if (statutParam) where.statut = statutParam;
     } else {
-      // Public : VOIT UNIQUEMENT "ACTIVE" (et publié)
       where.statut = 'ACTIVE';
       where.isActive = true; 
     }
 
+    // Filtrage par date avec validation
     const dateDebutRaw = searchParams.get('dateDebut');
     const dateFinRaw = searchParams.get('dateFin');
+    
     if (dateDebutRaw) {
       const dDebut = new Date(dateDebutRaw);
       if (!isNaN(dDebut.getTime())) {
         where.dateDebut = { gte: dDebut };
       }
     }
+    
     if (dateFinRaw) {
       const dFin = new Date(dateFinRaw);
       if (!isNaN(dFin.getTime())) {
@@ -69,67 +67,66 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       }
     }
 
-    const [campagnes, total, types] = await Promise.all([
-      prisma.campagne.findMany({
-        where,
-        include: {
-          _count: {
-            select: { participations: true },
+    // Exécution de la requête avec gestion d'erreur spécifique
+    try {
+      const [campagnes, total] = await Promise.all([
+        prisma.campagne.findMany({
+          where,
+          include: {
+            _count: { select: { participations: true } },
           },
+          orderBy: [
+            { isFeatured: 'desc' },
+            { createdAt: 'desc' },
+          ],
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.campagne.count({ where }),
+      ]);
+
+      // Formater les données
+      const formattedCampagnes = campagnes.map((c: any) => ({
+        id: c.id,
+        titre: c.titre,
+        nom: c.nom,
+        slug: c.slug,
+        description: c.description,
+        contenu: c.contenu,
+        type: c.type,
+        statut: c.statut,
+        dateDebut: c.dateDebut?.toISOString(),
+        dateFin: c.dateFin?.toISOString(),
+        objectifParticipations: c.objectifParticipations,
+        nombreParticipations: c._count?.participations || 0,
+        imageCouverture: c.imageCouverture,
+        imagePrincipale: c.imagePrincipale,
+        isFeatured: c.isFeatured,
+        isActive: c.isActive,
+        createdAt: c.createdAt.toISOString(),
+      }));
+
+      return NextResponse.json({
+        success: true,
+        data: formattedCampagnes,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
         },
-        orderBy: [
-          { isFeatured: 'desc' },
-          { createdAt: 'desc' },
-        ],
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.campagne.count({ where }),
-      prisma.campagne.groupBy({
-        by: ['type'],
-        where: isAdminOrDelegation ? {} : { statut: 'ACTIVE', isActive: true },
-        _count: { type: true },
-      }),
-    ]);
-
-    // Formater les données
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formattedCampagnes = campagnes.map((c: any) => ({
-      id: c.id,
-      titre: c.titre,
-      nom: c.nom,
-      slug: c.slug,
-      description: c.description,
-      contenu: c.contenu,
-      type: c.type,
-      statut: c.statut,
-      imageCouverture: c.imageCouverture || c.imagePrincipale,
-      couleurTheme: c.couleurTheme,
-      objectifParticipations: c.objectifParticipations,
-      nombreParticipations: c._count?.participations || 0,
-      dateDebut: c.dateDebut,
-      dateFin: c.dateFin,
-      isFeatured: c.isFeatured,
-      createdAt: c.createdAt,
-    }));
-
-    return NextResponse.json({
-      success: true,
-      data: formattedCampagnes,
-      types: types.map(t => ({
-        nom: t.type,
-        count: t._count.type,
-      })),
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    });
+      });
+    } catch (prismaError: any) {
+      SystemLogger.error('api:campagnes:db', `Prisma Error: ${prismaError.message}`, { where });
+      throw prismaError; // Laissé au wrapper withErrorHandler
+    }
   } catch (error: any) {
-    SystemLogger.error('api', `Erreur critique api/campagnes: ${error.message}`, { error, stack: error.stack });
-    throw error;
+    SystemLogger.error('api:campagnes', `Global error: ${error.message}`);
+    return errorResponse(
+      'Une erreur est survenue lors de la récupération des campagnes.',
+      'CAMPAGNES_FETCH_ERROR',
+      500
+    );
   }
 });
 

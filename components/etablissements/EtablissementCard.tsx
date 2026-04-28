@@ -176,7 +176,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
       {/* Body Content */}
       <div className="flex flex-col flex-1 p-5">
         <div className="flex-1">
-          <div className="flex items-center gap-1 text-xs text-gray-500 mb-2 truncate">
+          <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-2 truncate">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
             {etablissement.annexe && (
@@ -187,14 +187,14 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
             )}
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-[hsl(213,80%,28%)] transition-colors">
+          <h3 className="text-lg text-center font-bold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-[hsl(213,80%,28%)] transition-colors">
             <Link href={`/etablissements/${etablissement.id}`} className="focus:outline-none focus:underline">
               <span aria-hidden="true" className="absolute inset-0" />
               {etablissement.nom}
             </Link>
           </h3>
           
-          <div className="flex items-center gap-2 mt-2 mb-4">
+          <div className="flex items-center justify-center gap-2 mt-2 mb-4">
              <StarRating rating={Math.round(etablissement.noteMoyenne)} />
              <span className="text-sm font-bold text-gray-900">
                {etablissement.noteMoyenne > 0 ? etablissement.noteMoyenne.toFixed(1) : '-'}

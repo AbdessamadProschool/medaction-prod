@@ -39,6 +39,7 @@ const getCategoryKey = (cat: string | null) => {
 
 export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardProps) {
   const t = useTranslations('news_page');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const dateStr = news.datePublication || news.createdAt;
   const dateObj = new Date(dateStr);
@@ -99,12 +100,12 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
           {/* Overlay for text visibility in grid mode if needed, though we have white bg body */}
           {isGrid && <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-300" />}
 
-          {/* Badge */}
-          <div className="absolute top-3 left-3 z-10">
-            <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-bold backdrop-blur-md shadow-sm ${
+          {/* Badge Catégorie */}
+          <div className="absolute top-4 left-4 z-10">
+            <span className={`inline-flex px-3 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md shadow-sm border border-white/20 ${
               news.categorie 
                 ? 'bg-white/90 text-[hsl(213,80%,28%)]' 
-                : 'bg-gray-800/80 text-white'
+                : 'bg-[hsl(213,80%,28%)]/80 text-white'
             }`}>
               {t('categories.' + getCategoryKey(news.categorie))}
             </span>
@@ -112,17 +113,19 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
         </div>
 
         {/* Content Section */}
-        <div className={`flex flex-col p-5 flex-1 ${!isGrid && 'justify-center'}`}>
+        <div className={`flex flex-col p-6 flex-1 ${!isGrid && 'justify-center'}`}>
           {/* Meta Top */}
-          <div className="flex items-center gap-x-3 gap-y-1 text-xs text-gray-500 mb-3 flex-wrap">
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-              <Calendar className="w-3 h-3 text-[hsl(45,93%,47%)]" />
+          <div className="flex items-center gap-x-3 gap-y-2 text-xs font-medium text-gray-500 mb-4 flex-wrap">
+            <span className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100/50">
+              <Calendar className="w-3.5 h-3.5 text-[hsl(45,93%,47%)]" />
               {dateText}
             </span>
-            <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-              <Building2 className="w-3 h-3 text-gray-400" />
-              {news.etablissement?.secteur || 'N/A'}
-            </span>
+            {news.etablissement?.secteur && (
+              <span className="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1.5 rounded-lg border border-blue-100/50 uppercase tracking-wider">
+                <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                {tCommon(`sectors.${news.etablissement.secteur.toLowerCase()}`)}
+              </span>
+            )}
           </div>
 
           {/* Title */}

@@ -188,44 +188,50 @@ function ActualitesContent() {
                     )}
                   </div>
 
-                  {/* Search Input */}
-                  <div className="mb-6 relative">
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => updateFilter('search', e.target.value)}
-                      className="block w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] transition-all"
-                      placeholder={t('search_placeholder')}
-                    />
+                  {/* Search Input Premium */}
+                  <div className="mb-8 group">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block px-1">
+                      {t('search_title')}
+                    </label>
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                      <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => updateFilter('search', e.target.value)}
+                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                        placeholder={t('search_placeholder')}
+                      />
+                    </div>
                   </div>
 
                   {/* Categories */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{t('categories_title')}</h3>
-                    <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{t('categories_title')}</label>
+                    <div className="space-y-1.5">
                       <button
                         onClick={() => updateFilter('categorie', '')}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                           !categorie 
-                            ? 'bg-[hsl(213,80%,28%)] text-white font-medium shadow-md shadow-blue-900/10' 
-                            : 'text-gray-600 hover:bg-gray-50'
+                            ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20' 
+                            : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                         }`}
                       >
                         {t('all_news')}
-                        {!categorie && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                        {!categorie && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                       </button>
                       {CATEGORIES.map(cat => (
                         <button
                           key={cat}
                           onClick={() => updateFilter('categorie', cat)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                             categorie === cat
-                              ? 'bg-[hsl(213,80%,28%)] text-white font-medium shadow-md shadow-blue-900/10'
-                              : 'text-gray-600 hover:bg-gray-50'
+                              ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20'
+                              : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                           }`}
                         >
                           {t('categories.' + getCategoryKey(cat))}
-                          {categorie === cat && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                          {categorie === cat && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                         </button>
                       ))}
                     </div>

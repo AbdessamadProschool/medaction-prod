@@ -107,8 +107,8 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
            </span>
         </div>
 
-        <div className="absolute top-3 right-3">
-           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md text-xs font-bold text-gray-700 shadow-sm">
+        <div className="absolute top-4 right-4">
+           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md text-xs font-bold text-gray-700 shadow-sm border border-white/20">
               <secteurConfig.icon className={`w-3.5 h-3.5 ${secteurConfig.text}`} />
               {t(`sectors.${event.secteur.toLowerCase()}`)}
            </span>
@@ -124,7 +124,7 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
       </div>
 
       {/* Content Body */}
-      <div className={`p-5 flex flex-col flex-1 ${!isGrid && 'justify-center'}`}>
+      <div className={`p-6 flex flex-col flex-1 ${!isGrid && 'justify-center'}`}>
         <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl line-clamp-1'}`}>
           {event.titre}
         </h3>
@@ -136,14 +136,14 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
         {/* Footer Info */}
         <div className={`space-y-3 pt-4 border-t border-gray-50 ${isGrid ? 'mt-auto' : ''}`}>
            <div className="flex items-center justify-between text-xs text-gray-500">
-              <div className="flex items-center gap-1.5 truncate max-w-[60%]">
-                 <MapPin className="w-3.5 h-3.5 shrink-0" />
+               <div className="flex items-center gap-2 truncate max-w-[65%]">
+                  <MapPin className="w-4 h-4 shrink-0 text-gray-400" />
                   <span className="truncate">
                     {event.lieu || 
                      (event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe || event.etablissement.nom) : event.etablissement.nom) : 
                      (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna'))}
                   </span>
-              </div>
+               </div>
               {event.capaciteMax && (
                  <div className="flex items-center gap-1.5 font-medium">
                     <Users className="w-3.5 h-3.5" />

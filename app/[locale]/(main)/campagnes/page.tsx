@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -61,13 +61,14 @@ function CampagnesContent() {
   const selectedType = searchParams.get('type') || '';
   const page = parseInt(searchParams.get('page') || '1');
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   // UI State
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
   const [participating, setParticipating] = useState(false);
   const [participationSuccess, setParticipationSuccess] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // Views Increment Logic & Scroll Lock
   useEffect(() => {
@@ -105,7 +106,7 @@ function CampagnesContent() {
 
         const params = new URLSearchParams();
         params.set('page', page.toString());
-        params.set('limit', '12');
+        params.set('limit', '9');
         if (search) params.set('search', search);
         if (selectedType) params.set('type', selectedType);
 
@@ -115,6 +116,7 @@ function CampagnesContent() {
           setCampagnes(json.data || []);
           setTypes(json.types || []);
           setTotalPages(json.pagination?.totalPages || 1);
+          setTotal(json.pagination?.total || 0);
         }
       } catch (error) {
         console.error('Erreur:', error);
@@ -335,94 +337,121 @@ function CampagnesContent() {
 
       {/* ==================== CONTENT ==================== */}
       <div id="toutes-les-campagnes" className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        
-         {/* Filters Bar */}
-         <div className="flex flex-col md:flex-row gap-4 mb-10 items-start md:items-center justify-between">
-            <div className="flex-1 w-full md:w-auto relative group">
-               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" size={20} />
-               <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => updateFilter('search', e.target.value)}
-                  placeholder={t('search_placeholder')}
-                  className="w-full md:max-w-md pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] transition-all shadow-sm"
-               />
-            </div>
-
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
-               <button
-                  onClick={() => updateFilter('type', '')}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
-                     !selectedType
-                        ? 'bg-[hsl(145,63%,32%)] text-white shadow-md shadow-emerald-900/10'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                  }`}
-               >
-                  <Filter className="w-4 h-4" />
-                  {t('all_types')}
-               </button>
-               {types.map((type) => (
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* ==================== SIDEBAR FILTERS ==================== */}
+          <aside className="lg:w-80 flex-shrink-0">
+            <div className="bg-white rounded-3xl shadow-xl shadow-[hsl(213,80%,28%)]/5 border border-gray-100 p-6 sticky top-24">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="font-bold text-gray-900 flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[hsl(213,80%,28%)]/10 flex items-center justify-center">
+                    <Filter className="w-4 h-4 text-[hsl(213,80%,28%)]" />
+                  </div>
+                  {t('filter_title')}
+                </h2>
+                {search && (
                   <button
-                     key={type.nom}
-                     onClick={() => updateFilter('type', type.nom)}
-                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
-                        selectedType === type.nom
-                           ? 'bg-[hsl(145,63%,32%)] text-white shadow-md shadow-emerald-900/10'
-                           : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                     }`}
+                    onClick={() => updateFilter('search', '')}
+                    className="text-xs font-bold text-red-500 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-all"
                   >
-                     {t(`types.${type.nom}`)}
-                     {type.count > 0 && <span className="ml-1 px-1.5 py-0.5 bg-white/20 rounded-md text-xs">{type.count}</span>}
+                    {t('reset')}
                   </button>
-               ))}
-            </div>
-         </div>
+                )}
+              </div>
 
-         {/* Results */}
-         {loading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-               {[1,2,3,4,5,6].map(i => (
-                  <div key={i} className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100 shadow-sm" />
-               ))}
-            </div>
-         ) : campagnes.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
-               <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Megaphone className="w-8 h-8 text-gray-300" />
-               </div>
-               <h3 className="text-xl font-bold text-gray-900 mb-2">{t('no_campaigns_found')}</h3>
-               <p className="text-gray-500 mb-6">{t('check_filters')}</p>
-               <button 
-                  onClick={() => router.push('/campagnes')}
-                  className="text-[hsl(213,80%,28%)] font-bold hover:underline"
-               >
-                  {t('reset_filters')}
-               </button>
-            </div>
-         ) : (
-            <>
-               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <AnimatePresence mode="popLayout">
-                     {campagnes.map((campagne, index) => (
-                        <CampaignCard 
-                           key={campagne.id} 
-                           campagne={campagne} 
-                           onClick={setSelectedCampagne}
-                           index={index}
-                        />
-                     ))}
-                  </AnimatePresence>
-               </div>
+              {/* Search Premium */}
+              <div className="mb-8 group">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2.5 block px-1">
+                   {t('search_placeholder')}
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => updateFilter('search', e.target.value)}
+                    className="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                    placeholder={t('search_placeholder')}
+                  />
+                </div>
+              </div>
 
-               {/* Pagination */}
-               <Pagination 
-                  currentPage={page} 
-                  totalPages={totalPages} 
-                  onPageChange={setPageParam} 
-               />
-            </>
-         )}
+              {/* Quick Stats/Info or Categories if any */}
+              <div className="bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] rounded-2xl p-5 text-white shadow-lg shadow-blue-900/20">
+                 <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                       <Megaphone className="w-5 h-5 text-amber-300" />
+                    </div>
+                    <div>
+                       <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">{t('badge')}</div>
+                       <div className="text-xl font-bold leading-none">{total}</div>
+                    </div>
+                 </div>
+                 <p className="text-xs text-blue-100/70 leading-relaxed italic">
+                    "{t('hero_subtitle')}"
+                 </p>
+              </div>
+            </div>
+          </aside>
 
+          {/* ==================== CONTENT LIST ==================== */}
+          <main className="flex-1 min-w-0">
+             {/* Toolbar */}
+             <div className="flex items-center justify-between gap-4 mb-8 bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3">
+                   <div className="w-1.5 h-6 bg-[hsl(45,93%,47%)] rounded-full" />
+                   <div className="text-sm font-bold text-gray-700">
+                      {t('showing', { start: (page - 1) * 9 + 1, end: Math.min(page * 9, total), total })}
+                   </div>
+                </div>
+             </div>
+
+             {/* Results */}
+             {loading ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                   {[1,2,3,4,5,6].map(i => (
+                      <div key={i} className="bg-white rounded-2xl h-80 animate-pulse border border-gray-100 shadow-sm" />
+                   ))}
+                </div>
+             ) : campagnes.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
+                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Megaphone className="w-8 h-8 text-gray-300" />
+                   </div>
+                   <h3 className="text-xl font-bold text-gray-900 mb-2">{t('no_campaigns_found')}</h3>
+                   <p className="text-gray-500 mb-6">{t('check_filters')}</p>
+                   <button 
+                      onClick={() => router.push('/campagnes')}
+                      className="text-[hsl(213,80%,28%)] font-bold hover:underline"
+                   >
+                      {t('reset_filters')}
+                   </button>
+                </div>
+             ) : (
+                <>
+                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      <AnimatePresence mode="popLayout">
+                         {campagnes.map((campagne, index) => (
+                            <CampaignCard 
+                               key={campagne.id} 
+                               campagne={campagne} 
+                               onClick={setSelectedCampagne}
+                               index={index}
+                            />
+                         ))}
+                      </AnimatePresence>
+                   </div>
+
+                   {/* Pagination */}
+                   <Pagination 
+                      currentPage={page} 
+                      totalPages={totalPages} 
+                      onPageChange={setPageParam} 
+                   />
+                </>
+             )}
+          </main>
+        </div>
       </div>
 
       {/* ==================== MODAL ==================== */}

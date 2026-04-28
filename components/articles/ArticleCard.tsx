@@ -66,8 +66,8 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
 
             {/* Category */}
             {article.categorie && (
-              <div className="absolute top-3 left-3">
-                <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md rounded-lg text-xs font-bold text-[hsl(213,80%,28%)] shadow-sm">
+              <div className="absolute top-4 left-4">
+                <span className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-xs font-bold text-[hsl(213,80%,28%)] shadow-sm border border-white/20">
                   {t('categories.' + getCategoryKey(article.categorie))}
                 </span>
               </div>
@@ -107,7 +107,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
                     <div className="w-6 h-6 rounded-full bg-[hsl(213,80%,28%)]/10 flex items-center justify-center text-[hsl(213,80%,28%)] text-xs font-bold">
                        {article.auteur.prenom[0]}
                     </div>
-                    <span className="text-xs font-medium text-gray-600">
+                    <span className="text-xs font-semibold text-gray-700">
                        {article.auteur.prenom} {article.auteur.nom}
                     </span>
                  </div>

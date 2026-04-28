@@ -224,22 +224,27 @@ function EvenementsContent() {
                     )}
                   </div>
 
-                  {/* Search */}
-                  <div className="mb-6 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => updateFilter('search', e.target.value)}
-                      placeholder={t('filters.search_placeholder')}
-                      className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] transition-all outline-none"
-                    />
+                  {/* Search Input Premium */}
+                  <div className="mb-8 group">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block px-1">
+                      {t('filters.search_label')}
+                    </label>
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                      <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => updateFilter('search', e.target.value)}
+                        placeholder={t('filters.search_placeholder')}
+                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                      />
+                    </div>
                   </div>
 
-                  {/* Status Tabs (Vertical on mobile, styled list) */}
-                  <div className="mb-6">
-                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">{t('filters.status')}</label>
-                    <div className="space-y-1">
+                  {/* Status Tabs */}
+                  <div className="mb-8">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{t('filters.status')}</label>
+                    <div className="space-y-1.5">
                       {STATUS_TABS.map(tab => {
                         const labelKey = tab.id === 'all' ? 'all_status' : 
                                        tab.id === 'upcoming' ? 'upcoming' : 
@@ -248,15 +253,15 @@ function EvenementsContent() {
                           <button
                             key={tab.id}
                             onClick={() => updateFilter('status', tab.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all group ${
                               statusParam === tab.id
-                                ? 'bg-[hsl(213,80%,28%)] text-white shadow-md shadow-[hsl(213,80%,28%)]/20 font-medium'
-                                : 'text-gray-600 hover:bg-gray-50'
+                                ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg shadow-blue-900/20 font-bold'
+                                : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                             }`}
                           >
-                            <tab.icon className={`w-4 h-4 ${statusParam === tab.id ? 'text-white' : 'text-gray-400'}`} />
+                            <tab.icon className={`w-4 h-4 transition-colors ${statusParam === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-[hsl(213,80%,28%)]'}`} />
                             {t(`filters.${labelKey}`)}
-                            {statusParam === tab.id && <motion.div layoutId="statusDot" className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />}
+                            {statusParam === tab.id && <motion.div layoutId="statusDot" className="ml-auto w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                           </button>
                         );
                       })}
@@ -265,19 +270,19 @@ function EvenementsContent() {
 
                   {/* Secteurs */}
                   <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 block">{t('filters.sector')}</label>
-                    <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block px-1">{t('filters.sector')}</label>
+                    <div className="space-y-1.5">
                       {SECTEURS.map(s => (
                         <button
                           key={s.id}
                           onClick={() => updateFilter('secteur', s.id)}
-                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all group ${
                             secteur === s.id
-                              ? 'bg-emerald-50 text-emerald-700 font-medium border border-emerald-100'
-                              : 'text-gray-600 hover:bg-gray-50 border border-transparent'
+                              ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/50 shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50 border border-transparent hover:translate-x-1'
                           }`}
                         >
-                          <s.icon className={`w-4 h-4 ${secteur === s.id ? 'text-emerald-600' : 'text-gray-400'}`} />
+                          <s.icon className={`w-4 h-4 transition-colors ${secteur === s.id ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`} />
                           {s.id === '' ? t('filters.all_sectors') : t(`sectors.${s.id === 'CULTUREL' ? 'culture' : s.id.toLowerCase()}`)}
                         </button>
                       ))}

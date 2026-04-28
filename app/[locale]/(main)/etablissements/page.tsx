@@ -85,12 +85,14 @@ function EtablissementsContent() {
     const urlAnnexeId = searchParams.get('annexeId') || ''; // NEW
     const urlSearch = searchParams.get('search') || '';
     const urlNoteMin = parseInt(searchParams.get('noteMin') || '0') || 0;
+    const urlPage = parseInt(searchParams.get('page') || '1') || 1;
     
     if (urlSecteur !== secteur) setSecteur(urlSecteur);
     if (urlCommuneId !== communeId) setCommuneId(urlCommuneId);
     if (urlAnnexeId !== annexeId) setAnnexeId(urlAnnexeId); // NEW
     if (urlSearch !== search) setSearch(urlSearch);
     if (urlNoteMin !== noteMin) setNoteMin(urlNoteMin);
+    if (urlPage !== page) setPage(urlPage);
   }, [searchParams]);
 
   // Fetch communes
@@ -147,19 +149,47 @@ function EtablissementsContent() {
   }, [search, secteur, communeId, annexeId, noteMin]); // Updated dependency
 
   // Update URL on filter change (Debounced to avoid history spam on type)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (search) {
+        params.set('search', search);
+      } else {
+        params.delete('search');
+      }
+      // If search changed, reset page to 1 in URL too
+      if (search !== (searchParams.get('search') || '')) {
+        params.set('page', '1');
+        router.replace(`?${params.toString()}`, { scroll: false });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search, router, searchParams]);
+
   // Implementing simplified URL sync for key filter changes
   const updateUrlParams = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
+    
+    // Always sync current search state to ensure it's not lost when changing other filters
+    if (search) {
+      params.set('search', search);
+    } else {
+      params.delete('search');
+    }
+
     if (value && value !== '0') {
       params.set(key, value);
     } else {
       params.delete(key);
     }
+    
     // Si la commune change, on doit TOUJOURS réinitialiser l'annexe car elle dépend de la commune
     if (key === 'communeId') {
         params.delete('annexeId');
         setAnnexeId(''); // Mettre à jour l'état local aussi si nécessaire
     }
+    
+    params.set('page', '1'); // Reset page when filters change
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
@@ -502,7 +532,13 @@ function EtablissementsContent() {
                   {totalPages > 1 && (
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10 pt-6 border-t border-gray-200">
                       <button
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        onClick={() => {
+                          const newPage = Math.max(1, page - 1);
+                          setPage(newPage);
+                          const params = new URLSearchParams(searchParams.toString());
+                          params.set('page', newPage.toString());
+                          router.replace(`?${params.toString()}`, { scroll: false });
+                        }}
                         disabled={page === 1}
                         className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
@@ -518,7 +554,12 @@ function EtablissementsContent() {
                              return (
                                <button
                                  key={p}
-                                 onClick={() => setPage(p)}
+                                 onClick={() => {
+                                   setPage(p);
+                                   const params = new URLSearchParams(searchParams.toString());
+                                   params.set('page', p.toString());
+                                   router.replace(`?${params.toString()}`, { scroll: false });
+                                 }}
                                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
                                    page === p
                                      ? 'bg-[hsl(213,80%,28%)] text-white shadow-md'
@@ -536,7 +577,13 @@ function EtablissementsContent() {
                       </div>
 
                       <button
-                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        onClick={() => {
+                          const newPage = Math.min(totalPages, page + 1);
+                          setPage(newPage);
+                          const params = new URLSearchParams(searchParams.toString());
+                          params.set('page', newPage.toString());
+                          router.replace(`?${params.toString()}`, { scroll: false });
+                        }}
                         disabled={page === totalPages}
                         className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >

@@ -67,7 +67,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="group bg-white rounded-xl p-4 border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-lg hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300"
+        className="relative group bg-white rounded-xl p-4 border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-lg hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300"
       >
         <div className="flex gap-4 md:gap-6">
           {/* Image Thumbnail */}
@@ -141,7 +141,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex flex-col h-full"
+      className="relative group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex flex-col h-full"
     >
       {/* Image Area */}
       <div className="relative h-44 overflow-hidden bg-gray-100">

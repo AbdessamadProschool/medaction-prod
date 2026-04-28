@@ -556,7 +556,7 @@ export default function GovHeader() {
                         {/* Déconnexion */}
                         <div className="border-t border-gray-100 p-2">
                           <button
-                            onClick={() => signOut({ callbackUrl: '/' })}
+                            onClick={() => signOut({ callbackUrl: window.location.origin + '/' })}
                             className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
                           >
                             <LogOut size={18} />

@@ -162,7 +162,7 @@ export default function AdminSidebar() {
           )}
 
           <button
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={() => signOut({ callbackUrl: window.location.origin + '/login' })}
             className={`
               flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-slate-300
               hover:bg-red-500/20 hover:text-red-400 transition-all duration-200

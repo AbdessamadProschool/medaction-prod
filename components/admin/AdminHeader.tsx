@@ -224,7 +224,7 @@ export default function AdminHeader() {
                 </Link>
                 <hr className="my-2 border-gray-100" />
                 <button
-                  onClick={() => signOut({ callbackUrl: '/' })}
+                  onClick={() => signOut({ callbackUrl: window.location.origin + '/' })}
                   className="flex items-center gap-2 px-4 py-2 text-sm text-[hsl(348,83%,47%)] hover:bg-[hsl(348,83%,47%)]/10 w-full"
                 >
                   <LogOut size={16} />

@@ -153,7 +153,7 @@ export function OptimizedImage({
           placeholder={blur ? 'blur' : undefined}
           blurDataURL={blur ? BLUR_DATA_URL : undefined}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          unoptimized={hasError || process.env.NODE_ENV === 'development'}
+          unoptimized={hasError || process.env.NODE_ENV === 'development' || String(finalSrc).startsWith('/uploads/')}
           {...props}
         />
       </div>
@@ -183,7 +183,7 @@ export function OptimizedImage({
           placeholder={blur ? 'blur' : undefined}
           blurDataURL={blur ? BLUR_DATA_URL : undefined}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          unoptimized={hasError || process.env.NODE_ENV === 'development'}
+          unoptimized={hasError || process.env.NODE_ENV === 'development' || String(finalSrc).startsWith('/uploads/')}
           {...props}
         />
       </div>
@@ -215,7 +215,7 @@ export function OptimizedImage({
         loading={priority ? undefined : 'lazy'}
         placeholder={blur ? 'blur' : undefined}
         blurDataURL={blur ? BLUR_DATA_URL : undefined}
-        unoptimized={hasError || process.env.NODE_ENV === 'development'}
+        unoptimized={hasError || process.env.NODE_ENV === 'development' || String(finalSrc).startsWith('/uploads/')}
         {...props}
       />
     </div>

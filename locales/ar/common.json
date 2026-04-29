@@ -2620,7 +2620,25 @@
       "title_label": "عنوان الشكاية",
       "title_placeholder": "وصف مختصر للمشكلة...",
       "description_label": "وصف تفصيلي",
-      "description_placeholder": "اشرح المشكلة بالتفصيل: ماذا حدث، متى، وكيف يؤثر على المواطنين..."
+      "description_placeholder": "اشرح المشكلة بالتفصيل: ماذا حدث، متى، وكيف يؤثر على المواطنين...",
+      "commune": "الجماعة",
+      "select_commune": "اختر الجماعة",
+      "district": "الحي / الدوار",
+      "district_placeholder": "اسم الحي أو الدوار...",
+      "address": "العنوان",
+      "address_placeholder_field": "العنوان الكامل...",
+      "location_precise": "تحديد الموقع بدقة",
+      "location_help": "حدد موقع المشكلة على الخريطة بدقة لمساعدة السلطات في التدخل السريع",
+      "locating": "جاري تحديد الموقع...",
+      "my_position": "موقعي الحالي",
+      "position_success": "تم تحديد موقعك بنجاح",
+      "category": "الفئة",
+      "title": "عنوان الشكاية",
+      "title_placeholder": "وصف مختصر للمشكلة...",
+      "description": "وصف تفصيلي",
+      "description_placeholder": "اشرح المشكلة بالتفصيل...",
+      "tip_title": "نصيحة لشكاية فعّالة",
+      "tip_text": "كن دقيقاً في الوصف وأضف صوراً واضحة لتسريع معالجة شكايتك."
     }
   },
   "auth": {

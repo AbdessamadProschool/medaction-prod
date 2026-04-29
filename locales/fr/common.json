@@ -1190,7 +1190,25 @@
       "error_type": "Fichier non supporté (images uniquement)",
       "error_size": "Le fichier est trop lourd (max {size}MB)",
       "error_max": "Nombre maximum de photos atteint ({max})",
-      "photo_alt": "Photo réclamation n°{number}"
+      "photo_alt": "Photo réclamation n°{number}",
+      "commune": "Commune",
+      "select_commune": "Sélectionner la commune",
+      "district": "Quartier / Douar",
+      "district_placeholder": "Nom du quartier ou douar...",
+      "address": "Adresse",
+      "address_placeholder": "Adresse complète...",
+      "location_precise": "Localisation précise",
+      "location_help": "Indiquez la position exacte du problème sur la carte pour aider les autorités à intervenir rapidement",
+      "locating": "Localisation en cours...",
+      "my_position": "Ma position",
+      "position_success": "Position détectée avec succès",
+      "category": "Catégorie",
+      "title": "Titre de la réclamation",
+      "title_placeholder": "Description brève du problème...",
+      "description": "Description détaillée",
+      "description_placeholder": "Expliquez le problème en détail : quoi, quand, impact sur les citoyens...",
+      "tip_title": "Conseil pour une réclamation efficace",
+      "tip_text": "Soyez précis dans votre description et ajoutez des photos claires pour accélérer le traitement."
     }
   },
   "security_page": {

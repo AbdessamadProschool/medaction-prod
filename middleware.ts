@@ -134,6 +134,7 @@ const PUBLIC_READ_API_ROUTES = [
   '/api/reclamations/statut',
   '/api/maintenance', // Pour la page de maintenance
   '/api/license/check', // Pour la vérification de licence
+  '/api/uploads', // Pour le service de fichiers
 ];
 
 const ALWAYS_PUBLIC_API_ROUTES = [

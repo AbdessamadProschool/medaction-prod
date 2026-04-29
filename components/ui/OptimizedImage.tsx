@@ -108,11 +108,27 @@ export function OptimizedImage({
     normalizedSrc = `/${normalizedSrc}`;
   }
 
+  // Cache busting pour les uploads (pour forcer le navigateur à ignorer les anciennes redirections middleware)
+  if (normalizedSrc && typeof normalizedSrc === 'string' && normalizedSrc.startsWith('/uploads/')) {
+    normalizedSrc = `${normalizedSrc}${normalizedSrc.includes('?') ? '&' : '?'}v=2`;
+  }
+
   const finalSrc = hasError || !normalizedSrc ? getPlaceholder() : normalizedSrc;
 
   const handleLoad = useCallback(() => {
     setIsLoading(false);
   }, []);
+
+  // Fix pour les images déjà chargées en cache
+  useEffect(() => {
+    if (!isLoading) return;
+    
+    // On vérifie si l'image est déjà chargée (utile pour le SSR/Cache)
+    const img = document.querySelector(`img[src="${finalSrc}"]`) as HTMLImageElement;
+    if (img && img.complete) {
+      setIsLoading(false);
+    }
+  }, [finalSrc, isLoading]);
 
   const handleError = useCallback(() => {
     // Eviter la boucle infinie si le placeholder échoue aussi
@@ -142,6 +158,7 @@ export function OptimizedImage({
           src={finalSrc}
           alt={alt}
           fill
+          key={String(finalSrc)}
           className={cn(
             'object-cover transition-opacity duration-300',
             isLoading ? 'opacity-0' : 'opacity-100',

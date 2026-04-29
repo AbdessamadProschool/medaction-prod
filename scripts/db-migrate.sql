@@ -19,6 +19,24 @@ ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "lieuEtablissementId" INTEGER;
 ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "rapportClotureUrl" TEXT;
 ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "bilanDescription" TEXT;
 ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "bilanChiffresCles" JSONB;
+-- NOUVELLES colonnes de traduction arabe (fix erreur 500)
+ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "titreAr" TEXT;
+ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "descriptionAr" TEXT;
+ALTER TABLE "Campagne" ADD COLUMN IF NOT EXISTS "contenuAr" TEXT;
+
+-- Article : créer l'enum StatutArticle si absent puis ajouter la colonne statut
+DO $$ BEGIN
+  CREATE TYPE "StatutArticle" AS ENUM ('BROUILLON', 'EN_ATTENTE', 'PUBLIE', 'REJETE', 'ARCHIVE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "statut" "StatutArticle" NOT NULL DEFAULT 'BROUILLON';
+ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "titreAr" TEXT;
+ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "descriptionAr" TEXT;
+ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "contenuAr" TEXT;
+
+-- Evenement : colonnes de traduction arabe
+ALTER TABLE "Evenement" ADD COLUMN IF NOT EXISTS "titreAr" TEXT;
+ALTER TABLE "Evenement" ADD COLUMN IF NOT EXISTS "descriptionAr" TEXT;
 
 -- Notification
 ALTER TABLE "Notification" ADD COLUMN IF NOT EXISTS "isLue" BOOLEAN DEFAULT false;

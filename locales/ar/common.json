@@ -579,6 +579,56 @@
         "create_success": "تم إنشاء الأخبار بنجاح"
       }
     },
+    "news_page": {
+      "page_title": "الأخبار والمستجدات",
+      "total_news": "{count} خبر",
+      "filters": "تصفية",
+      "new_news": "خبر جديد",
+      "search_placeholder": "بحث في الأخبار...",
+      "all_sectors": "جميع القطاعات",
+      "reset": "إعادة تعيين",
+      "no_news": "لا توجد أخبار",
+      "no_results": "لم يتم العثور على نتائج",
+      "create_first": "كن أول من ينشر خبراً",
+      "highlight": "مميز",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "views": "{count} مشاهدة",
+      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
+      "modal": {
+        "title": "تفاصيل الخبر",
+        "resume": "الملخص",
+        "no_resume": "لا يوجد ملخص",
+        "sector": "القطاع",
+        "views": "المشاهدات",
+        "establishment": "المؤسسة",
+        "commune": "الجماعة",
+        "created_on": "أنشئ في {date}",
+        "change_status": "تغيير الحالة",
+        "view_online": "عرض على الموقع",
+        "remove_highlight": "إزالة التمييز",
+        "add_highlight": "تمييز الخبر",
+        "delete": "حذف الخبر"
+      },
+      "statuses": {
+        "BROUILLON": "مسودة",
+        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
+        "VALIDEE": "تم التحقق",
+        "PUBLIEE": "منشور",
+        "DEPUBLIEE": "غير منشور",
+        "ARCHIVEE": "مؤرشف"
+      },
+      "messages": {
+        "loading_error": "خطأ أثناء التحميل",
+        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
+        "highlight_removed": "تمت إزالة التمييز بنجاح",
+        "highlight_added": "تم تمييز الخبر بنجاح",
+        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
+        "deleted": "تم الحذف بنجاح",
+        "error": "حدث خطأ غير متوقع"
+      }
+    },
     "dashboard": {
       "header": {
         "title": "لوحة القيادة",
@@ -1095,6 +1145,58 @@
         "show": "إظهار"
       }
     },
+  "news_page": {
+    "badge": "معلومات رسمية",
+    "title_prefix": "مستجدات ",
+    "title_suffix": "الإقليم",
+    "hero_subtitle": "ابق على اطلاع بآخر المشاريع والأحداث والإعلانات الرسمية. الشفافية في خدمة المواطن.",
+    "filter_mobile": "تصفية الأخبار",
+    "search_title": "بحث",
+    "reset": "إعادة تعيين",
+    "search_placeholder": "كلمات مفتاحية...",
+    "categories_title": "الفئات",
+    "all_news": "جميع الأخبار",
+    "view_grid": "شبكة",
+    "view_list": "قائمة",
+    "no_news_found": "لم يتم العثور على أي خبر",
+    "no_news_desc": "لا توجد أخبار تطابق معايير بحثك.",
+    "reset_search": "إعادة تعيين البحث",
+    "page_info": "الصفحة {page} من {totalPages}",
+    "categories": {
+      "ANNONCE": "إعلان",
+      "EVENEMENT": "حدث",
+      "RENOVATION": "أشغال",
+      "SERVICE": "خدمة",
+      "PROJET": "مشروع",
+      "PARTENARIAT": "شراكة",
+      "AUTRE": "آخر",
+      "ACTUALITE": "أخبار",
+      "E_SERVICES": "خدمات إلكترونية",
+      "CULTURE": "ثقافة",
+      "URBANISME": "تعمير",
+      "SUCCESS_STORY": "قصة نجاح",
+      "TRAVAUX": "أشغال"
+    },
+    "read": "اقرأ المزيد",
+    "showing": "عرض {start}-{end} من أصل {total} خبر",
+    "reset_filters": "إعادة تعيين المرشحات",
+    "previous": "السابق",
+    "next": "التالي",
+    "detail": {
+      "back": "عودة",
+      "copied": "تم نسخ الرابط !",
+      "share": "مشاركة",
+      "shared": "تمت المشاركة",
+      "reading_time": "{min} دقيقة قراءة",
+      "written_by": "بقلم {name}",
+      "views": "{count} مشاهدة",
+      "official_source": "مصدر رسمي",
+      "gallery": "معرض الصور",
+      "related_articles": "مقالات ذات صلة",
+      "not_found": "المقال غير موجود",
+      "back_to_list": "العودة إلى القائمة"
+    }
+  },
     "validation_page": {
       "title": "التحقق من المحتوى",
       "subtitle": "إدارة محتوى {count} بانتظار الموافقة",
@@ -1135,56 +1237,6 @@
         "objective": "الهدف :",
         "participants": "مشارك",
         "cancel": "إلغاء"
-      }
-    },
-    "news_page": {
-      "page_title": "الأخبار والمستجدات",
-      "total_news": "{count} خبر",
-      "filters": "تصفية",
-      "new_news": "خبر جديد",
-      "search_placeholder": "بحث في الأخبار...",
-      "all_sectors": "جميع القطاعات",
-      "reset": "إعادة تعيين",
-      "no_news": "لا توجد أخبار",
-      "no_results": "لم يتم العثور على نتائج",
-      "create_first": "كن أول من ينشر خبراً",
-      "highlight": "مميز",
-      "view_details": "عرض التفاصيل",
-      "edit": "تعديل",
-      "delete": "حذف",
-      "views": "{count} مشاهدة",
-      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
-      "modal": {
-        "title": "تفاصيل الخبر",
-        "resume": "الملخص",
-        "no_resume": "لا يوجد ملخص",
-        "sector": "القطاع",
-        "views": "المشاهدات",
-        "establishment": "المؤسسة",
-        "commune": "الجماعة",
-        "created_on": "أنشئ في {date}",
-        "change_status": "تغيير الحالة",
-        "view_online": "عرض على الموقع",
-        "remove_highlight": "إزالة التمييز",
-        "add_highlight": "تمييز الخبر",
-        "delete": "حذف الخبر"
-      },
-      "statuses": {
-        "BROUILLON": "مسودة",
-        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
-        "VALIDEE": "تم التحقق",
-        "PUBLIEE": "منشور",
-        "DEPUBLIEE": "غير منشور",
-        "ARCHIVEE": "مؤرشف"
-      },
-      "messages": {
-        "loading_error": "خطأ أثناء التحميل",
-        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
-        "highlight_removed": "تمت إزالة التمييز بنجاح",
-        "highlight_added": "تم تمييز الخبر بنجاح",
-        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
-        "deleted": "تم الحذف بنجاح",
-        "error": "حدث خطأ غير متوقع"
       }
     },
     "events_page": {
@@ -1951,7 +2003,57 @@
       "related_articles": "مقالات ذات صلة",
       "not_found": "المقال غير موجود",
       "back_to_list": "العودة إلى القائمة"
-    }
+    },
+    "news_page": {
+      "page_title": "الأخبار والمستجدات",
+      "total_news": "{count} خبر",
+      "filters": "تصفية",
+      "new_news": "خبر جديد",
+      "search_placeholder": "بحث في الأخبار...",
+      "all_sectors": "جميع القطاعات",
+      "reset": "إعادة تعيين",
+      "no_news": "لا توجد أخبار",
+      "no_results": "لم يتم العثور على نتائج",
+      "create_first": "كن أول من ينشر خبراً",
+      "highlight": "مميز",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "views": "{count} مشاهدة",
+      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
+      "modal": {
+        "title": "تفاصيل الخبر",
+        "resume": "الملخص",
+        "no_resume": "لا يوجد ملخص",
+        "sector": "القطاع",
+        "views": "المشاهدات",
+        "establishment": "المؤسسة",
+        "commune": "الجماعة",
+        "created_on": "أنشئ في {date}",
+        "change_status": "تغيير الحالة",
+        "view_online": "عرض على الموقع",
+        "remove_highlight": "إزالة التمييز",
+        "add_highlight": "تمييز الخبر",
+        "delete": "حذف الخبر"
+      },
+      "statuses": {
+        "BROUILLON": "مسودة",
+        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
+        "VALIDEE": "تم التحقق",
+        "PUBLIEE": "منشور",
+        "DEPUBLIEE": "غير منشور",
+        "ARCHIVEE": "مؤرشف"
+      },
+      "messages": {
+        "loading_error": "خطأ أثناء التحميل",
+        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
+        "highlight_removed": "تمت إزالة التمييز بنجاح",
+        "highlight_added": "تم تمييز الخبر بنجاح",
+        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
+        "deleted": "تم الحذف بنجاح",
+        "error": "حدث خطأ غير متوقع"
+      }
+    },
   },
   "articles_page": {
     "badge": "مركز الموارد",

@@ -2143,9 +2143,7 @@
         "highlight_added": "Ajouté à la une",
         "delete_confirm": "Êtes-vous sûr de vouloir supprimer ?",
         "deleted": "Supprimé avec succès"
-      },
-      "page": "Page",
-      "limit": "Limite"
+      }
     },
     "articles_page": {
       "title": "Articles",

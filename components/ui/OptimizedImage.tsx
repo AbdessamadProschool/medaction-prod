@@ -12,13 +12,13 @@ import { cn } from '@/lib/utils';
 const BLUR_DATA_URL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q==';
 
 // Placeholder pour les images de profil
-const PROFILE_PLACEHOLDER = '/images/placeholder.jpg';
+const PROFILE_PLACEHOLDER = '/images/logo-portal-mediouna.png';
 
 // Placeholder pour les établissements
-const ETABLISSEMENT_PLACEHOLDER = '/images/placeholder.jpg';
+const ETABLISSEMENT_PLACEHOLDER = '/images/logo-portal-mediouna.png';
 
 // Placeholder pour les événements
-const EVENEMENT_PLACEHOLDER = '/images/placeholder.jpg';
+const EVENEMENT_PLACEHOLDER = '/images/logo-portal-mediouna.png';
 
 // Tailles d'images optimisées (responsive)
 export const imageSizes = {
@@ -95,7 +95,7 @@ export function OptimizedImage({
       case 'evenement':
         return EVENEMENT_PLACEHOLDER;
       default:
-        return '/images/placeholder.jpg';
+        return '/images/logo-portal-mediouna.png';
     }
   }, [type]);
 

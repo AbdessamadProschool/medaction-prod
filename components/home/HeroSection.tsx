@@ -18,7 +18,7 @@ export default function HeroSection() {
       title: t('hero.slide1_title'),
       subtitle: t('hero.slide1_subtitle'),
       description: t('hero.slide1_description'),
-      image: '/images/siege-province.jpg',
+      image: '/images/siege-province.jpg?v=2',
       gradient: 'from-gov-blue-dark/90 via-gov-blue/70 to-transparent',
     },
     {
@@ -26,7 +26,7 @@ export default function HeroSection() {
       title: t('hero.slide2_title'),
       subtitle: t('hero.slide2_subtitle'),
       description: t('hero.slide2_description'),
-      image: '/images/hero-province-mediouna.jpg',
+      image: '/images/hero-province-mediouna.jpg?v=2',
       gradient: 'from-gov-blue-dark/90 via-gov-blue/70 to-transparent',
     },
     {
@@ -34,7 +34,7 @@ export default function HeroSection() {
       title: t('hero.slide3_title'),
       subtitle: t('hero.slide3_subtitle'),
       description: t('hero.slide3_description'),
-      image: '/images/services-publics-mediouna.jpg',
+      image: '/images/services-publics-mediouna.jpg?v=2',
       gradient: 'from-gov-blue-dark/95 via-gov-blue/70 to-transparent',
     },
     {
@@ -42,7 +42,7 @@ export default function HeroSection() {
       title: t('hero.slide4_title'),
       subtitle: t('hero.slide4_subtitle'),
       description: t('hero.slide4_description'),
-      image: '/images/vie-locale-mediouna.jpg',
+      image: '/images/vie-locale-mediouna.jpg?v=2',
       gradient: 'from-gov-gold-dark/90 via-gov-gold/60 to-transparent',
     },
   ];
@@ -122,7 +122,7 @@ export default function HeroSection() {
                 className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-gov-gold/50 mb-8"
               >
                 <Image 
-                  src="/images/armoiries.png" 
+                  src="/images/armoiries.png?v=2" 
                   alt="Royaume du Maroc" 
                   width={32}
                   height={32}

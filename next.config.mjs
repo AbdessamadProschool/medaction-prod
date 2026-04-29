@@ -119,8 +119,8 @@ const nextConfig = {
   async redirects() {
     return [
       { source: '/home', destination: '/', permanent: true },
-      { source: '/.env:path*', destination: '/acces-refuse', permanent: false },
-      { source: '/.git:path*', destination: '/acces-refuse', permanent: false },
+      { source: '/.env', destination: '/acces-refuse', permanent: false },
+      { source: '/.git', destination: '/acces-refuse', permanent: false },
       { source: '/prisma/:path*', destination: '/acces-refuse', permanent: false },
     ];
   },

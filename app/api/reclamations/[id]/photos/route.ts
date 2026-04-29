@@ -7,6 +7,7 @@ import archiver from 'archiver';
 import { createReadStream, existsSync } from 'fs';
 import path from 'path';
 import { Readable } from 'stream';
+import { safeResolvePath } from '@/lib/utils/safe-path';
 
 // GET /api/reclamations/[id]/photos - Télécharger les photos en ZIP
 export async function GET(
@@ -88,10 +89,10 @@ export async function GET(
       // Résolution sécurisée du chemin (compatible Docker/STORAGE_PATH)
       const STORAGE_PATH = process.env.STORAGE_PATH;
       const UPLOAD_BASE = STORAGE_PATH 
-        ? (STORAGE_PATH.startsWith('/') || STORAGE_PATH.match(/^[a-zA-Z]:\\/)) 
+        ? (STORAGE_PATH.startsWith('/') || /^[a-zA-Z]:[\\\/]/.test(STORAGE_PATH)) 
           ? STORAGE_PATH 
           : path.join(process.cwd(), STORAGE_PATH)
-        : path.join(process.cwd(), 'public', 'uploads');
+        : path.join(process.cwd(), 'uploads');
 
       // Si le chemin en base est déjà absolu ou contient 'uploads', on nettoie
       let cleanSubPath = media.cheminFichier;
@@ -102,7 +103,12 @@ export async function GET(
          cleanSubPath = cleanSubPath.substring(cleanSubPath.indexOf('reclamations') - 1);
       }
       
-      const filePath = path.normalize(path.join(UPLOAD_BASE, cleanSubPath));
+      let filePath: string;
+      try {
+        filePath = safeResolvePath(UPLOAD_BASE, cleanSubPath);
+      } catch {
+        continue; // Passer au suivant si chemin invalide
+      }
       
       if (existsSync(filePath)) {
         // Ajouter le fichier avec un nom lisible

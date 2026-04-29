@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { writeFile, readdir, stat, unlink } from 'fs/promises';
 import { join } from 'path';
+import { safeResolvePath } from '@/lib/utils/safe-path';
 
 // Dossier de stockage des backups
 // Utilise /tmp/medaction-backups pour garantir l'accès en écriture dans tous les environnements Docker
@@ -116,7 +117,13 @@ export async function POST(request: NextRequest) {
     };
 
     const fileName = `backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    const filePath = join(BACKUP_DIR, fileName);
+    
+    let filePath: string;
+    try {
+      filePath = safeResolvePath(BACKUP_DIR, fileName);
+    } catch {
+      return NextResponse.json({ error: 'Chemin invalide' }, { status: 400 });
+    }
 
     await writeFile(filePath, JSON.stringify(backupData, null, 2));
 

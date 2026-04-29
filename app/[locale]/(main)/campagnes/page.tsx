@@ -44,6 +44,7 @@ interface TypeCampagne {
 
 function CampagnesContent() {
   const t = useTranslations('campaigns');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const { data: session } = useSession();
   const pathname = usePathname();

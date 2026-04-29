@@ -40,6 +40,10 @@ services:
       - medaction-network
     security_opt:
       - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
     # Resource limits
     deploy:
       resources:
@@ -175,6 +179,9 @@ services:
       - medaction-network
     security_opt:
       - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     profiles:
       - dev # Only start with: docker-compose --profile dev up
 

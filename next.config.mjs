@@ -60,7 +60,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'ui-avatars.com' },
       { protocol: 'http', hostname: 'localhost' },
-      { protocol: 'http', hostname: '192.168.1.83' },
       { protocol: 'https', hostname: 'bo.provincemediouna.ma' },
     ],
     unoptimized: true,

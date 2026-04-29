@@ -379,28 +379,29 @@ async function checkRateLimit(
 }
 
 function addSecurityHeaders(response: NextResponse, nonce?: string): NextResponse {
-  // Use try-catch to prevent entire middleware failure on header issues
   try {
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
     
-    // In Next.js 15, we only apply CSP if it's a "clean" response
     if (nonce) {
-      const isDev = process.env.NODE_ENV === 'development';
-      const cspValue = `
-        default-src 'self';
-        script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com;
-        img-src 'self' blob: data: https: http:;
-        font-src 'self' https://fonts.gstatic.com data:;
-        connect-src 'self' https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com;
-        object-src 'none';
-        base-uri 'self';
-        form-action 'self';
-        frame-ancestors 'none';
-        upgrade-insecure-requests;
-      `.replace(/\s{2,}/g, ' ').trim();
+      const cspValue = [
+        `default-src 'none'`,
+        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net`,
+        `style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com https://api.mapbox.com`,
+        `font-src 'self' https://fonts.gstatic.com`,
+        `img-src 'self' data: blob: https:`,
+        `connect-src https://bo.provincemediouna.ma https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com`,
+        `frame-ancestors 'none'`,
+        `form-action 'self'`,
+        `base-uri 'self'`,
+        `object-src 'none'`,
+        `upgrade-insecure-requests`,
+      ].join('; ');
       
       response.headers.set('Content-Security-Policy', cspValue);
       response.headers.set('x-nonce', nonce);

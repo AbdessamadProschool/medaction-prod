@@ -10,7 +10,6 @@
 #   Logs: docker-compose logs -f app
 #   Stop: docker-compose down
 
-version: '3.8'
 
 services:
   # ═══════════════════════════════════════════════════════════════════════════

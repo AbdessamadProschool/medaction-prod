@@ -26,6 +26,7 @@ import {
   UPLOAD_CONFIG,
 } from '@/lib/security/upload-security';
 import { SystemLogger } from '@/lib/system-logger';
+import { safeResolvePath, sanitizeFilename } from '@/lib/utils/safe-path';
 
 // Reclamation-specific configuration
 const MAX_UPLOADS_PER_RECLAMATION = 5;
@@ -229,9 +230,14 @@ export async function POST(request: Request) {
       ? (STORAGE_PATH.startsWith('/') || /^[a-zA-Z]:[\\\/]/.test(STORAGE_PATH)) 
         ? STORAGE_PATH 
         : path.join(process.cwd(), STORAGE_PATH)
-      : path.join(process.cwd(), 'public', 'uploads');
+      : path.join(process.cwd(), 'uploads');
 
-    const uploadDir = path.resolve(UPLOAD_BASE, 'reclamations', String(reclamationIdNum));
+    let uploadDir: string;
+    try {
+      uploadDir = safeResolvePath(UPLOAD_BASE, 'reclamations', String(reclamationIdNum));
+    } catch {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
 
     // Security check: ensure the resolved path is inside the UPLOAD_BASE
     if (!uploadDir.startsWith(path.normalize(UPLOAD_BASE))) {
@@ -296,11 +302,13 @@ export async function POST(request: Request) {
         // 8.2 GENERATE SECURE FILENAME (BLOC 3.2 FIX)
         // ─────────────────────────────────────────────────────────────────
         const secureFilename = generateSecureFilename(file.name);
-        // Using path.resolve() again to be absolutely sure
-        const filePath = path.resolve(uploadDir, secureFilename);
+        const safeSecureFilename = sanitizeFilename(secureFilename);
         
-        if (!filePath.startsWith(uploadDir + path.sep)) {
-            throw new Error('Nom de fichier malformé');
+        let filePath: string;
+        try {
+          filePath = safeResolvePath(uploadDir, safeSecureFilename);
+        } catch {
+          return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
         }
 
         // ─────────────────────────────────────────────────────────────────

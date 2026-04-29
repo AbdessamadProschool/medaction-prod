@@ -72,23 +72,40 @@ const getIconForType = (type: string) => {
 
 // Fonction pour surligner les termes de recherche
 function highlightText(text: string, query: string): React.ReactNode {
-  if (!query || query.length < 2) return text;
-  
-  try {
-    // BLOC 6.2 — ReDoS mitigation: cap query length before RegExp construction
-    const safeQuery = query.slice(0, 200);
-    const escapedQuery = safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
-    return parts.map((part, index) => 
-      part.toLowerCase() === safeQuery.toLowerCase() ? (
-        <mark key={index} className="bg-[hsl(45,93%,47%)]/40 text-gray-900 rounded px-0.5 font-medium">
-          {part}
-        </mark>
-      ) : part
+  if (!query || !text) return text;
+
+  // Double sécurité : limite 100 chars + escape
+  const safeQuery = query.slice(0, 100);
+  const escapedQuery = safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // Vérification supplémentaire : rejeter les patterns potentiellement dangereux
+  if (escapedQuery.length === 0) return text;
+
+  // Utiliser indexOf + substring plutôt que RegExp pour éviter ReDoS
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  const lowerText = text.toLowerCase();
+  const lowerQuery = safeQuery.toLowerCase();
+
+  let index = lowerText.indexOf(lowerQuery, lastIndex);
+  while (index !== -1 && parts.length < 50) { // max 50 matches
+    if (index > lastIndex) {
+      parts.push(text.substring(lastIndex, index));
+    }
+    parts.push(
+      <mark key={index} className="bg-[hsl(45,93%,47%)]/40 text-gray-900 rounded px-0.5 font-medium">
+        {text.substring(index, index + safeQuery.length)}
+      </mark>
     );
-  } catch {
-    return text;
+    lastIndex = index + safeQuery.length;
+    index = lowerText.indexOf(lowerQuery, lastIndex);
   }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? <>{parts}</> : text;
 }
 
 import { useSession } from 'next-auth/react';

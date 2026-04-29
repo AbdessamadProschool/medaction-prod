@@ -1,0 +1,35 @@
+# .semgrepignore
+# ────────────────────────────────────────────────────────
+# SCRIPTS PENTEST INTERNES — intentionnellement non sécurisés
+scripts/pentest/
+security-audit/
+
+# SCRIPTS I18N / MIGRATION — accès filesystem interne uniquement
+scripts/i18n/
+scratch/
+add_users_keys.js
+check-delegation-keys.js
+check_translations.js
+extract-delegation-keys.js
+fix-event-buttons.js
+fix-icu-vars.js
+verify-delegation.js
+temp-update-notifs.js
+restore-backup.js
+locales/audit_translations.js
+
+# SCRIPTS OUTILS ADMIN INTERNES
+audit-admin-keys.js
+audit-other-roles.js
+scripts/restore.ts
+
+# FICHIERS DE CONFIGURATION PRISMA/DB — usages internes
+prisma/init_users.txt
+prisma/update_pass.txt
+
+# FICHIERS EXEMPLE — valeurs fictives intentionnelles
+.env.example
+.env.mobile.example
+
+# LOGGER — formatstring est intentionnel (pas user-input)
+lib/logger.ts

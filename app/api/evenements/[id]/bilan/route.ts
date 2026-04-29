@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { safeResolvePath, sanitizeFilename } from '@/lib/utils/safe-path';
 
 // PATCH - Ajouter un bilan à un événement clôturé
 export async function PATCH(
@@ -66,8 +67,15 @@ export async function PATCH(
     // ═══════════════════════════════════════════════════════════════════
     // 7. CREATE SECURE UPLOAD DIRECTORY (BLOC 3.3 FIX)
     // ═══════════════════════════════════════════════════════════════════
-    const BASE_EVENT_DIR = path.resolve(process.cwd(), 'public', 'uploads', 'evenements');
-    const uploadDir = path.resolve(BASE_EVENT_DIR, id.toString(), 'bilan');
+    const BASE_EVENT_DIR = process.env.EVENT_UPLOAD_DIR ||
+      path.resolve(process.cwd(), 'uploads', 'evenements');
+
+    let uploadDir: string;
+    try {
+      uploadDir = safeResolvePath(BASE_EVENT_DIR, String(id), 'bilan');
+    } catch {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
 
     // Security check: ensure the resolved path is inside the BASE_EVENT_DIR
     if (!uploadDir.startsWith(BASE_EVENT_DIR + path.sep)) {
@@ -101,7 +109,13 @@ export async function PATCH(
       
       // Sanitisation basique du nom de fichier généré (même s'il est semi-aléatoire)
       const fileName = `${timestamp}-${randomStr}.${extension}`.replace(/[^a-zA-Z0-9.-]/g, '');
-      const filePath = path.resolve(uploadDir, fileName);
+      const safeFileName = sanitizeFilename(fileName);
+      let filePath: string;
+      try {
+        filePath = safeResolvePath(uploadDir, safeFileName);
+      } catch {
+        return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+      }
 
       // Vérification path traversal sur le fichier final
       if (!filePath.startsWith(uploadDir + path.sep)) {

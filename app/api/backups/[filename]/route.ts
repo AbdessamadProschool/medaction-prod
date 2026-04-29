@@ -1,114 +1,82 @@
-
-import { NextRequest, NextResponse } from 'next/server';
+import { safeResolvePath, sanitizeFilename } from '@/lib/utils/safe-path';
+import { join } from 'path';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
-import { prisma } from '@/lib/db';
-import { unlink, readFile } from 'fs/promises';
-import { join } from 'path';
-import fs from 'fs';
 
-const BACKUP_DIR = join(process.cwd(), 'backups');
+const BACKUP_DIR = process.env.BACKUP_DIR || join(process.cwd(), 'backups');
 
-// GET /api/backups/[filename] - Télécharger un backup
 export async function GET(
-  request: NextRequest,
-  { params: _p }: { params: Promise<{ filename: string }> }
+  request: Request,
+  { params }: { params: Promise<{ filename: string }> }
 ) {
-  const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    const { filename } = params;
-    
-    // Security layer 1: strict allowlist regex
-    if (!filename.match(/^backup-[\w.-]+\.json$/)) {
-      return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 });
-    }
-
-    const filePath = join(BACKUP_DIR, filename);
-
-    // Security layer 2: path traversal via path.resolve()
-    // Ensures the resolved absolute path stays inside BACKUP_DIR
-    const resolvedPath = require('path').resolve(filePath);
-    const resolvedBase = require('path').resolve(BACKUP_DIR);
-    if (!resolvedPath.startsWith(resolvedBase + require('path').sep) && resolvedPath !== resolvedBase) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
-
-    if (!fs.existsSync(filePath)) {
-      return NextResponse.json({ error: 'Fichier non trouvé' }, { status: 404 });
-    }
-
-    const fileBuffer = await readFile(filePath);
-
-    // Retourner le fichier
-    return new NextResponse(fileBuffer, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-      },
-    });
-
-  } catch (error) {
-    console.error('Erreur téléchargement backup:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  // ✅ Auth obligatoire — seuls ADMIN/SUPER_ADMIN peuvent accéder aux backups
+  const session = await getServerSession(authOptions);
+  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    return new Response('Non autorisé', { status: 403 });
   }
+
+  const { filename } = await params;
+
+  // ✅ Sanitisation + confinement
+  const safeFilename = sanitizeFilename(filename);
+  if (!safeFilename || safeFilename !== filename) {
+    return new Response('Nom de fichier invalide', { status: 400 });
+  }
+
+  let filePath: string;
+  try {
+    filePath = safeResolvePath(BACKUP_DIR, safeFilename);
+  } catch {
+    return new Response('Accès refusé', { status: 403 });
+  }
+
+  // ✅ Vérifier existence
+  const { existsSync, statSync } = await import('fs');
+  if (!existsSync(filePath) || !statSync(filePath).isFile()) {
+    return new Response('Fichier non trouvé', { status: 404 });
+  }
+
+  // Whitelist des extensions autorisées pour les backups
+  const ext = filePath.split('.').pop()?.toLowerCase();
+  const ALLOWED_EXTENSIONS = ['dump', 'gz', 'zip', 'sql', 'json'];
+  if (!ext || !ALLOWED_EXTENSIONS.includes(ext)) {
+    return new Response('Type de fichier non autorisé', { status: 400 });
+  }
+
+  const fileBuffer = await import('fs').then(fs => fs.readFileSync(filePath));
+  return new Response(fileBuffer, {
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${safeFilename}"`,
+      'Cache-Control': 'no-store, private',
+    },
+  });
 }
 
-// DELETE /api/backups/[filename] - Supprimer un backup
 export async function DELETE(
-  request: NextRequest,
-  { params: _p }: { params: Promise<{ filename: string }> }
+  request: Request,
+  { params }: { params: Promise<{ filename: string }> }
 ) {
-  const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    const { filename } = params;
-
-    // Security layer 1: strict allowlist regex
-    if (!filename.match(/^backup-[\w.-]+\.json$/)) {
-      return NextResponse.json({ error: 'Nom de fichier invalide' }, { status: 400 });
-    }
-
-    const filePath = join(BACKUP_DIR, filename);
-
-    // Security layer 2: path traversal via path.resolve()
-    const resolvedPath = require('path').resolve(filePath);
-    const resolvedBase = require('path').resolve(BACKUP_DIR);
-    if (!resolvedPath.startsWith(resolvedBase + require('path').sep) && resolvedPath !== resolvedBase) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
-
-    if (!fs.existsSync(filePath)) {
-      return NextResponse.json({ error: 'Fichier non trouvé' }, { status: 404 });
-    }
-
-    await unlink(filePath);
-
-    // Log (Désactivé temporairement)
-    /*
-    await prisma.activityLog.create({
-      data: {
-        userId: parseInt(session.user.id),
-        action: 'DELETE_BACKUP',
-        entity: 'System',
-        entityId: 0,
-        details: { fileName: filename }
-      }
-    });
-    */
-
-    return NextResponse.json({ message: 'Backup supprimé avec succès' });
-
-  } catch (error) {
-    console.error('Erreur suppression backup:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  const session = await getServerSession(authOptions);
+  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    return new Response('Non autorisé', { status: 403 });
   }
+
+  const { filename } = await params;
+  const safeFilename = sanitizeFilename(filename);
+
+  let filePath: string;
+  try {
+    filePath = safeResolvePath(BACKUP_DIR, safeFilename);
+  } catch {
+    return new Response('Accès refusé', { status: 403 });
+  }
+
+  const { existsSync, unlinkSync } = await import('fs');
+  if (!existsSync(filePath)) {
+    return new Response('Fichier non trouvé', { status: 404 });
+  }
+
+  unlinkSync(filePath);
+  return Response.json({ success: true });
 }

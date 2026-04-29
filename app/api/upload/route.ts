@@ -21,6 +21,7 @@ import {
 } from "@/lib/security/upload-security";
 import { stat } from "fs/promises";
 import { SystemLogger } from "@/lib/system-logger";
+import { safeResolvePath } from '@/lib/utils/safe-path';
 
 // Configuration
 // PROFESSIONAL CONFIGURATION: Allows external volume mapping via STORAGE_PATH
@@ -197,7 +198,12 @@ export async function POST(request: NextRequest) {
         // 6.2 GENERATE SECURE FILENAME (OWASP: Never use user-provided names)
         // ─────────────────────────────────────────────────────────────────
         const secureFilename = generateSecureFilename(file.name);
-        const filepath = join(uploadPath, secureFilename);
+        let filepath: string;
+        try {
+          filepath = safeResolvePath(uploadPath, secureFilename);
+        } catch {
+          return NextResponse.json({ error: 'Chemin de fichier invalide' }, { status: 400 });
+        }
 
         // ─────────────────────────────────────────────────────────────────
         // 6.3 SAVE FILE (with robust buffer handling)

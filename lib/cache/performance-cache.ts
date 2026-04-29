@@ -66,10 +66,20 @@ class PerformanceCache {
    * Invalidate all cache entries matching a pattern
    */
   invalidatePattern(pattern: string): void {
-    const regex = new RegExp(pattern);
-    const keys = Array.from(this.cache.keys());
-    for (const key of keys) {
-      if (regex.test(key)) {
+    // Whitelist de patterns autorisés (préfixes simples uniquement)
+    // Ou valider que le pattern ne contient pas de constructions dangereuses
+    if (!pattern || pattern.length > 100) return;
+
+    // Rejeter les patterns avec constructions ReDoS connues
+    const DANGEROUS_PATTERNS = /(\.\*|\+|\?){2,}|(\(.*\)){2,}|(\[.*\]){2,}/;
+    if (DANGEROUS_PATTERNS.test(pattern)) {
+      console.warn('[Cache] Pattern potentiellement dangereux rejeté:', pattern);
+      return;
+    }
+
+    // Option plus sûre : utiliser startsWith/includes à la place de RegExp
+    for (const key of this.cache.keys()) {
+      if (key.startsWith(pattern) || key.includes(pattern)) {
         this.cache.delete(key);
       }
     }

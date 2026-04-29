@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { safeResolvePath } from '@/lib/utils/safe-path';
 
 /**
  * POST /api/users/me/photo
@@ -49,17 +50,33 @@ export async function POST(request: Request) {
     }
 
     // Générer un nom de fichier unique
-    const extension = file.name.split('.').pop() || 'jpg';
+    const extension = (file.name.split('.').pop() || 'jpg')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, ''); // Sécuriser l'extension
+
+    // Extensions image autorisées uniquement
+    const ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    if (!ALLOWED_IMAGE_EXTENSIONS.includes(extension)) {
+      return NextResponse.json({ error: 'Format image non autorisé' }, { status: 400 });
+    }
+
     const fileName = `user_${session.user.id}_${Date.now()}.${extension}`;
     
     // Créer le dossier uploads/avatars s'il n'existe pas
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'avatars');
+    const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
     await mkdir(uploadDir, { recursive: true });
 
     // Sauvegarder le fichier
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const filePath = path.join(uploadDir, fileName);
+    
+    let filePath: string;
+    try {
+      filePath = safeResolvePath(uploadDir, fileName);
+    } catch {
+      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+    }
+
     await writeFile(filePath, buffer);
 
     // URL publique de la photo

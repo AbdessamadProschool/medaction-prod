@@ -391,15 +391,15 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     
     if (nonce) {
       const cspValue = [
-        `default-src 'none'`,
-        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com https://www.google-analytics.com https://api.mapbox.com https://cdn.jsdelivr.net`,
+        `default-src 'self'`,
+        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline'`,
         `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com`,
-        `font-src 'self' https://fonts.gstatic.com`,
+        `font-src 'self' https://fonts.gstatic.com data:`,
         `img-src 'self' data: blob: https:`,
-        `connect-src https://bo.provincemediouna.ma https://www.google-analytics.com https://api.mapbox.com https://*.sentry.io wss://*.mapbox.com`,
+        `connect-src 'self' https: wss:`,
         `frame-ancestors 'none'`,
         `form-action 'self'`,
-        `base-uri 'self'`,
+        `base-uri 'none'`,
         `object-src 'none'`,
         `upgrade-insecure-requests`,
       ].join('; ');

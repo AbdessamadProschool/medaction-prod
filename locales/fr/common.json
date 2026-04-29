@@ -5,8 +5,7 @@
   },
   "pagination": {
     "prev": "Précédent",
-    "next": "Suivant",
-    "page_info": "Page {page} sur {total}"
+    "next": "Suivant"
   },
   "governor": {
     "sidebar": {
@@ -1117,10 +1116,6 @@
     "in_progress": "En cours",
     "completed": "Terminés"
   },
-  "pagination": {
-    "prev": "Précédent",
-    "next": "Suivant"
-  },
   "directory": {
     "badge": "Annuaire officiel",
     "title": "Annuaire des Établissements",
@@ -1135,173 +1130,67 @@
     "all_communes": "Toutes les communes"
   },
   "reclamation": {
-    "new_title": "Nouvelle Réclamation",
-    "new_subtitle": "Signalez un problème dans votre commune et suivez sa résolution en temps réel",
     "steps": {
       "location": "Localisation",
-      "details": "Détails",
-      "proofs": "Preuves",
       "desc_location": "Où se situe le problème ?",
-      "desc_details": "Décrivez la situation",
-      "desc_proofs": "Ajoutez des photos"
-    },
-    "form": {
-      "loading_map": "Chargement de la carte...",
-      "commune": "Commune",
-      "select_commune": "Sélectionner une commune",
-      "district": "Quartier / Douar",
-      "district_placeholder": "Ex: Hay Mohammadi",
-      "address": "Adresse / Repère",
-      "address_placeholder": "Ex: Près de la mosquée...",
-      "location_precise": "Localisation précise",
-      "location_help": "Cliquez sur la carte ou utilisez votre GPS",
-      "my_position": "Ma position",
-      "locating": "Localisation...",
-      "position_success": "Position enregistrée avec succès",
-      "category": "Catégorie du problème",
-      "title": "Titre de la réclamation",
-      "title_placeholder": "Ex: Nid de poule dangereux sur la route principale",
-      "description": "Description détaillée",
-      "description_placeholder": "Décrivez le problème en détail: depuis quand, l'impact sur les citoyens, l'urgence...",
-      "tip_title": "Conseil",
-      "tip_text": "Plus votre description est précise et détaillée, plus le traitement de votre réclamation sera efficace et rapide.",
-      "photos_title": "Preuves",
-      "photos_subtitle": "Ajoutez des photos pour appuyer votre réclamation",
-      "drag_drop": "Glissez-déposez vos photos ici",
-      "click_select": "ou cliquez pour sélectionner",
-      "photos_limits": "MAXIMUM {max} photos • {size}MB max par photo",
-      "error_type": "Seules les images sont acceptées",
-      "error_size": "La taille maximale est de {size}MB",
-      "error_max": "Vous pouvez ajouter maximum {max} photos"
+      "details": "Description",
+      "desc_details": "Détails de votre demande",
+      "proofs": "Preuves",
+      "desc_proofs": "Photos et justificatifs"
     },
     "disclaimer": {
-      "title": "Charte de Responsabilité",
-      "service_name": "Province de Médiouna - Portail Citoyen",
-      "warning": "Avertissement Important",
-      "warning_text": "En soumettant cette réclamation, vous attestez que les informations fournies sont exactes et véridiques.",
-      "accept": "J'accepte et je continue",
-      "cancel": "Annuler",
-      "text_verified": "Contenu Vérifié",
-      "sub_verified": "Vous êtes responsable de l'exactitude des informations et descriptions fournies.",
-      "text_photos": "Photos Appropriées",
-      "sub_photos": "Les photos téléchargées doivent être pertinentes et ne pas contenir de contenu inapproprié.",
+      "title": "Engagement de Responsabilité",
+      "service_name": "Province de Médiouna - Service Citoyen",
+      "warning": "Avertissement Légal",
+      "warning_text": "Toute fausse déclaration ou utilisation abusive de ce service expose son auteur à des poursuites judiciaires conformément à la réglementation en vigueur.",
+      "text_verified": "Identité Vérifiée",
+      "sub_verified": "Votre compte est lié à votre identité réelle",
+      "text_photos": "Preuves Authentiques",
+      "sub_photos": "Les photos doivent être prises sur le lieu même",
       "text_official": "Traitement Officiel",
-      "sub_official": "Votre réclamation sera examinée par les autorités compétentes de la Province.",
-      "legal": "Conformément à la réglementation en vigueur, toute fausse déclaration ou utilisation abusive de ce service peut entraîner des poursuites judiciaires.",
-      "legal_warning": "Conformément à la réglementation en vigueur, toute fausse déclaration ou utilisation abusive de ce service peut entraîner des poursuites judiciaires."
+      "sub_official": "Chaque réclamation est suivie par les autorités",
+      "legal_warning": "En cliquant sur Accepter, vous reconnaissez avoir pris connaissance des conditions d'utilisation et de votre responsabilité juridique quant aux informations fournies.",
+      "cancel": "Annuler",
+      "accept": "J'accepte et je continue"
     },
     "new": {
-      "error_required": "Veuillez compléter tous les champs requis",
-      "error_all_required": "Veuillez remplir tous les champs obligatoires",
+      "error_required": "Veuillez remplir les champs obligatoires",
+      "error_all_required": "Veuillez remplir toutes les étapes",
       "success_sent": "Réclamation envoyée avec succès !"
     },
-    "success_page": {
-      "title": "Réclamation Enregistrée !",
-      "message": "Les réclamations sont traitées et leur conformité vérifiée. Nous traiterons votre demande dans les plus brefs délais.",
-      "view_my_reclamations": "Voir mes réclamations",
-      "back_home": "Retour à l'accueil"
-    },
-    "actions": {
-      "submit": "Soumettre la réclamation",
-      "sending": "Envoi en cours...",
-      "next": "Suivant",
-      "prev": "Précédent",
-      "back": "Retour",
-      "restricted": "Accès restreint",
-      "no_permission": "Vous n'avez pas la permission de créer une réclamation."
-    },
-    "trust": {
-      "secure": "Données sécurisées",
-      "compliance": "Vérification conformité et traitement dans les brefs délais",
-      "tracking": "Suivi en temps réel"
-    },
-    "ready": {
-      "title": "Prêt à envoyer !",
-      "desc": "Les photos sont optionnelles mais aident à mieux comprendre le problème. Cliquez sur **\"Soumettre\"** pour envoyer votre réclamation."
-    },
-    "auth": {
-      "login": "Connexion",
-      "register": "Inscription",
-      "logout": "Déconnexion",
-      "email": "Adresse email",
-      "password": "Mot de passe",
-      "forgot_password": "Mot de passe oublié ?",
-      "remember_me": "Se souvenir de moi",
-      "no_account": "Pas encore de compte ?",
-      "has_account": "Déjà un compte ?",
-      "create_account": "Créer un compte",
-      "login_title": "Espace Citoyen",
-      "login_subtitle": "Accès sécurisé à vos services numériques",
-      "register_title": "Inscription",
-      "register_subtitle": "Créez votre compte citoyen",
-      "portal_name": "Portail Mediouna",
-      "province_name": "Province de Médiouna",
-      "citizen_portal": "Portail Citoyen",
-      "login_description": "Connectez-vous pour accéder à vos services, soumettre des réclamations et participer à la vie locale.",
-      "feature_reclamations": "Suivez vos réclamations en temps réel",
-      "feature_etablissements": "Accédez aux informations des établissements",
-      "feature_evenements": "Restez informé des événements locaux",
-      "verifying": "Vérification...",
-      "locked": "Bloqué",
-      "verify_code": "Vérifier le code",
-      "connect_portal": "Se connecter au portail",
-      "verification_code": "Code de vérification",
-      "back_to_login": "Retour à la connexion",
-      "security_verification": "Vérification de sécurité",
-      "enter_6digit_code": "Entrez le code à 6 chiffres de votre application d'authentification",
-      "already_connected": "Vous êtes déjà connecté. Redirection...",
-      "too_many_attempts": "Trop de tentatives de connexion. Veuillez réessayer dans {minutes} minutes.",
-      "error_generic": "Une erreur est survenue. Veuillez réessayer.",
-      "invalid_credentials": "Identifiants incorrects",
-      "invalid_credentials_remaining": "Identifiants incorrects. {count} tentative(s) restante(s).",
-      "account_locked": "Compte temporairement bloqué. Réessayez dans {minutes} minutes.",
-      "copyright": "© 2025 Province de Mediouna - Royaume du Maroc",
-      "register_join_community": "Rejoignez notre communauté",
-      "register_join_description": "Créez votre compte pour accéder à tous les services de la Province de Médiouna.",
-      "register_closed": "Inscriptions fermées",
-      "register_closed_desc": "Les inscriptions sont actuellement fermées par l'administrateur. Veuillez réessayer plus tard ou contacter l'administration.",
-      "register_success": "Inscription réussie !",
-      "register_success_desc": "Votre compte a été créé avec succès. Vous allez être redirigé vers la page de connexion.",
-      "redirecting": "Redirection en cours...",
-      "step_identity": "Identité",
-      "step_identity_desc": "Vos informations personnelles",
-      "step_contact": "Contact",
-      "step_contact_desc": "Email et téléphone",
-      "step_security": "Sécurité",
-      "step_security_desc": "Créez votre mot de passe",
-      "first_name": "Prénom",
-      "first_name_placeholder": "Votre prénom",
-      "last_name": "Nom",
-      "last_name_placeholder": "Votre nom",
-      "phone": "Téléphone",
-      "phone_optional": "(optionnel)",
-      "phone_placeholder": "0612345678",
-      "continue": "Continuer",
-      "back": "Retour",
-      "password_requirements": "Le mot de passe doit contenir :",
-      "password_req_length": "Au moins 8 caractères",
-      "password_req_case": "Une majuscule et une minuscule",
-      "password_req_special": "Un chiffre et un caractère spécial",
-      "confirm_password": "Confirmer le mot de passe",
-      "creating": "Création...",
-      "create_my_account": "Créer mon compte",
-      "login_link": "Se connecter"
-    },
-    "errors": {
-      "required": "Ce champ est obligatoire",
-      "invalid_email": "Email invalide",
-      "password_min": "Le mot de passe doit contenir au moins 8 caractères",
-      "generic": "Une erreur s'est produite",
-      "not_found": "Page introuvable",
-      "not_found_desc": "La page que vous recherchez semble avoir été déplacée ou n'existe pas.",
-      "unauthorized": "Accès non autorisé",
-      "server_error": "Erreur serveur",
-      "service_unavailable": "Service temporairement indisponible. Veuillez réessayer plus tard."
-    },
     "progress": {
-      "creating": "Création de la réclamation...",
+      "creating": "Création du dossier...",
       "uploading": "Envoi des photos...",
       "finalizing": "Finalisation..."
+    },
+    "actions": {
+      "prev": "Précédent",
+      "next": "Suivant",
+      "submit": "Envoyer ma réclamation",
+      "sending": "Envoi en cours...",
+      "back": "Retour",
+      "restricted": "Accès restreint",
+      "no_permission": "Vous n'avez pas la permission de créer une réclamation"
+    },
+    "ready": {
+      "title": "Votre réclamation est prête",
+      "desc": "Vous avez fourni tous les détails nécessaires. Cliquez sur <strong>Envoyer</strong> pour transmettre votre demande aux autorités compétentes."
+    },
+    "trust": {
+      "secure": "Connexion Sécurisée SSL",
+      "compliance": "Conforme aux Normes Gouvernementales",
+      "tracking": "Suivi en Temps Réel"
+    },
+    "form": {
+      "photos_title": "Pièces jointes & Photos",
+      "photos_subtitle": "Ajoutez des photos pour appuyer votre demande",
+      "drag_drop": "Glissez-déposez vos photos ici",
+      "click_select": "ou cliquez pour sélectionner",
+      "photos_limits": "Max {max} photos, {size}MB par fichier",
+      "error_type": "Fichier non supporté (images uniquement)",
+      "error_size": "Le fichier est trop lourd (max {size}MB)",
+      "error_max": "Nombre maximum de photos atteint ({max})",
+      "photo_alt": "Photo réclamation n°{number}"
     }
   },
   "security_page": {
@@ -4157,15 +4046,10 @@
     }
   },
   "download_photos": {
-    "downloading": "Téléchargement en cours...",
-    "completed": "Téléchargé !",
-    "error": "Erreur",
-    "button_label": "{count} photo(s)",
-    "zip_label": "Télécharger les photos (ZIP)",
-    "compressing": "Compression en cours...",
-    "export_title": "Export Photos",
-    "photos_available": "{count} photo(s) disponible(s)",
-    "download_tooltip": "Télécharger {count} photo(s)"
+    "title": "Télécharger les photos",
+    "count": "{count} photo(s)",
+    "zip_ready": "Archive ZIP prête",
+    "downloading": "Téléchargement..."
   },
   "authority_statistics": {
     "title": "Statistiques",
@@ -4304,16 +4188,26 @@
     }
   },
   "reclamation_categories": {
-    "Infrastructure": "Infrastructure",
-    "Services": "Services",
-    "Propreté": "Propreté",
+    "Infrastructure": "Infrastructures",
+    "Services": "Services Publics",
+    "Propreté": "Hygiène & Propreté",
     "Sécurité": "Sécurité",
-    "Personnel": "Personnel",
+    "securite": "Sécurité",
+    "Personnel": "Comportement du Personnel",
     "Accessibilité": "Accessibilité",
     "education": "Éducation",
     "sport": "Sport",
-    "eclairage": "Éclairage public",
-    "Autre": "Autre"
+    "eclairage": "Éclairage Public",
+    "DECHETS": "Gestion des déchets",
+    "ECLAIRAGE": "Éclairage public",
+    "VOIRIE": "Voirie et routes",
+    "EAU_ASSAINISSEMENT": "Eau et assainissement",
+    "ESPACES_VERTS": "Espaces verts",
+    "TRANSPORT": "Transport urbain",
+    "NUISANCES": "Nuisances",
+    "SECURITE": "Sécurité publique",
+    "Autre": "Autre",
+    "AUTRE": "Autres demandes"
   },
   "coordinator": {
     "dashboard": {
@@ -5830,98 +5724,6 @@
     "processed_on": "Demande traitée le {date}",
     "back_list": "Retour à la liste",
     "update_etab": "Mise à jour de l'établissement"
-  },
-  "reclamation": {
-    "steps": {
-      "location": "Localisation",
-      "desc_location": "Où se situe le problème ?",
-      "details": "Description",
-      "desc_details": "Détails de votre demande",
-      "proofs": "Preuves",
-      "desc_proofs": "Photos et justificatifs"
-    },
-    "disclaimer": {
-      "title": "Engagement de Responsabilité",
-      "service_name": "Province de Médiouna - Service Citoyen",
-      "warning": "Avertissement Légal",
-      "warning_text": "Toute fausse déclaration ou utilisation abusive de ce service expose son auteur à des poursuites judiciaires conformément à la réglementation en vigueur.",
-      "text_verified": "Identité Vérifiée",
-      "sub_verified": "Votre compte est lié à votre identité réelle",
-      "text_photos": "Preuves Authentiques",
-      "sub_photos": "Les photos doivent être prises sur le lieu même",
-      "text_official": "Traitement Officiel",
-      "sub_official": "Chaque réclamation est suivie par les autorités",
-      "legal_warning": "En cliquant sur Accepter, vous reconnaissez avoir pris connaissance des conditions d'utilisation et de votre responsabilité juridique quant aux informations fournies.",
-      "cancel": "Annuler",
-      "accept": "J'accepte et je continue"
-    },
-    "new": {
-      "error_required": "Veuillez remplir les champs obligatoires",
-      "error_all_required": "Veuillez remplir toutes les étapes",
-      "success_sent": "Réclamation envoyée avec succès !"
-    },
-    "progress": {
-      "creating": "Création du dossier...",
-      "uploading": "Envoi des photos...",
-      "finalizing": "Finalisation..."
-    },
-    "actions": {
-      "prev": "Précédent",
-      "next": "Suivant",
-      "submit": "Envoyer ma réclamation",
-      "sending": "Envoi en cours...",
-      "back": "Retour",
-      "restricted": "Accès restreint",
-      "no_permission": "Vous n'avez pas la permission de créer une réclamation"
-    },
-    "ready": {
-      "title": "Votre réclamation est prête",
-      "desc": "Vous avez fourni tous les détails nécessaires. Cliquez sur <strong>Envoyer</strong> pour transmettre votre demande aux autorités compétentes."
-    },
-    "trust": {
-      "secure": "Connexion Sécurisée SSL",
-      "compliance": "Conforme aux Normes Gouvernementales",
-      "tracking": "Suivi en Temps Réel"
-    },
-    "form": {
-      "photos_title": "Pièces jointes & Photos",
-      "photos_subtitle": "Ajoutez des photos pour appuyer votre demande",
-      "drag_drop": "Glissez-déposez vos photos ici",
-      "click_select": "ou cliquez pour sélectionner",
-      "photos_limits": "Max {max} photos, {size}MB par fichier",
-      "error_type": "Fichier non supporté (images uniquement)",
-      "error_size": "Le fichier est trop lourd (max {size}MB)",
-      "error_max": "Nombre maximum de photos atteint ({max})",
-      "photo_alt": "Photo réclamation n°{number}"
-    }
-  },
-  "reclamation_categories": {
-    "Infrastructure": "Infrastructures",
-    "Services": "Services Publics",
-    "Propreté": "Hygiène & Propreté",
-    "Sécurité": "Sécurité",
-    "securite": "Sécurité",
-    "Personnel": "Comportement du Personnel",
-    "Accessibilité": "Accessibilité",
-    "education": "Éducation",
-    "sport": "Sport",
-    "eclairage": "Éclairage Public",
-    "DECHETS": "Gestion des déchets",
-    "ECLAIRAGE": "Éclairage public",
-    "VOIRIE": "Voirie et routes",
-    "EAU_ASSAINISSEMENT": "Eau et assainissement",
-    "ESPACES_VERTS": "Espaces verts",
-    "TRANSPORT": "Transport urbain",
-    "NUISANCES": "Nuisances",
-    "SECURITE": "Sécurité publique",
-    "Autre": "Autre",
-    "AUTRE": "Autres demandes"
-  },
-  "download_photos": {
-    "title": "Télécharger les photos",
-    "count": "{count} photo(s)",
-    "zip_ready": "Archive ZIP prête",
-    "downloading": "Téléchargement..."
   },
   "history_actions": {
     "CREATION": "Création de la réclamation",

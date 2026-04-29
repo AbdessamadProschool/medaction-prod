@@ -1145,58 +1145,6 @@
         "show": "إظهار"
       }
     },
-  "news_page": {
-    "badge": "معلومات رسمية",
-    "title_prefix": "مستجدات ",
-    "title_suffix": "الإقليم",
-    "hero_subtitle": "ابق على اطلاع بآخر المشاريع والأحداث والإعلانات الرسمية. الشفافية في خدمة المواطن.",
-    "filter_mobile": "تصفية الأخبار",
-    "search_title": "بحث",
-    "reset": "إعادة تعيين",
-    "search_placeholder": "كلمات مفتاحية...",
-    "categories_title": "الفئات",
-    "all_news": "جميع الأخبار",
-    "view_grid": "شبكة",
-    "view_list": "قائمة",
-    "no_news_found": "لم يتم العثور على أي خبر",
-    "no_news_desc": "لا توجد أخبار تطابق معايير بحثك.",
-    "reset_search": "إعادة تعيين البحث",
-    "page_info": "الصفحة {page} من {totalPages}",
-    "categories": {
-      "ANNONCE": "إعلان",
-      "EVENEMENT": "حدث",
-      "RENOVATION": "أشغال",
-      "SERVICE": "خدمة",
-      "PROJET": "مشروع",
-      "PARTENARIAT": "شراكة",
-      "AUTRE": "آخر",
-      "ACTUALITE": "أخبار",
-      "E_SERVICES": "خدمات إلكترونية",
-      "CULTURE": "ثقافة",
-      "URBANISME": "تعمير",
-      "SUCCESS_STORY": "قصة نجاح",
-      "TRAVAUX": "أشغال"
-    },
-    "read": "اقرأ المزيد",
-    "showing": "عرض {start}-{end} من أصل {total} خبر",
-    "reset_filters": "إعادة تعيين المرشحات",
-    "previous": "السابق",
-    "next": "التالي",
-    "detail": {
-      "back": "عودة",
-      "copied": "تم نسخ الرابط !",
-      "share": "مشاركة",
-      "shared": "تمت المشاركة",
-      "reading_time": "{min} دقيقة قراءة",
-      "written_by": "بقلم {name}",
-      "views": "{count} مشاهدة",
-      "official_source": "مصدر رسمي",
-      "gallery": "معرض الصور",
-      "related_articles": "مقالات ذات صلة",
-      "not_found": "المقال غير موجود",
-      "back_to_list": "العودة إلى القائمة"
-    }
-  },
     "validation_page": {
       "title": "التحقق من المحتوى",
       "subtitle": "إدارة محتوى {count} بانتظار الموافقة",
@@ -1709,12 +1657,6 @@
       "last_backup": "آخر نسخة احتياطية",
       "version": "إصدار"
     },
-    "dashboard": {
-      "total_users": "إجمالي المستخدمين",
-      "active_sessions": "الجلسات النشطة",
-      "database_size": "حجم قاعدة البيانات",
-      "server_status": "حالة الخادم"
-    },
     "home": "الرئيسية",
     "dashboard_admin": "لوحة تحكم المسؤول"
   },
@@ -1785,11 +1727,11 @@
     "badge": "حملات",
     "featured": "حملة مميزة",
     "objective_progress": "تقدم الهدف",
-    "participants_required": "مشاركون مطلوبون",
+    "participants_required": "المشاركين المطلوبين",
     "confirm_participation": "تأكيد مشاركتي",
     "participating": "جاري المشاركة...",
-    "campaign_ended": "الحملة منتهية",
-    "login_to_participate": "سجل الدخول للمشاركة",
+    "campaign_ended": "انتهت الحملة",
+    "login_to_participate": "تسجيل الدخول للمشاركة",
     "success_title": "تمت العملية بنجاح",
     "success_message": "شكراً لمشاركتك في هذه المبادرة !",
     "close": "إغلاق",
@@ -1818,12 +1760,7 @@
       "participation_success": "تم تسجيل مشاركتك بنجاح!",
       "link_copied": "تم نسخ الرابط!",
       "copy_failed": "تعذر نسخ الرابط"
-    },
-    "objective_progress": "تقدم الهدف",
-    "participants_required": "المشاركين المطلوبين",
-    "login_to_participate": "تسجيل الدخول للمشاركة",
-    "confirm_participation": "تأكيد مشاركتي",
-    "campaign_ended": "انتهت الحملة"
+    }
   },
   "errors": {
     "not_found": "الصفحة غير موجودة",
@@ -2577,7 +2514,10 @@
     "badge": "الأجندة الإقليمية",
     "showing": "عرض {start}-{end} من أصل {total} فعالية",
     "empty_title": "لم يتم العثور على أي فعالية",
-    "empty_desc": "عدل مرشحات البحث للعثور على فعاليات."
+    "empty_desc": "عدل مرشحات البحث للعثور على فعاليات.",
+    "common": {
+      "view_details": "عرض التفاصيل"
+    }
   },
   "filters": {
     "title": "تصفية",
@@ -2604,178 +2544,28 @@
     "in_progress": "جارية",
     "completed": "منتهية"
   },
-  "pagination": {
-    "prev": "السابق",
-    "next": "التالي"
-  },
   "reclamation": {
     "new_title": "شكاية جديدة",
     "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي",
     "steps": {
       "location": "الموقع",
-      "details": "التفاصيل",
-      "proofs": "الإثباتات",
-      "desc_location": "أين توجد المشكلة؟",
-      "desc_details": "صف الوضعية",
-      "desc_proofs": "أضف صوراً"
-    },
-    "form": {
-      "loading_map": "جاري تحميل الخريطة...",
-      "commune": "الجماعة",
-      "select_commune": "اختر الجماعة",
-      "district": "الحي / الدوار",
-      "district_placeholder": "مثال: حي المحمدي",
-      "address": "العنوان / معلمة",
-      "address_placeholder": "مثال: قرب المسجد...",
-      "location_precise": "تحديد الموقع بدقة",
-      "location_help": "انقر على الخريطة أو استخدم نظام تحديد الموقع",
-      "my_position": "موقعي",
-      "locating": "جاري تحديد الموقع...",
-      "position_success": "تم تحديد الموقع بنجاح",
-      "category": "نوع المشكلة",
-      "title": "موضوع الشكاية",
-      "title_placeholder": "مثال: حفرة خطيرة في الطريق الرئيسية",
-      "description": "وصف تفصيلي",
-      "description_placeholder": "صف المشكلة بالتفصيل: منذ متى، التأثير على المواطنين، درجة الاستعجال...",
-      "tip_title": "نصيحة",
-      "tip_text": "كلما كان الوصف دقيقاً ومفصلاً، كلما كانت معالجة شكايتك أسرع وأنجع.",
-      "photos_title": "الإثباتات",
-      "photos_subtitle": "أضف صوراً لدعم شكايتك",
-      "drag_drop": "اسحب الصور هنا",
-      "click_select": "أو انقر للاختيار",
-      "photos_limits": "الحد الأقصى {max} صور • {size}MB لكل صورة",
-      "error_type": "يسمح فقط بالصور",
-      "error_size": "الحجم الأقصى هو {size}MB",
-      "error_max": "يمكنك إضافة {max} صور كحد أقصى"
+      "desc_location": "أين تقع المشكلة؟",
+      "details": "الوصف",
+      "desc_details": "تفاصيل طلبك",
+      "proofs": "الأدلة",
+      "desc_proofs": "الصور والإثباتات"
     },
     "disclaimer": {
-      "title": "ميثاق المسؤولية",
-      "service_name": "إقليم مديونة - بوابة المواطن",
-      "warning": "تنبيه هام",
-      "warning_text": "بتقديمك لهذه الشكاية، فإنك تصرح بأن المعلومات المقدمة دقيقة وصحيحة.",
-      "accept": "أوافق وأتابع",
-      "cancel": "إلغاء",
-      "text_verified": "محتوى موثوق",
-      "sub_verified": "أنت مسؤول عن دقة المعلومات والأوصاف المقدمة.",
-      "text_photos": "صور ملائمة",
-      "sub_photos": "يجب أن تكون الصور المحملة ذات صلة ولا تحتوي على محتوى غير لائق.",
+      "title": "التزام بالمسؤولية",
+      "service_name": "إقليم مديونة - خدمة المواطن",
+      "warning": "تحذير قانوني",
+      "warning_text": "أي تصريح كاذب أو استخدام تعسفي لهذه الخدمة يعرض صاحبه للمتابعة القضائية وفقاً للقوانين الجاري بها العمل.",
+      "text_verified": "هوية مؤكدة",
+      "sub_verified": "حسابك مرتبط بهويتك الحقيقية",
+      "text_photos": "أدلة حقيقية",
+      "sub_photos": "يجب التقاط الصور في موقع المشكلة",
       "text_official": "معالجة رسمية",
-      "sub_official": "ستتم مراجعة شكايتك من قبل السلطات المختصة في الإقليم.",
-      "legal": "وفقاً للقوانين الجاري بها العمل، قد يؤدي أي تصريح كاذب أو سوء استخدام لهذه الخدمة إلى متابعات قضائية.",
-      "legal_warning": "وفقاً للقوانين الجاري بها العمل، قد يؤدي أي تصريح كاذب أو سوء استخدام لهذه الخدمة إلى متابعات قضائية."
-    },
-    "new": {
-      "error_required": "يرجى ملء جميع الحقول المطلوبة",
-      "error_all_required": "يرجى ملء جميع الحقول الإلزامية",
-      "success_sent": "تم إرسال الشكاية بنجاح!"
-    },
-    "success_page": {
-      "title": "تم تسجيل الشكاية!",
-      "message": "تتم معالجة الشكايات والتحقق من مطابقتها. سنعالج طلبك في أقرب الآجال.",
-      "view_my_reclamations": "عرض شكاياتي",
-      "back_home": "العودة للرئيسية"
-    },
-    "actions": {
-      "submit": "إرسال الشكاية",
-      "sending": "جاري الإرسال...",
-      "next": "التالي",
-      "prev": "السابق",
-      "back": "رجوع",
-      "restricted": "ولوج مقيد",
-      "no_permission": "ليس لديك الصلاحية لإنشاء شكاية."
-    },
-    "trust": {
-      "secure": "بيانات آمنة",
-      "compliance": "التحقق من الامتثال والمعالجة في أقرب الآجال",
-      "tracking": "تتبع في الوقت الفعلي"
-    },
-    "ready": {
-      "title": "جاهز للإرسال!",
-      "desc": "الصور اختيارية ولكنها تساعد في فهم المشكلة. انقر على **إرسال الشكاية** للمتابعة."
-    },
-    "progress": {
-      "creating": "جاري إنشاء الشكاية...",
-      "uploading": "جاري رفع الصور...",
-      "finalizing": "جاري الانتهاء..."
-    },
-    "auth": {
-      "login": "اتصال",
-      "register": "تسجيل",
-      "logout": "قطع الاتصال",
-      "email": "عنوان البريد الإلكتروني",
-      "password": "كلمة المرور",
-      "forgot_password": "هل نسيت كلمة المرور؟",
-      "remember_me": "تذكرنى",
-      "no_account": "ليس لديك حساب بعد؟",
-      "has_account": "هل لديك حساب بالفعل؟",
-      "create_account": "إنشاء حساب",
-      "login_title": "مساحة المواطن",
-      "login_subtitle": "الوصول الآمن إلى الخدمات الرقمية الخاصة بك",
-      "register_title": "تسجيل",
-      "register_subtitle": "قم بإنشاء حساب المواطن الخاص بك",
-      "portal_name": "بوابة مديونة",
-      "province_name": "ولاية المديونة",
-      "citizen_portal": "بوابة المواطن",
-      "login_description": "قم بتسجيل الدخول للوصول إلى خدماتك وتقديم الشكاوى والمشاركة في الحياة المحلية.",
-      "feature_reclamations": "تتبع شكاواك في الوقت الحقيقي",
-      "feature_etablissements": "الوصول إلى معلومات المنشأة",
-      "feature_evenements": "ابق على علم بالأحداث المحلية",
-      "verifying": "تَحَقّق...",
-      "locked": "محظور",
-      "verify_code": "تحقق من الرمز",
-      "connect_portal": "تسجيل الدخول إلى البوابة",
-      "verification_code": "رمز التحقق",
-      "back_to_login": "العودة إلى تسجيل الدخول",
-      "security_verification": "فحص الأمان",
-      "enter_6digit_code": "أدخل الرمز المكون من 6 أرقام لتطبيق المصادقة الخاص بك",
-      "already_connected": "لقد قمت بتسجيل الدخول بالفعل. إعادة التوجيه...",
-      "too_many_attempts": "محاولات اتصال كثيرة جدًا. يرجى المحاولة مرة أخرى خلال {minutes} من الدقائق.",
-      "error_generic": "لقد حدث خطأ. يرجى المحاولة مرة أخرى.",
-      "invalid_credentials": "معرفات غير صحيحة",
-      "invalid_credentials_remaining": "معرفات غير صحيحة. {count} من المحاولات المتبقية.",
-      "account_locked": "تم حظر الحساب مؤقتًا. حاول مرة أخرى خلال {minutes} دقيقة.",
-      "copyright": "© 2025 إقليم المديونة - المملكة المغربية",
-      "register_join_community": "انضم إلى مجتمعنا",
-      "register_join_description": "أنشئ حسابك للولوج إلى كافة خدمات إقليم مديونة.",
-      "register_closed": "التسجيلات مغلقة",
-      "register_closed_desc": "التسجيلات مغلقة حاليا من قبل المسؤول. يرجى المحاولة مرة أخرى في وقت لاحق أو الاتصال بالإدارة.",
-      "register_success": "التسجيل ناجح!",
-      "register_success_desc": "لقد تم إنشاء حسابك بنجاح. سيتم إعادة توجيهك إلى صفحة تسجيل الدخول.",
-      "redirecting": "جاري إعادة التوجيه...",
-      "step_identity": "تعريف",
-      "step_identity_desc": "معلوماتك الشخصية",
-      "step_contact": "اتصال",
-      "step_contact_desc": "البريد الإلكتروني والهاتف",
-      "step_security": "حماية",
-      "step_security_desc": "قم بإنشاء كلمة المرور الخاصة بك",
-      "first_name": "الاسم الأول",
-      "first_name_placeholder": "اسمك الأول",
-      "last_name": "اسم",
-      "last_name_placeholder": "اسمك",
-      "phone": "هاتف",
-      "phone_optional": "(خياري)",
-      "phone_placeholder": "0612345678",
-      "continue": "يكمل",
-      "back": "خلف",
-      "password_requirements": "يجب أن تحتوي كلمة المرور على:",
-      "password_req_length": "ما لا يقل عن 8 أحرف",
-      "password_req_case": "حرف كبير واحد وحرف صغير واحد",
-      "password_req_special": "رقم وشخصية خاصة",
-      "confirm_password": "تأكيد كلمة المرور",
-      "creating": "الخلق...",
-      "create_my_account": "إنشاء حسابي",
-      "login_link": "تسجيل الدخول"
-    },
-    "errors": {
-      "required": "هذه الخانة مطلوبه",
-      "invalid_email": "بريد إلكتروني غير صالح",
-      "password_min": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
-      "generic": "لقد حدث خطأ",
-      "not_found": "لم يتم العثور على الصفحة",
-      "not_found_desc": "يبدو أن الصفحة التي تبحث عنها قد تم نقلها أو أنها غير موجودة.",
-      "unauthorized": "الوصول غير المصرح به",
-      "server_error": "خطأ في الخادم",
-      "service_unavailable": "الخدمة غير متاحة مؤقتا. يرجى المحاولة مرة أخرى في وقت لاحق."
+      "sub_official": "يتم فحص كل شكاية من قبل السلطات"
     }
   },
   "auth": {
@@ -3795,6 +3585,9 @@
     }
   },
   "download_photos": {
+    "title": "تحميل الصور",
+    "count": "{count} صورة",
+    "zip_ready": "ملف ZIP جاهز",
     "downloading": "جاري التحميل...",
     "completed": "تم التحميل !",
     "error": "خطأ",
@@ -5962,76 +5755,6 @@
     "processed_on": "تمت معالجة الطلب في {date}",
     "back_list": "العودة إلى القائمة",
     "update_etab": "تحديث المؤسسة"
-  },
-  "reclamation": {
-    "steps": {
-      "location": "الموقع",
-      "desc_location": "أين يوجد المشكل؟",
-      "details": "الوصف",
-      "desc_details": "تفاصيل طلبكم",
-      "proofs": "الأدلة",
-      "desc_proofs": "الصور والوثائق"
-    },
-    "disclaimer": {
-      "title": "التزام بالمسؤولية",
-      "service_name": "إقليم مديونة - خدمة المواطن",
-      "warning": "تحذير قانوني",
-      "warning_text": "كل تصريح كاذب أو استخدام تعسفي لهذه الخدمة يعرض صاحبه للمتابعة القضائية وفقاً للقوانين الجاري بها العمل.",
-      "text_verified": "هوية محققة",
-      "sub_verified": "حسابكم مرتبط بهويتكم الحقيقية",
-      "text_photos": "أدلة أصلية",
-      "sub_photos": "يجب أن تؤخذ الصور في مكان الواقعة",
-      "text_official": "معالجة رسمية",
-      "sub_official": "تتم متابعة كل شكاية من طرف السلطات",
-      "legal_warning": "بالنقر على أقبل، تقرون باطلاعكم على شروط الاستخدام ومسؤوليتكم القانونية تجاه المعلومات المقدمة.",
-      "cancel": "إلغاء",
-      "accept": "أقبل وأتابع"
-    },
-    "new": {
-      "error_required": "يرجى ملء الحقول المطلوبة",
-      "error_all_required": "يرجى إكمال جميع المراحل",
-      "success_sent": "تم إرسال الشكاية بنجاح!"
-    },
-    "progress": {
-      "creating": "جاري إنشاء الملف...",
-      "uploading": "جاري إرسال الصور...",
-      "finalizing": "جاري الإنهاء..."
-    },
-    "actions": {
-      "prev": "السابق",
-      "next": "التالي",
-      "submit": "إرسال شكايتي",
-      "sending": "جاري الإرسال...",
-      "back": "رجوع",
-      "restricted": "دخول مقيد",
-      "no_permission": "ليس لديك الصلاحية لإنشاء شكاية"
-    },
-    "ready": {
-      "title": "شكايتكم جاهزة",
-      "desc": "لقد قدمتم جميع التفاصيل اللازمة. انقر على <strong>إرسال</strong> لنقل طلبكم إلى السلطات المختصة."
-    },
-    "trust": {
-      "secure": "اتصال آمن SSL",
-      "compliance": "مطابق للمعايير الحكومية",
-      "tracking": "تتبع في الوقت الحقيقي"
-    },
-    "form": {
-      "photos_title": "المرفقات والصور",
-      "photos_subtitle": "أضف صوراً لدعم طلبكم",
-      "drag_drop": "قم بسحب وإسقاط صورك هنا",
-      "click_select": "أو انقر للاختيار",
-      "photos_limits": "الأقصى {max} صور، {size} ميغابايت لكل ملف",
-      "error_type": "ملف غير مدعوم (صور فقط)",
-      "error_size": "الملف كبير جداً (الأقصى {size} ميغابايت)",
-      "error_max": "تم الوصول إلى الحد الأقصى للصور ({max})",
-      "photo_alt": "صورة الشكاية رقم {number}"
-    }
-  },
-  "download_photos": {
-    "title": "تحميل الصور",
-    "count": "{count} صورة",
-    "zip_ready": "ملف ZIP جاهز",
-    "downloading": "جاري التحميل..."
   },
   "history_actions": {
     "CREATION": "إنشاء الشكاية",

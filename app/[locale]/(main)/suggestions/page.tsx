@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
@@ -71,10 +72,11 @@ const CATEGORIES: Record<string, { label: string; icon: React.ElementType }> = {
 
 export default function SuggestionsPage() {
   const t = useTranslations('suggestions_page');
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(searchParams.get('new') === 'true');
   
   // Filters
   const [statutFilter, setStatutFilter] = useState('');

@@ -27,7 +27,8 @@ import {
   BookOpen,
   Layout,
   Phone,
-  Mail
+  Mail,
+  Lightbulb
 } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
@@ -62,9 +63,9 @@ export default function GovHeader() {
 
   // Dropdown: Services
   const serviceItems = [
-    { href: '/reclamations/nouvelle', label: t('actions.soumettre_reclamation') },
-    { href: '/mes-reclamations', label: t('nav.reclamations') },
-    { href: '/suggestions', label: t('footer.suggestions') },
+    { id: 'propose', href: '/suggestions?new=true', label: t('suggestions_page.propose_btn') },
+    { id: 'reclamation', href: '/reclamations/nouvelle', label: t('nav.reclamations') },
+    { id: 'suggestions_list', href: '/suggestions', label: t('footer.suggestions') },
   ];
   
   // Notifications
@@ -281,7 +282,7 @@ export default function GovHeader() {
                          <div className="p-2">
                           {serviceItems
                             .filter(item => {
-                              if (item.label === 'Mes réclamations') {
+                              if (item.id === 'mes_reclamations') {
                                  return session?.user?.role === 'CITOYEN';
                               }
                               return true;
@@ -293,7 +294,7 @@ export default function GovHeader() {
                               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-[hsl(213,80%,28%)] transition-colors group"
                             >
                                <div className="w-8 h-8 rounded-lg bg-[hsl(45,93%,47%)]/10 flex items-center justify-center text-[hsl(213,80%,28%)] group-hover:bg-[hsl(45,93%,47%)] group-hover:text-[hsl(213,80%,28%)] transition-colors">
-                                  {item.label.includes('reclamation') ? <Shield size={16} /> : <MessageSquare size={16} />}
+                                  {item.id === 'reclamation' || item.id === 'mes_reclamations' ? <Shield size={16} /> : item.id === 'propose' ? <Lightbulb size={16} /> : <MessageSquare size={16} />}
                                </div>
                               <span className="font-medium">{item.label}</span>
                             </Link>
@@ -663,7 +664,7 @@ export default function GovHeader() {
                     className="flex items-center gap-3 px-4 py-3 text-sm text-white/80 hover:bg-white/10 hover:text-white rounded-lg transition-all"
                   >
                      <div className="w-5 flex justify-center">
-                        {item.label.includes('reclamation') ? <Shield size={16} /> : <MessageSquare size={16} />}
+                        {item.id === 'reclamation' || item.id === 'mes_reclamations' ? <Shield size={16} /> : item.id === 'propose' ? <Lightbulb size={16} /> : <MessageSquare size={16} />}
                      </div>
                     {item.label}
                   </Link>

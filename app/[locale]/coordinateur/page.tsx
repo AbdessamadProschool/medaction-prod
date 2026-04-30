@@ -281,11 +281,11 @@ export default function CoordinateurDashboard() {
         >
           <div className="flex items-start justify-between relative z-10">
             <div>
-              <p className="text-sm text-gray-500 font-bold mb-2">{t('stats.today')}</p>
+              <p className="text-sm text-gray-600 font-bold mb-2">{t('stats.today')}</p>
               <p className="text-4xl font-black text-gray-900 mb-1">
                 {stats?.activitesAujourdhui || 0}
               </p>
-              <p className="text-xs text-gray-400 font-medium">{t('stats.activity_unit')}</p>
+              <p className="text-xs text-gray-500 font-medium">{t('stats.activity_unit')}</p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm group-hover:scale-110 transition-transform">
               <CalendarDays className="w-6 h-6" />
@@ -300,11 +300,11 @@ export default function CoordinateurDashboard() {
         >
           <div className="flex items-start justify-between relative z-10">
             <div>
-              <p className="text-sm text-gray-500 font-bold mb-2">{t('stats.week')}</p>
+              <p className="text-sm text-gray-600 font-bold mb-2">{t('stats.week')}</p>
               <p className="text-4xl font-black text-gray-900 mb-1">
                 {stats?.activitesSemaine || 0}
               </p>
-              <p className="text-xs text-gray-400 font-medium">{t('stats.programmed')}</p>
+              <p className="text-xs text-gray-500 font-medium">{t('stats.programmed')}</p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
               <TrendingUp className="w-6 h-6" />
@@ -319,11 +319,11 @@ export default function CoordinateurDashboard() {
         >
           <div className="flex items-start justify-between relative z-10">
             <div>
-              <p className="text-sm text-gray-500 font-bold mb-2">{t('stats.running')}</p>
+              <p className="text-sm text-gray-600 font-bold mb-2">{t('stats.running')}</p>
               <p className="text-4xl font-black text-gray-900 mb-1">
                 {stats?.activitesEnCours || 0}
               </p>
-              <p className="text-xs text-gray-400 font-medium">{t('stats.now')}</p>
+              <p className="text-xs text-gray-500 font-medium">{t('stats.now')}</p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 shadow-sm group-hover:scale-110 transition-transform">
               <Activity className="w-6 h-6" />
@@ -338,11 +338,11 @@ export default function CoordinateurDashboard() {
         >
           <div className="flex items-start justify-between relative z-10">
             <div>
-              <p className="text-sm text-gray-500 font-bold mb-2">{t('stats.reports')}</p>
+              <p className="text-sm text-gray-600 font-bold mb-2">{t('stats.reports')}</p>
               <p className="text-4xl font-black text-gray-900 mb-1">
                 {stats?.rapportsEnAttente || 0}
               </p>
-              <p className="text-xs text-gray-400 font-medium">{t('stats.to_complete')}</p>
+              <p className="text-xs text-gray-500 font-medium">{t('stats.to_complete')}</p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 shadow-sm group-hover:scale-110 transition-transform">
               <FileText className="w-6 h-6" />

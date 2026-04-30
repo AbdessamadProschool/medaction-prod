@@ -532,7 +532,7 @@ export default function GovHeader() {
 
                           {session.user?.role !== 'CITOYEN' && (
                             <Link
-                              href="/profil/parametres"
+                              href="/profil"
                               className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                             >
                               <Settings size={18} className="text-gray-400" />

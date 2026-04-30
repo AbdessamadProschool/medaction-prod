@@ -101,7 +101,7 @@ export default function CoordinateurEtablissementsPage() {
             </div>
             {t('title')}
           </h1>
-          <p className="text-gray-500 mt-1 font-medium">
+          <p className="text-gray-600 mt-1 font-medium">
             {t('subtitle', { count: etablissements.length })}
           </p>
         </div>
@@ -172,39 +172,39 @@ export default function CoordinateurEtablissementsPage() {
                     <h3 className="font-bold text-gray-900 line-clamp-2 text-lg leading-tight mb-1">
                       {etablissement.nom}
                     </h3>
-                    <span className="inline-block px-2.5 py-0.5 bg-gray-100 text-gray-600 text-xs font-bold rounded-lg">
+                    <span className="inline-block px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg">
                       {SECTEURS_LABELS[etablissement.secteur] || etablissement.secteur}
                     </span>
                   </div>
                 </div>
 
                 {/* Info */}
-                <div className="space-y-3 text-sm text-gray-500 mb-6 font-medium">
+                <div className="space-y-3 text-sm text-gray-600 mb-6 font-medium">
                   {etablissement.commune && (
                     <div className="flex items-center gap-2">
-                      <MapPin size={16} className="text-gray-400" />
+                      <MapPin size={16} className="text-emerald-500" />
                       <span>{etablissement.commune.nom}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded text-gray-400 border border-gray-100">{etablissement.code}</span>
+                    <span className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded text-gray-500 border border-gray-200">{etablissement.code}</span>
                   </div>
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
-                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1 font-bold">
-                      <Calendar size={14} className="text-blue-500" />
+                  <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100">
+                    <div className="flex items-center gap-1.5 text-xs text-blue-700 mb-1 font-bold">
+                      <Calendar size={14} className="text-blue-600" />
                       {t('stats.events')}
                     </div>
                     <p className="font-black text-xl text-gray-900">
                       {etablissement._count?.evenements || 0}
                     </p>
                   </div>
-                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1 font-bold">
-                      <Star size={14} className="text-amber-500" />
+                  <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-100">
+                    <div className="flex items-center gap-1.5 text-xs text-amber-700 mb-1 font-bold">
+                      <Star size={14} className="text-amber-600" />
                       {t('stats.evaluations')}
                     </div>
                     <p className="font-black text-xl text-gray-900">
@@ -216,20 +216,12 @@ export default function CoordinateurEtablissementsPage() {
                 {/* Action */}
                 <div className="space-y-2">
                   <Link
-                    href={`/delegation/etablissements/${etablissement.id}/demande-modification`}
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition-all font-bold border border-blue-100"
-                  >
-                    <RefreshCw size={18} />
-                    <span>Demander une modification</span>
-                  </Link>
-
-                  <Link
                     href={`/etablissements/${etablissement.id}`}
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 rounded-xl transition-all font-bold group-hover:border-emerald-200 border border-transparent"
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl transition-all font-bold shadow-md hover:shadow-lg"
                   >
                     <Eye size={18} />
                     <span>{t('view_details')}</span>
-                    <ChevronLeft size={18} className="mr-auto text-gray-400 group-hover:text-emerald-500" />
+                    <ChevronLeft size={18} className="mr-auto opacity-70" />
                   </Link>
                 </div>
               </div>

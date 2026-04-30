@@ -105,10 +105,10 @@ export default function DelegationEtablissementsPage() {
               </div>
 
               <div className="flex gap-2">
-                <Link href={`/delegation/etablissements/${e.id}/demande-modification`} className="flex-1">
+                <Link href={`/etablissements/${e.id}`} className="flex-1">
                   <Button variant="outline" className="w-full rounded-xl border-gray-100 py-5 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/20 group-hover:border-emerald-200">
-                    <Edit3 size={16} className="mr-2" />
-                    {t('request_edit')}
+                    <Building2 size={16} className="mr-2" />
+                    {te('view_details') || 'Voir les détails'}
                   </Button>
                 </Link>
               </div>

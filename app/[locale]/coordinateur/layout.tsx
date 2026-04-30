@@ -215,8 +215,7 @@ export default function CoordinateurLayout({
 
       {/* Main content */}
       <div 
-        className="transition-all duration-300 lg:w-[calc(100%-18rem)] lg:mr-[18rem] mr-0"
-        style={{ marginRight: '18rem', paddingRight: 0 }} // Force space on right
+        className="transition-all duration-300 lg:mr-72 mr-0"
       >
         {/* Top header */}
         <header className="sticky top-0 z-30 h-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 shadow-sm">

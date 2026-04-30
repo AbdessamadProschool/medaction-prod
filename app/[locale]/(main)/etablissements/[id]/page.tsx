@@ -407,16 +407,8 @@ export default function EtablissementDetailPage() {
                       />
                     </PermissionGuard>
 
-                    {/* Button for requesting an update (Modification workflow) */}
-                    <PermissionGuard permission="etablissements.request.edit">
-                      <Link 
-                        href={`/delegation/etablissements/${etablissement.id}/demande-modification`}
-                        className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-xl font-bold hover:bg-white/20 transition-all shadow-xl"
-                      >
-                         <FileText className="w-5 h-5" />
-                         {t('buttons.request_edit') || 'Demander une mise à jour'}
-                      </Link>
-                    </PermissionGuard>
+
+
                   </div>
                   
                   <p className="text-center text-white/50 text-xs mt-4">

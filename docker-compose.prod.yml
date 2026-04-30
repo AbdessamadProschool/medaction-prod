@@ -14,7 +14,7 @@ services:
       # On utilise le disque local pour la DB (plus stable sur Proxmox)
       - ./postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432" # Indispensable pour l'initialisation à distance
+      - "127.0.0.1:5433:5432" # Alignement avec le port par défaut pour éviter le conflit
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U medaction -h 127.0.0.1" ]
       interval: 10s

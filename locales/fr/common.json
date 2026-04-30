@@ -4431,7 +4431,8 @@
       "not_found": "Page introuvable",
       "not_found_desc": "La page que vous recherchez semble avoir été déplacée ou n'existe pas.",
       "unauthorized": "Accès non autorisé",
-      "server_error": "Erreur serveur"
+      "server_error": "Erreur serveur",
+      "service_unavailable": "Service temporairement indisponible. Veuillez réessayer plus tard."
     },
     "placeholders": {
       "email": "exemple@email.com",

@@ -2829,7 +2829,8 @@
       "not_found": "الصفحة غير موجودة",
       "not_found_desc": "الصفحة التي تبحث عنها قد تكون نقلت أو لم تعد موجودة.",
       "unauthorized": "دخول غير مصرح به",
-      "server_error": "خطأ في الخادم"
+      "server_error": "خطأ في الخادم",
+      "service_unavailable": "الخدمة غير متوفرة حالياً. يرجى المحاولة لاحقاً."
     },
     "placeholders": {
       "email": "example@email.com",

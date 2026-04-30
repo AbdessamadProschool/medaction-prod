@@ -259,7 +259,7 @@ export async function POST(request: Request) {
         error: mkdirError instanceof Error ? mkdirError.message : String(mkdirError),
       });
       return NextResponse.json(
-        { error: 'Erreur de configuration du stockage', code: 'STORAGE_ERROR' }, 
+        { error: `Erreur de configuration du stockage: ${mkdirError instanceof Error ? mkdirError.message : String(mkdirError)}`, code: 'STORAGE_ERROR' }, 
         { status: 500 }
       );
     }

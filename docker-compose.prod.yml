@@ -16,7 +16,7 @@ services:
     ports:
       - "127.0.0.1:5433:5432" # Alignement avec le port par défaut pour éviter le conflit
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U medaction -h 127.0.0.1" ]
+      test: [ "CMD-SHELL", "pg_isready -U medaction -d medaction" ]
       interval: 10s
       timeout: 5s
       retries: 5

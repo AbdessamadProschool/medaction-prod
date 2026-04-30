@@ -5,7 +5,8 @@
   },
   "pagination": {
     "prev": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "page_info": "Page {page} sur {total}"
   },
   "governor": {
     "sidebar": {
@@ -217,7 +218,8 @@
       "satisfaction": "Satisfaction",
       "alerts": "Alertes",
       "actualites": "Actualités",
-      "campagnes": "Campagnes"
+      "campagnes": "Campagnes",
+      "evenements": "Événements"
     },
     "reports": {
       "generating": "Génération du rapport...",
@@ -466,7 +468,15 @@
       "link_copied": "Lien copié dans le presse-papiers !",
       "copy_failed": "Impossible de copier le lien"
     },
-    "campaign_ended": "Campagne terminée"
+    "campaign_ended": "Campagne terminée",
+    "showing": "عرض {start}-{end} من أصل {total} مبادرة",
+    "filter_title": "تصفية المبادرات",
+    "badge": "حملات",
+    "featured": "حملة مميزة",
+    "participating": "جاري المشاركة...",
+    "success_title": "تمت العملية بنجاح",
+    "success_message": "شكراً لمشاركتك في هذه المبادرة !",
+    "close": "إغلاق"
   },
   "notifications": {
     "title": "Notifications",
@@ -664,6 +674,56 @@
       "related_articles": "Dans la même catégorie",
       "not_found": "Article non trouvé",
       "back_to_list": "Retour à la liste"
+    },
+    "news_page": {
+      "page_title": "الأخبار والمستجدات",
+      "total_news": "{count} خبر",
+      "filters": "تصفية",
+      "new_news": "خبر جديد",
+      "search_placeholder": "بحث في الأخبار...",
+      "all_sectors": "جميع القطاعات",
+      "reset": "إعادة تعيين",
+      "no_news": "لا توجد أخبار",
+      "no_results": "لم يتم العثور على نتائج",
+      "create_first": "كن أول من ينشر خبراً",
+      "highlight": "مميز",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "views": "{count} مشاهدة",
+      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
+      "modal": {
+        "title": "تفاصيل الخبر",
+        "resume": "الملخص",
+        "no_resume": "لا يوجد ملخص",
+        "sector": "القطاع",
+        "views": "المشاهدات",
+        "establishment": "المؤسسة",
+        "commune": "الجماعة",
+        "created_on": "أنشئ في {date}",
+        "change_status": "تغيير الحالة",
+        "view_online": "عرض على الموقع",
+        "remove_highlight": "إزالة التمييز",
+        "add_highlight": "تمييز الخبر",
+        "delete": "حذف الخبر"
+      },
+      "statuses": {
+        "BROUILLON": "مسودة",
+        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
+        "VALIDEE": "تم التحقق",
+        "PUBLIEE": "منشور",
+        "DEPUBLIEE": "غير منشور",
+        "ARCHIVEE": "مؤرشف"
+      },
+      "messages": {
+        "loading_error": "خطأ أثناء التحميل",
+        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
+        "highlight_removed": "تمت إزالة التمييز بنجاح",
+        "highlight_added": "تم تمييز الخبر بنجاح",
+        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
+        "deleted": "تم الحذف بنجاح",
+        "error": "حدث خطأ غير متوقع"
+      }
     }
   },
   "articles_page": {
@@ -696,7 +756,9 @@
       "ECOLOGIE": "Écologie"
     },
     "read": "Lire",
-    "tags": "Étiquettes"
+    "tags": "Étiquettes",
+    "showing": "عرض {start}-{end} من أصل {total} مقال",
+    "filter_title": "تصفية المقالات"
   },
   "contact_page": {
     "title": "Contactez-nous",
@@ -976,6 +1038,137 @@
         "ADMIN": "Administrateur",
         "SUPER_ADMIN": "Super Administrateur",
         "GOUVERNEUR": "Gouverneur"
+      },
+      "page_title": "إدارة المستخدمين",
+      "total_users": "Utilisateurs totaux",
+      "export": "تصدير",
+      "add": "إضافة",
+      "search_placeholder": "بحث...",
+      "filter_roles_all": "جميع الأدوار",
+      "filter_status_all": "جميع الحالات",
+      "reset_filters": "إعادة ضبط",
+      "no_users": "لا يوجد مستخدمون",
+      "pagination": "صفحة {start}-{end} من {total}",
+      "role_descriptions": {
+        "CITOYEN": "وصول مواطن قياسي",
+        "DELEGATION": "ممثل إقليمي",
+        "AUTORITE_LOCALE": "إدارة ترابية",
+        "COORDINATEUR_ACTIVITES": "إشراف ميداني",
+        "ADMIN": "إدارة تقنية",
+        "SUPER_ADMIN": "وصول كامل",
+        "GOUVERNEUR": "إشراف شامل"
+      },
+      "sectors": {
+        "EDUCATION": "تعليم",
+        "SANTE": "صحة",
+        "SPORT": "رياضة",
+        "SOCIAL": "اجتماعي",
+        "CULTUREL": "ثقافي",
+        "AUTRE": "آخر"
+      },
+      "table": {
+        "user": "المستخدم",
+        "role": "الدور",
+        "status": "الحالة",
+        "sector_establishment": "القطاع / المؤسسة",
+        "activity": "النشاط",
+        "actions": "إجراءات",
+        "actions_count": "{count} إجراءات",
+        "estab_count": "{count} مؤسسات"
+      },
+      "statuses": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "activated": "مفعل",
+        "deactivated": "معطل"
+      },
+      "actions": {
+        "edit_role": "تعديل الدور",
+        "reset_password": "إعادة ضبط كلمة المرور",
+        "deactivate": "تعطيل",
+        "activate": "تفعيل",
+        "delete": "حذف"
+      },
+      "messages": {
+        "error": "حدث خطأ",
+        "status_changed": "الحالة {status}",
+        "delete_confirm": "حذف {name} ؟",
+        "user_deleted": "تم حذف المستخدم",
+        "reset_password_confirm": "إعادة التعيين لـ {name} ؟",
+        "reset_password_alert": "كلمة المرور الجديدة: {password}",
+        "reset_password_success": "تم إعادة التعيين"
+      },
+      "create_modal": {
+        "title": "مستخدم جديد",
+        "subtitle": "إنشاء حساب",
+        "fields": {
+          "first_name": "الاسم الشخصي",
+          "last_name": "الاسم العائلي",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "password": "كلمة المرور",
+          "confirm_password": "تأكيد",
+          "role": "الدور",
+          "sector": "القطاع",
+          "commune": "الجماعة",
+          "establishments": "المؤسسات ({count})",
+          "active_account": "حساب نشط"
+        },
+        "placeholders": {
+          "first_name": "الاسم الشخصي",
+          "last_name": "الاسم العائلي",
+          "email": "email@example.com",
+          "phone": "06XXXXXXXX",
+          "password": "كلمة المرور"
+        },
+        "helpers": {
+          "commune_helper": "الجماعة التابعة",
+          "establishments_helper": "المؤسسات المدارة (متعددة الخيارات)"
+        },
+        "select_option": {
+          "sector": "اختر قطاعا",
+          "commune": "اختر جماعة"
+        },
+        "cancel_btn": "إلغاء",
+        "submit_btn": "إنشاء",
+        "errors": {
+          "password_mismatch": "كلمتا المرور غير متطابقتين",
+          "password_length": "6 أحرف كحد أدنى",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "المؤسسة مطلوبة",
+          "create_error": "خطأ في الإنشاء",
+          "server_error": "خطأ في الخادم"
+        },
+        "success": "تم إنشاء حساب {name}"
+      },
+      "edit_role_modal": {
+        "title": "تعديل الدور",
+        "current_role": "الدور الحالي",
+        "new_role": "الدور الجديد",
+        "errors": {
+          "edit_error": "خطأ في التعديل",
+          "sector_required": "القطاع مطلوب",
+          "commune_required": "الجماعة مطلوبة",
+          "establishment_required": "المؤسسة مطلوبة",
+          "server_error": "خطأ في الخادم"
+        },
+        "loading": "جاري التحميل..."
+      }
+    },
+    "backups": {
+      "title": "نسخ النظام الاحتياطية",
+      "subtitle": "تاريخ نقاط استعادة قاعدة البيانات الخاصة بك.",
+      "create": "نسخة جديدة",
+      "restore": "استعادة",
+      "empty_title": "لا توجد نسخ احتياطية",
+      "empty_desc": "لم تقم بإنشاء أي نقاط استعادة للنظام بعد.",
+      "create_first": "إنشاء أول نسخة احتياطية",
+      "success_create": "تم إنشاء النسخة الاحتياطية بنجاح",
+      "success_restore": "تمت استعادة النظام بنجاح",
+      "messages": {
+        "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
+        "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه."
       }
     }
   },
@@ -1089,7 +1282,10 @@
     "badge": "Agenda Provincial",
     "showing": "Affichage de {start}-{end} sur {total} événements",
     "empty_title": "Aucun événement trouvé",
-    "empty_desc": "Modifiez vos filtres de recherche pour trouver des événements."
+    "empty_desc": "Modifiez vos filtres de recherche pour trouver des événements.",
+    "common": {
+      "view_details": "عرض التفاصيل"
+    }
   },
   "filters": {
     "title": "Filtres",
@@ -1208,8 +1404,19 @@
       "description": "Description détaillée",
       "description_placeholder": "Expliquez le problème en détail : quoi, quand, impact sur les citoyens...",
       "tip_title": "Conseil pour une réclamation efficace",
-      "tip_text": "Soyez précis dans votre description et ajoutez des photos claires pour accélérer le traitement."
-    }
+      "tip_text": "Soyez précis dans votre description et ajoutez des photos claires pour accélérer le traitement.",
+      "location_label": "الموقع الجغرافي",
+      "address_label": "العنوان التفصيلي",
+      "commune_label": "الجماعة",
+      "commune_select": "اختر الجماعة...",
+      "category_label": "فئة الشكاية",
+      "category_select": "اختر الفئة...",
+      "title_label": "عنوان الشكاية",
+      "description_label": "وصف تفصيلي",
+      "address_placeholder_field": "العنوان الكامل..."
+    },
+    "new_title": "شكاية جديدة",
+    "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي"
   },
   "security_page": {
     "back_profile": "Retour au profil",
@@ -1739,7 +1946,8 @@
       "backup": "Sauvegarde",
       "legal": "Mentions Légales",
       "help": "Aide & Support",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "backups": "Sauvegardes"
     },
     "dashboard": {
       "header": {
@@ -2066,7 +2274,12 @@
         "all_statuses": "Tous les statuts",
         "reset": "Réinitialiser",
         "featured": "Mis en avant",
-        "no_resume": "Aucun résumé"
+        "no_resume": "Aucun résumé",
+        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟",
+        "deleted": "تم الحذف بنجاح",
+        "highlighted": "تم التمييز بنجاح",
+        "unhighlighted": "تم إلغاء التمييز",
+        "status_changed": "تم تغيير الحالة بنجاح"
       },
       "stats": {
         "total": "Total",
@@ -2144,7 +2357,9 @@
         "load_error": "Erreur lors du chargement de l'article",
         "save_error": "Erreur lors de la sauvegarde de l'article",
         "delete_error": "Erreur lors de la suppression de l'article"
-      }
+      },
+      "filter_status": "الحالة",
+      "filter_sector": "القطاع"
     },
     "news": {
       "create_title": "Nouvelle Actualité",
@@ -2298,7 +2513,11 @@
         "elevesFilles": "Total Filles",
         "elevesPrescolaireFilles": "Filles Préscolaire",
         "nouveauxInscritsFilles": "Filles Nvx Inscrits",
-        "fillesDerniereAnnee": "Filles Dern. Année"
+        "fillesDerniereAnnee": "Filles Dern. Année",
+        "statut_fonctionnel": "Statut fonctionnel",
+        "voie_acces": "Voie d accès",
+        "transport_public": "Transport public",
+        "distance_chef_lieu": "Distance au chef-lieu"
       },
       "actions": {
         "cancel": "Annuler",
@@ -2342,7 +2561,8 @@
           "RENOVATION": "Rénovation",
           "FERME": "Fermé"
         }
-      }
+      },
+      "view_details": "Voir les détails"
     },
     "events": {
       "new_title": "Nouvel Événement",
@@ -2666,7 +2886,13 @@
           "accept_desc": "La réclamation est valide et sera traitée",
           "reject_btn": "Rejeter la réclamation",
           "reject_desc": "La réclamation est invalide ou dupliquée",
-          "reject_reason_placeholder": "Motif du rejet (obligatoire)"
+          "reject_reason_placeholder": "Motif du rejet (obligatoire)",
+          "reject_placeholder": "سبب الرفض (مطلوب)",
+          "confirm_reject": "تأكيد الرفض"
+        },
+        "delete": {
+          "title": "حذف الشكاية",
+          "confirm_question": "هل أنت متأكد من حذف هذه الشكاية؟ هذا الإجراء لا يمكن التراجع عنه."
         }
       },
       "page": "Page",
@@ -4067,7 +4293,15 @@
     "title": "Télécharger les photos",
     "count": "{count} photo(s)",
     "zip_ready": "Archive ZIP prête",
-    "downloading": "Téléchargement..."
+    "downloading": "Téléchargement...",
+    "completed": "تم التحميل !",
+    "error": "خطأ",
+    "button_label": "{count} صورة",
+    "zip_label": "تحميل الصور (ZIP)",
+    "compressing": "جاري الضغط...",
+    "export_title": "تصدير الصور",
+    "photos_available": "{count} صورة متاحة",
+    "download_tooltip": "تحميل {count} صورة"
   },
   "authority_statistics": {
     "title": "Statistiques",
@@ -5741,7 +5975,8 @@
     "processing_admin": "Votre demande est en cours d'examen par l'administration.",
     "processed_on": "Demande traitée le {date}",
     "back_list": "Retour à la liste",
-    "update_etab": "Mise à jour de l'établissement"
+    "update_etab": "Mise à jour de l'établissement",
+    "soumettre": "إرسال الطلب"
   },
   "history_actions": {
     "CREATION": "Création de la réclamation",

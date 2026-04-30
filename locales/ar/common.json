@@ -120,7 +120,8 @@
         "performance": "مؤشر الأداء الإقليمي",
         "reclamations": "تدفق الشكايات",
         "map": "الخريطة التفاعلية",
-        "reports": "التقارير والبيانات"
+        "reports": "التقارير والبيانات",
+        "evenements": "Événements"
       },
       "notifications": {
         "title": "الإشعارات",
@@ -294,7 +295,8 @@
         "periods": {
           "last_month": "الشهر الماضي",
           "q4": "الربع الرابع",
-          "y2025": "سنة 2025"
+          "y2025": "سنة 2025",
+          "weekly": "Semaine en cours"
         },
         "formats": {
           "web": "نسخة ويب (قابل للطباعة)"
@@ -517,6 +519,10 @@
         "load_error": "خطأ أثناء تحميل المقال",
         "save_error": "خطأ أثناء حفظ المقال",
         "delete_error": "خطأ أثناء حذف المقال"
+      },
+      "filters_labels": {
+        "all": "Tous les articles",
+        "featured": "Mis en avant uniquement"
       }
     },
     "news": {
@@ -699,6 +705,7 @@
       "total": "المجموع"
     },
     "establishments": {
+      "view_details": "عرض التفاصيل",
       "back_list": "العودة إلى القائمة",
       "create_title": "إضافة مؤسسة جديدة",
       "create_subtitle": "ملء النموذج لإضافة مؤسسة",
@@ -1236,6 +1243,89 @@
         "validated": "تم قبول الحدث بنجاح",
         "rejected": "تم رفض الحدث",
         "error": "حدث خطأ أثناء العملية"
+      },
+      "communeId": "الجماعة",
+      "dateDebut": "تاريخ البدء",
+      "dateFin": "تاريخ الانتهاء",
+      "page": "الصفحة",
+      "limit": "الحد",
+      "create_modal": {
+        "title": "Nouvel événement",
+        "step_indicator": "Étape {current} sur {total}",
+        "steps": {
+          "info": "Informations",
+          "location": "Localisation",
+          "participation": "Participation",
+          "media": "Médias"
+        },
+        "form": {
+          "title_label": "العنوان",
+          "title_placeholder": "أدخل العنوان...",
+          "desc_label": "الوصف",
+          "desc_placeholder": "أدخل الوصف...",
+          "sector_label": "القطاع",
+          "category_label": "الفئة",
+          "select_placeholder": "اختر...",
+          "commune_label": "الجماعة",
+          "establishment_label": "المؤسسة",
+          "location_label": "المكان",
+          "location_placeholder": "أدخل المكان...",
+          "map_label": "الخريطة",
+          "start_date": "تاريخ البدء",
+          "end_date": "تاريخ الانتهاء",
+          "start_time": "وقت البدء",
+          "end_time": "وقت الانتهاء",
+          "max_capacity": "الطاقة الاستيعابية",
+          "capacity_placeholder": "عدد الحضور...",
+          "is_free": "مجاني",
+          "price": "السعر (درهم)",
+          "registration_link": "رابط التسجيل",
+          "photos_label": "الصور",
+          "upload_text": "رفع الصور",
+          "upload_hint": "JPG, PNG حتى 5MB",
+          "summary_title": "ملخص",
+          "summary": {
+            "title": "Titre",
+            "sector": "Secteur",
+            "date": "Date",
+            "location": "Lieu",
+            "price": "السعر (درهم)",
+            "photos": "Photos"
+          }
+        },
+        "buttons": {
+          "save_draft": "حفظ كمسودة",
+          "cancel": "إلغاء",
+          "prev": "السابق",
+          "next": "التالي",
+          "create": "إنشاء"
+        },
+        "errors": {
+          "title_required": "Le titre est requis",
+          "desc_required": "La description est requise",
+          "category_required": "La catégorie est requise",
+          "commune_required": "La commune est requise",
+          "location_required": "Le lieu est requis",
+          "date_required": "La date est requise",
+          "price_required": "Le prix est requis"
+        },
+        "categories": {
+          "conf": "Conférence",
+          "formation": "Formation",
+          "atelier": "Atelier",
+          "festival": "Festival",
+          "competition": "Compétition",
+          "spectacle": "Spectacle",
+          "exposition": "Exposition",
+          "open_day": "Journée portes ouvertes",
+          "campaign": "Campagne",
+          "rencontre": "Rencontre",
+          "ceremony": "Cérémonie",
+          "autre": "Autre"
+        }
+      },
+      "form": {
+        "sector": "Secteur de l'événement"
       }
     },
     "users_page": {
@@ -1485,6 +1575,15 @@
         "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
         "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه."
       }
+    },
+    "history_actions": {
+      "CREATION": "Création",
+      "VALIDATION": "Validation",
+      "REJET": "Rejet",
+      "AFFECTATION": "Affectation",
+      "RESOLUTION": "Résolution",
+      "UPDATE": "Mise à jour",
+      "ACCEPTATION": "Acceptation"
     }
   },
   "super_admin": {
@@ -1658,7 +1757,13 @@
       "version": "إصدار"
     },
     "home": "الرئيسية",
-    "dashboard_admin": "لوحة تحكم المسؤول"
+    "dashboard_admin": "لوحة تحكم المسؤول",
+    "dashboard": {
+      "total_users": "Utilisateurs Totaux",
+      "active_sessions": "Sessions Actives",
+      "database_size": "Taille BDD",
+      "server_status": "État du Serveur"
+    }
   },
   "maintenance": {
     "title": "الموقع في وضع الصيانة",
@@ -1879,7 +1984,10 @@
     "see_all": "تصفح كل الفعاليات",
     "date": "التاريخ والتوقيت",
     "location": "الموقع",
-    "organizer": "الجهة المنظمة"
+    "organizer": "الجهة المنظمة",
+    "form": {
+      "sector": "Secteur de l'événement"
+    }
   },
   "news": {
     "title": "المستجدات",
@@ -2620,7 +2728,7 @@
       "title_label": "عنوان الشكاية",
       "title_placeholder": "وصف مختصر للمشكلة...",
       "description_label": "وصف تفصيلي",
-      "description_placeholder": "اشرح المشكلة بالتفصيل: ماذا حدث، متى، وكيف يؤثر على المواطنين...",
+      "description_placeholder": "اشرح المشكلة بالتفصيل...",
       "commune": "الجماعة",
       "select_commune": "اختر الجماعة",
       "district": "الحي / الدوار",
@@ -2628,15 +2736,11 @@
       "address": "العنوان",
       "address_placeholder_field": "العنوان الكامل...",
       "location_precise": "تحديد الموقع بدقة",
-      "location_help": "حدد موقع المشكلة على الخريطة بدقة لمساعدة السلطات في التدخل السريع",
       "locating": "جاري تحديد الموقع...",
-      "my_position": "موقعي الحالي",
       "position_success": "تم تحديد موقعك بنجاح",
       "category": "الفئة",
       "title": "عنوان الشكاية",
-      "title_placeholder": "وصف مختصر للمشكلة...",
       "description": "وصف تفصيلي",
-      "description_placeholder": "اشرح المشكلة بالتفصيل...",
       "tip_title": "نصيحة لشكاية فعّالة",
       "tip_text": "كن دقيقاً في الوصف وأضف صوراً واضحة لتسريع معالجة شكايتك."
     }
@@ -5030,15 +5134,60 @@
     },
     "campagnes": {
       "read": "عرض الحملات",
-      "create": "إنشاء حملة"
+      "create": "إنشاء حملة",
+      "edit": "Modifier campagne",
+      "delete": "Supprimer campagne",
+      "activate": "Gérer statut campagne",
+      "participate": "Participer campagne"
     },
     "bilans": {
       "read": "عرض الحصائل"
     },
     "map": {
-      "view": {
-        "full": "عرض كامل للخريطة"
+      "view": "عرض الخريطة",
+      "view_full": "عرض كامل للخريطة"
+    },
+    "programmes": {
+      "read": "Voir programmes",
+      "create": "إنشاء",
+      "edit": "Modifier programme",
+      "delete": "Supprimer programme",
+      "validate": "Valider programme",
+      "report": "Remplir rapport activité"
+    },
+    "suggestions": {
+      "create": "إنشاء",
+      "read": {
+        "own": "Voir mes suggestions"
       }
+    },
+    "stats": {
+      "view": {
+        "global": "Voir stats globales",
+        "secteur": "Voir stats secteur",
+        "commune": "Voir stats commune",
+        "etablissement": "Voir stats établissement"
+      }
+    },
+    "reports": {
+      "export": "Exporter rapports"
+    },
+    "system": {
+      "settings": {
+        "read": "Voir paramètres",
+        "edit": "Modifier paramètres"
+      },
+      "logs": {
+        "view": "Voir logs"
+      },
+      "backup": "Gérer backups",
+      "restore": "Restaurer système"
+    },
+    "permissions": {
+      "manage": "Gérer permissions"
+    },
+    "communes": {
+      "manage": "Gérer communes"
     }
   },
   "contact_page": {

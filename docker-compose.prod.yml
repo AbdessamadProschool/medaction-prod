@@ -42,6 +42,7 @@ services:
       # Mettez l'URL interne du réseau Docker
       - DATABASE_URL=postgresql://medaction:medaction_secure_2024@postgres:5432/medaction
       - NEXTAUTH_URL=https://bo.provincemediouna.ma
+      - NEXTAUTH_URL_INTERNAL=http://127.0.0.1:3000
       - NEXTAUTH_SECRET=votre_secret_prod_complexe_a_changer
       - NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN}
       # Licence

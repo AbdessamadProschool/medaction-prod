@@ -2745,10 +2745,10 @@
       "tip_text": "كن دقيقاً في الوصف وأضف صوراً واضحة لتسريع معالجة شكايتك."
     },
     "success_page": {
-      "title": "?? ????? ?????? ?????",
-      "message": "????? ??? ?? ????? ?????? ????? ????? ???????? ?? ???? ???.",
-      "view_my_reclamations": "???? ???????",
-      "back_home": "?????? ????????"
+      "title": "تم إرسال شكايتك بنجاح",
+      "message": "شكراً لك، تم تسجيل شكايتك بنجاح وسيتم معالجتها في أقرب وقت.",
+      "view_my_reclamations": "تتبع شكاياتي",
+      "back_home": "العودة للرئيسية"
     }
   },
   "auth": {
@@ -5057,7 +5057,7 @@
     "SECURITE": "الأمن العام",
     "Autre": "أخرى",
     "AUTRE": "طلبات أخرى",
-    "social": "???????"
+    "social": "اجتماعي"
   },
   "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
   "suggestion_rate_limit": "تم استنفاد عدد الاقتراحات المسموح به. يمكنكم تقديم اقتراح جديد ابتداءً من {date}.",
@@ -5146,7 +5146,7 @@
       "edit": "Modifier campagne",
       "delete": "Supprimer campagne",
       "activate": "Gérer statut campagne",
-      "participate": "???????? ?? ???????"
+      "participate": "المشاركة في الحملات"
     },
     "bilans": {
       "read": "عرض الحصائل"
@@ -5164,9 +5164,9 @@
       "report": "Remplir rapport activité"
     },
     "suggestions": {
-      "create": "????? ??????",
+      "create": "إنشاء اقتراح",
       "read": {
-        "own": "??? ????????"
+        "own": "عرض مقترحاتي"
       }
     },
     "stats": {

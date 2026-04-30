@@ -2744,7 +2744,12 @@
       "tip_title": "نصيحة لشكاية فعّالة",
       "tip_text": "كن دقيقاً في الوصف وأضف صوراً واضحة لتسريع معالجة شكايتك."
     },
-    "success_page": "تم إرسال شكايتك بنجاح"
+    "success_page": {
+      "title": "?? ????? ?????? ?????",
+      "message": "????? ??? ?? ????? ?????? ????? ????? ???????? ?? ???? ???.",
+      "view_my_reclamations": "???? ???????",
+      "back_home": "?????? ????????"
+    }
   },
   "auth": {
     "account_pending": "حسابكم قيد المراجعة من قبل الإدارة. يرجى الانتظار حتى يتم تفعيله.",
@@ -5051,7 +5056,8 @@
     "NUISANCES": "الأضرار (ضجيج/روائح)",
     "SECURITE": "الأمن العام",
     "Autre": "أخرى",
-    "AUTRE": "طلبات أخرى"
+    "AUTRE": "طلبات أخرى",
+    "social": "???????"
   },
   "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
   "suggestion_rate_limit": "تم استنفاد عدد الاقتراحات المسموح به. يمكنكم تقديم اقتراح جديد ابتداءً من {date}.",
@@ -5140,7 +5146,7 @@
       "edit": "Modifier campagne",
       "delete": "Supprimer campagne",
       "activate": "Gérer statut campagne",
-      "participate": "Participer campagne"
+      "participate": "???????? ?? ???????"
     },
     "bilans": {
       "read": "عرض الحصائل"
@@ -5158,9 +5164,9 @@
       "report": "Remplir rapport activité"
     },
     "suggestions": {
-      "create": "إنشاء",
+      "create": "????? ??????",
       "read": {
-        "own": "Voir mes suggestions"
+        "own": "??? ????????"
       }
     },
     "stats": {

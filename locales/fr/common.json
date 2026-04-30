@@ -1416,7 +1416,13 @@
       "address_placeholder_field": "العنوان الكامل..."
     },
     "new_title": "شكاية جديدة",
-    "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي"
+    "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي",
+    "success_page": {
+      "title": "R�clamation envoy�e avec succ�s",
+      "message": "Merci, votre r�clamation a �t� enregistr�e avec succ�s et sera trait�e dans les plus brefs d�lais.",
+      "view_my_reclamations": "Suivre mes r�clamations",
+      "back_home": "Retour � l'accueil"
+    }
   },
   "security_page": {
     "back_profile": "Retour au profil",
@@ -3405,7 +3411,7 @@
       "edit": "Modifier campagne",
       "delete": "Supprimer campagne",
       "activate": "Gérer statut campagne",
-      "participate": "Participer campagne"
+      "participate": "Participer aux campagnes"
     },
     "programmes": {
       "read": "Voir programmes",
@@ -3416,7 +3422,7 @@
       "report": "Remplir rapport activité"
     },
     "suggestions": {
-      "create": "Créer suggestion",
+      "create": "Cr�er une suggestion",
       "read": {
         "own": "Voir mes suggestions"
       }
@@ -4460,7 +4466,8 @@
     "NUISANCES": "Nuisances",
     "SECURITE": "Sécurité publique",
     "Autre": "Autre",
-    "AUTRE": "Autres demandes"
+    "AUTRE": "Autres demandes",
+    "social": "Social"
   },
   "coordinator": {
     "dashboard": {

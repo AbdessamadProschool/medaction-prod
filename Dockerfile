@@ -37,8 +37,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copie des fichiers standalone générés
-COPY --from=builder /app/public ./public
+# Copie des fichiers standalone générés (avec ownership correct)
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -49,8 +49,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/locales ./locales
 
 # Créer les dossiers nécessaires à l'écriture runtime AVANT de changer d'utilisateur
-RUN mkdir -p /app/backups /app/public/uploads && \
-    chown -R nextjs:nodejs /app/backups /app/public/uploads && \
+RUN mkdir -p /app/backups /app/public/uploads/reclamations && \
+    chown -R nextjs:nodejs /app/backups /app/public /app/public/uploads && \
     chmod -R 775 /app/backups /app/public/uploads
 
 USER nextjs

@@ -249,7 +249,20 @@ export async function POST(request: Request) {
        return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
     }
 
-    await mkdir(uploadDir, { recursive: true });
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (mkdirError) {
+      SystemLogger.error('upload-reclamation', 'Impossible de créer le répertoire upload', {
+        uploadDir,
+        UPLOAD_BASE,
+        STORAGE_PATH: STORAGE_PATH || 'non défini',
+        error: mkdirError instanceof Error ? mkdirError.message : String(mkdirError),
+      });
+      return NextResponse.json(
+        { error: 'Erreur de configuration du stockage', code: 'STORAGE_ERROR' }, 
+        { status: 500 }
+      );
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     // 8. PROCESS EACH FILE WITH FULL SECURITY VALIDATION
@@ -264,7 +277,7 @@ export async function POST(request: Request) {
         // ─────────────────────────────────────────────────────────────────
         const validation = await validateUploadedFile(file, {
           checkContent: true,
-          strictMode: true,
+          strictMode: false, // FIX: strictMode cause des faux positifs sur images légitimes (données binaires)
         });
 
         if (!validation.isValid) {
@@ -375,10 +388,11 @@ export async function POST(request: Request) {
 
   } catch (error) {
     SystemLogger.error('upload-reclamation', 'Erreur critique upload réclamation', {
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
     });
     return NextResponse.json(
-      { error: 'Erreur lors de l\'upload', code: 'SERVER_ERROR' }, 
+      { error: 'Erreur lors de l\'upload', code: 'SERVER_ERROR', detail: error instanceof Error ? error.message : 'Unknown' }, 
       { status: 500 }
     );
   }

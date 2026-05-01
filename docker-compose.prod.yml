@@ -12,8 +12,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: md5
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      # On utilise le disque local pour la DB (plus stable sur Proxmox)
-      - ./postgres_data:/var/lib/postgresql/data
+      - medaction_postgres_data:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5433:5432" # Alignement avec le port par défaut pour éviter le conflit
     healthcheck:
@@ -54,15 +53,15 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # STOCKAGE SECURISE SUR DISQUE SECONDAIRE
-      - /mnt/data/medaction/uploads:/app/public/uploads
+      - medaction_uploads:/app/public/uploads
     networks:
       - medaction-network
 
-# Plus besoin de volumes nommés locaux car on utilise des chemins absolus
-# volumes:
-#   postgres_data_prod:
-#   uploads_data:
+volumes:
+  medaction_postgres_data:
+    external: true
+  medaction_uploads:
+    external: true
 
 networks:
   medaction-network:

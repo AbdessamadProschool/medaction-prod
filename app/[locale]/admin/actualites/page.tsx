@@ -204,7 +204,8 @@ export default function AdminActualitesPage() {
   const totalActualites = Object.values(stats).reduce((a, b) => a + b, 0);
 
   const getSecteurLabel = (key: string) => {
-    if (key === 'AUTRE') return 'Autre';
+    if (!key) return t('all_sectors');
+    if (key === 'AUTRE') return tSectors('AUTRE');
     return tSectors(key as any);
   };
 

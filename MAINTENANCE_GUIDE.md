@@ -117,4 +117,21 @@ find /var/lib/docker/volumes/medaction_uploads/_data -name "*.tmp" -delete
 
 ---
 
-*Document mis à jour le 30 Avril 2026 suite à la correction des uploads et des traductions.*
+## 7. 🔍 Résolution des Problèmes Récurrents
+
+### Les images ne s'affichent pas (404)
+1. **Volumes Docker :** Vérifiez que le volume `medaction_uploads` est bien monté dans le `docker-compose.prod.yml`.
+2. **Casse des fichiers (Case Sensitivity) :** Si un dossier est nommé `CAMPAGNE` au lieu de `campagne`, le système de routage (`app/api/uploads/route.ts`) gère désormais cela, mais assurez-vous que les fichiers existent réellement dans le volume.
+3. **Permissions :** Si vous copiez des fichiers manuellement, lancez :
+   ```bash
+   docker exec -u root medaction-app chown -R nextjs:nodejs /app/public/uploads
+   ```
+
+### Erreur "MISSING_MESSAGE" ou "Cannot read split"
+Cette erreur survient si une clé de traduction est manquante dans `locales/ar/common.json` ou `locales/fr/common.json`.
+1. **Identifier la clé :** Regardez l'interface, si vous voyez un texte comme `admin.news_page.sectors`, c'est que la clé est manquante.
+2. **Action :** Ajoutez la clé manquante dans les deux fichiers JSON.
+3. **Cas particulier :** Si le message utilise un pluriel (ex: `{count}`), assurez-vous que la variable est bien passée dans le code.
+
+---
+*Document mis à jour le 1 Mai 2026 suite à la stabilisation de la production et la correction des traductions.*

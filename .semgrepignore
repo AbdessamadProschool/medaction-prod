@@ -33,3 +33,12 @@ prisma/update_pass.txt
 
 # LOGGER — formatstring est intentionnel (pas user-input)
 lib/logger.ts
+
+# FICHIERS DE TEST — vulnérabilités intentionnelles pour valider les protections
+__tests__/
+tests/
+
+# UTILITAIRE SÉCURITÉ — faux positif ironique (path-join-resolve-traversal)
+# Ce fichier EST l'anti-path-traversal, pas la vulnérabilité.
+# Semgrep détecte path.resolve() dans notre confinement — c'est la protection elle-même.
+lib/utils/safe-path.ts

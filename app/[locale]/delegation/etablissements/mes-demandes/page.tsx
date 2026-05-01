@@ -79,14 +79,14 @@ export default function MesDemandesPage() {
           {te('back_list')}
         </Link>
 
-        {/* Header Header Premium */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-gray-900 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-200 dark:shadow-none">
-              <ClipboardList size={32} />
+        {/* Header Ultra-Compact */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[hsl(213,80%,28%)] rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-900/20">
+              <ClipboardList size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+              <h1 className="text-xl font-black text-gray-900 dark:text-white leading-tight">
                 {t('mes_demandes_title')}
               </h1>
               <p className="text-gray-500 dark:text-gray-400 font-medium">
@@ -103,11 +103,11 @@ export default function MesDemandesPage() {
                 placeholder="Rechercher..." 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-12 pr-6 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl w-full md:w-64 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
+                className="pl-12 pr-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
               />
             </div>
-            <Button variant="outline" onClick={fetchDemandes} className="rounded-2xl h-12 px-6 border-gray-200 dark:border-gray-700 font-bold">
-              <History size={18} className="mr-2" />
+            <Button variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
+              <History size={16} className="mr-2" />
               {te('requests.refresh')}
             </Button>
           </div>
@@ -142,15 +142,15 @@ export default function MesDemandesPage() {
                     layoutId={`card-${d.id}`}
                     key={d.id}
                     onClick={() => setSelectedDemande(d)}
-                    className={`p-6 rounded-[1.75rem] border-2 transition-all cursor-pointer relative overflow-hidden group ${
+                    className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden group ${
                       selectedDemande?.id === d.id 
-                        ? 'border-emerald-500 bg-emerald-50/30 dark:bg-emerald-500/10 shadow-lg shadow-emerald-500/5' 
-                        : 'border-white dark:border-gray-900 bg-white dark:bg-gray-900 hover:border-gray-200 dark:hover:border-gray-700 shadow-sm'
+                        ? 'border-[hsl(213,80%,28%)] bg-blue-50/50 dark:bg-blue-900/10 shadow-md' 
+                        : 'border-transparent bg-white dark:bg-gray-800 hover:border-gray-200 dark:hover:border-gray-700 shadow-sm'
                     }`}
                   >
                     {selectedDemande?.id === d.id && (
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-[2rem] flex items-center justify-center text-emerald-500">
-                         <ChevronRight size={24} />
+                      <div className="absolute top-0 right-0 w-8 h-8 bg-[hsl(213,80%,28%)] rounded-bl-2xl flex items-center justify-center text-white">
+                         <ChevronRight size={16} />
                       </div>
                     )}
                     
@@ -171,10 +171,10 @@ export default function MesDemandesPage() {
                     </h3>
                     
                     <div className="mt-4 flex items-center justify-between">
-                        <span className="text-[10px] text-gray-400 font-bold tracking-tighter">
+                        <span className="text-[10px] text-gray-500 font-bold tracking-tighter">
                           {t('submitted_on', { date: formatDate(new Date(d.createdAt), 'dd/MM/yyyy', { locale: dateLocale }) })}
                         </span>
-                        <Eye size={16} className="text-gray-300 group-hover:text-emerald-500 transition-colors" />
+                        <Eye size={16} className="text-gray-300 group-hover:text-[hsl(213,80%,28%)] transition-colors" />
                     </div>
                   </motion.div>
                 ))
@@ -190,44 +190,41 @@ export default function MesDemandesPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
                 >
                   {/* Banner Detail */}
-                  <div className="bg-gray-900 dark:bg-black p-10 text-white relative">
-                    <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                       <Building2 size={200} />
-                    </div>
-                    <div className="relative z-10 space-y-4">
-                      <div className="flex items-center gap-4">
-                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none py-1.5 px-4 rounded-full text-xs font-black tracking-widest">
+                  <div className="bg-gray-50 dark:bg-gray-900/50 p-6 md:p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div className="relative z-10 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Badge className="bg-[hsl(213,80%,28%)] text-white border-none py-1 px-3 rounded-lg text-[10px] font-black tracking-widest uppercase">
                           {selectedDemande.type === 'CREATION' ? tHistory('CREATION') : tHistory('UPDATE')}
                         </Badge>
-                        <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+                        <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-bold">
                           <Calendar size={14} />
                           {formatDate(new Date(selectedDemande.createdAt), 'PPPP', { locale: dateLocale })}
                         </div>
                       </div>
-                      <h2 className="text-4xl font-black tracking-tight">
+                      <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                         {selectedDemande.donneesModifiees.nom || selectedDemande.etablissement?.nom}
                       </h2>
                     </div>
                   </div>
 
-                  <div className="p-8 md:p-12 space-y-12">
+                  <div className="p-6 md:p-8 space-y-8">
                     {/* Status Summary */}
-                    <div className={`p-8 rounded-[2rem] flex flex-col md:flex-row items-center gap-8 ${
+                    <div className={`p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6 ${
                         selectedDemande.statut === 'APPROUVEE' 
-                          ? 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-900 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/30' 
+                          ? 'bg-green-50 dark:bg-green-900/10 text-green-900 dark:text-green-300 border border-green-200 dark:border-green-900/30' 
                           : selectedDemande.statut === 'REJETEE'
-                            ? 'bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-300 border border-red-100 dark:border-red-900/30'
-                            : 'bg-amber-50 dark:bg-amber-900/10 text-amber-900 dark:text-amber-300 border border-amber-100 dark:border-amber-900/30'
+                            ? 'bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-300 border border-red-200 dark:border-red-900/30'
+                            : 'bg-yellow-50 dark:bg-yellow-900/10 text-yellow-900 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-900/30'
                       }`}>
-                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${
-                          selectedDemande.statut === 'APPROUVEE' ? 'bg-emerald-500 text-white' : 
-                          selectedDemande.statut === 'REJETEE' ? 'bg-red-500 text-white' : 'bg-amber-500 text-white'
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
+                          selectedDemande.statut === 'APPROUVEE' ? 'bg-green-600 text-white' : 
+                          selectedDemande.statut === 'REJETEE' ? 'bg-red-600 text-white' : 'bg-yellow-600 text-white'
                         }`}>
-                          {selectedDemande.statut === 'APPROUVEE' ? <CheckCircle2 size={32} /> : 
-                           selectedDemande.statut === 'REJETEE' ? <XCircle size={32} /> : <Clock size={32} />}
+                          {selectedDemande.statut === 'APPROUVEE' ? <CheckCircle2 size={28} /> : 
+                           selectedDemande.statut === 'REJETEE' ? <XCircle size={28} /> : <Clock size={28} />}
                         </div>
                         <div className="text-center md:text-left space-y-1">
                           <h4 className="text-xl font-black">

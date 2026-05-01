@@ -39,6 +39,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function AdminDemandesPage() {
   const t = useTranslations('establishments_workflow');
   const te = useTranslations('admin.establishments');
+  const tHistory = useTranslations('history_actions');
   const params = useParams();
   const locale = params.locale as string;
   const dateLocale = locale === 'ar' ? ar : fr;
@@ -104,17 +105,17 @@ export default function AdminDemandesPage() {
     <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950/50 p-4 md:p-8">
       <div className="max-w-[1600px] mx-auto space-y-8">
         
-        {/* Header Header Premium */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-gray-900 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-200 dark:shadow-none">
-              <ShieldCheck size={32} />
+        {/* Header Ultra-Compact */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[hsl(213,80%,28%)] rounded-xl flex items-center justify-center text-white shadow-md shadow-blue-900/20">
+              <ShieldCheck size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+              <h1 className="text-xl font-black text-gray-900 dark:text-white leading-tight">
                 {t('admin_validation.title')}
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium">
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
                 {te('requests.subtitle')}
               </p>
             </div>
@@ -122,17 +123,17 @@ export default function AdminDemandesPage() {
           
           <div className="flex items-center gap-3">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" size={18} />
               <input 
                 type="text" 
-                placeholder="Rechercher une demande..." 
+                placeholder="Rechercher..." 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-12 pr-6 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl w-full md:w-64 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
+                className="pl-12 pr-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
               />
             </div>
-            <Button variant="outline" onClick={fetchDemandes} className="rounded-2xl h-12 px-6 border-gray-200 dark:border-gray-700 font-bold">
-              <History size={18} className="mr-2" />
+            <Button variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
+              <History size={16} className="mr-2" />
               {te('requests.refresh')}
             </Button>
           </div>
@@ -167,15 +168,15 @@ export default function AdminDemandesPage() {
                     layoutId={`card-${d.id}`}
                     key={d.id}
                     onClick={() => setSelectedDemande(d)}
-                    className={`p-6 rounded-[1.75rem] border-2 transition-all cursor-pointer relative overflow-hidden group ${
+                    className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden group ${
                       selectedDemande?.id === d.id 
-                        ? 'border-emerald-500 bg-emerald-50/30 dark:bg-emerald-500/10 shadow-lg shadow-emerald-500/5' 
-                        : 'border-white dark:border-gray-900 bg-white dark:bg-gray-900 hover:border-gray-200 dark:hover:border-gray-700 shadow-sm'
+                        ? 'border-[hsl(213,80%,28%)] bg-blue-50/50 dark:bg-blue-900/10 shadow-md' 
+                        : 'border-transparent bg-white dark:bg-gray-800 hover:border-gray-200 dark:hover:border-gray-700 shadow-sm'
                     }`}
                   >
                     {selectedDemande?.id === d.id && (
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-[2rem] flex items-center justify-center text-emerald-500">
-                         <ChevronRight size={24} />
+                      <div className="absolute top-0 right-0 w-8 h-8 bg-[hsl(213,80%,28%)] rounded-bl-2xl flex items-center justify-center text-white">
+                         <ChevronRight size={16} />
                       </div>
                     )}
                     
@@ -192,8 +193,8 @@ export default function AdminDemandesPage() {
                     </div>
                     
                     <h3 className="font-bold text-gray-900 dark:text-white leading-tight">
-                      <span className="opacity-40 font-medium mr-1">
-                        {d.type === 'CREATION' ? "CRÉATION" : "MODIF"} :
+                      <span className="opacity-40 font-medium mr-1 text-[10px] block mb-1 uppercase tracking-widest">
+                        {d.type === 'CREATION' ? tHistory('CREATION') : tHistory('UPDATE')}
                       </span>
                       {d.donneesModifiees.nom || d.etablissement?.nom}
                     </h3>
@@ -221,34 +222,31 @@ export default function AdminDemandesPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
                 >
                   {/* Banner Detail */}
-                  <div className="bg-gray-900 dark:bg-black p-10 text-white relative">
-                    <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-                       <Building2 size={200} />
-                    </div>
-                    <div className="relative z-10 space-y-4">
-                      <div className="flex items-center gap-4">
-                        <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-none py-1.5 px-4 rounded-full text-xs font-black tracking-widest">
-                          {selectedDemande.type}
+                  <div className="bg-gray-50 dark:bg-gray-900/50 p-6 md:p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div className="relative z-10 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Badge className="bg-[hsl(213,80%,28%)] text-white border-none py-1 px-3 rounded-lg text-[10px] font-black tracking-widest uppercase">
+                          {selectedDemande.type === 'CREATION' ? tHistory('CREATION') : tHistory('UPDATE')}
                         </Badge>
-                        <div className="flex items-center gap-2 text-gray-400 text-sm font-medium">
+                        <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-bold">
                           <Calendar size={14} />
                           {formatDate(selectedDemande.createdAt, 'PPPPpp', { locale: dateLocale })}
                         </div>
                       </div>
-                      <h2 className="text-4xl md:text-5xl font-black tracking-tight">
+                      <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                         {selectedDemande.donneesModifiees.nom || selectedDemande.etablissement?.nom}
                       </h2>
                       <div className="flex items-center gap-6 pt-2">
                         <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center">
-                              <UserIcon size={18} className="text-emerald-400" />
+                           <div className="w-10 h-10 bg-gray-200 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                              <UserIcon size={18} className="text-[hsl(213,80%,28%)]" />
                            </div>
                            <div>
-                              <p className="text-[10px] uppercase font-bold text-gray-500 tracking-widest">{t('admin_validation.soumis_par')}</p>
-                              <p className="text-sm font-bold text-white">{selectedDemande.soumisPar.prenom} {selectedDemande.soumisPar.nom}</p>
+                              <p className="text-[9px] uppercase font-black text-gray-400 tracking-widest">{t('admin_validation.soumis_par')}</p>
+                              <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedDemande.soumisPar.prenom} {selectedDemande.soumisPar.nom}</p>
                            </div>
                         </div>
                         {selectedDemande.etablissementId && (
@@ -264,14 +262,14 @@ export default function AdminDemandesPage() {
                     </div>
                   </div>
 
-                  <div className="p-8 md:p-12 space-y-12">
+                  <div className="p-6 md:p-8 space-y-8">
                     {/* Justification Box Premium */}
-                    <div className="bg-amber-50/50 dark:bg-amber-950/10 p-8 rounded-[2rem] border-2 border-amber-100 dark:border-amber-900/30 flex gap-6 shadow-sm">
-                      <div className="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-amber-200 dark:shadow-none">
-                        <AlertCircle size={28} />
+                    <div className="bg-blue-50/50 dark:bg-blue-900/10 p-6 rounded-2xl border border-blue-100 dark:border-blue-900/30 flex gap-4 shadow-sm">
+                      <div className="w-12 h-12 bg-[hsl(213,80%,28%)] rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                        <AlertCircle size={24} />
                       </div>
                       <div>
-                        <h4 className="text-amber-800 dark:text-amber-300 font-black text-lg mb-2 uppercase tracking-wide">
+                        <h4 className="text-[hsl(213,80%,28%)] dark:text-blue-300 font-black text-sm mb-1 uppercase tracking-wide">
                           {t('justification')}
                         </h4>
                         <p className="text-amber-900/70 dark:text-amber-100/70 leading-relaxed text-lg italic font-medium">
@@ -281,14 +279,14 @@ export default function AdminDemandesPage() {
                     </div>
 
                     {/* Data Comparison Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {[
-                        { id: 'general', label: te('sections.general'), icon: Building2, color: 'text-emerald-500', fields: ['nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture'] },
-                        { id: 'location', label: te('sections.localization'), icon: MapPin, color: 'text-red-500', fields: ['communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces'] },
-                        { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-indigo-500', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
-                        { id: 'education', label: te('sections.education'), icon: GraduationCap, color: 'text-orange-500', fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
-                        { id: 'financial', label: te('sections.financial'), icon: Coins, color: 'text-amber-500', fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
-                        { id: 'observations', label: 'Observations', icon: FileText, color: 'text-purple-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
+                        { id: 'general', label: te('sections.general'), icon: Building2, color: 'text-[hsl(213,80%,28%)]', fields: ['nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture'] },
+                        { id: 'location', label: te('sections.localization'), icon: MapPin, color: 'text-blue-600', fields: ['communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces'] },
+                        { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-indigo-600', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
+                        { id: 'education', label: te('sections.education'), icon: GraduationCap, color: 'text-blue-500', fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
+                        { id: 'financial', label: te('sections.financial'), icon: Coins, color: 'text-[hsl(213,80%,40%)]', fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
+                        { id: 'observations', label: 'Observations', icon: FileText, color: 'text-indigo-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
                       ].map(group => {
                         const groupFields = Object.entries(selectedDemande.donneesModifiees)
                           .filter(([k]) => group.fields.includes(k));
@@ -301,7 +299,7 @@ export default function AdminDemandesPage() {
                                <group.icon size={18} />
                                {group.label}
                             </h4>
-                            <div className="bg-gray-50/50 dark:bg-gray-800/40 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800/50">
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700 shadow-sm">
                               {groupFields.map(([k, v]: [string, any]) => (
                                 <div key={k} className="flex justify-between items-center py-4 first:pt-0 last:pb-0">
                                   <div className="flex flex-col">
@@ -331,8 +329,8 @@ export default function AdminDemandesPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                            {Object.keys(selectedDemande.champsComplementaires || {}).length > 0 ? (
                              Object.entries(selectedDemande.champsComplementaires).map(([k, v]: [string, any]) => (
-                               <div key={k} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4 rounded-2xl shadow-sm">
-                                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter mb-1">{k}</p>
+                               <div key={k} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-xl shadow-sm">
+                                  <p className="text-[10px] font-black text-[hsl(213,80%,28%)] uppercase tracking-tighter mb-1">{k}</p>
                                   <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{String(v)}</p>
                                </div>
                              ))
@@ -353,13 +351,13 @@ export default function AdminDemandesPage() {
                              <XCircle size={18} className="text-red-500" />
                              {t('admin_validation.motif_rejet')}
                            </label>
-                           <textarea 
-                            value={motifRejet}
-                            onChange={e => setMotifRejet(e.target.value)}
-                            placeholder={t('admin_validation.motif_placeholder')}
-                            className="w-full px-6 py-4 rounded-3xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-gray-700 dark:text-white font-medium"
-                            rows={3}
-                           />
+                             <textarea 
+                              value={motifRejet}
+                              onChange={e => setMotifRejet(e.target.value)}
+                              placeholder={t('admin_validation.motif_placeholder')}
+                              className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-[hsl(213,80%,28%)] focus:border-[hsl(213,80%,28%)] transition-all text-gray-900 dark:text-white font-medium"
+                              rows={3}
+                             />
                         </div>
                         
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -374,24 +372,23 @@ export default function AdminDemandesPage() {
                           <button 
                             disabled={processing}
                             onClick={() => handleAction('APPROUVER')}
-                            className="flex-1 h-16 rounded-2xl font-black text-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-gray-900/20 flex items-center justify-center gap-3 group"
+                            className="flex-1 h-14 rounded-xl font-black text-base bg-[hsl(213,80%,28%)] text-white hover:bg-[hsl(213,80%,20%)] active:scale-95 transition-all shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 group"
                           >
-                            {processing ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={22} className="group-hover:scale-110 transition-transform" />}
+                            {processing ? <Loader2 className="animate-spin" /> : <CheckCircle2 size={20} className="group-hover:scale-110 transition-transform" />}
                             {t('admin_validation.approve')}
                           </button>
                         </div>
                       </div>
                     )}
 
-                    {/* Status Summary if already processed */}
                     {selectedDemande.statut !== 'EN_ATTENTE_VALIDATION' && (
-                      <div className={`mt-10 p-10 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-8 ${
+                      <div className={`mt-8 p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6 border ${
                         selectedDemande.statut === 'APPROUVEE' 
-                          ? 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-900 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/30' 
-                          : 'bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-300 border border-red-100 dark:border-red-900/30'
+                          ? 'bg-green-50 dark:bg-green-900/10 text-green-900 dark:text-green-300 border-green-200 dark:border-green-900/30' 
+                          : 'bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-300 border-red-200 dark:border-red-900/30'
                       }`}>
-                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center shrink-0 ${
-                          selectedDemande.statut === 'APPROUVEE' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-red-500 text-white shadow-xl shadow-red-500/20'
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
+                          selectedDemande.statut === 'APPROUVEE' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                         }`}>
                           {selectedDemande.statut === 'APPROUVEE' ? <CheckCircle2 size={40} /> : <XCircle size={40} />}
                         </div>
@@ -413,16 +410,16 @@ export default function AdminDemandesPage() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-full min-h-[600px] flex flex-col items-center justify-center bg-white dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-gray-800 p-12 text-center">
-                   <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-[2rem] flex items-center justify-center mb-8 text-gray-200">
-                      <Building2 size={64} strokeWidth={1} />
+                 <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 p-12 text-center shadow-sm">
+                   <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center mb-6 text-gray-300 dark:text-gray-600">
+                      <Building2 size={48} strokeWidth={1} />
                    </div>
-                   <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{te('requests.select_to_view')}</h3>
-                   <p className="text-gray-400 font-medium max-w-sm mx-auto">{te('requests.can_validate_reject')}</p>
+                   <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">{te('requests.select_to_view')}</h3>
+                   <p className="text-gray-500 font-bold max-w-sm mx-auto">{te('requests.can_validate_reject')}</p>
                    <div className="mt-8 flex gap-2">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce" />
+                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.4s]" />
                    </div>
                 </div>
               )}

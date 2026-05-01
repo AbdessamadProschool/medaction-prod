@@ -114,49 +114,29 @@ export default function DelegationDashboard() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Header avec résumé sectoriel */}
-      <div className="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        {/* Background decorative blob */}
-        <div 
-          className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full opacity-10 pointer-events-none ltr:right-0 ltr:-mr-16 rtl:left-0 rtl:-ml-16 rtl:right-auto"
-          style={{ backgroundColor: secteurConfig.color }}
-        />
-        
-        <div className={`relative z-10 flex flex-col items-start text-start`}>
-          <div className={`flex items-center gap-4 mb-2`}>
-            <span className="text-4xl bg-gray-50 p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center shrink-0" style={{ color: secteurConfig.color }}>
-              {(() => { const Icon = secteurConfig.icon; return <Icon size={32} strokeWidth={2} />; })()}
-            </span>
-            <div>
-              <h1 className="text-2xl font-black text-gray-900 tracking-tight">
-                {t('title', { sector: sectorLabel })}
-              </h1>
-              <p className="text-gray-500 text-base font-medium mt-1">
-                {t('welcome', { name: session?.user?.prenom || '' })}
-              </p>
-            </div>
+      {/* Header Ultra-Compact */}
+      <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="p-2.5 rounded-xl shadow-inner border border-gray-100 dark:border-gray-700" style={{ backgroundColor: secteurConfig.bgColor, color: secteurConfig.color }}>
+            {(() => { const Icon = secteurConfig.icon; return <Icon size={24} strokeWidth={2.5} />; })()}
+          </div>
+          <div>
+            <h1 className="text-lg font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+              {t('title', { sector: sectorLabel })}
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 text-xs font-bold">
+              {t('welcome', { name: session?.user?.prenom || '' })}
+            </p>
           </div>
         </div>
         
-        <div className="relative z-10 flex items-center gap-6 divide-x divide-gray-100 bg-gray-50/80 backdrop-blur-sm px-6 py-3.5 rounded-2xl border border-gray-100 rtl:divide-x-reverse">
-          <div className="text-center ltr:pr-4 rtl:pl-4">
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{t('content_summary')}</p>
-            <p className="text-2xl font-black text-gray-900 leading-none">
-              {((stats?.evenements.total || 0) + (stats?.actualites.total || 0) + (stats?.articles.total || 0))}
-            </p>
-          </div>
-          <div className="text-center px-4">
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{t('total_views')}</p>
-            <p className="text-2xl font-black text-gray-900 leading-none">
-              {((stats?.actualites.vues || 0) + (stats?.articles.vues || 0))}
-            </p>
-          </div>
-          <div className="text-center ltr:pl-4 rtl:pr-4">
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">{t('engagement')}</p>
-            <p className="text-2xl font-black text-emerald-600 leading-none flex items-center justify-center gap-1">
-              {engagementRate}% <TrendingUp size={18} className="mb-0.5" />
-            </p>
-          </div>
+        <div className="relative z-10 flex items-center gap-4 bg-gray-50/80 dark:bg-gray-900/40 px-5 py-2 rounded-xl border border-gray-100 dark:border-gray-800">
+           <div className="flex flex-col items-end">
+              <p className="text-[9px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest">{t('engagement')}</p>
+              <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 leading-none">
+                {engagementRate}%
+              </p>
+           </div>
         </div>
       </div>
 
@@ -164,34 +144,22 @@ export default function DelegationDashboard() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Événements */}
         <Link href="/delegation/evenements" className="group">
-          <div className="h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group-hover:border-[hsl(280,60%,50%)]">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[hsl(280,60%,96%)] rounded-bl-[100px] -mr-4 -mt-4 transition-transform group-hover:scale-110 rtl:right-auto rtl:left-0 rtl:-ml-4 rtl:rounded-bl-none rtl:rounded-br-[100px]" />
-            
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-purple-500/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl bg-[hsl(280,60%,95%)] text-[hsl(280,60%,40%)] shadow-sm`}>
+                <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 shadow-sm">
                   <Calendar size={24} strokeWidth={2.5} />
                 </div>
                 {stats?.evenements?.enAttente ? (
-                  <span className="text-xs font-bold bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full border border-yellow-100 animate-pulse">
+                  <span className="text-[10px] font-black bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full border border-yellow-100 animate-pulse uppercase">
                     {t('kpi.pending', { count: stats.evenements.enAttente })}
                   </span>
                 ) : null}
               </div>
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wide">{t('kpi.events')}</h3>
-              <p className="text-3xl font-black text-gray-900 mt-2 mb-4">{stats?.evenements.total || 0}</p>
-              
-              <div className="space-y-2">
-                <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-[hsl(280,60%,50%)] rounded-full" 
-                    style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} 
-                  />
-                </div>
-                <p className="text-xs font-medium text-gray-500 flex justify-between">
-                  <span>{t('kpi.published', { count: stats?.evenements.publies || 0, total: stats?.evenements.total || 0 })}</span>
-                  <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-[hsl(280,60%,50%)]" />
-                </p>
+              <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.events')}</h3>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.evenements.total || 0}</p>
+              <div className="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -199,20 +167,17 @@ export default function DelegationDashboard() {
         
         {/* Actualités */}
         <Link href="/delegation/actualites" className="group">
-          <div className="h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group-hover:border-[hsl(25,95%,53%)]">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[hsl(25,95%,96%)] rounded-bl-[100px] -mr-4 -mt-4 transition-transform group-hover:scale-110 rtl:right-auto rtl:left-0 rtl:-ml-4 rtl:rounded-bl-none rtl:rounded-br-[100px]" />
-            
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-orange-500/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl bg-[hsl(25,95%,95%)] text-[hsl(25,95%,45%)] shadow-sm`}>
+                <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 shadow-sm">
                   <Newspaper size={24} strokeWidth={2.5} />
                 </div>
               </div>
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wide">{t('kpi.news')}</h3>
-              <p className="text-3xl font-black text-gray-900 mt-2 mb-4">{stats?.actualites.total || 0}</p>
-              
-              <div className="flex items-center gap-2 mt-auto p-2 bg-[hsl(25,95%,98%)] rounded-lg text-xs font-semibold text-[hsl(25,95%,45%)] border border-[hsl(25,95%,90%)]">
-                <Eye size={14} className="text-[hsl(25,95%,53%)]" />
+              <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.news')}</h3>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.actualites.total || 0}</p>
+              <div className="flex items-center gap-2 p-2 bg-orange-50/50 dark:bg-orange-900/10 rounded-xl text-xs font-bold text-orange-700 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
+                <Eye size={14} />
                 <span>{t('kpi.views_this_month', { count: stats?.actualites.vues || 0 })}</span>
               </div>
             </div>
@@ -221,54 +186,36 @@ export default function DelegationDashboard() {
 
         {/* Campagnes */}
         <Link href="/delegation/campagnes" className="group">
-          <div className="h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group-hover:border-[hsl(145,63%,32%)]">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[hsl(145,63%,90%)] rounded-bl-[100px] -mr-4 -mt-4 transition-transform group-hover:scale-110 rtl:right-auto rtl:left-0 rtl:-ml-4 rtl:rounded-bl-none rtl:rounded-br-[100px]" />
-            
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-emerald-500/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl bg-[hsl(145,63%,90%)] text-[hsl(145,63%,32%)] shadow-sm`}>
+                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
                   <Megaphone size={24} strokeWidth={2.5} />
                 </div>
-                <span className="flex h-3 w-3 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-white"></span>
-                </span>
               </div>
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wide">{t('kpi.campaigns')}</h3>
-              <p className="text-3xl font-black text-gray-900 mt-2 mb-4">{stats?.campagnes.actives || 0}</p>
-              
-              <p className="text-xs font-semibold text-gray-500 flex items-center gap-1.5 ">
-                <Users size={14} className="text-[hsl(145,63%,32%)]" />
+              <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.campaigns')}</h3>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.campagnes.actives || 0}</p>
+              <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                <Users size={14} />
                 {t('kpi.participants', { count: stats?.campagnes.participations || 0 })}
               </p>
             </div>
           </div>
         </Link>
 
-        {/* Articles */}
+        {/* Bibliothèque */}
         <Link href="/delegation/articles" className="group">
-          <div className="h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group-hover:border-[hsl(213,80%,28%)]">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-[hsl(213,80%,93%)] rounded-bl-[100px] -mr-4 -mt-4 transition-transform group-hover:scale-110 rtl:right-auto rtl:left-0 rtl:-ml-4 rtl:rounded-bl-none rtl:rounded-br-[100px]" />
-            
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-blue-500/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl bg-[hsl(213,80%,93%)] text-[hsl(213,80%,28%)] shadow-sm`}>
+                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm">
                   <FileText size={24} strokeWidth={2.5} />
                 </div>
               </div>
-              <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wide">{t('kpi.library')}</h3>
-              <p className="text-3xl font-black text-gray-900 mt-2 mb-4">{stats?.articles.total || 0}</p>
-              
-              <div className="space-y-2">
-                <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-[hsl(213,80%,28%)] rounded-full" 
-                    style={{ width: `${(stats?.articles.publies! / (stats?.articles.total || 1)) * 100}%` }} 
-                  />
-                </div>
-                <p className="text-xs font-medium text-gray-500">
-                  {t('kpi.publication_rate')}: {Math.round((stats?.articles.publies! / (stats?.articles.total || 1)) * 100 || 0)}%
-                </p>
+              <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.library')}</h3>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.articles.total || 0}</p>
+              <div className="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(stats?.articles.publies! / (stats?.articles.total || 1)) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -277,74 +224,76 @@ export default function DelegationDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Colonne Principale - Tableau Activités */}
-        <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h2 className={`text-lg font-bold text-gray-900 flex items-center gap-2 ${direction === 'rtl' ? 'flex-row' : 'flex-row'}`}>
-              <Clock className="text-gray-400" size={20} />
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-3">
+              <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-xl">
+                <Clock className="text-gray-500 dark:text-gray-400" size={20} />
+              </div>
               {t('recent_activity.title')}
             </h2>
-            <Link href="/delegation/statistiques" className="text-sm font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1">
+            <Link href="/delegation/statistiques" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
               {t('recent_activity.view_all')} <ChevronRight size={14} className="rtl:rotate-180" />
             </Link>
           </div>
           
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left rtl:text-right">
-              <thead className="bg-gray-50 text-xs uppercase text-gray-500 font-bold tracking-wider">
+            <table className="w-full text-left rtl:text-right border-collapse">
+              <thead className="bg-gray-50 dark:bg-gray-900/50 text-[11px] uppercase text-gray-600 dark:text-gray-400 font-black tracking-widest border-b border-gray-100 dark:border-gray-700">
                 <tr>
-                  <th className="px-6 py-4 rounded-tl-2xl rtl:rounded-tr-2xl rtl:rounded-tl-none">{t('recent_activity.columns.title')}</th>
+                  <th className="px-6 py-4">{t('recent_activity.columns.title')}</th>
                   <th className="px-6 py-4">{t('recent_activity.columns.type')}</th>
                   <th className="px-6 py-4">{t('recent_activity.columns.date')}</th>
                   <th className="px-6 py-4 text-center">{t('recent_activity.columns.status')}</th>
                   <th className="px-6 py-4 text-right rtl:text-left">{t('recent_activity.columns.performance')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {recentItems.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-16 text-center text-gray-400 font-medium">
+                    <td colSpan={5} className="px-6 py-16 text-center text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
                       {t('recent_activity.empty')}
                     </td>
                   </tr>
                 ) : (
                   recentItems.map((item) => (
-                    <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/50 transition-colors group">
-                      <td className="px-6 py-4">
-                        <Link href={`/delegation/${item.type}s/${item.id}`} className="font-bold text-gray-900 hover:text-emerald-600 block min-w-[180px] break-words line-clamp-2">
+                    <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/20 transition-all group">
+                      <td className="px-6 py-5">
+                        <Link href={`/delegation/${item.type}s/${item.id}`} className="font-black text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors block line-clamp-2 leading-tight">
                           {item.titre}
                         </Link>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg w-fit">
-                          {item.type === 'evenement' && <Calendar size={14} className="text-purple-600" />}
-                          {item.type === 'actualite' && <Newspaper size={14} className="text-orange-600" />}
-                          {item.type === 'article' && <FileText size={14} className="text-blue-600" />}
-                          {item.type === 'campagne' && <Megaphone size={14} className="text-green-600" />}
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-2 text-[10px] font-black text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg w-fit uppercase tracking-wider border border-gray-200/50 dark:border-gray-700">
+                          {item.type === 'evenement' && <Calendar size={12} className="text-purple-600" />}
+                          {item.type === 'actualite' && <Newspaper size={12} className="text-orange-600" />}
+                          {item.type === 'article' && <FileText size={12} className="text-blue-600" />}
+                          {item.type === 'campagne' && <Megaphone size={12} className="text-green-600" />}
                           {t(`recent_activity.types.${item.type}` as any)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-500 tabular-nums">
-                        {new Date(item.date).toLocaleDateString(session?.user?.role === 'ADMIN' ? 'fr-FR' : 'ar-MA', { day: '2-digit', month: 'short' })}
+                      <td className="px-6 py-5 text-sm font-bold text-gray-500 dark:text-gray-400 tabular-nums">
+                        {new Date(item.date).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: '2-digit', month: 'short' })}
                       </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                      <td className="px-6 py-5 text-center">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
                           ['PUBLIEE', 'PUBLIE', 'ACTIVE'].includes(item.statut)
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                             : ['CLOTURE', 'CLOTUREE', 'TERMINEE', 'FINISHED'].includes(item.statut)
-                            ? 'bg-gray-200 text-gray-800'
+                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'
                             : ['EN_ATTENTE', 'EN_ATTENTE_VALIDATION'].includes(item.statut)
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-700'
+                            ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'
                         }`}>
                           {['PUBLIEE', 'PUBLIE', 'ACTIVE'].includes(item.statut) ? t('recent_activity.status.published') : 
                            ['CLOTURE', 'CLOTUREE', 'TERMINEE', 'FINISHED'].includes(item.statut) ? t('recent_activity.status.closed') :
                            ['EN_ATTENTE', 'EN_ATTENTE_VALIDATION'].includes(item.statut) ? t('recent_activity.status.pending') : t('recent_activity.status.draft')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right rtl:text-left">
+                      <td className="px-6 py-5 text-right rtl:text-left">
                         {item.vues !== undefined ? (
-                          <div className="flex items-center justify-end rtl:justify-start gap-1.5 text-sm font-bold text-gray-700">
-                            {item.vues} <Eye size={16} className="text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                          <div className="flex items-center justify-end rtl:justify-start gap-1.5 text-sm font-black text-gray-900 dark:text-white tabular-nums">
+                            {item.vues} <Eye size={16} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
                           </div>
                         ) : (
                           <span className="text-gray-300">-</span>
@@ -358,54 +307,59 @@ export default function DelegationDashboard() {
           </div>
         </div>
 
-        {/* Colonne Droite - Actions Rapides + Performance */}
-        <div className="space-y-6">
-          {/* Actions Rapides */}
-          <div className="bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] rounded-3xl p-6 text-white shadow-xl shadow-blue-900/10">
-            <h2 className={`font-bold text-lg flex items-center gap-2 mb-6 ${direction === 'rtl' ? 'flex-row' : 'flex-row'}`}>
-              <MousePointer2 size={20} className="text-blue-300" />
+        {/* Colonne Droite - Actions Rapides */}
+        <div className="space-y-8">
+          {/* Actions Rapides - Palette Blue Deep */}
+          <div className="bg-[#1e3a8a] dark:bg-blue-950 rounded-3xl p-7 text-white shadow-2xl shadow-blue-900/20 relative overflow-hidden border border-white/5">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+            <h2 className="font-black text-xl flex items-center gap-3 mb-8 relative z-10">
+              <div className="p-2 bg-white/10 rounded-xl">
+                <MousePointer2 size={24} className="text-blue-300" />
+              </div>
               {t('quick_actions.title')}
             </h2>
-            <div className="space-y-3">
-              <Link href="/delegation/evenements/nouveau" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/5 group active:scale-95">
-                <div className="bg-white/20 p-2.5 rounded-xl group-hover:bg-white/30 transition-colors shadow-inner">
-                  <Calendar size={20} />
+            <div className="space-y-4 relative z-10">
+              <Link href="/delegation/evenements/nouveau" className="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group active:scale-95 shadow-sm">
+                <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-colors">
+                  <Calendar size={22} className="text-blue-200" />
                 </div>
                 <div>
-                  <span className="block font-bold text-sm">{t('quick_actions.new_event')}</span>
-                  <span className="text-xs text-blue-200 opacity-80">{t('quick_actions.new_event_desc')}</span>
+                  <span className="block font-black text-sm tracking-tight">{t('quick_actions.new_event')}</span>
+                  <span className="text-[11px] text-blue-200/60 font-bold uppercase tracking-wider">{t('quick_actions.new_event_desc')}</span>
                 </div>
-                <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
+                <ChevronRight size={20} className="ml-auto text-blue-300/50 group-hover:text-white transition-colors rtl:rotate-180" />
               </Link>
 
-              <Link href="/delegation/actualites/nouvelle" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/5 group active:scale-95">
-                <div className="bg-white/20 p-2.5 rounded-xl group-hover:bg-white/30 transition-colors shadow-inner">
-                  <Newspaper size={20} />
+              <Link href="/delegation/actualites/nouvelle" className="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group active:scale-95 shadow-sm">
+                <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-colors">
+                  <Newspaper size={22} className="text-blue-200" />
                 </div>
                 <div>
-                  <span className="block font-bold text-sm">{t('quick_actions.new_news')}</span>
-                  <span className="text-xs text-blue-200 opacity-80">{t('quick_actions.new_news_desc')}</span>
+                  <span className="block font-black text-sm tracking-tight">{t('quick_actions.new_news')}</span>
+                  <span className="text-[11px] text-blue-200/60 font-bold uppercase tracking-wider">{t('quick_actions.new_news_desc')}</span>
                 </div>
-                <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
+                <ChevronRight size={20} className="ml-auto text-blue-300/50 group-hover:text-white transition-colors rtl:rotate-180" />
               </Link>
 
-              <Link href="/delegation/etablissements" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/5 group active:scale-95">
-                <div className="bg-white/20 p-2.5 rounded-xl group-hover:bg-white/30 transition-colors shadow-inner">
-                  <Building2 size={20} />
+              <Link href="/delegation/etablissements" className="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 group active:scale-95 shadow-sm">
+                <div className="bg-white/10 p-3 rounded-xl group-hover:bg-white/20 transition-colors">
+                  <Building2 size={22} className="text-blue-200" />
                 </div>
                 <div>
-                  <span className="block font-bold text-sm">{t('quick_actions.establishments')}</span>
-                  <span className="text-xs text-blue-200 opacity-80">{t('quick_actions.establishments_desc')}</span>
+                  <span className="block font-black text-sm tracking-tight">{t('quick_actions.establishments')}</span>
+                  <span className="text-[11px] text-blue-200/60 font-bold uppercase tracking-wider">{t('quick_actions.establishments_desc')}</span>
                 </div>
-                <ChevronRight size={18} className="ml-auto text-blue-200 rtl:rotate-180" />
+                <ChevronRight size={20} className="ml-auto text-blue-300/50 group-hover:text-white transition-colors rtl:rotate-180" />
               </Link>
             </div>
           </div>
 
           {/* Rappels / Notifications */}
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-            <h2 className={`font-bold text-lg text-gray-900 mb-5 flex items-center gap-2 ${direction === 'rtl' ? 'flex-row' : 'flex-row'}`}>
-              <AlertCircle size={20} className="text-orange-500" />
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-7">
+            <h2 className="font-black text-lg text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+              <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+                <AlertCircle size={22} className="text-orange-600 dark:text-orange-400" />
+              </div>
               {t('todo.title')}
             </h2>
             <div className="space-y-4">
@@ -418,9 +372,9 @@ export default function DelegationDashboard() {
 
                 if (!hasTasks) {
                   return (
-                    <div className="text-sm font-medium text-gray-500 flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100/50">
-                      <div className="bg-green-100 p-1.5 rounded-full">
-                        <CheckCircle size={14} className="text-green-600" />
+                    <div className="text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center gap-4 p-5 bg-gray-50 dark:bg-gray-900/30 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-inner">
+                      <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full border border-green-200 dark:border-green-800">
+                        <CheckCircle size={16} className="text-green-600 dark:text-green-400" />
                       </div>
                       {t('todo.all_good')}
                     </div>
@@ -430,11 +384,11 @@ export default function DelegationDashboard() {
                 return (
                   <>
                     {toCloseEvents > 0 && (
-                      <div className="flex items-start gap-3 p-4 bg-red-50 text-red-900 rounded-2xl text-sm border border-red-100 shadow-sm">
-                        <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
-                        <div className="flex-1 text-start">
-                          <span className="font-bold block mb-1">{t('todo.to_close', { count: toCloseEvents })}</span>
-                          <Link href="/delegation/evenements?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-red-200 hover:bg-red-50 transition-colors mt-2 text-red-700 no-underline">
+                      <div className="flex items-start gap-4 p-5 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-400 rounded-2xl text-sm border border-red-100 dark:border-red-900/30 shadow-sm">
+                        <AlertCircle size={20} className="mt-0.5 shrink-0 text-red-600" />
+                        <div className="flex-1">
+                          <span className="font-black block mb-2">{t('todo.to_close', { count: toCloseEvents })}</span>
+                          <Link href="/delegation/evenements?statut=A_CLOTURER" className="inline-flex items-center text-xs font-black bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-red-700 dark:text-red-400 no-underline shadow-sm active:scale-95">
                             {t('todo.manage_now')} &rarr;
                           </Link>
                         </div>
@@ -442,11 +396,11 @@ export default function DelegationDashboard() {
                     )}
                     
                     {toCloseCampaigns > 0 && (
-                      <div className="flex items-start gap-3 p-4 bg-emerald-50 text-emerald-900 rounded-2xl text-sm border border-emerald-100 shadow-sm">
-                        <Megaphone size={18} className="mt-0.5 shrink-0 text-emerald-600" />
-                        <div className="flex-1 text-start">
-                          <span className="font-bold block mb-1">{t('todo.to_close_campaigns', { count: toCloseCampaigns })}</span>
-                          <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-bold bg-white px-2 py-1 rounded-lg border border-emerald-200 hover:bg-emerald-50 transition-colors mt-2 text-emerald-700 no-underline">
+                      <div className="flex items-start gap-4 p-5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-400 rounded-2xl text-sm border border-emerald-100 dark:border-emerald-900/30 shadow-sm">
+                        <Megaphone size={20} className="mt-0.5 shrink-0 text-emerald-600" />
+                        <div className="flex-1">
+                          <span className="font-black block mb-2">{t('todo.to_close_campaigns', { count: toCloseCampaigns })}</span>
+                          <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-black bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all text-emerald-700 dark:text-emerald-400 no-underline shadow-sm active:scale-95">
                             {t('todo.manage_now')} &rarr;
                           </Link>
                         </div>
@@ -454,10 +408,10 @@ export default function DelegationDashboard() {
                     )}
 
                     {pendingValidation > 0 && (
-                      <div className="flex items-start gap-3 p-4 bg-orange-50 text-orange-900 rounded-2xl text-sm border border-orange-100 shadow-sm">
-                        <CheckCircle size={18} className="mt-0.5 shrink-0 text-orange-600" />
-                        <div className="text-start">
-                          <span className="font-bold">{t('todo.pending_validation', { count: pendingValidation })}</span>
+                      <div className="flex items-start gap-4 p-5 bg-orange-50 dark:bg-orange-900/20 text-orange-900 dark:text-orange-400 rounded-2xl text-sm border border-orange-100 dark:border-orange-900/30 shadow-sm font-black">
+                        <CheckCircle size={20} className="mt-0.5 shrink-0 text-orange-600" />
+                        <div className="flex-1">
+                          {t('todo.pending_validation', { count: pendingValidation })}
                         </div>
                       </div>
                     )}

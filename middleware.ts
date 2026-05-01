@@ -136,6 +136,8 @@ const PUBLIC_READ_API_ROUTES = [
   '/api/license/check', // Pour la vérification de licence
   '/api/uploads', // Pour le service de fichiers
   '/api/map', // Autoriser les routes de carte (ex: /api/map/etablissements)
+  '/api/public', // Autoriser les routes publiques génériques (ex: /api/public/stats)
+  '/api/settings/announcement', // Autoriser la lecture de l'annonce
 ];
 
 const ALWAYS_PUBLIC_API_ROUTES = [
@@ -145,6 +147,7 @@ const ALWAYS_PUBLIC_API_ROUTES = [
   '/api/auth/mobile/forgot-password',
   '/api/auth/mobile/refresh',
   '/api/license/check',
+  '/api/suggestions', // Autoriser GET et POST pour la boîte à idées anonyme
 ];
 
 const SENSITIVE_API_ROUTES = [

@@ -99,19 +99,20 @@ crontab -e
 Si vous rencontrez une erreur 500 ou "Erreur de configuration du stockage" lors de l'envoi d'images :
 
 ### Fixer les droits sur l'Hôte (Proxmox/LXC) :
-Le dossier `/app/public/uploads` dans Docker est monté sur `/mnt/data/medaction/uploads` sur l'hôte. Les permissions doivent être alignées.
+Le dossier `/app/public/uploads` dans Docker est désormais monté sur le volume nommé `medaction_uploads`. 
+Pour manipuler les fichiers directement sur l'hôte :
 ```bash
-# Sur l'hôte Proxmox (ou dans le CT si monté localement) :
-sudo mkdir -p /mnt/data/medaction/uploads/reclamations
-sudo chown -R 1001:1001 /mnt/data/medaction/uploads
-sudo chmod -R 775 /mnt/data/medaction/uploads
+# Chemin réel du volume sur le disque (CT100) :
+/var/lib/docker/volumes/medaction_uploads/_data/
 ```
-*Note : 1001 est l'UID de l'utilisateur `nextjs` dans le container Docker.*
+
+### Note sur la Casse (Case Sensitivity) :
+Le serveur est configuré pour être **insensible à la casse** sur les dossiers de premier niveau (ex: `CAMPAGNE` ou `campagne` fonctionneront tous les deux).
 
 ### Nettoyage des Uploads :
 Pour supprimer les images temporaires ou obsolètes :
 ```bash
-find /mnt/data/medaction/uploads -name "*.tmp" -delete
+find /var/lib/docker/volumes/medaction_uploads/_data -name "*.tmp" -delete
 ```
 
 ---

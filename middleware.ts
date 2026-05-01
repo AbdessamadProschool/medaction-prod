@@ -135,6 +135,7 @@ const PUBLIC_READ_API_ROUTES = [
   '/api/maintenance', // Pour la page de maintenance
   '/api/license/check', // Pour la vérification de licence
   '/api/uploads', // Pour le service de fichiers
+  '/api/map', // Autoriser les routes de carte (ex: /api/map/etablissements)
 ];
 
 const ALWAYS_PUBLIC_API_ROUTES = [

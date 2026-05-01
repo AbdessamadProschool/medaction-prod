@@ -674,56 +674,6 @@
       "related_articles": "Dans la même catégorie",
       "not_found": "Article non trouvé",
       "back_to_list": "Retour à la liste"
-    },
-    "news_page": {
-      "page_title": "الأخبار والمستجدات",
-      "total_news": "{count} خبر",
-      "filters": "تصفية",
-      "new_news": "خبر جديد",
-      "search_placeholder": "بحث في الأخبار...",
-      "all_sectors": "جميع القطاعات",
-      "reset": "إعادة تعيين",
-      "no_news": "لا توجد أخبار",
-      "no_results": "لم يتم العثور على نتائج",
-      "create_first": "كن أول من ينشر خبراً",
-      "highlight": "مميز",
-      "view_details": "عرض التفاصيل",
-      "edit": "تعديل",
-      "delete": "حذف",
-      "views": "{count} مشاهدة",
-      "pagination": "صفحة {page} من {totalPages} (إجمالي {total} خبر)",
-      "modal": {
-        "title": "تفاصيل الخبر",
-        "resume": "الملخص",
-        "no_resume": "لا يوجد ملخص",
-        "sector": "القطاع",
-        "views": "المشاهدات",
-        "establishment": "المؤسسة",
-        "commune": "الجماعة",
-        "created_on": "أنشئ في {date}",
-        "change_status": "تغيير الحالة",
-        "view_online": "عرض على الموقع",
-        "remove_highlight": "إزالة التمييز",
-        "add_highlight": "تمييز الخبر",
-        "delete": "حذف الخبر"
-      },
-      "statuses": {
-        "BROUILLON": "مسودة",
-        "EN_ATTENTE_VALIDATION": "بانتظار التحقق",
-        "VALIDEE": "تم التحقق",
-        "PUBLIEE": "منشور",
-        "DEPUBLIEE": "غير منشور",
-        "ARCHIVEE": "مؤرشف"
-      },
-      "messages": {
-        "loading_error": "خطأ أثناء التحميل",
-        "status_changed": "تم تغيير الحالة إلى \"{status}\"",
-        "highlight_removed": "تمت إزالة التمييز بنجاح",
-        "highlight_added": "تم تمييز الخبر بنجاح",
-        "delete_confirm": "هل أنت متأكد من حذف هذا الخبر؟",
-        "deleted": "تم الحذف بنجاح",
-        "error": "حدث خطأ غير متوقع"
-      }
     }
   },
   "articles_page": {

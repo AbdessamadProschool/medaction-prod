@@ -121,7 +121,7 @@
         "reclamations": "تدفق الشكايات",
         "map": "الخريطة التفاعلية",
         "reports": "التقارير والبيانات",
-        "evenements": "Événements"
+        "evenements": "الفعاليات"
       },
       "notifications": {
         "title": "الإشعارات",
@@ -1760,10 +1760,10 @@
     "home": "الرئيسية",
     "dashboard_admin": "لوحة تحكم المسؤول",
     "dashboard": {
-      "total_users": "Utilisateurs Totaux",
-      "active_sessions": "Sessions Actives",
-      "database_size": "Taille BDD",
-      "server_status": "État du Serveur"
+      "total_users": "إجمالي المستخدمين",
+      "active_sessions": "الجلسات النشطة",
+      "database_size": "حجم قاعدة البيانات",
+      "server_status": "حالة الخادم"
     }
   },
   "maintenance": {
@@ -5986,6 +5986,74 @@
     "processed_on": "تمت معالجة الطلب في {date}",
     "back_list": "العودة إلى القائمة",
     "update_etab": "تحديث المؤسسة"
+  },
+  "news_page": {
+    "badge": "معلومات رسمية",
+    "title_prefix": "أخبار ",
+    "title_suffix": "الإقليم",
+    "hero_subtitle": "ابقوا على اطلاع بآخر المشاريع والفعاليات والإعلانات الرسمية. الشفافية في خدمة المواطن.",
+    "filter_mobile": "تصفية الأخبار",
+    "search_title": "بحث",
+    "reset": "إعادة تعيين",
+    "search_placeholder": "الكلمات المفتاحية...",
+    "categories_title": "الفئات",
+    "all_news": "كل الأخبار",
+    "view_grid": "شبكة",
+    "view_list": "قائمة",
+    "no_news_found": "لم يتم العثور على أي خبر",
+    "no_news_desc": "لا توجد أخبار تطابق معايير البحث الخاصة بكم.",
+    "reset_search": "إعادة تعيين البحث",
+    "page_info": "صفحة {page} من {totalPages}",
+    "categories": {
+      "ANNONCE": "إعلان",
+      "EVENEMENT": "فعالية",
+      "RENOVATION": "تجديد",
+      "SERVICE": "خدمة",
+      "PROJET": "مشروع",
+      "PARTENARIAT": "شراكة",
+      "AUTRE": "أخرى",
+      "ACTUALITE": "خبر",
+      "E_SERVICES": "خدمات إلكترونية",
+      "CULTURE": "ثقافة",
+      "URBANISME": "تعمير",
+      "SUCCESS_STORY": "قصة نجاح",
+      "TRAVAUX": "أشغال"
+    },
+    "read": "اقرأ المزيد",
+    "showing": "عرض {start}-{end} من {total} خبر",
+    "reset_filters": "إعادة تعيين الفلاتر",
+    "previous": "السابق",
+    "next": "التالي",
+    "detail": {
+      "back": "رجوع",
+      "copied": "تم نسخ الرابط !",
+      "share": "مشاركة",
+      "shared": "تمت المشاركة",
+      "reading_time": "{min} دقائق للقراءة",
+      "written_by": "بقلم {name}",
+      "views": "{count} مشاهدة",
+      "official_source": "مصدر رسمي",
+      "gallery": "معرض الصور",
+      "related_articles": "في نفس الفئة",
+      "not_found": "المقال غير موجود",
+      "back_to_list": "العودة إلى القائمة"
+    }
+  },
+  "articles_page": {
+    "badge": "مركز الموارد",
+    "title_prefix": "مقالات و ",
+    "title_suffix": "أدلة عملية",
+    "hero_subtitle": "تعرف على حقوقك، واكتشف الخدمات الإقليمية واطلع على أدلتنا العملية لتبسيط إجراءاتك.",
+    "search_placeholder": "البحث عن مقال...",
+    "all_categories": "كل المواضيع",
+    "no_articles": "لم يتم العثور على أي مقال",
+    "no_articles_desc": "حاول استخدام كلمات مفتاحية أخرى أو تصفح فئاتنا.",
+    "reset_filters": "مسح الفلاتر",
+    "published_on": "نشر في",
+    "read": "اقرأ",
+    "tags": "الوسوم",
+    "showing": "عرض {start}-{end} من أصل {total} مقال",
+    "filter_title": "تصفية المقالات"
   },
   "history_actions": {
     "CREATION": "إنشاء الشكاية",

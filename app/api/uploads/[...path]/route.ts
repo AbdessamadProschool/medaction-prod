@@ -50,13 +50,20 @@ const ACCESS_RULES: Record<string, AccessRule> = {
   // Public assets — no auth required
   'avatars':        { public: true },
   'etablissements': { public: true },
+  'etablissement':  { public: true }, // Singular added
   'actualites':     { public: true },
+  'actualite':      { public: true }, // Singular added
   'articles':       { public: true },
+  'article':        { public: true }, // Singular added
   'evenements':     { public: true },
+  'evenement':      { public: true }, // Singular added
   'campagnes':      { public: true },
+  'campagne':       { public: true }, // Singular added
   'talents':        { public: true },
+  'talent':         { public: true }, // Singular added
   // Private assets — auth + authorization required
   'reclamations':         { public: false, needsOwnerCheck: true, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'] },
+  'reclamation':          { public: false, needsOwnerCheck: true, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'] }, // Singular added
   'bilan':                { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION'] },
   'programmes-activites': { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION', 'COORDINATEUR_ACTIVITES'] },
   'documents':            { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN'] },
@@ -213,6 +220,7 @@ export async function GET(
         }
       }
     }
+
 
     // Fallback 2: Try public/uploads directly relative to CWD
     if (!exists) {

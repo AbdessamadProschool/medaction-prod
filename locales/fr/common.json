@@ -2518,7 +2518,10 @@
           "FERME": "Fermé"
         }
       },
-      "view_details": "Voir les détails"
+      "view_details": "Voir les détails",
+      "search_placeholder": "Rechercher une établissement par nom ou code...",
+      "no_establishments": "Aucun établissement trouvé",
+      "error_loading": "Erreur lors du chargement des établissements"
     },
     "events": {
       "new_title": "Nouvel Événement",
@@ -5945,13 +5948,5 @@
     "UPDATE": "Mise à jour du dossier",
     "ACCEPTATION": "Acceptation de la réclamation",
     "AJOUT_MEDIA": "Ajout de pièces jointes"
-  },
-  "admin": {
-    "establishments": {
-      "search_placeholder": "Rechercher une établissement par nom ou code...",
-      "view_details": "Voir les détails",
-      "no_establishments": "Aucun établissement trouvé",
-      "error_loading": "Erreur lors du chargement des établissements"
-    }
   }
 }

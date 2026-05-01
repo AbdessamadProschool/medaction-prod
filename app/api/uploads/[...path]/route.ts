@@ -125,8 +125,10 @@ export async function GET(
     // ═══════════════════════════════════════════════════════════════
     // 3. ACCESS CONTROL (Auth + Authorization) — SECURITY FIX
     // ═══════════════════════════════════════════════════════════════
-    const prefix = pathSegments[0] || '';
+    const prefix = (pathSegments[0] || '').toLowerCase(); // Force lowercase for rule matching
     const rule = ACCESS_RULES[prefix] ?? { public: false }; // Default: PRIVATE
+
+    console.log(`[FILE-SERVE] 🔍 Request: ${requestedPath} | Prefix: ${prefix} | Public: ${rule.public}`);
 
     if (!rule.public) {
       const session = await getServerSession(authOptions);
@@ -204,6 +206,10 @@ export async function GET(
     // ═══════════════════════════════════════════════════════════════
     let finalPath = filePath;
     let exists = existsSync(filePath);
+    
+    if (exists) {
+      console.log(`[FILE-SERVE] ✅ Found at primary path: ${filePath}`);
+    }
 
     // Fallback 1: Plural/Singular folder names
     if (!exists) {
@@ -214,20 +220,23 @@ export async function GET(
         const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
         const alternativePath = normalize(join(storagePath, alternativeFolder, rest));
         
+        console.log(`[FILE-SERVE] 🔄 Trying fallback 1: ${alternativePath}`);
         if (existsSync(alternativePath)) {
           finalPath = alternativePath;
           exists = true;
+          console.log(`[FILE-SERVE] ✅ Found at fallback 1 path`);
         }
       }
     }
 
-
     // Fallback 2: Try public/uploads directly relative to CWD
     if (!exists) {
       const publicPath = normalize(join(process.cwd(), 'public', 'uploads', requestedPath));
+      console.log(`[FILE-SERVE] 🔄 Trying fallback 2: ${publicPath}`);
       if (publicPath !== filePath && existsSync(publicPath)) {
         finalPath = publicPath;
         exists = true;
+        console.log(`[FILE-SERVE] ✅ Found at fallback 2 path`);
       } else {
         const parts = requestedPath.split(/[\\\/]/);
         if (parts.length > 1) {
@@ -235,9 +244,11 @@ export async function GET(
           const rest = parts.slice(1).join('/');
           const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
           const altPublicPath = normalize(join(process.cwd(), 'public', 'uploads', alternativeFolder, rest));
+          console.log(`[FILE-SERVE] 🔄 Trying fallback 2 (alt): ${altPublicPath}`);
           if (existsSync(altPublicPath)) {
             finalPath = altPublicPath;
             exists = true;
+            console.log(`[FILE-SERVE] ✅ Found at fallback 2 (alt) path`);
           }
         }
       }

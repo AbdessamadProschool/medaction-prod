@@ -133,9 +133,10 @@ export async function GET(
               console.warn(`Fetch échoué pour ${fullUrl}: ${response.status}`);
             }
           } catch (e) {
+            // ❌ Semgrep signale : unsafe-formatstring
+            // ✅ Faux positif : media.id est un entier PostgreSQL, pas un input utilisateur.
+            // Les format specifiers (%s, %n, %d) sont impossibles dans un template literal JS.
             // nosemgrep: javascript.lang.security.audit.unsafe-formatstring
-            // Justification: media.id est un entier DB, pas un input utilisateur.
-            // Les format specifiers (%s, %n) sont impossibles dans un template literal JS.
             console.warn(`Impossible de récupérer le média ${media.id}:`, e);
           }
         }

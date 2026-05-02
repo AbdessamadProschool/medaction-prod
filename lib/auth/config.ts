@@ -71,11 +71,11 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            // SECURITY FIX: Exécuter un hash factice pour uniformiser le temps de réponse
+            // ❌ Semgrep signale : detected-bcrypt-hash
+            // ✅ Faux positif : hash dummy intentionnel pour anti-timing attack (OWASP recommandé)
+            // Quand l'email n'existe pas, on appelle quand même bcrypt.compare() pour
+            // éviter les attaques par mesure de temps de réponse (user enumeration timing).
             // nosemgrep: generic.secrets.security.detected-bcrypt-hash
-            // Justification: Hash dummy intentionnel pour anti-timing attack (recommandation OWASP).
-            // Quand l'email n'existe pas, on exécute quand même bcrypt.compare() pour
-            // éviter les attaques par mesure de temps de réponse.
             await verifyPassword('dummy_password_check', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.aQZVRNWmqLqKiy');
             throw new Error('Identifiants incorrects');
           }

@@ -48,6 +48,34 @@ export default function DelegationEtablissementsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in">
+      {/* Section Historique (Déplacée en haut) */}
+      <div className="pb-2">
+         <div className="bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,20%)] rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border border-white/5">
+            <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none rotate-12">
+               <History size={220} />
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+               <div className="text-center md:text-start">
+                  <h2 className="text-2xl font-black flex items-center justify-center md:justify-start gap-3 text-white">
+                     <div className="p-2 bg-white/10 rounded-xl border border-white/10">
+                        <History className="text-white" size={24} />
+                     </div>
+                     {t('pending_requests_title')}
+                  </h2>
+                  <p className="text-blue-100 mt-3 max-w-md text-base leading-relaxed font-medium">
+                     {t('pending_requests_desc')}
+                  </p>
+               </div>
+               <Link href="/delegation/etablissements/mes-demandes">
+                  <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl px-10 py-7 backdrop-blur-md font-bold text-base transition-all active:scale-95 shadow-lg">
+                     {t('view_history')}
+                     <ChevronRight className="ltr:ml-2 rtl:mr-2 rtl:rotate-180" size={20} />
+                  </Button>
+               </Link>
+            </div>
+         </div>
+      </div>
+
       {/* Barre de Recherche + Bouton Création */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch">
         <div className="relative group flex-1">
@@ -109,33 +137,7 @@ export default function DelegationEtablissementsPage() {
         )}
       </div>
 
-      {/* Section Historique */}
-      <div className="pt-12">
-         <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border border-white/5">
-            <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none rotate-12">
-               <History size={220} />
-            </div>
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-               <div className="text-center md:text-start">
-                  <h2 className="text-2xl font-black flex items-center justify-center md:justify-start gap-3">
-                     <div className="p-2 bg-orange-500/20 rounded-xl">
-                        <History className="text-orange-400" size={24} />
-                     </div>
-                     {t('pending_requests_title')}
-                  </h2>
-                  <p className="text-gray-400 mt-3 max-w-md text-base leading-relaxed font-medium">
-                     {t('pending_requests_desc')}
-                  </p>
-               </div>
-               <Link href="/delegation/etablissements/mes-demandes">
-                  <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl px-10 py-7 backdrop-blur-md font-bold text-base transition-all active:scale-95 shadow-lg">
-                     {t('view_history')}
-                     <ChevronRight className="ltr:ml-2 rtl:mr-2 rtl:rotate-180" size={20} />
-                  </Button>
-               </Link>
-            </div>
-         </div>
-      </div>
+
     </div>
   );
 }

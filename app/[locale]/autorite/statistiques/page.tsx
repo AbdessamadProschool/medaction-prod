@@ -110,7 +110,7 @@ export default function AutoriteStatistiquesPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="text-white">
-            <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
+            <h1 className="text-3xl font-bold mb-2 text-white">{t('title')}</h1>
             <p className="text-blue-100 font-medium">{t('subtitle')}</p>
           </div>
           

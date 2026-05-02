@@ -312,7 +312,7 @@ export default function DelegationDashboard() {
           {/* Actions Rapides - Palette Blue Deep */}
           <div className="bg-[#1e3a8a] dark:bg-blue-950 rounded-3xl p-7 text-white shadow-2xl shadow-blue-900/20 relative overflow-hidden border border-white/5">
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-            <h2 className="font-black text-xl flex items-center gap-3 mb-8 relative z-10">
+            <h2 className="font-black text-xl flex items-center gap-3 mb-8 relative z-10 text-white">
               <div className="p-2 bg-white/10 rounded-xl">
                 <MousePointer2 size={24} className="text-blue-300" />
               </div>

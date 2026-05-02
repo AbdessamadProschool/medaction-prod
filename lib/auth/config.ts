@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
             // ✅ Faux positif : hash dummy intentionnel pour anti-timing attack (OWASP recommandé)
             // Quand l'email n'existe pas, on appelle quand même bcrypt.compare() pour
             // éviter les attaques par mesure de temps de réponse (user enumeration timing).
-            // nosemgrep: generic.secrets.security.detected-bcrypt-hash
+            // nosemgrep
             await verifyPassword('dummy_password_check', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.aQZVRNWmqLqKiy');
             throw new Error('Identifiants incorrects');
           }

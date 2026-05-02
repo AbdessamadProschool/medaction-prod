@@ -126,6 +126,11 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
       const data = await res.json();
       
       if (!res.ok) {
+        if (res.status === 401) {
+          toast.error(tGlobal('errors.unauthorized'));
+          window.location.href = `/${locale}/login?callbackUrl=/${locale}/suggestions?new=true`;
+          return;
+        }
         if (res.status === 429 && data.error === 'LIMIT_EXCEEDED' && data.resetDate) {
            const date = new Date(data.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
            throw new Error(tGlobal('suggestion_rate_limit', { date }));

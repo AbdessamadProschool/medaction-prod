@@ -388,7 +388,7 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     response.headers.set('X-Content-Type-Options', 'nosniff');
     // ❌ Semgrep signale : x-frame-options-misconfiguration
     // ✅ Faux positif : 'DENY' est une constante hardcodée, pas un input utilisateur
-    // nosemgrep: javascript.express.security.x-frame-options-misconfiguration
+    // nosemgrep
     response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');

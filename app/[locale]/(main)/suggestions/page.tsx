@@ -149,7 +149,7 @@ export default function SuggestionsPage() {
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-3xl md:text-4xl font-bold mb-3"
+                className="text-3xl md:text-4xl font-bold mb-3 text-white"
               >
                 <Lightbulb className="w-8 h-8 text-[hsl(45,93%,47%)] inline-block mr-3" />
                 {t('title')}

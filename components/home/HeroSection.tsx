@@ -184,7 +184,7 @@ export default function HeroSection() {
                   className="group relative overflow-hidden inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gov-gold-dark to-gov-gold text-white font-bold rounded-xl shadow-lg shadow-gov-gold/20 hover:shadow-gov-gold/40 hover:-translate-y-1 transition-all duration-300"
                 >
                   <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                  <span className={`relative ${isAr ? 'text-lg' : ''}`}>{t('actions.soumettre_reclamation')}</span>
+                  <span className={`relative ${isAr ? 'text-lg' : ''}`}>{t('suggestions_page.propose_btn')}</span>
                   <svg className="w-5 h-5 relative group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>

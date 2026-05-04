@@ -70,19 +70,7 @@ export async function GET(
       zlib: { level: 6 } // Compression niveau 6
     });
 
-    // Convertir le stream archive en ReadableStream pour la réponse
-    const chunks: Uint8Array[] = [];
-    
-    archive.on('data', (chunk) => {
-      chunks.push(chunk);
-    });
-
-    const archivePromise = new Promise<Buffer>((resolve, reject) => {
-      archive.on('end', () => {
-        resolve(Buffer.concat(chunks));
-      });
-      archive.on('error', reject);
-    });
+    // L'archive sera streamée directement dans la réponse via ReadableStream plus bas
 
     // Ajouter les fichiers à l'archive
     for (const media of reclamation.medias) {
@@ -94,20 +82,23 @@ export async function GET(
           : path.join(process.cwd(), STORAGE_PATH)
         : path.join(process.cwd(), 'uploads');
 
-      // Si le chemin en base est déjà absolu ou contient 'uploads', on nettoie
-      let cleanSubPath = media.cheminFichier;
+      // Nettoyer le chemin : supprimer 'uploads' et s'assurer que c'est relatif (pas de / au début)
+      let cleanSubPath = media.cheminFichier.replace(/\\/g, '/');
       if (cleanSubPath.includes('uploads')) {
         cleanSubPath = cleanSubPath.split('uploads')[1];
-      } else if (cleanSubPath.includes('reclamations')) {
-         // Fallback si 'uploads' n'est pas dans le chemin mais 'reclamations' oui
-         cleanSubPath = cleanSubPath.substring(cleanSubPath.indexOf('reclamations') - 1);
+      }
+      
+      // CRITICAL: Supprimer le slash initial pour que path.resolve reste dans UPLOAD_BASE sur Linux
+      if (cleanSubPath.startsWith('/')) {
+        cleanSubPath = cleanSubPath.substring(1);
       }
       
       let filePath: string;
       try {
         filePath = safeResolvePath(UPLOAD_BASE, cleanSubPath);
-      } catch {
-        continue; // Passer au suivant si chemin invalide
+      } catch (e) {
+        console.warn(`[ZIP] Chemin invalide pour média ${media.id}:`, e);
+        continue;
       }
       
       if (existsSync(filePath)) {
@@ -146,15 +137,22 @@ export async function GET(
     // Finaliser l'archive
     archive.finalize();
 
-    // Attendre que l'archive soit complète
-    const zipBuffer = await archivePromise;
+    // Créer un ReadableStream à partir de l'archive pour une réponse en streaming
+    const stream = new ReadableStream({
+      start(controller) {
+        archive.on('data', (chunk) => controller.enqueue(chunk));
+        archive.on('end', () => controller.close());
+        archive.on('error', (err) => controller.error(err));
+      }
+    });
 
-    // Retourner le fichier ZIP
-    return new NextResponse(new Uint8Array(zipBuffer), {
+    // Retourner le fichier ZIP en streaming
+    return new NextResponse(stream, {
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${zipFilename}"`,
-        'Content-Length': zipBuffer.length.toString(),
+        // On ne met pas de Content-Length car on streame sans connaître la taille finale exacte à l'avance
+        'Transfer-Encoding': 'chunked',
       },
     });
 

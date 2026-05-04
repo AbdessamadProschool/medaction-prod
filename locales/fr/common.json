@@ -469,14 +469,14 @@
       "copy_failed": "Impossible de copier le lien"
     },
     "campaign_ended": "Campagne terminée",
-    "showing": "عرض {start}-{end} من أصل {total} مبادرة",
-    "filter_title": "تصفية المبادرات",
-    "badge": "حملات",
-    "featured": "حملة مميزة",
-    "participating": "جاري المشاركة...",
-    "success_title": "تمت العملية بنجاح",
-    "success_message": "شكراً لمشاركتك في هذه المبادرة !",
-    "close": "إغلاق"
+    "showing": "Affichage de {start}-{end} sur {total} initiatives",
+    "filter_title": "Filtrer les initiatives",
+    "badge": "Campagnes",
+    "featured": "Campagne à la une",
+    "participating": "Participation en cours...",
+    "success_title": "Opération réussie",
+    "success_message": "Merci pour votre participation à cette initiative !",
+    "close": "Fermer"
   },
   "notifications": {
     "title": "Notifications",
@@ -707,8 +707,8 @@
     },
     "read": "Lire",
     "tags": "Étiquettes",
-    "showing": "عرض {start}-{end} من أصل {total} مقال",
-    "filter_title": "تصفية المقالات"
+    "showing": "Affichage de {start}-{end} sur {total} articles",
+    "filter_title": "Filtrer les articles"
   },
   "contact_page": {
     "title": "Contactez-nous",
@@ -989,136 +989,136 @@
         "SUPER_ADMIN": "Super Administrateur",
         "GOUVERNEUR": "Gouverneur"
       },
-      "page_title": "إدارة المستخدمين",
+      "page_title": "Gestion des Utilisateurs",
       "total_users": "Utilisateurs totaux",
-      "export": "تصدير",
-      "add": "إضافة",
-      "search_placeholder": "بحث...",
-      "filter_roles_all": "جميع الأدوار",
-      "filter_status_all": "جميع الحالات",
-      "reset_filters": "إعادة ضبط",
-      "no_users": "لا يوجد مستخدمون",
-      "pagination": "صفحة {start}-{end} من {total}",
+      "export": "Exporter",
+      "add": "Ajouter",
+      "search_placeholder": "Rechercher...",
+      "filter_roles_all": "Tous les rôles",
+      "filter_status_all": "Tous les statuts",
+      "reset_filters": "Réinitialiser",
+      "no_users": "Aucun utilisateur trouvé",
+      "pagination": "Page {start}-{end} sur {total}",
       "role_descriptions": {
-        "CITOYEN": "وصول مواطن قياسي",
-        "DELEGATION": "ممثل إقليمي",
-        "AUTORITE_LOCALE": "إدارة ترابية",
-        "COORDINATEUR_ACTIVITES": "إشراف ميداني",
-        "ADMIN": "إدارة تقنية",
-        "SUPER_ADMIN": "وصول كامل",
-        "GOUVERNEUR": "إشراف شامل"
+        "CITOYEN": "Accès citoyen standard",
+        "DELEGATION": "Représentant provincial",
+        "AUTORITE_LOCALE": "Administration territoriale",
+        "COORDINATEUR_ACTIVITES": "Supervision de terrain",
+        "ADMIN": "Administration technique",
+        "SUPER_ADMIN": "Accès complet",
+        "GOUVERNEUR": "Supervision globale"
       },
       "sectors": {
-        "EDUCATION": "تعليم",
-        "SANTE": "صحة",
-        "SPORT": "رياضة",
-        "SOCIAL": "اجتماعي",
-        "CULTUREL": "ثقافي",
-        "AUTRE": "آخر"
+        "EDUCATION": "Éducation",
+        "SANTE": "Santé",
+        "SPORT": "Sport",
+        "SOCIAL": "Social",
+        "CULTUREL": "Culture",
+        "AUTRE": "Autre"
       },
       "table": {
-        "user": "المستخدم",
-        "role": "الدور",
-        "status": "الحالة",
-        "sector_establishment": "القطاع / المؤسسة",
-        "activity": "النشاط",
-        "actions": "إجراءات",
-        "actions_count": "{count} إجراءات",
-        "estab_count": "{count} مؤسسات"
+        "user": "Utilisateur",
+        "role": "Rôle",
+        "status": "Statut",
+        "sector_establishment": "Secteur / Établissement",
+        "activity": "Activité",
+        "actions": "Actions",
+        "actions_count": "{count} actions",
+        "estab_count": "{count} établissements"
       },
       "statuses": {
-        "active": "نشط",
-        "inactive": "غير نشط",
-        "activated": "مفعل",
-        "deactivated": "معطل"
+        "active": "Actif",
+        "inactive": "Inactif",
+        "activated": "Activé",
+        "deactivated": "Désactivé"
       },
       "actions": {
-        "edit_role": "تعديل الدور",
-        "reset_password": "إعادة ضبط كلمة المرور",
-        "deactivate": "تعطيل",
-        "activate": "تفعيل",
-        "delete": "حذف"
+        "edit_role": "Modifier le rôle",
+        "reset_password": "Réinitialiser le mot de passe",
+        "deactivate": "Désactiver",
+        "activate": "Activer",
+        "delete": "Supprimer"
       },
       "messages": {
-        "error": "حدث خطأ",
-        "status_changed": "الحالة {status}",
-        "delete_confirm": "حذف {name} ؟",
-        "user_deleted": "تم حذف المستخدم",
-        "reset_password_confirm": "إعادة التعيين لـ {name} ؟",
-        "reset_password_alert": "كلمة المرور الجديدة: {password}",
-        "reset_password_success": "تم إعادة التعيين"
+        "error": "Une erreur est survenue",
+        "status_changed": "Statut {status}",
+        "delete_confirm": "Supprimer {name} ?",
+        "user_deleted": "Utilisateur supprimé",
+        "reset_password_confirm": "Réinitialiser pour {name} ?",
+        "reset_password_alert": "Nouveau mot de passe : {password}",
+        "reset_password_success": "Mot de passe réinitialisé"
       },
       "create_modal": {
-        "title": "مستخدم جديد",
-        "subtitle": "إنشاء حساب",
+        "title": "Nouvel Utilisateur",
+        "subtitle": "Créer un compte",
         "fields": {
-          "first_name": "الاسم الشخصي",
-          "last_name": "الاسم العائلي",
-          "email": "البريد الإلكتروني",
-          "phone": "الهاتف",
-          "password": "كلمة المرور",
-          "confirm_password": "تأكيد",
-          "role": "الدور",
-          "sector": "القطاع",
-          "commune": "الجماعة",
-          "establishments": "المؤسسات ({count})",
-          "active_account": "حساب نشط"
+          "first_name": "Prénom",
+          "last_name": "Nom",
+          "email": "Email",
+          "phone": "Téléphone",
+          "password": "Mot de passe",
+          "confirm_password": "Confirmer",
+          "role": "Rôle",
+          "sector": "Secteur",
+          "commune": "Commune",
+          "establishments": "Établissements ({count})",
+          "active_account": "Compte actif"
         },
         "placeholders": {
-          "first_name": "الاسم الشخصي",
-          "last_name": "الاسم العائلي",
-          "email": "email@example.com",
+          "first_name": "Prénom",
+          "last_name": "Nom",
+          "email": "email@exemple.com",
           "phone": "06XXXXXXXX",
-          "password": "كلمة المرور"
+          "password": "Mot de passe"
         },
         "helpers": {
-          "commune_helper": "الجماعة التابعة",
-          "establishments_helper": "المؤسسات المدارة (متعددة الخيارات)"
+          "commune_helper": "Commune rattachée",
+          "establishments_helper": "Établissements gérés (sélection multiple)"
         },
         "select_option": {
-          "sector": "اختر قطاعا",
-          "commune": "اختر جماعة"
+          "sector": "Choisir un secteur",
+          "commune": "Choisir une commune"
         },
-        "cancel_btn": "إلغاء",
-        "submit_btn": "إنشاء",
+        "cancel_btn": "Annuler",
+        "submit_btn": "Créer",
         "errors": {
-          "password_mismatch": "كلمتا المرور غير متطابقتين",
-          "password_length": "6 أحرف كحد أدنى",
-          "sector_required": "القطاع مطلوب",
-          "commune_required": "الجماعة مطلوبة",
-          "establishment_required": "المؤسسة مطلوبة",
-          "create_error": "خطأ في الإنشاء",
-          "server_error": "خطأ في الخادم"
+          "password_mismatch": "Les mots de passe ne correspondent pas",
+          "password_length": "6 caractères minimum",
+          "sector_required": "Le secteur est obligatoire",
+          "commune_required": "La commune est obligatoire",
+          "establishment_required": "L'établissement est obligatoire",
+          "create_error": "Erreur lors de la création",
+          "server_error": "Erreur serveur"
         },
-        "success": "تم إنشاء حساب {name}"
+        "success": "Compte de {name} créé avec succès"
       },
       "edit_role_modal": {
-        "title": "تعديل الدور",
-        "current_role": "الدور الحالي",
-        "new_role": "الدور الجديد",
+        "title": "Modifier le rôle",
+        "current_role": "Rôle actuel",
+        "new_role": "Nouveau rôle",
         "errors": {
-          "edit_error": "خطأ في التعديل",
-          "sector_required": "القطاع مطلوب",
-          "commune_required": "الجماعة مطلوبة",
-          "establishment_required": "المؤسسة مطلوبة",
-          "server_error": "خطأ في الخادم"
+          "edit_error": "Erreur lors de la modification",
+          "sector_required": "Le secteur est obligatoire",
+          "commune_required": "La commune est obligatoire",
+          "establishment_required": "L'établissement est obligatoire",
+          "server_error": "Erreur serveur"
         },
-        "loading": "جاري التحميل..."
+        "loading": "Chargement..."
       }
     },
     "backups": {
-      "title": "نسخ النظام الاحتياطية",
-      "subtitle": "تاريخ نقاط استعادة قاعدة البيانات الخاصة بك.",
-      "create": "نسخة جديدة",
-      "restore": "استعادة",
-      "empty_title": "لا توجد نسخ احتياطية",
-      "empty_desc": "لم تقم بإنشاء أي نقاط استعادة للنظام بعد.",
-      "create_first": "إنشاء أول نسخة احتياطية",
-      "success_create": "تم إنشاء النسخة الاحتياطية بنجاح",
-      "success_restore": "تمت استعادة النظام بنجاح",
+      "title": "Sauvegardes Système",
+      "subtitle": "Historique des points de restauration de la base de données.",
+      "create": "Nouvelle sauvegarde",
+      "restore": "Restaurer",
+      "empty_title": "Aucune sauvegarde",
+      "empty_desc": "Vous n'avez pas encore créé de points de restauration du système.",
+      "create_first": "Créer la première sauvegarde",
+      "success_create": "Sauvegarde créée avec succès",
+      "success_restore": "Système restauré avec succès",
       "messages": {
-        "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
-        "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه."
+        "confirm_restore": "Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cela écrasera les données actuelles.",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
       }
     }
   },
@@ -1234,7 +1234,7 @@
     "empty_title": "Aucun événement trouvé",
     "empty_desc": "Modifiez vos filtres de recherche pour trouver des événements.",
     "common": {
-      "view_details": "عرض التفاصيل"
+      "view_details": "Voir les détails"
     }
   },
   "filters": {
@@ -1355,23 +1355,23 @@
       "description_placeholder": "Expliquez le problème en détail : quoi, quand, impact sur les citoyens...",
       "tip_title": "Conseil pour une réclamation efficace",
       "tip_text": "Soyez précis dans votre description et ajoutez des photos claires pour accélérer le traitement.",
-      "location_label": "الموقع الجغرافي",
-      "address_label": "العنوان التفصيلي",
-      "commune_label": "الجماعة",
-      "commune_select": "اختر الجماعة...",
-      "category_label": "فئة الشكاية",
-      "category_select": "اختر الفئة...",
-      "title_label": "عنوان الشكاية",
-      "description_label": "وصف تفصيلي",
-      "address_placeholder_field": "العنوان الكامل..."
+      "location_label": "Localisation géographique",
+      "address_label": "Adresse détaillée",
+      "commune_label": "Commune",
+      "commune_select": "Choisir la commune...",
+      "category_label": "Catégorie de la réclamation",
+      "category_select": "Choisir la catégorie...",
+      "title_label": "Titre de la réclamation",
+      "description_label": "Description détaillée",
+      "address_placeholder_field": "Adresse complète..."
     },
-    "new_title": "شكاية جديدة",
-    "new_subtitle": "أبلغ عن مشكلة في جماعتك وتابع حلها في الوقت الفعلي",
+    "new_title": "Nouvelle Réclamation",
+    "new_subtitle": "Signalez un problème dans votre commune et suivez sa résolution en temps réel",
     "success_page": {
-      "title": "R�clamation envoy�e avec succ�s",
-      "message": "Merci, votre r�clamation a �t� enregistr�e avec succ�s et sera trait�e dans les plus brefs d�lais.",
-      "view_my_reclamations": "Suivre mes r�clamations",
-      "back_home": "Retour � l'accueil"
+      "title": "Réclamation envoyée avec succès",
+      "message": "Merci, votre réclamation a été enregistrée avec succès et sera traitée dans les plus brefs délais.",
+      "view_my_reclamations": "Suivre mes réclamations",
+      "back_home": "Retour à l’accueil"
     }
   },
   "security_page": {
@@ -2231,11 +2231,11 @@
         "reset": "Réinitialiser",
         "featured": "Mis en avant",
         "no_resume": "Aucun résumé",
-        "confirm_delete": "هل أنت متأكد من حذف هذا المقال؟",
-        "deleted": "تم الحذف بنجاح",
-        "highlighted": "تم التمييز بنجاح",
-        "unhighlighted": "تم إلغاء التمييز",
-        "status_changed": "تم تغيير الحالة بنجاح"
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet article ?",
+        "deleted": "Supprimé avec succès",
+        "highlighted": "Mis en avant avec succès",
+        "unhighlighted": "Mise en avant annulée",
+        "status_changed": "Statut modifié avec succès"
       },
       "stats": {
         "total": "Total",
@@ -2314,8 +2314,8 @@
         "save_error": "Erreur lors de la sauvegarde de l'article",
         "delete_error": "Erreur lors de la suppression de l'article"
       },
-      "filter_status": "الحالة",
-      "filter_sector": "القطاع"
+      "filter_status": "Statut",
+      "filter_sector": "Secteur"
     },
     "news": {
       "create_title": "Nouvelle Actualité",
@@ -2846,12 +2846,12 @@
           "reject_btn": "Rejeter la réclamation",
           "reject_desc": "La réclamation est invalide ou dupliquée",
           "reject_reason_placeholder": "Motif du rejet (obligatoire)",
-          "reject_placeholder": "سبب الرفض (مطلوب)",
-          "confirm_reject": "تأكيد الرفض"
+          "reject_placeholder": "Motif du rejet (obligatoire)",
+          "confirm_reject": "Confirmer le rejet"
         },
         "delete": {
-          "title": "حذف الشكاية",
-          "confirm_question": "هل أنت متأكد من حذف هذه الشكاية؟ هذا الإجراء لا يمكن التراجع عنه."
+          "title": "Supprimer la réclamation",
+          "confirm_question": "Êtes-vous sûr de vouloir supprimer cette réclamation ? Cette action est irréversible."
         }
       },
       "page": "Page",
@@ -4253,14 +4253,14 @@
     "count": "{count} photo(s)",
     "zip_ready": "Archive ZIP prête",
     "downloading": "Téléchargement...",
-    "completed": "تم التحميل !",
-    "error": "خطأ",
-    "button_label": "{count} صورة",
-    "zip_label": "تحميل الصور (ZIP)",
-    "compressing": "جاري الضغط...",
-    "export_title": "تصدير الصور",
-    "photos_available": "{count} صورة متاحة",
-    "download_tooltip": "تحميل {count} صورة"
+    "completed": "Téléchargement terminé !",
+    "error": "Erreur",
+    "button_label": "{count} photo(s)",
+    "zip_label": "Télécharger les photos (ZIP)",
+    "compressing": "Compression en cours...",
+    "export_title": "Exporter les photos",
+    "photos_available": "{count} photo(s) disponible(s)",
+    "download_tooltip": "Télécharger {count} photo(s)"
   },
   "authority_statistics": {
     "title": "Statistiques",
@@ -4401,13 +4401,23 @@
   },
   "reclamation_categories": {
     "Infrastructure": "Infrastructures",
-    "infrastructure": "Infrastructure",
+    "infrastructure": "Infrastructures",
+    "INFRASTRUCTURE": "Infrastructures",
     "Services": "Services Publics",
+    "services": "Services Publics",
+    "SERVICES": "Services Publics",
     "Propreté": "Hygiène & Propreté",
+    "proprete": "Hygiène & Propreté",
+    "PROPRETE": "Hygiène & Propreté",
     "Sécurité": "Sécurité",
     "securite": "Sécurité",
+    "SECURITE": "Sécurité",
     "Personnel": "Comportement du Personnel",
+    "personnel": "Comportement du Personnel",
+    "PERSONNEL": "Comportement du Personnel",
     "Accessibilité": "Accessibilité",
+    "accessibilite": "Accessibilité",
+    "ACCESSIBILITE": "Accessibilité",
     "education": "Éducation",
     "sport": "Sport",
     "eclairage": "Éclairage Public",
@@ -4420,6 +4430,7 @@
     "NUISANCES": "Nuisances",
     "SECURITE": "Sécurité publique",
     "Autre": "Autre",
+    "autre": "Autre",
     "AUTRE": "Autres demandes",
     "social": "Social"
   },
@@ -5938,7 +5949,7 @@
     "processed_on": "Demande traitée le {date}",
     "back_list": "Retour à la liste",
     "update_etab": "Mise à jour de l'établissement",
-    "soumettre": "إرسال الطلب"
+    "soumettre": "Soumettre la demande"
   },
   "history_actions": {
     "CREATION": "Création de la réclamation",

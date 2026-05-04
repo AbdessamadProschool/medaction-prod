@@ -98,7 +98,10 @@ export function stripHtml(input: string): string {
 export function sanitizeString(input: string): string {
   if (!input || typeof input !== 'string') return '';
   
-  return stripHtml(input)
+  // SECURITY FIX: Remove null bytes (\x00) which crash PostgreSQL encoding
+  const cleanInput = input.replace(/\x00/g, '');
+  
+  return stripHtml(cleanInput)
     .replace(/[<>"'&`]/g, (char) => {
       const map: Record<string, string> = {
         '<': '&lt;',

@@ -4401,6 +4401,7 @@
   },
   "reclamation_categories": {
     "Infrastructure": "Infrastructures",
+    "infrastructure": "Infrastructure",
     "Services": "Services Publics",
     "Propreté": "Hygiène & Propreté",
     "Sécurité": "Sécurité",

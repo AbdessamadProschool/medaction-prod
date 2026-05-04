@@ -13,10 +13,6 @@ export async function POST(request: NextRequest) {
   try {
     const clientIP = getClientIP(request);
     
-    // SECURITY FIX: Auto-record each check as a potential attempt
-    // This prevents attackers from just calling login-check without consequence
-    recordLoginAttemptByIP(clientIP, false); // Record as failed by default
-    
     // Check if this IP is rate limited
     const rateLimitResult = checkLoginRateLimit(clientIP);
     

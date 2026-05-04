@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import { verifyPassword } from '@/lib/auth/password';
 import { AuthToken, AuthUser } from '@/lib/auth/types';
 import { authenticator } from 'otplib';
-import { isAccountLocked, recordFailedLogin, resetLoginAttempts, check2FAAttempts, record2FAFailure, reset2FAAttempts } from '@/lib/auth/security';
+import { isAccountLocked, recordFailedLogin, resetLoginAttempts, check2FAAttempts, record2FAFailure, reset2FAAttempts, recordLoginAttemptByIP } from '@/lib/auth/security';
 import { getSecuritySettings } from '@/lib/settings/service';
 import bcrypt from 'bcryptjs';
 import { SystemLogger } from '@/lib/system-logger';
@@ -97,8 +97,11 @@ export const authOptions: NextAuthOptions = {
             user.motDePasse
           );
 
-          if (!isValidPassword) {
-            // === ENREGISTRER LA TENTATIVE ÉCHOUÉE ===
+            // === ENREGISTRER LA TENTATIVE ÉCHOUÉE (IP & COMPTE) ===
+            const headersList = await headers();
+            const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+            recordLoginAttemptByIP(ip, false);
+
             const result = await recordFailedLogin(email);
             
             // Log failed attempt to system logs
@@ -185,7 +188,11 @@ export const authOptions: NextAuthOptions = {
             }
           }
 
-          // === RÉINITIALISER LES TENTATIVES APRÈS SUCCÈS ===
+          // === RÉINITIALISER LES TENTATIVES APRÈS SUCCÈS (IP & COMPTE) ===
+          const headersList = await headers();
+          const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+          recordLoginAttemptByIP(ip, true);
+
           await resetLoginAttempts(user.id);
 
           await prisma.user.update({

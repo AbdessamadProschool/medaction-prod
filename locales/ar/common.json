@@ -4974,6 +4974,7 @@
   },
   "reclamation_categories": {
     "Infrastructure": "بنية تحتية",
+    "infrastructure": "بنية تحتية",
     "Services": "خدمات",
     "Propreté": "نظافة",
     "Sécurité": "أمن",

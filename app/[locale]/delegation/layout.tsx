@@ -50,6 +50,7 @@ export default function DelegationLayout({
     EDUCATION: { label: t('sectors.education'), icon: GraduationCap, color: 'hsl(213,80%,28%)' },
     SPORT: { label: t('sectors.sport'), icon: Dumbbell, color: 'hsl(145,63%,32%)' },
     CULTURE: { label: t('sectors.culture'), icon: Palette, color: 'hsl(280,60%,50%)' },
+    CULTUREL: { label: t('sectors.culture'), icon: Palette, color: 'hsl(280,60%,50%)' },
     JEUNESSE: { label: t('sectors.youth'), icon: UserCheck, color: 'hsl(45,93%,47%)' },
     SOCIAL: { label: t('sectors.social'), icon: Handshake, color: 'hsl(180,60%,40%)' },
     ENVIRONNEMENT: { label: t('sectors.environment'), icon: Leaf, color: 'hsl(120,50%,40%)' },

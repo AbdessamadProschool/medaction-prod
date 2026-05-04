@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Building2, 
   MapPin, 
@@ -27,6 +27,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soumettreDemandeEtablissement } from '@/app/actions/etablissementWorkflow';
+import { useSession } from 'next-auth/react';
 
 interface DemandeFormProps {
   initialData?: any;
@@ -47,7 +48,10 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
   const te = useTranslations('admin.establishments');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPER_ADMIN';
+  const isDelegation = session?.user?.role === 'DELEGATION';
+  const userSecteur = session?.user?.secteurResponsable;
 
   const [formData, setFormData] = useState({
     // Step 1: Identification
@@ -117,6 +121,13 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     projetsFuturs: initialData?.projetsFuturs || '',
     justification: '',
   });
+
+  // Force le secteur si c'est une délégation
+  useEffect(() => {
+    if (isDelegation && userSecteur && formData.secteur !== userSecteur) {
+      setFormData(prev => ({ ...prev, secteur: userSecteur as any }));
+    }
+  }, [isDelegation, userSecteur, formData.secteur]);
 
   const [complementaryFields, setComplementaryFields] = useState<Array<{ key: string, value: string }>>(() => {
     if (initialData?.champsComplementaires) {
@@ -339,10 +350,10 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         />
                       </FormField>
                       <FormField label={te('form.sector')}>
-                        <select
                           value={formData.secteur}
                           onChange={e => setFormData({ ...formData, secteur: e.target.value })}
-                          className="input-premium"
+                          className={`input-premium ${isDelegation ? 'opacity-70 bg-gray-50' : ''}`}
+                          disabled={isDelegation && !!userSecteur}
                         >
                           <option value="EDUCATION">Éducation</option>
                           <option value="SANTE">Santé</option>

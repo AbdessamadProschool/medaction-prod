@@ -37,11 +37,32 @@ export async function soumettreDemandeEtablissement(params: {
   const hasPermission = await checkPermission(userId, permission);
   if (!hasPermission) throw new ForbiddenError("Permission de soumettre une demande insuffisante");
 
+  // Sécurité Secteur pour DELEGATION
+  const isDelegation = session.user.role === 'DELEGATION';
+  const userSecteur = session.user.secteurResponsable;
+
+  if (isDelegation && userSecteur) {
+    // Force le secteur pour les créations
+    if (params.type === 'CREATION') {
+      params.donneesModifiees.secteur = userSecteur;
+    }
+  }
+
   // Si c'est une modification, on vérifie que l'établissement existe
   if (params.type === 'MODIFICATION') {
     if (!params.etablissementId) throw new AppError("ID d'établissement requis pour une modification", 'VALIDATION_ERROR', 400);
     const exists = await prisma.etablissement.findUnique({ where: { id: params.etablissementId } });
     if (!exists) throw new AppError("Établissement non trouvé", 'NOT_FOUND', 404);
+
+    // Sécurité supplémentaire pour modification : le délégué ne peut pas changer le secteur
+    // et ne peut modifier que les établissements de son propre secteur
+    if (isDelegation && userSecteur) {
+      if (exists.secteur !== userSecteur) {
+        throw new ForbiddenError("Vous ne pouvez modifier que les établissements de votre secteur");
+      }
+      // On s'assure que le secteur n'est pas changé dans la demande
+      params.donneesModifiees.secteur = userSecteur;
+    }
   }
 
   try {

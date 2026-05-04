@@ -100,8 +100,17 @@ export const GET = withErrorHandler(async (req: NextRequest, { params }: RoutePa
   }
 
   // Vérifier si l'établissement est accessible
-  if (!isAdmin && (!etablissement.isPublie || !etablissement.isValide)) {
-    throw new ForbiddenError("Établissement non disponible");
+  const isDelegation = session?.user?.role === 'DELEGATION';
+  if (!isAdmin) {
+    // Si c'est une délégation, elle ne peut voir que son secteur
+    if (isDelegation && session?.user?.secteurResponsable && etablissement.secteur !== session.user.secteurResponsable) {
+      throw new ForbiddenError("Vous n'avez pas accès aux établissements de ce secteur");
+    }
+
+    // Filtre de publication standard
+    if (!etablissement.isPublie || !etablissement.isValide) {
+      throw new ForbiddenError("Établissement non disponible");
+    }
   }
 
   return successResponse(etablissement);
@@ -136,6 +145,19 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
     throw new ForbiddenError("Vous n'avez pas les droits pour modifier cet établissement");
   }
 
+  // Sécurité supplémentaire pour DELEGATION : restriction au secteur
+  if (isDelegation && !isAdmin) {
+    // Re-fetch avec le secteur pour vérification
+    const etablissementToCheck = await prisma.etablissement.findUnique({
+      where: { id: etablissementId },
+      select: { secteur: true }
+    });
+
+    if (etablissementToCheck?.secteur !== session.user.secteurResponsable) {
+      throw new ForbiddenError("Vous ne pouvez modifier que les établissements de votre secteur");
+    }
+  }
+
   const body = await req.json();
   const result = etablissementUpdateSchema.safeParse(body);
 
@@ -143,12 +165,14 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
     throw new ValidationError("Données invalides", { fieldErrors: result.error.flatten().fieldErrors });
   }
 
-  // Mise de côté des champs admin
+  // Mise de côté des champs admin et verrouillage secteur
   const updateData: Record<string, any> = { ...result.data };
   if (!isAdmin) {
     delete updateData.isPublie;
     delete updateData.isValide;
     delete updateData.isMisEnAvant;
+    // Un délégué ne peut jamais changer le secteur d'un établissement
+    delete updateData.secteur;
   }
 
   const updatedEtablissement = await prisma.etablissement.update({

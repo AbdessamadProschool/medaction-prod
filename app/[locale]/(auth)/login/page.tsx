@@ -130,14 +130,6 @@ function LoginForm() {
         code: data.code,
       });
 
-      // === SECURITY: Record the login attempt result ===
-      const loginSuccess = !result?.error;
-      await fetch('/api/auth/login-record', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ success: loginSuccess }),
-      });
-
       if (result?.error) {
         if (result.error === '2FA_REQUIRED') {
           setStep('2fa');

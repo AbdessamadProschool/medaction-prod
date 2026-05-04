@@ -71,6 +71,12 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     }
   }
 
+  // === LOGIQUE DÉLÉGATION ===
+  // Force le filtrage sur le secteur de responsabilité de la délégation
+  if (isDelegation && session?.user?.secteurResponsable) {
+    where.secteur = session.user.secteurResponsable as any;
+  }
+
   // SECURITY FIX: Le filtre de visibilité doit TOUJOURS s'appliquer aux non-admins
   // Retrait de la condition `!idsParam` qui permettait de contourner le filtre
   if (!isAdmin && !isDelegation && !isCoordinateur) {
@@ -92,7 +98,14 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     ];
   }
 
-  if (secteur) where.secteur = secteur;
+  if (secteur) {
+    if (isDelegation && session?.user?.secteurResponsable) {
+      // La délégation reste restreinte à son secteur
+      where.secteur = session.user.secteurResponsable as any;
+    } else {
+      where.secteur = secteur;
+    }
+  }
   if (communeId) where.communeId = communeId;
   if (annexeId) where.annexeId = parseInt(annexeId);
   if (nature) where.nature = nature;

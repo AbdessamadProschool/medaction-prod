@@ -38,6 +38,11 @@ interface UserProfile {
   role: string;
   isEmailVerifie: boolean;
   dateInscription: string;
+  preferences?: {
+    email_reclamations?: boolean;
+    email_evenements?: boolean;
+    email_actualites?: boolean;
+  };
 }
 
 const tabs = [
@@ -217,6 +222,44 @@ export default function ProfilPage() {
       setMessage({ type: 'error', text: t('errors.delete_fail') });
     }
   };
+
+  // Mettre à jour les préférences (notifications, etc.)
+  const handlePreferencesSubmit = async (newPrefs: any) => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/users/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preferences: newPrefs }),
+      });
+      const result = await res.json();
+      
+      if (result.success) {
+        setProfile((prev) => prev ? { ...prev, preferences: result.data.preferences } : null);
+        setMessage({ type: 'success', text: t('messages.success') });
+      } else {
+        setMessage({ type: 'error', text: result.message });
+      }
+    } catch {
+      setMessage({ type: 'error', text: t('messages.error_update') });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleNotificationToggle = (id: string, checked: boolean) => {
+    const currentPrefs = profile?.preferences || {};
+    const newPrefs = {
+      ...currentPrefs,
+      [id]: checked
+    };
+    // Mettre à jour l'état local pour un feedback immédiat
+    setProfile(prev => prev ? { ...prev, preferences: newPrefs } : null);
+    // Optionnel: On pourrait appeler handlePreferencesSubmit ici pour sauvegarde automatique
+    // ou laisser le bouton "Sauvegarder" faire le travail.
+    // L'utilisateur a demandé que le bouton fonctionne, donc on sauvegarde via le bouton.
+  };
+
 
   const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
@@ -526,7 +569,8 @@ export default function ProfilPage() {
                         <input
                           type="checkbox"
                           id={item.id}
-                          defaultChecked
+                          checked={profile?.preferences?.[item.id as keyof typeof profile.preferences] !== false}
+                          onChange={(e) => handleNotificationToggle(item.id, e.target.checked)}
                           className="mt-1 w-5 h-5 rounded border-gray-300 text-[hsl(213,80%,28%)] focus:ring-[hsl(213,80%,28%)]"
                         />
                         <label htmlFor={item.id} className="flex-1 cursor-pointer">
@@ -537,12 +581,16 @@ export default function ProfilPage() {
                     ))}
                   </div>
 
-                  <button
-                    type="button"
-                    className="gov-btn gov-btn-primary"
-                  >
-                    {t('notifications.save_btn')}
-                  </button>
+                  <div className="pt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handlePreferencesSubmit(profile?.preferences)}
+                      disabled={isSaving}
+                      className="gov-btn gov-btn-primary"
+                    >
+                      {isSaving ? t('form.saving') : t('notifications.save_btn')}
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

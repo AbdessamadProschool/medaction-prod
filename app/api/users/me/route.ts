@@ -18,6 +18,7 @@ const updateProfileSchema = z.object({
     .regex(/^(\+212|0)[5-7]\d{8}$/, 'Numéro de téléphone marocain invalide')
     .nullable()
     .optional(),
+  preferences: z.any().optional(),
 });
 
 /**
@@ -85,8 +86,20 @@ export const PATCH = withErrorHandler(async (request: Request) => {
     throw validation.error;
   }
 
-  const { nom, prenom, telephone } = validation.data;
+  const { nom, prenom, telephone, preferences } = validation.data;
   const userId = parseInt(session.user.id);
+  
+  // Si preferences est fourni, s'assurer que c'est un objet valide
+  // On récupère les préférences actuelles pour faire un merge
+  let finalPreferences = preferences;
+  if (preferences) {
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { preferences: true }
+    });
+    const currentPrefs = (currentUser?.preferences as object) || {};
+    finalPreferences = { ...currentPrefs, ...preferences };
+  }
 
   // Vérifier si le téléphone est déjà utilisé par un autre utilisateur
   if (telephone) {
@@ -108,6 +121,7 @@ export const PATCH = withErrorHandler(async (request: Request) => {
       ...(nom && { nom }),
       ...(prenom && { prenom }),
       ...(telephone !== undefined && { telephone }),
+      ...(finalPreferences && { preferences: finalPreferences }),
     },
     select: {
       id: true,

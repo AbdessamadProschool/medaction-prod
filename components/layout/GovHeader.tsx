@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, usePathname } from '@/i18n/navigation';
@@ -444,11 +445,15 @@ export default function GovHeader() {
                   >
                     {/* Photo utilisateur ou initiales */}
                     {session.user?.photo ? (
-                      <img 
-                        src={session.user.photo} 
-                        alt="Photo profil"
-                        className="w-8 h-8 rounded-full object-cover border-2 border-[hsl(45,93%,47%)]"
-                      />
+                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[hsl(45,93%,47%)]">
+                        <OptimizedImage 
+                          src={session.user.photo} 
+                          alt="Photo profil"
+                          type="profile"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-[hsl(45,93%,47%)] flex items-center justify-center text-[hsl(213,80%,28%)] font-bold text-sm shadow-sm">
                         {session.user?.prenom?.[0]?.toUpperCase() || 'U'}
@@ -473,11 +478,15 @@ export default function GovHeader() {
                         <div className="px-5 py-5 border-b border-gray-100 bg-gradient-to-r from-[hsl(213,80%,28%)]/5 to-transparent">
                           <div className="flex items-center gap-4">
                             {session.user?.photo ? (
-                              <img 
-                                src={session.user.photo} 
-                                alt="Photo profil"
-                                className="w-12 h-12 rounded-full object-cover border-2 border-[hsl(213,80%,28%)]"
-                              />
+                              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[hsl(213,80%,28%)]">
+                                <OptimizedImage 
+                                  src={session.user.photo} 
+                                  alt="Photo profil"
+                                  type="profile"
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
                             ) : (
                               <div className="w-12 h-12 rounded-full bg-[hsl(45,93%,47%)] flex items-center justify-center text-[hsl(213,80%,28%)] font-bold text-xl shadow-sm">
                                 {session.user?.prenom?.[0]?.toUpperCase() || 'U'}

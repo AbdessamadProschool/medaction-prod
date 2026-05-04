@@ -62,8 +62,15 @@ export async function POST(request: Request) {
 
     const fileName = `user_${session.user.id}_${Date.now()}.${extension}`;
     
-    // Créer le dossier uploads/avatars s'il n'existe pas
-    const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
+    // Configuration du dossier de stockage (compatible Docker/STORAGE_PATH)
+    const STORAGE_PATH = process.env.STORAGE_PATH;
+    const UPLOAD_BASE = STORAGE_PATH 
+      ? (STORAGE_PATH.startsWith('/') || /^[a-zA-Z]:[\\\/]/.test(STORAGE_PATH)) 
+        ? STORAGE_PATH 
+        : path.join(process.cwd(), STORAGE_PATH)
+      : path.join(process.cwd(), 'uploads');
+
+    const uploadDir = path.join(UPLOAD_BASE, 'avatars');
     await mkdir(uploadDir, { recursive: true });
 
     // Sauvegarder le fichier

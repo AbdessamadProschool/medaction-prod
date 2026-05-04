@@ -52,8 +52,20 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
   const etablissementIds = abonnements.map(a => a.etablissementId);
 
+  // Mapper pour simplifier les clés pour le frontend
+  const formattedAbonnements = abonnements.map(abonnement => ({
+    ...abonnement,
+    etablissement: {
+      ...abonnement.etablissement,
+      _count: {
+        evenements: (abonnement.etablissement._count as any).evenementsOrganises || 0,
+        actualites: abonnement.etablissement._count.actualites || 0,
+      }
+    }
+  }));
+
   return successResponse({
-    data: abonnements,
+    data: formattedAbonnements,
     etablissementIds,
     pagination: {
       page,

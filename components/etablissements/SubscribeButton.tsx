@@ -46,8 +46,10 @@ export default function SubscribeButton({
       const res = await fetch(`/api/users/me/abonnements`);
       if (res.ok) {
         const data = await res.json();
-        const found = Array.isArray(data.data) 
-          ? data.data.find((a: Abonnement) => a.etablissementId === etablissementId)
+        // L'API wrap dans successResponse -> { success: true, data: { data: [...], ... } }
+        const abonnementsArray = data.data?.data || [];
+        const found = Array.isArray(abonnementsArray) 
+          ? abonnementsArray.find((a: Abonnement) => a.etablissementId === etablissementId)
           : null;
         setAbonnement(found || null);
       }
@@ -74,7 +76,7 @@ export default function SubscribeButton({
 
       if (res.ok) {
         const data = await res.json();
-        setAbonnement(data.abonnement);
+        setAbonnement(data.data);
       } else if (res.status === 409) {
         // Déjà abonné - rafraîchir
         await checkSubscription();
@@ -118,7 +120,7 @@ export default function SubscribeButton({
 
       if (res.ok) {
         const data = await res.json();
-        setAbonnement(data.abonnement);
+        setAbonnement(data.data);
       }
     } catch (error) {
       console.error('Erreur toggle notifications:', error);

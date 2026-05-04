@@ -30,7 +30,7 @@ const UPLOAD_DIR = STORAGE_PATH
   ? (STORAGE_PATH.startsWith('/') || STORAGE_PATH.match(/^[a-zA-Z]:\\/)) 
     ? STORAGE_PATH // Absolute path provided
     : join(process.cwd(), STORAGE_PATH) // Relative path provided
-  : join(process.cwd(), 'public', 'uploads'); // Fail-safe default
+  : join(process.cwd(), 'uploads'); // Fail-safe default (root uploads folder)
 
 // Ensure the directory exists on startup (optional but good practice)
 // Note: We create directories dynamically, so this is just for the root

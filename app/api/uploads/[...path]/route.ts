@@ -80,8 +80,8 @@ function getStoragePath(): string {
     // Relative path
     return join(process.cwd(), storagePath);
   }
-  // Default: public/uploads (for backward compatibility)
-  return join(process.cwd(), 'public', 'uploads');
+  // Default: uploads folder in root (standard)
+  return join(process.cwd(), 'uploads');
 }
 
 export async function GET(

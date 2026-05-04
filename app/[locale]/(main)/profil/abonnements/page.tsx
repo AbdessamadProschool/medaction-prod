@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import {
   Bell,
   BellOff,
@@ -79,9 +80,9 @@ export default function AbonnementsPage() {
       const res = await fetch(`/api/users/me/abonnements?page=${page}&limit=12`);
       if (res.ok) {
         const data = await res.json();
-        setAbonnements(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
+        setAbonnements(data.data?.data || []);
+        setTotalPages(data.data?.pagination?.totalPages || 1);
+        setTotal(data.data?.pagination?.total || 0);
       }
     } catch (error) {
       console.error('Erreur chargement abonnements:', error);
@@ -137,10 +138,11 @@ export default function AbonnementsPage() {
     }
   };
 
-  // Filtrer par recherche
-  const filteredAbonnements = abonnements.filter(a => 
-    a.etablissement?.nom?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.etablissement?.commune?.nom?.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filtrer par recherche de manière sécurisée (au cas où l'API renvoie autre chose qu'un tableau)
+  const safeAbonnements = Array.isArray(abonnements) ? abonnements : [];
+  const filteredAbonnements = safeAbonnements.filter(a => 
+    a?.etablissement?.nom?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    a?.etablissement?.commune?.nom?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Non connecté
@@ -254,10 +256,11 @@ export default function AbonnementsPage() {
                       {/* Image ou placeholder */}
                       <div className="relative h-32 bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] overflow-hidden">
                         {abonnement.etablissement.photoPrincipale ? (
-                          <img
+                          <OptimizedImage
                             src={abonnement.etablissement.photoPrincipale}
-                            alt=""
-                            className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300"
+                            alt={abonnement.etablissement.nom}
+                            fill
+                            className="opacity-80 group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center">

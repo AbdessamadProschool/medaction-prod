@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
             credentials.password,
             user.motDePasse
           );
-
+          if (!isValidPassword) {
             // === ENREGISTRER LA TENTATIVE ÉCHOUÉE (IP & COMPTE) ===
             const headersList = await headers();
             const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
@@ -200,8 +200,6 @@ export const authOptions: NextAuthOptions = {
             data: { derniereConnexion: new Date() },
           });
 
-          const headersList = await headers();
-          const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
           const userAgent = headersList.get('user-agent') || 'Unknown';
 
           await prisma.activityLog.create({

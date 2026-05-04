@@ -350,6 +350,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         />
                       </FormField>
                       <FormField label={te('form.sector')}>
+                        <select
                           value={formData.secteur}
                           onChange={e => setFormData({ ...formData, secteur: e.target.value })}
                           className={`input-premium ${isDelegation ? 'opacity-70 bg-gray-50' : ''}`}

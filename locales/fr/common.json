@@ -1248,7 +1248,8 @@
       "upcoming": "À venir",
       "in_progress": "En cours",
       "completed": "Terminés"
-    }
+    },
+    "explorer": "Explorer les établissements"
   },
   "events_page": {
     "title": "Événements & Activités",
@@ -4435,7 +4436,7 @@
     "PROPRETE": "Hygiène & Propreté",
     "Sécurité": "Sécurité",
     "securite": "Sécurité",
-    "SECURITE": "Sécurité",
+    "SECURITE": "Sécurité publique",
     "Personnel": "Comportement du Personnel",
     "personnel": "Comportement du Personnel",
     "PERSONNEL": "Comportement du Personnel",
@@ -4452,7 +4453,6 @@
     "ESPACES_VERTS": "Espaces verts",
     "TRANSPORT": "Transport urbain",
     "NUISANCES": "Nuisances",
-    "SECURITE": "Sécurité publique",
     "Autre": "Autre",
     "autre": "Autre",
     "AUTRE": "Autres demandes",

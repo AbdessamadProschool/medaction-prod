@@ -258,6 +258,7 @@ export default function AdminSettingsPage() {
                 </label>
                 <input
                   type="text"
+                  dir="auto"
                   value={settings.general.nomPlateforme}
                   onChange={(e) => updateSetting('general', 'nomPlateforme', e.target.value)}
                   disabled={!isSuperAdmin}
@@ -271,6 +272,7 @@ export default function AdminSettingsPage() {
                 </label>
                 <textarea
                   rows={3}
+                  dir="auto"
                   value={settings.general.description}
                   onChange={(e) => updateSetting('general', 'description', e.target.value)}
                   disabled={!isSuperAdmin}
@@ -360,6 +362,7 @@ export default function AdminSettingsPage() {
                 </label>
                 <input
                   type="number"
+                  dir="ltr"
                   value={settings.security.dureeSession}
                   onChange={(e) => updateSetting('security', 'dureeSession', parseInt(e.target.value) || 24)}
                   min={1}
@@ -375,6 +378,7 @@ export default function AdminSettingsPage() {
                 </label>
                 <input
                   type="number"
+                  dir="ltr"
                   value={settings.security.tentativesConnexionMax}
                   onChange={(e) => updateSetting('security', 'tentativesConnexionMax', parseInt(e.target.value) || 5)}
                   min={3}
@@ -411,10 +415,11 @@ export default function AdminSettingsPage() {
                 </label>
                 <input
                   type="email"
+                  dir="ltr"
                   value={settings.email.emailEnvoi}
                   onChange={(e) => updateSetting('email', 'emailEnvoi', e.target.value)}
                   disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="w-full px-4 py-2 text-start border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
                 />
               </div>
 
@@ -424,10 +429,11 @@ export default function AdminSettingsPage() {
                 </label>
                 <input
                   type="email"
+                  dir="ltr"
                   value={settings.email.emailContact}
                   onChange={(e) => updateSetting('email', 'emailContact', e.target.value)}
                   disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="w-full px-4 py-2 text-start border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
                 />
               </div>
 

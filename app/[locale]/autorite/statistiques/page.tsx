@@ -18,6 +18,7 @@ import {
 
 export default function AutoriteStatistiquesPage() {
   const t = useTranslations('authority_statistics');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const isRtl = locale === 'ar';
   
@@ -216,7 +217,11 @@ export default function AutoriteStatistiquesPage() {
                     return (
                         <div key={index} className="group">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-700 truncate">{cat.categorie}</span>
+                                <span className="text-sm font-medium text-gray-700 truncate">
+                                    {tCommon.has(`sectors.${cat.categorie.toLowerCase()}`) 
+                                        ? tCommon(`sectors.${cat.categorie.toLowerCase()}`) 
+                                        : cat.categorie}
+                                </span>
                                 <span className="text-xs font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded-md">{cat.count}</span>
                             </div>
                             <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">

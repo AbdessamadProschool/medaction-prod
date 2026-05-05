@@ -485,7 +485,7 @@ const authMiddleware = withAuth(
     // ─────────────────────────────────────────────────────────────────
     // ASSETS FIX: Rediriger /ar/images/* vers /images/* et /ar/uploads/* vers /uploads/*
     // ─────────────────────────────────────────────────────────────────
-    if (pathname.match(/^\/(fr|ar)\/(images|uploads|fonts|assets)\//)) {
+    if (pathname.match(/^\/(fr|ar)\/(images|uploads|fonts|assets|.*\.svg|.*\.png|.*\.ico)/)) {
       let strippedPath = pathname.replace(/^\/(fr|ar)/, '');
       if (strippedPath.startsWith('/uploads/')) {
         strippedPath = '/api' + strippedPath;
@@ -766,6 +766,6 @@ export const config = {
     // SECURITY & STATIC FIX: 
     // 1. Exclure les assets statiques évidents du middleware
     // 2. Le reste est géré dynamiquement dans la fonction middleware (ASSETS FIX)
-    '/((?!_next/static|_next/image|uploads|images|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
+    '/((?!_next/static|_next/image|uploads|images|favicon\\.ico|.*\\.svg|.*\\.png|robots\\.txt|sitemap\\.xml).*)',
   ],
 };

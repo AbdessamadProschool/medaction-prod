@@ -62,27 +62,37 @@ export default function AdminStatsPage() {
         // Mapping de la réponse API (format { stats, charts, details }) vers le format attendu par le composant
         const formattedData: StatsData = {
           reclamations: {
-            total: data?.stats?.reclamations?.total ?? 0,
-            ceMois: data?.stats?.reclamations?.ceMois ?? 0,
-            moisDernier: data?.stats?.reclamations?.moisDernier ?? 0,
-            parStatut: data?.details?.reclamations?.parStatut ?? [],
-            parCategorie: data?.details?.reclamations?.parCategorie ?? [],
-            parCommune: data?.details?.reclamations?.parCommune ?? [],
+            total: data?.data?.stats?.reclamations?.total ?? 0,
+            ceMois: data?.data?.stats?.reclamations?.ceMois ?? 0,
+            moisDernier: data?.data?.stats?.reclamations?.moisDernier ?? 0,
+            parStatut: data?.data?.charts?.reclamationsParStatut?.map((s: any) => ({
+              statut: s.statut === 'En attente' ? 'EN_ATTENTE' : 
+                      s.statut === 'À affecter' ? 'ACCEPTEE' : // Mapping approximatif pour le rendu
+                      s.statut === 'En cours' ? 'ACCEPTEE' :
+                      s.statut === 'Résolues' ? 'ACCEPTEE' :
+                      s.statut === 'Rejetées' ? 'REJETEE' : s.statut,
+              count: s.count
+            })) ?? [],
+            parCategorie: [], // Non fourni par cet API spécifique actuellement
+            parCommune: [],
           },
           etablissements: {
-            total: data?.stats?.etablissements?.total ?? 0,
-            parSecteur: data?.details?.etablissements?.parSecteur ?? [],
-            noteMoyenne: data?.stats?.etablissements?.noteMoyenne ?? 0
+            total: data?.data?.stats?.etablissements?.total ?? 0,
+            parSecteur: [], // Non fourni par cet API spécifique actuellement
+            noteMoyenne: data?.data?.stats?.etablissements?.noteMoyenne ?? 0
           },
           evenements: {
-            total: data?.stats?.evenements?.total ?? 0,
-            ceMois: data?.stats?.evenements?.ceMois ?? 0,
-            parSecteur: data?.details?.evenements?.parSecteur ?? []
+            total: data?.data?.stats?.evenements?.total ?? 0,
+            ceMois: data?.data?.stats?.evenements?.ceMois ?? 0,
+            parSecteur: data?.data?.charts?.evenementsParSecteur ?? []
           },
           utilisateurs: {
-            total: data?.stats?.utilisateurs?.total ?? 0,
-            nouveauxCeMois: data?.stats?.utilisateurs?.nouveaux ?? 0,
-            parRole: data?.details?.utilisateurs?.parRole ?? []
+            total: data?.data?.stats?.utilisateurs?.total ?? 0,
+            nouveauxCeMois: data?.data?.stats?.utilisateurs?.nouveaux ?? 0,
+            parRole: Object.entries(data?.data?.stats?.utilisateurs?.byRole || {}).map(([role, count]) => ({
+              role,
+              count: count as number
+            }))
           }
         };
         setStats(formattedData);

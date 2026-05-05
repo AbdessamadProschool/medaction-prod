@@ -53,28 +53,28 @@ export default function AutoriteStatistiquesPage() {
   const statsCards = [
     {
       label: t('cards.total'),
-      value: stats?.total || 0,
+      value: stats?.reclamations?.total || 0,
       icon: FileText,
       color: 'blue',
-      trend: stats?.totalTrend || 0
+      trend: stats?.reclamations?.totalTrend || 0
     },
     {
       label: t('cards.pending'),
-      value: stats?.enAttente || 0,
+      value: stats?.reclamations?.enAttente || 0,
       icon: Clock,
       color: 'amber',
       trend: null
     },
     {
       label: t('cards.resolved'),
-      value: stats?.resolues || 0,
+      value: stats?.reclamations?.resolues || 0,
       icon: CheckCircle,
       color: 'green',
-      trend: stats?.resoluesTrend || 0
+      trend: stats?.reclamations?.resoluesTrend || 0
     },
     {
       label: t('cards.rejected'),
-      value: stats?.rejetees || 0,
+      value: stats?.reclamations?.rejetees || 0,
       icon: XCircle,
       color: 'red',
       trend: null

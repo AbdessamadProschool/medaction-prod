@@ -4,6 +4,7 @@ import { PermissionGuard } from '@/hooks/use-permission';
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
@@ -56,6 +57,8 @@ const secteurIcons: Record<string, string> = {
 };
 
 export default function AbonnementsPage() {
+  const t = useTranslations('my_subscriptions_page');
+  const tCommon = useTranslations('common');
   const { data: session, status } = useSession();
   const [abonnements, setAbonnements] = useState<Abonnement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +120,7 @@ export default function AbonnementsPage() {
   };
 
   const unsubscribe = async (abonnement: Abonnement) => {
-    if (!confirm(`Voulez-vous vraiment vous désabonner de "${abonnement.etablissement.nom}" ?`)) {
+    if (!confirm(t('unsubscribe_confirm', { name: abonnement.etablissement.nom }))) {
       return;
     }
 
@@ -152,10 +155,10 @@ export default function AbonnementsPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="gov-card text-center py-16">
             <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Connexion requise</h2>
-            <p className="text-gray-500 mb-6">Connectez-vous pour gérer vos abonnements.</p>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('auth_required')}</h2>
+            <p className="text-gray-500 mb-6">{t('auth_required_desc')}</p>
             <Link href="/login" className="gov-btn gov-btn-primary">
-              Se connecter
+              {t('login_btn')}
             </Link>
           </div>
         </div>
@@ -169,10 +172,10 @@ export default function AbonnementsPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="text-center p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès restreint</h2>
-            <p className="text-gray-500 mb-6">Vous n'avez pas la permission de gérer des abonnements.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('access_denied')}</h2>
+            <p className="text-gray-500 mb-6">{t('access_denied_desc')}</p>
             <Link href="/profil" className="text-emerald-600 hover:underline">
-              Retour au profil
+              {t('back_to_profile')}
             </Link>
           </div>
         </div>
@@ -184,13 +187,13 @@ export default function AbonnementsPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                <Link href="/profil" className="hover:text-[hsl(213,80%,28%)]">Mon profil</Link>
+                <Link href="/profil" className="hover:text-[hsl(213,80%,28%)]">{tCommon('user')}</Link>
                 <span>/</span>
-                <span className="text-gray-900">Mes abonnements</span>
+                <span className="text-gray-900">{t('breadcrumb')}</span>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900">Mes Abonnements</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
               <p className="text-gray-600 mt-1">
-                Gérez vos abonnements aux établissements ({total})
+                {t('subtitle', { total })}
               </p>
             </div>
 
@@ -199,7 +202,7 @@ export default function AbonnementsPage() {
               className="gov-btn gov-btn-primary"
             >
               <Building2 size={18} />
-              Explorer les établissements
+              {tCommon('explorer')}
             </Link>
           </div>
 
@@ -211,7 +214,7 @@ export default function AbonnementsPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher un établissement..."
+                placeholder={t('search_placeholder')}
                 className="gov-input pl-12"
               />
             </div>
@@ -226,16 +229,16 @@ export default function AbonnementsPage() {
             <div className="gov-card text-center py-16">
               <Bell className="w-16 h-16 text-gray-200 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchQuery ? 'Aucun résultat' : 'Aucun abonnement'}
+                {searchQuery ? t('no_results') : t('no_subscriptions')}
               </h3>
               <p className="text-gray-500 mb-6">
                 {searchQuery 
-                  ? 'Aucun abonnement ne correspond à votre recherche.'
-                  : 'Vous n\'êtes abonné à aucun établissement pour le moment.'}
+                  ? t('no_results_desc')
+                  : t('no_subscriptions_desc')}
               </p>
               {!searchQuery && (
                 <Link href="/etablissements" className="gov-btn gov-btn-primary">
-                  Découvrir les établissements
+                  {t('discover_btn')}
                 </Link>
               )}
             </div>
@@ -272,7 +275,7 @@ export default function AbonnementsPage() {
                         
                         {/* Badge secteur */}
                         <span className="absolute top-3 left-3 px-2 py-1 bg-white/90 backdrop-blur rounded-lg text-xs font-medium text-gray-700">
-                          {abonnement.etablissement.secteur}
+                          {tCommon(`sectors.${abonnement.etablissement.secteur.toLowerCase()}`)}
                         </span>
                         
                         {/* Notification badge */}
@@ -304,11 +307,11 @@ export default function AbonnementsPage() {
                         <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
                           <span className="flex items-center gap-1">
                             <Calendar size={12} />
-                            {abonnement.etablissement._count.evenements} événement(s)
+                            {t('events_count', { count: abonnement.etablissement._count.evenements })}
                           </span>
                           <span className="flex items-center gap-1">
                             <Newspaper size={12} />
-                            {abonnement.etablissement._count.actualites} actualité(s)
+                            {t('news_count', { count: abonnement.etablissement._count.actualites })}
                           </span>
                         </div>
 
@@ -330,13 +333,13 @@ export default function AbonnementsPage() {
                             ) : (
                               <BellOff size={14} />
                             )}
-                            {abonnement.notificationsActives ? 'Notif. ON' : 'Notif. OFF'}
+                            {abonnement.notificationsActives ? t('notif_on') : t('notif_off')}
                           </button>
                           <button
                             onClick={() => unsubscribe(abonnement)}
                             disabled={actionLoading === abonnement.id}
                             className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                            title="Se désabonner"
+                            title={t('unsubscribe')}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -358,7 +361,7 @@ export default function AbonnementsPage() {
                     <ChevronLeft size={18} />
                   </button>
                   <span className="px-4 py-2 text-sm text-gray-600">
-                    Page {page} sur {totalPages}
+                    {t('page_info', { page, totalPages })}
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}

@@ -2687,6 +2687,30 @@
       "back_home": "العودة للرئيسية"
     }
   },
+  "my_subscriptions_page": {
+    "title": "اشتراكاتي",
+    "subtitle": "إدارة اشتراكاتك في المؤسسات ({total})",
+    "breadcrumb": "اشتراكاتي",
+    "search_placeholder": "بحث عن مؤسسة...",
+    "no_results": "لا توجد نتائج",
+    "no_subscriptions": "لا توجد اشتراكات",
+    "no_results_desc": "لم يتم العثور على أي اشتراك يطابق بحثك.",
+    "no_subscriptions_desc": "أنت لست مشتركاً في أي مؤسسة حالياً.",
+    "discover_btn": "اكتشف المؤسسات",
+    "events_count": "{count} فعالية(أحداث)",
+    "news_count": "{count} خبر(أخبار)",
+    "notif_on": "تنبيهات مفعلة",
+    "notif_off": "تنبيهات معطلة",
+    "unsubscribe": "إلغاء الاشتراك",
+    "unsubscribe_confirm": "هل تريد فعلاً إلغاء الاشتراك في \"{name}\"؟",
+    "auth_required": "تسجيل الدخول مطلوب",
+    "auth_required_desc": "يرجى تسجيل الدخول لإدارة اشتراكاتك.",
+    "login_btn": "تسجيل الدخول",
+    "access_denied": "وصول مقيد",
+    "access_denied_desc": "ليس لديك الصلاحية لإدارة الاشتراكات.",
+    "back_to_profile": "العودة للملف الشخصي",
+    "page_info": "صفحة {page} من {totalPages}"
+  },
   "auth": {
     "account_pending": "حسابكم قيد المراجعة من قبل الإدارة. يرجى الانتظار حتى يتم تفعيله.",
     "account_banned": "تم تعطيل حسابك. يرجى الاتصال بالدعم.",

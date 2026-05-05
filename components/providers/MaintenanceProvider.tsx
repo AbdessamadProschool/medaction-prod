@@ -48,8 +48,11 @@ export function MaintenanceProvider({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Vérifier si le chemin est exclu
-  const isExcludedPath = EXCLUDED_PATHS.some(path => pathname?.startsWith(path));
+  // Vérifier si le chemin est exclu (en ignorant la locale)
+  const normalizedPathname = pathname ? pathname.replace(/^\/(fr|ar)(\/|$)/, '/').replace(/^\/$/, '/') : '';
+  const isExcludedPath = EXCLUDED_PATHS.some(path => 
+    normalizedPathname === path || normalizedPathname.startsWith(path === '/' ? '/' : path + '/')
+  );
 
   // L'utilisateur est-il admin ?
   const isAdmin = session?.user?.role && ADMIN_ROLES.includes(session.user.role);

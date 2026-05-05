@@ -2658,7 +2658,8 @@
       "success_restore": "Système restauré avec succès",
       "messages": {
         "confirm_restore": "Êtes-vous sûr de vouloir restaurer à partir de cette sauvegarde ? Cette action écrasera les données actuelles.",
-        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible.",
+        "created": "Sauvegarde créée avec succès"
       }
     },
     "users_page": {
@@ -5805,7 +5806,8 @@
       "EVENT_CREATION": "Création d'Événement",
       "ACTUALITE_CREATION": "Création d'Actualité",
       "CAMPAGNE_CREATION": "Création de Campagne",
-      "SUGGESTION_STATUT": "Statut de suggestion mis à jour"
+      "SUGGESTION_STATUT": "Statut de suggestion mis à jour",
+      "MOT_DE_PASSE_REINITIALISE": "Mot de passe réinitialisé"
     },
     "actions": {
       "view": "Voir les détails",

@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 // GET /api/maintenance - Vérifier l'état du mode maintenance
 export async function GET() {
   try {
-    // Récupérer le paramètre de maintenance
-    const setting = await prisma.systemSetting.findUnique({
-      where: { key: 'general' },
-    });
-
-    const generalSettings = (setting?.value as Record<string, any>) || {};
-    const maintenanceMode = generalSettings.maintenanceMode || false;
-    const siteName = generalSettings.siteName || 'Portail Mediouna';
-    const siteDescription = generalSettings.siteDescription || '';
+    const SETTINGS_FILE = path.join(process.cwd(), 'data', 'settings.json');
+    const data = await fs.readFile(SETTINGS_FILE, 'utf-8');
+    const settings = JSON.parse(data);
+    
+    const generalSettings = settings.general || {};
+    const maintenanceMode = generalSettings.modeMaintenance || false;
+    const siteName = generalSettings.nomPlateforme || 'Portail Mediouna';
+    const siteDescription = generalSettings.description || '';
 
     return NextResponse.json({
       maintenanceMode,

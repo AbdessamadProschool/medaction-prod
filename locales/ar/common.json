@@ -1562,7 +1562,25 @@
       "title": "التقارير والإحصائيات",
       "date_range_to": "إلى",
       "excel": "تصدير Excel",
-      "no_data": "لا توجد بيانات متاحة لهذه الفترة"
+      "no_data": "لا توجد بيانات متاحة لهذه الفترة",
+      "subtitle": "التقارير والإحصائيات المفصلة",
+      "export_buttons": {
+        "excel_reclamations": "تصدير الشكايات (Excel)",
+        "excel_events": "تصدير الفعاليات (Excel)"
+      },
+      "kpi_cards": {
+        "total_reclamations": "إجمالي الشكايات",
+        "total_events": "إجمالي الفعاليات",
+        "average_rating": "متوسط التقييم",
+        "event_participation": "المشاركة في الفعاليات"
+      },
+      "charts": {
+        "reclamations_by_status": "الشكايات حسب الحالة",
+        "reclamations_evolution": "تطور الشكايات",
+        "reclamations_by_commune": "الشكايات حسب الجماعة",
+        "top_5_establishments": "أفضل 5 مؤسسات"
+      },
+      "reviews_count": "عدد التقييمات"
     },
     "backups": {
       "title": "نسخ النظام الاحتياطية",
@@ -3534,7 +3552,17 @@
       "success": "تم تحديث التكوين بنجاح",
       "save_error": "خطأ أثناء الحفظ",
       "server_error": "خطأ في الاتصال بالخادم"
-    }
+    },
+    "types": {
+      "popup": "نافذة منبثقة (Popup)",
+      "ticker": "شريط متحرك"
+    },
+    "style_variant": "النمط / المتغير",
+    "start_time": "وقت البدء (مثال: 09:00)",
+    "end_time": "وقت الانتهاء (مثال: 15:00)",
+    "scroll_speed": "سرعة التمرير (ثانية)",
+    "speed_fast": "سريع (20ث)",
+    "speed_slow": "بطيء جداً (300ث)"
   },
   "admin_activity_create": {
     "title": "نشاط جديد",

@@ -3092,7 +3092,25 @@
       "title": "Rapports & Statistiques",
       "date_range_to": "à",
       "excel": "Exporter Excel",
-      "no_data": "Aucune donnée disponible pour cette période"
+      "no_data": "Aucune donnée disponible pour cette période",
+      "subtitle": "Rapports et statistiques détaillés",
+      "export_buttons": {
+        "excel_reclamations": "Exporter Réclamations (Excel)",
+        "excel_events": "Exporter Événements (Excel)"
+      },
+      "kpi_cards": {
+        "total_reclamations": "Total Réclamations",
+        "total_events": "Total Événements",
+        "average_rating": "Note Moyenne",
+        "event_participation": "Participation Événements"
+      },
+      "charts": {
+        "reclamations_by_status": "Réclamations par statut",
+        "reclamations_evolution": "Évolution des réclamations",
+        "reclamations_by_commune": "Réclamations par commune",
+        "top_5_establishments": "Top 5 des établissements"
+      },
+      "reviews_count": "Nombre d'avis"
     }
   },
   "admin_campagnes": {
@@ -3463,7 +3481,17 @@
       "success": "Configuration mise à jour avec succès",
       "save_error": "Erreur lors de la sauvegarde",
       "server_error": "Erreur de connexion serveur"
-    }
+    },
+    "types": {
+      "popup": "Fenêtreale (Popup)",
+      "ticker": "Bandeau Défilant"
+    },
+    "style_variant": "Style / Variant",
+    "start_time": "Heure Début (ex: 09:00)",
+    "end_time": "Heure Fin (ex: 15:00)",
+    "scroll_speed": "Vitesse de défilement (s)",
+    "speed_fast": "Rapide (20s)",
+    "speed_slow": "Très Lent (300s)"
   },
   "admin_activity_create": {
     "title": "Nouvelle Activité",

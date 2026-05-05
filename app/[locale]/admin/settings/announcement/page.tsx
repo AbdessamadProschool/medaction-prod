@@ -136,7 +136,7 @@ export default function AnnouncementSettingsPage() {
                 }`}
               >
                 <Layout className="w-6 h-6 mb-2 mx-auto" />
-                <div className="font-bold text-sm text-center">Fenêtreale (Popup)</div>
+                <div className="font-bold text-sm text-center">{t('admin_announcement.types.popup')}</div>
               </button>
               <button
                 onClick={() => setConfig({ ...config, type: 'TICKER' })}
@@ -147,13 +147,13 @@ export default function AnnouncementSettingsPage() {
                 }`}
               >
                 <AlertCircle className="w-6 h-6 mb-2 mx-auto" />
-                <div className="font-bold text-sm text-center">Bandeau Défilant</div>
+                <div className="font-bold text-sm text-center">{t('admin_announcement.types.ticker')}</div>
               </button>
             </div>
 
             {/* Variant Selection */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Style / Variant</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('admin_announcement.style_variant')}</label>
               <div className="flex gap-2">
                 {['DEFAULT', 'INFO', 'WARNING', 'CELEBRATION'].map((v) => (
                   <button
@@ -174,7 +174,7 @@ export default function AnnouncementSettingsPage() {
             {/* Time Settings */}
             <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Heure Début (ex: 09:00)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('admin_announcement.start_time')}</label>
                     <input 
                         type="text" 
                         value={config.startTime || ''} 
@@ -184,7 +184,7 @@ export default function AnnouncementSettingsPage() {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Heure Fin (ex: 15:00)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('admin_announcement.end_time')}</label>
                     <input 
                         type="text" 
                         value={config.endTime || ''} 
@@ -199,7 +199,7 @@ export default function AnnouncementSettingsPage() {
             {config.type === 'TICKER' && (
                 <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Vitesse de défilement ({config.speed || 100}s)
+                        {t('admin_announcement.scroll_speed', { speed: config.speed || 100 })}
                     </label>
                     <input 
                         type="range" 
@@ -211,8 +211,8 @@ export default function AnnouncementSettingsPage() {
                         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                     />
                     <div className="flex justify-between text-xs text-gray-400 mt-1">
-                        <span>Rapide (20s)</span>
-                        <span>Très Lent (300s)</span>
+                        <span>{t('admin_announcement.speed_fast')}</span>
+                        <span>{t('admin_announcement.speed_slow')}</span>
                     </div>
                 </div>
             )}

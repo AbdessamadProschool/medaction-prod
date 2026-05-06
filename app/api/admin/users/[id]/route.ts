@@ -47,14 +47,23 @@ export const GET = withPermission('users.read', withErrorHandler(async (request:
 }));
 
 export const PUT = withPermission('users.edit', withErrorHandler(async (request: NextRequest, { params, session }) => {
-  // Restriction SUPER_ADMIN pour la modification d'utilisateurs critiques
-  if (session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Action réservée aux Super Administrateurs');
-  }
-
   const id = safeParseInt(params.id, 0);
   const body = await request.json();
   const data = updateUserSchema.parse(body);
+
+  // Vérifier que l'utilisateur cible existe
+  const targetUser = await prisma.user.findUnique({ where: { id }, select: { role: true } });
+  if (!targetUser) throw new NotFoundError('Utilisateur non trouvé');
+
+  // 🛡️ Protection escalade : seul SUPER_ADMIN peut modifier un SUPER_ADMIN
+  if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Seul un Super Admin peut modifier un autre Super Admin');
+  }
+
+  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut promouvoir vers SUPER_ADMIN
+  if (data.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Vous ne pouvez pas assigner le rôle Super Admin');
+  }
   
   const updateData: any = { ...data };
 
@@ -64,7 +73,7 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
   }
 
   // Protection contre l'auto-dégradation
-  if (id === parseInt(session.user.id) && data.role && data.role !== 'SUPER_ADMIN') {
+  if (id === parseInt(session.user.id) && data.role && data.role !== session.user.role) {
     throw new BadRequestError('Vous ne pouvez pas modifier votre propre rôle');
   }
 
@@ -85,11 +94,16 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
 }));
 
 export const DELETE = withPermission('users.delete', withErrorHandler(async (request: NextRequest, { params, session }) => {
-  if (session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Action réservée aux Super Administrateurs');
-  }
-
   const id = safeParseInt(params.id, 0);
+
+  // Vérifier que l'utilisateur cible existe
+  const targetUser = await prisma.user.findUnique({ where: { id }, select: { role: true } });
+  if (!targetUser) throw new NotFoundError('Utilisateur non trouvé');
+
+  // 🛡️ Protection : seul SUPER_ADMIN peut supprimer un SUPER_ADMIN
+  if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Impossible de supprimer un compte Super Admin');
+  }
 
   // Protection contre l'auto-suppression
   if (id === parseInt(session.user.id)) {

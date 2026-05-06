@@ -17,6 +17,9 @@ export type PermissionCode =
   | 'users.delete'     
   | 'users.hard-delete' 
   | 'users.activate'
+  | 'users.reset-password'  // Réinitialiser le mot de passe d'un autre utilisateur
+  | 'users.manage-2fa'      // Gérer le 2FA d'un autre utilisateur
+  | 'users.delete.all'      // Supprimer n'importe quel utilisateur (sauf SUPER_ADMIN)
   | 'users.security'   
   | 'users.me.read'    
   | 'users.me.edit'    
@@ -134,6 +137,9 @@ export const PERMISSION_LABELS: Record<PermissionCode, string> = {
   'users.delete': 'Supprimer utilisateur (Soft)',
   'users.hard-delete': 'Supprimer définitivement (Hard)',
   'users.activate': 'Activer/Désactiver compte',
+  'users.reset-password': 'Réinitialiser mot de passe utilisateur',
+  'users.manage-2fa': 'Gérer 2FA utilisateur',
+  'users.delete.all': 'Supprimer tout utilisateur (sauf Super Admin)',
   'users.security': 'Voir infos sécurité',
   'users.me.read': 'Voir mon profil',
   'users.me.edit': 'Modifier mon profil',
@@ -332,21 +338,41 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionCode[]> = {
 
 // LISTE COMPLÈTE DISPONIBLE POUR LES ADMINS (A attribuer via l'UI)
 export const AVAILABLE_ADMIN_PERMISSIONS: PermissionCode[] = [
-    // Gestion globale
-    'users.read', 'users.read.full', 'users.create', 'users.edit', 'users.edit.role', 'users.activate',
+    // --- Gestion Utilisateurs ---
+    'users.read', 'users.read.full', 'users.create', 'users.edit', 'users.edit.role',
+    'users.activate', 'users.delete', 'users.delete.all', 'users.hard-delete',
+    'users.reset-password', 'users.manage-2fa', 'users.security',
+
+    // --- Réclamations ---
     'reclamations.read.all', 'reclamations.validate', 'reclamations.assign', 'reclamations.archive',
+
+    // --- Événements ---
     'evenements.read.all', 'evenements.validate', 'evenements.delete', 'evenements.feature', 'evenements.edit.all', 'evenements.report',
+
+    // --- Actualités ---
     'actualites.validate', 'actualites.publish', 'actualites.delete',
+
+    // --- Établissements ---
     'etablissements.create', 'etablissements.edit', 'etablissements.validate', 'etablissements.publish', 'etablissements.delete',
     'etablissements.request.create', 'etablissements.request.edit',
+
+    // --- Évaluations ---
     'evaluations.validate', 'evaluations.delete',
+
+    // --- Campagnes ---
     'campagnes.activate',
+
+    // --- Programmes ---
     'programmes.validate',
+
+    // --- Statistiques & Rapports ---
     'stats.view.global', 'stats.view.secteur', 'stats.view.commune', 'reports.export',
     'bilans.read',
+
+    // --- Système & Administration ---
     'communes.manage',
-    'system.logs.view',
-    'permissions.manage' // Ajouté pour cohérence si besoin
+    'system.settings.read', 'system.logs.view', 'system.import',
+    'permissions.manage'
 ];
 
 export const DEFAULT_ADMIN_PERMISSIONS = ROLE_DEFAULT_PERMISSIONS['ADMIN'];

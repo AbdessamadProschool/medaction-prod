@@ -1,95 +1,81 @@
 import { safeParseInt } from '@/lib/utils/parse';
-
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import { z } from 'zod';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withPermission } from '@/lib/auth/api-guard';
 
-// Schema de validation pour les filtres (optionnel, surtout pour query params)
-// Ici on traite les params manuellement
+/**
+ * GET /api/admin/logs - Consulter les logs d'activité
+ * 
+ * 🔐 Permission requise : system.logs.view (ou SUPER_ADMIN bypass)
+ */
+export const GET = withPermission('system.logs.view', withErrorHandler(async (request: NextRequest) => {
+  const { searchParams } = new URL(request.url);
+  const page = safeParseInt(searchParams.get('page') || '1', 0);
+  const limit = Math.min(safeParseInt(searchParams.get('limit') || '20', 0), 100);
+  const search = searchParams.get('search') || '';
+  const action = searchParams.get('action') || '';
+  const entity = searchParams.get('entity') || '';
+  const userId = searchParams.get('userId');
 
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    // Protection: Super Admin seulement ? Ou Admin aussi ?
-    // Pour l'audit trail complet, Super Admin est mieux.
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  const skip = (page - 1) * limit;
 
-    const { searchParams } = new URL(request.url);
-    const page = safeParseInt(searchParams.get('page') || '1', 0);
-    const limit = safeParseInt(searchParams.get('limit') || '20', 0);
-    const search = searchParams.get('search') || '';
-    const action = searchParams.get('action') || '';
-    const entity = searchParams.get('entity') || '';
-    const userId = searchParams.get('userId');
+  // Construction du filtre
+  const where: any = {};
 
-    const skip = (page - 1) * limit;
+  if (search) {
+    where.OR = [
+      { user: { nom: { contains: search, mode: 'insensitive' } } },
+      { user: { prenom: { contains: search, mode: 'insensitive' } } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+      { action: { contains: search, mode: 'insensitive' } },
+    ];
+  }
 
-    // Construction du filtre
-    const where: any = {};
+  if (action) {
+    where.action = action;
+  }
 
-    if (search) {
-      where.OR = [
-        { user: { nom: { contains: search, mode: 'insensitive' } } },
-        { user: { prenom: { contains: search, mode: 'insensitive' } } },
-        { user: { email: { contains: search, mode: 'insensitive' } } },
-        { action: { contains: search, mode: 'insensitive' } },
-      ];
-    }
+  if (entity) {
+    where.entity = entity;
+  }
 
-    if (action) {
-      where.action = action;
-    }
+  if (userId) {
+    where.userId = safeParseInt(userId, 0);
+  }
 
-    if (entity) {
-      where.entity = entity;
-    }
-
-    if (userId) {
-      where.userId = safeParseInt(userId, 0);
-    }
-
-    //Requête principale
-    const [logs, total] = await Promise.all([
-      prisma.activityLog.findMany({
-        where,
-        take: limit,
-        skip,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              nom: true,
-              prenom: true,
-              email: true,
-              role: true,
-              photo: true,
-            }
+  // Requête principale
+  const [logs, total] = await Promise.all([
+    prisma.activityLog.findMany({
+      where,
+      take: limit,
+      skip,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nom: true,
+            prenom: true,
+            email: true,
+            role: true,
+            photo: true,
           }
         }
-      }),
-      prisma.activityLog.count({ where }),
-    ]);
-
-    const totalPages = Math.ceil(total / limit);
-
-    return NextResponse.json({
-      data: logs,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages,
       }
-    });
+    }),
+    prisma.activityLog.count({ where }),
+  ]);
 
-  } catch (error) {
-    console.error('Erreur GET logs:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  const totalPages = Math.ceil(total / limit);
+
+  return successResponse({
+    data: logs,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages,
+    }
+  });
+}));

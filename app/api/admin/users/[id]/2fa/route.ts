@@ -1,9 +1,16 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { checkPermission } from '@/lib/permissions';
 
-// DELETE - Réinitialiser le 2FA d'un utilisateur (SUPER_ADMIN uniquement)
+/**
+ * DELETE /api/admin/users/[id]/2fa
+ * Réinitialiser le 2FA d'un utilisateur
+ * 
+ * 🔐 Permission requise : users.manage-2fa (ou SUPER_ADMIN bypass)
+ * 🛡️ Sécurité : Un non-SUPER_ADMIN ne peut pas reset le 2FA d'un SUPER_ADMIN
+ */
 export async function DELETE(
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
@@ -16,10 +23,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    // Seul SUPER_ADMIN peut réinitialiser le 2FA d'un autre utilisateur
-    if (session.user.role !== 'SUPER_ADMIN') {
+    const requesterId = parseInt(session.user.id);
+
+    // 🔐 Vérification RBAC (remplace le check hardcodé SUPER_ADMIN)
+    const hasPermission = await checkPermission(requesterId, 'users.manage-2fa');
+    if (!hasPermission) {
       return NextResponse.json({ 
-        error: 'Seul un Super Admin peut réinitialiser le 2FA' 
+        error: 'Permission insuffisante',
+        details: "La permission 'users.manage-2fa' est requise pour cette action."
       }, { status: 403 });
     }
 
@@ -46,10 +57,17 @@ export async function DELETE(
     }
 
     // Empêcher de réinitialiser son propre 2FA via cette route
-    if (targetUser.id === parseInt(session.user.id)) {
+    if (targetUser.id === requesterId) {
       return NextResponse.json({ 
         error: 'Utilisez la page /profil/securite pour votre propre compte' 
       }, { status: 400 });
+    }
+
+    // 🛡️ Protection escalade : Un non-SUPER_ADMIN ne peut pas toucher un SUPER_ADMIN
+    if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ 
+        error: 'Seul un Super Admin peut gérer le 2FA d\'un autre Super Admin' 
+      }, { status: 403 });
     }
 
     if (!targetUser.twoFactorEnabled) {
@@ -71,7 +89,7 @@ export async function DELETE(
     // Log l'action
     await prisma.activityLog.create({
       data: {
-        userId: parseInt(session.user.id),
+        userId: requesterId,
         action: 'RESET_USER_2FA',
         entity: 'User',
         entityId: userId,
@@ -79,6 +97,7 @@ export async function DELETE(
           targetUser: `${targetUser.prenom} ${targetUser.nom}`,
           targetEmail: targetUser.email,
           resetBy: session.user.email,
+          performerRole: session.user.role,
         }
       }
     });
@@ -108,7 +127,12 @@ export async function DELETE(
   }
 }
 
-// GET - Statut 2FA d'un utilisateur (pour affichage admin)
+/**
+ * GET /api/admin/users/[id]/2fa
+ * Statut 2FA d'un utilisateur (pour affichage admin)
+ * 
+ * 🔐 Permission requise : users.security (ou SUPER_ADMIN bypass)
+ */
 export async function GET(
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
@@ -121,8 +145,15 @@ export async function GET(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
+    const requesterId = parseInt(session.user.id);
+
+    // 🔐 Vérification RBAC
+    const hasPermission = await checkPermission(requesterId, 'users.security');
+    if (!hasPermission) {
+      return NextResponse.json({ 
+        error: 'Permission insuffisante',
+        details: "La permission 'users.security' est requise pour cette action."
+      }, { status: 403 });
     }
 
     const userId = parseInt(params.id);

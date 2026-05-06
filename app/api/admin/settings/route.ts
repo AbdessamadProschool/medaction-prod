@@ -64,13 +64,13 @@ export const GET = withPermission('system.settings.read', withErrorHandler(async
 
 // PUT /api/admin/settings - Mettre à jour les paramètres
 export const PUT = withPermission('system.settings.edit', withErrorHandler(async (request: NextRequest, { session }) => {
-  // Protection supplémentaire : seul le SUPER_ADMIN peut modifier les paramètres critiques
-  if (session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Seul le Super Administrateur peut modifier les paramètres système');
-  }
-
   const body = await request.json();
   const { section, data } = updateSettingsSchema.parse(body);
+
+  // 🛡️ Sections critiques : seul SUPER_ADMIN peut modifier la sécurité système
+  if (section === 'security' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Seul le Super Admin peut modifier les paramètres de sécurité');
+  }
 
   const currentSettings = await getSettings();
   

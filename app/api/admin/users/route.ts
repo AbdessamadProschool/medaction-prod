@@ -77,14 +77,13 @@ export const GET = withPermission('users.read', withErrorHandler(async (request:
 
 // POST /api/admin/users - Créer un utilisateur
 export const POST = withPermission('users.create', withErrorHandler(async (request: NextRequest, { session }) => {
-  // Seul un Super Admin peut créer des utilisateurs administratifs ou d'autres membres
-  // Cette restriction est conservée du code initial pour la sécurité du déploiement
-  if (session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Seul un Super Admin peut créer des utilisateurs via ce module');
-  }
-
   const body = await request.json();
   const { email, password, nom, prenom, role, telephone, secteurResponsable, etablissementId } = createUserSchema.parse(body);
+
+  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut créer des comptes ADMIN ou SUPER_ADMIN
+  if (['ADMIN', 'SUPER_ADMIN'].includes(role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Seul un Super Admin peut créer des comptes administrateurs');
+  }
 
   // Vérifier unicité email
   const existingUser = await prisma.user.findUnique({

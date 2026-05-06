@@ -1,13 +1,17 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { hashPassword } from '@/lib/auth/password';
+import { checkPermission } from '@/lib/permissions';
 
 /**
  * POST /api/admin/users/[id]/reset-password
- * Permet au Super Admin de réinitialiser le mot de passe d'un utilisateur
- * Le nouveau mot de passe est généré automatiquement ou fourni
+ * Permet à un utilisateur ayant la permission 'users.reset-password' de réinitialiser
+ * le mot de passe d'un autre utilisateur.
+ * 
+ * 🔐 Permissions requises : users.reset-password (ou SUPER_ADMIN bypass)
+ * 🛡️ Sécurité : Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN
  */
 export async function POST(
   request: NextRequest,
@@ -21,10 +25,15 @@ export async function POST(
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
-    // Seuls SUPER_ADMIN peut réinitialiser les mots de passe
-    if (session.user.role !== 'SUPER_ADMIN') {
+    const requesterId = parseInt(session.user.id);
+
+    // 🔐 Vérification de permission RBAC (remplace le check hardcodé)
+    // SUPER_ADMIN bypass automatique via checkPermission()
+    const hasPermission = await checkPermission(requesterId, 'users.reset-password');
+    if (!hasPermission) {
       return NextResponse.json({ 
-        error: 'Seul le Super Admin peut réinitialiser les mots de passe' 
+        error: 'Permission insuffisante',
+        details: "La permission 'users.reset-password' est requise pour cette action. Demandez au Super Admin de vous l'accorder."
       }, { status: 403 });
     }
 
@@ -33,7 +42,14 @@ export async function POST(
       return NextResponse.json({ error: 'ID utilisateur invalide' }, { status: 400 });
     }
 
-    // Vérifier que l'utilisateur existe
+    // Empêcher de réinitialiser son propre mot de passe via cette route admin
+    if (userId === requesterId) {
+      return NextResponse.json({ 
+        error: 'Utilisez la route /api/users/me/password pour modifier votre propre mot de passe' 
+      }, { status: 400 });
+    }
+
+    // Vérifier que l'utilisateur cible existe
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, email: true, nom: true, prenom: true, role: true }
@@ -41,6 +57,13 @@ export async function POST(
 
     if (!user) {
       return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
+    }
+
+    // 🛡️ Protection escalade : Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN
+    if (user.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ 
+        error: 'Seul un Super Admin peut réinitialiser le mot de passe d\'un autre Super Admin' 
+      }, { status: 403 });
     }
 
     // Récupérer le nouveau mot de passe du body, ou en générer un
@@ -80,13 +103,14 @@ export async function POST(
     // Logger l'action
     await prisma.activityLog.create({
       data: {
-        userId: parseInt(session.user.id),
+        userId: requesterId,
         action: 'PASSWORD_RESET_BY_ADMIN',
         entity: 'User',
         entityId: userId,
         details: {
           targetEmail: user.email,
           performedBy: session.user.email,
+          performerRole: session.user.role,
         }
       }
     });
@@ -102,7 +126,7 @@ export async function POST(
       }
     });
 
-    console.log(`[ADMIN] Password reset for user ${user.email} by ${session.user.email}`);
+    console.log(`[ADMIN] Password reset for user ${user.email} by ${session.user.email} (role: ${session.user.role})`);
 
     return NextResponse.json({
       message: 'Mot de passe réinitialisé avec succès',

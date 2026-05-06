@@ -47,11 +47,13 @@ export default function CoordinateurLayout({
     { name: t('reports'), href: '/coordinateur/rapports', icon: FileText, description: t('reports_desc') },
   ];
 
+  const ALLOWED_ROLES = ['COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN'];
+
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.role !== 'COORDINATEUR_ACTIVITES') {
-        router.push('/');
+      router.push('/login?redirect=/coordinateur');
+    } else if (status === 'authenticated' && session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
+      router.push('/acces-refuse');
     }
   }, [status, session, router]);
 
@@ -64,14 +66,12 @@ export default function CoordinateurLayout({
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        </div>
+        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (status !== 'authenticated' || session?.user?.role !== 'COORDINATEUR_ACTIVITES') {
+  if (session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
     return null;
   }
 

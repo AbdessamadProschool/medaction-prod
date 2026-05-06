@@ -49,24 +49,26 @@ export default function AutoriteLayout({
     { href: '/autorite/statistiques', label: t('statistics'), icon: BarChart3 },
   ];
 
-  // Rediriger si non autorisé
+  const ALLOWED_ROLES = ['AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN'];
+
+  // Sécurité: redirection si non autorisé
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login?redirect=/autorite');
-    } else if (status === 'authenticated' && session?.user?.role !== 'AUTORITE_LOCALE') {
+    } else if (status === 'authenticated' && session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
       router.push('/acces-refuse');
     }
   }, [status, session, router]);
 
-  if (status === 'loading' || status === 'unauthenticated') {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (session?.user?.role !== 'AUTORITE_LOCALE') {
+  if (session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
     return null;
   }
 

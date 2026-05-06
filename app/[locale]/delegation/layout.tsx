@@ -66,11 +66,13 @@ export default function DelegationLayout({
     { href: '/delegation/statistiques', label: t('sidebar.stats'), icon: BarChart3 },
   ];
 
+  const ALLOWED_ROLES = ['DELEGATION', 'ADMIN', 'SUPER_ADMIN'];
+
   // Rediriger si non autorisé
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login?redirect=/delegation');
-    } else if (status === 'authenticated' && session?.user?.role !== 'DELEGATION') {
+    } else if (status === 'authenticated' && session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
       router.push('/acces-refuse');
     }
   }, [status, session, router]);
@@ -83,7 +85,7 @@ export default function DelegationLayout({
     );
   }
 
-  if (session?.user?.role !== 'DELEGATION') {
+  if (session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
     return null;
   }
 

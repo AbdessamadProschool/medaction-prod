@@ -3810,6 +3810,7 @@
   "admin_management": {
     "title": "إدارة المشرفين",
     "subtitle": "المشرفون • نظام RBAC",
+    "sync_permissions": "تزامن الصلاحيات",
     "new_admin": "مشرف جديد +",
     "search_placeholder": "البحث بالاسم، البريد الإلكتروني...",
     "columns": {

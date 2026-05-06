@@ -3545,6 +3545,7 @@
   "admin_management": {
     "title": "Gestion des Administrateurs",
     "subtitle": "Administrateurs actifs",
+    "sync_permissions": "Synchroniser les permissions",
     "new_admin": "Nouvel Administrateur",
     "search_placeholder": "Rechercher par nom, email...",
     "columns": {

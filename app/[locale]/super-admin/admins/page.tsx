@@ -89,6 +89,7 @@ export default function SuperAdminAdminsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -107,6 +108,27 @@ export default function SuperAdminAdminsPage() {
       }
     } catch (error) {
       console.error('Erreur chargement permissions:', error);
+    }
+  };
+
+  const handleSyncPermissions = async () => {
+    setSyncing(true);
+    try {
+      const res = await fetch('/api/admin/system/sync-permissions', {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSuccess(`Synchronisation réussie : ${data.updated} mises à jour, ${data.created} créations.`);
+        loadPermissions(); // Recharger la liste des permissions
+        setTimeout(() => setSuccess(null), 5000);
+      } else {
+        setError('Erreur lors de la synchronisation des permissions.');
+      }
+    } catch (error) {
+      setError('Erreur réseau lors de la synchronisation.');
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -403,6 +425,14 @@ export default function SuperAdminAdminsPage() {
               title={t('licence_page.refresh')}
             >
               <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+            </button>
+            <button
+              onClick={handleSyncPermissions}
+              disabled={syncing || refreshing}
+              className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-indigo-600"
+              title={t('admin_management.sync_permissions')}
+            >
+              <ShieldCheck size={18} className={syncing ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={() => {

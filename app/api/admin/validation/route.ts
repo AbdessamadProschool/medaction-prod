@@ -16,20 +16,20 @@ export async function GET(request: NextRequest) {
     const userId = parseInt(session.user.id);
     const { checkPermission } = await import("@/lib/permissions");
     
-    // On vérifie si l'utilisateur a le droit de valider des actualités ou des événements
-    // C'est une vérification "générique" pour l'accès au tableau de bord de validation
     const canValidateEvents = await checkPermission(userId, 'evenements.validate');
     const canValidateNews = await checkPermission(userId, 'actualites.validate');
     const canValidateEtab = await checkPermission(userId, 'etablissements.validate');
+    const canValidateProgs = await checkPermission(userId, 'programmes.validate');
+    const canValidateEvals = await checkPermission(userId, 'evaluations.validate');
 
-    if (!canValidateEvents && !canValidateNews && !canValidateEtab) {
+    if (!canValidateEvents && !canValidateNews && !canValidateEtab && !canValidateProgs && !canValidateEvals) {
       return NextResponse.json({ error: 'Accès réservé aux validateurs' }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'all';
 
-    // Récupérer les événements en attente
+    // 1. Récupérer les événements en attente
     const evenements = await prisma.evenement.findMany({
       where: { statut: 'EN_ATTENTE_VALIDATION' },
       select: {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       take: 50,
     });
 
-    // Récupérer les actualités en attente
+    // 2. Récupérer les actualités en attente
     const actualites = await prisma.actualite.findMany({
       where: { statut: 'EN_ATTENTE_VALIDATION' },
       select: {
@@ -67,11 +67,11 @@ export async function GET(request: NextRequest) {
       take: 50,
     });
 
-    // Récupérer les articles en attente (si le modèle existe)
+    // 3. Récupérer les articles en attente
     let articles: any[] = [];
     try {
       articles = await prisma.article.findMany({
-        where: { isPublie: false, isMisEnAvant: false }, // Articles non publiés (approx 'en attente')
+        where: { isPublie: false, isMisEnAvant: false },
         select: {
           id: true,
           titre: true,
@@ -86,11 +86,11 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: 'desc' },
         take: 50,
       });
-    } catch {
-      // Le modèle Article n'existe peut-être pas
+    } catch (e) {
+      // Ignorer si le modèle n'existe pas encore
     }
 
-    // Récupérer les campagnes en attente
+    // 4. Récupérer les campagnes en attente
     const campagnes = await prisma.campagne.findMany({
       where: { statut: 'EN_ATTENTE' },
       select: {
@@ -110,16 +110,69 @@ export async function GET(request: NextRequest) {
       take: 50,
     });
 
-    // Formater les données
+    // 5. Récupérer les demandes d'établissements en attente
+    const etablissementRequests = await prisma.demandeModificationEtablissement.findMany({
+      where: { statut: 'EN_ATTENTE_VALIDATION' },
+      select: {
+        id: true,
+        type: true,
+        justification: true,
+        createdAt: true,
+        statut: true,
+        etablissement: { select: { nom: true } },
+        soumisPar: { select: { nom: true, prenom: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    // 6. Récupérer les programmes d'activités en attente
+    const programmes = await prisma.programmeActivite.findMany({
+      where: { statut: 'EN_ATTENTE_VALIDATION' },
+      select: {
+        id: true,
+        titre: true,
+        description: true,
+        date: true,
+        heureDebut: true,
+        heureFin: true,
+        createdAt: true,
+        statut: true,
+        etablissement: { select: { nom: true } },
+        createdByUser: { select: { nom: true, prenom: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    // 7. Récupérer les évaluations à modérer
+    const evaluations = await prisma.evaluation.findMany({
+      where: { 
+        OR: [
+          { isValidee: false },
+          { isSignalee: true }
+        ]
+      },
+      select: {
+        id: true,
+        noteGlobale: true,
+        commentaire: true,
+        isSignalee: true,
+        motifSignalement: true,
+        createdAt: true,
+        etablissement: { select: { nom: true } },
+        user: { select: { nom: true, prenom: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    // Formater toutes les données pour l'interface unifiée
     const formattedEvenements = evenements.map(e => ({
       id: e.id,
       titre: e.titre,
       description: e.description,
       contenu: e.description,
-      image: undefined,
-      dateDebut: e.dateDebut?.toISOString(),
-      dateFin: e.dateFin?.toISOString(),
-      lieu: e.lieu,
       type: 'evenement' as const,
       secteur: e.secteur,
       createdBy: e.createdByUser,
@@ -133,8 +186,6 @@ export async function GET(request: NextRequest) {
       titre: a.titre,
       description: a.description,
       contenu: a.contenu,
-      image: undefined,
-      categorie: a.categorie,
       type: 'actualite' as const,
       secteur: a.etablissement?.secteur,
       createdBy: a.createdByUser,
@@ -148,12 +199,8 @@ export async function GET(request: NextRequest) {
       titre: a.titre,
       description: a.description,
       contenu: a.contenu,
-      image: a.imagePrincipale,
-      categorie: a.categorie,
       type: 'article' as const,
-      secteur: null,
       createdBy: a.createdByUser,
-      etablissement: null,
       createdAt: a.createdAt.toISOString(),
       statut: a.isPublie ? 'PUBLIEE' : 'EN_ATTENTE',
     }));
@@ -163,34 +210,59 @@ export async function GET(request: NextRequest) {
       titre: c.titre,
       description: c.description || undefined,
       contenu: c.contenu,
-      image: c.imagePrincipale || undefined,
-      dateDebut: c.dateDebut?.toISOString(),
-      dateFin: c.dateFin?.toISOString(),
-      objectif: c.objectifParticipations || undefined,
       type: 'campagne' as const,
-      secteur: undefined,
       createdBy: c.createdByUser,
-      etablissement: undefined,
       createdAt: c.createdAt.toISOString(),
       statut: c.statut,
     }));
 
-    // Filtrer par type si demandé
-    let items: any[] = [];
-    if (type === 'evenements' || type === 'all') {
-      items = [...items, ...formattedEvenements];
-    }
-    if (type === 'actualites' || type === 'all') {
-      items = [...items, ...formattedActualites];
-    }
-    if (type === 'articles' || type === 'all') {
-      items = [...items, ...formattedArticles];
-    }
-    if (type === 'campagnes' || type === 'all') {
-      items = [...items, ...formattedCampagnes];
-    }
+    const formattedEtablissementRequests = etablissementRequests.map(r => ({
+      id: r.id,
+      titre: `${r.type === 'CREATION' ? 'Création' : 'Modification'} : ${r.etablissement?.nom || 'Nouvel établissement'}`,
+      description: r.justification || undefined,
+      contenu: `Demande de ${r.type.toLowerCase()} soumise par ${r.soumisPar.prenom} ${r.soumisPar.nom}`,
+      type: 'etablissement_request' as const,
+      createdBy: r.soumisPar,
+      etablissement: r.etablissement,
+      createdAt: r.createdAt.toISOString(),
+      statut: r.statut,
+    }));
 
-    // Trier par date
+    const formattedProgrammes = programmes.map(p => ({
+      id: p.id,
+      titre: p.titre,
+      description: p.description || undefined,
+      contenu: `Activité du ${new Date(p.date).toLocaleDateString()} de ${p.heureDebut} à ${p.heureFin}`,
+      type: 'programme' as const,
+      createdBy: p.createdByUser,
+      etablissement: p.etablissement,
+      createdAt: p.createdAt.toISOString(),
+      statut: p.statut,
+    }));
+
+    const formattedEvaluations = evaluations.map(ev => ({
+      id: ev.id,
+      titre: `Avis ${ev.noteGlobale}/5 - ${ev.etablissement.nom}`,
+      description: ev.commentaire || undefined,
+      contenu: ev.isSignalee ? `SIGNALÉ: ${ev.motifSignalement}` : `Avis de ${ev.user.prenom} ${ev.user.nom}`,
+      type: 'evaluation' as const,
+      createdBy: ev.user,
+      etablissement: ev.etablissement,
+      createdAt: ev.createdAt.toISOString(),
+      statut: ev.isSignalee ? 'SIGNALEE' : 'EN_ATTENTE',
+    }));
+
+    // Fusionner et filtrer par type
+    let items: any[] = [];
+    if (type === 'evenements' || type === 'all') items = [...items, ...formattedEvenements];
+    if (type === 'actualites' || type === 'all') items = [...items, ...formattedActualites];
+    if (type === 'articles' || type === 'all') items = [...items, ...formattedArticles];
+    if (type === 'campagnes' || type === 'all') items = [...items, ...formattedCampagnes];
+    if (type === 'etablissement_requests' || type === 'all') items = [...items, ...formattedEtablissementRequests];
+    if (type === 'programmes' || type === 'all') items = [...items, ...formattedProgrammes];
+    if (type === 'evaluations' || type === 'all') items = [...items, ...formattedEvaluations];
+
+    // Trier par date décroissante
     items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({
@@ -200,7 +272,10 @@ export async function GET(request: NextRequest) {
         actualites: formattedActualites.length,
         articles: formattedArticles.length,
         campagnes: formattedCampagnes.length,
-        total: formattedEvenements.length + formattedActualites.length + formattedArticles.length + formattedCampagnes.length,
+        etablissementRequests: formattedEtablissementRequests.length,
+        programmes: formattedProgrammes.length,
+        evaluations: formattedEvaluations.length,
+        total: items.length,
       },
     });
 
@@ -221,19 +296,17 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { id, type, action, motifRejet } = body;
-
-    // Vérifier la permission spécifique selon le type
     const userId = parseInt(session.user.id);
     const { checkPermission } = await import("@/lib/permissions");
     
+    // Vérifier la permission spécifique
     let hasPermission = false;
-    if (type === 'evenement') {
-       hasPermission = await checkPermission(userId, 'evenements.validate');
-    } else if (type === 'actualite') {
-       hasPermission = await checkPermission(userId, 'actualites.validate');
-    } else if (type === 'article' || type === 'campagne') {
-       hasPermission = await checkPermission(userId, 'actualites.validate');
-    }
+    if (type === 'evenement') hasPermission = await checkPermission(userId, 'evenements.validate');
+    else if (type === 'actualite') hasPermission = await checkPermission(userId, 'actualites.validate');
+    else if (type === 'article' || type === 'campagne') hasPermission = await checkPermission(userId, 'actualites.validate');
+    else if (type === 'etablissement_request') hasPermission = await checkPermission(userId, 'etablissements.validate');
+    else if (type === 'programme') hasPermission = await checkPermission(userId, 'programmes.validate');
+    else if (type === 'evaluation') hasPermission = await checkPermission(userId, 'evaluations.validate');
 
     if (!hasPermission) {
        return NextResponse.json({ error: 'Action non autorisée pour ce type de contenu' }, { status: 403 });
@@ -243,20 +316,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Paramètres manquants' }, { status: 400 });
     }
 
-    if (!['approve', 'reject'].includes(action)) {
-      return NextResponse.json({ error: 'Action invalide' }, { status: 400 });
-    }
-
-    const newStatut = action === 'approve' ? 'PUBLIEE' : 'REJETEE';
-
-    // Mettre à jour selon le type
+    // --- LOGIQUE DE VALIDATION PAR TYPE ---
+    
     if (type === 'evenement') {
       await prisma.evenement.update({
         where: { id },
         data: {
-          statut: newStatut,
+          statut: action === 'approve' ? 'PUBLIEE' : 'REJETEE',
           motifRejet: action === 'reject' ? motifRejet : null,
-          // dateValidation removed as it doesn't exist on schema
         },
       });
     } else if (type === 'actualite') {
@@ -269,16 +336,10 @@ export async function POST(request: NextRequest) {
         },
       });
     } else if (type === 'article') {
-      try {
-        await prisma.article.update({
-          where: { id },
-          data: {
-            isPublie: action === 'approve',
-          },
-        });
-      } catch {
-        // Le modèle Article n'existe peut-être pas
-      }
+      await prisma.article.update({
+        where: { id },
+        data: { isPublie: action === 'approve' },
+      });
     } else if (type === 'campagne') {
       await prisma.campagne.update({
         where: { id },
@@ -286,6 +347,55 @@ export async function POST(request: NextRequest) {
           statut: action === 'approve' ? 'ACTIVE' : 'ANNULEE',
           isActive: action === 'approve',
         },
+      });
+    } else if (type === 'programme') {
+      await prisma.programmeActivite.update({
+        where: { id },
+        data: {
+          statut: action === 'approve' ? 'PLANIFIEE' : 'ANNULEE',
+          isValideParAdmin: action === 'approve',
+        },
+      });
+    } else if (type === 'evaluation') {
+      if (action === 'reject') {
+        await prisma.evaluation.delete({ where: { id } });
+      } else {
+        await prisma.evaluation.update({
+          where: { id },
+          data: { isValidee: true, isSignalee: false },
+        });
+      }
+    } else if (type === 'etablissement_request') {
+      const requestData = await prisma.demandeModificationEtablissement.findUnique({
+        where: { id },
+      });
+
+      if (!requestData) {
+        return NextResponse.json({ error: 'Demande non trouvée' }, { status: 404 });
+      }
+
+      if (action === 'approve') {
+        const data = requestData.donneesModifiees as any;
+        if (requestData.type === 'CREATION') {
+          await prisma.etablissement.create({
+            data: { ...data, isValide: true, isPublie: true }
+          });
+        } else if (requestData.type === 'MODIFICATION' && requestData.etablissementId) {
+          await prisma.etablissement.update({
+            where: { id: requestData.etablissementId },
+            data: { ...data, isValide: true }
+          });
+        }
+      }
+
+      await prisma.demandeModificationEtablissement.update({
+        where: { id },
+        data: {
+          statut: action === 'approve' ? 'APPROUVEE' : 'REJETEE',
+          motifRejet: action === 'reject' ? motifRejet : null,
+          valideParId: userId,
+          dateValidation: new Date(),
+        }
       });
     }
 

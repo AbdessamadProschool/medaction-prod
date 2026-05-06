@@ -33,6 +33,30 @@ const permissions = [
     ordre: 12,
     description: 'Permet de supprimer définitivement un compte utilisateur',
   },
+  {
+    code: 'etablissements.validate',
+    nom: 'Valider établissements',
+    groupe: 'etablissements',
+    groupeLabel: 'Établissements',
+    ordre: 30,
+    description: 'Valider les demandes de création ou modification d\'établissements',
+  },
+  {
+    code: 'programmes.validate',
+    nom: 'Valider programmes',
+    groupe: 'programmes',
+    groupeLabel: 'Programmes',
+    ordre: 40,
+    description: 'Valider les rapports d\'activités quotidiennes',
+  },
+  {
+    code: 'evaluations.validate',
+    nom: 'Modérer évaluations',
+    groupe: 'evaluations',
+    groupeLabel: 'Évaluations',
+    ordre: 50,
+    description: 'Modérer les avis et notes des citoyens',
+  },
   
   // --- Groupe: Logs et Audit ---
   {

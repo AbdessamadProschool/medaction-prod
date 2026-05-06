@@ -119,7 +119,8 @@ export default function SuperAdminAdminsPage() {
       });
       if (res.ok) {
         const data = await res.json();
-        setSuccess(`Synchronisation réussie : ${data.updated} mises à jour, ${data.created} créations.`);
+        const counts = data.data || {};
+        setSuccess(`Synchronisation réussie : ${counts.updated || 0} mises à jour, ${counts.created || 0} créations.`);
         loadPermissions(); // Recharger la liste des permissions
         setTimeout(() => setSuccess(null), 5000);
       } else {

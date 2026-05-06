@@ -96,6 +96,8 @@ export type PermissionCode =
   // --- SUGGESTIONS ---
   | 'suggestions.create'
   | 'suggestions.read.own'
+  | 'suggestions.validate'
+  | 'suggestions.read.all'
 
   // --- STATS & RAPPORTS ---
   | 'stats.view.global'      
@@ -216,6 +218,8 @@ export const PERMISSION_LABELS: Record<PermissionCode, string> = {
   // Suggestions
   'suggestions.create': 'Créer suggestion',
   'suggestions.read.own': 'Voir mes suggestions',
+  'suggestions.validate': 'Valider/Répondre aux suggestions',
+  'suggestions.read.all': 'Voir toutes les suggestions',
 
   // Stats
   'stats.view.global': 'Voir stats globales',
@@ -358,6 +362,9 @@ export const AVAILABLE_ADMIN_PERMISSIONS: PermissionCode[] = [
 
     // --- Évaluations ---
     'evaluations.validate', 'evaluations.delete',
+
+    // --- Suggestions ---
+    'suggestions.validate', 'suggestions.read.all',
 
     // --- Campagnes ---
     'campagnes.activate',

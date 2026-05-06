@@ -217,12 +217,12 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
              <div className="flex items-center gap-2 mb-4">
                <MessageSquare className="w-5 h-5 text-gray-700" />
-               <h3 className="font-semibold text-gray-900">Réponse de l'administration</h3>
+               <h3 className="font-semibold text-gray-900">{t('suggestions.admin_response_title')}</h3>
              </div>
              <textarea
                value={reponseAdmin}
                onChange={(e) => setReponseAdmin(e.target.value)}
-               placeholder="Ajouter une réponse officielle..."
+               placeholder={t('suggestions.admin_response_placeholder')}
                className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none resize-y"
              />
            </div>
@@ -261,7 +261,7 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
                     {actionLoading === 'DELETE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
                     {t('actions.delete')}
                   </button>
-                  <p className="text-xs text-gray-400 mt-2 text-right w-full block">Action irréversible réservée aux Super Admins</p>
+                  <p className="text-xs text-gray-400 mt-2 text-right w-full block">{t('suggestions.super_admin_delete_warning')}</p>
                </div>
              )}
            </div>

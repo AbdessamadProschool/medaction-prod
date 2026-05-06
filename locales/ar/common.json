@@ -3320,7 +3320,10 @@
       "culture": "ثقافة وترفيه",
       "numerique": "رقمي",
       "autre": "آخر"
-    }
+    },
+    "admin_response_title": "رد الإدارة",
+    "admin_response_placeholder": "...أضف ردا رسميا",
+    "super_admin_delete_warning": "إجراء لا رجعة فيه مخصص للمشرفين العامين"
   },
   "admin_campagnes": {
     "title": "إدارة الحملات",

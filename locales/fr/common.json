@@ -1895,7 +1895,10 @@
       "admin_response_title": "Réponse de l'administration",
       "admin_response_placeholder": "Ajouter une réponse officielle...",
       "superadmin_only_delete_warning": "Action irréversible réservée aux Super Administrateurs"
-    }
+    },
+    "admin_response_title": "Réponse de l'administration",
+    "admin_response_placeholder": "...Ajouter une réponse officielle",
+    "super_admin_delete_warning": "Action irréversible réservée aux Super Admins"
   },
   "admin": {
     "sidebar": {

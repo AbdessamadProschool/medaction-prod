@@ -144,11 +144,27 @@ export default function SuperAdminAdminsPage() {
       const res = await fetch(`/api/admins?${params}`);
       if (res.ok) {
         const json = await res.json();
-        const responseData = json.success ? json.data : json;
         
-        setAdmins(responseData.data || responseData.admins || responseData || []);
-        setTotalPages(responseData.pagination?.totalPages || responseData.pagination?.pages || 1);
-        setTotal(responseData.pagination?.total || 0);
+        let adminsArray: Admin[] = [];
+        let paginationData = json.pagination || (json.success ? json.data?.pagination : null);
+
+        if (json.success) {
+          if (Array.isArray(json.data)) {
+            adminsArray = json.data;
+            paginationData = json.pagination;
+          } else if (json.data?.admins || json.data?.data) {
+            adminsArray = json.data.admins || json.data.data;
+            paginationData = json.data.pagination || json.pagination;
+          }
+        } else {
+          adminsArray = json.data || json.admins || (Array.isArray(json) ? json : []);
+        }
+
+        setAdmins(adminsArray);
+        if (paginationData) {
+          setTotalPages(paginationData.totalPages || paginationData.pages || 1);
+          setTotal(paginationData.total || 0);
+        }
       }
     } catch (error) {
       console.error('Erreur chargement:', error);

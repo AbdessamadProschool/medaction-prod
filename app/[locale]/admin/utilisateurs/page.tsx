@@ -102,14 +102,36 @@ export default function UsersPage() {
       const res = await fetch(`/api/users?${params}`);
       if (res.ok) {
         const json = await res.json();
-        const responseData = json.success ? json.data : json;
         
-        setUsers(responseData.users || responseData.data || []);
-        setPagination(prev => ({
-          ...prev,
-          total: responseData.pagination?.total ?? prev.total,
-          totalPages: responseData.pagination?.totalPages ?? responseData.pagination?.pages ?? prev.totalPages,
-        }));
+        // Structure 1: { success: true, data: [...], pagination: {...} }
+        // Structure 2: { success: true, data: { users: [...], pagination: {...} } }
+        // Structure 3: { users: [...], pagination: {...} } (Ancien format)
+        
+        let usersArray: User[] = [];
+        let paginationData = json.pagination || (json.success ? json.data?.pagination : null);
+
+        if (json.success) {
+          if (Array.isArray(json.data)) {
+            usersArray = json.data;
+            paginationData = json.pagination; // Pagination au niveau racine
+          } else if (json.data?.users) {
+            usersArray = json.data.users;
+            paginationData = json.data.pagination; // Pagination dans data
+          } else if (json.data?.data && Array.isArray(json.data.data)) {
+            usersArray = json.data.data;
+          }
+        } else {
+          usersArray = json.users || json.data || (Array.isArray(json) ? json : []);
+        }
+
+        setUsers(usersArray);
+        if (paginationData) {
+          setPagination(prev => ({
+            ...prev,
+            total: paginationData.total ?? prev.total,
+            totalPages: paginationData.totalPages ?? paginationData.pages ?? prev.totalPages,
+          }));
+        }
       }
     } catch (error) {
       console.error('Erreur chargement utilisateurs:', error);

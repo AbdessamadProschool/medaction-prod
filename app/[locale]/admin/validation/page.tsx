@@ -181,9 +181,11 @@ export default function ValidationPage() {
       const res = await fetch(`/api/admin/validation?type=${activeTab}`);
       
       if (res.ok) {
-        const data = await res.json();
-        setItems(data.items || []);
-        setCounts(data.counts || { evenements: 0, actualites: 0, articles: 0, campagnes: 0 });
+        const json = await res.json();
+        const responseData = json.success ? json.data : json;
+        
+        setItems(responseData.items || (Array.isArray(responseData) ? responseData : []));
+        setCounts(responseData.counts || json.counts || { evenements: 0, actualites: 0, articles: 0, campagnes: 0 });
       } else {
         console.error('Erreur API validation');
         setItems([]);

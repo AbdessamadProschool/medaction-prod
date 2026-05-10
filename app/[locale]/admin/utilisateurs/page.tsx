@@ -101,12 +101,14 @@ export default function UsersPage() {
 
       const res = await fetch(`/api/users?${params}`);
       if (res.ok) {
-        const data = await res.json();
-        setUsers(data?.data || []);
+        const json = await res.json();
+        const responseData = json.success ? json.data : json;
+        
+        setUsers(responseData.users || responseData.data || []);
         setPagination(prev => ({
           ...prev,
-          total: data?.pagination?.total ?? 0,
-          totalPages: data?.pagination?.totalPages ?? 0,
+          total: responseData.pagination?.total ?? prev.total,
+          totalPages: responseData.pagination?.totalPages ?? responseData.pagination?.pages ?? prev.totalPages,
         }));
       }
     } catch (error) {

@@ -48,6 +48,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
   const te = useTranslations('admin.establishments');
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === 'ADMIN' || session?.user?.role === 'SUPER_ADMIN';
   const isDelegation = session?.user?.role === 'DELEGATION';

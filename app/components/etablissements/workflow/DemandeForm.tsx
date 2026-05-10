@@ -152,13 +152,13 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
     // Validation minimale
     if (currentStep === 0) {
       if (!formData.nom || !formData.code) {
-        toast.error("Veuillez remplir les champs obligatoires (Nom et Code)");
+        toast.error(t('errors.required_fields'));
         return;
       }
     }
     if (currentStep === 1) {
       if (!formData.communeId || !formData.latitude || !formData.longitude) {
-        toast.error("Veuillez remplir les données de localisation (Commune, Lat, Long)");
+        toast.error(t('errors.location_required'));
         return;
       }
     }
@@ -182,7 +182,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!formData.justification) {
-      toast.error("Veuillez fournir une justification pour cette demande");
+      toast.error(t('errors.justification_required'));
       return;
     }
     
@@ -239,7 +239,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
       toast.success(t('submit_success'));
       router.push('/delegation/etablissements/mes-demandes');
     } else {
-      toast.error(res.error || 'Erreur');
+      toast.error(res.error || t('errors.error_submit'));
     }
     setLoading(false);
   };
@@ -328,7 +328,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         value={formData.nom}
                         onChange={e => setFormData({ ...formData, nom: e.target.value })}
                         className="input-premium"
-                        placeholder="Ex: École Al Manar"
+                        placeholder={te('placeholders.nom')}
                       />
                    </FormField>
                    <FormField label={te('form.nameArabe')}>
@@ -337,7 +337,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         onChange={e => setFormData({ ...formData, nomArabe: e.target.value })}
                         dir="rtl"
                         className="input-premium font-arabic text-lg"
-                        placeholder="اسم المؤسسة بالعربية"
+                        placeholder={te('placeholders.nomArabe')}
                       />
                    </FormField>
                    <div className="grid grid-cols-2 gap-4">
@@ -347,7 +347,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           value={formData.code}
                           onChange={e => setFormData({ ...formData, code: e.target.value })}
                           className="input-premium font-mono"
-                          placeholder="CODE123"
+                          placeholder={te('placeholders.code')}
                         />
                       </FormField>
                       <FormField label={te('form.sector')}>
@@ -357,12 +357,12 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           className={`input-premium ${isDelegation ? 'opacity-70 bg-gray-50' : ''}`}
                           disabled={isDelegation && !!userSecteur}
                         >
-                          <option value="EDUCATION">Éducation</option>
-                          <option value="SANTE">Santé</option>
-                          <option value="SPORT">Sport</option>
-                          <option value="SOCIAL">Social</option>
-                          <option value="CULTUREL">Culturel</option>
-                          <option value="AUTRE">Autre</option>
+                          <option value="EDUCATION">{te('options.sectors.EDUCATION')}</option>
+                          <option value="SANTE">{te('options.sectors.SANTE')}</option>
+                          <option value="SPORT">{te('options.sectors.SPORT')}</option>
+                          <option value="SOCIAL">{te('options.sectors.SOCIAL')}</option>
+                          <option value="CULTUREL">{te('options.sectors.CULTUREL')}</option>
+                          <option value="AUTRE">{te('options.sectors.AUTRE')}</option>
                         </select>
                       </FormField>
                    </div>
@@ -376,8 +376,8 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           onChange={e => setFormData({ ...formData, nature: e.target.value })}
                           className="input-premium"
                         >
-                          <option value="PUBLIC">Public</option>
-                          <option value="PRIVE">Privé</option>
+                          <option value="PUBLIC">{te('options.natures.PUBLIC')}</option>
+                          <option value="PRIVE">{te('options.natures.PRIVE')}</option>
                         </select>
                       </FormField>
                       <FormField label={te('form.typeEtab')}>
@@ -385,7 +385,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           value={formData.typeEtablissement}
                           onChange={e => setFormData({ ...formData, typeEtablissement: e.target.value })}
                           className="input-premium"
-                          placeholder="Ex: École Primaire"
+                          placeholder={te('placeholders.typeEtab')}
                         />
                       </FormField>
                    </div>
@@ -394,7 +394,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         value={formData.tutelle}
                         onChange={e => setFormData({ ...formData, tutelle: e.target.value })}
                         className="input-premium"
-                        placeholder="Ex: Ministère de l'Éducation"
+                        placeholder={te('placeholders.tutelle')}
                       />
                    </FormField>
                    <div className="grid grid-cols-2 gap-4">
@@ -404,7 +404,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           value={formData.anneeCreation}
                           onChange={e => setFormData({ ...formData, anneeCreation: e.target.value })}
                           className="input-premium"
-                          placeholder="YYYY"
+                          placeholder={te('placeholders.annee')}
                         />
                       </FormField>
                       <FormField label={te('form.statutJuridique')}>
@@ -412,7 +412,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                           value={formData.statutJuridique}
                           onChange={e => setFormData({ ...formData, statutJuridique: e.target.value })}
                           className="input-premium"
-                          placeholder="Ex: Établissement Public"
+                          placeholder={te('placeholders.statut')}
                         />
                       </FormField>
                    </div>
@@ -433,7 +433,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         onChange={e => setFormData({ ...formData, communeId: e.target.value })}
                         className="input-premium"
                       >
-                        <option value="">{te('common.select') || 'Sélectionner...'}</option>
+                        <option value="">{te('common.select')}</option>
                         <option value="1">{te('options.communes.1')}</option>
                         <option value="2">{te('options.communes.2')}</option>
                         <option value="3">{te('options.communes.3')}</option>
@@ -447,7 +447,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         value={formData.quartierDouar}
                         onChange={e => setFormData({ ...formData, quartierDouar: e.target.value })}
                         className="input-premium"
-                        placeholder="Quartier / Douar"
+                        placeholder={te('placeholders.quartier')}
                       />
                     </FormField>
                   </div>
@@ -457,7 +457,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                       value={formData.adresseComplete}
                       onChange={e => setFormData({ ...formData, adresseComplete: e.target.value })}
                       className="input-premium resize-none"
-                      placeholder="Adresse précise..."
+                      placeholder={te('placeholders.adresse')}
                     />
                   </FormField>
                   <div className="grid grid-cols-3 gap-4">
@@ -475,13 +475,13 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                 <div className="space-y-6">
                    <SectionTitle icon={ArrowRight} title={te('sections.accessibility')} color="text-amber-500" />
                    <FormField label={te('form.voieAcces')}>
-                      <input value={formData.voieAcces} onChange={e => setFormData({...formData, voieAcces: e.target.value})} className="input-premium" placeholder="Ex: Route Goudronnée" />
+                      <input value={formData.voieAcces} onChange={e => setFormData({...formData, voieAcces: e.target.value})} className="input-premium" placeholder={te('placeholders.voie')} />
                    </FormField>
                    <FormField label={te('form.transportPublic')}>
-                      <input value={formData.transportPublic} onChange={e => setFormData({...formData, transportPublic: e.target.value})} className="input-premium" placeholder="Bus, Grands Taxis..." />
+                      <input value={formData.transportPublic} onChange={e => setFormData({...formData, transportPublic: e.target.value})} className="input-premium" placeholder={te('placeholders.transport')} />
                    </FormField>
                    <FormField label={te('form.distanceChefLieu')}>
-                      <input type="number" step="any" value={formData.distanceChefLieu} onChange={e => setFormData({...formData, distanceChefLieu: e.target.value})} className="input-premium" placeholder="Km" />
+                      <input type="number" step="any" value={formData.distanceChefLieu} onChange={e => setFormData({...formData, distanceChefLieu: e.target.value})} className="input-premium" placeholder={te('placeholders.km')} />
                    </FormField>
                 </div>
               </div>
@@ -513,7 +513,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <FormField label={te('form.surfaceTotale')}>
-                      <input type="number" value={formData.surfaceTotale} onChange={e => setFormData({...formData, surfaceTotale: e.target.value})} className="input-premium" placeholder="m²" />
+                      <input type="number" value={formData.surfaceTotale} onChange={e => setFormData({...formData, surfaceTotale: e.target.value})} className="input-premium" placeholder={te('placeholders.surface')} />
                     </FormField>
                     <FormField label={te('form.nombreSalles')}>
                       <input type="number" value={formData.nombreSalles} onChange={e => setFormData({...formData, nombreSalles: e.target.value})} className="input-premium" />
@@ -540,7 +540,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                         <input type="number" value={formData.nombrePersonnel} onChange={e => setFormData({...formData, nombrePersonnel: e.target.value})} className="input-premium" />
                       </FormField>
                       <FormField label={te('form.cadre')}>
-                        <input value={formData.cadre} onChange={e => setFormData({...formData, cadre: e.target.value})} className="input-premium" placeholder="Ex: Médical / Enseignant" />
+                        <input value={formData.cadre} onChange={e => setFormData({...formData, cadre: e.target.value})} className="input-premium" placeholder={te('placeholders.cadre')} />
                       </FormField>
                    </div>
                    <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-gray-800">
@@ -568,7 +568,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <FormField label={te('form.cycle')}>
                     <select value={formData.cycle} onChange={e => setFormData({...formData, cycle: e.target.value})} className="input-premium">
-                      <option value="">{te('common.choose') || 'Choisir...'}</option>
+                      <option value="">{te('common.choose')}</option>
                       <option value="PRIMAIRE">{te('options.cycles.PRIMAIRE')}</option>
                       <option value="COLLEGE">{te('options.cycles.COLLEGE')}</option>
                       <option value="LYCEE">{te('options.cycles.LYCEE')}</option>
@@ -595,7 +595,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                     <input type="number" value={formData.elevesPrescolaire} onChange={e => setFormData({...formData, elevesPrescolaire: e.target.value})} className="input-premium" />
                   </FormField>
                   <FormField label={te('form.tauxReussite')}>
-                    <input type="number" step="0.01" value={formData.tauxReussite} onChange={e => setFormData({...formData, tauxReussite: e.target.value})} className="input-premium" placeholder="%" />
+                    <input type="number" step="0.01" value={formData.tauxReussite} onChange={e => setFormData({...formData, tauxReussite: e.target.value})} className="input-premium" placeholder={te('placeholders.percent')} />
                   </FormField>
                 </div>
               </div>
@@ -609,7 +609,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                     <SectionTitle icon={Coins} title={te('sections.financial')} color="text-amber-500" />
                     <div className="grid grid-cols-2 gap-4">
                       <FormField label={te('form.budgetAnnuel')}>
-                        <input type="number" value={formData.budgetAnnuel} onChange={e => setFormData({...formData, budgetAnnuel: e.target.value})} className="input-premium" placeholder="DH" />
+                        <input type="number" value={formData.budgetAnnuel} onChange={e => setFormData({...formData, budgetAnnuel: e.target.value})} className="input-premium" placeholder={te('placeholders.dh')} />
                       </FormField>
                       <FormField label={te('form.sourcesFinancement')}>
                         <input value={formData.sourcesFinancement} onChange={e => setFormData({...formData, sourcesFinancement: e.target.value})} className="input-premium" />
@@ -697,7 +697,7 @@ export default function DemandeForm({ initialData, type, etablissementId }: Dema
                 className="flex items-center gap-3 px-12 py-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white font-black text-lg rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
               >
                 {loading ? <Loader2 className="animate-spin" /> : <Save size={24} />}
-                {t('soumettre', { defaultValue: 'Soumettre la demande' })}
+                {t('soumettre')}
               </button>
             )}
           </div>

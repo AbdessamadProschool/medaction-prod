@@ -20,7 +20,7 @@ export default function NouvelleDemandeCreationPage() {
 
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-black text-gray-900 dark:text-white">{t('request_creation')}</h1>
-        <p className="text-gray-500">Proposer un nouvel établissement au patrimoine provincial</p>
+        <p className="text-gray-500">{t('request_subtitle')}</p>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 p-8">

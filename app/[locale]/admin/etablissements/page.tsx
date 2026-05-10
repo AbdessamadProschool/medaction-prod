@@ -209,9 +209,9 @@ export default function AdminEtablissementsPage() {
   };
 
   const handlePublishAll = async () => {
-    if (!confirm("Voulez-vous vraiment publier TOUS les établissements ?")) return;
+    if (!confirm(t('messages.bulk_publish_confirm'))) return;
     
-    const toastId = toast.loading("Publication en cours...");
+    const toastId = toast.loading(t('messages.publishing'));
     try {
         const res = await fetch('/api/etablissements/bulk', {
             method: 'POST',
@@ -221,21 +221,21 @@ export default function AdminEtablissementsPage() {
         
         if (res.ok) {
             const data = await res.json();
-            toast.success(data.message || "Tout publié", { id: toastId });
+            toast.success(data.message || t('messages.bulk_publish_success'), { id: toastId });
             fetchEtablissements();
         } else {
             const err = await res.json();
-            toast.error(err.error || "Erreur publication", { id: toastId });
+            toast.error(err.error || t('messages.bulk_publish_error'), { id: toastId });
         }
     } catch(e) { 
-        toast.error("Erreur serveur", { id: toastId });
+        toast.error(t('messages.server_error'), { id: toastId });
     }
   };
 
   const handleDeleteAll = async () => {
-     if (!confirm("ATTENTION: Cette action va supprimer TOUS les établissements.\n\nÊtes-vous sûr ?")) return;
+     if (!confirm(t('messages.bulk_delete_confirm'))) return;
      
-     const toastId = toast.loading("Suppression en cours...");
+     const toastId = toast.loading(t('messages.deleting'));
      try {
         const res = await fetch('/api/etablissements/bulk', {
             method: 'POST',
@@ -245,14 +245,14 @@ export default function AdminEtablissementsPage() {
         
         if (res.ok) {
             const data = await res.json();
-            toast.success(data.message || "Tout supprimé", { id: toastId });
+            toast.success(data.message || t('messages.bulk_delete_success'), { id: toastId });
             fetchEtablissements();
         } else {
              const err = await res.json();
-            toast.error(err.error || "Erreur suppression", { id: toastId });
+            toast.error(err.error || t('messages.bulk_delete_error'), { id: toastId });
         }
      } catch(e) {
-         toast.error("Erreur serveur", { id: toastId });
+         toast.error(t('messages.server_error'), { id: toastId });
      }
   };
 
@@ -281,9 +281,9 @@ export default function AdminEtablissementsPage() {
           </button>
 
           <div className="flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-1">
-             <button
+              <button
                 onClick={handlePublishAll}
-                title="Tout Publier"
+                title={t('bulk_publish') || "Tout Publier"}
                 className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
              >
                <Globe size={18} />
@@ -291,7 +291,7 @@ export default function AdminEtablissementsPage() {
              <div className="w-px h-6 bg-gray-200 dark:bg-gray-700" />
              <button
                 onClick={handleDeleteAll}
-                title="Tout Supprimer"
+                title={t('bulk_delete') || "Tout Supprimer"}
                 className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
              >
                <Trash2 size={18} />
@@ -550,7 +550,7 @@ export default function AdminEtablissementsPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
           <p className="text-sm text-gray-500">
-            Page {page} sur {totalPages}
+            {t('pagination.info', { page, total: totalPages })}
           </p>
           <div className="flex items-center gap-2">
             <button

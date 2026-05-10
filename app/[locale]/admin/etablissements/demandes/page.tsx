@@ -61,7 +61,7 @@ export default function AdminDemandesPage() {
       const data = await getDemandesEtablissement();
       setDemandes(data);
     } catch (err) {
-      toast.error("Échec du chargement des demandes");
+      toast.error(t('admin_validation.load_error'));
     } finally {
       setLoading(false);
     }
@@ -87,10 +87,10 @@ export default function AdminDemandesPage() {
         setMotifRejet('');
         fetchDemandes();
       } else {
-        toast.error(res.error || 'Erreur');
+        toast.error(res.error || t('errors.error_submit'));
       }
     } catch (err) {
-      toast.error("Erreur serveur");
+      toast.error(t('admin_validation.server_error'));
     } finally {
       setProcessing(false);
     }
@@ -123,17 +123,17 @@ export default function AdminDemandesPage() {
           
           <div className="flex items-center gap-3">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" size={18} />
+              <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" size={18} />
               <input 
                 type="text" 
-                placeholder="Rechercher..." 
+                placeholder={t('admin_validation.search_placeholder')} 
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-12 pr-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
+                className="ltr:pl-12 rtl:pr-12 ltr:pr-6 rtl:pl-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
               />
             </div>
             <Button variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
-              <History size={16} className="mr-2" />
+              <History size={16} className="ltr:mr-2 rtl:ml-2" />
               {te('requests.refresh')}
             </Button>
           </div>
@@ -146,7 +146,7 @@ export default function AdminDemandesPage() {
             <div className="flex items-center justify-between px-2 mb-2">
                <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                  <ClipboardList size={16} />
-                 Demandes ({filteredDemandes.length})
+                 {t('admin_validation.requests_count')} ({filteredDemandes.length})
                </h3>
             </div>
             
@@ -175,8 +175,8 @@ export default function AdminDemandesPage() {
                     }`}
                   >
                     {selectedDemande?.id === d.id && (
-                      <div className="absolute top-0 right-0 w-8 h-8 bg-[hsl(213,80%,28%)] rounded-bl-2xl flex items-center justify-center text-white">
-                         <ChevronRight size={16} />
+                      <div className="absolute top-0 ltr:right-0 rtl:left-0 w-8 h-8 bg-[hsl(213,80%,28%)] ltr:rounded-bl-2xl rtl:rounded-br-2xl flex items-center justify-center text-white">
+                         <ChevronRight size={16} className="rtl:rotate-180" />
                       </div>
                     )}
                     
@@ -187,13 +187,13 @@ export default function AdminDemandesPage() {
                       }`}>
                         {t(`status.${d.statut}`)}
                       </div>
-                      <span className="text-[10px] text-gray-400 font-bold ml-auto tracking-tighter">
+                      <span className="text-[10px] text-gray-400 font-bold ltr:ml-auto rtl:mr-auto tracking-tighter">
                         #{d.id}
                       </span>
                     </div>
                     
                     <h3 className="font-bold text-gray-900 dark:text-white leading-tight">
-                      <span className="opacity-40 font-medium mr-1 text-[10px] block mb-1 uppercase tracking-widest">
+                      <span className="opacity-40 font-medium ltr:mr-1 rtl:ml-1 text-[10px] block mb-1 uppercase tracking-widest">
                         {d.type === 'CREATION' ? tHistory('CREATION') : tHistory('UPDATE')}
                       </span>
                       {d.donneesModifiees.nom || d.etablissement?.nom}
@@ -253,9 +253,9 @@ export default function AdminDemandesPage() {
                            <a 
                              href={`/${locale}/etablissements/${selectedDemande.etablissementId}`} 
                              target="_blank"
-                             className="ml-auto flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20 transition-colors py-2 px-4 rounded-xl backdrop-blur-md"
+                             className="ltr:ml-auto rtl:mr-auto flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20 transition-colors py-2 px-4 rounded-xl backdrop-blur-md"
                            >
-                             Voir fiche actuelle <ExternalLink size={14} />
+                             {t('admin_validation.view_current')} <ExternalLink size={14} />
                            </a>
                         )}
                       </div>
@@ -273,7 +273,7 @@ export default function AdminDemandesPage() {
                           {t('justification')}
                         </h4>
                         <p className="text-amber-900/70 dark:text-amber-100/70 leading-relaxed text-lg italic font-medium">
-                          "{selectedDemande.justification || 'Pas de justification fournie'}"
+                          "{selectedDemande.justification || t('admin_validation.no_justification')}"
                         </p>
                       </div>
                     </div>
@@ -286,7 +286,7 @@ export default function AdminDemandesPage() {
                         { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-indigo-600', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
                         { id: 'education', label: te('sections.education'), icon: GraduationCap, color: 'text-blue-500', fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
                         { id: 'financial', label: te('sections.financial'), icon: Coins, color: 'text-[hsl(213,80%,40%)]', fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
-                        { id: 'observations', label: 'Observations', icon: FileText, color: 'text-indigo-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
+                        { id: 'observations', label: t('admin_validation.observations'), icon: FileText, color: 'text-indigo-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
                       ].map(group => {
                         const groupFields = Object.entries(selectedDemande.donneesModifiees)
                           .filter(([k]) => group.fields.includes(k));
@@ -307,9 +307,9 @@ export default function AdminDemandesPage() {
                                       {te(`form.${k}`) || k}
                                     </span>
                                     <span className={`text-sm font-bold ${v === null || v === '' ? 'text-gray-300 italic' : 'text-gray-900 dark:text-gray-100'}`}>
-                                      {v === null || v === undefined || v === '' ? 'N/A' : 
-                                       typeof v === 'boolean' ? (v ? '✅ Oui' : '❌ Non') : 
-                                       k === 'budgetAnnuel' ? v.toLocaleString() + ' DH' : String(v)}
+                                       {v === null || v === undefined || v === '' ? t('admin_validation.not_available') : 
+                                        typeof v === 'boolean' ? (v ? t('admin_validation.yes') : t('admin_validation.no')) : 
+                                        k === 'budgetAnnuel' ? v.toLocaleString() + ' ' + te('placeholders.dh') : String(v)}
                                     </span>
                                   </div>
                                 </div>
@@ -337,7 +337,7 @@ export default function AdminDemandesPage() {
                            ) : (
                              <div className="col-span-full py-12 flex flex-col items-center justify-center opacity-20 grayscale">
                                 <Layers size={48} strokeWidth={1} />
-                                <p className="text-xs font-black uppercase mt-4 tracking-widest">Aucun champ personnalisé</p>
+                                <p className="text-xs font-black uppercase mt-4 tracking-widest">{t('admin_validation.no_custom_fields')}</p>
                              </div>
                            )}
                         </div>
@@ -394,14 +394,14 @@ export default function AdminDemandesPage() {
                         </div>
                         <div className="text-center md:text-left space-y-2">
                           <h4 className="text-2xl font-black tracking-tight">
-                            Demande traitée le {formatDate(selectedDemande.dateValidation || selectedDemande.updatedAt, 'PPP à HH:mm', { locale: dateLocale })}
+                            {t('admin_validation.processed_on')} {formatDate(selectedDemande.dateValidation || selectedDemande.updatedAt, 'PPP à HH:mm', { locale: dateLocale })}
                           </h4>
                           <p className="font-bold opacity-75 text-lg">
-                            Statut final : <span className="underline decoration-2 underline-offset-4 uppercase tracking-widest">{t(`status.${selectedDemande.statut}`)}</span>
+                            {t('admin_validation.final_status')} <span className="underline decoration-2 underline-offset-4 uppercase tracking-widest">{t(`status.${selectedDemande.statut}`)}</span>
                           </p>
                           {selectedDemande.statut === 'REJETEE' && (
                             <div className="mt-4 p-4 bg-white/50 dark:bg-black/20 rounded-2xl border border-current border-opacity-10 italic">
-                               Motif de rejet : {selectedDemande.motifRejet || 'Non spécifié'}
+                               {t('admin_validation.rejection_reason_label')} {selectedDemande.motifRejet || t('admin_validation.not_specified')}
                             </div>
                           )}
                         </div>

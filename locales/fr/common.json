@@ -2503,10 +2503,45 @@
         "transport_public": "Transport public",
         "distance_chef_lieu": "Distance au chef-lieu"
       },
+      "options": {
+        "sectors": {
+          "EDUCATION": "Éducation",
+          "SANTE": "Santé",
+          "SPORT": "Sport",
+          "SOCIAL": "Social",
+          "CULTUREL": "Culturel",
+          "AUTRE": "Autre"
+        },
+        "natures": {
+          "PUBLIC": "Public",
+          "PRIVE": "Privé"
+        }
+      },
+      "placeholders": {
+        "nom": "Ex: École Al Manar",
+        "nomArabe": "اسم المؤسسة بالعربية",
+        "code": "CODE123",
+        "typeEtab": "Ex: École Primaire",
+        "tutelle": "Ex: Ministère de l'Éducation",
+        "annee": "YYYY",
+        "statut": "Ex: Établissement Public",
+        "quartier": "Quartier / Douar",
+        "adresse": "Adresse précise...",
+        "voie": "Ex: Route Goudronnée",
+        "transport": "Bus, Grands Taxis...",
+        "km": "Km",
+        "surface": "m²",
+        "cadre": "Ex: Médical / Enseignant",
+        "percent": "%",
+        "dh": "DH"
+      },
       "actions": {
         "cancel": "Annuler",
         "save": "Enregistrer l'établissement",
         "success": "Établissement créé avec succès",
+        "error_creation": "Erreur lors de la création",
+        "server_error": "Erreur serveur",
+        "select": "Sélectionner...",
         "next": "Suivant",
         "previous": "Précédent"
       },
@@ -2982,6 +3017,8 @@
       "total_establishments": "{count} établissements",
       "filters": "Filtres",
       "new_establishment": "Nouvel établissement",
+      "bulk_publish": "Tout Publier",
+      "bulk_delete": "Tout Supprimer",
       "search_placeholder": "Rechercher...",
       "reset": "Réinitialiser",
       "all_sectors": "Tous les secteurs",
@@ -3014,7 +3051,19 @@
         "error": "Une erreur est survenue",
         "updated": "Mis à jour avec succès",
         "deleted": "Supprimé avec succès",
-        "delete_confirm": "Voulez-vous vraiment supprimer cet établissement ?"
+        "delete_confirm": "Voulez-vous vraiment supprimer cet établissement ?",
+        "bulk_publish_confirm": "Voulez-vous vraiment publier TOUS les établissements ?",
+        "publishing": "Publication en cours...",
+        "bulk_publish_success": "Tous les établissements ont été publiés",
+        "bulk_publish_error": "Erreur lors de la publication groupée",
+        "bulk_delete_confirm": "ATTENTION: Cette action va supprimer TOUS les établissements.\n\nÊtes-vous sûr ?",
+        "deleting": "Suppression en cours...",
+        "bulk_delete_success": "Tous les établissements ont été supprimés",
+        "bulk_delete_error": "Erreur lors de la suppression groupée",
+        "server_error": "Erreur serveur"
+      },
+      "pagination": {
+        "info": "Page {page} sur {total}"
       },
       "page": "Page",
       "limit": "Limite",
@@ -5966,6 +6015,13 @@
     "title": "Gestion du Patrimoine Établissements",
     "subtitle": "Workflow de validation et mise à jour des données",
     "request_creation": "Demander la création",
+    "request_subtitle": "Proposer un nouvel établissement au patrimoine provincial",
+    "errors": {
+      "required_fields": "Veuillez remplir les champs obligatoires (Nom et Code)",
+      "location_required": "Veuillez remplir les données de localisation (Commune, Lat, Long)",
+      "justification_required": "Veuillez fournir une justification pour cette demande",
+      "error_submit": "Une erreur est survenue lors de l'envoi de la demande"
+    },
     "request_edit": "Demander une mise à jour",
     "complementary_fields": "Données Complémentaires",
     "complementary_fields_desc": "Ajoutez des informations spécifiques supplémentaires (format flexible).",
@@ -5993,7 +6049,22 @@
       "type": "Type d'opération",
       "diff": "Modifications demandées",
       "applied_success": "Modifications appliquées à l'établissement avec succès.",
-      "rejected_success": "Demande rejetée avec succès."
+      "rejected_success": "Demande rejetée avec succès.",
+      "search_placeholder": "Rechercher...",
+      "requests_count": "Demandes",
+      "view_current": "Voir fiche actuelle",
+      "no_justification": "Pas de justification fournie",
+      "observations": "Observations",
+      "not_available": "N/A",
+      "yes": "✅ Oui",
+      "no": "❌ Non",
+      "no_custom_fields": "Aucun champ personnalisé",
+      "processed_on": "Demande traitée le",
+      "final_status": "Statut final :",
+      "rejection_reason_label": "Motif de rejet :",
+      "not_specified": "Non spécifié",
+      "load_error": "Échec du chargement des demandes",
+      "server_error": "Erreur serveur"
     },
     "mes_demandes_title": "Historique de mes demandes",
     "mes_demandes_subtitle": "Suivez l'état de vos demandes de modification et de création",

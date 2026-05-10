@@ -131,13 +131,13 @@ export default function NouveauEtablissementPage() {
       const data = await res.json();
       
       if (res.ok && data.success) {
-        toast.success(t('actions.success') || 'Établissement créé avec succès');
+        toast.success(t('actions.success'));
         router.push('/admin/etablissements');
       } else {
-        toast.error(data.error || 'Erreur lors de la création');
+        toast.error(data.error || t('actions.error_creation'));
       }
     } catch (err) {
-      toast.error('Erreur serveur');
+      toast.error(t('actions.server_error'));
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ export default function NouveauEtablissementPage() {
 
       <div className="bg-white dark:bg-gray-800 rounded-[3rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-12 text-white relative">
-          <div className="absolute top-0 right-0 p-12 opacity-10">
+          <div className="absolute top-0 ltr:right-0 rtl:left-0 p-12 opacity-10">
             <Building2 size={120} />
           </div>
           <div className="relative z-10 flex items-center gap-6">
@@ -231,8 +231,8 @@ export default function NouveauEtablissementPage() {
                     onChange={(e) => setFormData({ ...formData, nature: e.target.value })}
                     className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 shadow-sm"
                   >
-                    <option value="PUBLIC">Public</option>
-                    <option value="PRIVE">Privé</option>
+                    <option value="PUBLIC">{t('options.natures.PUBLIC')}</option>
+                    <option value="PRIVE">{t('options.natures.PRIVE')}</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -240,7 +240,7 @@ export default function NouveauEtablissementPage() {
                   <input
                     value={formData.typeEtablissement}
                     onChange={(e) => setFormData({ ...formData, typeEtablissement: e.target.value })}
-                    placeholder="Ex: Dispensaire, École..."
+                    placeholder={t('placeholders.typeEtab')}
                     className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 shadow-sm"
                   />
                 </div>
@@ -264,12 +264,12 @@ export default function NouveauEtablissementPage() {
                   className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 shadow-sm"
                 >
                   <option value="">{t('form.select_commune')}</option>
-                  <option value="1">Médiouna</option>
-                  <option value="2">Tit Mellil</option>
-                  <option value="3">Lahraouyine</option>
-                  <option value="4">Sidi Hajjaj Oued Hassar</option>
-                  <option value="5">Mejatia Oulad Taleb</option>
-                  <option value="6">Al Majat</option>
+                  <option value="1">{t('options.communes.1')}</option>
+                  <option value="2">{t('options.communes.2')}</option>
+                  <option value="3">{t('options.communes.3')}</option>
+                  <option value="4">{t('options.communes.4')}</option>
+                  <option value="5">{t('options.communes.5')}</option>
+                  <option value="6">{t('options.communes.6')}</option>
                 </select>
                </div>
                <div className="space-y-2">
@@ -336,7 +336,7 @@ export default function NouveauEtablissementPage() {
                     value={formData.telephone}
                     onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
                     className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
-                    placeholder="+212 ..."
+                    placeholder={t('placeholders.telephone') || "+212 ..."}
                   />
                 </div>
                </div>
@@ -349,7 +349,7 @@ export default function NouveauEtablissementPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
-                    placeholder="contact@etablissement.ma"
+                    placeholder={t('placeholders.email') || "contact@etablissement.ma"}
                   />
                 </div>
                </div>
@@ -362,7 +362,7 @@ export default function NouveauEtablissementPage() {
                     value={formData.siteWeb}
                     onChange={(e) => setFormData({ ...formData, siteWeb: e.target.value })}
                     className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
-                    placeholder="https://..."
+                    placeholder={t('placeholders.website') || "https://..."}
                   />
                 </div>
                </div>
@@ -384,11 +384,11 @@ export default function NouveauEtablissementPage() {
                       onChange={(e) => setFormData({ ...formData, cycle: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-orange-200 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-orange-500/20"
                     >
-                      <option value="">Sélectionner...</option>
-                      <option value="PRIMAIRE">Primaire</option>
-                      <option value="COLLEGE">Collège</option>
-                      <option value="LYCEE">Lycée</option>
-                      <option value="PRE-SCOLAIRE">Préscolaire</option>
+                      <option value="">{t('actions.select') || 'Sélectionner...'}</option>
+                      <option value="PRIMAIRE">{t('options.cycles.PRIMAIRE')}</option>
+                      <option value="COLLEGE">{t('options.cycles.COLLEGE')}</option>
+                      <option value="LYCEE">{t('options.cycles.LYCEE')}</option>
+                      <option value="PRE-SCOLAIRE">{t('options.cycles.PRE-SCOLAIRE')}</option>
                     </select>
                   </div>
                   <div className="space-y-2">

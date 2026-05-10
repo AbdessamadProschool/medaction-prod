@@ -3,6 +3,24 @@
     "code": "ar",
     "dir": "rtl"
   },
+  "permissions": {
+    "reclamations": {
+      "read": {
+        "assigned": "قراءة الشكايات المعينة",
+        "all": "قراءة جميع الشكايات"
+      }
+    },
+    "evenements": {
+      "read": {
+        "all": "قراءة جميع الفعاليات"
+      }
+    },
+    "map": {
+      "view": {
+        "full": "عرض الخريطة كاملة"
+      }
+    }
+  },
   "pagination": {
     "prev": "السابق",
     "next": "التالي",

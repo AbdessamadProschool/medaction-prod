@@ -24,7 +24,9 @@ import {
   Users,
   Play,
   Archive,
+  Trash2,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 
@@ -116,8 +118,10 @@ function AdminEvenementsContent() {
     cloturees: 0,
   });
 
-  // Modal création
+  // Modal création et détails
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedEvenement, setSelectedEvenement] = useState<Evenement | null>(null);
 
   // Vérifier authentification
   useEffect(() => {
@@ -459,13 +463,37 @@ function AdminEvenementsContent() {
                     <td className="px-4 py-3">
                       <div className={`flex items-center gap-2 ${locale === 'ar' ? 'justify-start' : 'justify-end'}`}>
                         {/* Voir */}
-                        <Link
-                          href={`/evenements/${evenement.id}`}
+                        <button
+                          onClick={() => { setSelectedEvenement(evenement); setShowDetailModal(true); }}
                           className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
                           title={t('actions.view')}
                         >
                           <Eye size={16} />
-                        </Link>
+                        </button>
+                        
+                        {/* Supprimer (Super Admin) */}
+                        <button
+                          onClick={async () => {
+                            if (confirm('Voulez-vous vraiment supprimer cet événement ? Cette action est irréversible et sera journalisée. (Action Super Admin)')) {
+                              try {
+                                const res = await fetch(`/api/evenements/${evenement.id}`, { method: 'DELETE' });
+                                if (res.ok) {
+                                  toast.success('Événement supprimé avec succès');
+                                  loadEvenements();
+                                } else {
+                                  toast.error('Erreur lors de la suppression');
+                                }
+                              } catch (e) {
+                                console.error(e);
+                                toast.error('Erreur lors de la suppression');
+                              }
+                            }
+                          }}
+                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                          title="Supprimer"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                         
                         {/* Modifier - Visible pour tous sauf Clôturés */}
                         {evenement.statut !== 'CLOTUREE' && (
@@ -560,6 +588,89 @@ function AdminEvenementsContent() {
           loadEvenements();
         }}
       />
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {showDetailModal && selectedEvenement && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowDetailModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="relative bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
+                <h3 className="text-xl font-bold">{selectedEvenement.titre}</h3>
+                <p className="text-white/70 mt-1">{selectedEvenement.typeCategorique}</p>
+              </div>
+              
+              {/* Content */}
+              <div className="p-6 space-y-6">
+                {/* Info grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Secteur</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{tSectors(selectedEvenement.secteur)}</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Date</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {new Date(selectedEvenement.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
+                      {selectedEvenement.dateFin && ` - ${new Date(selectedEvenement.dateFin).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}`}
+                    </p>
+                  </div>
+                  {selectedEvenement.lieu && (
+                    <div className="col-span-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Lieu</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{selectedEvenement.lieu}</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Status badges */}
+                <div className="flex flex-wrap gap-3">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color}`}>
+                    {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
+                  </span>
+                  {selectedEvenement.isMisEnAvant && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
+                      Mis en avant
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                    <Users size={16} />
+                    {selectedEvenement.nombreInscrits} inscrits
+                  </span>
+                </div>
+                
+                {/* Actions */}
+                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+                  <button
+                    onClick={() => setShowDetailModal(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Fermer
+                  </button>
+                  <Link
+                    href={`/admin/evenements/${selectedEvenement.id}/modifier`}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-center text-white rounded-xl hover:shadow-lg transition-all"
+                  >
+                    Modifier complet
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

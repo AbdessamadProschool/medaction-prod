@@ -23,6 +23,7 @@ import {
   FileText,
   Download,
   Plus,
+  Trash2,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr, arMA } from 'date-fns/locale';
@@ -187,39 +188,31 @@ export default function AdminProgrammesActivitesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header avec design gouvernemental */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] p-6 text-white">
-        {/* Tricolor band */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+      {/* Header unifié avec la palette de l'application (Emerald/Teal) */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {t('title')}
+          </h1>
+          <p className="text-gray-500">{t('subtitle')}</p>
+        </div>
         
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center">
-              <ClipboardList className="w-7 h-7 text-[hsl(45,93%,47%)]" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{t('title')}</h1>
-              <p className="text-white/70">{t('subtitle')}</p>
-            </div>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={fetchActivites}
+            disabled={loading}
+            className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+          </button>
           
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin/programmes-activites/nouvelle"
-              className="flex items-center gap-2 px-4 py-2 bg-[hsl(45,93%,47%)] hover:bg-[hsl(45,93%,40%)] text-black font-medium rounded-xl transition-colors shadow-lg shadow-[hsl(45,93%,47%)]/20"
-            >
-              <Plus className="w-4 h-4" />
-              {t('create')}
-            </Link>
-            
-            <button
-              onClick={fetchActivites}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              {t('refresh')}
-            </button>
-          </div>
+          <Link
+            href="/admin/programmes-activites/nouvelle"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            <Plus size={18} />
+            {t('create')}
+          </Link>
         </div>
       </div>
 
@@ -263,7 +256,7 @@ export default function AdminProgrammesActivitesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('filters.search')}
-              className={`w-full py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-[hsl(213,80%,50%)] focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white ${locale === 'ar' ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'}`}
+              className={`w-full py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white ${locale === 'ar' ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'}`}
             />
           </div>
           
@@ -271,7 +264,7 @@ export default function AdminProgrammesActivitesPage() {
           <select
             value={filterStatut}
             onChange={(e) => setFilterStatut(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-[hsl(213,80%,50%)] bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value="">{t('filters.all_statuses')}</option>
             <option value="BROUILLON">{t('status.draft')}</option>
@@ -288,7 +281,7 @@ export default function AdminProgrammesActivitesPage() {
           <select
             value={filterValidation}
             onChange={(e) => setFilterValidation(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-[hsl(213,80%,50%)] bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value="">{t('filters.all_validations')}</option>
             <option value="pending">{t('filters.pending_validation')}</option>
@@ -301,7 +294,7 @@ export default function AdminProgrammesActivitesPage() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <RefreshCw className="w-8 h-8 text-[hsl(213,80%,50%)] animate-spin" />
+            <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
           </div>
         ) : filteredActivites.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-gray-500">
@@ -386,29 +379,46 @@ export default function AdminProgrammesActivitesPage() {
                         <div className={`flex items-center gap-2 ${locale === 'ar' ? 'justify-start' : 'justify-end'}`}>
                           <button
                             onClick={() => openDetail(activite)}
-                            className="p-2 text-gray-400 hover:text-[hsl(213,80%,50%)] hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
                             title="Voir détails"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye size={16} />
+                          </button>
+                          
+                          <button
+                            onClick={async () => {
+                              if (confirm('Voulez-vous vraiment supprimer ce programme ? (Action Super Admin)')) {
+                                try {
+                                  const res = await fetch(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
+                                  if (res.ok) fetchActivites();
+                                } catch (e) {
+                                  console.error(e);
+                                }
+                              }
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                            title="Supprimer"
+                          >
+                            <Trash2 size={16} />
                           </button>
                           
                           {!activite.isValideParAdmin ? (
                             <button
                               onClick={() => handleValidate(activite.id, true)}
                               disabled={actionLoading === activite.id}
-                              className="p-2 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors disabled:opacity-50"
+                              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded disabled:opacity-50"
                               title="Valider"
                             >
-                              <CheckCircle className="w-4 h-4" />
+                              <CheckCircle size={16} />
                             </button>
                           ) : (
                             <button
                               onClick={() => handleValidate(activite.id, false)}
                               disabled={actionLoading === activite.id}
-                              className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
                               title="Retirer validation"
                             >
-                              <XCircle className="w-4 h-4" />
+                              <XCircle size={16} />
                             </button>
                           )}
                         </div>
@@ -440,8 +450,7 @@ export default function AdminProgrammesActivitesPage() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="relative bg-gradient-to-r from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] p-6 text-white">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+              <div className="relative bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
                 <h3 className="text-xl font-bold">{selectedActivite.titre}</h3>
                 <p className="text-white/70 mt-1">{t(`types.${selectedActivite.typeActivite}`) || selectedActivite.typeActivite}</p>
               </div>
@@ -540,7 +549,7 @@ export default function AdminProgrammesActivitesPage() {
                   ) : (
                     <button
                       onClick={() => handleToggleVisibility(selectedActivite.id, !selectedActivite.isVisiblePublic)}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[hsl(213,80%,50%)] to-[hsl(213,80%,40%)] text-white rounded-xl hover:shadow-lg transition-all"
+                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all"
                     >
                       {selectedActivite.isVisiblePublic ? t('modal.hide') : t('modal.show')}
                     </button>

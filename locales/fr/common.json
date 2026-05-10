@@ -3,6 +3,24 @@
     "code": "fr",
     "dir": "ltr"
   },
+  "permissions": {
+    "reclamations": {
+      "read": {
+        "assigned": "Lecture des réclamations assignées",
+        "all": "Lecture de toutes les réclamations"
+      }
+    },
+    "evenements": {
+      "read": {
+        "all": "Lecture de tous les événements"
+      }
+    },
+    "map": {
+      "view": {
+        "full": "Vue complète de la carte"
+      }
+    }
+  },
   "pagination": {
     "prev": "Précédent",
     "next": "Suivant",
@@ -2503,19 +2521,8 @@
         "transport_public": "Transport public",
         "distance_chef_lieu": "Distance au chef-lieu"
       },
-      "options": {
-        "sectors": {
-          "EDUCATION": "Éducation",
-          "SANTE": "Santé",
-          "SPORT": "Sport",
-          "SOCIAL": "Social",
-          "CULTUREL": "Culturel",
-          "AUTRE": "Autre"
-        },
-        "natures": {
-          "PUBLIC": "Public",
-          "PRIVE": "Privé"
-        }
+      "common": {
+        "select": "Sélectionner"
       },
       "placeholders": {
         "nom": "Ex: École Al Manar",
@@ -2553,6 +2560,18 @@
         "can_validate_reject": "Vous pouvez valider ou rejeter les modifications proposées"
       },
       "options": {
+        "sectors": {
+          "EDUCATION": "Éducation",
+          "SANTE": "Santé",
+          "SPORT": "Sport",
+          "SOCIAL": "Social",
+          "CULTUREL": "Culturel",
+          "AUTRE": "Autre"
+        },
+        "natures": {
+          "PUBLIC": "Public",
+          "PRIVE": "Privé"
+        },
         "cycles": {
           "PRIMAIRE": "Primaire",
           "COLLEGE": "Collège",

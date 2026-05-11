@@ -314,20 +314,6 @@ export default function AdminLogsPage() {
     }
   };
 
-  // Reset filters
-  const resetFilters = () => {
-    setFilters({
-      search: '',
-      action: '',
-      entity: '',
-      userId: '',
-      level: '',
-      source: '',
-      dateFrom: '',
-      dateTo: '',
-    });
-    setPage(1);
-  };
 
   // Change tab
   const changeTab = (tab: TabType) => {

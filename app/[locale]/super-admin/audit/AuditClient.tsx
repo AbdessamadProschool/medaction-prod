@@ -281,7 +281,7 @@ export default function AuditClient() {
       const res = await fetch(`/api/admin/logs?${params}`);
       if (res.ok) {
         const data = await res.json();
-        setLogs(data.data || []);
+        setLogs(Array.isArray(data.data) ? data.data : []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || 0);
       }

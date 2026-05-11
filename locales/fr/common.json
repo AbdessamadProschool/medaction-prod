@@ -6259,5 +6259,64 @@
       "export_error": "Échec de l'exportation",
       "connection_error": "Erreur de connexion au serveur"
     }
+  },
+  "audit_page": {
+    "title": "Logs & Activités",
+    "subtitle": "Journal d'audit du système et traçabilité des actions",
+    "search": "Rechercher",
+    "search_placeholder": "Rechercher un utilisateur, une action...",
+    "view_details": "Voir les détails",
+    "no_logs": "Aucun log trouvé",
+    "modify_filters_hint": "Essayez de modifier vos filtres ou votre recherche",
+    "columns": {
+      "date": "Date & Heure",
+      "user": "Utilisateur",
+      "action": "Action",
+      "target": "Entité / ID",
+      "details": "Détails"
+    },
+    "filters": {
+      "all_actions": "Toutes les actions",
+      "all_entities": "Toutes les entités"
+    }
+  },
+  "audit_log": {
+    "actions": {
+      "LOGIN_SUCCESS": "Connexion réussie",
+      "LOGIN_FAILED": "Échec de connexion",
+      "LOGOUT": "Déconnexion",
+      "REGISTER": "Inscription",
+      "CREATE_USER": "Création utilisateur",
+      "UPDATE_USER": "Modification utilisateur",
+      "DELETE_USER": "Suppression utilisateur",
+      "UPDATE_PERMISSIONS": "Mise à jour permissions",
+      "ACCESS_DENIED": "Accès refusé",
+      "CREATE_BACKUP": "Création sauvegarde",
+      "RECLAMATION_CREATE": "Création réclamation",
+      "RECLAMATION_UPDATE": "Mise à jour réclamation",
+      "RECLAMATION_DELETE": "Suppression réclamation"
+    },
+    "entities": {
+      "User": "Utilisateur",
+      "Reclamation": "Réclamation",
+      "System": "Système",
+      "Route": "Route / URL",
+      "Authentication": "Authentification"
+    },
+    "modal": {
+      "title": "Détails de l'entrée #{id}",
+      "system": "Système",
+      "ip_address": "Adresse IP",
+      "device": "Appareil / Navigateur",
+      "saved_data": "Données enregistrées",
+      "no_details": "Aucun détail supplémentaire pour cette action",
+      "close": "Fermer",
+      "not_available": "N/A",
+      "unknown": "Inconnu",
+      "reason": "Raison",
+      "path": "Chemin",
+      "timestamp": "Horodatage",
+      "other_details": "Autres détails"
+    }
   }
 }

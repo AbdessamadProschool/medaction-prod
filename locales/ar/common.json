@@ -6246,5 +6246,64 @@
       "export_error": "فشل التصدير",
       "connection_error": "خطأ في الاتصال بالخادم"
     }
+  },
+  "audit_page": {
+    "title": "السجلات والأنشطة",
+    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات",
+    "search": "بحث",
+    "search_placeholder": "البحث عن مستخدم، إجراء...",
+    "view_details": "عرض التفاصيل",
+    "no_logs": "لم يتم العثور على سجلات",
+    "modify_filters_hint": "حاول تعديل الفلاتر أو البحث",
+    "columns": {
+      "date": "التاريخ والوقت",
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "target": "الكيان / المعرف",
+      "details": "التفاصيل"
+    },
+    "filters": {
+      "all_actions": "جميع الإجراءات",
+      "all_entities": "جميع الكيانات"
+    }
+  },
+  "audit_log": {
+    "actions": {
+      "LOGIN_SUCCESS": "تسجيل دخول ناجح",
+      "LOGIN_FAILED": "فشل تسجيل الدخول",
+      "LOGOUT": "تسجيل الخروج",
+      "REGISTER": "تسجيل حساب",
+      "CREATE_USER": "إنشاء مستخدم",
+      "UPDATE_USER": "تعديل مستخدم",
+      "DELETE_USER": "حذف مستخدم",
+      "UPDATE_PERMISSIONS": "تحديث الصلاحيات",
+      "ACCESS_DENIED": "تم رفض الوصول",
+      "CREATE_BACKUP": "إنشاء نسخة احتياطية",
+      "RECLAMATION_CREATE": "إنشاء شكاية",
+      "RECLAMATION_UPDATE": "تحديث شكاية",
+      "RECLAMATION_DELETE": "حذف شكاية"
+    },
+    "entities": {
+      "User": "مستخدم",
+      "Reclamation": "شكاية",
+      "System": "النظام",
+      "Route": "المسار / الرابط",
+      "Authentication": "المصادقة"
+    },
+    "modal": {
+      "title": "تفاصيل السجل #{id}",
+      "system": "النظام",
+      "ip_address": "عنوان IP",
+      "device": "الجهاز / المتصفح",
+      "saved_data": "البيانات المسجلة",
+      "no_details": "لا توجد تفاصيل إضافية لهذا الإجراء",
+      "close": "إغلاق",
+      "not_available": "غير متوفر",
+      "unknown": "غير معروف",
+      "reason": "السبب",
+      "path": "المسار",
+      "timestamp": "الطابع الزمني",
+      "other_details": "تفاصيل أخرى"
+    }
   }
 }

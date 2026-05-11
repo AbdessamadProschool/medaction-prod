@@ -198,7 +198,7 @@ export const POST = withPermission('system.import', withErrorHandler(async (req:
           const nom = getValue(row, ['nom', 'etablissement', 'nom_de_letablissement', 'structure', 'nom_structure', 'nom_fr', 'intitule', 'designation', 'libelle', 'ecole', 'nom_ecole', 'titre', 'name']);
           if (!nom) continue;
 
-          let secteurRaw = getValue(row, ['secteur', 'domaine', 'categorie']);
+          let secteurRaw = getValue(row, ['secteur', 'domaine', 'categorie', 'secteur_education-sante-etc']);
           let secteur = 'AUTRE';
           if (secteurRaw) {
             const s = secteurRaw.toString().toUpperCase().trim();
@@ -219,7 +219,7 @@ export const POST = withPermission('system.import', withErrorHandler(async (req:
             'Tit Mellil': 'TIT MELLIL', 'TIT MELLIL': 'TIT MELLIL',
           };
 
-          let communeNom = getValue(row, ['commune', 'adresse', 'ville']) || 'Médiouna';
+          let communeNom = getValue(row, ['commune', 'adresse', 'ville', 'nom_de_la_commune']) || 'Médiouna';
           if (typeof communeNom === 'string' && COMMUNE_MAPPING[communeNom]) {
             communeNom = COMMUNE_MAPPING[communeNom];
           }
@@ -261,10 +261,10 @@ export const POST = withPermission('system.import', withErrorHandler(async (req:
             else { while (Math.abs(num) > 180) num /= 10; }
             return num;
           };
-          const latitude  = cleanCoord(getValue(row, ['latitude', 'lat', 'gps_lat', 'y']), 'lat');
-          const longitude = cleanCoord(getValue(row, ['longitude', 'lon', 'lng', 'long', 'gps_lng', 'x']), 'lng');
+          const latitude  = cleanCoord(getValue(row, ['latitude', 'lat', 'gps_lat', 'y', 'latitude_gps']), 'lat');
+          const longitude = cleanCoord(getValue(row, ['longitude', 'lon', 'lng', 'long', 'gps_lng', 'x', 'longitude_gps']), 'lng');
 
-          let code = getValue(row, ['code', 'reference', 'ref']);
+          let code = getValue(row, ['code', 'reference', 'ref', 'code_etablissement']);
           if (!code) {
             const slug = nom.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').substring(0, 40).toUpperCase();
             code = `${secteur.substring(0, 3)}-${slug}-${(communeNom || 'UNK').substring(0, 3).toUpperCase()}`;
@@ -283,17 +283,27 @@ export const POST = withPermission('system.import', withErrorHandler(async (req:
 
           const updateData = {
             nom, latitude, longitude, secteur: secteur as any,
-            adresseComplete: getValue(row, ['adresse', 'adresse_complete']) || (communeNom as string),
-            quartierDouar: getValue(row, ['quartier', 'douar']),
-            email: getValue(row, ['email']),
-            telephone: getValue(row, ['telephone']),
-            typeEtablissement: getValue(row, ['categorie', 'type_etablissement', 'nature']) || 'Autre',
-            surfaceTotale: parseFloatSafe(getValue(row, ['surface', 'surface_totale'])),
-            nombreSalles: parseIntSafe(getValue(row, ['salles', 'nb_salles'])),
-            capaciteAccueil: parseIntSafe(getValue(row, ['capacite', 'accueil'])),
-            disponibiliteEau: parseBool(getValue(row, ['eau'])),
-            disponibiliteElectricite: parseBool(getValue(row, ['electricite'])),
-            connexionInternet: parseBool(getValue(row, ['internet'])),
+            adresseComplete: getValue(row, ['adresse', 'adresse_complete', 'localisation', 'adresse_detaillee']) || (communeNom as string),
+            quartierDouar: getValue(row, ['quartier', 'douar', 'quartier_douar']),
+            email: getValue(row, ['email', 'courriel', 'adresse_electronique', 'e_mail']),
+            telephone: getValue(row, ['telephone', 'fixe', 'gsm', 'contact', 'tel']),
+            typeEtablissement: getValue(row, ['categorie', 'type_etablissement', 'type']) || 'Autre',
+            nature: getValue(row, ['nature', 'statut_juridique', 'type_juridique']) || 'Public',
+            surfaceTotale: parseFloatSafe(getValue(row, ['surface', 'surface_totale', 'superficie'])),
+            nombreSalles: parseIntSafe(getValue(row, ['salles', 'nb_salles', 'nombre_de_salles'])),
+            capaciteAccueil: parseIntSafe(getValue(row, ['capacite', 'accueil', 'nombre_deleves_total'])),
+            disponibiliteEau: parseBool(getValue(row, ['eau', 'disponibilite_eau', 'reseau_eau'])),
+            disponibiliteElectricite: parseBool(getValue(row, ['electricite', 'disponibilite_electricite', 'reseau_electrique'])),
+            connexionInternet: parseBool(getValue(row, ['internet', 'connexion_internet', 'acces_internet'])),
+            cycle: getValue(row, ['cycle', 'niveau', 'cycle_denseignement']),
+            nbClasses: parseIntSafe(getValue(row, ['nb_classes', 'nombre_de_classes', 'classes'])),
+            nbEnseignants: parseIntSafe(getValue(row, ['nb_enseignants', 'nombre_denseignants', 'enseignants', 'professeurs'])),
+            nbCadres: parseIntSafe(getValue(row, ['nb_cadres', 'nombre_de_cadres', 'administration'])),
+            elevesPrescolaire: parseIntSafe(getValue(row, ['eleves_prescolaire', 'prescolaire_total'])),
+            elevesPrescolaireFilles: parseIntSafe(getValue(row, ['filles_prescolaire', 'prescolaire_filles'])),
+            elevesTotal: parseIntSafe(getValue(row, ['eleves_total', 'total_eleves', 'effectif_global'])),
+            elevesFilles: parseIntSafe(getValue(row, ['eleves_filles', 'filles_total', 'effectif_filles'])),
+            fillesDerniereAnnee: parseIntSafe(getValue(row, ['filles_derniere_annee', 'derniere_annee_filles'])),
             donneesSpecifiques,
           };
 

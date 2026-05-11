@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 import { z } from 'zod';
+import { auditLog } from '@/lib/logger';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   EN_ATTENTE_VALIDATION: ['VALIDEE', 'ANNULEE'],
@@ -194,6 +195,18 @@ export const PUT = withErrorHandler(async (
     }
   }
 
+  auditLog(
+    'UPDATE_EVENEMENT',
+    'Evenement',
+    id,
+    parseInt(session.user.id),
+    { 
+      updatedFields: Object.keys(updateData),
+      statut: updateData.statut || updated.statut,
+      title: updated.titre
+    }
+  );
+
   return NextResponse.json({
     success: true,
     message: 'Événement mis à jour avec succès',
@@ -248,6 +261,14 @@ export const DELETE = withErrorHandler(async (
   
   // Supprimer l'événement
   await prisma.evenement.delete({ where: { id } });
+
+  auditLog(
+    'DELETE_EVENEMENT',
+    'Evenement',
+    id,
+    parseInt(session.user.id),
+    { title: evenement.titre }
+  );
 
   return NextResponse.json({
     success: true,

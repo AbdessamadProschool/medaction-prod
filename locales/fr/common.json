@@ -4,21 +4,140 @@
     "dir": "ltr"
   },
   "permissions": {
+    "auth": {
+      "login": "Se connecter",
+      "register": "S'inscrire",
+      "logout": "Se déconnecter",
+      "reset-password": "Réinitialiser mot de passe"
+    },
+    "users": {
+      "read": "Voir utilisateurs (basique)",
+      "read_full": "Voir utilisateurs (complet)",
+      "create": "Créer utilisateur",
+      "edit": "Modifier utilisateur",
+      "edit_role": "Changer rôle",
+      "delete": "Supprimer utilisateur (Soft)",
+      "hard-delete": "Supprimer définitivement (Hard)",
+      "activate": "Activer/Désactiver compte",
+      "security": "Voir infos sécurité",
+      "me": {
+        "read": "Voir mon profil",
+        "edit": "Modifier mon profil"
+      }
+    },
     "reclamations": {
-      "read": {
-        "assigned": "Lecture des réclamations assignées",
-        "all": "Lecture de toutes les réclamations"
+      "read": "Voir ses réclamations",
+      "read_all": "Voir toutes les réclamations",
+      "read_assigned": "Voir réclamations affectées",
+      "create": "Créer réclamation",
+      "edit": "Modifier réclamation",
+      "delete": "Supprimer réclamation",
+      "archive": "Archiver réclamation",
+      "assign": "Affecter réclamation",
+      "validate": "Valider/Rejeter décision",
+      "resolve": "Marquer comme résolue",
+      "comment": {
+        "internal": "Ajouter commentaire interne"
       }
     },
     "evenements": {
-      "read": {
-        "all": "Lecture de tous les événements"
+      "read": "Voir événements",
+      "read_all": "Voir tous événements (admin)",
+      "create": "Créer événement",
+      "edit": "Modifier événement propre",
+      "edit_all": "Modifier tout événement",
+      "delete": "Supprimer événement",
+      "validate": "Valider événement",
+      "feature": "Mettre événement en avant",
+      "subscribe": "S'inscrire à un événement",
+      "participate": "Participer à un événement",
+      "report": "Voir bilan événement"
+    },
+    "actualites": {
+      "read": "Lire actualités",
+      "create": "Créer actualité",
+      "edit": "Modifier actualité",
+      "delete": "Supprimer actualité",
+      "publish": "Publier actualité",
+      "validate": "Valider actualité"
+    },
+    "etablissements": {
+      "read": "Voir établissements",
+      "create": "Créer établissement",
+      "edit": "Modifier établissement",
+      "delete": "Supprimer établissement",
+      "validate": "Valider établissement",
+      "publish": "Publier établissement",
+      "subscribe": "S'abonner établissement",
+      "request": {
+        "create": "Créer une demande d'établissement",
+        "edit": "Modifier une demande d'établissement"
       }
     },
-    "map": {
-      "view": {
-        "full": "Vue complète de la carte"
+    "evaluations": {
+      "read": "Lire évaluations",
+      "create": "Evaluer",
+      "edit": "Modifier évaluation",
+      "delete": "Supprimer évaluation",
+      "validate": "Modérer évaluation",
+      "report": "Signaler évaluation"
+    },
+    "campagnes": {
+      "read": "Voir campagnes",
+      "create": "Créer campagne",
+      "edit": "Modifier campagne",
+      "delete": "Supprimer campagne",
+      "activate": "Gérer statut campagne",
+      "participate": "Participer aux campagnes"
+    },
+    "programmes": {
+      "read": "Voir programmes",
+      "create": "Créer programme",
+      "edit": "Modifier programme",
+      "delete": "Supprimer programme",
+      "validate": "Valider programme",
+      "report": "Remplir rapport activité"
+    },
+    "suggestions": {
+      "create": "Cr�er une suggestion",
+      "read": {
+        "own": "Voir mes suggestions"
       }
+    },
+    "stats": {
+      "view": {
+        "global": "Voir stats globales",
+        "secteur": "Voir stats secteur",
+        "commune": "Voir stats commune",
+        "etablissement": "Voir stats établissement"
+      }
+    },
+    "reports": {
+      "export": "Exporter rapports"
+    },
+    "map": {
+      "view": "Voir carte",
+      "view_full": "Voir carte avancée"
+    },
+    "system": {
+      "settings": {
+        "read": "Voir paramètres",
+        "edit": "Modifier paramètres"
+      },
+      "logs": {
+        "view": "Voir logs"
+      },
+      "backup": "Gérer backups",
+      "restore": "Restaurer système"
+    },
+    "permissions": {
+      "manage": "Gérer permissions"
+    },
+    "communes": {
+      "manage": "Gérer communes"
+    },
+    "bilans": {
+      "read": "Voir les bilans"
     }
   },
   "pagination": {
@@ -2175,14 +2294,34 @@
             "location": "Lieu",
             "price": "Prix",
             "photos": "Photos"
-          }
+          },
+          "image_selected": "Image sélectionnée",
+          "image_delete": "Supprimer",
+          "type_label": "Type d'événement",
+          "tags": "Tags",
+          "tags_hint": "(séparés par virgule)",
+          "tags_placeholder": "Ex: jeunesse, sport, culture, famille",
+          "optional": "(optionnel)",
+          "address": "Adresse complète",
+          "address_placeholder": "Ex: Avenue Mohammed V, Médiouna",
+          "neighborhood": "Quartier / Douar",
+          "neighborhood_placeholder": "Ex: Hay Mohammadi",
+          "organizer_name": "Nom de l'organisateur",
+          "organizer_name_placeholder": "Ex: Association Jeunesse Médiouna",
+          "organizer_phone": "Téléphone de contact",
+          "organizer_phone_placeholder": "Ex: 0522 123 456",
+          "organizer_email": "Email de contact",
+          "organizer_email_placeholder": "Ex: contact@event.ma",
+          "open_registrations": "Ouvrir les inscriptions",
+          "open_registrations_hint": "Permet aux citoyens de s'inscrire en ligne"
         },
         "buttons": {
           "save_draft": "Enregistrer le brouillon",
           "cancel": "Annuler",
           "prev": "Précédent",
           "next": "Suivant",
-          "create": "Créer l'événement"
+          "create": "Créer l'événement",
+          "saving": "Création en cours..."
         },
         "errors": {
           "title_required": "Le titre est requis",
@@ -2206,6 +2345,18 @@
           "rencontre": "Rencontre",
           "ceremony": "Cérémonie",
           "autre": "Autre"
+        },
+        "title_new": "Nouvel événement",
+        "subtitle_new": "Créer un nouvel événement",
+        "back_list": "Retour aux événements",
+        "sections": {
+          "visual": "Visuel de l'événement",
+          "visual_hint": "Une image attractive augmente la participation",
+          "info": "Informations Générales",
+          "date_location": "Date, Heure et Lieu",
+          "organizer": "Organisateur & Contact",
+          "organizer_hint": "Informations de contact pour les citoyens",
+          "participation": "Participation & Inscription"
         }
       },
       "form": {
@@ -2389,13 +2540,27 @@
         "select_status": "Sélectionner un statut...",
         "select_image": "Sélectionner une image",
         "summary": "Résumé",
-        "general_category": "Catégorie Générale"
+        "general_category": "Catégorie Générale",
+        "tags": "Tags (séparés par virgule)",
+        "tags_placeholder": "tag1, tag2, tag3",
+        "is_valide": "Validée",
+        "is_publie": "Publiée"
       },
       "actions": {
         "cancel": "Annuler",
         "create": "Créer l'actualité",
         "creating": "Création...",
-        "create_success": "Actualité créée avec succès"
+        "create_success": "Actualité créée avec succès",
+        "save": "Enregistrer",
+        "delete": "Supprimer",
+        "validate": "Valider",
+        "reject": "Rejeter",
+        "update_success": "Actualité mise à jour avec succès",
+        "update_error": "Erreur lors de la sauvegarde",
+        "delete_success": "Actualité supprimée",
+        "delete_error": "Erreur lors de la suppression",
+        "validate_success": "Actualité validée",
+        "reject_success": "Actualité rejetée"
       },
       "sectors": {
         "EDUCATION": "Éducation",
@@ -2421,6 +2586,12 @@
         "EN_ATTENTE_VALIDATION_DESC": "Soumis pour validation",
         "PUBLIEE": "Publier directement",
         "PUBLIEE_DESC": "Visible immédiatement"
+      },
+      "edit_title": "Modifier l'actualité",
+      "edit_subtitle": "Mise à jour des informations de l'actualité",
+      "info_card": {
+        "created_at": "Créé le:",
+        "by": "Par:"
       }
     },
     "establishments": {
@@ -3394,143 +3565,6 @@
     },
     "info": "Les modifications sont appliquées après enregistrement. Certains paramètres nécessitent un redémarrage du serveur."
   },
-  "permissions": {
-    "auth": {
-      "login": "Se connecter",
-      "register": "S'inscrire",
-      "logout": "Se déconnecter",
-      "reset-password": "Réinitialiser mot de passe"
-    },
-    "users": {
-      "read": "Voir utilisateurs (basique)",
-      "read_full": "Voir utilisateurs (complet)",
-      "create": "Créer utilisateur",
-      "edit": "Modifier utilisateur",
-      "edit_role": "Changer rôle",
-      "delete": "Supprimer utilisateur (Soft)",
-      "hard-delete": "Supprimer définitivement (Hard)",
-      "activate": "Activer/Désactiver compte",
-      "security": "Voir infos sécurité",
-      "me": {
-        "read": "Voir mon profil",
-        "edit": "Modifier mon profil"
-      }
-    },
-    "reclamations": {
-      "read": "Voir ses réclamations",
-      "read_all": "Voir toutes les réclamations",
-      "read_assigned": "Voir réclamations affectées",
-      "create": "Créer réclamation",
-      "edit": "Modifier réclamation",
-      "delete": "Supprimer réclamation",
-      "archive": "Archiver réclamation",
-      "assign": "Affecter réclamation",
-      "validate": "Valider/Rejeter décision",
-      "resolve": "Marquer comme résolue",
-      "comment": {
-        "internal": "Ajouter commentaire interne"
-      }
-    },
-    "evenements": {
-      "read": "Voir événements",
-      "read_all": "Voir tous événements (admin)",
-      "create": "Créer événement",
-      "edit": "Modifier événement propre",
-      "edit_all": "Modifier tout événement",
-      "delete": "Supprimer événement",
-      "validate": "Valider événement",
-      "feature": "Mettre événement en avant",
-      "subscribe": "S'inscrire à un événement",
-      "participate": "Participer à un événement",
-      "report": "Voir bilan événement"
-    },
-    "actualites": {
-      "read": "Lire actualités",
-      "create": "Créer actualité",
-      "edit": "Modifier actualité",
-      "delete": "Supprimer actualité",
-      "publish": "Publier actualité",
-      "validate": "Valider actualité"
-    },
-    "etablissements": {
-      "read": "Voir établissements",
-      "create": "Créer établissement",
-      "edit": "Modifier établissement",
-      "delete": "Supprimer établissement",
-      "validate": "Valider établissement",
-      "publish": "Publier établissement",
-      "subscribe": "S'abonner établissement",
-      "request": {
-        "create": "Créer une demande d'établissement",
-        "edit": "Modifier une demande d'établissement"
-      }
-    },
-    "evaluations": {
-      "read": "Lire évaluations",
-      "create": "Evaluer",
-      "edit": "Modifier évaluation",
-      "delete": "Supprimer évaluation",
-      "validate": "Modérer évaluation",
-      "report": "Signaler évaluation"
-    },
-    "campagnes": {
-      "read": "Voir campagnes",
-      "create": "Créer campagne",
-      "edit": "Modifier campagne",
-      "delete": "Supprimer campagne",
-      "activate": "Gérer statut campagne",
-      "participate": "Participer aux campagnes"
-    },
-    "programmes": {
-      "read": "Voir programmes",
-      "create": "Créer programme",
-      "edit": "Modifier programme",
-      "delete": "Supprimer programme",
-      "validate": "Valider programme",
-      "report": "Remplir rapport activité"
-    },
-    "suggestions": {
-      "create": "Cr�er une suggestion",
-      "read": {
-        "own": "Voir mes suggestions"
-      }
-    },
-    "stats": {
-      "view": {
-        "global": "Voir stats globales",
-        "secteur": "Voir stats secteur",
-        "commune": "Voir stats commune",
-        "etablissement": "Voir stats établissement"
-      }
-    },
-    "reports": {
-      "export": "Exporter rapports"
-    },
-    "map": {
-      "view": "Voir carte",
-      "view_full": "Voir carte avancée"
-    },
-    "system": {
-      "settings": {
-        "read": "Voir paramètres",
-        "edit": "Modifier paramètres"
-      },
-      "logs": {
-        "view": "Voir logs"
-      },
-      "backup": "Gérer backups",
-      "restore": "Restaurer système"
-    },
-    "permissions": {
-      "manage": "Gérer permissions"
-    },
-    "communes": {
-      "manage": "Gérer communes"
-    },
-    "bilans": {
-      "read": "Voir les bilans"
-    }
-  },
   "admin_announcement": {
     "title": "Popup d'Annonce Globale",
     "description": "Configurez le message qui s'affiche à l'ouverture du site (ex: Maintenance, Bêta, Info urgente).",
@@ -3697,6 +3731,7 @@
     "export_json": "JSON",
     "user_activity": "Activités Utilisateurs",
     "system_logs": "Logs Système",
+    "security_audit": "Audit de Sécurité",
     "search_placeholder": "Rechercher un log, un utilisateur ou une date...",
     "search": "Recherche",
     "filters": {
@@ -3721,8 +3756,16 @@
     "date_to": "Date fin",
     "message": "Message",
     "date": "Date",
+    "resource": "Ressource",
+    "status": "Statut",
+    "success": "Succès",
+    "failure": "Échec",
     "details": "Détails",
     "close": "Fermer",
+    "none": "Aucun(e)",
+    "changes_comparison": "Comparaison des changements",
+    "previous_value": "ANCIENNE VALEUR",
+    "new_value": "NOUVELLE VALEUR",
     "all": "Toutes",
     "export_btn": "Exporter",
     "no_logs": "Aucun log trouvé",
@@ -3736,6 +3779,8 @@
     "all_actions": "Toutes",
     "technical_data": "Données techniques",
     "no_tech_data": "Aucune donnée supplémentaire",
+    "cleanup": "Nettoyage",
+    "confirm_cleanup": "Êtes-vous sûr de vouloir supprimer définitivement les logs d'audit de plus de 12 mois ? Cette action est irréversible.",
     "toasts": {
       "export_success": "Export téléchargé avec succès!"
     },
@@ -3755,7 +3800,15 @@
       "REJECT": "Rejet",
       "EXPORT": "Export",
       "EXPORT_LOGS": "Export Logs",
-      "UPDATE_PERMISSIONS": "Modif. Permissions"
+      "UPDATE_PERMISSIONS": "Modif. Permissions",
+      "CREATE_USER": "Création Utilisateur",
+      "UPDATE_USER": "Modif. Utilisateur",
+      "DELETE_USER": "Suppr. Utilisateur",
+      "CREATE_ESTABLISHMENT": "Création Établissement",
+      "UPDATE_ETABLISSEMENT": "Modif. Établissement",
+      "DELETE_ETABLISSEMENT": "Suppr. Établissement",
+      "AFFECT_RECLAMATION": "Affectation Réclamation",
+      "UPDATE_SETTINGS": "Mise à jour Paramètres"
     },
     "entities": {
       "User": "Utilisateur",

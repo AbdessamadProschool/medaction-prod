@@ -6,6 +6,7 @@ import { etablissementSchema, etablissementFilterSchema } from "@/lib/validation
 import { Prisma } from "@prisma/client";
 import { withErrorHandler } from "@/lib/api-handler";
 import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from "@/lib/exceptions";
+import { auditLog } from "@/lib/logger";
 
 // GET - Liste des établissements (Public avec filtres)
 export const GET = withErrorHandler(async (req: NextRequest) => {
@@ -209,6 +210,22 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
       commune: { select: { id: true, nom: true, nomArabe: true } },
       annexe: { select: { id: true, nom: true, nomArabe: true } },
     },
+  });
+
+  // Audit log
+  await auditLog({
+    action: 'CREATE_ESTABLISHMENT',
+    resource: 'ETABLISSEMENT',
+    resourceId: String(etablissement.id),
+    userId: session.user.id,
+    status: 'SUCCESS',
+    ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
+    userAgent: req.headers.get('user-agent') || 'unknown',
+    details: {
+      nom: etablissement.nom,
+      code: etablissement.code,
+      secteur: etablissement.secteur
+    }
   });
 
   return NextResponse.json({

@@ -2,6 +2,7 @@ import { safeResolvePath, sanitizeFilename } from '@/lib/utils/safe-path';
 import { join } from 'path';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { auditLog } from '@/lib/logger';
 
 const BACKUP_DIR = process.env.BACKUP_DIR || join(process.cwd(), 'backups');
 
@@ -44,6 +45,10 @@ export async function GET(
   }
 
   const fileBuffer = await import('fs').then(fs => fs.readFileSync(filePath));
+  
+  // Audit log
+  auditLog('DOWNLOAD_BACKUP', 'System', safeFilename, parseInt(session.user.id));
+
   return new Response(fileBuffer, {
     headers: {
       'Content-Type': 'application/octet-stream',
@@ -78,5 +83,9 @@ export async function DELETE(
   }
 
   unlinkSync(filePath);
+  
+  // Audit log
+  auditLog('DELETE_BACKUP', 'System', safeFilename, parseInt(session.user.id));
+
   return Response.json({ success: true });
 }

@@ -24,7 +24,8 @@ import {
   X,
   FileJson,
   Database,
-  Monitor
+  Monitor,
+  Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -82,7 +83,26 @@ interface SystemLog {
   details?: Record<string, unknown>;
 }
 
-type TabType = 'activity' | 'system';
+interface AuditLog {
+  id: number;
+  action: string;
+  resourceType: string | null;
+  resourceId: string | null;
+  userId: number | null;
+  details: string | null;
+  previousValue: string | null;
+  newValue: string | null;
+  ipAddress: string | null;
+  success: boolean;
+  user: {
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+  createdAt: string;
+}
+
+type TabType = 'activity' | 'system' | 'audit';
 
 // Styles des actions
 const ACTION_STYLES: Record<string, string> = {
@@ -121,6 +141,7 @@ export default function AdminLogsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('activity');
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [systemLogs, setSystemLogs] = useState<SystemLog[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -145,16 +166,31 @@ export default function AdminLogsPage() {
     source: '',
     dateFrom: '',
     dateTo: '',
+    resourceType: '',
+    success: '',
   });
   
-  // Stats
-  const [, setStats] = useState<any>(null);
+  const resetFilters = () => {
+    setFilters({
+      search: '',
+      action: '',
+      entity: '',
+      userId: '',
+      level: '',
+      source: '',
+      dateFrom: '',
+      dateTo: '',
+      resourceType: '',
+      success: '',
+    });
+    setPage(1);
+  };
   
   // Last update time
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   
   // Selected Log for Modal
-  const [selectedLog, setSelectedLog] = useState<ActivityLog | SystemLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<ActivityLog | SystemLog | AuditLog | null>(null);
 
   // Vérifier authentification
   useEffect(() => {
@@ -202,6 +238,21 @@ export default function AdminLogsPage() {
           setTotalPages(data.pagination?.totalPages || 1);
           setTotal(data.pagination?.total || 0);
           setStats(data.stats);
+        }
+      } else if (activeTab === 'audit') {
+        if (filters.search) params.set('search', filters.search);
+        if (filters.action) params.set('action', filters.action);
+        if (filters.resourceType) params.set('resourceType', filters.resourceType);
+        if (filters.success) params.set('success', filters.success);
+        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+        if (filters.dateTo) params.set('dateTo', filters.dateTo);
+        
+        const res = await fetch(`/api/audit?${params}`);
+        if (res.ok) {
+          const data = await res.json();
+          setAuditLogs(data.data || []);
+          setTotalPages(data.pagination?.totalPages || 1);
+          setTotal(data.pagination?.total || 0);
         }
       }
     } catch (error) {
@@ -397,6 +448,31 @@ export default function AdminLogsPage() {
               <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
             </button>
             
+            {isSuperAdmin && activeTab === 'audit' && (
+              <button
+                onClick={async () => {
+                  if (confirm(t('confirm_cleanup'))) {
+                    try {
+                      const res = await fetch('/api/admin/system/cleanup-logs', { method: 'POST' });
+                      const data = await res.json();
+                      if (res.ok) {
+                        toast.success(data.message);
+                        loadLogs();
+                      } else {
+                        toast.error(data.error);
+                      }
+                    } catch (error) {
+                      toast.error('Erreur lors du nettoyage');
+                    }
+                  }
+                }}
+                className="flex items-center gap-2 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-sm font-medium transition-colors"
+              >
+                <Trash2 size={16} />
+                {t('cleanup')}
+              </button>
+            )}
+
             {activeTab === 'activity' && (
               <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                 <button
@@ -444,6 +520,20 @@ export default function AdminLogsPage() {
             >
               <Server size={18} />
               {t('system_logs')}
+            </button>
+          )}
+
+          {isSuperAdmin && (
+            <button
+              onClick={() => changeTab('audit')}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
+                activeTab === 'audit'
+                  ? 'bg-gov-green text-white shadow-lg shadow-gov-green/30'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+              }`}
+            >
+              <Database size={18} />
+              {t('security_audit')}
             </button>
           )}
         </div>
@@ -506,6 +596,62 @@ export default function AdminLogsPage() {
                         <option value="Evenement">{t('entities.Evenement')}</option>
                         <option value="Actualite">{t('entities.Actualite')}</option>
                         <option value="Etablissement">{t('entities.Etablissement')}</option>
+                      </select>
+                    </div>
+                  </>
+                ) : activeTab === 'audit' ? (
+                  <>
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">{t('search')}</label>
+                      <div className="relative">
+                        <Search className={`absolute ${locale === 'ar' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-gray-400`} size={16} />
+                        <input
+                          type="text"
+                          placeholder={`${t('user')}, ${t('details')}...`}
+                          value={filters.search}
+                          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                          className={`w-full ${locale === 'ar' ? 'pr-9 pl-3' : 'pl-9 pr-3'} py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-sm text-gray-900 dark:text-white`}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">{t('action')}</label>
+                      <select
+                        value={filters.action}
+                        onChange={(e) => setFilters({ ...filters, action: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-sm text-gray-900 dark:text-white"
+                      >
+                        <option value="">{t('all_actions')}</option>
+                        {Object.keys(ACTION_STYLES).map(key => (
+                            <option key={key} value={key}>{t(`actions.${key}`)}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">{t('resource')}</label>
+                      <select
+                        value={filters.resourceType}
+                        onChange={(e) => setFilters({ ...filters, resourceType: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-sm text-gray-900 dark:text-white"
+                      >
+                        <option value="">{t('all')}</option>
+                        <option value="User">{t('entities.User')}</option>
+                        <option value="Reclamation">{t('entities.Reclamation')}</option>
+                        <option value="Evenement">{t('entities.Evenement')}</option>
+                        <option value="Actualite">{t('entities.Actualite')}</option>
+                        <option value="Etablissement">{t('entities.Etablissement')}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">{t('status')}</label>
+                      <select
+                        value={filters.success}
+                        onChange={(e) => setFilters({ ...filters, success: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg text-sm text-gray-900 dark:text-white"
+                      >
+                        <option value="">{t('all')}</option>
+                        <option value="true">{t('success')}</option>
+                        <option value="false">{t('failure')}</option>
                       </select>
                     </div>
                   </>
@@ -573,7 +719,7 @@ export default function AdminLogsPage() {
         {/* Table */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
-            {activeTab === 'activity' ? (
+            {activeTab === 'activity' && (
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
@@ -647,7 +793,9 @@ export default function AdminLogsPage() {
                   })}
                 </tbody>
               </table>
-            ) : (
+            )}
+
+            {activeTab === 'system' && (
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
@@ -694,10 +842,83 @@ export default function AdminLogsPage() {
                 </tbody>
               </table>
             )}
+
+            {activeTab === 'audit' && (
+              <table className="w-full">
+                <thead className="bg-gray-50 dark:bg-gray-700/50">
+                  <tr>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('date')}</th>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('user')}</th>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('action_label')}</th>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('resource')}</th>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('status')}</th>
+                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>{t('details')}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  {auditLogs.map((log) => {
+                    const actionInfo = getActionInfo(log.action);
+                    return (
+                      <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <Clock size={14} className="text-gray-400 shrink-0" />
+                            <span className="text-gray-600 dark:text-gray-400 font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          {log.user ? (
+                            <div className="flex items-center gap-2">
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                                {log.user.name?.[0]}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{log.user.name}</p>
+                                <p className="text-[10px] text-gray-500 truncate">{log.user.email}</p>
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400 italic font-medium">{t('system_user')}</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
+                            {actionInfo.label}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-sm">
+                            <span className="text-gray-900 dark:text-gray-200 font-medium">{t(`entities.${log.resourceType}`, { fallback: log.resourceType })}</span>
+                            {log.resourceId && (
+                              <span className="text-gray-400 ml-1 font-mono text-xs">#{log.resourceId}</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${log.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {log.success ? <Check size={10} /> : <X size={10} />}
+                            {log.success ? t('success') : t('failure')}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => setSelectedLog(log)}
+                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                          >
+                            {t('view_details')}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
 
           {((activeTab === 'activity' && activityLogs.length === 0) || 
-            (activeTab === 'system' && systemLogs.length === 0)) && (
+            (activeTab === 'system' && systemLogs.length === 0) ||
+            (activeTab === 'audit' && auditLogs.length === 0)) && (
             <div className="text-center py-20">
               <FileText className="w-20 h-20 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
               <p className="text-gray-500 dark:text-gray-400 font-bold text-lg">{t('no_logs')}</p>
@@ -840,6 +1061,30 @@ export default function AdminLogsPage() {
                     </div>
                 )}
 
+                {/* Valeurs Audit (Uniquement pour AuditLog) */}
+                {'previousValue' in selectedLog && (selectedLog.previousValue || selectedLog.newValue) && (
+                    <div className="space-y-4">
+                        <h4 className={`text-sm font-black text-gray-900 dark:text-white flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                            <History size={18} className="text-amber-500" />
+                            {t('changes_comparison') || 'Comparaison des changements'}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">{t('previous_value') || 'ANCIENNE VALEUR'}</p>
+                                <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/30 font-mono text-xs overflow-auto max-h-40">
+                                    <pre className="whitespace-pre-wrap break-all">{selectedLog.previousValue || t('none') || 'Aucune'}</pre>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-[10px] font-black text-green-500 uppercase tracking-widest">{t('new_value') || 'NOUVELLE VALEUR'}</p>
+                                <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-xl border border-green-100 dark:border-green-900/30 font-mono text-xs overflow-auto max-h-40">
+                                    <pre className="whitespace-pre-wrap break-all">{selectedLog.newValue || t('none') || 'Aucune'}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Détails JSON */}
                 <div>
                    <h4 className={`text-sm font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
@@ -847,11 +1092,24 @@ export default function AdminLogsPage() {
                       {t('technical_data')}
                    </h4>
                    <div className="bg-slate-900 rounded-2xl p-6 font-mono text-xs overflow-x-auto border-2 border-slate-800 shadow-2xl max-h-80 overflow-y-auto" dir="ltr">
-                        {selectedLog.details && Object.keys(selectedLog.details).length > 0 ? (
-                           <JSONValue value={selectedLog.details} />
-                        ) : (
-                           <span className="text-slate-500 italic">{t('no_tech_data')}</span>
-                        )}
+                        {(() => {
+                            if (!selectedLog.details) return <span className="text-slate-500 italic">{t('no_tech_data')}</span>;
+                            
+                            let detailsObj = selectedLog.details;
+                            if (typeof detailsObj === 'string') {
+                                try {
+                                    detailsObj = JSON.parse(detailsObj);
+                                } catch {
+                                    return <pre className="text-slate-300">{detailsObj}</pre>;
+                                }
+                            }
+                            
+                            if (Object.keys(detailsObj).length === 0) {
+                                return <span className="text-slate-500 italic">{t('no_tech_data')}</span>;
+                            }
+                            
+                            return <JSONValue value={detailsObj} />;
+                        })()}
                    </div>
                 </div>
 

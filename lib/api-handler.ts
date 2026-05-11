@@ -143,6 +143,104 @@ export function withErrorHandler(handler: ApiHandler): (req: NextRequest, contex
 }
 
 /**
+ * Wrapper pour l'audit automatique des actions administratives.
+ * Doit être utilisé APRÈS withPermission pour avoir accès à la session.
+ */
+export function withAudit(
+  action: string, 
+  resource: string,
+  metadataExtractor?: (req: NextRequest, responseData?: any, body?: any) => { 
+    resourceId?: string | number; 
+    details?: any; 
+    previousValue?: any; 
+    newValue?: any 
+  }
+) {
+  return (handler: ApiHandler): ApiHandler => {
+    return async (req: NextRequest, context: any) => {
+      // Cloner la requête pour pouvoir lire le body sans affecter le handler
+      let body: any = null;
+      try {
+        const clonedReq = req.clone();
+        body = await clonedReq.json().catch(() => null);
+      } catch {}
+
+      try {
+        const response = await handler(req, context);
+        
+        // Si la réponse est un succès (status 2xx) et qu'on a un utilisateur
+        if (response.ok && context.session?.user?.id) {
+          const { auditLog } = await import('./logger');
+          
+          let responseData: any = null;
+          try {
+            const clonedRes = response.clone();
+            responseData = await clonedRes.json().catch(() => null);
+          } catch {}
+
+          // Extraction des métadonnées
+          const meta = metadataExtractor ? metadataExtractor(req, responseData, body) : {};
+          
+          let resourceId = String(meta.resourceId || context.params?.id || 'N/A');
+
+          // Capture des valeurs depuis responseData._audit si présent (pattern interne)
+          const previousValue = meta.previousValue || responseData?._audit?.previousValue || null;
+          const newValue = meta.newValue || responseData?._audit?.newValue || null;
+          const details = {
+            ...(meta.details || {}),
+            method: req.method,
+            url: req.url,
+            ...(responseData?._audit?.details || {})
+          };
+
+          // Exécution asynchrone
+          auditLog({
+            action,
+            resource,
+            resourceId,
+            userId: context.session.user.id,
+            status: 'SUCCESS',
+            ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
+            userAgent: req.headers.get('user-agent') || 'unknown',
+            details,
+            previousValue,
+            newValue
+          }).catch(err => console.error('Audit failed:', err));
+        }
+
+        return response;
+      } catch (error: any) {
+        // En cas d'erreur, on logue l'échec
+        if (context.session?.user?.id) {
+          const { auditLog } = await import('./logger');
+          
+          const meta = metadataExtractor ? metadataExtractor(req, null, body) : {};
+          const resourceId = String(meta.resourceId || context.params?.id || 'N/A');
+
+          auditLog({
+            action,
+            resource,
+            resourceId,
+            userId: context.session.user.id,
+            status: 'FAILURE',
+            ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
+            userAgent: req.headers.get('user-agent') || 'unknown',
+            details: {
+              ...(meta.details || {}),
+              method: req.method,
+              url: req.url,
+              error: error.message || 'Unknown error'
+            }
+          }).catch(err => console.error('Audit failure log failed:', err));
+        }
+        
+        throw error;
+      }
+    };
+  };
+}
+
+/**
  * Helper pour créer une réponse de succès standardisée
  */
 export function successResponse<T>(data: T, message?: string, status: number = 200): NextResponse {

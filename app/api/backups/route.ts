@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db';
 import { writeFile, readdir, stat, unlink } from 'fs/promises';
 import { join } from 'path';
 import { safeResolvePath } from '@/lib/utils/safe-path';
+import { auditLog } from '@/lib/logger';
 
 // Dossier de stockage des backups
 // Utilise /tmp/medaction-backups pour garantir l'accès en écriture dans tous les environnements Docker
@@ -139,6 +140,10 @@ export async function POST(request: NextRequest) {
       }
     });
     
+    // Audit log
+    auditLog('CREATE_BACKUP', 'System', fileName, parseInt(session.user.id), {
+      stats: backupData.stats
+    });
 
     return NextResponse.json({ 
       message: 'Backup créé avec succès',

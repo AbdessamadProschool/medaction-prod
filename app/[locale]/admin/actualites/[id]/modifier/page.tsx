@@ -50,7 +50,8 @@ export default function ModifierActualitePage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
-  const t = useTranslations('news_page');
+  const tNewsPage = useTranslations('admin.news_page');
+  const t = useTranslations('admin.news');
   const tCommon = useTranslations('common');
   
   const [actualite, setActualite] = useState<Actualite | null>(null);
@@ -93,7 +94,7 @@ export default function ModifierActualitePage() {
       });
     } catch (error) {
       console.error('Erreur chargement actualité:', error);
-      toast.error('Erreur lors du chargement de l\'actualité');
+      toast.error(t('actions.update_error'));
       router.push('/admin/actualites');
     } finally {
       setLoading(false);
@@ -128,23 +129,23 @@ export default function ModifierActualitePage() {
         if (result.error?.details) {
           result.error.details.forEach((d: any) => toast.error(d.message));
         } else {
-          toast.error(result.error?.message || 'Erreur lors de la sauvegarde');
+          toast.error(result.error?.message || t('actions.update_error'));
         }
         return;
       }
       
-      toast.success('Actualité mise à jour avec succès');
+      toast.success(t('actions.update_success'));
       router.push('/admin/actualites');
     } catch (error) {
       console.error('Erreur sauvegarde:', error);
-      toast.error('Erreur lors de la sauvegarde');
+      toast.error(t('actions.update_error'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) return;
+    if (!confirm(tNewsPage('messages.delete_confirm') || 'Êtes-vous sûr de vouloir supprimer cette actualité ?')) return;
     
     setDeleting(true);
     try {
@@ -152,14 +153,14 @@ export default function ModifierActualitePage() {
       
       if (!res.ok) {
         const result = await res.json();
-        toast.error(result.error?.message || 'Erreur lors de la suppression');
+        toast.error(result.error?.message || t('actions.delete_error'));
         return;
       }
       
-      toast.success('Actualité supprimée');
+      toast.success(t('actions.delete_success'));
       router.push('/admin/actualites');
     } catch (error) {
-      toast.error('Erreur lors de la suppression');
+      toast.error(t('actions.delete_error'));
     } finally {
       setDeleting(false);
     }
@@ -174,11 +175,11 @@ export default function ModifierActualitePage() {
       });
       
       if (res.ok) {
-        toast.success(validate ? 'Actualité validée' : 'Actualité rejetée');
+        toast.success(validate ? t('actions.validate_success') : t('actions.reject_success'));
         fetchActualite();
       }
     } catch (error) {
-      toast.error('Erreur lors de la validation');
+      toast.error(t('actions.update_error'));
     }
   };
 
@@ -198,9 +199,9 @@ export default function ModifierActualitePage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900">{t('detail.not_found')}</h2>
+          <h2 className="text-xl font-bold text-gray-900">{tNewsPage('messages.not_found') || 'Actualité non trouvée'}</h2>
           <Link href="/admin/actualites" className="text-emerald-600 hover:underline mt-4 inline-block">
-            {t('detail.back_to_list')}
+            {t('back_list')}
           </Link>
         </div>
       </div>
@@ -219,7 +220,7 @@ export default function ModifierActualitePage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Modifier l'actualité</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('edit_title')}</h1>
             <p className="text-gray-500">ID: {id}</p>
           </div>
         </div>
@@ -233,14 +234,14 @@ export default function ModifierActualitePage() {
                 className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
               >
                 <CheckCircle className="w-4 h-4" />
-                Valider
+                {t('actions.validate')}
               </button>
               <button
                 onClick={() => handleValidate(false)}
                 className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
                 <XCircle className="w-4 h-4" />
-                Rejeter
+                {t('actions.reject')}
               </button>
             </>
           )}
@@ -252,7 +253,7 @@ export default function ModifierActualitePage() {
         <div className="flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-blue-600" />
-            <span>Créé le: {new Date(actualite.createdAt).toLocaleDateString('fr-FR')}</span>
+            <span>{t('info_card.created_at')} {new Date(actualite.createdAt).toLocaleDateString('fr-FR')}</span>
           </div>
           {actualite.etablissement && (
             <div className="flex items-center gap-2">
@@ -263,7 +264,7 @@ export default function ModifierActualitePage() {
           {actualite.createdByUser && (
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-blue-600" />
-              <span>Par: {actualite.createdByUser.prenom} {actualite.createdByUser.nom}</span>
+              <span>{t('info_card.by')} {actualite.createdByUser.prenom} {actualite.createdByUser.nom}</span>
             </div>
           )}
           <div className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -271,7 +272,7 @@ export default function ModifierActualitePage() {
             actualite.isValide ? 'bg-blue-100 text-blue-700' :
             'bg-amber-100 text-amber-700'
           }`}>
-            {actualite.isPublie ? 'Publiée' : actualite.isValide ? 'Validée' : 'En attente'}
+            {actualite.isPublie ? t('form.is_publie') : actualite.isValide ? t('form.is_valide') : tNewsPage('statuses.EN_ATTENTE_VALIDATION')}
           </div>
         </div>
       </div>
@@ -282,7 +283,7 @@ export default function ModifierActualitePage() {
           {/* Titre */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Titre *
+              {t('form.title')} *
             </label>
             <input
               type="text"
@@ -298,7 +299,7 @@ export default function ModifierActualitePage() {
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description (chapeau)
+              {t('form.description')}
             </label>
             <textarea
               value={formData.description}
@@ -312,7 +313,7 @@ export default function ModifierActualitePage() {
           {/* Contenu */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contenu *
+              {t('form.content')} *
             </label>
             <textarea
               value={formData.contenu}
@@ -328,14 +329,14 @@ export default function ModifierActualitePage() {
             {/* Catégorie */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Catégorie
+                {t('form.category')}
               </label>
               <select
                 value={formData.categorie}
                 onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               >
-                <option value="">-- Sélectionner --</option>
+                <option value="">{t('form.select_category') || '-- Sélectionner --'}</option>
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
@@ -345,14 +346,14 @@ export default function ModifierActualitePage() {
             {/* Tags */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tags (séparés par virgule)
+                {t('form.tags')}
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                placeholder="tag1, tag2, tag3"
+                placeholder={t('form.tags_placeholder')}
               />
             </div>
           </div>
@@ -366,7 +367,7 @@ export default function ModifierActualitePage() {
                 onChange={(e) => setFormData({ ...formData, isValide: e.target.checked })}
                 className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <span className="text-sm font-medium text-gray-700">Validée</span>
+              <span className="text-sm font-medium text-gray-700">{t('form.is_valide')}</span>
             </label>
             
             <label className="flex items-center gap-2 cursor-pointer">
@@ -376,7 +377,7 @@ export default function ModifierActualitePage() {
                 onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
                 className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <span className="text-sm font-medium text-gray-700">Publiée</span>
+              <span className="text-sm font-medium text-gray-700">{t('form.is_publie')}</span>
             </label>
           </div>
         </div>
@@ -390,7 +391,7 @@ export default function ModifierActualitePage() {
             className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
           >
             {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-            Supprimer
+            {t('actions.delete')}
           </button>
           
           <div className="flex items-center gap-3">
@@ -398,7 +399,7 @@ export default function ModifierActualitePage() {
               href="/admin/actualites"
               className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Annuler
+              {t('actions.cancel')}
             </Link>
             <button
               type="submit"
@@ -406,7 +407,7 @@ export default function ModifierActualitePage() {
               className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Enregistrer
+              {t('actions.save')}
             </button>
           </div>
         </div>

@@ -32,7 +32,8 @@ import { Link } from '@/i18n/navigation';
 
 
 export default function NouveauEventPage() {
-  const t = useTranslations('admin.events');
+  const t = useTranslations('admin.events_page.create_modal');
+  const tForm = useTranslations('admin.events_page.create_modal.form');
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -138,7 +139,7 @@ export default function NouveauEventPage() {
       // Parse tags
       const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-      const res = await fetch('/api/admin/evenements', {
+      const res = await fetch('/api/evenements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -185,7 +186,7 @@ export default function NouveauEventPage() {
             className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 transition-colors"
           >
             <ArrowLeft size={18} />
-            <span>Retour aux événements</span>
+            <span>{t('back_list')}</span>
           </Link>
           
           <div className="flex items-start justify-between">
@@ -194,10 +195,10 @@ export default function NouveauEventPage() {
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
-                {t('new_title')}
+                {t('title_new')}
               </h1>
               <p className="text-gray-500">
-                {t('new_subtitle')}
+                {t('subtitle_new')}
               </p>
             </div>
           </div>
@@ -210,9 +211,9 @@ export default function NouveauEventPage() {
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-emerald-600" />
-                Visuel de l'événement
+                {t('sections.visual')}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">Une image attractive augmente la participation</p>
+              <p className="text-sm text-gray-500 mt-1">{t('sections.visual_hint')}</p>
             </div>
             
             <div className="p-6">
@@ -221,7 +222,7 @@ export default function NouveauEventPage() {
                   <img src={previewUrl} alt="Prévisualisation" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                      <span className="text-white text-sm font-medium">Image sélectionnée</span>
+                      <span className="text-white text-sm font-medium">{tForm('image_selected')}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -230,7 +231,7 @@ export default function NouveauEventPage() {
                         }}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                       >
-                        Supprimer
+                        {tForm('image_delete')}
                       </button>
                     </div>
                   </div>
@@ -240,8 +241,8 @@ export default function NouveauEventPage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <ImageIcon className="w-8 h-8 text-blue-600" />
                   </div>
-                  <p className="text-gray-700 font-medium mb-1">Cliquez pour ajouter une image</p>
-                  <p className="text-gray-400 text-sm">PNG, JPG jusqu'à 5MB</p>
+                  <p className="text-gray-700 font-medium mb-1">{tForm('upload_text')}</p>
+                  <p className="text-gray-400 text-sm">{tForm('upload_hint')}</p>
                   <input 
                     type="file" 
                     className="hidden"
@@ -258,7 +259,7 @@ export default function NouveauEventPage() {
             <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50/50 to-transparent">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <AlignLeft className="w-5 h-5 text-blue-600" />
-                Informations Générales
+                {t('sections.info')}
               </h2>
             </div>
             
@@ -266,12 +267,12 @@ export default function NouveauEventPage() {
               {/* Titre */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Titre de l'événement <span className="text-red-500">*</span>
+                  {tForm('title_label')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register('titre')}
                   type="text"
-                  placeholder="Ex: Festival du Printemps 2025"
+                  placeholder={tForm('title_placeholder')}
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg font-medium placeholder:text-gray-300"
                 />
                 {errors.titre && (
@@ -282,12 +283,12 @@ export default function NouveauEventPage() {
               {/* Description */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description détaillée <span className="text-red-500">*</span>
+                  {tForm('desc_label')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   {...register('description')}
                   rows={5}
-                  placeholder="Décrivez le programme, les objectifs, les invités, les activités prévues..."
+                  placeholder={tForm('desc_placeholder')}
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 leading-relaxed"
                 />
                 {errors.description && (
@@ -299,7 +300,7 @@ export default function NouveauEventPage() {
                 {/* Établissement */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Établissement organisateur <span className="text-red-500">*</span>
+                    {tForm('establishment_label')} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -307,7 +308,7 @@ export default function NouveauEventPage() {
                       {...register('etablissementId')}
                       className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white appearance-none"
                     >
-                      <option value="">Sélectionner un établissement...</option>
+                      <option value="">{tForm('select_placeholder')}</option>
                       {etablissements.map(e => (
                         <option key={e.id} value={e.id}>
                           {locale === 'ar' ? (e.nomArabe || e.nom) : e.nom}
@@ -323,7 +324,7 @@ export default function NouveauEventPage() {
                 {/* Type */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Type d'événement <span className="text-red-500">*</span>
+                    {tForm('type_label')} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -331,7 +332,7 @@ export default function NouveauEventPage() {
                       {...register('typeCategorique')}
                       className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white appearance-none"
                     >
-                      <option value="">Sélectionner un type...</option>
+                      <option value="">{tForm('select_placeholder')}</option>
                       <option value="CULTUREL">🎭 Culturel</option>
                       <option value="SPORTIF">⚽ Sportif</option>
                       <option value="SOCIAL">🤝 Social</option>
@@ -349,12 +350,12 @@ export default function NouveauEventPage() {
               {/* Tags */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Tags <span className="text-gray-400 font-normal">(séparés par virgule)</span>
+                  {tForm('tags')} <span className="text-gray-400 font-normal">{tForm('tags_hint')}</span>
                 </label>
                 <input
                   {...register('tags')}
                   type="text"
-                  placeholder="Ex: jeunesse, sport, culture, famille"
+                  placeholder={tForm('tags_placeholder')}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none placeholder:text-gray-300"
                 />
               </div>
@@ -366,7 +367,7 @@ export default function NouveauEventPage() {
             <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-amber-50/50 to-transparent">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-amber-600" />
-                Date, Heure et Lieu
+                {t('sections.date_location')}
               </h2>
             </div>
             
@@ -375,7 +376,7 @@ export default function NouveauEventPage() {
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Date de début <span className="text-red-500">*</span>
+                    {tForm('start_date')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('dateDebut')}
@@ -389,7 +390,7 @@ export default function NouveauEventPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Date de fin <span className="text-gray-400 font-normal">(optionnel)</span>
+                    {tForm('end_date')} <span className="text-gray-400 font-normal">{tForm('optional')}</span>
                   </label>
                   <input
                     {...register('dateFin')}
@@ -404,7 +405,7 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <Clock className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Heure de début
+                    {tForm('start_time')}
                   </label>
                   <input
                     {...register('heureDebut')}
@@ -416,7 +417,7 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <Clock className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Heure de fin
+                    {tForm('end_time')}
                   </label>
                   <input
                     {...register('heureFin')}
@@ -431,24 +432,24 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <MapPin className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Lieu / Salle
+                    {tForm('location_label')}
                   </label>
                   <input
                     {...register('lieu')}
                     type="text"
-                    placeholder="Ex: Grande Salle de Conférence"
+                    placeholder={tForm('location_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Adresse complète
+                    {tForm('address')}
                   </label>
                   <input
                     {...register('adresse')}
                     type="text"
-                    placeholder="Ex: Avenue Mohammed V, Médiouna"
+                    placeholder={tForm('address_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
                   />
                 </div>
@@ -456,12 +457,12 @@ export default function NouveauEventPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Quartier / Douar
+                  {tForm('neighborhood')}
                 </label>
                 <input
                   {...register('quartierDouar')}
                   type="text"
-                  placeholder="Ex: Hay Mohammadi"
+                  placeholder={tForm('neighborhood_placeholder')}
                   className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
                 />
               </div>
@@ -473,9 +474,9 @@ export default function NouveauEventPage() {
             <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50/50 to-transparent">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <User className="w-5 h-5 text-purple-600" />
-                Organisateur & Contact
+                {t('sections.organizer')}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">Informations de contact pour les citoyens</p>
+              <p className="text-sm text-gray-500 mt-1">{t('sections.organizer_hint')}</p>
             </div>
             
             <div className="p-6">
@@ -483,12 +484,12 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <User className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Nom de l'organisateur
+                    {tForm('organizer_name')}
                   </label>
                   <input
                     {...register('organisateur')}
                     type="text"
-                    placeholder="Ex: Association Jeunesse Médiouna"
+                    placeholder={tForm('organizer_name_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
                   />
                 </div>
@@ -496,12 +497,12 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <Phone className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Téléphone de contact
+                    {tForm('organizer_phone')}
                   </label>
                   <input
                     {...register('contactOrganisateur')}
                     type="tel"
-                    placeholder="Ex: 0522 123 456"
+                    placeholder={tForm('organizer_phone_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
                   />
                 </div>
@@ -509,12 +510,12 @@ export default function NouveauEventPage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <Mail className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Email de contact
+                    {tForm('organizer_email')}
                   </label>
                   <input
                     {...register('emailContact')}
                     type="email"
-                    placeholder="Ex: contact@event.ma"
+                    placeholder={tForm('organizer_email_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
                   />
                   {errors.emailContact && (
@@ -530,7 +531,7 @@ export default function NouveauEventPage() {
             <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50/50 to-transparent">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Users className="w-5 h-5 text-green-600" />
-                Participation & Inscription
+                {t('sections.participation')}
               </h2>
             </div>
             
@@ -538,13 +539,13 @@ export default function NouveauEventPage() {
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Capacité maximale (personnes)
+                    {tForm('max_capacity')}
                   </label>
                   <input
                     {...register('capaciteMax')}
                     type="number"
                     min="0"
-                    placeholder="Ex: 500"
+                    placeholder={tForm('capacity_placeholder')}
                     className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none placeholder:text-gray-300"
                   />
                 </div>
@@ -557,8 +558,8 @@ export default function NouveauEventPage() {
                       className="w-5 h-5 rounded border-gray-300 text-green-600 mt-0.5"
                     />
                     <div>
-                      <span className="font-medium text-gray-800 block">Ouvrir les inscriptions</span>
-                      <span className="text-sm text-gray-500">Permet aux citoyens de s'inscrire en ligne</span>
+                      <span className="font-medium text-gray-800 block">{tForm('open_registrations')}</span>
+                      <span className="text-sm text-gray-500">{tForm('open_registrations_hint')}</span>
                     </div>
                   </label>
                 </div>
@@ -568,7 +569,7 @@ export default function NouveauEventPage() {
                 <div className="animate-in slide-in-from-top-2 duration-200">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <LinkIcon className="w-4 h-4 inline mr-1 text-gray-400" />
-                    Lien d'inscription externe
+                    {tForm('registration_link')}
                   </label>
                   <input
                     {...register('lienInscription')}
@@ -590,7 +591,7 @@ export default function NouveauEventPage() {
               href="/admin/evenements"
               className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
             >
-              {t('form.cancel')}
+              {t('buttons.cancel')}
             </Link>
             
             <button
@@ -601,12 +602,12 @@ export default function NouveauEventPage() {
               {loading ? (
                 <>
                   <Loader2 size={22} className="animate-spin" />
-                  {t('form.creating')}
+                  {t('buttons.saving')}
                 </>
               ) : (
                 <>
                   <Save size={22} />
-                  {t('form.create_btn')}
+                  {t('buttons.create')}
                 </>
               )}
             </button>

@@ -1,10 +1,11 @@
-﻿import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
 import { SecurityValidation } from '@/lib/security/validation';
-import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withErrorHandler, successResponse, withAudit } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
+import { auditLog } from '@/lib/logger';
 
 // Schéma de mise à jour sécurisé - INTERDIT les changements de statut directs
 const updateReclamationSchema = z.object({
@@ -69,11 +70,15 @@ export const GET = withErrorHandler(async (
 });
 
 // PATCH - Mise à jour d'une réclamation (propriétaire seulement, champs limités)
-export const PATCH = withErrorHandler(async (
+export const PATCH = withAudit('UPDATE', 'Reclamation', (req, res, body) => ({
+  resourceId: res?.data?.id,
+  previousValue: res?.data?._audit?.previousValue,
+  newValue: res?.data?._audit?.newValue
+}))(withErrorHandler(async (
   request: Request,
-  { params: _p }: { params: Promise<{ id: string }> }
+  context: any
 ) => {
-  const params = await _p;
+  const params = await context.params;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -88,10 +93,12 @@ export const PATCH = withErrorHandler(async (
   const userId = parseInt(session.user.id);
   const role = session.user.role;
 
+  // On injecte la session dans le contexte pour withAudit
+  context.session = session;
+
   // Récupérer la réclamation
   const reclamation = await prisma.reclamation.findUnique({
     where: { id },
-    select: { id: true, userId: true, statut: true }
   });
 
   if (!reclamation) {
@@ -112,14 +119,13 @@ export const PATCH = withErrorHandler(async (
     throw new ForbiddenError("Vous ne pouvez modifier que vos propres réclamations");
   }
 
-  // Bloquer modification si déjà acceptée/traitée (sauf Admin peut-être ?)
+  // Bloquer modification si déjà acceptée/traitée
   if (!isAdmin && reclamation.statut && ['ACCEPTEE', 'AFFECTEE', 'EN_COURS', 'RESOLUE', 'REJETEE'].includes(reclamation.statut)) {
     throw new ForbiddenError('Impossible de modifier une réclamation déjà traitée');
   }
 
   const body = await request.json();
   
-  // Détecter tentative de manipulation de statut (SUSPICIOUS)
   if (body.statut) {
     SecurityValidation.logSecurityEvent('SUSPICIOUS_ACTIVITY', `Attempt to change status directly on PATCH /reclamations/${id}`);
     throw new ForbiddenError('Modification du statut non autorisée via cet endpoint');
@@ -135,15 +141,21 @@ export const PATCH = withErrorHandler(async (
     data: validation.data,
   });
 
-  return successResponse(updated, 'Réclamation mise à jour avec succès');
-});
+  return successResponse({
+    ...updated,
+    _audit: {
+      previousValue: reclamation,
+      newValue: updated
+    }
+  }, 'Réclamation mise à jour avec succès');
+}));
 
 // DELETE - Supprimer une réclamation (propriétaire si non traitée, ou Admin)
-export const DELETE = withErrorHandler(async (
+export const DELETE = withAudit('DELETE', 'Reclamation')(withErrorHandler(async (
   request: Request,
-  { params: _p }: { params: Promise<{ id: string }> }
+  context: any
 ) => {
-  const params = await _p;
+  const params = await context.params;
   const session = await getServerSession(authOptions);
   
   if (!session?.user) {
@@ -159,9 +171,12 @@ export const DELETE = withErrorHandler(async (
   const role = session.user.role;
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(role);
 
+  // On injecte la session dans le contexte pour withAudit
+  context.session = session;
+
   const reclamation = await prisma.reclamation.findUnique({
     where: { id },
-    select: { id: true, userId: true, statut: true }
+    select: { id: true, userId: true, statut: true, titre: true }
   });
 
   if (!reclamation) {
@@ -174,7 +189,6 @@ export const DELETE = withErrorHandler(async (
     throw new ForbiddenError('Accès refusé pour la suppression');
   }
 
-  // Si propriétaire, ne peut supprimer que si non traitée
   const isTraitee = reclamation.statut && ['ACCEPTEE', 'AFFECTEE', 'EN_COURS', 'RESOLUE'].includes(reclamation.statut);
   
   if (!isAdmin && isTraitee) {
@@ -184,4 +198,4 @@ export const DELETE = withErrorHandler(async (
   await prisma.reclamation.delete({ where: { id } });
 
   return successResponse(null, 'Réclamation supprimée avec succès');
-});
+}));

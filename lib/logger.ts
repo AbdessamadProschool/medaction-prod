@@ -179,6 +179,47 @@ export function createLogger(context: string, options?: Omit<LoggerOptions, 'con
   return new Logger({ context, ...options });
 }
 
+/**
+ * Prune old audit logs based on retention period
+ * @param retentionMonths Number of months to keep logs
+ */
+export async function cleanupAuditLogs(retentionMonths: number = 12) {
+  if (typeof window !== 'undefined') return { success: false, error: 'Server-side only' };
+
+  try {
+    const { prisma } = await import('@/lib/db');
+    const cutOffDate = new Date();
+    cutOffDate.setMonth(cutOffDate.getMonth() - retentionMonths);
+
+    const result = await prisma.auditLog.deleteMany({
+      where: {
+        createdAt: {
+          lt: cutOffDate
+        }
+      }
+    });
+
+    // Log the cleanup action itself
+    await auditLog({
+      action: 'SYSTEM_CLEANUP',
+      resource: 'AUDIT_LOG',
+      resourceId: 'all',
+      userId: 0, // System action
+      details: {
+        retentionMonths,
+        deletedCount: result.count,
+        cutOffDate: cutOffDate.toISOString()
+      },
+      status: 'SUCCESS'
+    });
+
+    return { success: true, deletedCount: result.count };
+  } catch (error) {
+    console.error('Failed to cleanup audit logs:', error);
+    return { success: false, error };
+  }
+}
+
 // API Request logger middleware helper
 export function logApiRequest(
   method: string,
@@ -199,21 +240,81 @@ export function logApiRequest(
 }
 
 // Audit log for sensitive operations
-export function auditLog(
-  action: string,
-  entityType: string,
-  entityId: number | string,
-  userId: number,
-  details?: Record<string, unknown>
+export async function auditLog(
+  arg1: any,
+  arg2?: string,
+  arg3?: string | number,
+  arg4?: string | number,
+  arg5?: any
 ) {
+  let action: string;
+  let resource: string;
+  let resourceId: string;
+  let userId: string | number;
+  let details: any = null;
+  let status: 'SUCCESS' | 'FAILURE' = 'SUCCESS';
+  let ipAddress: string | null = null;
+  let userAgent: string | null = null;
+  let previousValue: any = null;
+  let newValue: any = null;
+
+  if (typeof arg1 === 'object' && arg1 !== null && !Array.isArray(arg1)) {
+    // New signature: auditLog({ action, resource, ... })
+    const options = arg1;
+    action = options.action;
+    resource = options.resource;
+    resourceId = String(options.resourceId);
+    userId = options.userId;
+    details = options.details;
+    status = options.status || 'SUCCESS';
+    ipAddress = options.ipAddress || null;
+    userAgent = options.userAgent || null;
+    previousValue = options.previousValue;
+    newValue = options.newValue;
+  } else {
+    // Old signature: auditLog(action, entityType, entityId, userId, details)
+    action = arg1;
+    resource = arg2 || 'UNKNOWN';
+    resourceId = String(arg3 || '0');
+    userId = arg4 || 0;
+    details = arg5 || null;
+  }
+
   const log = createLogger('audit');
-  log.info(`${action} - ${entityType}:${entityId}`, {
+  log.info(`${action} - ${resource}:${resourceId}`, {
     action,
-    entityType,
-    entityId,
+    resource,
+    resourceId,
     userId,
+    status,
     ...details,
   });
+
+  // Persist to database if running on server
+  if (typeof window === 'undefined') {
+    try {
+      const { prisma } = await import('@/lib/db');
+      
+      const parsedUserId = typeof userId === 'string' ? parseInt(userId) : userId;
+
+      await prisma.auditLog.create({
+        data: {
+          action,
+          resourceType: resource,
+          resourceId: String(resourceId),
+          userId: isNaN(parsedUserId) ? 0 : parsedUserId,
+          details: details ? (typeof details === 'string' ? details : JSON.stringify(details)) : null,
+          success: status === 'SUCCESS',
+          ipAddress,
+          userAgent,
+          previousValue: previousValue ? (typeof previousValue === 'string' ? previousValue : JSON.stringify(previousValue)) : null,
+          newValue: newValue ? (typeof newValue === 'string' ? newValue : JSON.stringify(newValue)) : null,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to persist audit log:', error);
+    }
+  }
 }
 
 export default Logger;

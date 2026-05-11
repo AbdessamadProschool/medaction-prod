@@ -1,11 +1,12 @@
 import { NextRequest } from 'next/server';
-import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { withErrorHandler, successResponse, withAudit } from '@/lib/api-handler';
 import { ForbiddenError } from '@/lib/exceptions';
 import { SecurityValidation } from '@/lib/security/validation';
 import { withPermission } from '@/lib/auth/api-guard';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { z } from 'zod';
+import { auditLog } from '@/lib/logger';
 
 // Chemin du fichier de configuration
 const SETTINGS_FILE = path.join(process.cwd(), 'data', 'settings.json');
@@ -63,7 +64,11 @@ export const GET = withPermission('system.settings.read', withErrorHandler(async
 }));
 
 // PUT /api/admin/settings - Mettre à jour les paramètres
-export const PUT = withPermission('system.settings.edit', withErrorHandler(async (request: NextRequest, { session }) => {
+export const PUT = withPermission('system.settings.edit', withAudit('UPDATE', 'SystemSettings', (req, res, body) => ({
+  resourceId: body?.section,
+  details: { section: body?.section },
+  newValue: body?.data
+}))(withErrorHandler(async (request: NextRequest, { session }) => {
   const body = await request.json();
   const { section, data } = updateSettingsSchema.parse(body);
 
@@ -73,6 +78,7 @@ export const PUT = withPermission('system.settings.edit', withErrorHandler(async
   }
 
   const currentSettings = await getSettings();
+  const previousValue = currentSettings[section];
   
   // Sanitisation basique
   const sanitizedData: Record<string, any> = {};
@@ -94,5 +100,12 @@ export const PUT = withPermission('system.settings.edit', withErrorHandler(async
   // Logging de sécurité
   SecurityValidation.logSecurityEvent('SUSPICIOUS_ACTIVITY', `System settings updated: section ${section} by ${session.user.email}`);
 
-  return successResponse(currentSettings, 'Paramètres mis à jour avec succès');
-}));
+  // On retourne une structure que withAudit peut utiliser pour newValue/previousValue
+  return successResponse({
+    ...currentSettings,
+    _audit: {
+      previousValue,
+      newValue: currentSettings[section]
+    }
+  }, 'Paramètres mis à jour avec succès');
+})));

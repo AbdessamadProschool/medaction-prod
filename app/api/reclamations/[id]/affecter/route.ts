@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { z } from "zod";
 import { Secteur } from "@prisma/client";
+import { auditLog } from "@/lib/logger";
 
 // Schéma de validation pour l'affectation
 const affectationSchema = z.object({
@@ -146,6 +147,29 @@ export async function PATCH(
         },
       });
     }
+
+    // Audit log
+    await auditLog({
+      action: affecteAId ? 'AFFECT_RECLAMATION' : 'DESAFFECT_RECLAMATION',
+      resource: 'RECLAMATION',
+      resourceId: String(reclamationId),
+      userId: session.user.id,
+      status: 'SUCCESS',
+      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
+      userAgent: request.headers.get('user-agent') || 'unknown',
+      previousValue: { 
+        affecteeAAutoriteId: reclamation.affecteeAAutoriteId,
+        affectationReclamation: reclamation.affectationReclamation
+      },
+      newValue: {
+        affecteeAAutoriteId: updated.affecteeAAutoriteId,
+        affectationReclamation: updated.affectationReclamation
+      },
+      details: {
+        agentName: agent ? `${agent.prenom} ${agent.nom}` : 'Désaffecté',
+        secteur: secteurAffecte
+      }
+    });
 
     return NextResponse.json({
       message: affecteAId ? "Réclamation affectée avec succès" : "Réclamation désaffectée",

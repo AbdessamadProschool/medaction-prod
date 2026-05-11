@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
 
 // Fonction pour nettoyer les objets (convertir les dates string en objets Date)
 const cleanData = (data: any[]) => {
@@ -175,6 +176,11 @@ export async function POST(req: Request) {
     });
 
     console.log('[RESTORE] Restauration terminée avec succès');
+
+    // Audit log
+    auditLog('RESTORE_BACKUP', 'System', file.name, parseInt(session.user.id), {
+      tablesCount: Object.keys(d).length
+    });
 
     return NextResponse.json({ 
       success: true, 

@@ -122,6 +122,14 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     console.warn('Erreur notification événement:', notifError);
   }
 
+  // Use dynamic import for auditLog since it's used after response, or static import at top. Let's do static import.
+  const { auditLog } = await import("@/lib/logger");
+  auditLog('CREATE_EVENEMENT', 'Evenement', evenement.id, userId, {
+    title: evenement.titre,
+    secteur: evenement.secteur,
+    etablissementId: evenement.etablissementId
+  });
+
   return NextResponse.json({
     success: true,
     message: 'Événement créé avec succès. Il sera visible après validation.',

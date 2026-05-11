@@ -1,8 +1,9 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
 
 // GET - Détail d'une campagne
 export async function GET(
@@ -214,6 +215,13 @@ export async function PATCH(
       data: updateData,
     });
 
+    // Audit logging
+    auditLog('UPDATE_CAMPAGNE', 'Campagne', campagneId, userId, {
+      titre: campagne.titre,
+      statut: updateData.statut,
+      updatedFields: Object.keys(updateData)
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Campagne mise à jour',
@@ -268,6 +276,11 @@ export async function DELETE(
     // Supprimer la campagne
     await prisma.campagne.delete({
       where: { id: campagneId },
+    });
+
+    // Audit logging
+    auditLog('DELETE_CAMPAGNE', 'Campagne', campagneId, userId, {
+      titre: existingCampagne.titre
     });
 
     return NextResponse.json({

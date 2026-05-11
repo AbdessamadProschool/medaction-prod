@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, NotFoundError, BadRequestError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
+import { auditLog } from '@/lib/logger';
 
 const updateUserSchema = z.object({
   nom: z.string().min(2).optional(),
@@ -90,6 +91,19 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
     },
   });
 
+  // Audit log avec comparaison d'état
+  await auditLog({
+    action: 'UPDATE_USER',
+    resource: 'USER',
+    resourceId: String(updatedUser.id),
+    userId: session.user.id,
+    previousValue: targetUser,
+    newValue: updatedUser,
+    status: 'SUCCESS',
+    ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
+    userAgent: request.headers.get('user-agent') || 'unknown'
+  });
+
   return successResponse(updatedUser, 'Utilisateur mis à jour avec succès');
 }));
 
@@ -114,6 +128,18 @@ export const DELETE = withPermission('users.delete', withErrorHandler(async (req
     await prisma.user.delete({
       where: { id },
     });
+
+    // Audit log
+    await auditLog({
+      action: 'DELETE_USER',
+      resource: 'USER',
+      resourceId: String(id),
+      userId: session.user.id,
+      status: 'SUCCESS',
+      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
+      userAgent: request.headers.get('user-agent') || 'unknown'
+    });
+
     return successResponse(null, 'Utilisateur supprimé');
   } catch (error) {
     throw new BadRequestError('Impossible de supprimer cet utilisateur (données liées). Essayez de le désactiver.');

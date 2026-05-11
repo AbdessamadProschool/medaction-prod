@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { invalidateSettingsCache } from '@/lib/settings/service';
+import { auditLog } from '@/lib/logger';
 
 // Paramètres par défaut
 const DEFAULT_SETTINGS = {
@@ -124,6 +125,11 @@ export async function PUT(request: NextRequest) {
     // Invalider le cache des settings
     invalidateSettingsCache();
 
+    // Audit log
+    auditLog('UPDATE_SETTINGS', 'System', 'global', parseInt(session.user.id), {
+      categories: categories.filter(c => c.value).map(c => c.key)
+    });
+
     // Récupérer les paramètres mis à jour
     const updatedSettings = await prisma.systemSetting.findMany();
     
@@ -190,6 +196,12 @@ export async function PATCH(request: NextRequest) {
         value: newValue,
         updatedById: parseInt(session.user.id),
       },
+    });
+
+    // Audit log
+    auditLog('PATCH_SETTING', 'System', category, parseInt(session.user.id), {
+      key,
+      value
     });
 
     return NextResponse.json({

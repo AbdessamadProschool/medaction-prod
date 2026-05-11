@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
 
 // GET - Liste de toutes les permissions disponibles
 export async function GET(request: NextRequest) {
@@ -122,6 +123,12 @@ export async function POST(request: NextRequest) {
         ordre: newOrdre,
         isActive: true,
       },
+    });
+
+    // Audit log
+    auditLog('CREATE_PERMISSION', 'Permission', permission.id, parseInt(session.user.id), {
+      code: permission.code,
+      nom: permission.nom
     });
 
     return NextResponse.json({

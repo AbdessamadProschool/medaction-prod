@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
 
 // GET /api/admin/validation - Récupérer les contenus en attente de validation
 export async function GET(request: NextRequest) {
@@ -398,6 +399,18 @@ export async function POST(request: NextRequest) {
         }
       });
     }
+
+    // Logging d'audit
+    await auditLog({
+      action: action === 'approve' ? 'VALIDATE' : 'REJECT',
+      resource: type.toUpperCase(),
+      resourceId: id.toString(),
+      userId: session.user.id,
+      details: { type, action, motifRejet },
+      status: 'SUCCESS',
+      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
+      userAgent: request.headers.get('user-agent') || 'unknown'
+    });
 
     return NextResponse.json({
       success: true,

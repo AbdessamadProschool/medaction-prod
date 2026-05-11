@@ -4,21 +4,140 @@
     "dir": "rtl"
   },
   "permissions": {
+    "auth": {
+      "login": "تسجيل الدخول",
+      "register": "التسجيل",
+      "logout": "تسجيل الخروج",
+      "reset-password": "إعادة تعيين كلمة المرور"
+    },
+    "users": {
+      "read": "عرض المستخدمين (أساسي)",
+      "read_full": "عرض المستخدمين (كامل)",
+      "create": "إنشاء مستخدم",
+      "edit": "تعديل مستخدم",
+      "edit_role": "تغيير الدور",
+      "delete": "حذف مستخدم (مؤقت)",
+      "hard-delete": "حذف نهائي",
+      "activate": "تفعيل/تعطيل الحساب",
+      "security": "عرض معلومات الأمان",
+      "me": {
+        "read": "عرض ملفي الشخصي",
+        "edit": "تعديل ملفي الشخصي"
+      }
+    },
     "reclamations": {
-      "read": {
-        "assigned": "قراءة الشكايات المعينة",
-        "all": "قراءة جميع الشكايات"
+      "read": "عرض شكاياتي",
+      "read_all": "عرض جميع الشكايات",
+      "read_assigned": "عرض الشكايات المعينة",
+      "create": "إنشاء شكاية",
+      "edit": "تعديل شكاية",
+      "delete": "حذف شكاية",
+      "archive": "أرشفة شكاية",
+      "assign": "تعيين شكاية",
+      "validate": "قبول/رفض القرار",
+      "resolve": "تحديد كمحلولة",
+      "comment": {
+        "internal": "إضافة تعليق داخلي"
       }
     },
     "evenements": {
-      "read": {
-        "all": "قراءة جميع الفعاليات"
+      "read": "عرض الأحداث",
+      "read_all": "عرض جميع الأحداث (مسؤول)",
+      "create": "إنشاء حدث",
+      "edit": "تعديل الحدث الخاص",
+      "edit_all": "تعديل جميع الأحداث",
+      "delete": "حذف حدث",
+      "validate": "المصادقة على حدث",
+      "feature": "تمييز حدث",
+      "subscribe": "التسجيل في حدث",
+      "participate": "المشاركة في حدث",
+      "report": "عرض تقرير الحدث"
+    },
+    "actualites": {
+      "read": "قراءة الأخبار",
+      "create": "إنشاء خبر",
+      "edit": "تعديل خبر",
+      "delete": "حذف خبر",
+      "publish": "نشر خبر",
+      "validate": "المصادقة على خبر"
+    },
+    "etablissements": {
+      "read": "عرض المؤسسات",
+      "create": "إنشاء مؤسسة",
+      "edit": "تعديل مؤسسة",
+      "delete": "حذف مؤسسة",
+      "validate": "المصادقة على مؤسسة",
+      "publish": "نشر مؤسسة",
+      "subscribe": "الاشتراك في مؤسسة",
+      "request": {
+        "create": "إنشاء طلب مؤسسة",
+        "edit": "تعديل طلب مؤسسة"
       }
     },
+    "evaluations": {
+      "read": "قراءة التقييمات",
+      "create": "تقييم",
+      "edit": "تعديل تقييم",
+      "delete": "حذف تقييم",
+      "validate": "مراقبة تقييم",
+      "report": "الإبلاغ عن تقييم"
+    },
+    "campagnes": {
+      "read": "عرض الحملات",
+      "create": "إنشاء حملة",
+      "edit": "Modifier campagne",
+      "delete": "Supprimer campagne",
+      "activate": "Gérer statut campagne",
+      "participate": "المشاركة في الحملات"
+    },
+    "bilans": {
+      "read": "عرض الحصائل"
+    },
     "map": {
-      "view": {
-        "full": "عرض الخريطة كاملة"
+      "view": "عرض الخريطة",
+      "view_full": "عرض كامل للخريطة"
+    },
+    "programmes": {
+      "read": "Voir programmes",
+      "create": "إنشاء",
+      "edit": "Modifier programme",
+      "delete": "Supprimer programme",
+      "validate": "Valider programme",
+      "report": "Remplir rapport activité"
+    },
+    "suggestions": {
+      "create": "إنشاء اقتراح",
+      "read": {
+        "own": "عرض مقترحاتي"
       }
+    },
+    "stats": {
+      "view": {
+        "global": "Voir stats globales",
+        "secteur": "Voir stats secteur",
+        "commune": "Voir stats commune",
+        "etablissement": "Voir stats établissement"
+      }
+    },
+    "reports": {
+      "export": "Exporter rapports"
+    },
+    "system": {
+      "settings": {
+        "read": "Voir paramètres",
+        "edit": "Modifier paramètres"
+      },
+      "logs": {
+        "view": "Voir logs"
+      },
+      "backup": "Gérer backups",
+      "restore": "Restaurer système"
+    },
+    "permissions": {
+      "manage": "Gérer permissions"
+    },
+    "communes": {
+      "manage": "Gérer communes"
     }
   },
   "pagination": {
@@ -569,7 +688,11 @@
         "select_status": "حدد الحالة...",
         "select_image": "اختر صورة",
         "summary": "ملخص",
-        "general_category": "الفئة العامة"
+        "general_category": "الفئة العامة",
+        "tags": "الوسوم (مفصولة بفاصلة)",
+        "tags_placeholder": "وسم1، وسم2، وسم3",
+        "is_valide": "مصادق عليه",
+        "is_publie": "منشور"
       },
       "categories": {
         "TRAVAUX": "أشغال",
@@ -600,7 +723,23 @@
         "cancel": "إلغاء",
         "create": "إنشاء الخبر",
         "creating": "جاري الإنشاء...",
-        "create_success": "تم إنشاء الأخبار بنجاح"
+        "create_success": "تم إنشاء الأخبار بنجاح",
+        "save": "حفظ",
+        "delete": "حذف",
+        "validate": "مصادقة",
+        "reject": "رفض",
+        "update_success": "تم تحديث الخبر بنجاح",
+        "update_error": "خطأ أثناء الحفظ",
+        "delete_success": "تم حذف الخبر",
+        "delete_error": "خطأ أثناء الحذف",
+        "validate_success": "تمت المصادقة على الخبر",
+        "reject_success": "تم رفض الخبر"
+      },
+      "edit_title": "تعديل الخبر",
+      "edit_subtitle": "تحديث معلومات الخبر",
+      "info_card": {
+        "created_at": "تاريخ الإنشاء:",
+        "by": "بواسطة:"
       }
     },
     "news_page": {
@@ -1359,14 +1498,34 @@
             "location": "Lieu",
             "price": "السعر (درهم)",
             "photos": "Photos"
-          }
+          },
+          "image_selected": "الصورة المحددة",
+          "image_delete": "حذف",
+          "type_label": "نوع الحدث",
+          "tags": "الوسوم",
+          "tags_hint": "(مفصولة بفاصلة)",
+          "tags_placeholder": "مثال: شباب، رياضة، ثقافة، عائلة",
+          "optional": "(اختياري)",
+          "address": "العنوان الكامل",
+          "address_placeholder": "مثال: شارع محمد الخامس، مديونة",
+          "neighborhood": "الحي / الدوار",
+          "neighborhood_placeholder": "مثال: الحي المحمدي",
+          "organizer_name": "اسم المنظم",
+          "organizer_name_placeholder": "مثال: جمعية شباب مديونة",
+          "organizer_phone": "هاتف الاتصال",
+          "organizer_phone_placeholder": "مثال: 0522 123 456",
+          "organizer_email": "البريد الإلكتروني للاتصال",
+          "organizer_email_placeholder": "مثال: contact@event.ma",
+          "open_registrations": "فتح باب التسجيل",
+          "open_registrations_hint": "يسمح للمواطنين بالتسجيل عبر الإنترنت"
         },
         "buttons": {
           "save_draft": "حفظ كمسودة",
           "cancel": "إلغاء",
           "prev": "السابق",
           "next": "التالي",
-          "create": "إنشاء"
+          "create": "إنشاء",
+          "saving": "جارِ الإنشاء..."
         },
         "errors": {
           "title_required": "Le titre est requis",
@@ -1390,6 +1549,18 @@
           "rencontre": "Rencontre",
           "ceremony": "Cérémonie",
           "autre": "Autre"
+        },
+        "title_new": "حدث جديد",
+        "subtitle_new": "إنشاء حدث جديد",
+        "back_list": "العودة إلى الأحداث",
+        "sections": {
+          "visual": "صورة الحدث",
+          "visual_hint": "الصورة الجذابة تزيد من المشاركة",
+          "info": "معلومات عامة",
+          "date_location": "التاريخ، الوقت والمكان",
+          "organizer": "المنظم والاتصال",
+          "organizer_hint": "معلومات الاتصال للمواطنين",
+          "participation": "المشاركة والتسجيل"
         }
       },
       "form": {
@@ -3959,6 +4130,7 @@
     "export_json": "JSON",
     "user_activity": "أنشطة المستخدمين",
     "system_logs": "سجلات النظام",
+    "security_audit": "تدقيق الأمن",
     "search_placeholder": "البحث عن إجراء أو مستخدم أو تاريخ...",
     "search": "البحث",
     "filters": {
@@ -3983,8 +4155,16 @@
     "date_to": "تاريخ الانتهاء",
     "message": "الرسالة",
     "date": "التاريخ",
+    "resource": "المورد",
+    "status": "الحالة",
+    "success": "نجاح",
+    "failure": "فشل",
     "details": "التفاصيل",
     "close": "إغلاق",
+    "none": "لا شيء",
+    "changes_comparison": "مقارنة التغييرات",
+    "previous_value": "القيمة السابقة",
+    "new_value": "القيمة الجديدة",
     "all": "الكل",
     "export_btn": "تصدير",
     "no_logs": "لم يتم العثور على سجلات",
@@ -3998,6 +4178,8 @@
     "all_actions": "الكل",
     "technical_data": "البيانات التقنية",
     "no_tech_data": "لا توجد بيانات إضافية",
+    "cleanup": "تنظيف",
+    "confirm_cleanup": "هل أنت متأكد من رغبتك في حذف سجلات التدقيق التي يزيد عمرها عن 12 شهرًا نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه.",
     "toasts": {
       "export_success": "تم تحميل ملف التصدير بنجاح!"
     },
@@ -5131,143 +5313,6 @@
   },
   "reclamation_rate_limit": "تم استنفاد عدد الشكايات المسموح به. يمكنكم تقديم شكاية جديدة ابتداءً من {date}.",
   "suggestion_rate_limit": "تم استنفاد عدد الاقتراحات المسموح به. يمكنكم تقديم اقتراح جديد ابتداءً من {date}.",
-  "permissions": {
-    "auth": {
-      "login": "تسجيل الدخول",
-      "register": "التسجيل",
-      "logout": "تسجيل الخروج",
-      "reset-password": "إعادة تعيين كلمة المرور"
-    },
-    "users": {
-      "read": "عرض المستخدمين (أساسي)",
-      "read_full": "عرض المستخدمين (كامل)",
-      "create": "إنشاء مستخدم",
-      "edit": "تعديل مستخدم",
-      "edit_role": "تغيير الدور",
-      "delete": "حذف مستخدم (مؤقت)",
-      "hard-delete": "حذف نهائي",
-      "activate": "تفعيل/تعطيل الحساب",
-      "security": "عرض معلومات الأمان",
-      "me": {
-        "read": "عرض ملفي الشخصي",
-        "edit": "تعديل ملفي الشخصي"
-      }
-    },
-    "reclamations": {
-      "read": "عرض شكاياتي",
-      "read_all": "عرض جميع الشكايات",
-      "read_assigned": "عرض الشكايات المعينة",
-      "create": "إنشاء شكاية",
-      "edit": "تعديل شكاية",
-      "delete": "حذف شكاية",
-      "archive": "أرشفة شكاية",
-      "assign": "تعيين شكاية",
-      "validate": "قبول/رفض القرار",
-      "resolve": "تحديد كمحلولة",
-      "comment": {
-        "internal": "إضافة تعليق داخلي"
-      }
-    },
-    "evenements": {
-      "read": "عرض الأحداث",
-      "read_all": "عرض جميع الأحداث (مسؤول)",
-      "create": "إنشاء حدث",
-      "edit": "تعديل الحدث الخاص",
-      "edit_all": "تعديل جميع الأحداث",
-      "delete": "حذف حدث",
-      "validate": "المصادقة على حدث",
-      "feature": "تمييز حدث",
-      "subscribe": "التسجيل في حدث",
-      "participate": "المشاركة في حدث",
-      "report": "عرض تقرير الحدث"
-    },
-    "actualites": {
-      "read": "قراءة الأخبار",
-      "create": "إنشاء خبر",
-      "edit": "تعديل خبر",
-      "delete": "حذف خبر",
-      "publish": "نشر خبر",
-      "validate": "المصادقة على خبر"
-    },
-    "etablissements": {
-      "read": "عرض المؤسسات",
-      "create": "إنشاء مؤسسة",
-      "edit": "تعديل مؤسسة",
-      "delete": "حذف مؤسسة",
-      "validate": "المصادقة على مؤسسة",
-      "publish": "نشر مؤسسة",
-      "subscribe": "الاشتراك في مؤسسة",
-      "request": {
-        "create": "إنشاء طلب مؤسسة",
-        "edit": "تعديل طلب مؤسسة"
-      }
-    },
-    "evaluations": {
-      "read": "قراءة التقييمات",
-      "create": "تقييم",
-      "edit": "تعديل تقييم",
-      "delete": "حذف تقييم",
-      "validate": "مراقبة تقييم",
-      "report": "الإبلاغ عن تقييم"
-    },
-    "campagnes": {
-      "read": "عرض الحملات",
-      "create": "إنشاء حملة",
-      "edit": "Modifier campagne",
-      "delete": "Supprimer campagne",
-      "activate": "Gérer statut campagne",
-      "participate": "المشاركة في الحملات"
-    },
-    "bilans": {
-      "read": "عرض الحصائل"
-    },
-    "map": {
-      "view": "عرض الخريطة",
-      "view_full": "عرض كامل للخريطة"
-    },
-    "programmes": {
-      "read": "Voir programmes",
-      "create": "إنشاء",
-      "edit": "Modifier programme",
-      "delete": "Supprimer programme",
-      "validate": "Valider programme",
-      "report": "Remplir rapport activité"
-    },
-    "suggestions": {
-      "create": "إنشاء اقتراح",
-      "read": {
-        "own": "عرض مقترحاتي"
-      }
-    },
-    "stats": {
-      "view": {
-        "global": "Voir stats globales",
-        "secteur": "Voir stats secteur",
-        "commune": "Voir stats commune",
-        "etablissement": "Voir stats établissement"
-      }
-    },
-    "reports": {
-      "export": "Exporter rapports"
-    },
-    "system": {
-      "settings": {
-        "read": "Voir paramètres",
-        "edit": "Modifier paramètres"
-      },
-      "logs": {
-        "view": "Voir logs"
-      },
-      "backup": "Gérer backups",
-      "restore": "Restaurer système"
-    },
-    "permissions": {
-      "manage": "Gérer permissions"
-    },
-    "communes": {
-      "manage": "Gérer communes"
-    }
-  },
   "contact_page": {
     "title": "اتصل بنا",
     "subtitle": "نحن هنا للاستماع إليكم والإجابة على استفساراتكم",

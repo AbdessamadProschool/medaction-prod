@@ -6173,5 +6173,91 @@
     "UPDATE": "Mise à jour du dossier",
     "ACCEPTATION": "Acceptation de la réclamation",
     "AJOUT_MEDIA": "Ajout de pièces jointes"
+  },
+  "super_admin": {
+    "access_denied": "Accès refusé : Droits Super Administrateur requis",
+    "loading": "Chargement du tableau de bord global...",
+    "home": "Accueil",
+    "dashboard_admin": "Tableau de Bord Admin",
+    "title": "Administration Globale",
+    "subtitle": "Gestion complète de la plateforme Medaction",
+    "export": "Exporter",
+    "manage_admins": "Gérer les Administrateurs",
+    "system_status": {
+      "title": "État du Système",
+      "operational": "Opérationnel",
+      "api": "API",
+      "database": "Base de Données",
+      "auth": "Authentification",
+      "notifications": "Notifications",
+      "storage": "Stockage",
+      "emails": "Emails",
+      "uptime": "Disponibilité",
+      "response_time": "Temps de réponse",
+      "errors_24h": "Erreurs 24h"
+    },
+    "quick_actions": {
+      "title": "Actions Rapides",
+      "admins": "Administrateurs",
+      "users": "Utilisateurs",
+      "reclamations": "Réclamations",
+      "validation": "Validation",
+      "events": "Événements",
+      "establishments": "Établissements",
+      "activities": "Activités",
+      "logs": "Journal d'audit",
+      "import": "Import Données",
+      "licence": "Licence",
+      "settings": "Paramètres"
+    },
+    "stats": {
+      "total_users": "Utilisateurs Total",
+      "this_month": "ce mois",
+      "admins": "Administrateurs",
+      "citizens": "Citoyens",
+      "establishments": "Établissements",
+      "validated": "Validés",
+      "events": "Événements",
+      "reclamations": "Réclamations",
+      "pending": "En attente",
+      "urgent": "Urgentes",
+      "content": "Contenus",
+      "news": "Actualités",
+      "articles": "Articles"
+    },
+    "recent_activity": {
+      "title": "Activité Récente",
+      "view_all": "Voir tout",
+      "system": "Système",
+      "user": "Utilisateur",
+      "no_activity": "Aucune activité récente"
+    },
+    "rbac": {
+      "title": "Rôles & Permissions",
+      "manage": "Gérer",
+      "super_admins": "Super Administrateurs",
+      "administrators": "Administrateurs",
+      "delegations": "Délégations",
+      "local_authorities": "Autorités Locales",
+      "citizens": "Citoyens"
+    },
+    "features": {
+      "title": "Fonctionnalités Avancées",
+      "admin_management": "Gestion des Admins",
+      "admin_management_desc": "Créer et gérer les comptes administratifs",
+      "permissions": "Permissions",
+      "permissions_desc": "Configurer les accès granulaires",
+      "system_settings": "Paramètres Système",
+      "system_settings_desc": "Configuration globale de l'application",
+      "backups": "Sauvegardes",
+      "backups_desc": "Gestion des copies de sécurité"
+    },
+    "toasts": {
+      "data_error": "Erreur de chargement des données",
+      "export_loading": "Préparation de l'exportation...",
+      "export_success": "Exportation réussie",
+      "export_error": "Échec de l'exportation",
+      "connection_error": "Erreur de connexion au serveur"
+    }
   }
 }

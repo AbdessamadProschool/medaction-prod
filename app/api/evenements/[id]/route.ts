@@ -17,6 +17,7 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 };
 
 function isValidTransition(from: string, to: string): boolean {
+  if (from === to) return true;
   return VALID_TRANSITIONS[from]?.includes(to) ?? false;
 }
 

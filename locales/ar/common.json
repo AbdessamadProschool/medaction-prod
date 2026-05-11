@@ -6160,5 +6160,91 @@
     "UPDATE": "تحديث الملف",
     "ACCEPTATION": "قبول الشكاية",
     "AJOUT_MEDIA": "إضافة مرفقات"
+  },
+  "super_admin": {
+    "access_denied": "تم رفض الوصول: صلاحيات المشرف العام مطلوبة",
+    "loading": "جاري تحميل لوحة التحكم العامة...",
+    "home": "الرئيسية",
+    "dashboard_admin": "لوحة تحكم المسؤول",
+    "title": "الإدارة العامة",
+    "subtitle": "الإدارة الكاملة لمنصة Medaction",
+    "export": "تصدير",
+    "manage_admins": "إدارة المسؤولين",
+    "system_status": {
+      "title": "حالة النظام",
+      "operational": "يعمل بشكل طبيعي",
+      "api": "واجهة البرمجيات",
+      "database": "قاعدة البيانات",
+      "auth": "المصادقة",
+      "notifications": "الإشعارات",
+      "storage": "التخزين",
+      "emails": "البريد الإلكتروني",
+      "uptime": "التوافر",
+      "response_time": "وقت الاستجابة",
+      "errors_24h": "أخطاء خلال 24 ساعة"
+    },
+    "quick_actions": {
+      "title": "إجراءات سريعة",
+      "admins": "المسؤولون",
+      "users": "المستخدمون",
+      "reclamations": "الشكاوى",
+      "validation": "التحقق",
+      "events": "الفعاليات",
+      "establishments": "المؤسسات",
+      "activities": "الأنشطة",
+      "logs": "سجل التدقيق",
+      "import": "استيراد البيانات",
+      "licence": "الترخيص",
+      "settings": "الإعدادات"
+    },
+    "stats": {
+      "total_users": "إجمالي المستخدمين",
+      "this_month": "هذا الشهر",
+      "admins": "مسؤولون",
+      "citizens": "مواطنون",
+      "establishments": "المؤسسات",
+      "validated": "تم التحقق",
+      "events": "الفعاليات",
+      "reclamations": "الشكاوى",
+      "pending": "في الانتظار",
+      "urgent": "عاجلة",
+      "content": "المحتويات",
+      "news": "الأخبار",
+      "articles": "المقالات"
+    },
+    "recent_activity": {
+      "title": "النشاط الأخير",
+      "view_all": "عرض الكل",
+      "system": "النظام",
+      "user": "المستخدم",
+      "no_activity": "لا يوجد نشاط أخير"
+    },
+    "rbac": {
+      "title": "الأدوار والصلاحيات",
+      "manage": "إدارة",
+      "super_admins": "المشرفون العامون",
+      "administrators": "المسؤولون",
+      "delegations": "المندوبيات",
+      "local_authorities": "السلطات المحلية",
+      "citizens": "المواطنون"
+    },
+    "features": {
+      "title": "ميزات متقدمة",
+      "admin_management": "إدارة المسؤولين",
+      "admin_management_desc": "إنشاء وإدارة حسابات المسؤولين",
+      "permissions": "الصلاحيات",
+      "permissions_desc": "تكوين الوصول التفصيلي",
+      "system_settings": "إعدادات النظام",
+      "system_settings_desc": "التكوين العام للتطبيق",
+      "backups": "النسخ الاحتياطي",
+      "backups_desc": "إدارة النسخ الاحتياطية"
+    },
+    "toasts": {
+      "data_error": "خطأ في تحميل البيانات",
+      "export_loading": "جاري تحضير التصدير...",
+      "export_success": "تم التصدير بنجاح",
+      "export_error": "فشل التصدير",
+      "connection_error": "خطأ في الاتصال بالخادم"
+    }
   }
 }

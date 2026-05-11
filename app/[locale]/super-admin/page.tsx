@@ -305,7 +305,7 @@ export default function SuperAdminDashboard() {
 
       if (logsRes.ok) {
         const logsData = await logsRes.json();
-        const logs = logsData.data || [];
+        const logs = Array.isArray(logsData.data) ? logsData.data : [];
         setRecentLogs(logs.map((l: any) => ({
           ...l,
           timestamp: l.createdAt || l.timestamp

@@ -26,9 +26,13 @@
       }
     },
     "reclamations": {
-      "read": "Voir ses réclamations",
+      "read_own": "Voir ses réclamations",
       "read_all": "Voir toutes les réclamations",
       "read_assigned": "Voir réclamations affectées",
+      "read": {
+        "all": "Voir toutes les réclamations",
+        "assigned": "Voir réclamations affectées"
+      },
       "create": "Créer réclamation",
       "edit": "Modifier réclamation",
       "delete": "Supprimer réclamation",
@@ -41,8 +45,11 @@
       }
     },
     "evenements": {
-      "read": "Voir événements",
+      "read_own": "Voir événements",
       "read_all": "Voir tous événements (admin)",
+      "read": {
+        "all": "Voir tous événements (admin)"
+      },
       "create": "Créer événement",
       "edit": "Modifier événement propre",
       "edit_all": "Modifier tout événement",
@@ -116,8 +123,11 @@
       "export": "Exporter rapports"
     },
     "map": {
-      "view": "Voir carte",
-      "view_full": "Voir carte avancée"
+      "view_simple": "Voir carte",
+      "view_full": "Voir carte avancée",
+      "view": {
+        "full": "Voir carte avancée"
+      }
     },
     "system": {
       "settings": {
@@ -2414,6 +2424,7 @@
       }
     },
     "articles_page": {
+      "loading": "Chargement des articles...",
       "title": "Articles",
       "subtitle": "Gérez les articles et contenus de la plateforme",
       "create": "Nouvel Article",
@@ -2877,6 +2888,7 @@
     "backups": {
       "title": "Sauvegardes Système",
       "subtitle": "Historique de vos points de restauration de base de données.",
+      "empty": "Aucune sauvegarde",
       "create": "Nouvelle sauvegarde",
       "restore": "Restaurer",
       "empty_title": "Aucune sauvegarde",
@@ -3358,7 +3370,7 @@
   },
   "admin_campagnes": {
     "title": "Campagnes de sensibilisation",
-    "subtitle": "Gérez les campagnes de sensibilisation ({count})",
+    "subtitle": "Gérez les campagnes de sensibilisation ({total})",
     "filters": "Filtres",
     "new_campaign": "Nouvelle campagne",
     "stats": {

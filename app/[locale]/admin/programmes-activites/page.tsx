@@ -24,6 +24,7 @@ import {
   Download,
   Plus,
   Trash2,
+  Loader2,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr, arMA } from 'date-fns/locale';

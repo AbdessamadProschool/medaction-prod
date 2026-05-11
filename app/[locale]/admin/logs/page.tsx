@@ -25,7 +25,9 @@ import {
   FileJson,
   Database,
   Monitor,
-  Trash2
+  Trash2,
+  History,
+  Check,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -220,7 +222,7 @@ export default function AdminLogsPage() {
         const res = await fetch(`/api/logs/activity?${params}`);
         if (res.ok) {
           const data = await res.json();
-          setActivityLogs(data.data || []);
+          setActivityLogs(Array.isArray(data.data) ? data.data : []);
           setTotalPages(data.pagination?.totalPages || 1);
           setTotal(data.pagination?.total || 0);
           setStats(data.stats);
@@ -234,7 +236,7 @@ export default function AdminLogsPage() {
         const res = await fetch(`/api/logs/system?${params}`);
         if (res.ok) {
           const data = await res.json();
-          setSystemLogs(data.data || []);
+          setSystemLogs(Array.isArray(data.data) ? data.data : []);
           setTotalPages(data.pagination?.totalPages || 1);
           setTotal(data.pagination?.total || 0);
           setStats(data.stats);
@@ -250,7 +252,7 @@ export default function AdminLogsPage() {
         const res = await fetch(`/api/audit?${params}`);
         if (res.ok) {
           const data = await res.json();
-          setAuditLogs(data.data || []);
+          setAuditLogs(Array.isArray(data.data) ? data.data : []);
           setTotalPages(data.pagination?.totalPages || 1);
           setTotal(data.pagination?.total || 0);
         }
@@ -927,7 +929,7 @@ export default function AdminLogsPage() {
                   <ChevronLeft size={20} className={locale === 'ar' ? 'rotate-180' : ''} />
                 </button>
                 <div className="flex gap-1">
-                    {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                    {[...Array(Math.min(5, Number(totalPages) || 0))].map((_, i) => {
                         let pageNum = i + 1;
                         if (totalPages > 5 && page > 3) {
                             pageNum = Math.min(page - 2 + i, totalPages - 4 + i);

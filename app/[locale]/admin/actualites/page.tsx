@@ -103,13 +103,14 @@ export default function AdminActualitesPage() {
       const res = await fetch(`/api/actualites?${params}`);
       if (res.ok) {
         const data = await res.json();
-        setActualites(data.data || []);
+        setActualites(Array.isArray(data.data) ? data.data : []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || 0);
         
         // Calculate stats from data
+        const allData = Array.isArray(data.data) ? data.data : [];
         const statsCounts: Record<string, number> = {};
-        (data.data || []).forEach((a: Actualite) => {
+        allData.forEach((a: Actualite) => {
           statsCounts[a.statut] = (statsCounts[a.statut] || 0) + 1;
         });
         setStats(statsCounts);

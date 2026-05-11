@@ -95,12 +95,12 @@ export default function AdminArticlesPage() {
       const res = await fetch(`/api/articles?${params}`);
       if (res.ok) {
         const data = await res.json();
-        setArticles(data.data || []);
+        setArticles(Array.isArray(data.data) ? data.data : []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || 0);
         
         // Calculate stats
-        const all = data.data || [];
+        const all = Array.isArray(data.data) ? data.data : [];
         setStats({
           total: data.pagination?.total || 0,
           publies: all.filter((a: Article) => a.statut === 'PUBLIE').length,

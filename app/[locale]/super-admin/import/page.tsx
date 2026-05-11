@@ -41,20 +41,23 @@ export default function BulkImportPage() {
   const t = useTranslations();
   
   const [selectedEntity, setSelectedEntity] = useState(ENTITIES[0]);
+  const [selectedSector, setSelectedSector] = useState('EDUCATION');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [report, setReport] = useState<any>(null);
 
   const handleDownloadTemplate = async () => {
     try {
-      const res = await fetch(`/api/admin/import/template?entity=${selectedEntity.id}`);
+      const url = `/api/admin/import/template?entity=${selectedEntity.id}${selectedEntity.id === 'etablissement' ? `&sector=${selectedSector}` : ''}`;
+      const res = await fetch(url);
       if (!res.ok) throw new Error('Erreur téléchargement');
       
       const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `template_${selectedEntity.id}.csv`;
+      a.href = blobUrl;
+      const fileName = `template_${selectedEntity.id}${selectedEntity.id === 'etablissement' ? `_${selectedSector}` : ''}.xlsx`;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -203,6 +206,30 @@ export default function BulkImportPage() {
                   {t('import_page.download_template.button')}
                 </button>
               </div>
+
+              {selectedEntity.id === 'etablissement' && (
+                <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                  <p className="text-sm font-semibold text-slate-700 mb-3">Sélectionner le secteur pour le modèle :</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['EDUCATION', 'SANTE', 'SPORT', 'SOCIAL', 'CULTUREL', 'AUTRE'].map((sec) => (
+                      <button
+                        key={sec}
+                        onClick={() => setSelectedSector(sec)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          selectedSector === sec
+                            ? 'bg-indigo-600 text-white shadow-md'
+                            : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300'
+                        }`}
+                      >
+                        {sec}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-2 italic">
+                    * Le modèle inclura les colonnes spécifiques au secteur choisi.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Upload Area */}
@@ -269,7 +296,7 @@ export default function BulkImportPage() {
                         <h4 className="font-bold text-emerald-800">Import terminé</h4>
                         <p className="text-emerald-700 text-sm">{report.count} éléments ont été ajoutés à la base de données.</p>
                         
-                        {report.errors && report.errors.length > 0 && (
+                        {report.errors && Array.isArray(report.errors) && report.errors.length > 0 && (
                             <div className="mt-3 p-3 bg-red-50 rounded-lg text-xs text-red-700 border border-red-100 max-h-48 overflow-y-auto">
                                 <p className="font-semibold mb-1">Attention ({report.errors.length} problèmes) :</p>
                                 <ul className="list-disc pl-4 space-y-1">

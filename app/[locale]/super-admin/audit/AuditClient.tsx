@@ -281,9 +281,13 @@ export default function AuditClient() {
       const res = await fetch(`/api/admin/logs?${params}`);
       if (res.ok) {
         const data = await res.json();
-        setLogs(Array.isArray(data.data) ? data.data : []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
+        // Le format de successResponse est { success: true, data: { data: logs, pagination: {...} } }
+        const logsData = data.data?.data || [];
+        const pagination = data.data?.pagination || {};
+        
+        setLogs(Array.isArray(logsData) ? logsData : []);
+        setTotalPages(pagination.totalPages || 1);
+        setTotal(pagination.total || 0);
       }
     } catch (error) {
       console.error('Erreur chargement logs:', error);

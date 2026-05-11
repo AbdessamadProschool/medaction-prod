@@ -3729,7 +3729,7 @@
   },
   "audit_page": {
     "title": "Logs & Activités",
-    "subtitle": "Journal d'activité et traçabilité des actions administratives",
+    "subtitle": "Journal d'audit du système et traçabilité des actions administratives",
     "total_entries": "{count} entrées au total",
     "last_update": "Dernière mise à jour : {time}",
     "live": "Live",
@@ -3744,21 +3744,23 @@
     "user_activity": "Activités Utilisateurs",
     "system_logs": "Logs Système",
     "security_audit": "Audit de Sécurité",
-    "search_placeholder": "Rechercher un log, un utilisateur ou une date...",
-    "search": "Recherche",
+    "search_placeholder": "Rechercher un utilisateur, une action ou une date...",
+    "search": "Rechercher",
+    "view_details": "Voir les détails",
+    "no_logs": "Aucun log trouvé",
+    "modify_filters_hint": "Modifiez vos filtres ou votre recherche pour voir plus de résultats",
     "filters": {
       "all_entities": "Toutes les entités",
       "all_actions": "Toutes les actions"
     },
     "columns": {
-      "date": "Date",
+      "date": "Date & Heure",
       "user": "Utilisateur",
       "action": "Action",
-      "target": "Cible",
+      "target": "Cible / Entité",
       "details": "Détails"
     },
     "action": "Action",
-    "action_label": "Action",
     "entity": "Entité",
     "user": "Utilisateur",
     "ip": "IP",
@@ -3780,13 +3782,10 @@
     "new_value": "NOUVELLE VALEUR",
     "all": "Toutes",
     "export_btn": "Exporter",
-    "no_logs": "Aucun log trouvé",
-    "modify_filters_hint": "Modifiez vos filtres pour voir plus de résultats",
     "page_x_of_y": "Page {current} sur {total} ({count} entrées)",
     "details_modal_title": "Détails du Log #{id}",
     "type_level": "Type / Niveau",
     "source_action": "Source / Action",
-    "view_details": "Voir détails",
     "system_user": "Système",
     "all_actions": "Toutes",
     "technical_data": "Données techniques",
@@ -6258,26 +6257,6 @@
       "export_success": "Exportation réussie",
       "export_error": "Échec de l'exportation",
       "connection_error": "Erreur de connexion au serveur"
-    }
-  },
-  "audit_page": {
-    "title": "Logs & Activités",
-    "subtitle": "Journal d'audit du système et traçabilité des actions",
-    "search": "Rechercher",
-    "search_placeholder": "Rechercher un utilisateur, une action...",
-    "view_details": "Voir les détails",
-    "no_logs": "Aucun log trouvé",
-    "modify_filters_hint": "Essayez de modifier vos filtres ou votre recherche",
-    "columns": {
-      "date": "Date & Heure",
-      "user": "Utilisateur",
-      "action": "Action",
-      "target": "Entité / ID",
-      "details": "Détails"
-    },
-    "filters": {
-      "all_actions": "Toutes les actions",
-      "all_entities": "Toutes les entités"
     }
   },
   "audit_log": {

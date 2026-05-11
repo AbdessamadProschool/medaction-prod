@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
+import { useParams } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { 
   ArrowLeft, 
   Save, 
@@ -278,7 +278,7 @@ export default function ModifierEvenementPage() {
       const result = await res.json();
       
       if (!res.ok) {
-        if (result.error?.details) {
+        if (result.error?.details && Array.isArray(result.error.details)) {
           result.error.details.forEach((d: any) => toast.error(d.message));
         } else {
           toast.error(result.error?.message || 'Erreur lors de la sauvegarde');

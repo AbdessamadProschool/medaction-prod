@@ -225,7 +225,7 @@ export default function AdminLogsPage() {
           setTotal(data.pagination?.total || 0);
           setStats(data.stats);
         }
-      } else {
+      } else if (activeTab === 'system') {
         if (filters.level) params.set('level', filters.level);
         if (filters.source) params.set('source', filters.source);
         if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);

@@ -6173,6 +6173,43 @@
     "ACCEPTATION": "Acceptation de la réclamation",
     "AJOUT_MEDIA": "Ajout de pièces jointes"
   },
+  "licence_page": {
+    "title": "Gestion de Licence",
+    "subtitle": "Information sur la licence et l'état d'activation",
+    "refresh": "Actualiser",
+    "verifying": "Vérification de la licence...",
+    "error_fetching": "Impossible de récupérer les informations de licence",
+    "error_desc": "Le serveur de licence ne répond pas ou la configuration est manquante.",
+    "retry": "Réessayer",
+    "status": {
+      "title": "État de la licence",
+      "active": "Active",
+      "expires_soon": "Expire bientôt",
+      "invalid": "Invalide",
+      "days_left": "Expire dans {days} jours"
+    },
+    "license_key": "Clé de Licence",
+    "expiry_date": "Date d'expiration",
+    "authorized_domains": "Domaines Autorisés",
+    "none": "Aucun",
+    "not_configured": "Non configurée",
+    "not_defined": "Non définie",
+    "error_detected": "Erreur détectée",
+    "help": {
+      "title": "Configuration",
+      "step1_title": "1. Modifier .env",
+      "step1_desc": "Ajoutez votre clé de licence dans le fichier d'environnement.",
+      "step2_title": "2. Variables optionnelles",
+      "step2_desc": "Vous pouvez définir des domaines ou une date d'expiration pour les tests.",
+      "step3_title": "3. Redémarrer",
+      "step3_desc": "Relancez l'application pour appliquer les changements.",
+      "support": "Contacter le support"
+    },
+    "toasts": {
+      "fetch_error": "Erreur lors de la récupération des données",
+      "connection_error": "Erreur de connexion au serveur"
+    }
+  },
   "super_admin": {
     "access_denied": "Accès refusé : Droits Super Administrateur requis",
     "loading": "Chargement du tableau de bord global...",

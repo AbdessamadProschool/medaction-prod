@@ -10,7 +10,7 @@ import { ForbiddenError } from '@/lib/exceptions';
  */
 export const GET = withPermission('system.license.read', withErrorHandler(async (req: NextRequest, { session }) => {
   // Sécurité renforcée : Seul le super admin peut voir les détails de licence
-  if (session.role !== 'SUPER_ADMIN') {
+  if (session.user.role !== 'SUPER_ADMIN') {
     throw new ForbiddenError('Accès réservé au Super Administrateur');
   }
 

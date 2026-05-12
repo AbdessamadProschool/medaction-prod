@@ -110,7 +110,7 @@ export default function LicensePage() {
                     <div className="w-16 h-16 border-4 border-indigo-100 dark:border-indigo-900/30 rounded-full"></div>
                     <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
                 </div>
-                <p className="mt-4 text-gray-500 font-medium">Vérification de la licence...</p>
+                <p className="mt-4 text-gray-500 font-medium">{t('licence_page.verifying') || "Vérification de la licence..."}</p>
              </div>
         ) : !license ? (
             <motion.div 
@@ -119,10 +119,10 @@ export default function LicensePage() {
                 className="bg-white dark:bg-gray-800 rounded-3xl p-10 text-center border border-gray-100 dark:border-gray-700 shadow-sm"
             >
                 <Server className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Impossible de récupérer les infos</h3>
-                <p className="text-gray-500 mb-6 max-w-md mx-auto">Le serveur de licence ne répond pas ou la configuration est manquante.</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('licence_page.error_fetching') || "Impossible de récupérer les infos"}</h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">{t('licence_page.error_desc') || "Le serveur de licence ne répond pas ou la configuration est manquante."}</p>
                 <button onClick={fetchLicenseInfo} className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
-                    Réessayer
+                    {t('licence_page.retry') || "Réessayer"}
                 </button>
             </motion.div>
         ) : (
@@ -148,7 +148,7 @@ export default function LicensePage() {
                                 </div>
                                 {license.daysRemaining !== undefined && (
                                     <p className="mt-2 font-medium opacity-90">
-                                        Expire dans {license.daysRemaining} jours
+                                        {t('licence_page.status.days_left', { days: license.daysRemaining }) || `Expire dans ${license.daysRemaining} jours`}
                                     </p>
                                 )}
                             </div>
@@ -158,7 +158,7 @@ export default function LicensePage() {
                              <div className="mt-6 p-4 bg-white/50 dark:bg-black/10 rounded-xl border border-white/20 dark:border-black/10 backdrop-blur-sm">
                                 <div className="flex items-center gap-2 font-medium text-red-700 dark:text-red-300 mb-1">
                                     <AlertTriangle size={16} />
-                                    Erreur détectée
+                                    {t('licence_page.error_detected') || "Erreur détectée"}
                                 </div>
                                 <p className="text-sm text-red-600 dark:text-red-400">{license.error}</p>
                              </div>
@@ -176,7 +176,7 @@ export default function LicensePage() {
                             </div>
                             <div className="flex items-center justify-between group">
                                 <code className="text-sm font-mono text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded truncate max-w-[180px]">
-                                    {license.key || "Non configurée"}
+                                    {license.key || t('licence_page.not_configured') || "Non configurée"}
                                 </code>
                                 {license.key && (
                                     <button onClick={() => copyToClipboard(license.key!)} className="text-gray-400 hover:text-indigo-600 transition-colors bg-gray-50 p-1.5 rounded-lg opacity-0 group-hover:opacity-100">
@@ -195,10 +195,10 @@ export default function LicensePage() {
                             </div>
                             <p className="text-lg font-semibold text-gray-900 dark:text-white">
                                 {license.expiryDate 
-                                  ? new Date(license.expiryDate).toLocaleDateString('fr-FR', { 
+                                  ? new Date(license.expiryDate).toLocaleDateString(undefined, { 
                                       day: 'numeric', month: 'long', year: 'numeric' 
                                     })
-                                  : 'Non définie'
+                                  : (t('licence_page.not_defined') || 'Non définie')
                                 }
                             </p>
                         </div>
@@ -221,7 +221,7 @@ export default function LicensePage() {
                                     </span>
                                   ))
                                 ) : (
-                                  <span className="text-gray-400 italic text-sm">Aucun domaine restreint ou information indisponible</span>
+                                  <span className="text-gray-400 italic text-sm">{t('licence_page.none') || "Aucun domaine restreint ou information indisponible"}</span>
                                 )}
                             </div>
                         </div>
@@ -246,9 +246,9 @@ export default function LicensePage() {
                         <div className="space-y-4">
                             <div className="relative pl-6 border-l-2 border-gray-300 dark:border-gray-600 pb-2">
                                 <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800"></div>
-                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">1. Modifier .env</h4>
+                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{t('licence_page.help.step1_title') || "1. Modifier .env"}</h4>
                                 <p className="text-xs text-gray-500 leading-relaxed">
-                                    Ajoutez votre clé de licence dans le fichier d'environnement.
+                                    {t('licence_page.help.step1_desc') || "Ajoutez votre clé de licence dans le fichier d'environnement."}
                                 </p>
                                 <div className="mt-2 bg-gray-900 rounded-lg p-3 overflow-x-auto">
                                     <code className="text-xs font-mono text-green-400">LICENSE_KEY=your-key-here</code>
@@ -257,17 +257,17 @@ export default function LicensePage() {
                             
                             <div className="relative pl-6 border-l-2 border-gray-300 dark:border-gray-600 pb-2">
                                 <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800"></div>
-                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">2. Variables optionnelles</h4>
+                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{t('licence_page.help.step2_title') || "2. Variables optionnelles"}</h4>
                                 <p className="text-xs text-gray-500 leading-relaxed">
-                                    Vous pouvez définir des domaines ou une date d'expiration pour les tests.
+                                    {t('licence_page.help.step2_desc') || "Vous pouvez définir des domaines ou une date d'expiration pour les tests."}
                                 </p>
                             </div>
                             
                             <div className="relative pl-6 border-l-2 border-transparent">
                                 <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800"></div>
-                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">3. Redémarrer</h4>
+                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{t('licence_page.help.step3_title') || "3. Redémarrer"}</h4>
                                 <p className="text-xs text-gray-500 leading-relaxed">
-                                    Relancez l'application pour appliquer les changements : 
+                                    {t('licence_page.help.step3_desc') || "Relancez l'application pour appliquer les changements"} : 
                                     <code className="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded mx-1">npm run dev</code>
                                 </p>
                             </div>
@@ -275,7 +275,7 @@ export default function LicensePage() {
                         
                         <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <a href="#" className="flex items-center justify-between group text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700">
-                                Contacter le support
+                                {t('licence_page.help.support') || "Contacter le support"}
                                 <span className="transform transition-transform group-hover:translate-x-1">→</span>
                             </a>
                         </div>

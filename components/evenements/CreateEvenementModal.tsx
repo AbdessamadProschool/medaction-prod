@@ -244,8 +244,8 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-gray-800 w-full sm:max-w-4xl max-h-[95dvh] sm:max-h-[90vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
           <div>
@@ -289,27 +289,25 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     {t('form.title')} *
                   </label>
                   <input
                     {...register('titre')}
                     type="text"
                     placeholder="Ex: Nettoyage de la plage"
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      errors.titre ? 'border-red-500' : 'border-gray-200 dark:border-gray-600'
-                    } focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all`}
+                    className={`gov-input ${errors.titre ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
                   />
                   {errors.titre && <p className="text-red-500 text-xs mt-1">{errors.titre.message?.toString()}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     {t('form.sector')} *
                   </label>
                   <select
                     {...register('secteur')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all appearance-none bg-white"
+                    className="gov-select"
                   >
                     <option value="">Sélectionner...</option>
                     {SECTEURS.map(s => (
@@ -319,26 +317,26 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Catégorie d'événement *
                   </label>
                   <input
                     {...register('typeCategorique')}
                     type="text"
                     placeholder="Ex: Concours de dessin"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                    className="gov-input"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Description détaillée *
                   </label>
                   <textarea
                     {...register('description')}
                     rows={4}
                     placeholder="Détails de l'événement..."
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                    className="gov-textarea"
                   />
                 </div>
 
@@ -385,12 +383,12 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Commune *
                   </label>
                   <select
                     {...register('communeId', { valueAsNumber: true })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-select"
                   >
                     {communes.map(c => (
                       <option key={c.id} value={c.id}>{locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}</option>
@@ -459,14 +457,14 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   ) : (
                     <div className="space-y-4">
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="gov-label">
                           Lieu exact ou Nom de la salle *
                         </label>
                         <input
                           {...register('lieu')}
                           type="text"
                           placeholder="Ex: Grande Salle du Conseil"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all"
+                          className="gov-input"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -494,58 +492,58 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Date de début *
                   </label>
                   <input
                     {...register('dateDebut')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Date de fin
                   </label>
                   <input
                     {...register('dateFin')}
                     type="date"
                     min={formData.dateDebut || new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-input"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Heure de début
                   </label>
                   <input
                     {...register('heureDebut')}
                     type="time"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Heure de fin
                   </label>
                   <input
                     {...register('heureFin')}
                     type="time"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-input"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="gov-label">
                     Capacité maximale
                   </label>
                   <input
                     {...register('capaciteMax', { valueAsNumber: true })}
                     type="number"
                     placeholder="Ex: 500"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white"
+                    className="gov-input"
                   />
                 </div>
 
@@ -630,41 +628,41 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800">
+        <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800 flex-shrink-0">
            <button
              onClick={saveDraft}
              disabled={savingDraft}
-             className="px-6 py-2.5 text-gray-600 dark:text-gray-400 font-medium flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors disabled:opacity-50"
+             className="gov-btn gov-btn-secondary flex items-center gap-2 text-sm"
            >
-             {savingDraft ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-             Brouillon
+             {savingDraft ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+             <span className="hidden sm:inline">Brouillon</span>
            </button>
 
-           <div className="flex items-center gap-4">
+           <div className="flex items-center gap-3">
              {currentStep > 1 && (
                <button
                  onClick={goPrev}
-                 className="px-6 py-2.5 text-gray-600 dark:text-gray-400 font-medium flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                 className="gov-btn gov-btn-secondary flex items-center gap-1.5 text-sm"
                >
-                 <ChevronLeft size={18} />
-                 Retour
+                 <ChevronLeft size={16} />
+                 <span className="hidden sm:inline">Retour</span>
                </button>
              )}
              {currentStep < 4 ? (
                <button
                  onClick={goNext}
-                 className="px-8 py-2.5 bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 hover:shadow-emerald-500/40 transition-all flex items-center gap-2"
+                 className="gov-btn gov-btn-primary flex items-center gap-1.5 text-sm"
                >
-                 Suivant
-                 <ChevronRight size={18} />
+                 <span className="hidden sm:inline">Suivant</span>
+                 <ChevronRight size={16} />
                </button>
              ) : (
                <button
                  onClick={handleSubmit(onSubmit)}
                  disabled={loading}
-                 className="px-10 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all flex items-center gap-2 disabled:opacity-50"
+                 className="gov-btn gov-btn-success flex items-center gap-2 text-sm"
                >
-                 {loading ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
+                 {loading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                  Créer l'événement
                </button>
              )}

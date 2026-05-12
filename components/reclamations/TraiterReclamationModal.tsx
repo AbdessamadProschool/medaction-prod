@@ -211,7 +211,7 @@ export default function TraiterReclamationModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden"
+          className="bg-white rounded-none sm:rounded-2xl shadow-2xl w-full sm:max-w-lg max-h-[100dvh] sm:max-h-[90dvh] overflow-hidden flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -229,7 +229,7 @@ export default function TraiterReclamationModal({
           </div>
 
           {/* Content */}
-          <div className="p-6 overflow-y-auto max-h-[60vh]">
+          <div className="p-4 sm:p-6 overflow-y-auto flex-1">
             {/* Sélection de l'action */}
             {!action && (
               <div className="space-y-4">
@@ -320,10 +320,10 @@ export default function TraiterReclamationModal({
                         value={motifRejet}
                         onChange={(e) => setMotifRejet(e.target.value)}
                         rows={4}
-                        className="gov-input"
+                        className="gov-textarea"
                         placeholder="Expliquez pourquoi cette réclamation est rejetée..."
                       />
-                      <p className="text-xs text-gray-400 mt-1">Minimum 10 caractères</p>
+                      <p className="text-xs text-muted-foreground mt-1">Minimum 10 caractères</p>
                     </div>
                   </div>
                 )}
@@ -387,10 +387,10 @@ export default function TraiterReclamationModal({
                         value={solution}
                         onChange={(e) => setSolution(e.target.value)}
                         rows={4}
-                        className="gov-input"
+                        className="gov-textarea"
                         placeholder="Décrivez la solution apportée pour résoudre le problème..."
                       />
-                      <p className="text-xs text-gray-400 mt-1">Minimum 10 caractères</p>
+                      <p className="text-xs text-muted-foreground mt-1">Minimum 10 caractères</p>
                     </div>
                   </div>
                 )}
@@ -402,7 +402,7 @@ export default function TraiterReclamationModal({
                     value={commentaire}
                     onChange={(e) => setCommentaire(e.target.value)}
                     rows={2}
-                    className="gov-input"
+                    className="gov-textarea"
                     placeholder="Note interne pour le suivi..."
                   />
                 </div>
@@ -420,21 +420,21 @@ export default function TraiterReclamationModal({
 
           {/* Footer */}
           {action && (
-            <div className="p-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50">
+            <div className="p-4 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50/80 flex-shrink-0">
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="gov-btn gov-btn-secondary px-5 py-2.5 text-sm"
               >
                 Annuler
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`px-4 py-2 rounded-lg font-medium text-white flex items-center gap-2 transition-colors disabled:opacity-50 ${
-                  action === 'rejeter' 
-                    ? 'bg-[hsl(348,83%,47%)] hover:bg-[hsl(348,83%,42%)]'
-                    : 'bg-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,25%)]'
+                className={`gov-btn text-white flex items-center gap-2 px-5 py-2.5 text-sm ${
+                  action === 'rejeter'
+                    ? 'gov-btn-danger'
+                    : 'gov-btn-primary'
                 }`}
               >
                 {loading ? (

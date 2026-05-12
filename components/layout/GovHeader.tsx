@@ -188,7 +188,7 @@ export default function GovHeader() {
             </Link>
 
             {/* Navigation principale (Desktop) */}
-            <nav className="hidden xl:flex items-center justify-center flex-1 gap-1 px-4">
+            <nav className="hidden xl:flex items-center justify-center flex-1 gap-1 px-4 relative">
               {primaryNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -196,12 +196,19 @@ export default function GovHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all ${
+                    className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-colors z-10 ${
                       isActive
-                        ? 'bg-white/10 text-white shadow-sm ring-1 ring-white/20'
-                        : 'text-white/80 hover:bg-white/5 hover:text-white'
+                        ? 'text-white'
+                        : 'text-white/80 hover:text-white'
                     }`}
                   >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavIndicator"
+                        className="absolute inset-0 bg-white/10 rounded-lg shadow-sm ring-1 ring-white/20 -z-10"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
                     <Icon size={16} className={isActive ? 'text-[hsl(45,93%,47%)]' : ''} />
                     {item.label}
                   </Link>
@@ -216,7 +223,7 @@ export default function GovHeader() {
                     setKiosqueOpen(!kiosqueOpen);
                     setServicesOpen(false);
                   }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all active:scale-[0.98] ${
                      kiosqueOpen ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white'
                   }`}
                 >
@@ -262,7 +269,7 @@ export default function GovHeader() {
                       setServicesOpen(!servicesOpen);
                       setKiosqueOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-all active:scale-[0.98] ${
                        servicesOpen ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white'
                     }`}
                   >
@@ -319,7 +326,7 @@ export default function GovHeader() {
               {/* Recherche */}
               <Link
                 href="/recherche"
-                className="p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all"
+                className="p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
               >
                 <Search size={20} />
               </Link>
@@ -332,7 +339,7 @@ export default function GovHeader() {
                       e.stopPropagation();
                       setNotificationsOpen(!notificationsOpen);
                     }}
-                    className="relative p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all"
+                    className="relative p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
                   >
                     <Bell size={20} />
                     {unreadCount > 0 && (
@@ -441,7 +448,7 @@ export default function GovHeader() {
                       e.stopPropagation();
                       setUserMenuOpen(!userMenuOpen);
                     }}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all text-white ring-1 ring-white/10"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all text-white ring-1 ring-white/10 active:scale-[0.98]"
                   >
                     {/* Photo utilisateur ou initiales */}
                     {session.user?.photo ? (
@@ -606,6 +613,7 @@ export default function GovHeader() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="xl:hidden bg-[hsl(213,80%,15%)] border-t border-white/10 overflow-hidden"
           >
             <nav className="px-4 py-4 space-y-1">

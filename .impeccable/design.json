@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-12T17:19:00Z",
+  "title": "Design System: Portail Médiouna (MedAction)",
+  "extensions": {
+    "colorMeta": {
+      "bleu-administratif": {
+        "role": "primary",
+        "displayName": "Bleu Administratif",
+        "canonical": "hsl(213, 80%, 28%)",
+        "tonalRamp": ["#061A33", "#0A2F5C", "#0E4281", "#1A6AB5", "#4D8FCC", "#80B3DE", "#B3D5EE", "#E6F0F9"]
+      },
+      "or-royal": {
+        "role": "secondary",
+        "displayName": "Or Royal",
+        "canonical": "hsl(45, 93%, 47%)",
+        "tonalRamp": ["#3D2F02", "#7A5F04", "#B68E06", "#E7B408", "#F0C940", "#F5D870", "#FAE8A0", "#FEF5D8"]
+      },
+      "vert-officiel": {
+        "role": "tertiary",
+        "displayName": "Vert Officiel",
+        "canonical": "hsl(145, 63%, 32%)",
+        "tonalRamp": ["#0A2E1A", "#155C37", "#1E8550", "#2BBB70", "#5CCC90", "#8DDDB0", "#BEEED0", "#E6F9EF"]
+      },
+      "rouge-drapeau": {
+        "role": "tertiary",
+        "displayName": "Rouge Drapeau",
+        "canonical": "hsl(348, 83%, 47%)",
+        "tonalRamp": ["#3D0816", "#7A1030", "#AD1340", "#DA1851", "#E44A73", "#ED7C96", "#F5AEB9", "#FCE0E5"]
+      },
+      "surface-claire": {
+        "role": "neutral",
+        "displayName": "Surface Claire",
+        "canonical": "#FAFAFA",
+        "tonalRamp": ["#212530", "#3D4250", "#676C78", "#9EA2AA", "#C5C8CC", "#E3E5E8", "#F3F4F5", "#FAFAFA"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Titre principal de page. Un seul par écran." },
+      "headline": { "displayName": "Headline", "purpose": "Titres de section dans les dashboards." },
+      "title": { "displayName": "Title", "purpose": "En-têtes de cartes, titres de modals." },
+      "body": { "displayName": "Body", "purpose": "Texte courant, descriptions, formulaires." },
+      "label": { "displayName": "Label", "purpose": "Labels de champs, légendes, métadonnées." }
+    },
+    "shadows": [
+      { "name": "ambient-repos", "value": "0 1px 3px rgba(0,0,0,0.06)", "purpose": "Ombre minimale sur les cartes au repos." },
+      { "name": "hover-elevation", "value": "0 4px 12px rgba(0,0,0,0.08)", "purpose": "Apparaît au survol. Transition 200ms." },
+      { "name": "menu-dropdown", "value": "0 8px 24px rgba(0,0,0,0.12)", "purpose": "Menus déroulants, popovers, modals." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Transitions d'état par défaut." },
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Entrées d'éléments, ouvertures de menus." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "Hover, focus, toggles." },
+      { "name": "duration-normal", "value": "200ms", "purpose": "Transitions standard." },
+      { "name": "duration-slow", "value": "300ms", "purpose": "Ouvertures de cartes, slide-in panels." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Action principale. Utilisé pour soumettre, confirmer, sauvegarder.",
+      "html": "<button class=\"ds-btn-primary\">Soumettre</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #0E4281; color: #fff; padding: 10px 20px; font-family: Inter, ui-sans-serif, system-ui; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #0A2F5C; box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .ds-btn-primary:focus-visible { outline: 2px solid #0E4281; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Action secondaire. Annuler, retour, action alternative.",
+      "html": "<button class=\"ds-btn-secondary\">Annuler</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #fff; color: #0E4281; padding: 10px 20px; font-family: Inter, ui-sans-serif, system-ui; font-size: 0.875rem; font-weight: 600; border: 1px solid #0E4281; border-radius: 8px; cursor: pointer; transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-secondary:hover { background: rgba(14,66,129,0.05); } .ds-btn-secondary:focus-visible { outline: 2px solid #0E4281; outline-offset: 2px; }"
+    },
+    {
+      "name": "Gov Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Conteneur standard pour les sections de contenu.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\">Titre</div><div class=\"ds-card-body\">Contenu</div></div>",
+      "css": ".ds-card { background: #fff; border: 1px solid #E3E5E8; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); } .ds-card-header { padding: 16px 24px; border-bottom: 1px solid #E3E5E8; font-family: Inter, ui-sans-serif, system-ui; font-weight: 600; font-size: 1rem; } .ds-card-body { padding: 24px; }"
+    },
+    {
+      "name": "Gov Badge",
+      "kind": "chip",
+      "refersTo": "badge-primary",
+      "description": "Badge de statut. Variantes: primary, success, warning, danger.",
+      "html": "<span class=\"ds-badge ds-badge-primary\">En cours</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; font-family: Inter, ui-sans-serif, system-ui; font-size: 0.75rem; font-weight: 600; border-radius: 9999px; border: 1px solid; } .ds-badge-primary { background: #E8EFF8; color: #0E4281; border-color: rgba(14,66,129,0.3); } .ds-badge-success { background: #E6F5ED; color: #1E8550; border-color: rgba(30,133,80,0.3); } .ds-badge-warning { background: #FEF5E0; color: #B68E06; border-color: rgba(231,180,8,0.4); } .ds-badge-danger { background: #FDEAEA; color: #DE3030; border-color: rgba(222,48,48,0.3); }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Champ de saisie standard pour formulaires administratifs.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Saisir...\" />",
+      "css": ".ds-input { width: 100%; padding: 10px 16px; font-family: Inter, ui-sans-serif, system-ui; font-size: 0.875rem; color: #212530; background: #FAFAFA; border: 2px solid #E3E5E8; border-radius: 8px; transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1); outline: none; } .ds-input::placeholder { color: #9EA2AA; } .ds-input:focus { border-color: #0E4281; box-shadow: 0 0 0 3px rgba(14,66,129,0.15); } .ds-input:disabled { background: #F3F4F5; opacity: 0.5; }"
+    },
+    {
+      "name": "Gov Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-sidebar-item",
+      "description": "Item de navigation dans la sidebar administrative.",
+      "html": "<a class=\"ds-nav-item ds-nav-item-active\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/></svg> Tableau de bord</a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin: 2px 8px; font-family: Inter, ui-sans-serif, system-ui; font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.7); border-radius: 8px; text-decoration: none; transition: color 200ms, background 200ms; cursor: pointer; } .ds-nav-item:hover { color: #fff; background: rgba(255,255,255,0.1); } .ds-nav-item-active { color: #fff; background: rgba(255,255,255,0.15); border-left: 3px solid #E7B408; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Gouvernance Moderne",
+    "overview": "Un design sérieux et institutionnel qui privilégie la clarté de l'information, sans fioritures décoratives. Chaque pixel sert un objectif fonctionnel. Le système visuel s'enracine dans l'identité nationale marocaine : le bleu structure l'autorité, l'or accentue, le vert confirme, le rouge alerte. Le portail rejette catégoriquement les esthétiques de startups SaaS.",
+    "keyCharacteristics": [
+      "Clarté institutionnelle : hiérarchie forte, labels explicites, jamais d'ambiguïté",
+      "Bilingue natif : chaque composant fonctionne en Français (LTR) et Arabe (RTL)",
+      "Plat par défaut : ombres uniquement en réponse à une interaction",
+      "Épuré et discret : bordures fines, coins arrondis, contrastes forts"
+    ],
+    "rules": [
+      { "name": "La Règle des Quatre Piliers", "body": "Chaque couleur sémantique porte exactement un rôle fonctionnel. Bleu=autorité, Or=importance, Vert=succès, Rouge=danger.", "section": "colors" },
+      { "name": "La Règle du Contraste", "body": "Tout texte atteint un ratio WCAG AA minimum de 4.5:1.", "section": "colors" },
+      { "name": "La Règle Cairo-Inter", "body": "En-têtes: Cairo. Corps: Inter. Pas de mélange. En RTL, Cairo pour tout.", "section": "typography" },
+      { "name": "La Règle du Repos Plat", "body": "Surfaces plates au repos. Ombres uniquement en réponse à une interaction.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do utiliser la palette des quatre piliers exclusivement pour leurs rôles fonctionnels",
+      "Do vérifier chaque texte pour un ratio de contraste WCAG AA ≥ 4.5:1",
+      "Do tester chaque composant en RTL et en mode sombre",
+      "Do respecter prefers-reduced-motion",
+      "Do garder les transitions à 200-300ms avec courbe ease-out"
+    ],
+    "donts": [
+      "Don't utiliser de gradients violets, glassmorphisme ou animations rebondissantes",
+      "Don't créer de grilles de cartes identiques icône+titre+texte",
+      "Don't utiliser de border-left > 1px comme accent coloré",
+      "Don't utiliser background-clip: text avec gradient",
+      "Don't utiliser #000000 ou #FFFFFF purs",
+      "Don't animer les propriétés CSS de layout"
+    ]
+  }
+}

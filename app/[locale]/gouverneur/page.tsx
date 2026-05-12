@@ -571,10 +571,73 @@ export default function GouverneurDashboard() {
 
   if (loading || status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 border-4 border-gov-blue/20 border-t-gov-blue rounded-full animate-spin" />
-          <p className="text-gray-500 font-medium">{t('sidebar.loading')}</p>
+            <div className="min-h-screen bg-[#F8FAFC] relative flex" dir={dir}>
+        {/* Sidebar Skeleton (Desktop only) */}
+        <div className={`hidden xl:flex flex-col w-72 bg-slate-900 border-white/10 p-8 h-screen sticky top-0 ${isRTL ? 'border-l' : 'border-r'}`}>
+          <div className="flex items-center gap-4 mb-12">
+            <div className="w-10 h-10 bg-slate-800 rounded-xl animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-5 w-32 bg-slate-800 rounded animate-pulse" />
+              <div className="h-3 w-20 bg-slate-800 rounded animate-pulse" />
+            </div>
+          </div>
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="h-12 w-full bg-slate-800/50 rounded-xl animate-pulse" />
+            ))}
+          </div>
+          <div className="mt-auto pt-6 border-t border-white/10">
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 bg-slate-800 rounded-full animate-pulse" />
+               <div className="space-y-2">
+                 <div className="h-4 w-24 bg-slate-800 rounded animate-pulse" />
+                 <div className="h-3 w-16 bg-slate-800 rounded animate-pulse" />
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="flex-1 flex flex-col min-h-screen">
+          <header className="bg-white/80 border-b border-gray-100 flex items-center justify-between px-8 py-4 h-20 sticky top-0 z-40">
+             <div className="h-6 w-48 bg-slate-200 rounded animate-pulse" />
+             <div className="hidden md:flex h-8 w-48 bg-slate-100 rounded-full animate-pulse" />
+          </header>
+          <main className="p-8 space-y-8">
+             <div className="flex justify-between items-center">
+                <div className="space-y-3">
+                   <div className="h-8 w-64 bg-slate-200 rounded animate-pulse" />
+                   <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
+                </div>
+                <div className="h-12 w-48 bg-gov-blue/20 rounded-2xl animate-pulse hidden md:block" />
+             </div>
+             
+             {/* Cards Skeleton Grid */}
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 h-36 flex flex-col justify-between">
+                     <div className="h-3 w-24 bg-slate-200 rounded animate-pulse" />
+                     <div className="flex justify-between items-end">
+                        <div className="space-y-2">
+                           <div className="h-8 w-16 bg-slate-200 rounded animate-pulse" />
+                           <div className="h-3 w-20 bg-slate-100 rounded animate-pulse" />
+                        </div>
+                        <div className="h-12 w-12 bg-slate-100 rounded-2xl animate-pulse" />
+                     </div>
+                  </div>
+                ))}
+             </div>
+
+             {/* Live Pulse Skeleton */}
+             <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 h-48 flex items-center">
+               <div className="space-y-4 flex-1">
+                 <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+                 <div className="h-8 w-3/4 bg-slate-200 rounded animate-pulse" />
+                 <div className="h-4 w-1/2 bg-slate-200 rounded animate-pulse" />
+               </div>
+               <div className="h-24 w-48 bg-slate-50 rounded-3xl animate-pulse" />
+             </div>
+          </main>
         </div>
       </div>
     );

@@ -183,9 +183,74 @@ export default function CoordinateurDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="w-10 h-10 text-blue-600 animate-spin mx-auto mb-4" />
+      <div className="space-y-8 animate-pulse" dir="rtl">
+        {/* Hero Header Skeleton */}
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gray-200 dark:bg-gray-800 p-8 md:p-12 shadow-sm">
+          <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            <div className="space-y-4">
+              <div className="h-6 w-32 bg-gray-300 dark:bg-gray-700 rounded-full" />
+              <div className="h-10 w-64 md:w-96 bg-gray-300 dark:bg-gray-700 rounded-lg" />
+              <div className="h-6 w-48 bg-gray-300 dark:bg-gray-700 rounded-lg" />
+            </div>
+            <div className="flex gap-3">
+              <div className="h-12 w-32 bg-gray-300 dark:bg-gray-700 rounded-xl" />
+              <div className="h-12 w-40 bg-gray-300 dark:bg-gray-700 rounded-xl" />
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid Skeleton */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+              <div className="flex items-start justify-between">
+                <div className="space-y-3">
+                  <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-10 w-16 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                  <div className="h-3 w-24 bg-gray-100 dark:bg-gray-700 rounded" />
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-700" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Main Content Grid Skeleton */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Upcoming Activities Skeleton */}
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="p-8 border-b border-gray-50 dark:border-gray-700 flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-700" />
+                <div className="space-y-2">
+                  <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-4 w-48 bg-gray-100 dark:bg-gray-700 rounded" />
+                </div>
+              </div>
+              <div className="h-8 w-24 bg-gray-100 dark:bg-gray-700 rounded-xl" />
+            </div>
+            <div className="p-8 space-y-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="flex gap-6">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-gray-700 shrink-0" />
+                  <div className="flex-1 space-y-3">
+                    <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="flex gap-4">
+                      <div className="h-4 w-24 bg-gray-100 dark:bg-gray-700 rounded" />
+                      <div className="h-4 w-32 bg-gray-100 dark:bg-gray-700 rounded" />
+                    </div>
+                  </div>
+                  <div className="h-8 w-24 bg-gray-100 dark:bg-gray-700 rounded-xl" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Side Panel Skeleton */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[400px]" />
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-[2rem] h-[200px]" />
+          </div>
         </div>
       </div>
     );

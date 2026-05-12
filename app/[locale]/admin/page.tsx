@@ -352,44 +352,100 @@ export default function AdminDashboard() {
             <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
             <div className="space-y-2">
               <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
-              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+              <div className="h-4 w-64 bg-gray-100 dark:bg-gray-800 rounded-lg" />
             </div>
           </div>
           <div className="flex gap-3">
-             <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-             <div className="h-12 w-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-             <div className="h-12 w-40 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+            <div className="h-[46px] w-[46px] bg-gray-200 dark:bg-gray-700 rounded-xl" />
+            <div className="h-[46px] w-28 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+            <div className="h-[46px] w-32 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl" />
           </div>
         </div>
 
         {/* KPI Cards Skeleton */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-6 h-36 flex flex-col justify-between">
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-6 flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700" />
               <div className="flex justify-between items-start">
-                 <div className="space-y-2">
+                 <div className="space-y-3">
                     <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
-                    <div className="h-10 w-16 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                    <div className="h-10 w-20 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                    <div className="h-4 w-32 bg-gray-100 dark:bg-gray-800 rounded" />
                  </div>
-                 <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+                 <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-2xl" />
               </div>
+              <div className="mt-4 h-6 w-24 bg-gray-100 dark:bg-gray-700 rounded-full" />
             </div>
           ))}
         </div>
 
+        {/* Quick Actions Skeleton */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-5 h-5 bg-gray-200 dark:bg-gray-700 rounded-full" />
+            <div className="h-6 w-40 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="p-5 rounded-2xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 h-36 flex flex-col justify-between">
+                <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700" />
+                <div className="space-y-2 mt-auto">
+                  <div className="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Charts Skeleton */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col">
-              <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-8" />
-              <div className="flex-1 bg-gray-100 dark:bg-gray-700/50 rounded-2xl" />
+           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col border border-gray-100 dark:border-gray-700">
+              <div className="flex justify-between items-start mb-6">
+                <div className="space-y-2">
+                  <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-4 w-32 bg-gray-100 dark:bg-gray-800 rounded" />
+                </div>
+                <div className="h-4 w-20 bg-gray-100 dark:bg-gray-800 rounded" />
+              </div>
+              <div className="flex-1 space-y-4 mt-4">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between">
+                      <div className="h-4 w-24 bg-gray-100 dark:bg-gray-800 rounded" />
+                      <div className="h-4 w-8 bg-gray-100 dark:bg-gray-800 rounded" />
+                    </div>
+                    <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full" />
+                  </div>
+                ))}
+              </div>
            </div>
-           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col">
-              <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-8" />
-              <div className="flex-1 bg-gray-100 dark:bg-gray-700/50 rounded-2xl" />
+           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col border border-gray-100 dark:border-gray-700">
+              <div className="flex justify-between items-start mb-6">
+                <div className="space-y-2">
+                  <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded" />
+                  <div className="h-4 w-32 bg-gray-100 dark:bg-gray-800 rounded" />
+                </div>
+                <div className="h-4 w-20 bg-gray-100 dark:bg-gray-800 rounded" />
+              </div>
+              <div className="flex-1 flex items-center justify-center gap-6">
+                <div className="w-32 h-32 rounded-full border-[12px] border-gray-100 dark:border-gray-700" />
+                <div className="space-y-3 flex-1">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-gray-700" />
+                      <div className="h-4 flex-1 bg-gray-100 dark:bg-gray-800 rounded" />
+                      <div className="h-4 w-8 bg-gray-100 dark:bg-gray-800 rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
            </div>
         </div>
+        
+        {/* Footer Stats Skeleton */}
+        <div className="bg-gray-200 dark:bg-gray-800 rounded-3xl p-6 h-24" />
       </div>
     );
   }

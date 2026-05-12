@@ -61,21 +61,22 @@ export default function CTASection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/register"
-                className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-[hsl(45,93%,47%)] text-gray-900 font-semibold rounded-lg hover:bg-[hsl(45,93%,52%)] transition-colors ${isAr ? 'text-lg font-bold' : ''}`}
-              >
-                {t('cta.btn_create_account')}
-                <ArrowRight className="w-5 h-5 rtl:rotate-180" />
-              </Link>
-              <Link
-                href="/login"
-                className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors ${isAr ? 'text-lg font-bold' : ''}`}
-              >
-                {t('cta.btn_login')}
-              </Link>
-            </div>
+             <div className="flex flex-col sm:flex-row gap-4">
+               <Link
+                 href="/register"
+                 className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-4 bg-[hsl(45,93%,47%)] text-gray-900 font-bold rounded-xl shadow-lg shadow-[hsl(45,93%,47%)]/30 hover:shadow-[hsl(45,93%,47%)]/50 hover:-translate-y-1 transition-all duration-300 ${isAr ? 'text-lg' : ''}`}
+               >
+                 <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                 <span className="relative">{t('cta.btn_create_account')}</span>
+                 <ArrowRight className="w-5 h-5 relative group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform" />
+               </Link>
+               <Link
+                 href="/login"
+                 className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 hover:border-white/50 hover:-translate-y-0.5 transition-all duration-300 ${isAr ? 'text-lg font-bold' : ''}`}
+               >
+                 {t('cta.btn_login')}
+               </Link>
+             </div>
           </motion.div>
 
           {/* Right Content - Simple Stats Card */}
@@ -98,17 +99,17 @@ export default function CTASection() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                <div className="text-center p-4 bg-gray-50 rounded-xl hover:bg-[hsl(213,80%,95%)] transition-colors">
                   <p className="text-2xl font-bold text-[hsl(213,80%,35%)]">25K+</p>
                   <p className="text-xs text-gray-500 mt-1">{t('cta.stats_citizens')}</p>
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
-                  <p className="text-2xl font-bold text-[hsl(213,80%,35%)]">95%</p>
+                <div className="text-center p-4 bg-gray-50 rounded-xl hover:bg-[hsl(145,63%,95%)] transition-colors">
+                  <p className="text-2xl font-bold text-[hsl(145,63%,32%)]">95%</p>
                   <p className="text-xs text-gray-500 mt-1">{t('cta.stats_resolution')}</p>
                 </div>
-                <div className="text-center p-4 bg-gray-50 rounded-xl">
-                  <p className="text-2xl font-bold text-[hsl(213,80%,35%)]">48h</p>
+                <div className="col-span-2 sm:col-span-1 text-center p-4 bg-gray-50 rounded-xl hover:bg-[hsl(45,93%,95%)] transition-colors">
+                  <p className="text-2xl font-bold text-[hsl(45,93%,40%)]">48h</p>
                   <p className="text-xs text-gray-500 mt-1">{t('cta.stats_time')}</p>
                 </div>
               </div>

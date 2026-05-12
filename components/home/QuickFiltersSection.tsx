@@ -198,10 +198,10 @@ export default function QuickFiltersSection() {
           transition={{ delay: 0.3 }}
           className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100"
         >
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Commune Select */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-3">
+              <label className="gov-label flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[hsl(213,80%,35%)]" />
                 {t('common.commune')}
               </label>
@@ -209,13 +209,7 @@ export default function QuickFiltersSection() {
                 <select
                   value={selectedCommune || ''}
                   onChange={(e) => setSelectedCommune(Number(e.target.value) || null)}
-                  className="
-                    w-full px-4 py-4 
-                    bg-gray-50 border-2 border-gray-100 rounded-2xl
-                    text-gray-900 appearance-none
-                    focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[hsl(213,80%,35%)]
-                    transition-all duration-200 hover:border-gray-200
-                  "
+                  className="gov-select"
                 >
                   <option value="">{t('search.all_communes')}</option>
                   {communes.map((commune) => (
@@ -234,7 +228,7 @@ export default function QuickFiltersSection() {
 
             {/* Search Input */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-3">
+              <label className="gov-label flex items-center gap-2">
                 <Search className="w-4 h-4 text-[hsl(213,80%,35%)]" />
                 {t('common.rechercher')}
               </label>
@@ -244,15 +238,9 @@ export default function QuickFiltersSection() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('search.placeholder')}
-                  className="
-                    w-full pl-12 pr-4 py-4 
-                    bg-gray-50 border-2 border-gray-100 rounded-2xl
-                    text-gray-900 placeholder:text-gray-400
-                    focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-[hsl(213,80%,35%)]
-                    transition-all duration-200 hover:border-gray-200
-                  "
+                  className="gov-input ps-12"
                 />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
             </div>
 
@@ -260,17 +248,17 @@ export default function QuickFiltersSection() {
             <div className="flex items-end gap-3">
               <Link
                 href={`/etablissements?secteur=${selectedSecteur || ''}&communeId=${selectedCommune || ''}&search=${searchQuery}`}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-[hsl(213,80%,35%)] to-[hsl(213,80%,45%)] text-white font-semibold rounded-2xl shadow-lg shadow-blue-200 hover:shadow-xl transition-all"
+                className="flex-1 gov-btn gov-btn-primary flex items-center justify-center gap-2 py-3"
               >
                 <Search className="w-5 h-5" />
                 {t('actions.search')}
               </Link>
               <Link
                 href="/carte"
-                className="flex items-center justify-center gap-2 px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-2xl hover:border-[hsl(213,80%,35%)]/30 hover:bg-gray-50 transition-all"
+                className="gov-btn gov-btn-secondary flex items-center justify-center gap-2 py-3"
               >
                 <MapPin className="w-5 h-5" />
-                {t('nav.carte')}
+                <span className="hidden sm:inline">{t('nav.carte')}</span>
               </Link>
             </div>
           </div>

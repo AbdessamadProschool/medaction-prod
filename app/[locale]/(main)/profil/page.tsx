@@ -276,8 +276,47 @@ export default function ProfilPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 space-y-6 animate-pulse">
+          {/* Header skeleton */}
+          <div className="h-9 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+
+          {/* Card skeleton */}
+          <div className="gov-card overflow-hidden">
+            {/* Profile header skeleton */}
+            <div className="bg-gray-200 dark:bg-gray-700 h-40 w-full" />
+
+            {/* Tabs skeleton */}
+            <div className="border-b border-gray-200 flex gap-2 px-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-12 w-28 bg-gray-100 dark:bg-gray-700 rounded-t-lg" />
+              ))}
+            </div>
+
+            {/* Form skeleton */}
+            <div className="p-6 space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {[1, 2].map(i => (
+                  <div key={i} className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="h-11 w-full bg-gray-100 dark:bg-gray-700 rounded-xl" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded" />
+                <div className="h-11 w-full bg-gray-100 dark:bg-gray-700 rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded" />
+                <div className="h-11 w-full bg-gray-100 dark:bg-gray-700 rounded-xl" />
+              </div>
+              <div className="flex justify-end">
+                <div className="h-11 w-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -122,8 +122,8 @@ export default function MesReclamationsPage() {
             </PermissionGuard>
           </div>
 
-          {/* Stats Cards - 3 cartes seulement */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="gov-card p-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[hsl(213,80%,28%)]">

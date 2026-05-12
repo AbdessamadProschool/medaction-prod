@@ -492,6 +492,39 @@
     background-size: 24px 24px;
   }
 
+  /* === TABLES RESPONSIVES === */
+  .gov-table-wrapper {
+    @apply overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--gov-blue) / 0.3) transparent;
+  }
+
+  .gov-table-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .gov-table-wrapper::-webkit-scrollbar-thumb {
+    @apply bg-[hsl(var(--gov-blue)/0.3)] rounded-full;
+  }
+
+  /* Colonnes non essentielles masquées sur mobile */
+  .gov-table-col-optional {
+    @apply hidden sm:table-cell;
+  }
+
+  /* Card mobile quand la table ne passe pas */
+  .gov-card-mobile {
+    @apply flex flex-col gap-1 py-3 px-4 border-b border-gray-100 dark:border-gray-700 last:border-0;
+  }
+
+  .gov-card-mobile-label {
+    @apply text-xs text-muted-foreground font-medium uppercase tracking-wide;
+  }
+
+  .gov-card-mobile-value {
+    @apply text-sm font-medium text-foreground;
+  }
+
   /* === FOOTER OFFICIEL === */
   .gov-footer {
     @apply bg-gradient-to-b from-gray-900 to-gray-950 text-white;

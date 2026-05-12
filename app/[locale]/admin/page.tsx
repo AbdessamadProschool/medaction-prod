@@ -345,10 +345,50 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500">{t('loading')}</p>
+      <div className="space-y-8 animate-pulse">
+        {/* Header Skeleton */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+            <div className="space-y-2">
+              <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+            </div>
+          </div>
+          <div className="flex gap-3">
+             <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+             <div className="h-12 w-32 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+             <div className="h-12 w-40 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+          </div>
+        </div>
+
+        {/* KPI Cards Skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-6 h-36 flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                 <div className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="h-10 w-16 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+                 </div>
+                 <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Charts Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col">
+              <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-8" />
+              <div className="flex-1 bg-gray-100 dark:bg-gray-700/50 rounded-2xl" />
+           </div>
+           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-80 flex flex-col">
+              <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+              <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-8" />
+              <div className="flex-1 bg-gray-100 dark:bg-gray-700/50 rounded-2xl" />
+           </div>
         </div>
       </div>
     );

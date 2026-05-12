@@ -125,8 +125,55 @@ export default function AutoriteDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-10 h-10 text-gov-blue animate-spin" />
+      <div className="space-y-6 animate-pulse">
+        {/* Header Skeleton */}
+        <div className="bg-gray-200 dark:bg-gray-700 rounded-xl h-32 w-full" />
+        
+        {/* KPI Cards Skeleton */}
+        <div className="grid md:grid-cols-4 gap-4">
+           {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-white dark:bg-gray-800 rounded-xl h-32 border border-gray-100 dark:border-gray-700 p-6 flex flex-col justify-between">
+                 <div className="flex justify-between">
+                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl" />
+                 </div>
+                 <div className="space-y-2 mt-4">
+                    <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded" />
+                 </div>
+              </div>
+           ))}
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="grid lg:grid-cols-3 gap-6">
+           {/* Table */}
+           <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl h-96 border border-gray-100 dark:border-gray-700 p-5">
+              <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-8" />
+              <div className="space-y-4">
+                 {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="h-12 w-full bg-gray-100 dark:bg-gray-700/50 rounded-lg" />
+                 ))}
+              </div>
+           </div>
+           {/* Sidebar */}
+           <div className="space-y-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl h-64 border border-gray-100 dark:border-gray-700 p-5">
+                 <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-6" />
+                 <div className="space-y-3">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="h-8 w-full bg-gray-100 dark:bg-gray-700/50 rounded" />
+                    ))}
+                 </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl h-48 border border-gray-100 dark:border-gray-700 p-5">
+                 <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-6" />
+                 <div className="space-y-3">
+                    {[1, 2].map(i => (
+                       <div key={i} className="h-8 w-full bg-gray-100 dark:bg-gray-700/50 rounded" />
+                    ))}
+                 </div>
+              </div>
+           </div>
+        </div>
       </div>
     );
   }

@@ -103,8 +103,61 @@ export default function DelegationDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+      <div className="space-y-8 animate-pulse">
+        {/* Ultra-compact Header Skeleton */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 h-20 border border-gray-200 dark:border-gray-700 flex items-center justify-between">
+           <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700" />
+              <div className="space-y-2">
+                 <div className="w-40 h-5 bg-gray-200 dark:bg-gray-700 rounded-md" />
+                 <div className="w-24 h-3 bg-gray-200 dark:bg-gray-700 rounded-md" />
+              </div>
+           </div>
+           <div className="w-32 h-12 rounded-xl bg-gray-200 dark:bg-gray-700" />
+        </div>
+
+        {/* KPI Cards Skeleton */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl p-6 h-40 border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                 <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700" />
+              </div>
+              <div className="space-y-2 mt-4">
+                 <div className="w-20 h-3 bg-gray-200 dark:bg-gray-700 rounded-md" />
+                 <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Main Content Columns Skeleton */}
+        <div className="grid lg:grid-cols-3 gap-8">
+           {/* Table Skeleton (Colspan 2) */}
+           <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-6 h-[500px] border border-gray-200 dark:border-gray-700 flex flex-col">
+              <div className="w-48 h-6 bg-gray-200 dark:bg-gray-700 rounded-md mb-8" />
+              <div className="space-y-4 flex-1">
+                 {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className="w-full h-12 bg-gray-100 dark:bg-gray-700/50 rounded-xl" />
+                 ))}
+              </div>
+           </div>
+           {/* Sidebar Actions Skeleton (Colspan 1) */}
+           <div className="space-y-8">
+              <div className="bg-blue-900/10 dark:bg-blue-950 rounded-3xl p-7 h-80 border border-gray-200 dark:border-gray-800">
+                 <div className="w-40 h-6 bg-gray-200 dark:bg-gray-700 rounded-md mb-8" />
+                 <div className="space-y-4">
+                    {[1, 2, 3].map(i => (
+                       <div key={i} className="w-full h-16 bg-gray-200 dark:bg-gray-700/50 rounded-2xl" />
+                    ))}
+                 </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-3xl p-7 h-48 border border-gray-200 dark:border-gray-700">
+                 <div className="w-32 h-6 bg-gray-200 dark:bg-gray-700 rounded-md mb-6" />
+                 <div className="w-full h-16 bg-gray-100 dark:bg-gray-700/50 rounded-2xl" />
+              </div>
+           </div>
+        </div>
       </div>
     );
   }

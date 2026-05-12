@@ -6257,6 +6257,12 @@
       "export_success": "Exportation réussie",
       "export_error": "Échec de l'exportation",
       "connection_error": "Erreur de connexion au serveur"
+    },
+    "footer": {
+      "mode": "Mode Super Administrateur",
+      "full_access": "Accès total au système activé",
+      "last_backup": "Dernière sauvegarde",
+      "version": "Version du système"
     }
   },
   "audit_log": {

@@ -29,6 +29,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Evenement {
   id: number;
@@ -547,9 +548,22 @@ function AdminEvenementsContent() {
         </div>
 
         {evenements.length === 0 && (
-          <div className="text-center py-12">
-            <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-            <p className="text-gray-500">{t('empty')}</p>
+          <div className="p-8">
+            <EmptyState
+              icon={<Calendar className="w-10 h-10" />}
+              title={t('empty')}
+              description="Aucun événement ne correspond à vos critères actuels. Vous pouvez en créer un nouveau ou ajuster vos filtres."
+              action={
+                (filters.search || filters.statut || filters.secteur || filters.communeId) ? (
+                  <button 
+                    onClick={resetFilters}
+                    className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mt-2"
+                  >
+                    Effacer les filtres
+                  </button>
+                ) : undefined
+              }
+            />
           </div>
         )}
 

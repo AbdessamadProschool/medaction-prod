@@ -31,6 +31,7 @@ import {
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Campagne {
   id: number;
@@ -352,14 +353,22 @@ export default function AdminCampagnesPage() {
             </div>
           ))
         ) : campagnes.length === 0 ? (
-          <div className="col-span-full text-center py-16">
-            <Megaphone className="w-16 h-16 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {t('no_campaigns')}
-            </h3>
-            <p className="text-gray-500">
-              {search || statutFilter ? t('no_results') : t('create_first')}
-            </p>
+          <div className="col-span-full">
+            <EmptyState
+              icon={<Megaphone className="w-10 h-10" />}
+              title={t('no_campaigns')}
+              description={search || statutFilter || secteurFilter ? t('no_results') : t('create_first')}
+              action={
+                (search || statutFilter || secteurFilter) ? (
+                  <button 
+                    onClick={() => { setSearch(''); setStatutFilter(''); setSecteurFilter(''); }}
+                    className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mt-2"
+                  >
+                    Effacer les filtres
+                  </button>
+                ) : undefined
+              }
+            />
           </div>
         ) : (
           campagnes.map((campagne) => {

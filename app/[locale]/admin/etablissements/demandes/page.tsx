@@ -35,6 +35,7 @@ import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
+import EmptyState from '@/components/ui/EmptyState';
 
 export default function AdminDemandesPage() {
   const t = useTranslations('establishments_workflow');
@@ -156,12 +157,12 @@ export default function AdminDemandesPage() {
                   <div key={i} className="h-32 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 animate-pulse" />
                 ))
               ) : filteredDemandes.length === 0 ? (
-                <div className="bg-white dark:bg-gray-900 p-12 rounded-[2rem] border border-dashed border-gray-200 dark:border-gray-800 text-center">
-                  <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-300">
-                    <FileText size={32} />
-                  </div>
-                  <p className="text-gray-500 font-bold">{te('requests.no_requests')}</p>
-                </div>
+                <EmptyState
+                  icon={<FileText className="w-8 h-8" />}
+                  title={te('requests.no_requests')}
+                  description={searchTerm ? "Aucune demande ne correspond à votre recherche." : "Il n'y a aucune demande en attente pour le moment."}
+                  className="bg-white dark:bg-gray-900 rounded-[2rem] border-dashed"
+                />
               ) : (
                 filteredDemandes.map(d => (
                   <motion.div 
@@ -410,17 +411,20 @@ export default function AdminDemandesPage() {
                   </div>
                 </motion.div>
               ) : (
-                 <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 p-12 text-center shadow-sm">
-                   <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center mb-6 text-gray-300 dark:text-gray-600">
-                      <Building2 size={48} strokeWidth={1} />
-                   </div>
-                   <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">{te('requests.select_to_view')}</h3>
-                   <p className="text-gray-500 font-bold max-w-sm mx-auto">{te('requests.can_validate_reject')}</p>
-                   <div className="mt-8 flex gap-2">
-                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.4s]" />
-                   </div>
+                <div className="h-full min-h-[500px] bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 p-12 shadow-sm flex items-center justify-center">
+                  <EmptyState
+                    icon={<Building2 className="w-12 h-12" />}
+                    title={te('requests.select_to_view')}
+                    description={te('requests.can_validate_reject')}
+                    className="border-none bg-transparent"
+                    action={
+                      <div className="mt-4 flex gap-2 justify-center">
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce" />
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.4s]" />
+                      </div>
+                    }
+                  />
                 </div>
               )}
             </AnimatePresence>

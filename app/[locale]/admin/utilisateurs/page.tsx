@@ -17,9 +17,11 @@ import {
   Download,
   X,
   KeyRound,
+  Users,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import EmptyState from '@/components/ui/EmptyState';
 import CreateUserModal from './CreateUserModal';
 import EditRoleModal from './EditRoleModal';
 
@@ -336,8 +338,26 @@ export default function UsersPage() {
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                    {t('no_users')}
+                  <td colSpan={6} className="px-6 py-12">
+                    <EmptyState
+                      icon={<Users className="w-10 h-10" />}
+                      title={t('no_users')}
+                      description="Aucun utilisateur ne correspond à vos critères actuels. Vous pouvez en ajouter un nouveau ou modifier vos filtres."
+                      action={
+                        (searchQuery || selectedRole !== 'ALL' || selectedStatus !== 'ALL') ? (
+                          <button 
+                            onClick={() => {
+                              setSearchQuery('');
+                              setSelectedRole('ALL');
+                              setSelectedStatus('ALL');
+                            }}
+                            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mt-2"
+                          >
+                            Effacer les filtres
+                          </button>
+                        ) : undefined
+                      }
+                    />
                   </td>
                 </tr>
               ) : (

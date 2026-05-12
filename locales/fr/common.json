@@ -6274,6 +6274,7 @@
       "CREATE_USER": "Création utilisateur",
       "UPDATE_USER": "Modification utilisateur",
       "DELETE_USER": "Suppression utilisateur",
+      "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe par admin",
       "UPDATE_PERMISSIONS": "Mise à jour permissions",
       "ACCESS_DENIED": "Accès refusé",
       "CREATE_BACKUP": "Création sauvegarde",

@@ -3584,7 +3584,9 @@
       "active": "حملات نشطة",
       "pending": "قيد الانتظار",
       "participants": "مجموع المشاركين",
-      "finished": "مكتمل"
+      "finished": "مكتمل",
+      "planned": "مخطط لها",
+      "ended": "منتهية"
     },
     "search_placeholder": "البحث عن حملة...",
     "all_statuses": "جميع الحالات",
@@ -5915,18 +5917,6 @@
       "delete_success": "تم حذف الرسالة بنجاح"
     }
   },
-  "admin_campagnes": {
-    "title": "حملات التوعية",
-    "subtitle": "إدارة حملات التوعية ({total})",
-    "filters": "تصفية",
-    "new_campaign": "حملة جديدة",
-    "stats": {
-      "active": "نشطة",
-      "planned": "مخطط لها",
-      "ended": "منتهية",
-      "total_participants": "إجمالي المشاركين"
-    }
-  },
   "notifications_page": {
     "title": "الإشعارات",
     "unread_count": "{count} غير مقروءة",
@@ -6245,6 +6235,12 @@
       "export_success": "تم التصدير بنجاح",
       "export_error": "فشل التصدير",
       "connection_error": "خطأ في الاتصال بالخادم"
+    },
+    "footer": {
+      "mode": "وضع المشرف العام",
+      "full_access": "تم تفعيل الوصول الكامل للنظام",
+      "last_backup": "آخر نسخة احتياطية",
+      "version": "إصدار النظام"
     }
   },
   "audit_page": {

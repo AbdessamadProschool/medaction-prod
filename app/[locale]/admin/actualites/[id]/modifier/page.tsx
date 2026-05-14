@@ -105,43 +105,51 @@ export default function ModifierActualitePage() {
     e.preventDefault();
     setSaving(true);
     
-    try {
-      const tagsArray = formData.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean);
-      
-      const res = await fetch(`/api/actualites/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          tags: tagsArray,
-          statut: formData.isPublie ? 'PUBLIEE' : (formData.isValide ? 'VALIDEE' : 'EN_ATTENTE_VALIDATION'),
-          datePublication: formData.isPublie ? new Date().toISOString() : null,
-        }),
-      });
-      
-      const result = await res.json();
-      
-      if (!res.ok) {
-        // Afficher les erreurs détaillées
-        if (result.error?.details) {
-          result.error.details.forEach((d: any) => toast.error(d.message));
-        } else {
-          toast.error(result.error?.message || t('actions.update_error'));
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const tagsArray = formData.tags
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean);
+        
+        const res = await fetch(`/api/actualites/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...formData,
+            tags: tagsArray,
+            statut: formData.isPublie ? 'PUBLIEE' : (formData.isValide ? 'VALIDEE' : 'EN_ATTENTE_VALIDATION'),
+            datePublication: formData.isPublie ? new Date().toISOString() : null,
+          }),
+        });
+        
+        const result = await res.json();
+        
+        if (!res.ok) {
+          // Afficher les erreurs détaillées
+          if (result.error?.details) {
+            reject(new Error(result.error.details.map((d: any) => d.message).join(', ')));
+          } else {
+            reject(new Error(result.error?.message || t('actions.update_error')));
+          }
+          return;
         }
-        return;
+        
+        resolve(true);
+        router.push('/admin/actualites');
+      } catch (error) {
+        console.error('Erreur sauvegarde:', error);
+        reject(new Error(t('actions.update_error')));
+      } finally {
+        setSaving(false);
       }
-      
-      toast.success(t('actions.update_success'));
-      router.push('/admin/actualites');
-    } catch (error) {
-      console.error('Erreur sauvegarde:', error);
-      toast.error(t('actions.update_error'));
-    } finally {
-      setSaving(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Sauvegarde en cours...',
+      success: t('actions.update_success'),
+      error: (err: any) => err.message,
+    });
   };
 
   const handleDelete = async () => {
@@ -231,14 +239,14 @@ export default function ModifierActualitePage() {
             <>
               <button
                 onClick={() => handleValidate(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
+                className="gov-btn gov-btn-success"
               >
                 <CheckCircle className="w-4 h-4" />
                 {t('actions.validate')}
               </button>
               <button
                 onClick={() => handleValidate(false)}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="gov-btn gov-btn-danger"
               >
                 <XCircle className="w-4 h-4" />
                 {t('actions.reject')}
@@ -289,7 +297,7 @@ export default function ModifierActualitePage() {
               type="text"
               value={formData.titre}
               onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="gov-input"
               required
               minLength={5}
               maxLength={200}
@@ -304,7 +312,7 @@ export default function ModifierActualitePage() {
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="gov-textarea"
               rows={2}
               maxLength={500}
             />
@@ -318,7 +326,7 @@ export default function ModifierActualitePage() {
             <textarea
               value={formData.contenu}
               onChange={(e) => setFormData({ ...formData, contenu: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="gov-textarea"
               rows={8}
               required
               minLength={50}
@@ -334,7 +342,7 @@ export default function ModifierActualitePage() {
               <select
                 value={formData.categorie}
                 onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="gov-select"
               >
                 <option value="">{t('form.select_category') || '-- Sélectionner --'}</option>
                 {CATEGORIES.map(cat => (
@@ -352,7 +360,7 @@ export default function ModifierActualitePage() {
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="gov-input"
                 placeholder={t('form.tags_placeholder')}
               />
             </div>
@@ -365,7 +373,7 @@ export default function ModifierActualitePage() {
                 type="checkbox"
                 checked={formData.isValide}
                 onChange={(e) => setFormData({ ...formData, isValide: e.target.checked })}
-                className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
               />
               <span className="text-sm font-medium text-gray-700">{t('form.is_valide')}</span>
             </label>
@@ -375,7 +383,7 @@ export default function ModifierActualitePage() {
                 type="checkbox"
                 checked={formData.isPublie}
                 onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
-                className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
               />
               <span className="text-sm font-medium text-gray-700">{t('form.is_publie')}</span>
             </label>
@@ -388,7 +396,7 @@ export default function ModifierActualitePage() {
             type="button"
             onClick={handleDelete}
             disabled={deleting}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+            className="gov-btn text-red-600 hover:bg-red-50 disabled:opacity-50"
           >
             {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
             {t('actions.delete')}
@@ -397,14 +405,14 @@ export default function ModifierActualitePage() {
           <div className="flex items-center gap-3">
             <Link
               href="/admin/actualites"
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {t('actions.cancel')}
             </Link>
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              className="gov-btn gov-btn-primary"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {t('actions.save')}

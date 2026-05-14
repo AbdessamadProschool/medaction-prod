@@ -75,51 +75,62 @@ export default function AdminNouvelleCampagnePage() {
 
   const onSubmit = async (data: CampagneForm) => {
     setLoading(true);
-    try {
-      let imageUrl = null;
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        let imageUrl = null;
 
-      // Upload image
-      if (selectedImage) {
-        const formData = new FormData();
-        formData.append('file', selectedImage);
-        formData.append('type', 'campagnes');
+        // Upload image
+        if (selectedImage) {
+          const formData = new FormData();
+          formData.append('file', selectedImage);
+          formData.append('type', 'campagnes');
 
-        const uploadRes = await fetch('/api/upload', {
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!uploadRes.ok) {
+            reject(new Error("Erreur upload image"));
+            return;
+          }
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.url;
+        }
+
+        const res = await fetch('/api/campagnes', {
           method: 'POST',
-          body: formData,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
+            isOrganiseParProvince: data.isOrganiseParProvince,
+            sousCouvertProvince: data.sousCouvertProvince,
+            imagePrincipale: imageUrl
+          }),
         });
 
-        if (!uploadRes.ok) throw new Error("Erreur upload image");
-        const uploadData = await uploadRes.json();
-        imageUrl = uploadData.url;
+        if (res.ok) {
+          resolve(true);
+          router.push('/admin/campagnes');
+          router.refresh();
+        } else {
+          const err = await res.json();
+          reject(new Error(err.error || t('validation.error')));
+        }
+      } catch (error) {
+        console.error(error);
+        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : t('validation.error'))));
+      } finally {
+        setLoading(false);
       }
+    });
 
-      const res = await fetch('/api/campagnes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
-          isOrganiseParProvince: data.isOrganiseParProvince,
-          sousCouvertProvince: data.sousCouvertProvince,
-          imagePrincipale: imageUrl
-        }),
-      });
-
-      if (res.ok) {
-        toast.success(t('validation.success'));
-        router.push('/admin/campagnes');
-        router.refresh();
-      } else {
-        const err = await res.json();
-        toast.error(err.error || t('validation.error'));
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Erreur: ' + (error instanceof Error ? error.message : t('validation.error')));
-    } finally {
-      setLoading(false);
-    }
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: t('validation.success'),
+      error: (err: any) => err.message,
+    });
   };
 
   return (
@@ -169,8 +180,7 @@ export default function AdminNouvelleCampagnePage() {
                 <input
                   {...register('nom')}
                   type="text"
-                  placeholder={t('form.short_name_placeholder')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none dark:text-white"
+                  className="gov-input"
                 />
                 {errors.nom && <p className="text-red-500 text-sm mt-1">{errors.nom.message}</p>}
               </div>
@@ -180,7 +190,7 @@ export default function AdminNouvelleCampagnePage() {
                 </label>
                 <select
                   {...register('type')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none dark:text-white"
+                  className="gov-select"
                 >
                   <option value="">{t('form.type_placeholder')}</option>
                   {TYPES_LIST.map(val => (
@@ -198,8 +208,7 @@ export default function AdminNouvelleCampagnePage() {
               <input
                 {...register('titre')}
                 type="text"
-                placeholder={t('form.public_title_placeholder')}
-                className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none text-lg font-medium dark:text-white"
+                className="gov-input text-lg font-medium"
               />
               {errors.titre && <p className="text-red-500 text-sm mt-1">{errors.titre.message}</p>}
             </div>
@@ -211,8 +220,7 @@ export default function AdminNouvelleCampagnePage() {
               <textarea
                 {...register('description')}
                 rows={2}
-                placeholder={t('form.short_desc_placeholder')}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none dark:text-white"
+                className="gov-textarea"
               />
             </div>
 
@@ -223,8 +231,7 @@ export default function AdminNouvelleCampagnePage() {
               <textarea
                 {...register('contenu')}
                 rows={8}
-                placeholder={t('form.content_placeholder')}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none dark:text-white"
+                className="gov-textarea"
               />
               {errors.contenu && <p className="text-red-500 text-sm mt-1">{errors.contenu.message}</p>}
             </div>
@@ -248,8 +255,7 @@ export default function AdminNouvelleCampagnePage() {
               <input
                 {...register('objectifParticipations')}
                 type="number"
-                placeholder={t('form.participants_goal_placeholder')}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none dark:text-white"
+                className="gov-input"
               />
             </div>
             <div>
@@ -265,7 +271,7 @@ export default function AdminNouvelleCampagnePage() {
                 <input
                   {...register('couleurTheme')}
                   type="text"
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none uppercase dark:text-white"
+                  className="gov-input uppercase"
                 />
               </div>
             </div>
@@ -277,7 +283,7 @@ export default function AdminNouvelleCampagnePage() {
               <input
                 {...register('dateDebut')}
                 type="date"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none dark:text-white"
+                className="gov-input"
               />
             </div>
             <div>
@@ -288,7 +294,7 @@ export default function AdminNouvelleCampagnePage() {
               <input
                 {...register('dateFin')}
                 type="date"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none dark:text-white"
+                className="gov-input"
               />
             </div>
           </div>
@@ -382,7 +388,7 @@ export default function AdminNouvelleCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                     />
                   </div>
                   <div>
@@ -396,7 +402,7 @@ export default function AdminNouvelleCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                     />
                   </div>
                   <div>
@@ -413,7 +419,7 @@ export default function AdminNouvelleCampagnePage() {
         <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
           <Link
             href="/admin/campagnes"
-            className="px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium transition-colors"
+            className="gov-btn gov-btn-secondary"
           >
             {t('form.cancel')}
           </Link>
@@ -421,7 +427,7 @@ export default function AdminNouvelleCampagnePage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all shadow-lg font-semibold flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="gov-btn gov-btn-primary px-8 py-4 text-lg"
           >
             {loading ? (
               <>

@@ -94,38 +94,46 @@ export default function ModifierArticlePage() {
     e.preventDefault();
     setSaving(true);
     
-    try {
-      const tagsArray = formData.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean);
-      
-      const res = await fetch(`/api/articles/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          tags: tagsArray,
-          datePublication: formData.isPublie ? new Date().toISOString() : null,
-        }),
-      });
-      
-      const result = await res.json();
-      
-      if (!res.ok) {
-        toast.error(result.error?.message || t('messages.save_error') || 'Erreur lors de la sauvegarde');
-        return;
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const tagsArray = formData.tags
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean);
+        
+        const res = await fetch(`/api/articles/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...formData,
+            tags: tagsArray,
+            datePublication: formData.isPublie ? new Date().toISOString() : null,
+          }),
+        });
+        
+        const result = await res.json();
+        
+        if (!res.ok) {
+          reject(new Error(result.error?.message || t('messages.save_error') || 'Erreur lors de la sauvegarde'));
+          return;
+        }
+        
+        resolve(true);
+        router.push('/admin/articles');
+        router.refresh();
+      } catch (error) {
+        console.error('Erreur sauvegarde:', error);
+        reject(new Error(t('messages.save_error') || 'Erreur lors de la sauvegarde'));
+      } finally {
+        setSaving(false);
       }
-      
-      toast.success(t('messages.success') || 'Article mis à jour avec succès');
-      router.push('/admin/articles');
-      router.refresh();
-    } catch (error) {
-      console.error('Erreur sauvegarde:', error);
-      toast.error(t('messages.save_error') || 'Erreur lors de la sauvegarde');
-    } finally {
-      setSaving(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Sauvegarde en cours...',
+      success: t('messages.success') || 'Article mis à jour avec succès',
+      error: (err: any) => err.message,
+    });
   };
 
   const handleDelete = async () => {
@@ -224,7 +232,7 @@ export default function ModifierArticlePage() {
                 type="text"
                 value={formData.titre}
                 onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
-                className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xl font-medium"
+                className="gov-input text-xl font-medium"
                 required
                 minLength={5}
               />
@@ -237,8 +245,7 @@ export default function ModifierArticlePage() {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={2}
-                className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-600"
+                className="gov-textarea"
               />
             </div>
 
@@ -249,8 +256,7 @@ export default function ModifierArticlePage() {
               <textarea
                 value={formData.contenu}
                 onChange={(e) => setFormData({ ...formData, contenu: e.target.value })}
-                rows={15}
-                className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all leading-relaxed"
+                className="gov-textarea leading-relaxed"
                 required
                 minLength={50}
               />
@@ -272,7 +278,7 @@ export default function ModifierArticlePage() {
                 <select
                   value={formData.categorie}
                   onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white"
+                  className="gov-select bg-white"
                 >
                   <option value="">{t('form.select_category')}</option>
                   <option value="GUIDE">Guide</option>
@@ -291,8 +297,7 @@ export default function ModifierArticlePage() {
                   type="text"
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                  placeholder="tag1, tag2..."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                  className="gov-input"
                 />
               </div>
             </div>
@@ -310,7 +315,7 @@ export default function ModifierArticlePage() {
                   type="checkbox"
                   checked={formData.isPublie}
                   onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-indigo-600 mt-0.5"
+                  className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] mt-0.5"
                 />
                 <div>
                   <span className="font-medium text-gray-800 block">{t('form.publish_now')}</span>
@@ -322,7 +327,7 @@ export default function ModifierArticlePage() {
                   type="checkbox"
                   checked={formData.isMisEnAvant}
                   onChange={(e) => setFormData({ ...formData, isMisEnAvant: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-amber-600 mt-0.5"
+                  className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] mt-0.5"
                 />
                 <div>
                   <span className="font-medium text-gray-800 block">{t('modal.toggle_featured')}</span>
@@ -338,7 +343,7 @@ export default function ModifierArticlePage() {
             type="button"
             onClick={handleDelete}
             disabled={deleting}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors disabled:opacity-50"
+            className="gov-btn text-red-600 hover:bg-red-50 disabled:opacity-50"
           >
             {deleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
             <span>{t('modal.delete')}</span>
@@ -348,14 +353,14 @@ export default function ModifierArticlePage() {
             <button
               type="button"
               onClick={() => router.push('/admin/articles')}
-              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {t('actions.cancel')}
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-700 hover:to-indigo-800 transition-all shadow-lg shadow-indigo-500/25 font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="gov-btn gov-btn-primary px-8 py-3"
             >
               {saving ? (
                 <>

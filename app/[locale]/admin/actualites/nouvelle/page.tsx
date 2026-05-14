@@ -80,61 +80,70 @@ export default function AdminNouvelleActualitePage() {
 
   const onSubmit = async (data: ActualiteForm) => {
     setLoading(true);
-    try {
-      let imageUrl = null;
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        let imageUrl = null;
 
-      if (selectedImage) {
-        const formData = new FormData();
-        formData.append('file', selectedImage);
-        formData.append('type', 'actualites');
+        if (selectedImage) {
+          const formData = new FormData();
+          formData.append('file', selectedImage);
+          formData.append('type', 'actualites');
 
-        try {
-            const uploadRes = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-            });
+          try {
+              const uploadRes = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData,
+              });
 
-            if (!uploadRes.ok) {
-                const text = await uploadRes.text();
-                throw new Error(`Upload Failed: ${uploadRes.status}`);
-            }
-            const uploadData = await uploadRes.json();
-            imageUrl = uploadData.url;
-        } catch (e) {
-            console.error("Upload error:", e);
-             toast.error("Erreur téléchargement image");
-             throw e;
+              if (!uploadRes.ok) {
+                  const text = await uploadRes.text();
+                  reject(new Error(`Upload Failed: ${uploadRes.status}`));
+                  return;
+              }
+              const uploadData = await uploadRes.json();
+              imageUrl = uploadData.url;
+          } catch (e) {
+               console.error("Upload error:", e);
+               reject(new Error("Erreur téléchargement image"));
+               return;
+          }
         }
-      }
 
-      const res = await fetch('/api/actualites', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          imageUrl: imageUrl,
-        }),
-      });
+        const res = await fetch('/api/actualites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            imageUrl: imageUrl,
+          }),
+        });
 
-      if (res.ok) {
-        toast.success(t('actions.create') || 'Succès'); 
-        router.push('/admin/actualites');
-        router.refresh();
-      } else {
-        const text = await res.text();
-        try {
-            const err = JSON.parse(text);
-            toast.error(err.error || 'Erreur');
-        } catch {
-             toast.error(`Erreur serveur (${res.status})`);
+        if (res.ok) {
+          resolve(true);
+          router.push('/admin/actualites');
+          router.refresh();
+        } else {
+          const text = await res.text();
+          try {
+              const err = JSON.parse(text);
+              reject(new Error(err.error || 'Erreur'));
+          } catch {
+               reject(new Error(`Erreur serveur (${res.status})`));
+          }
         }
+      } catch (error) {
+        console.error(error);
+        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur')));
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur'));
-    } finally {
-      setLoading(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: t('actions.create') || 'Succès',
+      error: (err: any) => err.message,
+    });
   };
 
   return (
@@ -231,7 +240,7 @@ export default function AdminNouvelleActualitePage() {
               <input
                 {...register('titre')}
                 type="text"
-                className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg font-medium placeholder:text-gray-300 dark:placeholder:text-gray-500 dark:text-white"
+                className="gov-input text-lg font-medium"
               />
               {errors.titre && <p className="text-red-500 text-sm mt-2">{errors.titre.message}</p>}
             </div>
@@ -244,7 +253,7 @@ export default function AdminNouvelleActualitePage() {
               <textarea
                 {...register('resume')}
                 rows={2}
-                className="w-full px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-500 dark:text-white"
+                className="gov-textarea"
               />
             </div>
 
@@ -256,7 +265,7 @@ export default function AdminNouvelleActualitePage() {
               <textarea
                 {...register('contenu')}
                 rows={12}
-                className="w-full px-5 py-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-500 leading-relaxed dark:text-white"
+                className="gov-textarea leading-relaxed"
               />
               {errors.contenu && <p className="text-red-500 text-sm mt-2">{errors.contenu.message}</p>}
             </div>
@@ -273,7 +282,7 @@ export default function AdminNouvelleActualitePage() {
             
             <select
               {...register('secteur')}
-              className="w-full px-4 py-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
+              className="gov-select"
             >
               <option value="">{t('form.select_sector')}</option>
               {SECTEURS.map(s => (
@@ -291,7 +300,7 @@ export default function AdminNouvelleActualitePage() {
             
             <select
               {...register('categorie')}
-              className="w-full px-4 py-4 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
+              className="gov-select"
             >
               <option value="">{t('form.general_category')}</option>
               <option value="TRAVAUX">{t('categories.TRAVAUX')}</option>
@@ -337,7 +346,7 @@ export default function AdminNouvelleActualitePage() {
         <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
           <Link
             href="/admin/actualites"
-            className="px-6 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium transition-colors"
+            className="gov-btn gov-btn-secondary"
           >
             {t('actions.cancel')}
           </Link>
@@ -345,7 +354,7 @@ export default function AdminNouvelleActualitePage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all shadow-lg font-semibold flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="gov-btn gov-btn-primary px-8 py-4 text-lg"
           >
             {loading ? (
               <>

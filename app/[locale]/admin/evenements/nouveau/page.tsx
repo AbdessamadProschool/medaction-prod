@@ -114,56 +114,65 @@ export default function NouveauEventPage() {
 
   const onSubmit = async (data: EventForm) => {
     setLoading(true);
-    try {
-      let imageUrl = null;
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        let imageUrl = null;
 
-      if (selectedImage) {
-        const formData = new FormData();
-        formData.append('file', selectedImage);
-        formData.append('type', 'evenements');
+        if (selectedImage) {
+          const formData = new FormData();
+          formData.append('file', selectedImage);
+          formData.append('type', 'evenements');
 
-        const uploadRes = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
 
-        if (!uploadRes.ok) {
-          const errData = await uploadRes.json();
-          throw new Error(errData.error || t('errors.upload_error'));
+          if (!uploadRes.ok) {
+            const errData = await uploadRes.json();
+            reject(new Error(errData.error || t('errors.upload_error')));
+            return;
+          }
+
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.url;
         }
 
-        const uploadData = await uploadRes.json();
-        imageUrl = uploadData.url;
+        // Parse tags
+        const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+        const res = await fetch('/api/evenements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              ...data,
+              etablissementId: parseInt(data.etablissementId),
+              capaciteMax: data.capaciteMax ? parseInt(data.capaciteMax) : null,
+              tags: tagsArray,
+              imagePrincipale: imageUrl
+          }),
+        });
+
+        if (res.ok) {
+          resolve(true);
+          router.push('/admin/evenements');
+          router.refresh();
+        } else {
+          const errorData = await res.json();
+          reject(new Error(errorData.error || t('errors.create_error')));
+        }
+      } catch (error) {
+        reject(error instanceof Error ? error : new Error(t('errors.create_error')));
+      } finally {
+        setLoading(false);
       }
+    });
 
-      // Parse tags
-      const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
-
-      const res = await fetch('/api/evenements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            ...data,
-            etablissementId: parseInt(data.etablissementId),
-            capaciteMax: data.capaciteMax ? parseInt(data.capaciteMax) : null,
-            tags: tagsArray,
-            imagePrincipale: imageUrl
-        }),
-      });
-
-      if (res.ok) {
-        router.push('/admin/evenements');
-        router.refresh();
-      } else {
-        const errorData = await res.json();
-        toast.error(errorData.error || t('errors.create_error'));
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error instanceof Error ? error.message : t('errors.create_error'));
-    } finally {
-      setLoading(false);
-    }
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: 'Événement créé avec succès',
+      error: (err: any) => err.message,
+    });
   };
 
   const typeColors: Record<string, string> = {
@@ -273,7 +282,7 @@ export default function NouveauEventPage() {
                   {...register('titre')}
                   type="text"
                   placeholder={tForm('title_placeholder')}
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg font-medium placeholder:text-gray-300"
+                  className="gov-input text-lg font-medium"
                 />
                 {errors.titre && (
                   <p className="text-red-500 text-sm mt-2">{errors.titre.message}</p>
@@ -289,7 +298,7 @@ export default function NouveauEventPage() {
                   {...register('description')}
                   rows={5}
                   placeholder={tForm('desc_placeholder')}
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300 leading-relaxed"
+                  className="gov-textarea leading-relaxed"
                 />
                 {errors.description && (
                   <p className="text-red-500 text-sm mt-2">{errors.description.message}</p>
@@ -306,7 +315,7 @@ export default function NouveauEventPage() {
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <select
                       {...register('etablissementId')}
-                      className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white appearance-none"
+                      className="gov-select ltr:pl-12 rtl:pr-12"
                     >
                       <option value="">{tForm('select_placeholder')}</option>
                       {etablissements.map(e => (
@@ -330,7 +339,7 @@ export default function NouveauEventPage() {
                     <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <select
                       {...register('typeCategorique')}
-                      className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white appearance-none"
+                      className="gov-select ltr:pl-12 rtl:pr-12"
                     >
                       <option value="">{tForm('select_placeholder')}</option>
                       <option value="CULTUREL">🎭 Culturel</option>
@@ -356,7 +365,7 @@ export default function NouveauEventPage() {
                   {...register('tags')}
                   type="text"
                   placeholder={tForm('tags_placeholder')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none placeholder:text-gray-300"
+                  className="gov-input"
                 />
               </div>
             </div>
@@ -381,7 +390,7 @@ export default function NouveauEventPage() {
                   <input
                     {...register('dateDebut')}
                     type="date"
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+                    className="gov-input"
                   />
                   {errors.dateDebut && (
                     <p className="text-red-500 text-sm mt-2">{errors.dateDebut.message}</p>
@@ -395,7 +404,7 @@ export default function NouveauEventPage() {
                   <input
                     {...register('dateFin')}
                     type="date"
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+                    className="gov-input"
                   />
                 </div>
               </div>
@@ -410,7 +419,7 @@ export default function NouveauEventPage() {
                   <input
                     {...register('heureDebut')}
                     type="time"
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+                    className="gov-input"
                   />
                 </div>
 
@@ -422,7 +431,7 @@ export default function NouveauEventPage() {
                   <input
                     {...register('heureFin')}
                     type="time"
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
+                    className="gov-input"
                   />
                 </div>
               </div>
@@ -438,7 +447,7 @@ export default function NouveauEventPage() {
                     {...register('lieu')}
                     type="text"
                     placeholder={tForm('location_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                 </div>
 
@@ -450,7 +459,7 @@ export default function NouveauEventPage() {
                     {...register('adresse')}
                     type="text"
                     placeholder={tForm('address_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                 </div>
               </div>
@@ -463,7 +472,7 @@ export default function NouveauEventPage() {
                   {...register('quartierDouar')}
                   type="text"
                   placeholder={tForm('neighborhood_placeholder')}
-                  className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none placeholder:text-gray-300"
+                  className="gov-input"
                 />
               </div>
             </div>
@@ -490,7 +499,7 @@ export default function NouveauEventPage() {
                     {...register('organisateur')}
                     type="text"
                     placeholder={tForm('organizer_name_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                 </div>
 
@@ -503,7 +512,7 @@ export default function NouveauEventPage() {
                     {...register('contactOrganisateur')}
                     type="tel"
                     placeholder={tForm('organizer_phone_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                 </div>
 
@@ -516,7 +525,7 @@ export default function NouveauEventPage() {
                     {...register('emailContact')}
                     type="email"
                     placeholder={tForm('organizer_email_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                   {errors.emailContact && (
                     <p className="text-red-500 text-sm mt-2">{errors.emailContact.message}</p>
@@ -546,7 +555,7 @@ export default function NouveauEventPage() {
                     type="number"
                     min="0"
                     placeholder={tForm('capacity_placeholder')}
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                 </div>
 
@@ -555,7 +564,7 @@ export default function NouveauEventPage() {
                     <input
                       type="checkbox"
                       {...register('inscriptionsOuvertes')}
-                      className="w-5 h-5 rounded border-gray-300 text-green-600 mt-0.5"
+                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] mt-0.5 focus:ring-[hsl(var(--gov-blue))]"
                     />
                     <div>
                       <span className="font-medium text-gray-800 block">{tForm('open_registrations')}</span>
@@ -575,7 +584,7 @@ export default function NouveauEventPage() {
                     {...register('lienInscription')}
                     type="url"
                     placeholder="Ex: https://forms.google.com/..."
-                    className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none placeholder:text-gray-300"
+                    className="gov-input"
                   />
                   {errors.lienInscription && (
                     <p className="text-red-500 text-sm mt-2">{errors.lienInscription.message}</p>
@@ -589,7 +598,7 @@ export default function NouveauEventPage() {
           <div className="flex items-center justify-between pt-6 border-t border-gray-100">
             <Link
               href="/admin/evenements"
-              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {t('buttons.cancel')}
             </Link>
@@ -597,7 +606,7 @@ export default function NouveauEventPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`px-8 py-4 bg-gradient-to-r ${watchedType ? typeColors[watchedType] || 'from-blue-600 to-blue-700' : 'from-blue-600 to-blue-700'} text-white rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all shadow-lg font-semibold flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+              className={`gov-btn gov-btn-primary ${watchedType ? typeColors[watchedType] || '' : ''} px-8 py-4 text-lg`}
             >
               {loading ? (
                 <>

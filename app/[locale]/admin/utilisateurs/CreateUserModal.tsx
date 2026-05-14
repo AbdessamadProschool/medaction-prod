@@ -126,56 +126,58 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
 
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nom: formData.nom,
-          prenom: formData.prenom,
-          email: formData.email,
-          telephone: formData.telephone || null,
-          motDePasse: formData.motDePasse,
-          role: formData.role,
-          secteurResponsable: formData.secteurResponsable || null,
-          communeResponsableId: formData.communeResponsableId ? parseInt(formData.communeResponsableId) : null,
-          etablissementsGeres: formData.etablissementsGeres,
-          isActive: formData.isActive,
-        }),
-      });
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nom: formData.nom,
+            prenom: formData.prenom,
+            email: formData.email,
+            telephone: formData.telephone || null,
+            motDePasse: formData.motDePasse,
+            role: formData.role,
+            secteurResponsable: formData.secteurResponsable || null,
+            communeResponsableId: formData.communeResponsableId ? parseInt(formData.communeResponsableId) : null,
+            etablissementsGeres: formData.etablissementsGeres,
+            isActive: formData.isActive,
+          }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.ok) {
-        toast.success(t('success', { name: `${formData.prenom} ${formData.nom}` }));
-        onSuccess();
-      } else {
-        // Gestion des erreurs structurées de l'API
-        if (data.error) {
-          if (data.error.fieldErrors) {
-            setFieldErrors(data.error.fieldErrors);
-          }
-          if (data.error.field) {
-            setFieldErrors(prev => ({
-              ...prev,
-              [data.error.field]: [data.error.message]
-            }));
-          }
-          
-          const errorMessage = data.error.message || t('errors.create_error');
-          setError(errorMessage);
-          toast.error(errorMessage);
+        if (res.ok) {
+          onSuccess();
+          resolve(data);
         } else {
-          setError(t('errors.create_error'));
-          toast.error(t('errors.create_error'));
+          if (data.error) {
+            if (data.error.fieldErrors) {
+              setFieldErrors(data.error.fieldErrors);
+            }
+            if (data.error.field) {
+              setFieldErrors(prev => ({
+                ...prev,
+                [data.error.field]: [data.error.message]
+              }));
+            }
+            reject(new Error(data.error.message || t('errors.create_error')));
+          } else {
+            reject(new Error(t('errors.create_error')));
+          }
         }
+      } catch (err) {
+        reject(new Error(t('errors.server_error')));
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(t('errors.server_error'));
-      toast.error(t('errors.server_error'));
-    } finally {
-      setLoading(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: t('success', { name: `${formData.prenom} ${formData.nom}` }),
+      error: (err: any) => err.message,
+    });
   };
 
   const toggleEtablissement = (id: number) => {
@@ -225,7 +227,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.prenom}
                   onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.first_name')}
                 />
               </div>
@@ -246,7 +248,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.nom}
                   onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.last_name')}
                 />
               </div>
@@ -267,7 +269,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.email')}
                 />
               </div>
@@ -287,7 +289,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   type="tel"
                   value={formData.telephone}
                   onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.phone')}
                 />
               </div>
@@ -308,7 +310,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.motDePasse}
                   onChange={(e) => setFormData({ ...formData, motDePasse: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.password')}
                 />
               </div>
@@ -329,7 +331,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.confirmMotDePasse}
                   onChange={(e) => setFormData({ ...formData, confirmMotDePasse: e.target.value })}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="gov-input ltr:pl-10 rtl:pr-10"
                   placeholder={t('placeholders.password')}
                 />
               </div>
@@ -388,7 +390,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   required
                   value={formData.secteurResponsable}
                   onChange={(e) => setFormData({ ...formData, secteurResponsable: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500"
+                  className="gov-select"
                 >
                   <option value="">{t('select_option.sector')}</option>
                   {SECTEURS.map((s) => (
@@ -413,7 +415,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                     required
                     value={formData.communeResponsableId}
                     onChange={(e) => setFormData({ ...formData, communeResponsableId: e.target.value })}
-                    className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500"
+                    className="gov-select ltr:pl-10 rtl:pr-10"
                   >
                     <option value="">{t('select_option.commune')}</option>
                     {communes.map((c) => (
@@ -481,7 +483,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
+                  className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                 />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t('fields.active_account')}
@@ -495,14 +497,14 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {t('cancel_btn')}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="gov-btn gov-btn-primary"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {t('submit_btn')}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
+import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
 
@@ -113,33 +114,42 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
 
     setLoading(true);
 
-    try {
-      const res = await fetch(`/api/users/${user.id}/role`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: selectedRole,
-          secteurResponsable: selectedRole === 'DELEGATION' ? secteurResponsable : null,
-          communeResponsableId: selectedRole === 'AUTORITE_LOCALE' ? parseInt(communeResponsableId) : null,
-          etablissementsGeres: selectedRole === 'COORDINATEUR_ACTIVITES' ? etablissementsGeres : [],
-        }),
-      });
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/users/${user.id}/role`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            role: selectedRole,
+            secteurResponsable: selectedRole === 'DELEGATION' ? secteurResponsable : null,
+            communeResponsableId: selectedRole === 'AUTORITE_LOCALE' ? parseInt(communeResponsableId) : null,
+            etablissementsGeres: selectedRole === 'COORDINATEUR_ACTIVITES' ? etablissementsGeres : [],
+          }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.ok) {
-        onSuccess();
-      } else {
-        const errorMessage = typeof data.error === 'string' 
-          ? data.error 
-          : data.error?.message || t('errors.edit_error');
-        setError(errorMessage);
+        if (res.ok) {
+          onSuccess();
+          resolve(data);
+        } else {
+          const errorMessage = typeof data.error === 'string' 
+            ? data.error 
+            : data.error?.message || t('errors.edit_error');
+          reject(new Error(errorMessage));
+        }
+      } catch (err) {
+        reject(new Error(t('errors.server_error')));
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(t('errors.server_error'));
-    } finally {
-      setLoading(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Mise à jour en cours...',
+      success: t('success', { name: `${user.prenom} ${user.nom}` }),
+      error: (err: any) => err.message,
+    });
   };
 
   const toggleEtablissement = (id: number) => {
@@ -238,7 +248,7 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                 required
                 value={secteurResponsable}
                 onChange={(e) => setSecteurResponsable(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500"
+                className="gov-select"
               >
                 <option value="">{tCreate('select_option.sector')}</option>
                 {SECTEURS.map((s) => (
@@ -260,7 +270,7 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                   required
                   value={communeResponsableId}
                   onChange={(e) => setCommuneResponsableId(e.target.value)}
-                  className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500"
+                  className="gov-select ltr:pl-10 rtl:pr-10"
                 >
                   <option value="">{tCreate('select_option.commune')}</option>
                   {communes.map((c) => (
@@ -296,7 +306,7 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                         type="checkbox"
                         checked={etablissementsGeres.includes(etab.id)}
                         onChange={() => toggleEtablissement(etab.id)}
-                        className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500"
+                        className="w-4 h-4 rounded text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                       />
                       <Building2 className="w-4 h-4 text-gray-400" />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -314,14 +324,14 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {tCreate('cancel_btn')}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="gov-btn gov-btn-primary"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {t('submit_btn')}

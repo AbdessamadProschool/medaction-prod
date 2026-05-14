@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 const articleSchema = z.object({
   titre: z.string().min(5, 'Le titre doit faire au moins 5 caractères').max(150),
@@ -62,49 +63,61 @@ export default function NouvelArticlePage() {
 
   const onSubmit = async (data: ArticleForm) => {
     setLoading(true);
-    try {
-      let imageUrl = null;
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        let imageUrl = null;
 
-      if (selectedImage) {
-        const formData = new FormData();
-        formData.append('file', selectedImage);
-        formData.append('type', 'articles');
+        if (selectedImage) {
+          const formData = new FormData();
+          formData.append('file', selectedImage);
+          formData.append('type', 'articles');
 
-        const uploadRes = await fetch('/api/upload', {
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!uploadRes.ok) {
+            reject(new Error("Erreur upload image"));
+            return;
+          }
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.url;
+        }
+
+        const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+        const res = await fetch('/api/admin/articles', {
           method: 'POST',
-          body: formData,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            tags: tagsArray,
+            imagePrincipale: imageUrl
+          }),
         });
 
-        if (!uploadRes.ok) throw new Error("Erreur upload image");
-        const uploadData = await uploadRes.json();
-        imageUrl = uploadData.url;
+        if (res.ok) {
+          resolve(true);
+          router.push('/admin/articles');
+          router.refresh();
+        } else {
+          const err = await res.json();
+          reject(new Error(err.error || 'Erreur lors de la création'));
+        }
+      } catch (error) {
+        console.error(error);
+        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur')));
+      } finally {
+        setLoading(false);
       }
+    });
 
-      const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
-
-      const res = await fetch('/api/admin/articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          tags: tagsArray,
-          imagePrincipale: imageUrl
-        }),
-      });
-
-      if (res.ok) {
-        router.push('/admin/articles');
-        router.refresh();
-      } else {
-        const err = await res.json();
-        alert(err.error || 'Erreur lors de la création');
-      }
-    } catch (error) {
-      console.error(error);
-      alert('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur'));
-    } finally {
-      setLoading(false);
-    }
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: 'Article créé avec succès',
+      error: (err: any) => err.message,
+    });
   };
 
   return (
@@ -200,8 +213,7 @@ export default function NouvelArticlePage() {
                 <input
                   {...register('titre')}
                   type="text"
-                  placeholder="Un titre accrocheur pour votre article..."
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-xl font-medium placeholder:text-gray-300"
+                  className="gov-input text-xl font-medium"
                 />
                 {errors.titre && (
                   <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
@@ -219,8 +231,7 @@ export default function NouvelArticlePage() {
                 <textarea
                   {...register('description')}
                   rows={2}
-                  placeholder="Un bref résumé qui donne envie de lire..."
-                  className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-gray-600 placeholder:text-gray-300"
+                  className="gov-textarea"
                 />
               </div>
 
@@ -232,8 +243,7 @@ export default function NouvelArticlePage() {
                 <textarea
                   {...register('contenu')}
                   rows={15}
-                  placeholder="Rédigez votre article ici. Soyez clair, précis et engageant..."
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all leading-relaxed placeholder:text-gray-300"
+                  className="gov-textarea leading-relaxed"
                 />
                 {errors.contenu && (
                   <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
@@ -258,7 +268,7 @@ export default function NouvelArticlePage() {
                   <label className="block text-sm font-medium text-gray-600 mb-2">{t('form.category')}</label>
                   <select
                     {...register('categorie')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none bg-white"
+                    className="gov-select bg-white"
                   >
                     <option value="">{t('form.select_category')}</option>
                     <option value="ACTUALITE">Actualité</option>
@@ -276,8 +286,7 @@ export default function NouvelArticlePage() {
                   <input
                     {...register('tags')}
                     type="text"
-                    placeholder="développement, innovation, mediouna"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+                    className="gov-input"
                   />
                 </div>
               </div>
@@ -294,7 +303,7 @@ export default function NouvelArticlePage() {
                   <input
                     type="checkbox"
                     {...register('isPublie')}
-                    className="w-5 h-5 rounded border-gray-300 text-blue-600 mt-0.5"
+                    className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] mt-0.5"
                   />
                   <div>
                     <span className="font-medium text-gray-800 block">{t('form.publish_now')}</span>
@@ -308,7 +317,7 @@ export default function NouvelArticlePage() {
           <div className="flex items-center justify-between pt-6 border-t border-gray-100">
             <Link
               href="/admin/articles"
-              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              className="gov-btn gov-btn-secondary"
             >
               {t('actions.cancel')}
             </Link>
@@ -317,7 +326,7 @@ export default function NouvelArticlePage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/25 font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="gov-btn gov-btn-primary px-8 py-3"
               >
                 {loading ? (
                   <>

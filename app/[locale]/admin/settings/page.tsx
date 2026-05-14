@@ -15,6 +15,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 
 interface SettingsData {
@@ -70,8 +71,6 @@ export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<SettingsData>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const tabs = [
     { id: 'general', label: t('admin_settings.tabs.general'), icon: Settings },
@@ -119,39 +118,44 @@ export default function AdminSettingsPage() {
         [key]: value,
       },
     }));
-    setSaved(false);
   };
 
   // Sauvegarder les paramètres
   const handleSave = async () => {
     setSaving(true);
-    setError(null);
     
-    try {
-      // Sauvegarder chaque section
-      for (const section of Object.keys(settings) as (keyof SettingsData)[]) {
-        const res = await fetch('/api/admin/settings', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            section,
-            data: settings[section],
-          }),
-        });
+    const savePromise = new Promise(async (resolve, reject) => {
+      try {
+        // Sauvegarder chaque section
+        for (const section of Object.keys(settings) as (keyof SettingsData)[]) {
+          const res = await fetch('/api/admin/settings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              section,
+              data: settings[section],
+            }),
+          });
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || 'Erreur lors de la sauvegarde');
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Erreur lors de la sauvegarde');
+          }
         }
-      }
 
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la sauvegarde');
-    } finally {
-      setSaving(false);
-    }
+        resolve(true);
+      } catch (err: any) {
+        reject(new Error(err.message || 'Erreur lors de la sauvegarde'));
+      } finally {
+        setSaving(false);
+      }
+    });
+
+    toast.promise(savePromise, {
+      loading: t('admin_settings.saving') || 'Sauvegarde...',
+      success: t('admin_settings.saved') || 'Paramètres sauvegardés',
+      error: (err: any) => err.message,
+    });
   };
 
   const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
@@ -189,26 +193,18 @@ export default function AdminSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving || !isSuperAdmin}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="gov-btn gov-btn-primary px-4 py-2"
         >
           {saving ? (
             <Loader2 className="w-4 h-4 animate-spin" />
-          ) : saved ? (
-            <CheckCircle className="w-4 h-4" />
           ) : (
             <Save className="w-4 h-4" />
           )}
-          {saving ? t('admin_settings.saving') : saved ? t('admin_settings.saved') : t('admin_settings.save')}
+          {saving ? t('admin_settings.saving') : t('admin_settings.save')}
         </button>
       </div>
 
       {/* Messages */}
-      {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-          <AlertCircle size={18} />
-          {error}
-        </div>
-      )}
 
       {!isSuperAdmin && (
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-2 text-amber-700">
@@ -261,8 +257,7 @@ export default function AdminSettingsPage() {
                   dir="auto"
                   value={settings.general.nomPlateforme}
                   onChange={(e) => updateSetting('general', 'nomPlateforme', e.target.value)}
-                  disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-input w-full"
                 />
               </div>
 
@@ -275,8 +270,7 @@ export default function AdminSettingsPage() {
                   dir="auto"
                   value={settings.general.description}
                   onChange={(e) => updateSetting('general', 'description', e.target.value)}
-                  disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-textarea w-full"
                 />
               </div>
 
@@ -289,8 +283,7 @@ export default function AdminSettingsPage() {
                     type="checkbox"
                     checked={settings.general.modeMaintenance}
                     onChange={(e) => updateSetting('general', 'modeMaintenance', e.target.checked)}
-                    disabled={!isSuperAdmin}
-                    className="w-4 h-4 text-emerald-600 rounded"
+                    className="w-4 h-4 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
                   />
                   <label className="text-sm text-gray-600 dark:text-gray-400">
                     {t('admin_settings.general.enable_maintenance')}
@@ -315,8 +308,7 @@ export default function AdminSettingsPage() {
                   type="checkbox"
                   checked={settings.notifications.nouvelleReclamation}
                   onChange={(e) => updateSetting('notifications', 'nouvelleReclamation', e.target.checked)}
-                  disabled={!isSuperAdmin}
-                  className="w-4 h-4 text-emerald-600 rounded"
+                  className="w-4 h-4 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
                 />
               </div>
               
@@ -329,8 +321,7 @@ export default function AdminSettingsPage() {
                   type="checkbox"
                   checked={settings.notifications.nouvelUtilisateur}
                   onChange={(e) => updateSetting('notifications', 'nouvelUtilisateur', e.target.checked)}
-                  disabled={!isSuperAdmin}
-                  className="w-4 h-4 text-emerald-600 rounded"
+                  className="w-4 h-4 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
                 />
               </div>
               
@@ -343,8 +334,7 @@ export default function AdminSettingsPage() {
                   type="checkbox"
                   checked={settings.notifications.rapportQuotidien}
                   onChange={(e) => updateSetting('notifications', 'rapportQuotidien', e.target.checked)}
-                  disabled={!isSuperAdmin}
-                  className="w-4 h-4 text-emerald-600 rounded"
+                  className="w-4 h-4 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
                 />
               </div>
             </div>
@@ -367,8 +357,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) => updateSetting('security', 'dureeSession', parseInt(e.target.value) || 24)}
                   min={1}
                   max={168}
-                  disabled={!isSuperAdmin}
-                  className="w-32 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-input w-32 px-4 py-2"
                 />
               </div>
 
@@ -383,8 +372,7 @@ export default function AdminSettingsPage() {
                   onChange={(e) => updateSetting('security', 'tentativesConnexionMax', parseInt(e.target.value) || 5)}
                   min={3}
                   max={10}
-                  disabled={!isSuperAdmin}
-                  className="w-32 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-input w-32 px-4 py-2"
                 />
               </div>
 
@@ -393,8 +381,7 @@ export default function AdminSettingsPage() {
                   type="checkbox"
                   checked={settings.security.doubleAuthentification}
                   onChange={(e) => updateSetting('security', 'doubleAuthentification', e.target.checked)}
-                  disabled={!isSuperAdmin}
-                  className="w-4 h-4 text-emerald-600 rounded"
+                  className="w-4 h-4 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
                 />
                 <label className="text-sm text-gray-600 dark:text-gray-400">
                   {t('admin_settings.security.enable_2fa')}
@@ -418,8 +405,7 @@ export default function AdminSettingsPage() {
                   dir="ltr"
                   value={settings.email.emailEnvoi}
                   onChange={(e) => updateSetting('email', 'emailEnvoi', e.target.value)}
-                  disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 text-start border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-input w-full px-4 py-2 text-start"
                 />
               </div>
 
@@ -432,8 +418,7 @@ export default function AdminSettingsPage() {
                   dir="ltr"
                   value={settings.email.emailContact}
                   onChange={(e) => updateSetting('email', 'emailContact', e.target.value)}
-                  disabled={!isSuperAdmin}
-                  className="w-full px-4 py-2 text-start border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100"
+                  className="gov-input w-full px-4 py-2 text-start"
                 />
               </div>
 

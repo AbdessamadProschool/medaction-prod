@@ -97,50 +97,58 @@ export default function NouveauEtablissementPage() {
       return isFloat ? parseFloat(String(val)) : parseInt(String(val));
     };
 
-    try {
-      const res = await fetch('/api/etablissements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          communeId: parseNum(formData.communeId),
-          annexeId: parseNum(formData.annexeId),
-          latitude: parseNum(formData.latitude, true),
-          longitude: parseNum(formData.longitude, true),
-          altitude: parseNum(formData.altitude, true),
-          surfaceTotale: parseNum(formData.surfaceTotale, true),
-          anneeCreation: parseNum(formData.anneeCreation),
-          anneeOuverture: parseNum(formData.anneeOuverture),
-          nombreSalles: parseNum(formData.nombreSalles),
-          effectifTotal: parseNum(formData.effectifTotal),
-          nombrePersonnel: parseNum(formData.nombrePersonnel),
-          capaciteAccueil: parseNum(formData.capaciteAccueil),
-          // Éducation
-          nbClasses: parseNum(formData.nbClasses),
-          nbEnseignants: parseNum(formData.nbEnseignants),
-          nbCadres: parseNum(formData.nbCadres),
-          elevesPrescolaire: parseNum(formData.elevesPrescolaire),
-          elevesTotal: parseNum(formData.elevesTotal),
-          nouveauxInscrits: parseNum(formData.nouveauxInscrits),
-          tauxReussite: parseNum(formData.tauxReussite, true),
-          // Financement
-          budgetAnnuel: parseNum(formData.budgetAnnuel, true),
-        }),
-      });
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/etablissements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...formData,
+            communeId: parseNum(formData.communeId),
+            annexeId: parseNum(formData.annexeId),
+            latitude: parseNum(formData.latitude, true),
+            longitude: parseNum(formData.longitude, true),
+            altitude: parseNum(formData.altitude, true),
+            surfaceTotale: parseNum(formData.surfaceTotale, true),
+            anneeCreation: parseNum(formData.anneeCreation),
+            anneeOuverture: parseNum(formData.anneeOuverture),
+            nombreSalles: parseNum(formData.nombreSalles),
+            effectifTotal: parseNum(formData.effectifTotal),
+            nombrePersonnel: parseNum(formData.nombrePersonnel),
+            capaciteAccueil: parseNum(formData.capaciteAccueil),
+            // Éducation
+            nbClasses: parseNum(formData.nbClasses),
+            nbEnseignants: parseNum(formData.nbEnseignants),
+            nbCadres: parseNum(formData.nbCadres),
+            elevesPrescolaire: parseNum(formData.elevesPrescolaire),
+            elevesTotal: parseNum(formData.elevesTotal),
+            nouveauxInscrits: parseNum(formData.nouveauxInscrits),
+            tauxReussite: parseNum(formData.tauxReussite, true),
+            // Financement
+            budgetAnnuel: parseNum(formData.budgetAnnuel, true),
+          }),
+        });
 
-      const data = await res.json();
-      
-      if (res.ok && data.success) {
-        toast.success(t('actions.success'));
-        router.push('/admin/etablissements');
-      } else {
-        toast.error(data.error || t('actions.error_creation'));
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          resolve(true);
+          router.push('/admin/etablissements');
+        } else {
+          reject(new Error(data.error || t('actions.error_creation')));
+        }
+      } catch (err) {
+        reject(new Error(t('actions.server_error')));
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      toast.error(t('actions.server_error'));
-    } finally {
-      setLoading(false);
-    }
+    });
+
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: t('actions.success'),
+      error: (err: any) => err.message,
+    });
   };
 
   return (
@@ -185,7 +193,7 @@ export default function NouveauEtablissementPage() {
                   required
                   value={formData.nom}
                   onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium shadow-sm"
+                  className="gov-input text-lg"
                 />
               </div>
               <div className="space-y-2">
@@ -194,7 +202,7 @@ export default function NouveauEtablissementPage() {
                   dir="rtl"
                   value={formData.nomArabe}
                   onChange={(e) => setFormData({ ...formData, nomArabe: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-2xl font-arabic shadow-sm"
+                  className="gov-input text-2xl font-arabic"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -204,7 +212,7 @@ export default function NouveauEtablissementPage() {
                     required
                     value={formData.code}
                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 transition-all font-mono shadow-sm"
+                    className="gov-input font-mono"
                   />
                 </div>
                 <div className="space-y-2">
@@ -212,7 +220,7 @@ export default function NouveauEtablissementPage() {
                   <select
                     value={formData.secteur}
                     onChange={(e) => setFormData({ ...formData, secteur: e.target.value })}
-                    className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 transition-all font-bold shadow-sm"
+                    className="gov-select font-bold"
                   >
                     <option value="EDUCATION">{tSectors('EDUCATION')}</option>
                     <option value="SANTE">{tSectors('SANTE')}</option>
@@ -229,7 +237,7 @@ export default function NouveauEtablissementPage() {
                   <select
                     value={formData.nature}
                     onChange={(e) => setFormData({ ...formData, nature: e.target.value })}
-                    className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 shadow-sm"
+                    className="gov-select"
                   >
                     <option value="PUBLIC">{t('options.natures.PUBLIC')}</option>
                     <option value="PRIVE">{t('options.natures.PRIVE')}</option>
@@ -241,7 +249,7 @@ export default function NouveauEtablissementPage() {
                     value={formData.typeEtablissement}
                     onChange={(e) => setFormData({ ...formData, typeEtablissement: e.target.value })}
                     placeholder={t('placeholders.typeEtab')}
-                    className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-emerald-500/10 shadow-sm"
+                    className="gov-input"
                   />
                 </div>
               </div>
@@ -261,7 +269,7 @@ export default function NouveauEtablissementPage() {
                   required
                   value={formData.communeId}
                   onChange={(e) => setFormData({ ...formData, communeId: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 shadow-sm"
+                  className="gov-select"
                 >
                   <option value="">{t('form.select_commune')}</option>
                   <option value="1">{t('options.communes.1')}</option>
@@ -277,7 +285,7 @@ export default function NouveauEtablissementPage() {
                 <input
                   value={formData.quartierDouar}
                   onChange={(e) => setFormData({ ...formData, quartierDouar: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 shadow-sm"
+                  className="gov-input"
                 />
                </div>
                <div className="col-span-full space-y-2">
@@ -285,7 +293,7 @@ export default function NouveauEtablissementPage() {
                 <input
                   value={formData.adresseComplete}
                   onChange={(e) => setFormData({ ...formData, adresseComplete: e.target.value })}
-                  className="w-full px-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 shadow-sm"
+                  className="gov-input"
                 />
                </div>
                <div className="grid grid-cols-3 gap-4 col-span-full">
@@ -295,7 +303,7 @@ export default function NouveauEtablissementPage() {
                       type="number" step="any" required
                       value={formData.latitude}
                       onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 font-mono shadow-sm"
+                      className="gov-input font-mono"
                     />
                   </div>
                   <div className="space-y-2">
@@ -304,7 +312,7 @@ export default function NouveauEtablissementPage() {
                       type="number" step="any" required
                       value={formData.longitude}
                       onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 font-mono shadow-sm"
+                      className="gov-input font-mono"
                     />
                   </div>
                   <div className="space-y-2">
@@ -313,7 +321,7 @@ export default function NouveauEtablissementPage() {
                       type="number" step="any"
                       value={formData.altitude}
                       onChange={(e) => setFormData({ ...formData, altitude: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-blue-500/10 font-mono shadow-sm"
+                      className="gov-input font-mono"
                     />
                   </div>
                </div>
@@ -335,7 +343,7 @@ export default function NouveauEtablissementPage() {
                     type="tel"
                     value={formData.telephone}
                     onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    className="gov-input ltr:pl-12 rtl:pr-12"
                     placeholder={t('placeholders.telephone') || "+212 ..."}
                   />
                 </div>
@@ -348,7 +356,7 @@ export default function NouveauEtablissementPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    className="gov-input ltr:pl-12 rtl:pr-12"
                     placeholder={t('placeholders.email') || "contact@etablissement.ma"}
                   />
                 </div>
@@ -361,7 +369,7 @@ export default function NouveauEtablissementPage() {
                     type="url"
                     value={formData.siteWeb}
                     onChange={(e) => setFormData({ ...formData, siteWeb: e.target.value })}
-                    className="w-full ltr:pl-12 rtl:pr-12 ltr:pr-5 rtl:pl-5 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 shadow-sm transition-all"
+                    className="gov-input ltr:pl-12 rtl:pr-12"
                     placeholder={t('placeholders.website') || "https://..."}
                   />
                 </div>
@@ -382,7 +390,7 @@ export default function NouveauEtablissementPage() {
                     <select
                       value={formData.cycle}
                       onChange={(e) => setFormData({ ...formData, cycle: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-orange-200 bg-white dark:bg-gray-800 focus:ring-4 focus:ring-orange-500/20"
+                      className="gov-select"
                     >
                       <option value="">{t('actions.select') || 'Sélectionner...'}</option>
                       <option value="PRIMAIRE">{t('options.cycles.PRIMAIRE')}</option>
@@ -397,7 +405,7 @@ export default function NouveauEtablissementPage() {
                       type="number"
                       value={formData.nbClasses}
                       onChange={(e) => setFormData({ ...formData, nbClasses: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-orange-200 bg-white dark:bg-gray-800 shadow-sm"
+                      className="gov-input"
                     />
                   </div>
                   <div className="space-y-2">
@@ -406,7 +414,7 @@ export default function NouveauEtablissementPage() {
                       type="number"
                       value={formData.nbEnseignants}
                       onChange={(e) => setFormData({ ...formData, nbEnseignants: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-orange-200 bg-white dark:bg-gray-800 shadow-sm"
+                      className="gov-input"
                     />
                   </div>
                   <div className="space-y-2">
@@ -415,7 +423,7 @@ export default function NouveauEtablissementPage() {
                       type="number" step="0.01"
                       value={formData.tauxReussite}
                       onChange={(e) => setFormData({ ...formData, tauxReussite: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-orange-200 bg-white dark:bg-gray-800 shadow-sm"
+                      className="gov-input"
                     />
                   </div>
                </div>
@@ -429,7 +437,7 @@ export default function NouveauEtablissementPage() {
                 type="checkbox"
                 checked={formData.isPublie}
                 onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
-                className="w-6 h-6 rounded-lg border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                className="w-6 h-6 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
               />
               <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-emerald-700 transition-colors uppercase tracking-tight">{t('form.publish_now')}</span>
             </label>
@@ -438,14 +446,14 @@ export default function NouveauEtablissementPage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-8 py-4 text-gray-600 dark:text-gray-400 font-black uppercase tracking-widest text-xs hover:bg-gray-100 dark:hover:bg-gray-700 rounded-2xl transition-all"
+                className="gov-btn gov-btn-secondary uppercase text-xs tracking-widest"
               >
                 {t('actions.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-12 py-4 bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-black text-lg rounded-2xl shadow-2xl shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+                className="gov-btn gov-btn-primary px-12 py-4 text-lg font-black"
               >
                 {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
                 {t('actions.save')}

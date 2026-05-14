@@ -3730,20 +3730,20 @@
   "audit_page": {
     "title": "Logs & Activités",
     "subtitle": "Journal d'audit du système et traçabilité des actions administratives",
-    "total_entries": "{count} entrées au total",
-    "last_update": "Dernière mise à jour : {time}",
+    "total_entries": "Entrées totales",
+    "last_update": "Dernière mise à jour",
     "live": "Live",
     "auto": "Auto",
     "filters_btn": "Filtres",
     "advanced_filters": "Filtres avancés",
     "reset": "Réinitialiser",
     "apply_filters": "Appliquer les filtres",
-    "refresh_now": "Rafraîchir maintenant",
-    "export_csv": "CSV",
-    "export_json": "JSON",
-    "user_activity": "Activités Utilisateurs",
-    "system_logs": "Logs Système",
-    "security_audit": "Audit de Sécurité",
+    "refresh_now": "Actualiser",
+    "export_csv": "Exporter CSV",
+    "export_json": "Exporter JSON",
+    "user_activity": "Activité utilisateur",
+    "system_logs": "Journaux système",
+    "security_audit": "Audit de sécurité",
     "search_placeholder": "Rechercher un utilisateur, une action ou une date...",
     "search": "Rechercher",
     "view_details": "Voir les détails",
@@ -3763,7 +3763,7 @@
     "action": "Action",
     "entity": "Entité",
     "user": "Utilisateur",
-    "ip": "IP",
+    "ip": "Adresse IP",
     "source": "Source",
     "level": "Niveau",
     "date_from": "Date début",
@@ -3782,7 +3782,7 @@
     "new_value": "NOUVELLE VALEUR",
     "all": "Toutes",
     "export_btn": "Exporter",
-    "page_x_of_y": "Page {current} sur {total} ({count} entrées)",
+    "page_x_of_y": "Page {{x}} sur {{y}}",
     "details_modal_title": "Détails du Log #{id}",
     "type_level": "Type / Niveau",
     "source_action": "Source / Action",
@@ -3803,7 +3803,7 @@
     },
     "actions": {
       "CREATE": "Création",
-      "UPDATE": "Modification",
+      "UPDATE": "Mise à jour",
       "DELETE": "Suppression",
       "LOGIN": "Connexion",
       "LOGOUT": "Déconnexion",
@@ -3827,7 +3827,8 @@
       "Evenement": "Événement",
       "Actualite": "Actualité",
       "Etablissement": "Établissement"
-    }
+    },
+    "action_label": "Action"
   },
   "import_page": {
     "title": "Importation de Données en Masse",
@@ -3864,31 +3865,37 @@
     "title": "Gestion de Licence",
     "subtitle": "Information sur la licence et l'état d'activation",
     "refresh": "Actualiser",
+    "verifying": "Vérification de la licence...",
+    "error_fetching": "Impossible de récupérer les informations de licence",
+    "error_desc": "Le serveur de licence ne répond pas ou la configuration est manquante.",
+    "retry": "Réessayer",
     "status": {
       "title": "État de la licence",
       "active": "Active",
-      "invalid": "Invalide",
       "expires_soon": "Expire bientôt",
-      "loading": "Chargement..."
+      "invalid": "Invalide",
+      "days_left": "Expire dans {days} jours"
     },
     "license_key": "Clé de Licence",
-    "not_configured": "Non configurée",
     "expiry_date": "Date d'expiration",
-    "not_defined": "Non définie",
-    "days_remaining": "{count} jours restants",
     "authorized_domains": "Domaines Autorisés",
-    "no_domains": "Aucune restriction de domaine",
-    "license_error": "Erreur de licence",
-    "load_error": "Impossible de charger les informations de licence",
+    "none": "Aucun",
+    "not_configured": "Non configurée",
+    "not_defined": "Non définie",
+    "error_detected": "Erreur détectée",
     "help": {
       "title": "Configuration",
-      "step1": "Ajoutez votre clé dans",
-      "step2": "Définissez les variables optionnelles",
-      "step3": "Redémarrez l'application"
+      "step1_title": "1. Modifier .env",
+      "step1_desc": "Ajoutez votre clé de licence dans le fichier d'environnement.",
+      "step2_title": "2. Variables optionnelles",
+      "step2_desc": "Vous pouvez définir des domaines ou une date d'expiration pour les tests.",
+      "step3_title": "3. Redémarrer",
+      "step3_desc": "Relancez l'application pour appliquer les changements.",
+      "support": "Contacter le support"
     },
     "toasts": {
-      "fetch_error": "Erreur de chargement",
-      "connection_error": "Erreur de connexion"
+      "fetch_error": "Erreur lors de la récupération des données",
+      "connection_error": "Erreur de connexion au serveur"
     }
   },
   "system_settings": {
@@ -5568,19 +5575,14 @@
   "reclamation_rate_limit": "Le quota de réclamations autorisé est atteint. Vous pourrez en créer une nouvelle à partir du {date}.",
   "suggestion_rate_limit": "Le quota de suggestions autorisé est atteint. Vous pourrez en proposer une nouvelle à partir du {date}.",
   "super_admin": {
+    "access_denied": "Accès refusé : Droits Super Administrateur requis",
+    "loading": "Chargement du tableau de bord global...",
+    "home": "Accueil",
+    "dashboard_admin": "Tableau de Bord Admin",
     "title": "Administration Globale",
     "subtitle": "Gestion complète de la plateforme Medaction",
-    "loading": "Chargement du tableau de bord...",
     "export": "Exporter",
     "manage_admins": "Gérer les Administrateurs",
-    "access_denied": "Accès refusé. Cette zone est réservée aux Super Administrateurs.",
-    "toasts": {
-      "data_error": "Erreur de chargement des données",
-      "export_loading": "Préparation du rapport...",
-      "export_success": "Rapport exporté avec succès",
-      "export_error": "Échec de l'export",
-      "connection_error": "Erreur de connexion"
-    },
     "system_status": {
       "title": "État du Système",
       "operational": "Opérationnel",
@@ -5626,9 +5628,9 @@
     "recent_activity": {
       "title": "Activité Récente",
       "view_all": "Voir tout",
-      "no_activity": "Aucune activité récente",
       "system": "Système",
-      "user": "Utilisateur"
+      "user": "Utilisateur",
+      "no_activity": "Aucune activité récente"
     },
     "rbac": {
       "title": "Rôles & Permissions",
@@ -5640,111 +5642,29 @@
       "citizens": "Citoyens"
     },
     "features": {
-      "title": "Fonctionnalités Admin",
-      "admin_management": "Gestion des Administrateurs",
-      "admin_management_desc": "Gérer les comptes et rôles",
+      "title": "Fonctionnalités Avancées",
+      "admin_management": "Gestion des Admins",
+      "admin_management_desc": "Créer et gérer les comptes administratifs",
       "permissions": "Permissions",
-      "permissions_desc": "Configurer les accès et privilèges",
+      "permissions_desc": "Configurer les accès granulaires",
       "system_settings": "Paramètres Système",
-      "system_settings_desc": "Configuration globale de la plateforme",
+      "system_settings_desc": "Configuration globale de l'application",
       "backups": "Sauvegardes",
-      "backups_desc": "Gérer et restaurer les backups"
+      "backups_desc": "Gestion des copies de sécurité"
+    },
+    "toasts": {
+      "data_error": "Erreur de chargement des données",
+      "export_loading": "Préparation de l'exportation...",
+      "export_success": "Exportation réussie",
+      "export_error": "Échec de l'exportation",
+      "connection_error": "Erreur de connexion au serveur"
     },
     "footer": {
-      "mode": "Mode",
-      "full_access": "Accès complet",
+      "mode": "Mode Super Administrateur",
+      "full_access": "Accès total au système activé",
       "last_backup": "Dernière sauvegarde",
-      "version": "Version"
-    },
-    "permissions": {
-      "title": "Gestion des Permissions",
-      "subtitle": "Contrôlez finement les accès aux différentes fonctionnalités du système.",
-      "add_role": "Ajouter un rôle",
-      "edit_permission": "Modifier permission",
-      "role_name": "Nom du rôle",
-      "permissions_list": "Liste des permissions",
-      "save_changes": "Enregistrer les modifications",
-      "delete_role": "Supprimer le rôle",
-      "search": "Rechercher une permission...",
-      "new": "Nouvelle permission",
-      "total": "Total permissions",
-      "active": "Activées",
-      "inactive": "Désactivées",
-      "groups": "Groupes",
-      "empty": "Aucune permission trouvée",
-      "empty_search": "Aucun résultat pour votre recherche",
-      "empty_desc": "Commencez par ajouter des permissions pour structurer les accès.",
-      "messages": {
-        "activated": "Permission activée",
-        "deactivated": "Permission désactivée",
-        "confirm_delete": "Supprimer la permission {name} ?",
-        "deleted": "Permission supprimée",
-        "required_fields": "Veuillez remplir tous les champs obligatoires",
-        "updated": "Permission mise à jour",
-        "created": "Permission créée"
-      },
-      "modal": {
-        "title_create": "Créer une permission",
-        "title_edit": "Modifier la permission",
-        "code": "Code unique",
-        "code_tooltip": "Identifiant technique utilisé dans le code (ex: USERS_VIEW)",
-        "code_hint": "Utilisez uniquement MAJUSCULES et UNDERSCORES",
-        "name": "Nom public",
-        "name_tooltip": "Nom qui sera affiché aux administrateurs",
-        "name_placeholder": "Ex: Gestion des utilisateurs",
-        "description": "Description",
-        "description_placeholder": "À quoi sert cette permission ?",
-        "group": "Groupe technique",
-        "group_select": "Sélectionner un groupe",
-        "group_title": "Label du groupe",
-        "group_title_hint": "Titre d'affichage pour ce groupe",
-        "cancel": "Annuler",
-        "update": "Mettre à jour",
-        "create": "Créer la permission",
-        "groups_label": {
-          "USERS": "Administrateurs & Utilisateurs",
-          "RECLAMATIONS": "Réclamations & Plaintes",
-          "ETABLISSEMENTS": "Gestion des Établissements",
-          "EVENEMENTS": "Événements & Campagnes",
-          "CONTENT": "Gestion du Contenu",
-          "SETTINGS": "Paramètres Système",
-          "SYSTEM": "Infrastructure & API"
-        }
-      }
-    },
-    "backups": {
-      "title": "Sauvegardes Système",
-      "subtitle": "Historique et création de points de restauration sécurisés pour votre base de données.",
-      "create_now": "Sauvegarder maintenant",
-      "restore": "Restaurer",
-      "download": "Télécharger",
-      "last_backup": "Dernière sauvegarde",
-      "status": "État",
-      "restore_btn": "Restaurer",
-      "create_btn": "Nouvelle sauvegarde",
-      "confirm_restore": "Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cette action écrasera les données actuelles.",
-      "confirm_delete": "Supprimer cette sauvegarde définitivement ?",
-      "empty": "Aucune sauvegarde",
-      "empty_desc": "Vous n'avez pas encore créé de points de restauration système.",
-      "messages": {
-        "created": "Sauvegarde créée avec succès",
-        "deleted": "Sauvegarde supprimée",
-        "restored": "Restauration terminée avec succès",
-        "error_create": "Erreur lors de la création",
-        "error_delete": "Erreur lors de la suppression",
-        "error_restore": "Erreur lors de la restauration",
-        "error_format": "Format de fichier invalide (.json requis)",
-        "error_network": "Erreur de connexion au serveur"
-      }
-    },
-    "dashboard": {
-      "total_users": "Utilisateurs Totaux",
-      "active_sessions": "Sessions Actives",
-      "database_size": "Taille BDD",
-      "server_status": "État du Serveur"
-    },
-    "home": "Accueil",
-    "dashboard_admin": "Tableau de bord Admin"
+      "version": "Version du système"
+    }
   },
   "admin_campaigns": {
     "new": {
@@ -5824,44 +5744,42 @@
   },
   "audit_log": {
     "actions": {
-      "LOGIN": "Connexion",
       "LOGIN_SUCCESS": "Connexion réussie",
       "LOGIN_FAILED": "Échec de connexion",
       "LOGOUT": "Déconnexion",
       "REGISTER": "Inscription",
-      "CREATE_USER": "Création Utilisateur",
-      "UPDATE_USER": "Mise à jour Utilisateur",
-      "DELETE_USER": "Suppression Utilisateur",
-      "UPDATE_PERMISSIONS": "Mise à jour Permissions",
-      "CREATE_BACKUP": "Création Sauvegarde",
-      "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe",
-      "ACCESS_DENIED": "Accès Refusé",
-      "ENABLE_2FA": "Activation 2FA",
-      "DISABLE_2FA": "Désactivation 2FA",
-      "VERIFY_2FA_SUCCESS": "Vérification 2FA réussie",
-      "VERIFY_2FA_FAILED": "Échec vérification 2FA"
-    },
-    "modal": {
-      "title": "Détails du Log #{id}",
-      "not_available": "Non disponible",
-      "unknown": "Inconnu",
-      "ip_address": "Adresse IP",
-      "device": "Appareil / Navigateur",
-      "saved_data": "Données enregistrées",
-      "no_details": "Aucun détail supplémentaire pour cette opération",
-      "reason": "Raison du refus",
-      "path": "Chemin d'accès",
-      "timestamp": "Horodatage",
-      "other_details": "Autres détails",
-      "system": "Système",
-      "close": "Fermer"
+      "CREATE_USER": "Création utilisateur",
+      "UPDATE_USER": "Modification utilisateur",
+      "DELETE_USER": "Suppression utilisateur",
+      "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe par admin",
+      "UPDATE_PERMISSIONS": "Mise à jour permissions",
+      "ACCESS_DENIED": "Accès refusé",
+      "CREATE_BACKUP": "Création sauvegarde",
+      "RECLAMATION_CREATE": "Création réclamation",
+      "RECLAMATION_UPDATE": "Mise à jour réclamation",
+      "RECLAMATION_DELETE": "Suppression réclamation"
     },
     "entities": {
       "User": "Utilisateur",
       "Reclamation": "Réclamation",
       "System": "Système",
-      "Route": "Route / Page",
+      "Route": "Route / URL",
       "Authentication": "Authentification"
+    },
+    "modal": {
+      "title": "Détails de l'entrée #{id}",
+      "system": "Système",
+      "ip_address": "Adresse IP",
+      "device": "Appareil / Navigateur",
+      "saved_data": "Données enregistrées",
+      "no_details": "Aucun détail supplémentaire pour cette action",
+      "close": "Fermer",
+      "not_available": "N/A",
+      "unknown": "Inconnu",
+      "reason": "Raison",
+      "path": "Chemin",
+      "timestamp": "Horodatage",
+      "other_details": "Autres détails"
     }
   },
   "toasts": {
@@ -6172,174 +6090,5 @@
     "UPDATE": "Mise à jour du dossier",
     "ACCEPTATION": "Acceptation de la réclamation",
     "AJOUT_MEDIA": "Ajout de pièces jointes"
-  },
-  "licence_page": {
-    "title": "Gestion de Licence",
-    "subtitle": "Information sur la licence et l'état d'activation",
-    "refresh": "Actualiser",
-    "verifying": "Vérification de la licence...",
-    "error_fetching": "Impossible de récupérer les informations de licence",
-    "error_desc": "Le serveur de licence ne répond pas ou la configuration est manquante.",
-    "retry": "Réessayer",
-    "status": {
-      "title": "État de la licence",
-      "active": "Active",
-      "expires_soon": "Expire bientôt",
-      "invalid": "Invalide",
-      "days_left": "Expire dans {days} jours"
-    },
-    "license_key": "Clé de Licence",
-    "expiry_date": "Date d'expiration",
-    "authorized_domains": "Domaines Autorisés",
-    "none": "Aucun",
-    "not_configured": "Non configurée",
-    "not_defined": "Non définie",
-    "error_detected": "Erreur détectée",
-    "help": {
-      "title": "Configuration",
-      "step1_title": "1. Modifier .env",
-      "step1_desc": "Ajoutez votre clé de licence dans le fichier d'environnement.",
-      "step2_title": "2. Variables optionnelles",
-      "step2_desc": "Vous pouvez définir des domaines ou une date d'expiration pour les tests.",
-      "step3_title": "3. Redémarrer",
-      "step3_desc": "Relancez l'application pour appliquer les changements.",
-      "support": "Contacter le support"
-    },
-    "toasts": {
-      "fetch_error": "Erreur lors de la récupération des données",
-      "connection_error": "Erreur de connexion au serveur"
-    }
-  },
-  "super_admin": {
-    "access_denied": "Accès refusé : Droits Super Administrateur requis",
-    "loading": "Chargement du tableau de bord global...",
-    "home": "Accueil",
-    "dashboard_admin": "Tableau de Bord Admin",
-    "title": "Administration Globale",
-    "subtitle": "Gestion complète de la plateforme Medaction",
-    "export": "Exporter",
-    "manage_admins": "Gérer les Administrateurs",
-    "system_status": {
-      "title": "État du Système",
-      "operational": "Opérationnel",
-      "api": "API",
-      "database": "Base de Données",
-      "auth": "Authentification",
-      "notifications": "Notifications",
-      "storage": "Stockage",
-      "emails": "Emails",
-      "uptime": "Disponibilité",
-      "response_time": "Temps de réponse",
-      "errors_24h": "Erreurs 24h"
-    },
-    "quick_actions": {
-      "title": "Actions Rapides",
-      "admins": "Administrateurs",
-      "users": "Utilisateurs",
-      "reclamations": "Réclamations",
-      "validation": "Validation",
-      "events": "Événements",
-      "establishments": "Établissements",
-      "activities": "Activités",
-      "logs": "Journal d'audit",
-      "import": "Import Données",
-      "licence": "Licence",
-      "settings": "Paramètres"
-    },
-    "stats": {
-      "total_users": "Utilisateurs Total",
-      "this_month": "ce mois",
-      "admins": "Administrateurs",
-      "citizens": "Citoyens",
-      "establishments": "Établissements",
-      "validated": "Validés",
-      "events": "Événements",
-      "reclamations": "Réclamations",
-      "pending": "En attente",
-      "urgent": "Urgentes",
-      "content": "Contenus",
-      "news": "Actualités",
-      "articles": "Articles"
-    },
-    "recent_activity": {
-      "title": "Activité Récente",
-      "view_all": "Voir tout",
-      "system": "Système",
-      "user": "Utilisateur",
-      "no_activity": "Aucune activité récente"
-    },
-    "rbac": {
-      "title": "Rôles & Permissions",
-      "manage": "Gérer",
-      "super_admins": "Super Administrateurs",
-      "administrators": "Administrateurs",
-      "delegations": "Délégations",
-      "local_authorities": "Autorités Locales",
-      "citizens": "Citoyens"
-    },
-    "features": {
-      "title": "Fonctionnalités Avancées",
-      "admin_management": "Gestion des Admins",
-      "admin_management_desc": "Créer et gérer les comptes administratifs",
-      "permissions": "Permissions",
-      "permissions_desc": "Configurer les accès granulaires",
-      "system_settings": "Paramètres Système",
-      "system_settings_desc": "Configuration globale de l'application",
-      "backups": "Sauvegardes",
-      "backups_desc": "Gestion des copies de sécurité"
-    },
-    "toasts": {
-      "data_error": "Erreur de chargement des données",
-      "export_loading": "Préparation de l'exportation...",
-      "export_success": "Exportation réussie",
-      "export_error": "Échec de l'exportation",
-      "connection_error": "Erreur de connexion au serveur"
-    },
-    "footer": {
-      "mode": "Mode Super Administrateur",
-      "full_access": "Accès total au système activé",
-      "last_backup": "Dernière sauvegarde",
-      "version": "Version du système"
-    }
-  },
-  "audit_log": {
-    "actions": {
-      "LOGIN_SUCCESS": "Connexion réussie",
-      "LOGIN_FAILED": "Échec de connexion",
-      "LOGOUT": "Déconnexion",
-      "REGISTER": "Inscription",
-      "CREATE_USER": "Création utilisateur",
-      "UPDATE_USER": "Modification utilisateur",
-      "DELETE_USER": "Suppression utilisateur",
-      "PASSWORD_RESET_BY_ADMIN": "Réinitialisation mot de passe par admin",
-      "UPDATE_PERMISSIONS": "Mise à jour permissions",
-      "ACCESS_DENIED": "Accès refusé",
-      "CREATE_BACKUP": "Création sauvegarde",
-      "RECLAMATION_CREATE": "Création réclamation",
-      "RECLAMATION_UPDATE": "Mise à jour réclamation",
-      "RECLAMATION_DELETE": "Suppression réclamation"
-    },
-    "entities": {
-      "User": "Utilisateur",
-      "Reclamation": "Réclamation",
-      "System": "Système",
-      "Route": "Route / URL",
-      "Authentication": "Authentification"
-    },
-    "modal": {
-      "title": "Détails de l'entrée #{id}",
-      "system": "Système",
-      "ip_address": "Adresse IP",
-      "device": "Appareil / Navigateur",
-      "saved_data": "Données enregistrées",
-      "no_details": "Aucun détail supplémentaire pour cette action",
-      "close": "Fermer",
-      "not_available": "N/A",
-      "unknown": "Inconnu",
-      "reason": "Raison",
-      "path": "Chemin",
-      "timestamp": "Horodatage",
-      "other_details": "Autres détails"
-    }
   }
 }

@@ -1857,182 +1857,95 @@
     }
   },
   "super_admin": {
+    "access_denied": "تم رفض الوصول: صلاحيات المشرف العام مطلوبة",
+    "loading": "جاري تحميل لوحة التحكم العامة...",
+    "home": "الرئيسية",
+    "dashboard_admin": "لوحة تحكم المسؤول",
     "title": "الإدارة العامة",
-    "subtitle": "الإشراف الكامل على منصة مد أكشن",
-    "loading": "جاري تحميل لوحة التحكم...",
-    "access_denied": "وصول مرفوض. هذه المنطقة مخصصة للمدير الأعلى فقط.",
+    "subtitle": "الإدارة الكاملة لمنصة Medaction",
     "export": "تصدير",
-    "manage_admins": "إدارة المشرفين",
-    "toasts": {
-      "data_error": "خطأ في تحميل البيانات",
-      "export_loading": "جاري إعداد التقرير...",
-      "export_success": "تم تصدير التقرير بنجاح",
-      "export_error": "فشل التصدير",
-      "connection_error": "خطأ في الاتصال"
-    },
+    "manage_admins": "إدارة المسؤولين",
     "system_status": {
       "title": "حالة النظام",
-      "operational": "يعمل بكفاءة",
-      "api": "واجهة برمجة التطبيقات",
+      "operational": "يعمل بشكل طبيعي",
+      "api": "واجهة البرمجيات",
       "database": "قاعدة البيانات",
       "auth": "المصادقة",
       "notifications": "الإشعارات",
-      "storage": "تخزين الملفات",
+      "storage": "التخزين",
       "emails": "البريد الإلكتروني",
-      "uptime": "وقت التشغيل",
+      "uptime": "التوافر",
       "response_time": "وقت الاستجابة",
-      "errors_24h": "أخطاء 24 ساعة"
+      "errors_24h": "أخطاء خلال 24 ساعة"
     },
     "quick_actions": {
       "title": "إجراءات سريعة",
-      "admins": "المشرفون",
+      "admins": "المسؤولون",
       "users": "المستخدمون",
-      "reclamations": "الشكايات",
-      "validation": "المصادقة",
+      "reclamations": "الشكاوى",
+      "validation": "التحقق",
       "events": "الفعاليات",
       "establishments": "المؤسسات",
       "activities": "الأنشطة",
-      "logs": "سجلات النشاط",
+      "logs": "سجل التدقيق",
       "import": "استيراد البيانات",
       "licence": "الترخيص",
-      "settings": "إعدادات النظام"
+      "settings": "الإعدادات"
     },
     "stats": {
       "total_users": "إجمالي المستخدمين",
       "this_month": "هذا الشهر",
-      "admins": "مشرفون",
+      "admins": "مسؤولون",
       "citizens": "مواطنون",
-      "establishments": "مؤسسات",
+      "establishments": "المؤسسات",
       "validated": "تم التحقق",
-      "events": "فعاليات",
-      "reclamations": "شكايات",
-      "pending": "قيد الانتظار",
+      "events": "الفعاليات",
+      "reclamations": "الشكاوى",
+      "pending": "في الانتظار",
       "urgent": "عاجلة",
-      "content": "المحتوى",
-      "news": "أخبار",
-      "articles": "مقالات"
+      "content": "المحتويات",
+      "news": "الأخبار",
+      "articles": "المقالات"
     },
     "recent_activity": {
       "title": "النشاط الأخير",
       "view_all": "عرض الكل",
-      "no_activity": "لا يوجد نشاط حديث",
       "system": "النظام",
-      "user": "مستخدم"
+      "user": "المستخدم",
+      "no_activity": "لا يوجد نشاط أخير"
     },
     "rbac": {
       "title": "الأدوار والصلاحيات",
       "manage": "إدارة",
-      "super_admins": "المسؤولون العامون",
-      "administrators": "المشرفون",
+      "super_admins": "المشرفون العامون",
+      "administrators": "المسؤولون",
       "delegations": "المندوبيات",
       "local_authorities": "السلطات المحلية",
       "citizens": "المواطنون"
     },
     "features": {
-      "title": "ميزات الإدارة",
-      "admin_management": "إدارة المشرفين",
-      "admin_management_desc": "إدارة الحسابات والأدوار",
+      "title": "ميزات متقدمة",
+      "admin_management": "إدارة المسؤولين",
+      "admin_management_desc": "إنشاء وإدارة حسابات المسؤولين",
       "permissions": "الصلاحيات",
-      "permissions_desc": "تكوين الوصول والامتيازات",
+      "permissions_desc": "تكوين الوصول التفصيلي",
       "system_settings": "إعدادات النظام",
-      "system_settings_desc": "للتكوين الشامل للمنصة",
+      "system_settings_desc": "التكوين العام للتطبيق",
       "backups": "النسخ الاحتياطي",
-      "backups_desc": "إدارة واستعادة النسخ الاحتياطية"
+      "backups_desc": "إدارة النسخ الاحتياطية"
     },
-    "permissions": {
-      "title": "إدارة الصلاحيات",
-      "subtitle": "تحكم دقيق في الوصول إلى وظائف النظام المختلفة.",
-      "add_role": "إضافة دور",
-      "edit_permission": "تعديل الصلاحية",
-      "role_name": "اسم الدور",
-      "permissions_list": "قائمة الصلاحيات",
-      "save_changes": "حفظ التغييرات",
-      "delete_role": "حذف الدور",
-      "search": "البحث عن صلاحية...",
-      "new": "صلاحية جديدة",
-      "total": "إجمالي الصلاحيات",
-      "active": "مفعلة",
-      "inactive": "معطلة",
-      "groups": "مجموعات",
-      "empty": "لم يتم العثور على صلاحيات",
-      "empty_search": "لا توجد نتائج لبحثك",
-      "empty_desc": "ابدأ بإضافة صلاحيات لتنظيم الوصول.",
-      "messages": {
-        "activated": "تم تفعيل الصلاحية",
-        "deactivated": "تم تعطيل الصلاحية",
-        "confirm_delete": "حذف الصلاحية {name}؟",
-        "deleted": "تم حذف الصلاحية",
-        "required_fields": "يرجى ملء جميع الحقول المطلوبة",
-        "updated": "تم تحديث الصلاحية",
-        "created": "تم إنشاء الصلاحية"
-      },
-      "modal": {
-        "title_create": "إنشاء صلاحية",
-        "title_edit": "تعديل الصلاحية",
-        "code": "الرمز الفريد",
-        "code_tooltip": "المعرف التقني المستخدم في الكود (مثال: USERS_VIEW)",
-        "code_hint": "استخدم الحروف الكبيرة والشرطات السفلية فقط",
-        "name": "الاسم العام",
-        "name_tooltip": "الاسم الذي سيظهر للمسؤولين",
-        "name_placeholder": "مثال: إدارة المستخدمين",
-        "description": "الوصف",
-        "description_placeholder": "ما الغرض من هذه الصلاحية؟",
-        "group": "المجموعة التقنية",
-        "group_select": "اختر مجموعة",
-        "group_title": "تسمية المجموعة",
-        "group_title_hint": "عنوان العرض لهذه المجموعة",
-        "cancel": "إلغاء",
-        "update": "تحديث",
-        "create": "إنشاء الصلاحية",
-        "groups_label": {
-          "USERS": "المسؤولون والمستخدمون",
-          "RECLAMATIONS": "الشكاوى والبلاغات",
-          "ETABLISSEMENTS": "إدارة المؤسسات",
-          "EVENEMENTS": "الأحداث والحملات",
-          "CONTENT": "إدارة المحتوى",
-          "SETTINGS": "إعدادات النظام",
-          "SYSTEM": "البنية التحتية والواجهة البرمجية"
-        }
-      }
-    },
-    "backups": {
-      "title": "نسخ النظام الاحتياطية",
-      "subtitle": "تاريخ ونقاط استعادة آمنة لقاعدة البيانات الخاصة بك.",
-      "create_now": "نسخ الآن",
-      "restore": "استعادة",
-      "download": "تحميل",
-      "last_backup": "آخر نسخة احتياطية",
-      "status": "الحالة",
-      "restore_btn": "استعادة",
-      "create_btn": "نسخة جديدة",
-      "confirm_restore": "هل أنت متأكد من رغبتك في استعادة هذه النسخة؟ سيؤدي ذلك إلى استبدال البيانات الحالية.",
-      "confirm_delete": "حذف هذه النسخة الاحتياطية نهائياً؟",
-      "empty": "لا توجد نسخ احتياطية",
-      "empty_desc": "لمتقم بإنشاء أي نقاط استعادة للنظام بعد.",
-      "messages": {
-        "created": "تم إنشاء النسخة الاحتياطية بنجاح",
-        "deleted": "تم حذف النسخة الاحتياطية",
-        "restored": "تمت الاستعادة بنجاح",
-        "error_create": "خطأ أثناء الإنشاء",
-        "error_delete": "خطأ أثناء الحذف",
-        "error_restore": "خطأ أثناء الاستعادة",
-        "error_format": "صيغة ملف غير صالحة (يتطلب .json)",
-        "error_network": "خطأ في الاتصال بالخادم"
-      }
+    "toasts": {
+      "data_error": "خطأ في تحميل البيانات",
+      "export_loading": "جاري تحضير التصدير...",
+      "export_success": "تم التصدير بنجاح",
+      "export_error": "فشل التصدير",
+      "connection_error": "خطأ في الاتصال بالخادم"
     },
     "footer": {
-      "mode": "الوضع",
-      "full_access": "وصول كامل",
+      "mode": "وضع المشرف العام",
+      "full_access": "تم تفعيل الوصول الكامل للنظام",
       "last_backup": "آخر نسخة احتياطية",
-      "version": "إصدار"
-    },
-    "home": "الرئيسية",
-    "dashboard_admin": "لوحة تحكم المسؤول",
-    "dashboard": {
-      "total_users": "إجمالي المستخدمين",
-      "active_sessions": "الجلسات النشطة",
-      "database_size": "حجم قاعدة البيانات",
-      "server_status": "حالة الخادم"
+      "version": "إصدار النظام"
     }
   },
   "maintenance": {
@@ -4129,98 +4042,47 @@
     }
   },
   "audit_page": {
-    "title": "سجل التدقيق والأمن",
-    "subtitle": "سجل النشاط وتتبع الإجراءات الإدارية ونشاط النظام",
-    "total_entries": "{count} مدخلات في المجموع",
-    "last_update": "آخر تحديث : {time}",
-    "live": "مباشر",
-    "auto": "تلقائي",
-    "filters_btn": "مرشحات",
-    "advanced_filters": "مرشحات متقدمة",
-    "reset": "إعادة تعيين",
-    "apply_filters": "تطبيق المرشحات",
-    "refresh_now": "تحديث الآن",
-    "export_csv": "CSV",
-    "export_json": "JSON",
-    "user_activity": "أنشطة المستخدمين",
-    "system_logs": "سجلات النظام",
-    "security_audit": "تدقيق الأمن",
-    "search_placeholder": "البحث عن إجراء أو مستخدم أو تاريخ...",
-    "search": "البحث",
-    "filters": {
-      "all_entities": "جميع الهيئات",
-      "all_actions": "جميع الإجراءات"
-    },
+    "title": "السجلات والأنشطة",
+    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات",
+    "search": "بحث",
+    "search_placeholder": "البحث عن مستخدم، إجراء...",
+    "view_details": "عرض التفاصيل",
+    "no_logs": "لم يتم العثور على سجلات",
+    "modify_filters_hint": "حاول تعديل الفلاتر أو البحث",
     "columns": {
-      "date": "التاريخ",
+      "date": "التاريخ والوقت",
       "user": "المستخدم",
       "action": "الإجراء",
-      "target": "الهدف",
+      "target": "الكيان / المعرف",
       "details": "التفاصيل"
     },
-    "action": "الإجراء",
+    "filters": {
+      "all_actions": "جميع الإجراءات",
+      "all_entities": "جميع الكيانات"
+    },
+    "total_entries": "إجمالي السجلات",
+    "last_update": "آخر تحديث",
+    "auto": "تلقائي",
+    "filters_btn": "تصفية",
+    "refresh_now": "تحديث الآن",
+    "export_csv": "تصدير CSV",
+    "export_json": "تصدير JSON",
+    "user_activity": "نشاط المستخدم",
+    "system_logs": "سجلات النظام",
+    "security_audit": "تدقيق الأمان",
+    "date": "التاريخ",
+    "user": "المستخدم",
     "action_label": "الإجراء",
     "entity": "الكيان",
-    "user": "المستخدم",
-    "ip": "IP",
-    "source": "المصدر",
-    "level": "المستوى",
-    "date_from": "تاريخ البدء",
-    "date_to": "تاريخ الانتهاء",
-    "message": "الرسالة",
-    "date": "التاريخ",
-    "resource": "المورد",
-    "status": "الحالة",
-    "success": "نجاح",
-    "failure": "فشل",
+    "ip": "عنوان IP",
     "details": "التفاصيل",
-    "close": "إغلاق",
-    "none": "لا شيء",
-    "changes_comparison": "مقارنة التغييرات",
-    "previous_value": "القيمة السابقة",
-    "new_value": "القيمة الجديدة",
-    "all": "الكل",
-    "export_btn": "تصدير",
-    "no_logs": "لم يتم العثور على سجلات",
-    "modify_filters_hint": "قم بتعديل المرشحات لرؤية المزيد من النتائج",
-    "page_x_of_y": "الصفحة {current} من {total} ({count} مدخلات)",
-    "details_modal_title": "تفاصيل السجل #{id}",
-    "type_level": "النوع / المستوى",
-    "source_action": "المصدر / الإجراء",
-    "view_details": "عرض التفاصيل",
-    "system_user": "النظام",
-    "all_actions": "الكل",
-    "technical_data": "البيانات التقنية",
-    "no_tech_data": "لا توجد بيانات إضافية",
-    "cleanup": "تنظيف",
-    "confirm_cleanup": "هل أنت متأكد من رغبتك في حذف سجلات التدقيق التي يزيد عمرها عن 12 شهرًا نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه.",
-    "toasts": {
-      "export_success": "تم تحميل ملف التصدير بنجاح!"
-    },
-    "levels": {
-      "info": "معلومات",
-      "warning": "تحذير",
-      "error": "خطأ",
-      "debug": "تصحيح"
-    },
+    "page_x_of_y": "صفحة {{x}} من {{y}}",
     "actions": {
-      "CREATE": "إنشاء",
-      "UPDATE": "تعديل",
-      "DELETE": "حذف",
       "LOGIN": "تسجيل الدخول",
-      "LOGOUT": "تسجيل الخروج",
-      "VALIDATE": "تصديق",
-      "REJECT": "رفض",
-      "EXPORT": "تصدير",
-      "EXPORT_LOGS": "تصدير السجلات",
-      "UPDATE_PERMISSIONS": "تعديل الصلاحيات"
+      "UPDATE": "تحديث"
     },
     "entities": {
-      "User": "مستخدم",
-      "Reclamation": "شكاية",
-      "Evenement": "حدث",
-      "Actualite": "خبر",
-      "Etablissement": "مؤسسة"
+      "User": "المستخدم"
     }
   },
   "import_page": {
@@ -4256,33 +4118,39 @@
   },
   "licence_page": {
     "title": "إدارة الترخيص",
-    "subtitle": "معلومات ترخيص التطبيق",
+    "subtitle": "معلومات عن الترخيص وحالة التفعيل",
     "refresh": "تحديث",
+    "verifying": "جاري التحقق من الترخيص...",
+    "error_fetching": "تعذر استرداد معلومات الترخيص",
+    "error_desc": "خادم الترخيص لا يستجيب أو التكوين مفقود.",
+    "retry": "إعادة المحاولة",
     "status": {
       "title": "حالة الترخيص",
       "active": "نشط",
+      "expires_soon": "تنتهي صلاحيته قريباً",
       "invalid": "غير صالح",
-      "expires_soon": "ينتهي قريباً",
-      "loading": "جاري التحميل..."
+      "days_left": "تنتهي الصلاحية خلال {days} يوم"
     },
     "license_key": "مفتاح الترخيص",
-    "not_configured": "غير مكوّن",
     "expiry_date": "تاريخ الانتهاء",
-    "not_defined": "غير محدد",
-    "days_remaining": "{count} يوم متبقي",
     "authorized_domains": "النطاقات المصرح بها",
-    "no_domains": "لا توجد نطاقات مكوّنة",
-    "license_error": "خطأ في الترخيص",
-    "load_error": "لا يمكن تحميل معلومات الترخيص",
+    "none": "لا يوجد",
+    "not_configured": "غير مكون",
+    "not_defined": "غير محدد",
+    "error_detected": "تم اكتشاف خطأ",
     "help": {
-      "title": "كيفية تكوين الترخيص؟",
-      "step1": "تعديل ملف .env على الخادم",
-      "step2": "إضافة المتغيرات: LICENSE_KEY، LICENSE_DOMAINS، LICENSE_EXPIRY",
-      "step3": "إعادة تشغيل التطبيق باستخدام docker compose restart app"
+      "title": "الإعدادات",
+      "step1_title": "1. تعديل ملف .env",
+      "step1_desc": "أضف مفتاح الترخيص الخاص بك في ملف البيئة.",
+      "step2_title": "2. متغيرات اختيارية",
+      "step2_desc": "يمكنك تحديد النطاقات أو تاريخ انتهاء الصلاحية للاختبار.",
+      "step3_title": "3. إعادة التشغيل",
+      "step3_desc": "أعد تشغيل التطبيق لتطبيق التغييرات.",
+      "support": "الاتصال بالدعم"
     },
     "toasts": {
-      "fetch_error": "خطأ في استرجاع معلومات الترخيص",
-      "connection_error": "خطأ في الاتصال"
+      "fetch_error": "خطأ أثناء جلب البيانات",
+      "connection_error": "خطأ في الاتصال بالخادم"
     }
   },
   "system_settings": {
@@ -5452,44 +5320,42 @@
   },
   "audit_log": {
     "actions": {
-      "LOGIN": "تسجيل الدخول",
       "LOGIN_SUCCESS": "تسجيل دخول ناجح",
       "LOGIN_FAILED": "فشل تسجيل الدخول",
       "LOGOUT": "تسجيل الخروج",
-      "REGISTER": "تسجيل مستخدم جديد",
+      "REGISTER": "تسجيل حساب",
       "CREATE_USER": "إنشاء مستخدم",
-      "UPDATE_USER": "تحديث مستخدم",
+      "UPDATE_USER": "تعديل مستخدم",
       "DELETE_USER": "حذف مستخدم",
+      "PASSWORD_RESET_BY_ADMIN": "إعادة تعيين كلمة المرور من قبل المسؤول",
       "UPDATE_PERMISSIONS": "تحديث الصلاحيات",
-      "CREATE_BACKUP": "إنشاء نسخة احتياطية",
-      "PASSWORD_RESET_BY_ADMIN": "إعادة تعيين كلمة المرور",
       "ACCESS_DENIED": "تم رفض الوصول",
-      "ENABLE_2FA": "تفعيل المصادقة الثنائية",
-      "DISABLE_2FA": "تعطيل المصادقة الثنائية",
-      "VERIFY_2FA_SUCCESS": "نجاح التحقق من المصادقة الثنائية",
-      "VERIFY_2FA_FAILED": "فشل التحقق من المصادقة الثنائية"
-    },
-    "modal": {
-      "title": "تفاصيل السجل #{id}",
-      "not_available": "غير متوفر",
-      "unknown": "غير معروف",
-      "ip_address": "عنوان IP",
-      "device": "الجهاز / المتصفح",
-      "saved_data": "البيانات المسجلة",
-      "no_details": "لا توجد تفاصيل إضافية لهذه العملية",
-      "reason": "سبب الرفض",
-      "path": "مسار الوصول",
-      "timestamp": "الطابع الزمني",
-      "other_details": "تفاصيل أخرى",
-      "system": "النظام",
-      "close": "إغلاق"
+      "CREATE_BACKUP": "إنشاء نسخة احتياطية",
+      "RECLAMATION_CREATE": "إنشاء شكاية",
+      "RECLAMATION_UPDATE": "تحديث شكاية",
+      "RECLAMATION_DELETE": "حذف شكاية"
     },
     "entities": {
       "User": "مستخدم",
       "Reclamation": "شكاية",
-      "System": "نظام",
-      "Route": "مسار / صفحة",
+      "System": "النظام",
+      "Route": "المسار / الرابط",
       "Authentication": "المصادقة"
+    },
+    "modal": {
+      "title": "تفاصيل السجل #{id}",
+      "system": "النظام",
+      "ip_address": "عنوان IP",
+      "device": "الجهاز / المتصفح",
+      "saved_data": "البيانات المسجلة",
+      "no_details": "لا توجد تفاصيل إضافية لهذا الإجراء",
+      "close": "إغلاق",
+      "not_available": "غير متوفر",
+      "unknown": "غير معروف",
+      "reason": "السبب",
+      "path": "المسار",
+      "timestamp": "الطابع الزمني",
+      "other_details": "تفاصيل أخرى"
     }
   },
   "toasts": {
@@ -6150,194 +6016,5 @@
     "UPDATE": "تحديث الملف",
     "ACCEPTATION": "قبول الشكاية",
     "AJOUT_MEDIA": "إضافة مرفقات"
-  },
-  "licence_page": {
-    "title": "إدارة الترخيص",
-    "subtitle": "معلومات عن الترخيص وحالة التفعيل",
-    "refresh": "تحديث",
-    "verifying": "جاري التحقق من الترخيص...",
-    "error_fetching": "تعذر استرداد معلومات الترخيص",
-    "error_desc": "خادم الترخيص لا يستجيب أو التكوين مفقود.",
-    "retry": "إعادة المحاولة",
-    "status": {
-      "title": "حالة الترخيص",
-      "active": "نشط",
-      "expires_soon": "تنتهي صلاحيته قريباً",
-      "invalid": "غير صالح",
-      "days_left": "تنتهي الصلاحية خلال {days} يوم"
-    },
-    "license_key": "مفتاح الترخيص",
-    "expiry_date": "تاريخ الانتهاء",
-    "authorized_domains": "النطاقات المصرح بها",
-    "none": "لا يوجد",
-    "not_configured": "غير مكون",
-    "not_defined": "غير محدد",
-    "error_detected": "تم اكتشاف خطأ",
-    "help": {
-      "title": "الإعدادات",
-      "step1_title": "1. تعديل ملف .env",
-      "step1_desc": "أضف مفتاح الترخيص الخاص بك في ملف البيئة.",
-      "step2_title": "2. متغيرات اختيارية",
-      "step2_desc": "يمكنك تحديد النطاقات أو تاريخ انتهاء الصلاحية للاختبار.",
-      "step3_title": "3. إعادة التشغيل",
-      "step3_desc": "أعد تشغيل التطبيق لتطبيق التغييرات.",
-      "support": "الاتصال بالدعم"
-    },
-    "toasts": {
-      "fetch_error": "خطأ أثناء جلب البيانات",
-      "connection_error": "خطأ في الاتصال بالخادم"
-    }
-  },
-  "super_admin": {
-    "access_denied": "تم رفض الوصول: صلاحيات المشرف العام مطلوبة",
-    "loading": "جاري تحميل لوحة التحكم العامة...",
-    "home": "الرئيسية",
-    "dashboard_admin": "لوحة تحكم المسؤول",
-    "title": "الإدارة العامة",
-    "subtitle": "الإدارة الكاملة لمنصة Medaction",
-    "export": "تصدير",
-    "manage_admins": "إدارة المسؤولين",
-    "system_status": {
-      "title": "حالة النظام",
-      "operational": "يعمل بشكل طبيعي",
-      "api": "واجهة البرمجيات",
-      "database": "قاعدة البيانات",
-      "auth": "المصادقة",
-      "notifications": "الإشعارات",
-      "storage": "التخزين",
-      "emails": "البريد الإلكتروني",
-      "uptime": "التوافر",
-      "response_time": "وقت الاستجابة",
-      "errors_24h": "أخطاء خلال 24 ساعة"
-    },
-    "quick_actions": {
-      "title": "إجراءات سريعة",
-      "admins": "المسؤولون",
-      "users": "المستخدمون",
-      "reclamations": "الشكاوى",
-      "validation": "التحقق",
-      "events": "الفعاليات",
-      "establishments": "المؤسسات",
-      "activities": "الأنشطة",
-      "logs": "سجل التدقيق",
-      "import": "استيراد البيانات",
-      "licence": "الترخيص",
-      "settings": "الإعدادات"
-    },
-    "stats": {
-      "total_users": "إجمالي المستخدمين",
-      "this_month": "هذا الشهر",
-      "admins": "مسؤولون",
-      "citizens": "مواطنون",
-      "establishments": "المؤسسات",
-      "validated": "تم التحقق",
-      "events": "الفعاليات",
-      "reclamations": "الشكاوى",
-      "pending": "في الانتظار",
-      "urgent": "عاجلة",
-      "content": "المحتويات",
-      "news": "الأخبار",
-      "articles": "المقالات"
-    },
-    "recent_activity": {
-      "title": "النشاط الأخير",
-      "view_all": "عرض الكل",
-      "system": "النظام",
-      "user": "المستخدم",
-      "no_activity": "لا يوجد نشاط أخير"
-    },
-    "rbac": {
-      "title": "الأدوار والصلاحيات",
-      "manage": "إدارة",
-      "super_admins": "المشرفون العامون",
-      "administrators": "المسؤولون",
-      "delegations": "المندوبيات",
-      "local_authorities": "السلطات المحلية",
-      "citizens": "المواطنون"
-    },
-    "features": {
-      "title": "ميزات متقدمة",
-      "admin_management": "إدارة المسؤولين",
-      "admin_management_desc": "إنشاء وإدارة حسابات المسؤولين",
-      "permissions": "الصلاحيات",
-      "permissions_desc": "تكوين الوصول التفصيلي",
-      "system_settings": "إعدادات النظام",
-      "system_settings_desc": "التكوين العام للتطبيق",
-      "backups": "النسخ الاحتياطي",
-      "backups_desc": "إدارة النسخ الاحتياطية"
-    },
-    "toasts": {
-      "data_error": "خطأ في تحميل البيانات",
-      "export_loading": "جاري تحضير التصدير...",
-      "export_success": "تم التصدير بنجاح",
-      "export_error": "فشل التصدير",
-      "connection_error": "خطأ في الاتصال بالخادم"
-    },
-    "footer": {
-      "mode": "وضع المشرف العام",
-      "full_access": "تم تفعيل الوصول الكامل للنظام",
-      "last_backup": "آخر نسخة احتياطية",
-      "version": "إصدار النظام"
-    }
-  },
-  "audit_page": {
-    "title": "السجلات والأنشطة",
-    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات",
-    "search": "بحث",
-    "search_placeholder": "البحث عن مستخدم، إجراء...",
-    "view_details": "عرض التفاصيل",
-    "no_logs": "لم يتم العثور على سجلات",
-    "modify_filters_hint": "حاول تعديل الفلاتر أو البحث",
-    "columns": {
-      "date": "التاريخ والوقت",
-      "user": "المستخدم",
-      "action": "الإجراء",
-      "target": "الكيان / المعرف",
-      "details": "التفاصيل"
-    },
-    "filters": {
-      "all_actions": "جميع الإجراءات",
-      "all_entities": "جميع الكيانات"
-    }
-  },
-  "audit_log": {
-    "actions": {
-      "LOGIN_SUCCESS": "تسجيل دخول ناجح",
-      "LOGIN_FAILED": "فشل تسجيل الدخول",
-      "LOGOUT": "تسجيل الخروج",
-      "REGISTER": "تسجيل حساب",
-      "CREATE_USER": "إنشاء مستخدم",
-      "UPDATE_USER": "تعديل مستخدم",
-      "DELETE_USER": "حذف مستخدم",
-      "PASSWORD_RESET_BY_ADMIN": "إعادة تعيين كلمة المرور من قبل المسؤول",
-      "UPDATE_PERMISSIONS": "تحديث الصلاحيات",
-      "ACCESS_DENIED": "تم رفض الوصول",
-      "CREATE_BACKUP": "إنشاء نسخة احتياطية",
-      "RECLAMATION_CREATE": "إنشاء شكاية",
-      "RECLAMATION_UPDATE": "تحديث شكاية",
-      "RECLAMATION_DELETE": "حذف شكاية"
-    },
-    "entities": {
-      "User": "مستخدم",
-      "Reclamation": "شكاية",
-      "System": "النظام",
-      "Route": "المسار / الرابط",
-      "Authentication": "المصادقة"
-    },
-    "modal": {
-      "title": "تفاصيل السجل #{id}",
-      "system": "النظام",
-      "ip_address": "عنوان IP",
-      "device": "الجهاز / المتصفح",
-      "saved_data": "البيانات المسجلة",
-      "no_details": "لا توجد تفاصيل إضافية لهذا الإجراء",
-      "close": "إغلاق",
-      "not_available": "غير متوفر",
-      "unknown": "غير معروف",
-      "reason": "السبب",
-      "path": "المسار",
-      "timestamp": "الطابع الزمني",
-      "other_details": "تفاصيل أخرى"
-    }
   }
 }

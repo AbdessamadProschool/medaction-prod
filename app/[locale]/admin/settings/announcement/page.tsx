@@ -49,24 +49,32 @@ export default function AnnouncementSettingsPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    try {
-      const res = await fetch('/api/settings/announcement', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config),
-      });
-      
-      if (res.ok) {
-        toast.success(t('admin_announcement.toasts.success'));
-      } else {
-        const error = await res.json();
-        toast.error(error.error || t('admin_announcement.toasts.save_error'));
+    const savePromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/settings/announcement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config),
+        });
+        
+        if (res.ok) {
+          resolve(true);
+        } else {
+          const error = await res.json();
+          reject(new Error(error.error || t('admin_announcement.toasts.save_error')));
+        }
+      } catch (e: any) {
+        reject(new Error(t('admin_announcement.toasts.server_error')));
+      } finally {
+        setSaving(false);
       }
-    } catch (e) {
-      toast.error(t('admin_announcement.toasts.server_error'));
-    } finally {
-      setSaving(false);
-    }
+    });
+
+    toast.promise(savePromise, {
+      loading: 'Sauvegarde en cours...',
+      success: t('admin_announcement.toasts.success'),
+      error: (err: any) => err.message,
+    });
   };
 
   if (loading) {
@@ -92,7 +100,7 @@ export default function AnnouncementSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-600/20"
+          className="gov-btn gov-btn-primary px-6 py-2.5"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {t('admin_announcement.save')}
@@ -179,7 +187,7 @@ export default function AnnouncementSettingsPage() {
                         type="text" 
                         value={config.startTime || ''} 
                         onChange={(e) => setConfig({...config, startTime: e.target.value})}
-                        className="w-full px-4 py-2 rounded-xl border border-gray-200"
+                        className="gov-input w-full"
                         placeholder="09:00"
                     />
                 </div>
@@ -189,7 +197,7 @@ export default function AnnouncementSettingsPage() {
                         type="text" 
                         value={config.endTime || ''} 
                         onChange={(e) => setConfig({...config, endTime: e.target.value})}
-                        className="w-full px-4 py-2 rounded-xl border border-gray-200"
+                        className="gov-input w-full"
                         placeholder="15:00"
                     />
                 </div>
@@ -226,7 +234,7 @@ export default function AnnouncementSettingsPage() {
                 type="text"
                 value={config.title}
                 onChange={(e) => setConfig({ ...config, title: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-gray-800"
+                className="gov-input w-full font-bold text-gray-800"
                 placeholder={t('admin_announcement.title_placeholder')}
               />
             </div>
@@ -240,7 +248,7 @@ export default function AnnouncementSettingsPage() {
                 value={config.message}
                 onChange={(e) => setConfig({ ...config, message: e.target.value })}
                 rows={6}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                className="gov-textarea w-full"
                 placeholder={t('admin_announcement.content_placeholder')}
               />
               <p className="text-xs text-gray-400 mt-2 text-right">
@@ -255,7 +263,7 @@ export default function AnnouncementSettingsPage() {
                 id="showOnce"
                 checked={config.showOncePerSession}
                 onChange={(e) => setConfig({ ...config, showOncePerSession: e.target.checked })}
-                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                className="w-5 h-5 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] rounded"
               />
               <label htmlFor="showOnce" className="text-sm text-gray-700 select-none cursor-pointer">
                 {t('admin_announcement.show_once')}

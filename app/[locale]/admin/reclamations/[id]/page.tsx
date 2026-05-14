@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import DownloadPhotosButton from '@/components/reclamations/DownloadPhotosButton';
 import { useTranslations, useLocale } from 'next-intl';
+import { toast } from 'sonner';
 
 interface Reclamation {
   id: number;
@@ -126,50 +127,68 @@ export default function ReclamationDetailPage() {
 
   const handleAccept = async () => {
     setActionLoading('accept');
-    try {
-      const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ decision: 'ACCEPTEE' }),
-      });
-      if (res.ok) {
-        fetchReclamation();
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Erreur lors de l\'acceptation');
+    const acceptPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision: 'ACCEPTEE' }),
+        });
+        if (res.ok) {
+          fetchReclamation();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors de l\'acceptation'));
+        }
+      } catch (err: any) {
+        reject(new Error(err.message || 'Erreur lors de l\'acceptation'));
+      } finally {
+        setActionLoading(null);
       }
-    } catch (err) {
-      console.error('Erreur:', err);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(acceptPromise, {
+      loading: 'Acceptation en cours...',
+      success: 'Réclamation acceptée avec succès',
+      error: (err: any) => err.message,
+    });
   };
 
   const handleReject = async () => {
     if (!motifRejet.trim()) {
-      alert(t('messages.reject_reason_required'));
+      toast.error(t('messages.reject_reason_required'));
       return;
     }
     setActionLoading('reject');
-    try {
-      const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ decision: 'REJETEE', motifRejet }),
-      });
-      if (res.ok) {
-        setShowRejectForm(false);
-        setMotifRejet('');
-        fetchReclamation();
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Erreur lors du rejet');
+    const rejectPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ decision: 'REJETEE', motifRejet }),
+        });
+        if (res.ok) {
+          setShowRejectForm(false);
+          setMotifRejet('');
+          fetchReclamation();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors du rejet'));
+        }
+      } catch (err: any) {
+        reject(new Error(err.message || 'Erreur lors du rejet'));
+      } finally {
+        setActionLoading(null);
       }
-    } catch (err) {
-      console.error('Erreur:', err);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(rejectPromise, {
+      loading: 'Rejet en cours...',
+      success: 'Réclamation rejetée',
+      error: (err: any) => err.message,
+    });
   };
 
   if (loading) {
@@ -285,20 +304,20 @@ export default function ReclamationDetailPage() {
                     onChange={(e) => setMotifRejet(e.target.value)}
                     placeholder={t('reject_reason_placeholder')}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                    className="gov-textarea w-full"
                   />
                   <div className="flex items-center gap-3">
                     <button
                       onClick={handleReject}
                       disabled={actionLoading === 'reject'}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
+                      className="gov-btn text-white bg-red-500 hover:bg-red-600 px-4 py-2 disabled:opacity-50"
                     >
                       {actionLoading === 'reject' && <Loader2 size={16} className="animate-spin" />}
                       {t('confirm_reject')}
                     </button>
                     <button
                       onClick={() => setShowRejectForm(false)}
-                      className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="gov-btn gov-btn-secondary px-4 py-2"
                     >
                       {t('cancel')}
                     </button>
@@ -309,7 +328,7 @@ export default function ReclamationDetailPage() {
                   <button
                     onClick={handleAccept}
                     disabled={actionLoading === 'accept'}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                    className="gov-btn gov-btn-primary px-6 py-3"
                   >
                     {actionLoading === 'accept' ? (
                       <Loader2 size={18} className="animate-spin" />
@@ -320,7 +339,7 @@ export default function ReclamationDetailPage() {
                   </button>
                   <button
                     onClick={() => setShowRejectForm(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-white border border-red-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors"
+                    className="gov-btn bg-white border border-red-200 text-red-600 hover:bg-red-50 px-6 py-3"
                   >
                     <XCircle size={18} />
                     {t('reject')}

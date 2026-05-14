@@ -64,36 +64,45 @@ export default function AdminNouveauProgrammePage() {
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
-    try {
-      const payload = {
-        ...data,
-        etablissementId: parseInt(data.etablissementId),
-        participantsAttendus: data.participantsAttendus ? parseInt(data.participantsAttendus) : undefined,
-        isOrganiseParProvince: data.isOrganiseParProvince,
-        sousCouvertProvince: data.sousCouvertProvince,
-      };
+    const submitPromise = new Promise(async (resolve, reject) => {
+      try {
+        const payload = {
+          ...data,
+          etablissementId: parseInt(data.etablissementId),
+          participantsAttendus: data.participantsAttendus ? parseInt(data.participantsAttendus) : undefined,
+          isOrganiseParProvince: data.isOrganiseParProvince,
+          sousCouvertProvince: data.sousCouvertProvince,
+        };
 
-      const res = await fetch("/api/programmes-activites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+        const res = await fetch("/api/programmes-activites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-      const responseData = await res.json();
+        const responseData = await res.json();
 
-      if (!res.ok) {
-        throw new Error(responseData.message || responseData.error || t('messages.error'));
+        if (!res.ok) {
+          reject(new Error(responseData.message || responseData.error || t('messages.error')));
+          return;
+        }
+
+        resolve(true);
+        router.push("/admin/programmes-activites");
+        router.refresh();
+      } catch (error: any) {
+        console.error(error);
+        reject(new Error(error.message || t('messages.error')));
+      } finally {
+        setLoading(false);
       }
+    });
 
-      toast.success(t('messages.success'));
-      router.push("/admin/programmes-activites");
-      router.refresh();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || t('messages.error'));
-    } finally {
-      setLoading(false);
-    }
+    toast.promise(submitPromise, {
+      loading: 'Création en cours...',
+      success: t('messages.success'),
+      error: (err: any) => err.message,
+    });
   };
 
   return (
@@ -126,7 +135,7 @@ export default function AdminNouveauProgrammePage() {
                 <label className="text-sm font-medium">{t('fields.etablissement')} <span className="text-red-500">*</span></label>
                 <select 
                   {...register("etablissementId")}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="gov-select w-full"
                   disabled={loadingEtabs}
                 >
                   <option value="">{t('fields.select_etablissement')}</option>
@@ -141,7 +150,7 @@ export default function AdminNouveauProgrammePage() {
                 <label className="text-sm font-medium">{t('fields.type_activity')} <span className="text-red-500">*</span></label>
                 <select 
                   {...register("typeActivite")}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="gov-select w-full"
                 >
                   <option value="Culturel">{t('activity_types.Culturel')}</option>
                   <option value="Sportif">{t('activity_types.Sportif')}</option>
@@ -159,8 +168,7 @@ export default function AdminNouveauProgrammePage() {
               <label className="text-sm font-medium">{t('fields.activity_title')} <span className="text-red-500">*</span></label>
               <input
                 {...register("titre")}
-                placeholder={t('fields.title_placeholder')}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="gov-input w-full"
               />
               {errors.titre && <p className="text-sm text-red-500">{errors.titre.message}</p>}
             </div>
@@ -170,8 +178,7 @@ export default function AdminNouveauProgrammePage() {
               <textarea
                 {...register("description")}
                 placeholder={t('fields.description_placeholder')}
-                rows={4}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="gov-textarea w-full"
               />
             </div>
           </div>
@@ -192,7 +199,7 @@ export default function AdminNouveauProgrammePage() {
                     lang="fr"
                     dir="ltr"
                     {...register("date")}
-                    className="flex h-10 w-full rounded-md border border-input bg-background/50 pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none text-right md:text-left"
+                    className="gov-input w-full pl-10 text-right md:text-left"
                     style={{ colorScheme: 'light' }}
                   />
                 </div>
@@ -210,7 +217,7 @@ export default function AdminNouveauProgrammePage() {
                     lang="fr"
                     dir="ltr"
                     {...register("heureDebut")}
-                    className="flex h-10 w-full rounded-md border border-input bg-background/50 pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none text-right md:text-left"
+                    className="gov-input w-full pl-10 text-right md:text-left"
                     style={{ colorScheme: 'light' }}
                   />
                 </div>
@@ -228,7 +235,7 @@ export default function AdminNouveauProgrammePage() {
                     lang="fr"
                     dir="ltr"
                     {...register("heureFin")}
-                    className="flex h-10 w-full rounded-md border border-input bg-background/50 pl-10 pr-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none text-right md:text-left"
+                    className="gov-input w-full pl-10 text-right md:text-left"
                     style={{ colorScheme: 'light' }}
                   />
                 </div>
@@ -246,8 +253,7 @@ export default function AdminNouveauProgrammePage() {
                 <label className="text-sm font-medium">{t('fields.location')}</label>
                 <input
                   {...register("lieu")}
-                  placeholder={t('fields.location_placeholder')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="gov-input w-full"
                 />
               </div>
 
@@ -255,8 +261,7 @@ export default function AdminNouveauProgrammePage() {
                 <label className="text-sm font-medium">{t('fields.manager')}</label>
                 <input
                   {...register("responsableNom")}
-                  placeholder={t('fields.manager_placeholder')}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="gov-input w-full"
                 />
               </div>
 
@@ -264,8 +269,7 @@ export default function AdminNouveauProgrammePage() {
                  <label className="text-sm font-medium">{t('fields.participants')}</label>
                 <input
                   type="number"
-                  {...register("participantsAttendus")}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="gov-input w-full"
                 />
                 {errors.participantsAttendus && <p className="text-sm text-red-500">{errors.participantsAttendus.message}</p>}
               </div>
@@ -276,8 +280,7 @@ export default function AdminNouveauProgrammePage() {
                 <div className="pt-0.5">
                   <input
                     type="checkbox"
-                    {...register("isOrganiseParProvince")}
-                    className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                   />
                 </div>
                 <div className="text-start">
@@ -290,8 +293,7 @@ export default function AdminNouveauProgrammePage() {
                 <div className="pt-0.5">
                   <input
                     type="checkbox"
-                    {...register("sousCouvertProvince")}
-                    className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                    className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                   />
                 </div>
                 <div className="text-start">
@@ -306,14 +308,14 @@ export default function AdminNouveauProgrammePage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="mr-4 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4"
+              className="gov-btn gov-btn-secondary mr-4"
             >
               {t('buttons.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4"
+              className="gov-btn gov-btn-primary px-8"
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                {t('buttons.create')}

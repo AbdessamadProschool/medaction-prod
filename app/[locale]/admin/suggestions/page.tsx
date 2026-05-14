@@ -123,32 +123,38 @@ export default function AdminSuggestionsPage() {
 
   const handleChangeStatut = async (suggestionId: number, newStatut: string) => {
     setActionLoading(`${suggestionId}-${newStatut}`);
-    try {
-      const res = await fetch(`/api/suggestions/${suggestionId}/statut`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          statut: newStatut,
-          reponseAdmin: reponseAdmin || undefined,
-        }),
-      });
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/suggestions/${suggestionId}/statut`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            statut: newStatut,
+            reponseAdmin: reponseAdmin || undefined,
+          }),
+        });
 
-      if (res.ok) {
-        const statutLabel = t(`statuses.${newStatut}`);
-        toast.success(`Statut changé: ${statutLabel}`);
-        fetchSuggestions();
-        setShowDetailModal(false);
-        setReponseAdmin('');
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur lors du changement de statut');
+        if (res.ok) {
+          fetchSuggestions();
+          setShowDetailModal(false);
+          setReponseAdmin('');
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors du changement de statut'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
+      } finally {
+        setActionLoading(null);
       }
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: 'Mise à jour en cours...',
+      success: `Statut mis à jour: ${t(`statuses.${newStatut}`)}`,
+      error: (err) => err.message,
+    });
   };
 
   const openDetail = (suggestion: Suggestion) => {
@@ -191,24 +197,22 @@ export default function AdminSuggestionsPage() {
         {Object.entries(STATUT_CONFIG).map(([key, config]) => {
           const count = stats[key] || 0;
           const Icon = config.icon;
-          const percentage = totalSuggestions > 0 ? Math.round((count / totalSuggestions) * 100) : 0;
           
           return (
             <button
               key={key}
               onClick={() => setStatutFilter(statutFilter === key ? '' : key)}
-              className={`p-4 rounded-2xl border transition-all ${
+              className={`gov-stat-card transition-all cursor-pointer text-start ${
                 statutFilter === key
-                  ? `${config.bg} border-current shadow-lg`
-                  : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-gray-200'
+                  ? 'ring-2 ring-[hsl(var(--gov-gold))] shadow-lg'
+                  : 'hover:shadow-md'
               }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <Icon className={`w-5 h-5 ${config.text}`} />
-                <span className="text-xs text-gray-400">{percentage}%</span>
+              <div className="gov-stat-icon">
+                <Icon className={`w-6 h-6 ${config.text}`} />
               </div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{count}</p>
-              <p className={`text-xs ${config.text}`}>{t(`statuses.${key}`)}</p>
+              <p className="gov-stat-value">{count}</p>
+              <p className={`gov-stat-label ${config.text}`}>{t(`statuses.${key}`)}</p>
             </button>
           );
         })}
@@ -241,29 +245,14 @@ export default function AdminSuggestionsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-          </div>
-        ) : suggestions.length === 0 ? (
-          <div className="text-center py-20">
-            <Lightbulb className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {t('no_suggestions')}
-            </h3>
-            <p className="text-gray-500">
-              {search ? t('no_results') : t('waiting_suggestions')}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.suggestion')}
-                  </th>
+      <div className="gov-card overflow-hidden">
+        <div className="gov-table-wrapper">
+          <table className="gov-table">
+            <thead className="bg-gray-50 dark:bg-gray-700/50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                  {t('table.suggestion')}
+                </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     {t('table.category')}
                   </th>

@@ -1,0 +1,187 @@
+{
+  "admin_roles": {
+    "title": "Gestion des Rôles & Permissions",
+    "description": "Consultez la matrice des droits d'accès institutionnels définis pour chaque profil d'utilisateur du système.",
+    "read_only_mode": "Mode lecture seule (Configuration Système)",
+    "available_roles": "Profils Institutionnels",
+    "active_permissions": "{count} permissions actives",
+    "roles": {
+      "CITOYEN": "Citoyen Plaignant",
+      "DELEGATION": "Délégué de Secteur",
+      "AUTORITE_LOCALE": "Autorité Locale",
+      "ADMIN": "Administrateur Central",
+      "SUPER_ADMIN": "Super Administrateur",
+      "GOUVERNEUR": "Gouverneur de Province",
+      "COORDINATEUR_ACTIVITES": "Coordinateur d'Activités"
+    },
+    "descriptions": {
+      "CITOYEN": "Accès public standard avec authentification. Peut créer des réclamations, évaluer les services et participer aux événements.",
+      "DELEGATION": "Responsable de secteur thématique (Santé, Éducation, etc.). Gère les contenus et les actualités liés à son domaine de compétence.",
+      "AUTORITE_LOCALE": "Gestionnaire territorial (Commune/Annexe). Traite, oriente et résout les réclamations de sa zone géographique.",
+      "ADMIN": "Administrateur fonctionnel. Supervise les validations, modère les contenus et gère les comptes utilisateurs standards.",
+      "SUPER_ADMIN": "Contrôle total de l'infrastructure logicielle. Gère les paramètres techniques, les rôles et la sécurité système.",
+      "GOUVERNEUR": "Vue stratégique de haut niveau. Accès complet en lecture seule pour la supervision de la performance provinciale.",
+      "COORDINATEUR_ACTIVITES": "Gère la planification opérationnelle et le suivi des activités au sein des établissements de la province."
+    },
+    "groups": {
+      "auth": "Authentification",
+      "users": "Utilisateurs",
+      "reclamations": "Réclamations",
+      "etablissements": "Établissements",
+      "evenements": "Événements",
+      "actualites": "Actualités",
+      "campagnes": "Campagnes",
+      "stats": "Statistiques",
+      "communes": "Territoire",
+      "settings": "Paramètres",
+      "logs": "Audit & Logs",
+      "evaluations": "Évaluations",
+      "programmes": "Programmes",
+      "suggestions": "Suggestions",
+      "map": "Cartographie",
+      "reports": "Rapports",
+      "bilans": "Bilans",
+      "system": "Système",
+      "permissions": "Rôles & Droits"
+    }
+  },
+  "permissions": {
+    "auth": {
+      "login": "Se connecter",
+      "register": "S'inscrire",
+      "logout": "Se déconnecter",
+      "reset-password": "Réinitialiser mot de passe"
+    },
+    "users": {
+      "read": "Voir utilisateurs (basique)",
+      "read_full": "Voir utilisateurs (complet)",
+      "create": "Créer utilisateur",
+      "edit": "Modifier utilisateur",
+      "edit_role": "Changer rôle",
+      "delete": "Supprimer utilisateur (Soft)",
+      "hard-delete": "Supprimer définitivement (Hard)",
+      "activate": "Activer/Désactiver compte",
+      "security": "Voir infos sécurité",
+      "me": {
+        "read": "Voir mon profil",
+        "edit": "Modifier mon profil"
+      }
+    },
+    "reclamations": {
+      "read": "Voir réclamations",
+      "read_all": "Voir toutes les réclamations",
+      "read_assigned": "Voir réclamations affectées",
+      "create": "Créer réclamation",
+      "edit": "Modifier réclamation",
+      "delete": "Supprimer réclamation",
+      "archive": "Archiver réclamation",
+      "assign": "Affecter réclamation",
+      "validate": "Valider/Rejeter décision",
+      "resolve": "Marquer comme résolue",
+      "comment": {
+        "internal": "Ajouter commentaire interne"
+      }
+    },
+    "evenements": {
+      "read": "Voir événements",
+      "read_all": "Voir tous événements (admin)",
+      "create": "Créer événement",
+      "edit": "Modifier événement propre",
+      "edit_all": "Modifier tout événement",
+      "delete": "Supprimer événement",
+      "validate": "Valider événement",
+      "feature": "Mettre événement en avant",
+      "subscribe": "S'inscrire à un événement",
+      "participate": "Participer à un événement",
+      "report": "Voir bilan événement"
+    },
+    "actualites": {
+      "read": "Lire actualités",
+      "create": "Créer actualité",
+      "edit": "Modifier actualité",
+      "delete": "Supprimer actualité",
+      "publish": "Publier actualité",
+      "validate": "Valider actualité"
+    },
+    "etablissements": {
+      "read": "Voir établissements",
+      "create": "Créer établissement",
+      "edit": "Modifier établissement",
+      "delete": "Supprimer établissement",
+      "validate": "Valider établissement",
+      "publish": "Publier établissement",
+      "subscribe": "S'abonner établissement",
+      "request": {
+        "create": "Créer une demande d'établissement",
+        "edit": "Modifier une demande d'établissement"
+      }
+    },
+    "evaluations": {
+      "read": "Lire évaluations",
+      "create": "Evaluer",
+      "edit": "Modifier évaluation",
+      "delete": "Supprimer évaluation",
+      "validate": "Modérer évaluation",
+      "report": "Signaler évaluation"
+    },
+    "campagnes": {
+      "read": "Voir campagnes",
+      "create": "Créer campagne",
+      "edit": "Modifier campagne",
+      "delete": "Supprimer campagne",
+      "activate": "Gérer statut campagne",
+      "participate": "Participer aux campagnes"
+    },
+    "programmes": {
+      "read": "Voir programmes",
+      "create": "Créer programme",
+      "edit": "Modifier programme",
+      "delete": "Supprimer programme",
+      "validate": "Valider programme",
+      "report": "Remplir rapport activité"
+    },
+    "suggestions": {
+      "create": "Créer une suggestion",
+      "read": {
+        "own": "Voir mes suggestions",
+        "all": "Voir toutes les suggestions"
+      },
+      "validate": "Valider/Répondre aux suggestions"
+    },
+    "stats": {
+      "view": {
+        "global": "Voir stats globales",
+        "secteur": "Voir stats secteur",
+        "commune": "Voir stats commune",
+        "etablissement": "Voir stats établissement"
+      }
+    },
+    "reports": {
+      "export": "Exporter rapports"
+    },
+    "map": {
+      "view": "Voir carte",
+      "view_full": "Voir carte avancée"
+    },
+    "system": {
+      "settings": {
+        "read": "Voir paramètres",
+        "edit": "Modifier paramètres"
+      },
+      "logs": {
+        "view": "Voir logs"
+      },
+      "backup": "Gérer backups",
+      "restore": "Restaurer système"
+    },
+    "permissions": {
+      "manage": "Gérer permissions"
+    },
+    "communes": {
+      "manage": "Gérer communes"
+    },
+    "bilans": {
+      "read": "Voir les bilans"
+    }
+  }
+}

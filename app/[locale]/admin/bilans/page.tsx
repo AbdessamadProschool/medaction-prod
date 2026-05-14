@@ -98,12 +98,12 @@ interface BilanCampagne {
 }
 
 const SECTEUR_COLORS: Record<string, string> = {
-  'EDUCATION': 'bg-blue-100 text-blue-700',
-  'SANTE': 'bg-red-100 text-red-700',
-  'SPORT': 'bg-green-100 text-green-700',
-  'SOCIAL': 'bg-purple-100 text-purple-700',
-  'CULTUREL': 'bg-amber-100 text-amber-700',
-  'AUTRE': 'bg-gray-100 text-gray-700',
+  'EDUCATION': 'bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))]',
+  'SANTE': 'bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))]',
+  'SPORT': 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]',
+  'SOCIAL': 'bg-purple-500/10 text-purple-600',
+  'CULTUREL': 'bg-amber-500/10 text-amber-600',
+  'AUTRE': 'bg-muted text-muted-foreground',
 };
 
 const SECTEUR_LABELS: Record<string, string> = {
@@ -279,30 +279,32 @@ export default function BilansPage() {
     if (!photos || photos.length === 0) return null;
     
     return (
-      <div className="mt-4">
-        <h5 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-          <ImageIcon className="w-4 h-4" />
+    return (
+      <div className="mt-6">
+        <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+          <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
           Photos ({photos.length})
         </h5>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {photos.map((photo, idx) => (
             <a 
               key={idx} 
               href={photo} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 hover:border-emerald-500 transition-colors group"
+              className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
             >
               <img 
                 src={photo} 
                 alt={`${title} - Photo ${idx + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
             </a>
           ))}
         </div>
       </div>
+    );
     );
   };
 
@@ -314,31 +316,32 @@ export default function BilansPage() {
     const documents = medias.filter(m => m.type === 'DOCUMENT' || m.type === 'EVENT_REPORT');
     
     return (
-      <div className="mt-4 space-y-4">
+    return (
+      <div className="mt-6 space-y-6">
         {/* Documents Section */}
         {documents.length > 0 && (
           <div>
-            <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-blue-500" />
+            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+              <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
               {t('admin_bilans.labels.documents')} ({documents.length})
             </h5>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {documents.map((doc) => (
                 <a 
                   key={doc.id} 
                   href={doc.urlPublique} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all group shadow-sm"
+                  className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:border-[hsl(var(--gov-blue))/0.5] transition-all group shadow-sm hover:shadow-md hover:-translate-y-1"
                 >
-                  <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600">
+                  <div className="p-2.5 bg-[hsl(var(--gov-blue))/0.05] rounded-xl text-[hsl(var(--gov-blue))] border border-[hsl(var(--gov-blue))/0.1]">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                    <p className="text-sm font-extrabold text-foreground truncate group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                       {doc.nomFichier === 'Compte Rendu Bilan' ? t('admin_bilans.labels.report') : doc.nomFichier}
                     </p>
-                    <p className="text-xs text-gray-500">{t('admin_bilans.labels.download_report')}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('admin_bilans.labels.download_report')}</p>
                   </div>
                 </a>
               ))}
@@ -349,25 +352,25 @@ export default function BilansPage() {
         {/* Photos Section */}
         {images.length > 0 && (
           <div>
-            <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-emerald-500" />
+            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+              <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
               {t('admin_bilans.labels.photos')} ({images.length})
             </h5>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {images.map((media) => (
                 <a 
                   key={media.id} 
                   href={media.urlPublique} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-emerald-500 transition-colors group shadow-sm"
+                  className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
                 >
                   <img 
                     src={media.urlPublique} 
                     alt={media.nomFichier}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
                 </a>
               ))}
             </div>
@@ -375,136 +378,142 @@ export default function BilansPage() {
         )}
       </div>
     );
+    );
   };
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-emerald-600 mx-auto" />
-          <p className="text-gray-500 mt-4">{t('admin_bilans.loading')}</p>
+      <div className="min-h-[60vh] flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-[hsl(var(--gov-green))/0.1] rounded-3xl flex items-center justify-center mx-auto border border-[hsl(var(--gov-green))/0.2]">
+            <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--gov-green))]" />
+          </div>
+          <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs animate-pulse">{t('admin_bilans.loading')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-8 bg-background min-h-screen p-4 sm:p-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+          <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
               <BarChart3 className="w-6 h-6" />
             </div>
             {t('admin_bilans.title')}
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground mt-2 font-medium">
             {t('admin_bilans.subtitle')}
           </p>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-600" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.1] group-hover:scale-110 transition-transform shadow-sm">
+              <Calendar className="w-7 h-7 text-[hsl(var(--gov-blue))]" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t('admin_bilans.stats.closed_events')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{statsEvenements.total}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.closed_events')}</p>
+              <p className="text-3xl font-extrabold text-foreground leading-none">{statsEvenements.total}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-              <ClipboardList className="w-6 h-6 text-purple-600" />
+        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/10 group-hover:scale-110 transition-transform shadow-sm">
+              <ClipboardList className="w-7 h-7 text-purple-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t('admin_bilans.stats.activities_with_report')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{statsActivites.total}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.activities_with_report')}</p>
+              <p className="text-3xl font-extrabold text-foreground leading-none">{statsActivites.total}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-              <Megaphone className="w-6 h-6 text-amber-600" />
+        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/10 group-hover:scale-110 transition-transform shadow-sm">
+              <Megaphone className="w-7 h-7 text-amber-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t('admin_bilans.stats.finished_campaigns')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{statsCampagnes.total}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.finished_campaigns')}</p>
+              <p className="text-3xl font-extrabold text-foreground leading-none">{statsCampagnes.total}</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-              <Users className="w-6 h-6 text-emerald-600" />
+        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group border-[hsl(var(--gov-green))/0.3] shadow-[hsl(var(--gov-green))/0.05]">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center border border-[hsl(var(--gov-green))/0.1] group-hover:scale-110 transition-transform shadow-sm">
+              <Users className="w-7 h-7 text-[hsl(var(--gov-green))]" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">{t('admin_bilans.stats.total_participations')}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.total_participations')}</p>
+              <p className="text-3xl font-extrabold text-foreground leading-none">
                 {statsEvenements.totalParticipants + statsActivites.totalParticipants}
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700">
+      <div className="flex gap-4 p-1.5 bg-muted rounded-2xl w-fit border border-border shadow-sm">
         <button
           onClick={() => setActiveTab('evenements')}
-          className={`px-6 py-3 font-medium transition-colors ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'evenements'
-              ? 'text-emerald-600 border-b-2 border-emerald-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <Calendar className="w-4 h-4 inline mr-2" />
-          {t('admin_bilans.tabs.events')} ({evenements.length})
+          <Calendar className="w-4 h-4" />
+          {t('admin_bilans.tabs.events')}
+          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'evenements' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{evenements.length}</span>
         </button>
         <button
           onClick={() => setActiveTab('activites')}
-          className={`px-6 py-3 font-medium transition-colors ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'activites'
-              ? 'text-emerald-600 border-b-2 border-emerald-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <ClipboardList className="w-4 h-4 inline mr-2" />
-          {t('admin_bilans.tabs.activities')} ({activites.length})
+          <ClipboardList className="w-4 h-4" />
+          {t('admin_bilans.tabs.activities')}
+          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'activites' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{activites.length}</span>
         </button>
         <button
           onClick={() => setActiveTab('campagnes')}
-          className={`px-6 py-3 font-medium transition-colors ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'campagnes'
-              ? 'text-emerald-600 border-b-2 border-emerald-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <Megaphone className="w-4 h-4 inline mr-2" />
-          {t('admin_bilans.tabs.campaigns')} ({campagnes.length})
+          <Megaphone className="w-4 h-4" />
+          {t('admin_bilans.tabs.campaigns')}
+          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'campagnes' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{campagnes.length}</span>
         </button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="relative flex-1 group">
+          <Search className={`absolute ${locale === 'ar' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors`} />
           <input
             type="text"
             placeholder={t('admin_bilans.search_placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-800"
+            className={`gov-input py-3.5 ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
           />
         </div>
         
@@ -512,7 +521,7 @@ export default function BilansPage() {
           <select
             value={selectedSecteur}
             onChange={(e) => setSelectedSecteur(e.target.value)}
-            className="px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-800"
+            className="gov-input py-3.5 min-w-[200px]"
           >
             <option value="">{t('admin_bilans.all_sectors')}</option>
             <option value="EDUCATION">{t('sectors.education')}</option>
@@ -527,58 +536,60 @@ export default function BilansPage() {
 
       {/* Content - Événements */}
       {activeTab === 'evenements' && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {filteredEvenements.length === 0 ? (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700">{t('admin_bilans.empty.events')}</h3>
-              <p className="text-gray-500">{t('admin_bilans.empty.desc_events')}</p>
+            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <Calendar className="w-10 h-10 text-muted-foreground/30" />
+              </div>
+              <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.events')}</h3>
+              <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_events')}</p>
             </div>
           ) : (
-            filteredEvenements.map((evt) => {
-              const isExpanded = expandedItems.has(`evt-${evt.id}`);
-              return (
-                <div 
+                <motion.div 
                   key={evt.id} 
-                  className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${SECTEUR_COLORS[evt.secteur] || 'bg-gray-100'}`}>
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+                    <div className="flex-1 space-y-6">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${SECTEUR_COLORS[evt.secteur] || 'bg-muted'} border-current/20`}>
                           {t('sectors.' + evt.secteur.toLowerCase())}
                         </span>
-                        <span className="text-xs text-gray-500 flex items-center gap-1">
+                        <div className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/50">
                           <Clock className="w-3 h-3" />
                           {new Date(evt.dateDebut).toLocaleDateString('fr-FR')}
                           {evt.dateFin && ` - ${new Date(evt.dateFin).toLocaleDateString('fr-FR')}`}
-                        </span>
+                        </div>
                           {evt.medias && evt.medias.length > 0 && (
-                          <span className="text-xs text-emerald-600 flex items-center gap-1">
+                          <div className="flex items-center gap-2 px-3 py-1 bg-[hsl(var(--gov-green))/0.05] rounded-full text-[10px] font-bold uppercase tracking-widest text-[hsl(var(--gov-green))] border border-[hsl(var(--gov-green))/0.1]">
                             <ImageIcon className="w-3 h-3" />
                             {evt.medias.filter(m => m.type === 'IMAGE').length} {t('admin_bilans.labels.photos')}
-                          </span>
+                          </div>
                         )}
                       </div>
                       
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-2xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight">
                         {evt.titre}
                       </h3>
                       
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+                      <div className="flex flex-wrap gap-6 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                         {evt.etablissement && (
-                          <span className="flex items-center gap-1">
-                            <Building2 className="w-4 h-4" />
+                          <span className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-xl border border-border/50">
+                            <Building2 className="w-4 h-4 text-[hsl(var(--gov-blue))]" />
                             {evt.etablissement.nom}
                           </span>
                         )}
                         {evt.commune && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
+                          <span className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-xl border border-border/50">
+                            <MapPin className="w-4 h-4 text-[hsl(var(--gov-red))]" />
                             {evt.commune.nom}
                           </span>
                         )}
-                        <span className="flex items-center gap-1 font-medium text-emerald-600">
+                        <span className="flex items-center gap-2 bg-[hsl(var(--gov-green))/0.05] px-3 py-1.5 rounded-xl border border-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]">
                           <Users className="w-4 h-4" />
                           {evt.bilanNbParticipants || evt.nombreInscrits} {t('admin_bilans.labels.participations')}
                         </span>
@@ -586,44 +597,58 @@ export default function BilansPage() {
 
                       {/* Bilan Description */}
                       {evt.bilanDescription && (
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                              <FileText className="w-4 h-4" />
+                        <div className="bg-muted/50 rounded-3xl p-6 border border-border/50">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                              <div className="w-6 h-6 bg-card rounded-lg flex items-center justify-center border border-border">
+                                <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
+                              </div>
                               {t('admin_bilans.labels.report')}
                             </h4>
                             <button 
                               onClick={() => toggleExpand(`evt-${evt.id}`)}
-                              className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
+                              className="text-[10px] font-bold uppercase tracking-widest text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-[hsl(var(--gov-blue))/0.05] transition-all"
                             >
                               {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                               {isExpanded ? t('admin_bilans.labels.reduce') : t('admin_bilans.labels.expand')}
                             </button>
                           </div>
-                          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm">
+                          <div className="text-muted-foreground font-medium text-sm leading-relaxed whitespace-pre-wrap">
                             {isExpanded 
                               ? evt.bilanDescription 
                               : (evt.bilanDescription.length > 200 
                                   ? evt.bilanDescription.substring(0, 200) + '...'
                                   : evt.bilanDescription)
                             }
-                          </p>
+                          </div>
                           {evt.bilanDatePublication && (
-                            <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
-                              <Calendar className="w-3 h-3" /> {t('admin_bilans.labels.published_on')} {new Date(evt.bilanDatePublication).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
-                            </p>
+                            <div className="flex items-center gap-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                              <Calendar className="w-3.5 h-3.5" />
+                              {t('admin_bilans.labels.published_on')} {new Date(evt.bilanDatePublication).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
+                            </div>
                           )}
                           
                           {/* Photos */}
-                          {isExpanded && <MediaGallery medias={evt.medias} />}
+                          <AnimatePresence>
+                            {isExpanded && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="overflow-hidden"
+                              >
+                                <MediaGallery medias={evt.medias} />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
                       )}
                     </div>
                     
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-3 min-w-[200px]">
                       <Link
                         href={`/admin/evenements/${evt.id}/modifier`}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm transition-colors"
+                        className="flex items-center justify-center gap-2 px-5 py-3.5 bg-[hsl(var(--gov-blue))/0.05] text-[hsl(var(--gov-blue))] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[hsl(var(--gov-blue))] hover:text-white transition-all border border-[hsl(var(--gov-blue))/0.1] shadow-sm"
                       >
                         <Eye className="w-4 h-4" />
                         {t('admin_bilans.labels.details')}
@@ -635,21 +660,21 @@ export default function BilansPage() {
                           description: evt.bilanDescription || '',
                           participants: evt.bilanNbParticipants || 0
                         })}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-blue-200 dark:border-gray-700 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm transition-colors"
+                        className="flex items-center justify-center gap-2 px-5 py-3.5 bg-card text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted hover:text-foreground transition-all border border-border shadow-sm"
                       >
                         <Edit2 className="w-4 h-4" />
                         {t('admin_bilans.labels.edit_bilan')}
                       </button>
                       <button
                         onClick={() => handleResetBilan(evt.id)}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-red-200 dark:border-gray-700 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-sm transition-colors"
+                        className="flex items-center justify-center gap-2 px-5 py-3.5 bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[hsl(var(--gov-red))] hover:text-white transition-all border border-[hsl(var(--gov-red))/0.1] shadow-sm"
                       >
                         <Trash2 className="w-4 h-4" />
                         {t('admin_bilans.labels.reset_bilan')}
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })
           )}
@@ -658,68 +683,70 @@ export default function BilansPage() {
 
       {/* Content - Activités */}
       {activeTab === 'activites' && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {filteredActivites.length === 0 ? (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-              <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700">{t('admin_bilans.empty.activities')}</h3>
-              <p className="text-gray-500">{t('admin_bilans.empty.desc_activities')}</p>
+            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <ClipboardList className="w-10 h-10 text-muted-foreground/30" />
+              </div>
+              <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.activities')}</h3>
+              <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_activities')}</p>
             </div>
           ) : (
             filteredActivites.map((act) => {
               const isExpanded = expandedItems.has(`act-${act.id}`);
               return (
-                <div 
+                <motion.div 
                   key={act.id} 
-                  className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${SECTEUR_COLORS[act.etablissement.secteur] || 'bg-gray-100'}`}>
+                  <div className="space-y-6">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${SECTEUR_COLORS[act.etablissement.secteur] || 'bg-muted'} border-current/20`}>
                         {t('sectors.' + act.etablissement.secteur.toLowerCase())}
                       </span>
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[hsl(var(--gov-blue))/0.05] text-[hsl(var(--gov-blue))] border border-[hsl(var(--gov-blue))/0.1]">
                         {act.typeActivite}
                       </span>
-                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <div className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/50">
                         <Clock className="w-3 h-3" />
                         {new Date(act.date).toLocaleDateString('fr-FR')} • {act.heureDebut} - {act.heureFin}
-                      </span>
+                      </div>
                       {act.photosRapport && act.photosRapport.length > 0 && (
-                        <span className="text-xs text-emerald-600 flex items-center gap-1">
+                        <div className="flex items-center gap-2 px-3 py-1 bg-[hsl(var(--gov-green))/0.05] rounded-full text-[10px] font-bold uppercase tracking-widest text-[hsl(var(--gov-green))] border border-[hsl(var(--gov-green))/0.1]">
                           <ImageIcon className="w-3 h-3" />
                           {act.photosRapport.length} {t('admin_bilans.labels.photos')}
-                        </span>
+                        </div>
                       )}
                     </div>
                     
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-2xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight">
                       {act.titre}
                     </h3>
                     
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                      <span className="flex items-center gap-1">
-                        <Building2 className="w-4 h-4" />
+                    <div className="flex flex-wrap gap-6 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <span className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-xl border border-border/50">
+                        <Building2 className="w-4 h-4 text-[hsl(var(--gov-blue))]" />
                         {act.etablissement.nom}
                       </span>
-                      {act.etablissement.commune && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {act.etablissement.commune.nom}
+                      {(act.etablissement.commune || act.lieu) && (
+                        <span className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-xl border border-border/50">
+                          <MapPin className="w-4 h-4 text-[hsl(var(--gov-red))]" />
+                          {act.etablissement.commune?.nom || act.lieu}
                         </span>
                       )}
-                      {act.lieu && (
-                        <span className="text-gray-400 flex items-center gap-1"><MapPin className="w-3 h-3" /> {act.lieu}</span>
-                      )}
-                      <span className="flex items-center gap-1 font-medium text-emerald-600">
+                      <span className="flex items-center gap-2 bg-[hsl(var(--gov-green))/0.05] px-3 py-1.5 rounded-xl border border-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]">
                         <Users className="w-4 h-4" />
                         {act.presenceEffective || 0} / {act.participantsAttendus || '?'} {t('admin_bilans.labels.present')}
                         {act.tauxPresence && (
-                          <span className="text-xs text-gray-400">({act.tauxPresence.toFixed(0)}%)</span>
+                          <span className="opacity-60 ml-1">({act.tauxPresence.toFixed(0)}%)</span>
                         )}
                       </span>
                       {act.noteQualite && (
-                        <span className="flex items-center gap-1 text-amber-600">
+                        <span className="flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 text-amber-600">
                           <Star className="w-4 h-4 fill-current" />
                           {act.noteQualite}/5
                         </span>
@@ -727,58 +754,78 @@ export default function BilansPage() {
                     </div>
 
                     {/* Rapport */}
-                    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                          <FileText className="w-4 h-4" />
+                    <div className="bg-muted/50 rounded-3xl p-6 border border-border/50">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                          <div className="w-6 h-6 bg-card rounded-lg flex items-center justify-center border border-border">
+                            <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
+                          </div>
                           {t('admin_bilans.labels.report_activity')}
                         </h4>
                         <button 
                           onClick={() => toggleExpand(`act-${act.id}`)}
-                          className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
+                          className="text-[10px] font-bold uppercase tracking-widest text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-[hsl(var(--gov-blue))/0.05] transition-all"
                         >
                           {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           {isExpanded ? t('admin_bilans.labels.reduce') : t('admin_bilans.labels.view_all')}
                         </button>
                       </div>
                       
-                      {act.commentaireDeroulement && (
-                        <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
-                          <strong>{t('admin_bilans.labels.deroulement')} :</strong> {isExpanded ? act.commentaireDeroulement : (act.commentaireDeroulement.length > 150 ? act.commentaireDeroulement.substring(0, 150) + '...' : act.commentaireDeroulement)}
-                        </p>
-                      )}
-                      
-                      {isExpanded && (
-                        <>
-                          {act.pointsPositifs && (
-                            <p className="text-emerald-700 dark:text-emerald-400 text-sm mb-2 flex items-start gap-2">
-                              <strong className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4" /> {t('admin_bilans.labels.positives')} :</strong> {act.pointsPositifs}
-                            </p>
+                      <div className="space-y-4">
+                        {act.commentaireDeroulement && (
+                          <div className="text-muted-foreground font-medium text-sm leading-relaxed">
+                            <strong className="text-foreground">{t('admin_bilans.labels.deroulement')} :</strong> {isExpanded ? act.commentaireDeroulement : (act.commentaireDeroulement.length > 150 ? act.commentaireDeroulement.substring(0, 150) + '...' : act.commentaireDeroulement)}
+                          </div>
+                        )}
+                        
+                        <AnimatePresence>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="overflow-hidden space-y-4"
+                            >
+                              {act.pointsPositifs && (
+                                <div className="p-4 bg-[hsl(var(--gov-green))/0.05] rounded-2xl border border-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] text-sm font-medium leading-relaxed">
+                                  <div className="flex items-center gap-2 mb-1 font-bold uppercase text-[9px] tracking-widest opacity-60">
+                                    <CheckCircle2 className="w-3 h-3" /> {t('admin_bilans.labels.positives')}
+                                  </div>
+                                  {act.pointsPositifs}
+                                </div>
+                              )}
+                              {act.difficultes && (
+                                <div className="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10 text-amber-700 text-sm font-medium leading-relaxed">
+                                  <div className="flex items-center gap-2 mb-1 font-bold uppercase text-[9px] tracking-widest opacity-60">
+                                    <AlertCircle className="w-3 h-3" /> {t('admin_bilans.labels.difficulties')}
+                                  </div>
+                                  {act.difficultes}
+                                </div>
+                              )}
+                              {act.recommandations && (
+                                <div className="p-4 bg-[hsl(var(--gov-blue))/0.05] rounded-2xl border border-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] text-sm font-medium leading-relaxed">
+                                  <div className="flex items-center gap-2 mb-1 font-bold uppercase text-[9px] tracking-widest opacity-60">
+                                    <Lightbulb className="w-3 h-3" /> {t('admin_bilans.labels.recommendations')}
+                                  </div>
+                                  {act.recommandations}
+                                </div>
+                              )}
+                              
+                              <PhotoGallery photos={act.photosRapport || []} title={act.titre} />
+                            </motion.div>
                           )}
-                          {act.difficultes && (
-                            <p className="text-amber-700 dark:text-amber-400 text-sm mb-2 flex items-start gap-2">
-                              <strong className="flex items-center gap-1"><AlertCircle className="w-4 h-4" /> {t('admin_bilans.labels.difficulties')} :</strong> {act.difficultes}
-                            </p>
-                          )}
-                          {act.recommandations && (
-                            <p className="text-blue-700 dark:text-blue-400 text-sm mb-2 flex items-start gap-2">
-                              <strong className="flex items-center gap-1"><Lightbulb className="w-4 h-4" /> {t('admin_bilans.labels.recommendations')} :</strong> {act.recommandations}
-                            </p>
-                          )}
-                          
-                          {/* Photos du rapport */}
-                          <PhotoGallery photos={act.photosRapport || []} title={act.titre} />
-                        </>
-                      )}
+                        </AnimatePresence>
+                      </div>
                       
                       {act.dateRapport && (
-                        <p className="text-xs text-gray-400 mt-2">
+                        <div className="flex items-center gap-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                          <Calendar className="w-3.5 h-3.5" />
                           {t('admin_bilans.labels.completed_on')} {new Date(act.dateRapport).toLocaleDateString(t('locale') === 'ar' ? 'ar-MA' : 'fr-FR')}
-                        </p>
+                        </div>
                       )}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })
           )}
@@ -787,209 +834,174 @@ export default function BilansPage() {
 
       {/* Content - Campagnes */}
       {activeTab === 'campagnes' && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {filteredCampagnes.length === 0 ? (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-              <Megaphone className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-700">{t('admin_bilans.empty.campaigns')}</h3>
-              <p className="text-gray-500">{t('admin_bilans.empty.desc_campaigns')}</p>
+            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <Megaphone className="w-10 h-10 text-muted-foreground/30" />
+              </div>
+              <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.campaigns')}</h3>
+              <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_campaigns')}</p>
             </div>
           ) : (
             filteredCampagnes.map((camp) => {
               const isExpanded = expandedItems.has(`camp-${camp.id}`);
               return (
-                <div 
+                <motion.div 
                   key={camp.id} 
-                  className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                          {t('admin_bilans.tabs.campaigns')}
-                        </span>
-                        {camp.dateDebut && (
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {new Date(camp.dateDebut).toLocaleDateString(locale)}
-                            {camp.dateFin && ` - ${new Date(camp.dateFin).toLocaleDateString(locale)}`}
-                          </span>
-                        )}
-                        {camp.medias && camp.medias.length > 0 && (
-                          <span className="text-xs text-emerald-600 flex items-center gap-1">
-                            <ImageIcon className="w-3 h-3" />
-                            {camp.medias.filter(m => m.type === 'IMAGE').length} {t('admin_bilans.labels.photos')}
-                          </span>
-                        )}
+                  <div className="space-y-6">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${camp.statut === 'PUBLIEE' ? 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]' : 'bg-muted text-muted-foreground'} border-current/20`}>
+                        {camp.statut}
+                      </span>
+                      <div className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border/50">
+                        <Calendar className="w-3 h-3" />
+                        {camp.dateDebut ? new Date(camp.dateDebut).toLocaleDateString('fr-FR') : '?'}
+                        {camp.dateFin && ` - ${new Date(camp.dateFin).toLocaleDateString('fr-FR')}`}
                       </div>
-                      
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                        {camp.titre}
-                      </h3>
-                      
-                      {camp.description && (
-                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                          {camp.description.length > 150 
-                            ? camp.description.substring(0, 150) + '...' 
-                            : camp.description}
-                        </p>
-                      )}
-                      
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                        <span className="flex items-center gap-1 font-medium text-emerald-600">
-                          <Users className="w-4 h-4" />
-                          {camp.nombreParticipations} {t('admin_bilans.labels.participations')}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-4 h-4" />
-                          {camp.nombreVues} {t('admin_bilans.labels.views')}
-                        </span>
-                        {camp.objectifParticipations && (
-                          <span className="flex items-center gap-1">
-                            <Target className="w-4 h-4" /> {t('admin_bilans.labels.objective')}: {camp.objectifParticipations}
-                          </span>
-                        )}
-                      </div>
+                    </div>
 
-                      {/* Bilan */}
-                      <div className="bg-gradient-to-r from-amber-50 to-green-50 rounded-lg p-4 border-l-4 border-amber-500">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2 text-amber-700">
-                            <CheckCircle2 className="w-5 h-5" />
-                            <span className="font-medium">{t('admin_bilans.labels.campaign_finished')}</span>
-                          </div>
-                          {(camp.bilanDescription || (camp.medias && camp.medias.length > 0)) && (
-                            <button 
-                              onClick={() => toggleExpand(`camp-${camp.id}`)}
-                              className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
-                            >
-                              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                              {isExpanded ? t('admin_bilans.labels.reduce') : t('admin_bilans.labels.expand')}
-                            </button>
-                          )}
+                    <h3 className="text-2xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight">
+                      {camp.titre}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-6 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                      <span className="flex items-center gap-2 bg-[hsl(var(--gov-green))/0.05] px-3 py-1.5 rounded-xl border border-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]">
+                        <Users className="w-4 h-4" />
+                        {camp.nombreParticipations || 0} / {camp.objectifParticipations || '?'} {t('admin_bilans.labels.participations')}
+                      </span>
+                      <span className="flex items-center gap-2 bg-[hsl(var(--gov-blue))/0.05] px-3 py-1.5 rounded-xl border border-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))]">
+                        <Eye className="w-4 h-4" />
+                        {camp.nombreVues || 0} {t('admin_bilans.labels.views')}
+                      </span>
+                    </div>
+
+                    {/* Description Section */}
+                    {(camp.description || camp.bilanDescription) && (
+                      <div className="bg-muted/50 rounded-3xl p-6 border border-border/50">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                            <div className="w-6 h-6 bg-card rounded-lg flex items-center justify-center border border-border">
+                              <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
+                            </div>
+                            {t('admin_bilans.labels.campaign_description')}
+                          </h4>
+                        </div>
+                        <div className="text-muted-foreground font-medium text-sm leading-relaxed whitespace-pre-wrap line-clamp-3">
+                          {camp.bilanDescription || camp.description}
                         </div>
                         
-                        {camp.objectifParticipations && (
-                          <p className="text-sm text-gray-600">
-                            {camp.objectifParticipations <= camp.nombreParticipations 
-                              ? <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-emerald-600" /> {t('admin_bilans.labels.objective_reached')} ({camp.nombreParticipations}/{camp.objectifParticipations})</span>
-                              : <span className="flex items-center gap-1"><BarChart3 className="w-4 h-4 text-gray-500" /> {camp.nombreParticipations}/{camp.objectifParticipations} {t('admin_bilans.labels.participations')}</span>
-                            }
-                          </p>
-                        )}
-                        
-                        {isExpanded && camp.bilanDescription && (
-                          <p className="text-gray-700 text-sm mt-3 whitespace-pre-wrap">
-                            {camp.bilanDescription}
-                          </p>
-                        )}
-                        
-                        {isExpanded && <MediaGallery medias={camp.medias} />}
+                        {/* Media */}
+                        <MediaGallery medias={camp.medias} />
                       </div>
-                    </div>
-                    
-                    <div className="flex flex-col gap-2">
-                      <Link
-                        href={`/admin/campagnes/${camp.id}`}
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm"
-                      >
-                        <Eye className="w-4 h-4" />
-                        {t('admin_bilans.labels.details')}
-                      </Link>
-                    </div>
+                    )}
                   </div>
-                </div>
+                </motion.div>
               );
             })
           )}
         </div>
+        </div>
       )}
-      {/* Modal d'édition */}
+
+      {/* Modal d'édition Bilan (Events) */}
       <AnimatePresence>
         {editingBilan && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
-              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingBilan(null)}
+              className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
+            />
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-[101] overflow-y-auto border-l border-border"
             >
-              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-900/50">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Edit2 className="w-5 h-5 text-blue-600" />
-                  {t('admin_bilans.labels.edit_bilan')}
-                </h3>
-                <button 
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <h2 className="text-xl font-extrabold text-foreground">
+                  {t('admin_bilans.labels.edit_bilan_title') || 'Modifier le bilan'}
+                </h2>
+                <button
                   onClick={() => setEditingBilan(null)}
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border"
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X size={20} />
                 </button>
               </div>
 
-              <form onSubmit={handleUpdateBilan} className="p-6 space-y-6">
-                <div>
-                  <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-4 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
-                    {editingBilan.titre}
-                  </h4>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                        {t('admin_bilans.labels.participants')}
-                      </label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input
-                          type="number"
-                          value={editingBilan.participants}
-                          onChange={(e) => setEditingBilan({ ...editingBilan, participants: parseInt(e.target.value) || 0 })}
-                          className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold"
-                          min="0"
-                        />
-                      </div>
-                    </div>
+              <form onSubmit={handleUpdateBilan} className="p-8 space-y-8">
+                <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{t('admin_bilans.labels.event')}</p>
+                  <p className="text-lg font-extrabold text-foreground leading-tight">{editingBilan.titre}</p>
+                </div>
 
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                        {t('admin_bilans.labels.description')}
-                      </label>
-                      <textarea
-                        value={editingBilan.description}
-                        onChange={(e) => setEditingBilan({ ...editingBilan, description: e.target.value })}
-                        rows={6}
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-                        placeholder="..."
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
+                      {t('admin_bilans.labels.participants_count')}
+                    </label>
+                    <div className="relative group">
+                      <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
+                      <input
+                        type="number"
+                        required
+                        value={editingBilan.participants}
+                        onChange={(e) => setEditingBilan({ ...editingBilan, participants: parseInt(e.target.value) })}
+                        className="gov-input pl-12 py-3.5"
                       />
                     </div>
                   </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
+                      {t('admin_bilans.labels.bilan_description')}
+                    </label>
+                    <textarea
+                      required
+                      rows={10}
+                      value={editingBilan.description}
+                      onChange={(e) => setEditingBilan({ ...editingBilan, description: e.target.value })}
+                      className="gov-input py-4 min-h-[250px] resize-none"
+                      placeholder={t('admin_bilans.labels.description_placeholder') || 'Rédigez le bilan de l\'événement...'}
+                    />
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex gap-4 pt-6">
                   <button
                     type="button"
                     onClick={() => setEditingBilan(null)}
-                    className="px-6 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all font-semibold"
+                    className="flex-1 px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-muted/80 hover:text-foreground transition-all"
                   >
-                    {t('admin_bilans.labels.cancel')}
+                    {t('admin_bilans.labels.cancel') || 'Annuler'}
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all font-bold shadow-lg shadow-blue-200 dark:shadow-none disabled:opacity-50"
+                    className="flex-[2] gov-btn-primary py-4 rounded-2xl justify-center"
                   >
                     {saving ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
-                      <Save className="w-5 h-5" />
+                      <>
+                        <Save className="w-5 h-5" />
+                        {t('admin_bilans.labels.save') || 'Enregistrer'}
+                      </>
                     )}
-                    {t('admin_bilans.labels.save')}
                   </button>
                 </div>
               </form>
             </motion.div>
-          </div>
+          </>
         )}
       </AnimatePresence>
     </div>

@@ -31,8 +31,12 @@ import {
   Eye,
   Star,
 } from 'lucide-react';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, AreaChart, Area
+} from 'recharts';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface DashboardStats {
   utilisateurs: { total: number; nouveaux: number; variation: number };
@@ -71,68 +75,79 @@ const itemVariants = {
   show: { opacity: 1, y: 0 }
 };
 
-// KPI Card Component with enhanced design
+// KPI Card Component with enhanced design following gov-* standards
 function MetricCard({
   title,
   value,
   change,
   changeType,
   icon: Icon,
-  gradient,
+  color,
   subValue,
   subLabel,
+  i
 }: {
   title: string;
   value: number | string;
   change?: number;
   changeType?: 'up' | 'down' | 'neutral';
   icon: React.ElementType;
-  gradient: string;
+  color: string;
   subValue?: number | string;
   subLabel?: string;
+  i: number;
 }) {
   const t = useTranslations('admin.dashboard.metrics');
   
   return (
     <motion.div
       variants={itemVariants}
-      whileHover={{ scale: 1.02, y: -4 }}
-      className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 overflow-hidden group"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.1 }}
+      className="gov-stat-card group relative overflow-hidden"
     >
-      {/* Background gradient accent */}
-      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${gradient}`} />
+      <div 
+        className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] transition-transform group-hover:scale-110 group-hover:rotate-12"
+        style={{ color: color }}
+      >
+        <Icon className="w-full h-full" />
+      </div>
       
-      <div className="flex items-start justify-between relative z-10">
-        <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-          <p className="text-4xl font-bold text-gray-900 dark:text-white mt-2 tracking-tight">
-            {typeof value === 'number' ? value.toLocaleString() : value}
-          </p>
-          {subValue !== undefined && (
-            <p className="text-sm text-gray-500 mt-2 flex items-center gap-1">
-              <span className="font-semibold text-emerald-600">{subValue}</span>
-              <span>{subLabel}</span>
-            </p>
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div 
+            className="w-10 h-10 rounded-xl flex items-center justify-center border border-current/10"
+            style={{ backgroundColor: `${color}08`, color: color }}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
+          {change !== undefined && (
+            <span className={`text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 ${
+              changeType === 'up' 
+                ? 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]'
+                : changeType === 'down'
+                ? 'bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))]'
+                : 'bg-muted text-muted-foreground'
+            }`}>
+              {changeType === 'up' && <TrendingUp size={10} />}
+              {changeType === 'down' && <TrendingDown size={10} />}
+              {change > 0 ? '+' : ''}{change}%
+            </span>
           )}
         </div>
-        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-          <Icon className="w-8 h-8 text-white" />
-        </div>
+        <p className="text-3xl font-black text-foreground mb-1 tracking-tight">
+          {typeof value === 'number' ? value.toLocaleString() : value}
+        </p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{title}</p>
+        
+        {subValue !== undefined && (
+          <div className="flex items-center gap-2 pt-3 border-t border-border/50">
+            <span className="text-xs font-black text-foreground">{subValue}</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{subLabel}</span>
+          </div>
+        )}
       </div>
-
-      {change !== undefined && (
-        <div className={`mt-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
-          changeType === 'up' 
-            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-            : changeType === 'down'
-            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-            : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-        }`}>
-          {changeType === 'up' && <TrendingUp className="w-3 h-3" />}
-          {changeType === 'down' && <TrendingDown className="w-3 h-3" />}
-          {change > 0 ? '+' : ''}{change}% {t('this_month')}
-        </div>
-      )}
     </motion.div>
   );
 }
@@ -162,28 +177,25 @@ function QuickActionCard({
       <motion.div
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className={`relative p-5 rounded-2xl bg-gradient-to-br ${color} text-white overflow-hidden group cursor-pointer`}
+        className={`relative p-5 rounded-2xl bg-gradient-to-br ${color} text-white overflow-hidden group cursor-pointer shadow-lg`}
       >
-        {/* Pattern overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/20" />
-          <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full bg-white/10" />
-        </div>
+        {/* Motif Royal Overlay */}
+        <div className="absolute inset-0 opacity-10 gov-pattern" />
 
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-3">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
               <Icon className="w-6 h-6" />
             </div>
             {count !== undefined && count > 0 && (
-              <span className={`px-2 py-1 rounded-full text-xs font-bold ${urgent ? 'bg-red-500 text-white animate-pulse' : 'bg-white/20 backdrop-blur'}`}>
+              <span className={`px-2 py-1 rounded-full text-xs font-bold ${urgent ? 'bg-[hsl(var(--gov-red))] text-white animate-pulse' : 'bg-white/20 backdrop-blur'}`}>
                 {count} {urgent ? '!' : ''}
               </span>
             )}
           </div>
           <h3 className="font-bold text-lg mb-1">{title}</h3>
-          <p className="text-sm opacity-80">{description}</p>
-          <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          <p className="text-sm opacity-80 line-clamp-1">{description}</p>
+          <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0">
             {t('access')}
             <ChevronRight className="w-4 h-4" />
           </div>
@@ -195,87 +207,91 @@ function QuickActionCard({
 
 // Mini Bar Chart Component
 function MiniBarChart({ data }: { data: { label: string; value: number; color: string }[] }) {
-  const maxValue = Math.max(...data.map(d => d.value), 1);
-  
   return (
-    <div className="space-y-3">
-      {data.map((item, i) => (
-        <div key={i} className="group">
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-gray-600 dark:text-gray-400 truncate">{item.label}</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{item.value}</span>
-          </div>
-          <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${(item.value / maxValue) * 100}%` }}
-              transition={{ duration: 0.8, delay: i * 0.1 }}
-              className="h-full rounded-full"
-              style={{ backgroundColor: item.color }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="h-64 mt-4">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
+          <XAxis 
+            type="number" 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
+          />
+          <YAxis 
+            dataKey="label" 
+            type="category" 
+            width={100} 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
+          />
+          <RechartsTooltip 
+            cursor={{ fill: 'hsl(var(--muted)/0.3)' }}
+            contentStyle={{ 
+              backgroundColor: 'hsl(var(--card))', 
+              border: '1px solid hsl(var(--border))', 
+              borderRadius: '16px',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+            }}
+          />
+          <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={24}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
-// Donut Chart Component
+// Donut Chart Component using Recharts
 function DonutChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const t = useTranslations('admin.dashboard.charts');
-  let cumulativePercent = 0;
 
   if (total === 0) {
     return (
-      <div className="flex items-center justify-center h-40 text-gray-400">
-        {t('no_data')}
+      <div className="flex flex-col items-center justify-center h-64 text-muted-foreground opacity-30">
+        <Activity size={48} />
+        <p className="text-[10px] font-bold uppercase tracking-widest mt-4">{t('no_data')}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-6">
-      <div className="relative w-32 h-32">
-        <svg viewBox="0 0 36 36" className="w-32 h-32 -rotate-90">
-          {data.map((item, i) => {
-            const percent = (item.value / total) * 100;
-            const dashArray = `${percent} ${100 - percent}`;
-            const dashOffset = 100 - cumulativePercent;
-            cumulativePercent += percent;
-            
-            return (
-              <circle
-                key={i}
-                cx="18"
-                cy="18"
-                r="15.915"
-                fill="transparent"
-                stroke={item.color}
-                strokeWidth="3"
-                strokeDasharray={dashArray}
-                strokeDashoffset={dashOffset}
-                className="transition-all duration-500"
-              />
-            );
-          })}
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{total}</p>
-            <p className="text-xs text-gray-500">{t('total')}</p>
-          </div>
-        </div>
-      </div>
-      <div className="space-y-2 flex-1">
-        {data.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-gray-600 dark:text-gray-400 flex-1">{item.label}</span>
-            <span className="font-semibold text-gray-900 dark:text-white">{item.value}</span>
-          </div>
-        ))}
-      </div>
+    <div className="h-64 mt-4">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={90}
+            paddingAngle={8}
+            dataKey="value"
+            nameKey="label"
+            stroke="none"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <RechartsTooltip 
+            contentStyle={{ 
+              backgroundColor: 'hsl(var(--card))', 
+              border: '1px solid hsl(var(--border))', 
+              borderRadius: '16px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+            }}
+          />
+          <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -458,48 +474,48 @@ export default function AdminDashboard() {
       initial="hidden"
       animate="show"
       className="space-y-8"
-    >
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <motion.h1 
-            variants={itemVariants}
-            className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3"
-          >
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <BarChart3 className="w-6 h-6" />
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+              <BarChart3 className="text-[hsl(var(--gov-blue))] w-6 h-6" />
             </div>
-            {t('header.title')}
-          </motion.h1>
-          <motion.p variants={itemVariants} className="text-gray-500 dark:text-gray-400 mt-2">
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+              {t('header.title')}
+            </h1>
+          </div>
+          <p className="text-muted-foreground font-medium text-lg ml-1">
             {t('header.subtitle')}
-          </motion.p>
+          </p>
         </div>
-
-        <motion.div variants={itemVariants} className="flex items-center gap-3">
+ 
+        <div className="flex items-center gap-3">
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group disabled:opacity-50"
           >
-            <RefreshCw size={20} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${refreshing ? 'animate-spin' : ''}`} />
           </button>
+          
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-5 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
+            className="gov-btn-outline h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-sm"
           >
             <Download size={18} />
             {t('header.export')}
           </button>
+          
           <Link
             href="/admin/rapports"
-            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-medium shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30 hover:shadow-xl transition-all"
+            className="gov-btn-primary h-12 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
           >
             <FileText size={18} />
             {t('header.reports')}
           </Link>
-        </motion.div>
-      </div>
+        </div>
+      </div></div>
 
       {/* Alerts Section */}
       {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
@@ -527,42 +543,46 @@ export default function AdminDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
+          i={0}
           title={t('metrics.users')}
           value={stats?.utilisateurs?.total ?? 0}
           change={stats?.utilisateurs?.variation ?? 0}
           changeType={stats?.utilisateurs?.variation && stats?.utilisateurs?.variation > 0 ? 'up' : 'neutral'}
           icon={Users}
-          gradient="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
+          color="hsl(var(--gov-blue))"
           subValue={stats?.utilisateurs?.nouveaux ?? 0}
           subLabel={t('metrics.new_this_month')}
         />
         <MetricCard
+          i={1}
           title={t('metrics.establishments')}
           value={stats?.etablissements?.total ?? 0}
           change={stats?.etablissements?.variation ?? 0}
           changeType={stats?.etablissements?.variation && stats?.etablissements?.variation > 0 ? 'up' : 'neutral'}
           icon={Building2}
-          gradient="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
+          color="hsl(var(--gov-green))"
           subValue={stats?.etablissements?.valides ?? 0}
           subLabel={t('metrics.validated')}
         />
         <MetricCard
+          i={2}
           title={t('metrics.events')}
           value={stats?.evenements?.total ?? 0}
           change={stats?.evenements?.variation ?? 0}
           changeType={stats?.evenements?.variation && stats?.evenements?.variation > 0 ? 'up' : 'neutral'}
           icon={Calendar}
-          gradient="from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]"
+          color="hsl(var(--gov-yellow))"
           subValue={stats?.evenements?.enCours ?? 0}
           subLabel={t('metrics.in_progress')}
         />
         <MetricCard
+          i={3}
           title={t('metrics.reclamations')}
           value={stats?.reclamations?.total ?? 0}
           change={reclamationVariation}
           changeType={reclamationVariation > 0 ? 'up' : reclamationVariation < 0 ? 'down' : 'neutral'}
           icon={MessageSquare}
-          gradient="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
+          color="hsl(var(--gov-red))"
           subValue={stats?.reclamations?.enAttente ?? 0}
           subLabel={t('metrics.pending')}
         />
@@ -608,22 +628,20 @@ export default function AdminDashboard() {
             color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
           />
         </div>
-      </motion.div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      </motion.      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Events by Sector */}
         <motion.div 
           variants={itemVariants}
-          className="gov-card p-6"
+          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white">{t('charts.events_by_sector')}</h3>
-              <p className="text-sm text-gray-500">{t('charts.events_distribution')}</p>
+              <h3 className="text-xl font-extrabold text-foreground">{t('charts.events_by_sector')}</h3>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('charts.events_distribution')}</p>
             </div>
-            <Link href="/admin/evenements" className="text-sm text-[hsl(var(--gov-blue))] hover:underline flex items-center gap-1">
-              {t('charts.view_all')} <ChevronRight className="w-4 h-4" />
+            <Link href="/admin/evenements" className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl hover:bg-foreground hover:text-background transition-all">
+              <ChevronRight size={20} />
             </Link>
           </div>
           {chartData?.evenementsParSecteur && (
@@ -634,41 +652,48 @@ export default function AdminDashboard() {
                 color: [
                   'hsl(var(--gov-blue))', 
                   'hsl(var(--gov-green))', 
-                  'hsl(var(--gov-gold))', 
+                  'hsl(var(--gov-yellow))', 
                   'hsl(var(--gov-red))',
-                  'hsl(var(--gov-blue-light))',
-                  'hsl(var(--gov-green-light))'
+                  'hsl(var(--gov-muted))',
+                  '#8B5CF6'
                 ][i % 6]
               }))}
             />
           )}
         </motion.div>
-
+ 
         {/* Reclamations by Status */}
         <motion.div 
           variants={itemVariants}
-          className="gov-card p-6"
+          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white">{t('charts.reclamations_by_status')}</h3>
-              <p className="text-sm text-gray-500">{t('charts.current_breakdown')}</p>
+              <h3 className="text-xl font-extrabold text-foreground">{t('charts.reclamations_by_status')}</h3>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('charts.current_breakdown')}</p>
             </div>
-            <Link href="/admin/reclamations" className="text-sm text-[hsl(var(--gov-blue))] hover:underline flex items-center gap-1">
-              {t('charts.view_all')} <ChevronRight className="w-4 h-4" />
+            <Link href="/admin/reclamations" className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl hover:bg-foreground hover:text-background transition-all">
+              <ChevronRight size={20} />
             </Link>
           </div>
           {chartData?.reclamationsParStatut && (
             <DonutChart
-              data={chartData.reclamationsParStatut.map(item => ({
+              data={chartData.reclamationsParStatut.map((item, i) => ({
                 label: item.statut.replace('_', ' '),
                 value: item.count,
-                color: item.color // Ensure colors from API match charter if possible, otherwise rely on API
+                color: [
+                  'hsl(var(--gov-blue))', 
+                  'hsl(var(--gov-green))', 
+                  'hsl(var(--gov-yellow))', 
+                  'hsl(var(--gov-red))',
+                  'hsl(var(--gov-muted))',
+                  '#8B5CF6'
+                ][i % 6]
               }))}
             />
           )}
         </motion.div>
-      </div>
+      </div></div>
 
       {/* Additional Management Sections */}
       <motion.div variants={itemVariants}>

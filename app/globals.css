@@ -150,7 +150,7 @@
   h4,
   h5,
   h6 {
-    @apply font-cairo font-bold tracking-tight text-gray-900 dark:text-gray-100;
+    @apply font-cairo font-bold tracking-tight text-foreground;
     line-height: 1.2;
   }
 
@@ -350,8 +350,9 @@
 
   /* === STATISTIQUES === */
   .gov-stat-card {
-    @apply bg-card rounded-xl p-6 shadow-sm border border-border;
+    @apply bg-card rounded-2xl p-6 shadow-sm border border-border/60;
     @apply relative overflow-hidden;
+    @apply transition-all duration-300;
   }
 
   .gov-stat-card::before {
@@ -377,12 +378,12 @@
   /* === FORMULAIRES OFFICIELS === */
   .gov-input, .gov-textarea {
     @apply w-full px-4 py-2.5 text-sm shadow-sm;
-    @apply border border-input rounded-xl bg-white dark:bg-gray-900 text-foreground;
+    @apply border border-input rounded-xl bg-background text-foreground;
     @apply focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))] focus:ring-offset-2;
-    @apply hover:border-gray-300 dark:hover:border-gray-600;
+    @apply hover:border-border-dark;
     @apply transition-all duration-200;
     @apply placeholder:text-muted-foreground;
-    @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50;
+    @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/50;
   }
 
   .gov-textarea {
@@ -390,7 +391,7 @@
   }
 
   .gov-label {
-    @apply block text-sm font-bold text-gray-900 dark:text-gray-100 mb-1.5;
+    @apply block text-sm font-bold text-foreground mb-1.5;
   }
 
   .gov-select {

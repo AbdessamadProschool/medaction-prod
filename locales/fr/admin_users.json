@@ -1,0 +1,132 @@
+{
+  "admin": {
+    "users_page": {
+      "page_title": "Gestion des Comptes Utilisateurs",
+      "total_users": "{count} comptes enregistrés",
+      "search_placeholder": "Rechercher par nom, email ou matricule...",
+      "add": "Créer un nouvel utilisateur",
+      "export": "Exporter la liste (Excel/CSV)",
+      "reset_filters": "Réinitialiser les filtres",
+      "filter_roles_all": "Tous les rôles institutionnels",
+      "filter_status_all": "Tous les statuts",
+      "no_users": "Aucun utilisateur ne correspond à vos critères",
+      "pagination": "Affichage de {start} à {end} sur {total} utilisateurs",
+      "roles": {
+        "CITOYEN": "Citoyen",
+        "DELEGATION": "Délégué de Secteur",
+        "AUTORITE_LOCALE": "Autorité Locale",
+        "COORDINATEUR_ACTIVITES": "Coordinateur des activités",
+        "ADMIN": "Administrateur",
+        "SUPER_ADMIN": "Super Administrateur",
+        "GOUVERNEUR": "Gouverneur de Province"
+      },
+      "role_descriptions": {
+        "CITOYEN": "Accès citoyen standard (plaintes, actualités, événements)",
+        "DELEGATION": "Représentant provincial (gestion thématique sectorielle)",
+        "AUTORITE_LOCALE": "Gestionnaire territorial (Commune / Annexe)",
+        "COORDINATEUR_ACTIVITES": "Supervision opérationnelle des activités terrain",
+        "ADMIN": "Gestion technique et modération fonctionnelle",
+        "SUPER_ADMIN": "Contrôle total de l'infrastructure et de la sécurité",
+        "GOUVERNEUR": "Supervision stratégique de la performance provinciale"
+      },
+      "sectors": {
+        "EDUCATION": "Éducation",
+        "SANTE": "Santé",
+        "SPORT": "Sport",
+        "SOCIAL": "Social",
+        "CULTUREL": "Culturel",
+        "AUTRE": "Autre secteur"
+      },
+      "table": {
+        "user": "Identité & Coordonnées",
+        "role": "Profil & Permissions",
+        "status": "État du compte",
+        "sector_establishment": "Affectation Institutionnelle",
+        "activity": "Dernière Activité",
+        "actions": "Actions de gestion",
+        "actions_count": "{count} actions effectuées",
+        "estab_count": "{count} établissements gérés"
+      },
+      "statuses": {
+        "active": "Compte Actif",
+        "inactive": "Compte Suspendu",
+        "activated": "activé",
+        "deactivated": "désactivé"
+      },
+      "actions": {
+        "edit_role": "Modifier le rôle & l'affectation",
+        "reset_password": "Réinitialiser le mot de passe",
+        "deactivate": "Suspendre l'accès",
+        "activate": "Rétablir l'accès",
+        "delete": "Supprimer le compte"
+      },
+      "messages": {
+        "error": "Une erreur technique est survenue",
+        "status_changed": "Le statut du compte a été mis à jour : {status}",
+        "delete_confirm": "Voulez-vous vraiment supprimer définitivement le compte de {name} ? Cette action est irréversible.",
+        "user_deleted": "Utilisateur supprimé avec succès",
+        "reset_password_confirm": "Générer un nouveau mot de passe sécurisé pour {name} ?",
+        "reset_password_alert": "Nouveau mot de passe généré : {password}\n\nVeuillez le transmettre à l'utilisateur de manière sécurisée.",
+        "reset_password_success": "Le mot de passe a été réinitialisé avec succès"
+      },
+      "create_modal": {
+        "title": "Création d'un Nouveau Compte",
+        "subtitle": "Remplissez les informations pour générer un accès sécurisé",
+        "fields": {
+          "first_name": "Prénom",
+          "last_name": "Nom de famille",
+          "email": "Adresse Email Professionnelle",
+          "phone": "Numéro de Téléphone",
+          "password": "Mot de passe initial",
+          "confirm_password": "Confirmer le mot de passe",
+          "role": "Rôle Institutionnel",
+          "sector": "Secteur d'Activité",
+          "commune": "Commune de rattachement",
+          "establishments": "Établissements sous tutelle ({count})",
+          "active_account": "Activer le compte immédiatement"
+        },
+        "placeholders": {
+          "first_name": "Saisir le prénom",
+          "last_name": "Saisir le nom",
+          "email": "exemple@domaine.ma",
+          "phone": "06XXXXXXXX",
+          "password": "Mot de passe complexe"
+        },
+        "helpers": {
+          "commune_helper": "Zone géographique de compétence",
+          "establishments_helper": "Sélectionnez les établissements gérés par cet utilisateur"
+        },
+        "select_option": {
+          "sector": "Choisir un secteur thématique",
+          "commune": "Sélectionner une commune"
+        },
+        "cancel_btn": "Annuler l'opération",
+        "submit_btn": "Finaliser la création",
+        "errors": {
+          "password_mismatch": "Les mots de passe saisis ne sont pas identiques",
+          "password_length": "Le mot de passe doit contenir au moins 8 caractères",
+          "sector_required": "Le secteur d'activité est obligatoire pour ce rôle",
+          "commune_required": "La commune de rattachement est requise",
+          "establishment_required": "Veuillez sélectionner au moins un établissement",
+          "create_error": "Erreur lors de la création du compte",
+          "server_error": "Le serveur n'a pas pu traiter la demande"
+        },
+        "success": "Le compte utilisateur pour {name} a été créé avec succès",
+        "loading_establishments": "Chargement du catalogue des établissements..."
+      },
+      "edit_role_modal": {
+        "title": "Ajustement des Privilèges & Affectation",
+        "current_role": "Rôle Actuel",
+        "new_role": "Nouveau Rôle Institutionnel",
+        "errors": {
+          "edit_error": "Erreur lors de la modification des privilèges",
+          "sector_required": "Secteur requis pour ce profil",
+          "commune_required": "Commune requise pour ce profil",
+          "establishment_required": "L'affectation à un établissement est requise",
+          "server_error": "Erreur de communication avec le serveur"
+        },
+        "loading": "Mise à jour en cours..."
+      }
+    }
+  }
+}

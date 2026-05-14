@@ -156,6 +156,7 @@ export default function AdminLogsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [stats, setStats] = useState<any>(null);
   
   // Filtres
   const [showFilters, setShowFilters] = useState(false);

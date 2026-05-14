@@ -25,6 +25,8 @@ import {
   Play,
   Archive,
   Trash2,
+  Star,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -215,26 +217,58 @@ function AdminEvenementsContent() {
       motifRejet = response;
     }
 
-    try {
-      const res = await fetch(`/api/evenements/${id}/valider`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          decision: action === 'valider' ? 'PUBLIEE' : 'REJETEE',
-          motifRejet: motifRejet,
-        }),
-      });
-      
-      if (res.ok) {
-        toast.success(action === 'valider' ? t('messages.validated') : t('messages.rejected'));
-        loadEvenements();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || t('messages.error'));
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/evenements/${id}/valider`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            decision: action === 'valider' ? 'PUBLIEE' : 'REJETEE',
+            motifRejet: motifRejet,
+          }),
+        });
+        
+        if (res.ok) {
+          loadEvenements();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || t('messages.error')));
+        }
+      } catch (error) {
+        reject(new Error(t('messages.error')));
       }
-    } catch (error) {
-      toast.error(t('messages.error'));
-    }
+    });
+
+    toast.promise(promise, {
+      loading: action === 'valider' ? 'Validation en cours...' : 'Rejet en cours...',
+      success: action === 'valider' ? t('messages.validated') : t('messages.rejected'),
+      error: (err) => err.message,
+    });
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm(t('messages.delete_confirm'))) return;
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/evenements/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          loadEvenements();
+          resolve(true);
+        } else {
+          reject(new Error('Erreur lors de la suppression'));
+        }
+      } catch (e) {
+        reject(new Error('Erreur de connexion'));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Suppression en cours...',
+      success: 'Événement supprimé avec succès',
+      error: (err) => err.message,
+    });
   };
 
   const statusKeyMap: Record<string, string> = {
@@ -247,45 +281,57 @@ function AdminEvenementsContent() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[hsl(var(--gov-blue))/0.1] border-t-[hsl(var(--gov-blue))] rounded-full animate-spin" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">
+            {t('loading') || 'Chargement des événements...'}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t('title')}
-          </h1>
-          <p className="text-gray-500">{t('subtitle', { count: total })}</p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+              <Calendar className="text-[hsl(var(--gov-blue))] w-6 h-6" />
+            </div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+              {t('title')}
+            </h1>
+          </div>
+          <p className="text-muted-foreground font-medium text-lg ml-15">
+            {t('subtitle', { count: total })}
+          </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={loadEvenements}
             disabled={refreshing}
-            className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group"
           >
-            <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${refreshing ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+            className={`flex items-center gap-2 px-6 h-12 rounded-2xl border font-bold text-xs uppercase tracking-widest transition-all ${
               showFilters 
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue))/0.2]' 
+                : 'bg-card border-border text-foreground hover:bg-muted shadow-sm'
             }`}
           >
-            <Filter size={18} />
+            <Filter size={16} />
             {t('filters')}
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all"
+            className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
           >
             <Plus size={18} />
             {t('create')}
@@ -294,121 +340,173 @@ function AdminEvenementsContent() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100">
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
-          <p className="text-sm text-gray-500">{t('stats.total')}</p>
-        </div>
-        <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-          <p className="text-2xl font-bold text-yellow-600">{stats.enAttente}</p>
-          <p className="text-sm text-yellow-700">{t('stats.pending')}</p>
-        </div>
-        <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-          <p className="text-2xl font-bold text-emerald-600">{stats.publiees}</p>
-          <p className="text-sm text-emerald-700">{t('stats.published')}</p>
-        </div>
-        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-          <p className="text-2xl font-bold text-blue-600">{stats.enCours}</p>
-          <p className="text-sm text-blue-700">{t('stats.in_progress')}</p>
-        </div>
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-          <p className="text-2xl font-bold text-gray-600">{stats.cloturees}</p>
-          <p className="text-sm text-gray-700">{t('stats.closed')}</p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        {[
+          { label: t('stats.total'), value: stats.total, icon: Calendar, color: 'hsl(var(--gov-blue))' },
+          { label: t('stats.pending'), value: stats.enAttente, icon: Clock, color: 'hsl(var(--gov-red))', highlight: true },
+          { label: t('stats.published'), value: stats.publiees, icon: CheckCircle, color: 'hsl(var(--gov-green))' },
+          { label: t('stats.in_progress'), value: stats.enCours, icon: Play, color: 'hsl(var(--gov-blue))' },
+          { label: t('stats.closed'), value: stats.cloturees, icon: Archive, color: 'hsl(var(--gov-muted))' },
+        ].map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="gov-stat-card group relative overflow-hidden"
+          >
+            <div 
+              className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] transition-transform group-hover:scale-110 group-hover:rotate-12"
+              style={{ color: stat.color }}
+            >
+              <stat.icon className="w-full h-full" />
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-current/10"
+                  style={{ backgroundColor: `${stat.color}08`, color: stat.color }}
+                >
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                {stat.highlight && stat.value > 0 && (
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--gov-red))] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(var(--gov-red))]"></span>
+                  </span>
+                )}
+              </div>
+              <p className="text-3xl font-black text-foreground mb-1 tracking-tight">{stat.value}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
 
       {/* Filtres avancés */}
-      {showFilters && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Recherche */}
-            <div className="relative">
-              <Search className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${locale === 'ar' ? 'right-3' : 'left-3'}`} size={18} />
-              <input
-                type="text"
-                placeholder={t('filter_labels.search')}
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className={`w-full py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 ${locale === 'ar' ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'}`}
-              />
+      <AnimatePresence>
+        {showFilters && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.05]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Recherche */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    {t('filter_labels.search')}
+                  </label>
+                  <div className="relative group">
+                    <Search className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors ${locale === 'ar' ? 'right-4' : 'left-4'}`} size={18} />
+                    <input
+                      type="text"
+                      placeholder={t('filter_labels.search_placeholder') || 'Rechercher...'}
+                      value={filters.search}
+                      onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                      className="gov-input pl-12 h-12 text-sm font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Statut */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    {t('filter_labels.statut')}
+                  </label>
+                  <select
+                    value={filters.statut}
+                    onChange={(e) => setFilters({ ...filters, statut: e.target.value })}
+                    className="gov-input h-12 text-sm font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="">{t('filter_labels.all_statuses')}</option>
+                    <option value="EN_ATTENTE_VALIDATION">{t('status.pending')}</option>
+                    <option value="PUBLIEE">{t('status.published')}</option>
+                    <option value="EN_ACTION">{t('status.in_progress')}</option>
+                    <option value="CLOTUREE">{t('status.closed')}</option>
+                    <option value="REJETEE">{t('status.rejected')}</option>
+                  </select>
+                </div>
+
+                {/* Secteur */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    {t('filter_labels.secteur')}
+                  </label>
+                  <select
+                    value={filters.secteur}
+                    onChange={(e) => setFilters({ ...filters, secteur: e.target.value })}
+                    className="gov-input h-12 text-sm font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="">{t('filter_labels.all_sectors')}</option>
+                    {SECTEURS.map(s => (
+                      <option key={s} value={s}>{tSectors(s)}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Commune */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                    {t('filter_labels.commune')}
+                  </label>
+                  <select
+                    value={filters.communeId}
+                    onChange={(e) => setFilters({ ...filters, communeId: e.target.value })}
+                    className="gov-input h-12 text-sm font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="">{t('filter_labels.all_muncipalities')}</option>
+                    {communes.map(c => (
+                      <option key={c.id} value={c.id}>
+                        {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-8 pt-6 border-t border-border/50">
+                <button
+                  onClick={resetFilters}
+                  className="flex items-center gap-2 px-6 py-2.5 text-muted-foreground hover:text-foreground font-bold text-[10px] uppercase tracking-widest transition-colors"
+                >
+                  <RefreshCw size={14} />
+                  {t('filter_labels.reset')}
+                </button>
+              </div>
             </div>
-
-            {/* Statut */}
-            <select
-              value={filters.statut}
-              onChange={(e) => setFilters({ ...filters, statut: e.target.value })}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-            >
-              <option value="">{t('filter_labels.all_statuses')}</option>
-              <option value="EN_ATTENTE_VALIDATION">{t('status.pending')}</option>
-              <option value="PUBLIEE">{t('status.published')}</option>
-              <option value="EN_ACTION">{t('status.in_progress')}</option>
-              <option value="CLOTUREE">{t('status.closed')}</option>
-              <option value="REJETEE">{t('status.rejected')}</option>
-            </select>
-
-            {/* Secteur */}
-            <select
-              value={filters.secteur}
-              onChange={(e) => setFilters({ ...filters, secteur: e.target.value })}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-            >
-              <option value="">{t('filter_labels.all_sectors')}</option>
-              {SECTEURS.map(s => (
-                <option key={s} value={s}>{tSectors(s)}</option>
-              ))}
-            </select>
-
-            {/* Commune */}
-            <select
-              value={filters.communeId}
-              onChange={(e) => setFilters({ ...filters, communeId: e.target.value })}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-            >
-              <option value="">{t('filter_labels.all_muncipalities')}</option>
-              {communes.map(c => (
-                <option key={c.id} value={c.id}>
-                  {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
-                </option>
-              ))}
-            </select>
-
-            {/* Reset */}
-            <button
-              onClick={resetFilters}
-              className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              {t('filter_labels.reset')}
-            </button>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-[hsl(var(--gov-blue))/0.05]">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700/50">
-              <tr>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+          <table className="gov-table">
+            <thead>
+              <tr className="bg-muted/30">
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.event')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.sector')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.location')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.date')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.status')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
                   {t('table.registrations')}
                 </th>
-                <th className={`px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider ${locale === 'ar' ? 'text-left' : 'text-right'}`}>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-right whitespace-nowrap">
                   {t('table.actions')}
                 </th>
               </tr>
@@ -420,106 +518,92 @@ function AdminEvenementsContent() {
                 const secteurLabel = tSectors(evenement.secteur);
                 
                 return (
-                  <tr key={evenement.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white line-clamp-1">
+                  <tr key={evenement.id} className="group hover:bg-muted/50 transition-colors">
+                    <td className="px-8 py-5">
+                      <div className="flex flex-col">
+                        <p className="font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight mb-1">
                           {evenement.titre}
                         </p>
-                        <p className="text-xs text-gray-500">{evenement.typeCategorique}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{evenement.typeCategorique}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className="text-sm text-gray-600">{secteurLabel}</span>
+                    <td className="px-6 py-5">
+                      <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
+                        {secteurLabel}
+                      </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                        <MapPin size={14} />
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <MapPin size={14} className="text-[hsl(var(--gov-red))]" />
                         <span className="line-clamp-1">
                           {evenement.lieu || (locale === 'ar' ? (evenement.commune?.nomArabe || evenement.commune?.nom) : evenement.commune?.nom) || '-'}
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                        <Calendar size={14} />
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <Calendar size={14} className="text-[hsl(var(--gov-blue))]" />
                         {new Date(evenement.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statutConfig.bg} ${statutConfig.color}`}>
+                    <td className="px-6 py-5">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${statutConfig.bg} ${statutConfig.color} border-current/10`}>
                         <StatutIcon size={12} />
                         {t('status.' + (statusKeyMap[evenement.statut] || 'pending'))}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5 text-sm">
-                        <Users size={14} className="text-gray-400" />
-                        <span className="text-gray-900">
-                          {evenement.nombreInscrits}
-                          {evenement.capaciteMax && `/${evenement.capaciteMax}`}
-                        </span>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border">
+                          <Users size={14} className="text-muted-foreground" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-foreground">
+                            {evenement.nombreInscrits}
+                          </span>
+                          {evenement.capaciteMax && (
+                            <span className="text-[10px] font-bold uppercase text-muted-foreground/60 tracking-tighter">
+                              Max {evenement.capaciteMax}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className={`flex items-center gap-2 ${locale === 'ar' ? 'justify-start' : 'justify-end'}`}>
+                    <td className="px-8 py-5">
+                      <div className="flex items-center justify-end gap-2">
                         {/* Voir */}
                         <button
                           onClick={() => { setSelectedEvenement(evenement); setShowDetailModal(true); }}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                          className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] hover:border-[hsl(var(--gov-blue))/0.2] rounded-xl transition-all shadow-sm"
                           title={t('actions.view')}
                         >
                           <Eye size={16} />
                         </button>
                         
-                        {/* Supprimer (Super Admin) */}
-                        <button
-                          onClick={async () => {
-                            if (confirm('Voulez-vous vraiment supprimer cet événement ? Cette action est irréversible et sera journalisée. (Action Super Admin)')) {
-                              try {
-                                const res = await fetch(`/api/evenements/${evenement.id}`, { method: 'DELETE' });
-                                if (res.ok) {
-                                  toast.success('Événement supprimé avec succès');
-                                  loadEvenements();
-                                } else {
-                                  toast.error('Erreur lors de la suppression');
-                                }
-                              } catch (e) {
-                                console.error(e);
-                                toast.error('Erreur lors de la suppression');
-                              }
-                            }
-                          }}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                          title="Supprimer"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                        
-                        {/* Modifier - Visible pour tous sauf Clôturés */}
+                        {/* Modifier */}
                         {evenement.statut !== 'CLOTUREE' && (
                           <Link
                             href={`/admin/evenements/${evenement.id}/modifier`}
-                            className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded"
+                            className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-amber-600 hover:bg-amber-50 hover:border-amber-200 rounded-xl transition-all shadow-sm"
                             title={t('actions.edit')}
                           >
                             <Edit2 size={16} />
                           </Link>
                         )}
-                        
-                        {/* Valider/Rejeter - Seulement en attente */}
+
+                        {/* Valider/Rejeter */}
                         {evenement.statut === 'EN_ATTENTE_VALIDATION' && (
                           <>
                             <button
                               onClick={() => handleValidation(evenement.id, 'valider')}
-                              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded"
+                              className="w-9 h-9 flex items-center justify-center bg-[hsl(var(--gov-green))/0.05] border border-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] hover:bg-[hsl(var(--gov-green))] hover:text-white rounded-xl transition-all shadow-sm"
                               title={t('actions.validate')}
                             >
                               <CheckCircle size={16} />
                             </button>
                             <button
                               onClick={() => handleValidation(evenement.id, 'rejeter')}
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                              className="w-9 h-9 flex items-center justify-center bg-[hsl(var(--gov-red))/0.05] border border-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))] hover:text-white rounded-xl transition-all shadow-sm"
                               title={t('actions.reject')}
                             >
                               <XCircle size={16} />
@@ -527,17 +611,14 @@ function AdminEvenementsContent() {
                           </>
                         )}
                         
-                        {/* Clôture pour Admin si terminé */}
-                        {(evenement.statut === 'PUBLIEE' || evenement.statut === 'EN_ACTION') && 
-                         evenement.dateFin && new Date(evenement.dateFin) < new Date() && (
-                          <Link
-                            href={`/delegation/evenements/${evenement.id}/cloture`}
-                            className="p-1.5 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded animate-pulse"
-                            title={t('actions.close')}
-                          >
-                            <Archive size={16} />
-                          </Link>
-                        )}
+                        {/* Supprimer */}
+                        <button
+                          onClick={() => handleDelete(evenement.id)}
+                          className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05] hover:border-[hsl(var(--gov-red))/0.2] rounded-xl transition-all shadow-sm"
+                          title="Supprimer"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -569,22 +650,40 @@ function AdminEvenementsContent() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
-              Page {page} sur {totalPages}
+          <div className="flex items-center justify-between px-8 py-6 border-t border-border/50 bg-muted/10">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              {t('pagination.page', { current: page, total: totalPages })}
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                className="w-10 h-10 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 rounded-xl transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
               </button>
+              <div className="flex items-center gap-1">
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${
+                        page === pageNum 
+                          ? 'bg-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue))/0.2]' 
+                          : 'bg-card border border-border text-muted-foreground hover:bg-muted'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                className="w-10 h-10 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 rounded-xl transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {locale === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
               </button>
@@ -603,86 +702,146 @@ function AdminEvenementsContent() {
         }}
       />
 
-      {/* Detail Modal */}
+      {/* Detail Modal (Institutional Sidebar) */}
       <AnimatePresence>
         {showDetailModal && selectedEvenement && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowDetailModal(false)}
-          >
+          <>
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDetailModal(false)}
+              className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
+            />
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-[101] overflow-y-auto border-l border-border"
             >
               {/* Header */}
-              <div className="relative bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
-                <h3 className="text-xl font-bold">{selectedEvenement.titre}</h3>
-                <p className="text-white/70 mt-1">{selectedEvenement.typeCategorique}</p>
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <div>
+                  <h2 className="text-xl font-extrabold text-foreground">
+                    {selectedEvenement.titre}
+                  </h2>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
+                    {selectedEvenement.typeCategorique}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              
+
               {/* Content */}
-              <div className="p-6 space-y-6">
-                {/* Info grid */}
+              <div className="p-8 space-y-10">
+                {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Secteur</p>
-                    <p className="font-medium text-gray-900 dark:text-white">{tSectors(selectedEvenement.secteur)}</p>
+                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Secteur</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                        <Building2 size={16} />
+                      </div>
+                      <p className="font-extrabold text-foreground">{tSectors(selectedEvenement.secteur)}</p>
+                    </div>
                   </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Date</p>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {new Date(selectedEvenement.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
-                      {selectedEvenement.dateFin && ` - ${new Date(selectedEvenement.dateFin).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}`}
-                    </p>
+                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Inscriptions</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center text-[hsl(var(--gov-green))]">
+                        <Users size={16} />
+                      </div>
+                      <p className="font-extrabold text-foreground">
+                        {selectedEvenement.nombreInscrits}
+                        {selectedEvenement.capaciteMax && <span className="text-muted-foreground/60 font-medium ml-1">/ {selectedEvenement.capaciteMax}</span>}
+                      </p>
+                    </div>
                   </div>
-                  {selectedEvenement.lieu && (
-                    <div className="col-span-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Lieu</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{selectedEvenement.lieu}</p>
+                </div>
+
+                {/* Info List */}
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
+                      <Calendar className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Période</p>
+                      <p className="font-bold text-foreground">
+                        {new Date(selectedEvenement.dateDebut).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                        {selectedEvenement.dateFin && (
+                          <span className="block text-sm text-muted-foreground/80 mt-1">
+                            au {new Date(selectedEvenement.dateFin).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
+                      <MapPin className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Localisation</p>
+                      <p className="font-bold text-foreground">
+                        {selectedEvenement.lieu || (locale === 'ar' ? (selectedEvenement.commune?.nomArabe || selectedEvenement.commune?.nom) : selectedEvenement.commune?.nom)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
+                    Description de l'événement
+                  </h4>
+                  <div className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium">
+                    {selectedEvenement.description}
+                  </div>
+                </div>
+
+                {/* Status Section */}
+                <div className="p-6 bg-[hsl(var(--gov-blue))/0.03] rounded-3xl border border-[hsl(var(--gov-blue))/0.1] space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Statut Actuel</span>
+                    <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color} border-current/10`}>
+                      {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
+                    </span>
+                  </div>
+                  {selectedEvenement.isMisEnAvant && (
+                    <div className="flex items-center gap-2 text-amber-600 bg-amber-500/5 px-4 py-2 rounded-xl border border-amber-500/10">
+                      <Star className="w-4 h-4 fill-current" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Événement Mis en avant</span>
                     </div>
                   )}
                 </div>
-                
-                {/* Status badges */}
-                <div className="flex flex-wrap gap-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color}`}>
-                    {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
-                  </span>
-                  {selectedEvenement.isMisEnAvant && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-                      Mis en avant
-                    </span>
-                  )}
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                    <Users size={16} />
-                    {selectedEvenement.nombreInscrits} inscrits
-                  </span>
-                </div>
-                
-                {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+
+                {/* Footer Actions */}
+                <div className="grid grid-cols-2 gap-4 pt-10 border-t border-border">
                   <button
                     onClick={() => setShowDetailModal(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
                   >
                     Fermer
                   </button>
                   <Link
                     href={`/admin/evenements/${selectedEvenement.id}/modifier`}
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-center text-white rounded-xl hover:shadow-lg transition-all"
+                    className="gov-btn-primary py-4 rounded-2xl justify-center text-xs uppercase tracking-widest font-bold"
                   >
+                    <Edit2 size={16} />
                     Modifier complet
                   </Link>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

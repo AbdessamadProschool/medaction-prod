@@ -174,28 +174,29 @@ export default function AdminSidebar() {
       <Link
         href={item.href}
         onClick={() => setMobileOpen(false)}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
-          active
-            ? 'bg-[hsl(45,93%,47%)] text-gray-900 font-bold shadow-lg shadow-[hsl(45,93%,47%)]/20'
-            : 'text-blue-100/70 hover:bg-white/10 hover:text-white'
+        className={`gov-sidebar-nav-item group relative ${
+          active ? 'active' : ''
         }`}
       >
-        <Icon size={20} className={active ? 'text-gray-900' : 'text-blue-100/70 group-hover:text-white'} />
+        <Icon 
+          size={20} 
+          className={active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} 
+        />
         {!collapsed && (
           <span className="flex-1">{t(item.labelKey)}</span>
         )}
         {item.badge !== undefined && item.badge > 0 && (
           <span className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center ${
             active 
-              ? 'bg-gray-900 text-white' 
-              : 'bg-[hsl(45,93%,47%)] text-gray-900 shadow-sm animate-pulse'
+              ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
+              : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
           }`}>
             {item.badge > 99 ? '99+' : item.badge}
           </span>
         )}
         
         {collapsed && (
-          <div className="absolute px-2 py-1 bg-[hsl(213,80%,20%)] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2">
+          <div className="absolute px-2 py-1 bg-[hsl(var(--gov-blue-dark))] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2 shadow-xl border border-white/10">
             {t(item.labelKey)}
           </div>
         )}

@@ -1,0 +1,46 @@
+{
+  "admin_settings": {
+    "title": "Configuration Système",
+    "subtitle": "Gérez les paramètres globaux, la sécurité et les notifications de la plateforme.",
+    "save": "Enregistrer",
+    "saving": "Sauvegarde en cours...",
+    "saved": "Paramètres mis à jour avec succès",
+    "super_admin_only": "Seul un Super Administrateur peut modifier ces paramètres.",
+    "info": "Les modifications apportées ici affectent l'ensemble des utilisateurs et le comportement global du système.",
+    "tabs": {
+      "general": "Général",
+      "notifications": "Communications",
+      "security": "Sécurité",
+      "email": "Emails & SMTP"
+    },
+    "general": {
+      "title": "Paramètres Généraux",
+      "platform_name": "Nom de la plateforme",
+      "description": "Description institutionnelle",
+      "maintenance_mode": "Mode Maintenance",
+      "enable_maintenance": "Activer le mode maintenance (limite l'accès au portail)"
+    },
+    "notifications": {
+      "title": "Configuration des Alertes",
+      "new_reclamation": "Nouvelle Réclamation",
+      "new_reclamation_desc": "Notifier les autorités lors d'un nouveau dépôt.",
+      "new_user": "Inscription Utilisateur",
+      "new_user_desc": "Alerter lors de la création d'un nouveau compte citoyen.",
+      "daily_report": "Rapport Quotidien",
+      "daily_report_desc": "Envoyer une synthèse d'activité chaque matin."
+    },
+    "security": {
+      "title": "Sécurité & Accès",
+      "session_duration": "Durée de session (heures)",
+      "max_attempts": "Tentatives de connexion max",
+      "enable_2fa": "Forcer la double authentification (2FA)",
+      "session_desc": "Délai avant déconnexion automatique."
+    },
+    "email": {
+      "title": "Serveur de Messagerie",
+      "sender_email": "Email d'expédition (System)",
+      "contact_email": "Email de contact (Support)",
+      "smtp_note": "La configuration SMTP avancée est gérée via les variables d'environnement du serveur."
+    }
+  }
+}

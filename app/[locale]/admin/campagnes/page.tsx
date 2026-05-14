@@ -51,12 +51,12 @@ interface Campagne {
 }
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
-  BROUILLON: { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-600 dark:text-gray-300', icon: Edit, label: 'Brouillon' },
-  EN_ATTENTE: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', icon: Clock, label: 'En attente' },
-  ACTIVE: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400', icon: Play, label: 'Active' },
-  EN_PAUSE: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400', icon: Pause, label: 'En pause' },
-  TERMINEE: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', icon: CheckCircle, label: 'Terminée' },
-  ANNULEE: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', icon: XCircle, label: 'Annulée' },
+  BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit, label: 'Brouillon' },
+  EN_ATTENTE: { bg: 'bg-amber-500/10', text: 'text-amber-600', icon: Clock, label: 'En attente' },
+  ACTIVE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Play, label: 'Active' },
+  EN_PAUSE: { bg: 'bg-orange-500/10', text: 'text-orange-600', icon: Pause, label: 'En pause' },
+  TERMINEE: { bg: 'bg-[hsl(var(--gov-blue))/0.1]', text: 'text-[hsl(var(--gov-blue))]', icon: CheckCircle, label: 'Terminée' },
+  ANNULEE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle, label: 'Annulée' },
 };
 
 const SECTEURS = [
@@ -138,47 +138,57 @@ export default function AdminCampagnesPage() {
   }, [fetchCampagnes]);
 
   const handleChangeStatut = async (id: number, newStatut: string) => {
-    setActionLoading(`${id}-${newStatut}`);
-    try {
-      const res = await fetch(`/api/campagnes/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statut: newStatut }),
-      });
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/campagnes/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ statut: newStatut }),
+        });
 
-      if (res.ok) {
-        toast.success(`Statut modifié: ${STATUT_CONFIG[newStatut]?.label || newStatut}`);
-        fetchCampagnes();
-        setShowDetailModal(false);
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur');
+        if (res.ok) {
+          fetchCampagnes();
+          setShowDetailModal(false);
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
       }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: 'Mise à jour du statut...',
+      success: `Statut modifié: ${STATUT_CONFIG[newStatut]?.label || newStatut}`,
+      error: (err) => err.message,
+    });
   };
 
   const handleDelete = async (id: number) => {
     if (!confirm('Supprimer cette campagne ?')) return;
     
-    setActionLoading(`delete-${id}`);
-    try {
-      const res = await fetch(`/api/campagnes/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success('Campagne supprimée');
-        fetchCampagnes();
-        setShowDetailModal(false);
-      } else {
-        toast.error('Erreur lors de la suppression');
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/campagnes/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          fetchCampagnes();
+          setShowDetailModal(false);
+          resolve(true);
+        } else {
+          reject(new Error('Erreur lors de la suppression'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
       }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: 'Suppression en cours...',
+      success: 'Campagne supprimée',
+      error: (err) => err.message,
+    });
   };
 
   const formatDate = (date: string) => {
@@ -195,17 +205,17 @@ export default function AdminCampagnesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 bg-background min-h-screen p-4 sm:p-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-200 dark:shadow-purple-900/30">
+          <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
               <Megaphone className="w-6 h-6" />
             </div>
             {t('title')}
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground mt-2 font-medium">
             {t('subtitle', { total })}
           </p>
         </div>
@@ -213,16 +223,16 @@ export default function AdminCampagnesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchCampagnes}
-            className="p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold transition-all shadow-sm ${
               showFilters
-                ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]'
+                : 'bg-card border-border text-foreground hover:bg-muted'
             }`}
           >
             <Filter size={18} />
@@ -230,7 +240,7 @@ export default function AdminCampagnesPage() {
           </button>
           <Link
             href="/admin/campagnes/nouvelle"
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-medium shadow-lg shadow-purple-200 dark:shadow-purple-900/30 hover:shadow-xl transition-all"
+            className="gov-btn-primary"
           >
             <Plus size={18} />
             {t('new_campaign')}
@@ -239,50 +249,29 @@ export default function AdminCampagnesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-5 text-white"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <BarChart3 className="w-6 h-6 opacity-80" />
-            <span className="text-2xl font-bold">{stats.total}</span>
-          </div>
-          <p className="text-sm opacity-80">{t('stats.total')}</p>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <Play className="w-6 h-6 text-emerald-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.actives}</span>
-          </div>
-          <p className="text-sm text-gray-500">{t('stats.active')}</p>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-6 h-6 text-amber-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.enAttente}</span>
-          </div>
-          <p className="text-sm text-gray-500">{t('stats.pending')}</p>
-        </motion.div>
-
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <Users className="w-6 h-6 text-blue-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalParticipants}</span>
-          </div>
-          <p className="text-sm text-gray-500">{t('stats.participants')}</p>
-        </motion.div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: t('stats.total'), value: stats.total, icon: BarChart3, gradient: 'from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]' },
+          { label: t('stats.active'), value: stats.actives, icon: Play, gradient: 'from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]' },
+          { label: t('stats.pending'), value: stats.enAttente, icon: Clock, gradient: 'from-amber-400 to-amber-600' },
+          { label: t('stats.participants'), value: stats.totalParticipants, icon: Users, gradient: 'from-purple-500 to-purple-700' },
+        ].map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="gov-stat-card group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                <stat.icon className="w-5 h-5" />
+              </div>
+            </div>
+            <p className="gov-stat-value">{stat.value}</p>
+            <p className="gov-stat-label">{stat.label}</p>
+          </motion.div>
+        ))}
       </div>
 
       {/* Filters */}
@@ -292,18 +281,18 @@ export default function AdminCampagnesPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 overflow-hidden"
+            className="gov-card p-5 overflow-hidden border-border"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Search */}
-              <div className="relative lg:col-span-2">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <div className="relative lg:col-span-2 group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('search_placeholder')}
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-purple-500 dark:text-white"
+                  className="gov-input pl-12"
                 />
               </div>
 
@@ -311,7 +300,7 @@ export default function AdminCampagnesPage() {
               <select
                 value={statutFilter}
                 onChange={(e) => setStatutFilter(e.target.value)}
-                className="px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-purple-500 dark:text-white"
+                className="gov-input py-3"
               >
                 <option value="">{t('all_statuses')}</option>
                 {Object.entries(STATUT_CONFIG).map(([key, config]) => (
@@ -331,7 +320,7 @@ export default function AdminCampagnesPage() {
               {/* Reset */}
               <button
                 onClick={() => { setSearch(''); setStatutFilter(''); setSecteurFilter(''); }}
-                className="flex items-center justify-center gap-2 px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all font-bold text-sm border border-transparent hover:border-border"
               >
                 <X size={16} />
                 {t('reset')}
@@ -345,11 +334,11 @@ export default function AdminCampagnesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {loading ? (
           [...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 animate-pulse">
-              <div className="h-5 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-3" />
-              <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-              <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-              <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div key={i} className="bg-card rounded-2xl p-6 animate-pulse border border-border">
+              <div className="h-5 w-3/4 bg-muted rounded mb-3" />
+              <div className="h-4 w-full bg-muted rounded mb-4" />
+              <div className="h-2 w-full bg-muted rounded mb-4" />
+              <div className="h-8 w-24 bg-muted rounded" />
             </div>
           ))
         ) : campagnes.length === 0 ? (
@@ -382,12 +371,12 @@ export default function AdminCampagnesPage() {
                 layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all"
+                className="group bg-card rounded-3xl shadow-sm border border-border overflow-hidden hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.1)] hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="p-6">
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${statutConfig.bg} ${statutConfig.text}`}>
+                  <div className="flex items-start justify-between mb-5">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${statutConfig.bg} ${statutConfig.text} border-current/20`}>
                       <StatutIcon className="w-3 h-3" />
                       {t(`status.${{
                         BROUILLON: 'draft',
@@ -398,16 +387,16 @@ export default function AdminCampagnesPage() {
                         ANNULEE: 'cancelled'
                       }[campagne.statut] || 'draft'}`)}
                     </span>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
                       <button
                         onClick={() => { setSelectedCampagne(campagne); setShowDetailModal(true); }}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.1] rounded-xl transition-all shadow-sm bg-background border border-border"
                       >
                         <Eye size={16} />
                       </button>
                       <Link
                         href={`/admin/campagnes/${campagne.id}/modifier`}
-                        className="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.1] rounded-xl transition-all shadow-sm bg-background border border-border"
                       >
                         <Edit size={16} />
                       </Link>
@@ -415,43 +404,47 @@ export default function AdminCampagnesPage() {
                   </div>
 
                   {/* Title & Description */}
-                  <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2 leading-tight">
+                  <h3 className="font-extrabold text-foreground line-clamp-2 mb-2 leading-tight text-lg group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                     {campagne.titre}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-6 font-medium">
                     {campagne.description || t('no_description')}
                   </p>
 
                   {/* Progress */}
                   {campagne.objectifParticipants && (
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                    <div className="mb-6 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                      <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
                         <span>{t('progress')}</span>
-                        <span className="font-medium">{progress}%</span>
+                        <span className="text-[hsl(var(--gov-blue))]">{progress}%</span>
                       </div>
-                      <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div
-                          className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                          className="h-full bg-gradient-to-r from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
                           initial={{ width: 0 }}
                           animate={{ width: `${progress}%` }}
-                          transition={{ duration: 0.5 }}
+                          transition={{ duration: 1, ease: "easeOut" }}
                         />
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-[11px] text-muted-foreground mt-2 font-bold">
                         {t('participants_count', { count: campagne.nombreParticipants, total: campagne.objectifParticipants })}
                       </p>
                     </div>
                   )}
 
                   {/* Meta */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={12} />
+                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground pt-5 border-t border-border/50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 bg-muted rounded-md flex items-center justify-center">
+                        <Calendar size={12} className="text-[hsl(var(--gov-blue))]" />
+                      </div>
                       {formatDate(campagne.dateDebut)}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Users size={12} />
-                      {campagne.nombreParticipants} participants
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 bg-muted rounded-md flex items-center justify-center">
+                        <Users size={12} className="text-[hsl(var(--gov-gold))]" />
+                      </div>
+                      {campagne.nombreParticipants}
                     </div>
                   </div>
                 </div>
@@ -463,22 +456,22 @@ export default function AdminCampagnesPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-          <p className="text-sm text-gray-500">
+        <div className="flex items-center justify-between px-6 py-5 bg-card rounded-3xl border border-border shadow-sm">
+          <p className="text-sm text-muted-foreground font-bold uppercase tracking-widest">
             Page {page} sur {totalPages}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+              className="p-2.5 text-foreground hover:text-[hsl(var(--gov-blue))] bg-background hover:bg-muted rounded-xl border border-border disabled:opacity-30 transition-all shadow-sm"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+              className="p-2.5 text-foreground hover:text-[hsl(var(--gov-blue))] bg-background hover:bg-muted rounded-xl border border-border disabled:opacity-30 transition-all shadow-sm"
             >
               <ChevronRight size={20} />
             </button>
@@ -495,37 +488,37 @@ export default function AdminCampagnesPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowDetailModal(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-background/80 backdrop-blur-md z-50"
             />
             <motion.div
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-50 overflow-y-auto border-l border-border"
             >
               {/* Modal Header */}
-              <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <h2 className="text-xl font-extrabold text-foreground">
                   {t('details')}
                 </h2>
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="p-6 space-y-6">
+              <div className="p-8 space-y-8">
                 {/* Status & Title */}
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
                     {(() => {
                       const config = STATUT_CONFIG[selectedCampagne.statut] || STATUT_CONFIG.BROUILLON;
                       const Icon = config.icon;
                       return (
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${config.bg} ${config.text} border-current/20`}>
                           <Icon className="w-3 h-3" />
                           {t(`status.${{
                             BROUILLON: 'draft',
@@ -539,36 +532,37 @@ export default function AdminCampagnesPage() {
                       );
                     })()}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-2xl font-extrabold text-foreground leading-tight">
                     {selectedCampagne.titre}
                   </h3>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
                     {t('description')}
                   </label>
-                  <p className="text-gray-700 dark:text-gray-300">
+                  <div className="p-5 bg-muted/30 rounded-2xl border border-border/50 text-foreground font-medium leading-relaxed">
                     {selectedCampagne.description || t('no_description')}
-                  </p>
+                  </div>
                 </div>
 
                 {/* Progress */}
                 {selectedCampagne.objectifParticipants && (
-                  <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('progress')}</span>
-                      <span className="text-lg font-bold text-purple-600">{getProgressPercentage(selectedCampagne)}%</span>
+                  <div className="p-6 bg-gradient-to-br from-[hsl(var(--gov-blue))/0.05] to-transparent rounded-3xl border border-[hsl(var(--gov-blue))/0.1]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('progress')}</span>
+                      <span className="text-xl font-extrabold text-[hsl(var(--gov-blue))]">{getProgressPercentage(selectedCampagne)}%</span>
                     </div>
-                    <div className="w-full h-3 bg-white dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                        className="h-full bg-gradient-to-r from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
                         initial={{ width: 0 }}
                         animate={{ width: `${getProgressPercentage(selectedCampagne)}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
                       />
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    <p className="text-[11px] text-muted-foreground mt-3 font-bold uppercase tracking-widest">
                       {t('participants_count', { count: selectedCampagne.nombreParticipants, total: selectedCampagne.objectifParticipants })}
                     </p>
                   </div>
@@ -576,21 +570,21 @@ export default function AdminCampagnesPage() {
 
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('start_date')}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">{formatDate(selectedCampagne.dateDebut)}</p>
+                  <div className="p-4 bg-muted/50 rounded-2xl border border-border/50">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('start_date')}</p>
+                    <p className="font-bold text-foreground">{formatDate(selectedCampagne.dateDebut)}</p>
                   </div>
                   {selectedCampagne.dateFin && (
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('end_date')}</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{formatDate(selectedCampagne.dateFin)}</p>
+                    <div className="p-4 bg-muted/50 rounded-2xl border border-border/50">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('end_date')}</p>
+                      <p className="font-bold text-foreground">{formatDate(selectedCampagne.dateFin)}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Actions */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+                  <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">
                     {t('change_status')}
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -604,10 +598,10 @@ export default function AdminCampagnesPage() {
                           key={key}
                           onClick={() => handleChangeStatut(selectedCampagne.id, key)}
                           disabled={isActive || !!actionLoading}
-                          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all disabled:opacity-50 ${
+                          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-50 border shadow-sm ${
                             isActive
-                              ? `${config.bg} ${config.text} border-2 border-current`
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                              ? `${config.bg} ${config.text} border-current/30 scale-[1.02] ring-2 ring-offset-2 ring-offset-card ring-current/20`
+                              : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                           }`}
                         >
                           {isLoading ? (
@@ -633,7 +627,7 @@ export default function AdminCampagnesPage() {
                 <button
                   onClick={() => handleDelete(selectedCampagne.id)}
                   disabled={!!actionLoading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] rounded-2xl font-bold text-sm hover:bg-[hsl(var(--gov-red))] hover:text-white transition-all border border-[hsl(var(--gov-red))/0.2] shadow-sm active:scale-95"
                 >
                   {actionLoading === `delete-${selectedCampagne.id}` ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

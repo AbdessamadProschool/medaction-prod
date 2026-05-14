@@ -88,12 +88,12 @@ export default function AdminHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-20 bg-white border-b-2 border-[hsl(45,93%,47%)]/30 px-4 sm:px-6 py-3">
+    <header className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b-2 border-[hsl(var(--gov-gold)/0.3)] px-4 sm:px-6 py-3 shadow-sm">
       <div className="flex items-center justify-between">
         {/* Search */}
         <div className="flex-1 max-w-lg">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
             <input
               type="text"
               placeholder={t('search_placeholder')}
@@ -107,7 +107,7 @@ export default function AdminHeader() {
           {/* Link to public site */}
           <Link
             href="/"
-            className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/10 rounded-lg transition-colors font-medium"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue)/0.1)] rounded-lg transition-all font-bold"
           >
             <ExternalLink size={16} />
             {t('site_public')}
@@ -116,7 +116,7 @@ export default function AdminHeader() {
           {/* Dark mode toggle */}
           <button
             onClick={toggleDarkMode}
-            className="p-2 text-gray-500 hover:text-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/10 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue)/0.1)] rounded-lg transition-colors"
           >
             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
@@ -129,11 +129,11 @@ export default function AdminHeader() {
                 setShowNotifications(!showNotifications);
                 setShowUserMenu(false);
               }}
-              className="relative p-2 text-gray-500 hover:text-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/10 rounded-lg transition-colors"
+              className="relative p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue)/0.1)] rounded-lg transition-colors"
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-[hsl(348,83%,47%)] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                <span className="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-[hsl(var(--gov-red))] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse shadow-sm">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}
@@ -141,20 +141,20 @@ export default function AdminHeader() {
 
             {showNotifications && (
               <div 
-                className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 gov-card overflow-hidden"
-                style={{ zIndex: 9999 }}
+                className="absolute right-0 mt-2 w-80 bg-card rounded-xl shadow-2xl border border-border py-0 gov-card overflow-hidden z-[9999]"
               >
-                <div className="px-4 py-2 border-b border-gray-100 bg-gradient-to-r from-[hsl(213,80%,28%)]/5 to-transparent flex justify-between items-center">
-                  <h3 className="font-semibold text-gray-900">{t('notifications')} ({unreadCount})</h3>
+                <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-[hsl(var(--gov-blue))/0.05] to-transparent flex justify-between items-center">
+                  <h3 className="font-bold text-foreground">{t('notifications')} ({unreadCount})</h3>
                   {unreadCount > 0 && (
-                    <button onClick={markAllRead} className="text-xs text-[hsl(213,80%,28%)] hover:underline flex items-center gap-1">
+                    <button onClick={markAllRead} className="text-xs text-[hsl(var(--gov-blue))] hover:underline flex items-center gap-1 font-semibold">
                       <Check size={12} /> {t('mark_all_read')}
                     </button>
                   )}
                 </div>
-                <div className="max-h-80 overflow-y-auto">
+                <div className="max-h-80 overflow-y-auto scrollbar-hide">
                   {notifications.length === 0 ? (
-                    <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                    <div className="px-4 py-8 text-center text-muted-foreground text-sm flex flex-col items-center gap-2">
+                      <Bell className="w-8 h-8 opacity-20" />
                       {t('no_notifications')}
                     </div>
                   ) : (
@@ -163,17 +163,17 @@ export default function AdminHeader() {
                         key={notif.id} 
                         href={notif.lien || '#'}
                         onClick={() => setShowNotifications(false)}
-                        className="block px-4 py-3 hover:bg-[hsl(213,80%,28%)]/5 cursor-pointer border-l-2 border-transparent hover:border-[hsl(45,93%,47%)] transition-colors"
+                        className="block px-4 py-3 hover:bg-[hsl(var(--gov-blue))/0.05] cursor-pointer border-l-4 border-transparent hover:border-[hsl(var(--gov-gold))] transition-all"
                       >
-                        <p className="text-sm font-semibold text-gray-900">{notif.titre}</p>
-                        <p className="text-sm text-gray-600 line-clamp-2">{notif.message}</p>
-                        <p className="text-xs text-gray-400 mt-1">{formatTime(notif.createdAt)}</p>
+                        <p className="text-sm font-bold text-foreground">{notif.titre}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">{notif.message}</p>
+                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-bold mt-1.5">{formatTime(notif.createdAt)}</p>
                       </Link>
                     ))
                   )}
                 </div>
-                <div className="px-4 py-2 border-t border-gray-100 bg-gray-50">
-                  <Link href="/notifications" className="text-sm text-[hsl(213,80%,28%)] hover:underline font-medium block text-center">
+                <div className="px-4 py-3 border-t border-border bg-muted/30">
+                  <Link href="/notifications" className="text-sm text-[hsl(var(--gov-blue))] hover:underline font-bold block text-center">
                     {t('view_history')}
                   </Link>
                 </div>
@@ -194,42 +194,47 @@ export default function AdminHeader() {
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-64 bg-card rounded-xl shadow-2xl border border-border py-0 overflow-hidden z-[9999]">
                 {/* Gold top accent */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(213,80%,28%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
-                <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 mt-1">
-                  <p className="font-semibold text-gray-900">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[hsl(var(--gov-blue))] via-[hsl(var(--gov-gold))] to-[hsl(var(--gov-green))]" />
+                <div className="px-4 py-4 border-b border-border bg-muted/30 mt-1.5">
+                  <p className="font-bold text-foreground text-base">
                     {session?.user?.prenom && session?.user?.nom ? `${session.user.prenom} ${session.user.nom}` : t('administrator')}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-muted-foreground truncate font-medium">
                     {session?.user?.email}
                   </p>
-                  <span className="inline-block mt-1 px-2 py-0.5 bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)] text-xs rounded-full font-medium">
-                    {session?.user?.role || 'Admin'}
-                  </span>
+                  <div className="mt-2.5">
+                    <span className="px-2.5 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] uppercase tracking-wider rounded-full font-bold border border-[hsl(var(--gov-blue)/0.2)]">
+                      {session?.user?.role || 'Admin'}
+                    </span>
+                  </div>
                 </div>
-                <Link
-                  href="/admin/profil"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[hsl(213,80%,28%)]/10 hover:text-[hsl(213,80%,28%)]"
-                >
-                  <User size={16} />
-                  {t('my_profile')}
-                </Link>
-                <Link
-                  href="/admin/settings"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[hsl(213,80%,28%)]/10 hover:text-[hsl(213,80%,28%)]"
-                >
-                  <Settings size={16} />
-                  {t('settings')}
-                </Link>
-                <hr className="my-2 border-gray-100" />
-                <button
-                  onClick={() => signOut({ callbackUrl: window.location.origin + '/' })}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-[hsl(348,83%,47%)] hover:bg-[hsl(348,83%,47%)]/10 w-full"
-                >
-                  <LogOut size={16} />
-                  {t('logout')}
-                </button>
+                <div className="py-1">
+                  <Link
+                    href="/admin/profil"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
+                  >
+                    <User size={18} className="text-muted-foreground" />
+                    {t('my_profile')}
+                  </Link>
+                  <Link
+                    href="/admin/settings"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
+                  >
+                    <Settings size={18} className="text-muted-foreground" />
+                    {t('settings')}
+                  </Link>
+                </div>
+                <div className="p-1 border-t border-border bg-muted/10">
+                  <button
+                    onClick={() => signOut({ callbackUrl: window.location.origin + '/' })}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red)/0.05)] w-full rounded-lg transition-colors font-bold"
+                  >
+                    <LogOut size={18} />
+                    {t('logout')}
+                  </button>
+                </div>
               </div>
             )}
           </div>

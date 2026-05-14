@@ -48,11 +48,11 @@ interface Article {
 }
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
-  BROUILLON: { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-600 dark:text-gray-300', icon: Edit },
-  EN_ATTENTE: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', icon: Clock },
-  PUBLIE: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400', icon: Globe },
-  REJETE: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', icon: XCircle },
-  ARCHIVE: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-600 dark:text-slate-300', icon: FileText },
+  BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit },
+  EN_ATTENTE: { bg: 'bg-amber-500/10', text: 'text-amber-600', icon: Clock },
+  PUBLIE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Globe },
+  REJETE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle },
+  ARCHIVE: { bg: 'bg-slate-500/10', text: 'text-slate-600', icon: FileText },
 };
 
 export default function AdminArticlesPage() {
@@ -205,17 +205,17 @@ export default function AdminArticlesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 bg-background min-h-screen p-4 sm:p-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
+          <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
               <BookOpen className="w-6 h-6" />
             </div>
             {t('title')}
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-muted-foreground mt-2 font-medium">
             {t('subtitle', { count: total })}
           </p>
         </div>
@@ -223,16 +223,16 @@ export default function AdminArticlesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchArticles}
-            className="p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold transition-all shadow-sm ${
               showFilters
-                ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-700 text-indigo-700 dark:text-indigo-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]'
+                : 'bg-card border-border text-foreground hover:bg-muted'
             }`}
           >
             <Filter size={18} />
@@ -240,7 +240,7 @@ export default function AdminArticlesPage() {
           </button>
           <Link
             href="/admin/articles/nouveau"
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-medium shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:shadow-xl transition-all"
+            className="gov-btn-primary"
           >
             <Plus size={18} />
             {t('create')}
@@ -249,49 +249,57 @@ export default function AdminArticlesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-5 text-white"
+          whileHover={{ y: -5 }}
+          className="bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-3xl p-6 text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.2)]"
         >
-          <div className="flex items-center justify-between mb-2">
-            <BookOpen className="w-6 h-6 opacity-80" />
-            <span className="text-2xl font-bold">{stats.total}</span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <span className="text-3xl font-extrabold">{stats.total}</span>
           </div>
-          <p className="text-sm opacity-80">{t('stats.total')}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">{t('stats.total')}</p>
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
+          whileHover={{ y: -5 }}
+          className="gov-stat-card bg-card"
         >
-          <div className="flex items-center justify-between mb-2">
-            <Globe className="w-6 h-6 text-emerald-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.publies}</span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-10 h-10 bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] rounded-xl flex items-center justify-center">
+              <Globe className="w-6 h-6" />
+            </div>
+            <span className="text-3xl font-extrabold text-foreground">{stats.publies}</span>
           </div>
-          <p className="text-sm text-gray-500">{t('stats.published')}</p>
+          <p className="gov-stat-label">{t('stats.published')}</p>
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
+          whileHover={{ y: -5 }}
+          className="gov-stat-card bg-card"
         >
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-6 h-6 text-amber-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.enAttente}</span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-10 h-10 bg-amber-500/10 text-amber-600 rounded-xl flex items-center justify-center">
+              <Clock className="w-6 h-6" />
+            </div>
+            <span className="text-3xl font-extrabold text-foreground">{stats.enAttente}</span>
           </div>
-          <p className="text-sm text-gray-500">{t('stats.pending')}</p>
+          <p className="gov-stat-label">{t('stats.pending')}</p>
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700"
+          whileHover={{ y: -5 }}
+          className="gov-stat-card bg-card"
         >
-          <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="w-6 h-6 text-blue-500" />
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalVues}</span>
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-10 h-10 bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <span className="text-3xl font-extrabold text-foreground">{stats.totalVues}</span>
           </div>
-          <p className="text-sm text-gray-500">{t('stats.views')}</p>
+          <p className="gov-stat-label">{t('stats.views')}</p>
         </motion.div>
       </div>
 
@@ -302,18 +310,18 @@ export default function AdminArticlesPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 overflow-hidden"
+            className="gov-card p-5 overflow-hidden border-border shadow-sm"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Search */}
-              <div className="relative lg:col-span-2">
-                <Search className={`absolute ${locale === 'ar' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400`} />
+              <div className="relative lg:col-span-2 group">
+                <Search className={`absolute ${locale === 'ar' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors`} />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('labels.search_placeholder')}
-                  className={`w-full ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500 dark:text-white`}
+                  className={`gov-input py-3 ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
                 />
               </div>
 
@@ -321,7 +329,7 @@ export default function AdminArticlesPage() {
               <select
                 value={statutFilter}
                 onChange={(e) => setStatutFilter(e.target.value)}
-                className="px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-indigo-500 dark:text-white"
+                className="gov-input py-3"
               >
                 <option value="">{t('labels.all_statuses')}</option>
                 <option value="BROUILLON">{t('status.draft')}</option>
@@ -334,7 +342,7 @@ export default function AdminArticlesPage() {
               {/* Reset */}
               <button
                 onClick={() => { setSearch(''); setStatutFilter(''); }}
-                className="flex items-center justify-center gap-2 px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all font-bold text-sm border border-transparent hover:border-border"
               >
                 <X size={16} />
                 {t('labels.reset')}
@@ -348,12 +356,12 @@ export default function AdminArticlesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {loading ? (
           [...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 animate-pulse">
-              <div className="h-5 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-3" />
-              <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded mb-4" />
+            <div key={i} className="bg-card rounded-3xl p-6 animate-pulse border border-border">
+              <div className="h-5 w-3/4 bg-muted rounded mb-3" />
+              <div className="h-4 w-full bg-muted rounded mb-4" />
               <div className="flex gap-2">
-                <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full" />
-                <div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full" />
+                <div className="h-6 w-16 bg-muted rounded-full" />
+                <div className="h-6 w-20 bg-muted rounded-full" />
               </div>
             </div>
           ))
@@ -378,70 +386,74 @@ export default function AdminArticlesPage() {
                 layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all"
+                className="group bg-card rounded-3xl shadow-sm border border-border overflow-hidden hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.1)] hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="p-6">
+                <div className="p-8">
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${statutConfig.bg} ${statutConfig.text}`}>
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${statutConfig.bg} ${statutConfig.text} border-current/20`}>
                         <StatutIcon className="w-3 h-3" />
                         {t('status.' + (statusKeyMap[article.statut] || 'draft'))}
                       </span>
                       {article.isMisEnAvant && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20 shadow-sm">
                           <Star className="w-3 h-3 fill-current" />
                           {t('labels.featured')}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <button
                         onClick={() => { setSelectedArticle(article); setShowDetailModal(true); }}
-                        className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] rounded-xl border border-transparent hover:border-[hsl(var(--gov-blue))/0.1] transition-all"
                       >
-                        <Eye size={16} />
+                        <Eye size={18} />
                       </button>
                       <Link
                         href={`/admin/articles/${article.id}/modifier`}
-                        className="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] rounded-xl border border-transparent hover:border-[hsl(var(--gov-blue))/0.1] transition-all"
                       >
-                        <Edit size={16} />
+                        <Edit size={18} />
                       </Link>
                     </div>
                   </div>
 
                   {/* Title & Resume */}
-                  <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2 leading-tight">
+                  <h3 className="text-xl font-extrabold text-foreground line-clamp-2 mb-3 leading-tight group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                     {article.titre}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-6 font-medium leading-relaxed">
                     {article.resume || t('labels.no_resume')}
                   </p>
 
                   {/* Tags */}
                   {article.tags && article.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-6">
                       {article.tags.slice(0, 3).map((tag, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full">
+                        <span key={i} className="px-3 py-1 bg-muted/50 text-muted-foreground text-[10px] font-bold uppercase tracking-widest rounded-lg border border-border/50">
                           #{tag}
                         </span>
                       ))}
                       {article.tags.length > 3 && (
-                        <span className="px-2 py-0.5 text-gray-400 text-xs">+{article.tags.length - 3}</span>
+                        <span className="px-2 py-1 text-muted-foreground/50 text-[10px] font-bold">+{article.tags.length - 3}</span>
                       )}
                     </div>
                   )}
 
                   {/* Meta */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={12} />
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground pt-6 border-t border-border/50">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-muted rounded-lg flex items-center justify-center">
+                        <Calendar size={12} className="text-[hsl(var(--gov-blue))]" />
+                      </div>
                       {formatDate(article.createdAt)}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1">
-                        <Eye size={12} />
+                    <div className="flex items-center gap-4">
+                      <span className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-muted rounded-lg flex items-center justify-center">
+                          <Eye size={12} className="text-[hsl(var(--gov-gold))]" />
+                        </div>
                         {article.nombreVues}
                       </span>
                     </div>
@@ -455,22 +467,40 @@ export default function AdminArticlesPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-          <p className="text-sm text-gray-500">
+        <div className="flex items-center justify-between px-8 py-6 bg-card rounded-3xl border border-border shadow-sm">
+          <p className="text-sm text-muted-foreground font-bold uppercase tracking-widest">
             Page {page} sur {totalPages}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+              className="p-2.5 text-foreground hover:text-[hsl(var(--gov-blue))] bg-background hover:bg-muted rounded-xl border border-border disabled:opacity-30 transition-all shadow-sm"
             >
               {locale === 'ar' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             </button>
+            <div className="flex items-center gap-2">
+              {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`w-10 h-10 rounded-xl text-xs font-bold uppercase transition-all shadow-sm border ${
+                      page === pageNum
+                        ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-[hsl(var(--gov-blue)/0.2)] shadow-lg'
+                        : 'bg-card text-foreground border-border hover:bg-muted'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+              className="p-2.5 text-foreground hover:text-[hsl(var(--gov-blue))] bg-background hover:bg-muted rounded-xl border border-border disabled:opacity-30 transition-all shadow-sm"
             >
               {locale === 'ar' ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
             </button>
@@ -487,156 +517,163 @@ export default function AdminArticlesPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowDetailModal(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-background/80 backdrop-blur-md z-50"
             />
             <motion.div
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-50 overflow-y-auto border-l border-border"
             >
               {/* Modal Header */}
-              <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <h2 className="text-xl font-extrabold text-foreground">
                   {t('modal.title')}
                 </h2>
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="p-6 space-y-6">
+              <div className="p-8 space-y-8">
                 {/* Title */}
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
                     {(() => {
                       const config = STATUT_CONFIG[selectedArticle.statut] || STATUT_CONFIG.BROUILLON;
                       const Icon = config.icon;
                       return (
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${config.bg} ${config.text} border-current/20`}>
                           <Icon className="w-3 h-3" />
                           {t('status.' + (statusKeyMap[selectedArticle.statut] || 'draft'))}
                         </span>
                       );
                     })()}
                     {selectedArticle.isMisEnAvant && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20 shadow-sm">
                         <Star className="w-3 h-3 fill-current" />
                         {t('labels.featured')}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-2xl font-extrabold text-foreground leading-tight">
                     {selectedArticle.titre}
                   </h3>
                 </div>
 
                 {/* Resume */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      {t('modal.resume')}
-                    </label>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      {selectedArticle.resume || t('labels.no_resume')}
-                    </p>
+                  <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
+                    {t('modal.resume')}
+                  </label>
+                  <div className="p-5 bg-muted/30 rounded-2xl border border-border/50 text-foreground font-medium leading-relaxed">
+                    {selectedArticle.resume || t('labels.no_resume')}
                   </div>
+                </div>
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-center">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">{selectedArticle.nombreVues}</p>
-                      <p className="text-xs text-gray-500">{t('modal.views')}</p>
+                    <div className="p-5 bg-muted/50 rounded-2xl border border-border/50 text-center group hover:bg-[hsl(var(--gov-blue))/0.05] transition-colors">
+                      <p className="text-3xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors">{selectedArticle.nombreVues}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('modal.views')}</p>
                     </div>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-xl text-center">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">{selectedArticle.nombreLikes}</p>
-                      <p className="text-xs text-gray-500">{t('modal.likes')}</p>
+                    <div className="p-5 bg-muted/50 rounded-2xl border border-border/50 text-center group hover:bg-[hsl(var(--gov-red))/0.05] transition-colors">
+                      <p className="text-3xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-red))] transition-colors">{selectedArticle.nombreLikes}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('modal.likes')}</p>
                     </div>
-                </div>
+                  </div>
 
                 {/* Author */}
                 {selectedArticle.auteur && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600">
-                      <User className="w-5 h-5" />
+                  <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-[hsl(var(--gov-blue))/0.05] to-transparent rounded-3xl border border-[hsl(var(--gov-blue))/0.1]">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white shadow-lg">
+                      <User className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('modal.author')}</p>
+                      <p className="font-extrabold text-foreground text-lg">
                         {selectedArticle.auteur.prenom} {selectedArticle.auteur.nom}
                       </p>
-                      <p className="text-xs text-gray-500">{t('modal.author')}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1 opacity-60">
+                        {t('modal.contributor') || 'Contributeur'}
+                      </p>
                     </div>
                   </div>
                 )}
 
                 {/* Change Status */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
-                    {t('modal.change_status')}
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {Object.entries(STATUT_CONFIG).map(([key, config]) => {
-                      const Icon = config.icon;
-                      const isActive = selectedArticle.statut === key;
-                      const isLoading = actionLoading === `${selectedArticle.id}-${key}`;
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">
+                      {t('modal.change_status')}
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {Object.entries(STATUT_CONFIG).map(([key, config]) => {
+                        const Icon = config.icon;
+                        const isActive = selectedArticle.statut === key;
+                        const isLoading = actionLoading === `${selectedArticle.id}-${key}`;
 
-                      return (
-                        <button
-                          key={key}
-                          onClick={() => handleChangeStatut(selectedArticle.id, key)}
-                          disabled={isActive || !!actionLoading}
-                          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all disabled:opacity-50 ${
-                            isActive
-                              ? `${config.bg} ${config.text} border-2 border-current`
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                          }`}
-                        >
-                          {isLoading ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Icon className="w-4 h-4" />
-                          )}
-                          {t('status.' + (statusKeyMap[key] || 'draft'))}
-                        </button>
-                      );
-                    })}
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => handleChangeStatut(selectedArticle.id, key)}
+                            disabled={isActive || !!actionLoading}
+                            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all disabled:opacity-50 border shadow-sm ${
+                              isActive
+                                ? `${config.bg} ${config.text} border-current/30 scale-[1.02] ring-2 ring-offset-2 ring-offset-card ring-current/20`
+                                : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+                            }`}
+                          >
+                            {isLoading ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Icon className="w-4 h-4" />
+                            )}
+                            {t('status.' + (statusKeyMap[key] || 'draft'))}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 pt-4">
+                    {/* Toggle Featured */}
+                    <button
+                      onClick={() => handleToggleMisEnAvant(selectedArticle.id, selectedArticle.isMisEnAvant)}
+                      disabled={!!actionLoading}
+                      className={`flex items-center justify-center gap-2 px-4 py-4 rounded-2xl font-bold text-sm transition-all border shadow-sm ${
+                        selectedArticle.isMisEnAvant
+                          ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white'
+                          : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {actionLoading === `highlight-${selectedArticle.id}` ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Star className={`w-4 h-4 ${selectedArticle.isMisEnAvant ? 'fill-current' : ''}`} />
+                      )}
+                      {selectedArticle.isMisEnAvant ? t('modal.toggle_featured_off') : t('modal.toggle_featured')}
+                    </button>
+
+                    {/* Delete */}
+                    <button
+                      onClick={() => handleDelete(selectedArticle.id)}
+                      disabled={!!actionLoading}
+                      className="flex items-center justify-center gap-2 px-4 py-4 bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] rounded-2xl font-bold text-sm hover:bg-[hsl(var(--gov-red))] hover:text-white transition-all border border-[hsl(var(--gov-red))/0.2] shadow-sm"
+                    >
+                      {actionLoading === `delete-${selectedArticle.id}` ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                      {t('modal.delete')}
+                    </button>
                   </div>
                 </div>
-
-                {/* Toggle Featured */}
-                <button
-                  onClick={() => handleToggleMisEnAvant(selectedArticle.id, selectedArticle.isMisEnAvant)}
-                  disabled={!!actionLoading}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all ${
-                    selectedArticle.isMisEnAvant
-                      ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  {actionLoading === `highlight-${selectedArticle.id}` ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Star className={`w-4 h-4 ${selectedArticle.isMisEnAvant ? 'fill-current' : ''}`} />
-                  )}
-                  {selectedArticle.isMisEnAvant ? t('modal.toggle_featured_off') : t('modal.toggle_featured')}
-                </button>
-
-                {/* Delete */}
-                <button
-                  onClick={() => handleDelete(selectedArticle.id)}
-                  disabled={!!actionLoading}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-all"
-                >
-                  {actionLoading === `delete-${selectedArticle.id}` ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
-                  )}
-                  {t('modal.delete')}
-                </button>
               </div>
             </motion.div>
           </>

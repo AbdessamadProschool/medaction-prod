@@ -134,4 +134,32 @@ Cette erreur survient si une clé de traduction est manquante dans `locales/ar/c
 3. **Cas particulier :** Si le message utilise un pluriel (ex: `{count}`), assurez-vous que la variable est bien passée dans le code.
 
 ---
-*Document mis à jour le 1 Mai 2026 suite à la stabilisation de la production et la correction des traductions.*
+## 8. 🎨 Standards de Développement (Design System & UX)
+
+Pour maintenir l'intégrité visuelle et la qualité de l'expérience utilisateur, tout nouveau développement doit suivre ces règles :
+
+### Design System Institutionnel
+Toute l'administration utilise des tokens CSS standardisés. Ne jamais utiliser de classes CSS ad-hoc si un token `gov-*` existe :
+- **Inputs :** `className="gov-input"`
+- **Sélecteurs :** `className="gov-select"`
+- **Zones de texte :** `className="gov-textarea"`
+- **Boutons :** `className="gov-btn gov-btn-primary"` (ou `gov-btn-secondary`, `gov-btn-danger`)
+- **Checkboxes/Toggles :** Utiliser les couleurs `hsl(var(--gov-blue))` pour les états actifs.
+
+### Gestion des Actions Asynchrones
+Toutes les mutations (création, modification, suppression) doivent utiliser le pattern `toast.promise` de la librairie **Sonner** pour un feedback fluide :
+```typescript
+toast.promise(votrePromesse, {
+  loading: 'Action en cours...',
+  success: 'Réussite !',
+  error: (err) => err.message || 'Erreur lors de l\'action',
+});
+```
+
+### Intégrité des Traductions (i18n)
+Les fichiers `locales/ar/common.json` et `locales/fr/common.json` sont critiques.
+- **Règle d'or :** Ne **jamais supprimer** de clés existantes. 
+- **Ajout :** Toujours ajouter les nouvelles clés à la fin des objets respectifs pour éviter les erreurs `MISSING_MESSAGE` sur les modules déjà déployés.
+
+---
+*Document mis à jour le 14 Mai 2026 suite à la modernisation de l'UI Admin et l'unification des notifications.*

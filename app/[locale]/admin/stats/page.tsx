@@ -137,20 +137,23 @@ export default function AdminStatsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('admin_stats.title')}</h1>
-          <p className="text-gray-600">{t('admin_stats.subtitle')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <BarChart3 className="text-[hsl(var(--gov-blue))]" size={32} />
+            {t('admin_stats.title')}
+          </h1>
+          <p className="text-gray-500 mt-1">{t('admin_stats.subtitle')}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           {(['7j', '30j', '90j', '1an'] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriode(p)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                 periode === p
-                  ? 'bg-[hsl(213,80%,28%)] text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-[hsl(var(--gov-blue))] text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-white dark:hover:bg-gray-700'
               }`}
             >
               {p}
@@ -164,29 +167,29 @@ export default function AdminStatsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="gov-card p-6"
+          className="gov-stat-card"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">{t('admin_stats.cards.reclamations_total')}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <p className="gov-stat-label">{t('admin_stats.cards.reclamations_total')}</p>
+              <p className="gov-stat-value mt-1">
                 {defaultStats.reclamations.total}
               </p>
             </div>
-            <div className="w-12 h-12 bg-[hsl(213,80%,28%)]/10 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-[hsl(213,80%,28%)]" />
+            <div className="gov-stat-icon">
+              <FileText className="w-6 h-6" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
             {variation >= 0 ? (
-              <TrendingUp className="w-4 h-4 text-[hsl(145,63%,32%)]" />
+              <TrendingUp className="w-4 h-4 text-green-500" />
             ) : (
-              <TrendingDown className="w-4 h-4 text-[hsl(348,83%,47%)]" />
+              <TrendingDown className="w-4 h-4 text-red-500" />
             )}
-            <span className={`text-sm font-medium ${variation >= 0 ? 'text-[hsl(145,63%,32%)]' : 'text-[hsl(348,83%,47%)]'}`}>
+            <span className={`text-sm font-bold ${variation >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {variation >= 0 ? '+' : ''}{variation}%
             </span>
-            <span className="text-sm text-gray-500">{t('admin_stats.cards.vs_last_month')}</span>
+            <span className="text-xs text-gray-500">{t('admin_stats.cards.vs_last_month')}</span>
           </div>
         </motion.div>
 
@@ -194,23 +197,23 @@ export default function AdminStatsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="gov-card p-6"
+          className="gov-stat-card"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">{t('admin_stats.cards.establishments')}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <p className="gov-stat-label">{t('admin_stats.cards.establishments')}</p>
+              <p className="gov-stat-value mt-1">
                 {defaultStats.etablissements.total}
               </p>
             </div>
-            <div className="w-12 h-12 bg-[hsl(145,63%,32%)]/10 rounded-xl flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-[hsl(145,63%,32%)]" />
+            <div className="gov-stat-icon">
+              <Building2 className="w-6 h-6" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-gray-500">{t('admin_stats.cards.avg_rating')}</span>
-            <span className="text-sm font-medium text-[hsl(45,93%,40%)]">
-              ⭐ {defaultStats.etablissements.noteMoyenne.toFixed(1)}
+            <span className="text-xs text-gray-500">{t('admin_stats.cards.avg_rating')}</span>
+            <span className="text-sm font-bold text-[hsl(var(--gov-gold))]">
+              ★ {defaultStats.etablissements.noteMoyenne.toFixed(1)}
             </span>
           </div>
         </motion.div>
@@ -219,22 +222,22 @@ export default function AdminStatsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="gov-card p-6"
+          className="gov-stat-card"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">{t('admin_stats.cards.events')}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <p className="gov-stat-label">{t('admin_stats.cards.events')}</p>
+              <p className="gov-stat-value mt-1">
                 {defaultStats.evenements.total}
               </p>
             </div>
-            <div className="w-12 h-12 bg-[hsl(45,93%,47%)]/10 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-[hsl(45,93%,40%)]" />
+            <div className="gov-stat-icon">
+              <Calendar className="w-6 h-6" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-gray-500">{t('admin_stats.cards.this_month')}</span>
-            <span className="text-sm font-medium">{defaultStats.evenements.ceMois}</span>
+            <span className="text-xs text-gray-500">{t('admin_stats.cards.this_month')}</span>
+            <span className="text-sm font-bold text-[hsl(var(--gov-blue))]">{defaultStats.evenements.ceMois}</span>
           </div>
         </motion.div>
 
@@ -242,22 +245,22 @@ export default function AdminStatsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="gov-card p-6"
+          className="gov-stat-card"
         >
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">{t('admin_stats.cards.users')}</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">
+              <p className="gov-stat-label">{t('admin_stats.cards.users')}</p>
+              <p className="gov-stat-value mt-1">
                 {defaultStats.utilisateurs.total}
               </p>
             </div>
-            <div className="w-12 h-12 bg-[hsl(348,83%,47%)]/10 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-[hsl(348,83%,47%)]" />
+            <div className="gov-stat-icon">
+              <Users className="w-6 h-6" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-2">
-            <span className="text-sm text-gray-500">{t('admin_stats.cards.new_this_month')}</span>
-            <span className="text-sm font-medium text-[hsl(145,63%,32%)]">
+            <span className="text-xs text-gray-500">{t('admin_stats.cards.new_this_month')}</span>
+            <span className="text-sm font-bold text-green-600">
               +{defaultStats.utilisateurs.nouveauxCeMois}
             </span>
           </div>

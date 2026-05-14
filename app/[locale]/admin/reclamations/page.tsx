@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -30,7 +30,14 @@ import {
   Ban,
   MessageSquare,
   Trash2,
+  Shield,
+  FileText,
+  Mail,
+  Phone,
+  Paperclip,
+  ExternalLink,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { useTranslations, useLocale } from 'next-intl';
@@ -46,11 +53,12 @@ interface Reclamation {
   isUrgente: boolean;
   affectationReclamation: string;
   createdAt: string;
-  citoyen: { id: number; nom: string; prenom: string } | null;
-  user: { nom: string; prenom: string; email: string } | null;
+  updatedAt?: string;
+  citoyen: { id: number; nom: string; prenom: string; email?: string; telephone?: string } | null;
+  user: { nom: string; prenom: string; email: string; telephone?: string } | null;
   commune: { id: number; nom: string; nomArabe?: string };
   etablissement: { id: number; nom: string; nomArabe?: string } | null;
-  affecteeAAutorite: { id: number; nom: string; prenom: string } | null;
+  affecteeAAutorite: { id: number; nom: string; prenom: string; role?: string; email?: string } | null;
 }
 
 interface Agent {
@@ -71,15 +79,13 @@ interface Filters {
   dateFin: string;
 }
 
-const CATEGORIES = [
-  'Infrastructure',
-  'Services',
-  'Propreté',
-  'Sécurité',
-  'Personnel',
-  'Accessibilité',
-  'Autre',
-];
+const STATUT_CONFIG: Record<string, { labelKey: string, color: string, bg: string, icon: any }> = {
+  'EN_ATTENTE': { labelKey: 'status_labels.pending', color: 'text-amber-700', bg: 'bg-amber-100', icon: Clock },
+  'ACCEPTEE': { labelKey: 'status_labels.accepted', color: 'text-emerald-700', bg: 'bg-emerald-100', icon: CheckCircle },
+  'REJETEE': { labelKey: 'status_labels.rejected', color: 'text-red-700', bg: 'bg-red-100', icon: XCircle },
+  'AFFECTEE': { labelKey: 'status_labels.assigned', color: 'text-blue-700', bg: 'bg-blue-100', icon: User },
+  'TO_DISPATCH': { labelKey: 'status_labels.to_dispatch', color: 'text-purple-700', bg: 'bg-purple-100', icon: ArrowUpDown },
+};
 
 export default function AdminReclamationsPage() {
   const { data: session, status } = useSession();
@@ -113,8 +119,9 @@ export default function AdminReclamationsPage() {
     dateFin: '',
   });
   
-  // Modals
+  // Modals & Detail
   const [selectedReclamation, setSelectedReclamation] = useState<Reclamation | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
   const [showAffectationModal, setShowAffectationModal] = useState(false);
   const [showStatutModal, setShowStatutModal] = useState(false);
   const [rejetMotif, setRejetMotif] = useState('');
@@ -216,27 +223,35 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
-    try {
-      const res = await fetch(`/api/reclamations/${selectedReclamation.id}/affecter`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ affecteAId: agentId }),
-      });
-      
-      if (res.ok) {
-        toast.success(t('messages.assigned_success'));
-        setShowAffectationModal(false);
-        setSelectedReclamation(null);
-        loadReclamations();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur lors de l\'affectation');
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/reclamations/${selectedReclamation.id}/affecter`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ affecteAId: agentId }),
+        });
+        
+        if (res.ok) {
+          setShowAffectationModal(false);
+          setSelectedReclamation(null);
+          loadReclamations();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors de l\'affectation'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
+      } finally {
+        setActionLoading(false);
       }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(false);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.assigning') || 'Affectation en cours...',
+      success: t('messages.assigned_success'),
+      error: (err) => err.message,
+    });
   };
 
   // Changer le statut d'une réclamation (Accepter ou Rejeter)
@@ -244,31 +259,39 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
-    try {
-      const res = await fetch(`/api/reclamations/${selectedReclamation.id}/statut`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          statut,
-          motifRejet: statut === 'REJETEE' ? rejetMotif : undefined,
-        }),
-      });
-      
-      if (res.ok) {
-        toast.success(t('messages.status_success'));
-        setShowStatutModal(false);
-        setSelectedReclamation(null);
-        setRejetMotif('');
-        loadReclamations();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur lors de la modification du statut');
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/reclamations/${selectedReclamation.id}/statut`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            statut,
+            motifRejet: statut === 'REJETEE' ? rejetMotif : undefined,
+          }),
+        });
+        
+        if (res.ok) {
+          setShowStatutModal(false);
+          setSelectedReclamation(null);
+          setRejetMotif('');
+          loadReclamations();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors de la modification du statut'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
+      } finally {
+        setActionLoading(false);
       }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(false);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.updating_status') || 'Mise à jour du statut...',
+      success: t('messages.status_success'),
+      error: (err) => err.message,
+    });
   };
 
   // Supprimer une réclamation
@@ -276,25 +299,33 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
-    try {
-      const res = await fetch(`/api/reclamations/${selectedReclamation.id}`, {
-        method: 'DELETE',
-      });
-      
-      if (res.ok) {
-        toast.success(t('messages.deleted_success'));
-        setShowDeleteModal(false);
-        setSelectedReclamation(null);
-        loadReclamations();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur lors de la suppression');
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/reclamations/${selectedReclamation.id}`, {
+          method: 'DELETE',
+        });
+        
+        if (res.ok) {
+          setShowDeleteModal(false);
+          setSelectedReclamation(null);
+          loadReclamations();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur lors de la suppression'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
+      } finally {
+        setActionLoading(false);
       }
-    } catch (error) {
-      toast.error('Erreur de connexion');
-    } finally {
-      setActionLoading(false);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.deleting') || 'Suppression en cours...',
+      success: t('messages.deleted_success'),
+      error: (err) => err.message,
+    });
   };
 
   // Reset filtres
@@ -311,621 +342,739 @@ export default function AdminReclamationsPage() {
     setPage(1);
   };
 
+  const CATEGORIES = useMemo(() => [
+    'Infrastructure',
+    'Services',
+    'Propreté',
+    'Sécurité',
+    'Personnel',
+    'Accessibilité',
+    'Autre',
+  ], []);
+
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-[hsl(var(--gov-blue))] animate-spin" />
+          <p className="text-sm font-bold text-muted-foreground animate-pulse uppercase tracking-widest">{tCommon('loading')}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <PermissionGuard permission="reclamations.read">
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {t('page_title')}
-              </h1>
-              <p className="text-gray-500">{t('total_reclamations', { count: total })}</p>
+      <div className="min-h-screen bg-background py-8 px-4 sm:px-6 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
+
+        <div className="max-w-[1600px] mx-auto relative z-10">
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
+                <Flag className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                    {t('page_title')}
+                  </h1>
+                  <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)]">
+                    Admin
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">
+                  <p>{t('total_reclamations', { count: total })}</p>
+                  <div className="w-1 h-1 bg-border rounded-full" />
+                  <p className="flex items-center gap-1.5">
+                    <Shield size={14} className="text-[hsl(var(--gov-blue))]" />
+                    {tCommon('governance_secure')}
+                  </p>
+                </div>
+              </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={loadReclamations}
                 disabled={refreshing}
-                className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                className="p-3 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-50 transition-all shadow-sm hover:shadow-md active:scale-95"
+                title={tCommon('refresh')}
               >
-                <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+                <RefreshCw size={20} className={refreshing ? 'animate-spin' : ''} />
               </button>
+              
+              <div className="h-10 w-px bg-border mx-1 hidden sm:block" />
+              
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
+                className={`flex items-center gap-2.5 px-6 py-3 rounded-xl border font-bold transition-all shadow-sm ${
                   showFilters 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                    ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] ring-2 ring-[hsl(var(--gov-blue)/0.1)]' 
+                    : 'bg-card border-border text-foreground hover:bg-muted hover:border-muted-foreground/30'
                 }`}
               >
-                <Filter size={18} />
+                <Filter size={18} className={showFilters ? 'scale-110' : ''} />
                 {tActions('filter')}
+                {Object.values(filters).filter(v => v !== '').length > 0 && (
+                  <span className="ml-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
+                    {Object.values(filters).filter(v => v !== '').length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => {/* Export logic */}}
+                className="flex items-center gap-2.5 px-6 py-3 bg-card border border-border text-foreground rounded-xl font-bold hover:bg-muted transition-all shadow-sm active:scale-95"
+              >
+                <Download size={18} />
+                {tCommon('export')}
               </button>
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100">
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
-              <p className="text-sm text-gray-500">{t('stats.total')}</p>
-            </div>
-            <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-              <p className="text-2xl font-bold text-yellow-600">{stats.enAttente}</p>
-              <p className="text-sm text-yellow-700">{t('stats.pending')}</p>
-            </div>
-            <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-              <p className="text-2xl font-bold text-purple-600">{stats.aDispatcher}</p>
-              <p className="text-sm text-purple-700">{t('stats.to_dispatch')}</p>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <p className="text-2xl font-bold text-blue-600">{stats.enCours}</p>
-              <p className="text-sm text-blue-700">{t('stats.in_progress')}</p>
-            </div>
-            <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-              <p className="text-2xl font-bold text-red-600">{stats.rejetees}</p>
-              <p className="text-sm text-red-700">{t('stats.rejected')}</p>
-            </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
+            {[
+              { label: t('stats.total'), value: stats.total, icon: Flag, gradient: 'from-blue-500 to-blue-700', shadow: 'shadow-blue-500/20' },
+              { label: t('stats.pending'), value: stats.enAttente, icon: Clock, gradient: 'from-amber-400 to-amber-600', shadow: 'shadow-amber-500/20', highlight: stats.enAttente > 0 },
+              { label: t('stats.to_dispatch'), value: stats.aDispatcher, icon: ArrowUpDown, gradient: 'from-purple-500 to-purple-700', shadow: 'shadow-purple-500/20' },
+              { label: t('stats.in_progress'), value: stats.enCours, icon: RefreshCw, gradient: 'from-emerald-500 to-emerald-700', shadow: 'shadow-emerald-500/20' },
+              { label: t('stats.rejected'), value: stats.rejetees, icon: XCircle, gradient: 'from-rose-500 to-rose-700', shadow: 'shadow-rose-500/20' },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                className="gov-stat-card group relative overflow-hidden"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center text-white shadow-lg ${stat.shadow} group-hover:scale-110 transition-transform duration-500`}>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                  {stat.highlight && (
+                    <div className="flex items-center gap-1 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                      <span className="text-[10px] font-black text-rose-600 uppercase tracking-widest">Urgent</span>
+                    </div>
+                  )}
+                </div>
+                <div className="relative z-10">
+                  <p className="text-3xl font-black text-foreground mb-1 tabular-nums tracking-tight">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest group-hover:text-foreground transition-colors">
+                    {stat.label}
+                  </p>
+                </div>
+                {/* Decorative pulse element */}
+                <div className={`absolute -right-4 -bottom-4 w-24 h-24 bg-gradient-to-br ${stat.gradient} opacity-[0.03] rounded-full group-hover:scale-150 transition-transform duration-1000`} />
+              </motion.div>
+            ))}
           </div>
 
-          {/* Filtres avancés */}
-          {showFilters && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-6 border border-gray-100 dark:border-gray-700">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Recherche */}
-                <div className="relative">
-                  <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input
-                    type="text"
-                    placeholder={t('search_placeholder')}
-                    value={filters.search}
-                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                    className="w-full ltr:pl-10 rtl:pr-10 ltr:pr-4 rtl:pl-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                  />
+          {/* Advanced Filters */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, y: -20 }}
+                animate={{ opacity: 1, height: 'auto', y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -20 }}
+                className="mb-8 overflow-hidden"
+              >
+                <div className="gov-card p-6 bg-card/80 backdrop-blur-xl border-dashed">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Filter className="text-[hsl(var(--gov-blue))]" size={18} />
+                    <h2 className="text-sm font-black uppercase tracking-widest text-foreground">{tCommon('advanced_filters')}</h2>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {/* Recherche */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{tCommon('search')}</label>
+                      <div className="relative group">
+                        <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" size={18} />
+                        <input
+                          type="text"
+                          placeholder={t('search_placeholder')}
+                          value={filters.search}
+                          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                          className="gov-input ltr:pl-10 rtl:pr-10 h-11"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Statut */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('status_filter')}</label>
+                      <select
+                        value={filters.statut}
+                        onChange={(e) => setFilters({ ...filters, statut: e.target.value })}
+                        className="gov-input h-11"
+                      >
+                        <option value="">{tCommon('all_statuses')}</option>
+                        <option value="EN_ATTENTE">{t('status_labels.pending')}</option>
+                        <option value="ACCEPTEE">{t('status_labels.accepted')}</option>
+                        <option value="REJETEE">{t('status_labels.rejected')}</option>
+                      </select>
+                    </div>
+
+                    {/* Affectation */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('affectation')}</label>
+                      <select
+                        value={filters.affectation}
+                        onChange={(e) => setFilters({ ...filters, affectation: e.target.value })}
+                        className="gov-input h-11"
+                      >
+                        <option value="">{tCommon('all')}</option>
+                        <option value="NON_AFFECTEE">{t('not_assigned')}</option>
+                        <option value="AFFECTEE">{t('status_labels.assigned')}</option>
+                      </select>
+                    </div>
+
+                    {/* Commune */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('communeId')}</label>
+                      <select
+                        value={filters.communeId}
+                        onChange={(e) => setFilters({ ...filters, communeId: e.target.value })}
+                        className="gov-input h-11"
+                      >
+                        <option value="">{t('filters_labels.all_communes')}</option>
+                        {communes.map(c => (
+                          <option key={c.id} value={c.id}>
+                            {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Catégorie */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('categorie')}</label>
+                      <select
+                        value={filters.categorie}
+                        onChange={(e) => setFilters({ ...filters, categorie: e.target.value })}
+                        className="gov-input h-11"
+                      >
+                        <option value="">{t('category_filter')}</option>
+                        {CATEGORIES.map(c => (
+                          <option key={c} value={c}>{tCategories(c)}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Date début */}
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{tCommon('date_range')}</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="date"
+                          value={filters.dateDebut}
+                          onChange={(e) => setFilters({ ...filters, dateDebut: e.target.value })}
+                          className="gov-input h-11 px-2 text-xs"
+                        />
+                        <input
+                          type="date"
+                          value={filters.dateFin}
+                          onChange={(e) => setFilters({ ...filters, dateFin: e.target.value })}
+                          className="gov-input h-11 px-2 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Reset */}
+                    <div className="lg:col-span-2 flex items-end">
+                      <button
+                        onClick={resetFilters}
+                        className="flex items-center gap-2 px-6 py-3 text-rose-600 hover:bg-rose-500/10 rounded-xl transition-all font-bold text-sm border border-transparent hover:border-rose-500/20 active:scale-95"
+                      >
+                        <Trash2 size={16} />
+                        {tCommon('reset_filters')}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-                {/* Statut */}
-                <select
-                  value={filters.statut}
-                  onChange={(e) => setFilters({ ...filters, statut: e.target.value })}
-                  className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">{t('status_filter')}</option>
-                  <option value="EN_ATTENTE">{t('status_labels.pending')}</option>
-                  <option value="ACCEPTEE">{t('status_labels.accepted')}</option>
-                  <option value="REJETEE">{t('status_labels.rejected')}</option>
-                </select>
-
-                {/* Affectation */}
-                <select
-                  value={filters.affectation}
-                  onChange={(e) => setFilters({ ...filters, affectation: e.target.value })}
-                  className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">{t('filters')}</option>
-                  <option value="NON_AFFECTEE">{t('not_assigned')}</option>
-                  <option value="AFFECTEE">{t('status_labels.assigned')}</option>
-                </select>
-
-
-
-                {/* Commune */}
-                <select
-                  value={filters.communeId}
-                  onChange={(e) => setFilters({ ...filters, communeId: e.target.value })}
-                  className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">{t('filters_labels.all_communes')}</option>
-                  {communes.map(c => (
-                    <option key={c.id} value={c.id}>
-                      {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Catégorie */}
-                <select
-                  value={filters.categorie}
-                  onChange={(e) => setFilters({ ...filters, categorie: e.target.value })}
-                  className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">{t('category_filter')}</option>
-                  {CATEGORIES.map(c => (
-                    <option key={c} value={c}>{tCategories(c)}</option>
-                  ))}
-                </select>
-
-                {/* Date début */}
-                <input
-                  type="date"
-                  value={filters.dateDebut}
-                  onChange={(e) => setFilters({ ...filters, dateDebut: e.target.value })}
-                  className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                  placeholder={t('filters_labels.start_date')}
-                />
-
-                {/* Reset */}
-                <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  {t('filters')}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Table */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700/50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.reclamation')}
+          {/* Table Section */}
+          <div className="gov-card overflow-hidden shadow-xl border-border bg-card/50 backdrop-blur-sm">
+            <div className="gov-table-wrapper">
+              <table className="gov-table">
+                <thead>
+                  <tr className="bg-muted/30 border-b border-border">
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.ref')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.citizen')}
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.citoyen')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.commune')}
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.sujet')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.status')}
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.statut')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.category')}
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.affectation')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.assigned_to')}
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('table.date')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.date')}
-                    </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('columns.actions')}
+                    <th className="px-6 py-4 text-right text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {tCommon('actions')}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                  {reclamations.map((reclamation) => {
-                    const isAssigned = !!reclamation.affecteeAAutorite;
-                    const isNew = !reclamation.statut;
-                    const isRejected = reclamation.statut === 'REJETEE';
-                    const isAccepted = reclamation.statut === 'ACCEPTEE';
-
-                    let statusConfig = { 
-                      bg: 'bg-yellow-100', 
-                      color: 'text-yellow-700', 
-                      icon: Clock, 
-                      label: t('status_labels.pending') 
-                    };
-
-                    if (isRejected) {
-                      statusConfig = { bg: 'bg-red-100', color: 'text-red-700', icon: XCircle, label: t('status_labels.rejected') };
-                    } else if (isAccepted) {
-                      if (isAssigned) {
-                        statusConfig = { bg: 'bg-blue-100', color: 'text-blue-700', icon: User, label: t('status_labels.assigned') };
-                      } else {
-                        statusConfig = { bg: 'bg-purple-100', color: 'text-purple-700', icon: CheckCircle, label: t('status_labels.to_dispatch') };
-                      }
-                    }
-                    
-                    const StatusIcon = statusConfig.icon;
-                    
-                    return (
-                      <tr key={reclamation.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                        <td className="px-4 py-3">
-                          <div className="flex items-start gap-3">
-                            {reclamation.isUrgente && (
-                              <AlertTriangle size={16} className="text-red-500 flex-shrink-0 mt-1" />
-                            )}
+                <tbody className="divide-y divide-border">
+                  {reclamations.length > 0 ? (
+                    reclamations.map((r, i) => {
+                      const status = STATUT_CONFIG[r.statut] || STATUT_CONFIG.EN_ATTENTE;
+                      return (
+                        <motion.tr
+                          key={r.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.03 }}
+                          className="hover:bg-muted/50 transition-colors group cursor-pointer"
+                          onClick={() => {
+                            setSelectedReclamation(r);
+                            setShowDetail(true);
+                          }}
+                        >
+                          <td className="px-6 py-4">
+                            <span className="font-mono text-xs font-black text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] px-2 py-1 rounded border border-[hsl(var(--gov-blue)/0.1)]">
+                              #{r.reference || r.id.toString().padStart(4, '0')}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center text-[hsl(var(--gov-blue))] font-black shadow-sm group-hover:scale-110 transition-transform">
+                                {r.auteur?.nom?.[0] || 'U'}
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold text-foreground line-clamp-1">{r.auteur?.nom || 'Anonyme'}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{r.auteur?.telephone || 'No phone'}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
                             <div>
-                              <p className="font-medium text-gray-900 dark:text-white line-clamp-1">
-                                {reclamation.titre}
-                              </p>
-                              <p className="text-xs text-gray-500">{reclamation.code}</p>
+                              <p className="text-sm font-bold text-foreground line-clamp-1 group-hover:text-[hsl(var(--gov-blue))] transition-colors">{r.titre}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[10px] font-bold bg-muted px-1.5 py-0.5 rounded text-muted-foreground uppercase tracking-widest">
+                                  {tCategories(r.categorie)}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                              <User size={14} className="text-gray-500" />
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${status.bg} ${status.color} border border-current/10 shadow-sm`}>
+                              <status.icon size={12} className="stroke-[3]" />
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                {t(status.labelKey)}
+                              </span>
                             </div>
-                            <span className="text-sm text-gray-900 dark:text-white">
-                              {reclamation.user ? `${reclamation.user.prenom} ${reclamation.user.nom}` : (reclamation.citoyen ? `${reclamation.citoyen.prenom} ${reclamation.citoyen.nom}` : t('anonymous'))}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-1.5 text-sm text-gray-600">
-                            <MapPin size={14} />
-                            {locale === 'ar' ? (reclamation.commune.nomArabe || reclamation.commune.nom) : reclamation.commune.nom}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bg} ${statusConfig.color}`}>
-                            <StatusIcon size={12} />
-                            {statusConfig.label}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                            {tCategories(reclamation.categorie)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          {reclamation.affecteeAAutorite ? (
-                            <span className="text-sm text-gray-900 dark:text-white font-medium">
-                              {reclamation.affecteeAAutorite.prenom} {reclamation.affecteeAAutorite.nom}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-gray-400 italic">{t('not_assigned')}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-sm text-gray-500">
-                            {new Date(reclamation.createdAt).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-1">
-                            <Link
-                              href={`/admin/reclamations/${reclamation.id}`}
-                              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                              title={t('actions.view_details')}
-                            >
-                              <Eye size={16} />
-                            </Link>
-
-                            {/* Bouton statut (si non décidé) */}
-                            {!reclamation.statut && (
-                              <PermissionGuard permission="reclamations.validate">
-                                <button
-                                  onClick={() => { setSelectedReclamation(reclamation); setShowStatutModal(true); }}
-                                  className="p-1.5 text-yellow-500 hover:text-yellow-700 hover:bg-yellow-50 rounded"
-                                  title={t('actions.decide')}
-                                >
-                                  <MessageSquare size={16} />
-                                </button>
-                              </PermissionGuard>
+                          </td>
+                          <td className="px-6 py-4">
+                            {r.agentAffecte ? (
+                              <div className="flex items-center gap-2 text-blue-700 bg-blue-50 px-2.5 py-1.5 rounded-lg border border-blue-100 w-fit">
+                                <User size={12} className="shrink-0" />
+                                <span className="text-[10px] font-black uppercase tracking-widest line-clamp-1">
+                                  {r.agentAffecte.nom}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5 opacity-60">
+                                <Minus size={12} />
+                                {t('not_assigned')}
+                              </span>
                             )}
-                            
-                            {/* Bouton affecter (si acceptée) */}
-                            {reclamation.statut === 'ACCEPTEE' && (
-                              <PermissionGuard permission="reclamations.assign">
-                                <button
-                                  onClick={() => { setSelectedReclamation(reclamation); setShowAffectationModal(true); }}
-                                  className={`p-1.5 rounded transition-colors ${
-                                    isAssigned 
-                                      ? 'text-blue-500 hover:text-blue-700 hover:bg-blue-50' 
-                                      : 'text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50'
-                                  }`}
-                                  title={isAssigned ? t('actions.edit_assignment') : t('actions.assign')}
-                                >
-                                  {isAssigned ? <RefreshCw size={16} /> : <UserPlus size={16} />}
-                                </button>
-                              </PermissionGuard>
-                            )}
-                            
-                            {/* Bouton supprimer */}
-                            <PermissionGuard permission="reclamations.delete">
-                              <button
-                                onClick={() => { setSelectedReclamation(reclamation); setShowDeleteModal(true); }}
-                                className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
-                                title={t('actions.delete')}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                              <p className="text-foreground">{new Date(r.createdAt).toLocaleDateString(locale)}</p>
+                              <p className="opacity-60">{new Date(r.createdAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedReclamation(r);
+                                  setShowAffectationModal(true);
+                                }}
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200"
+                                title={t('actions.assign')}
                               >
-                                <Trash2 size={16} />
+                                <UserPlus size={18} />
                               </button>
-                            </PermissionGuard>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedReclamation(r);
+                                  setShowStatutModal(true);
+                                }}
+                                className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors border border-transparent hover:border-emerald-200"
+                                title={t('actions.update_status')}
+                              >
+                                <Edit size={18} />
+                              </button>
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedReclamation(r);
+                                  setShowDeleteModal(true);
+                                }}
+                                className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors border border-transparent hover:border-rose-200"
+                                title={tActions('delete')}
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-20 text-center">
+                        <div className="flex flex-col items-center gap-4 opacity-40">
+                          <Flag size={48} className="text-muted-foreground" />
+                          <p className="text-sm font-black uppercase tracking-widest">{t('no_reclamations')}</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
 
-            {reclamations.length === 0 && (
-              <div className="p-8">
-                <EmptyState
-                  icon={<Search className="w-10 h-10" />}
-                  title={t('empty.title')}
-                  description="Aucune réclamation ne correspond à vos critères actuels. Essayez d'ajuster vos filtres pour voir plus de résultats."
-                  action={
-                    (searchQuery || selectedStatus !== 'ALL' || selectedCategory !== 'ALL' || selectedPriority !== 'ALL') ? (
-                      <button 
-                        onClick={() => {
-                          setSearchQuery('');
-                          setSelectedStatus('ALL');
-                          setSelectedCategory('ALL');
-                          setSelectedPriority('ALL');
-                        }}
-                        className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        Effacer les filtres
-                      </button>
-                    ) : undefined
-                  }
-                />
+            {/* Institutional Pagination */}
+            <div className="px-6 py-5 bg-muted/20 border-t border-border flex items-center justify-between">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                Page <span className="text-foreground">{page}</span> sur <span className="text-foreground">{totalPages}</span>
+                <span className="mx-2">•</span>
+                <span className="text-foreground">{total}</span> résultats
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 bg-card border border-border rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-muted disabled:opacity-50 transition-all active:scale-95 shadow-sm"
+                >
+                  {tCommon('previous')}
+                </button>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 bg-card border border-border rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-muted disabled:opacity-50 transition-all active:scale-95 shadow-sm"
+                >
+                  {tCommon('next')}
+                </button>
               </div>
-            )}
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-                <p className="text-sm text-gray-500">
-                  {t('pagination', { page, total: totalPages })}
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button
-                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
-        {/* Modal Affectation */}
-        {showAffectationModal && selectedReclamation && (
-          <PermissionGuard permission="reclamations.assign">
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-                    {t('modals.assignment.title')}
-                  </h3>
-                  <button onClick={() => setShowAffectationModal(false)} className="p-1 hover:bg-gray-100 rounded">
-                    <X size={20} />
-                  </button>
-                </div>
-                
-                <p className="text-sm text-gray-500 mb-4">
-                  {selectedReclamation.titre}
-                </p>
-                
-                <div className="space-y-2 max-h-72 overflow-y-auto">
-                  {/* Désaffecter */}
-                  <button
-                    onClick={() => handleAffectation(null)}
-                    disabled={actionLoading}
-                    className="w-full p-3 text-left rounded-lg hover:bg-gray-50 flex items-center gap-3 border border-gray-200"
-                  >
-                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                      <X size={18} className="text-gray-500" />
-                    </div>
-                    <span className="text-gray-600">{t('modals.assignment.unassign')}</span>
-                  </button>
-                  
-                  {/* Message si aucun agent */}
-                  {agents.length === 0 && (
-                    <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-                      <p className="text-sm text-yellow-700">
-                        {t('modals.assignment.no_agents')}
-                      </p>
-                      <p className="text-xs text-yellow-600 mt-1">
-                        {t('modals.assignment.create_agents_hint')}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Agents AUTORITE_LOCALE en premier */}
-                  {agents.filter(a => a.role === 'AUTORITE_LOCALE').length > 0 && (
-                    <p className="text-xs text-gray-500 font-medium mt-3 mb-1 uppercase">{t('modals.assignment.local_authorities')}</p>
-                  )}
-                  {agents.filter(a => a.role === 'AUTORITE_LOCALE').map(agent => (
-                    <button
-                      key={agent.id}
-                      onClick={() => handleAffectation(agent.id)}
-                      disabled={actionLoading}
-                      className={`w-full p-3 text-left rounded-lg hover:bg-emerald-50 flex items-center gap-3 border ${
-                        selectedReclamation.affecteeAAutorite?.id === agent.id 
-                          ? 'border-emerald-500 bg-emerald-50' 
-                          : 'border-gray-200'
-                      }`}
-                    >
-                      <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-medium">
-                        {agent.prenom?.[0] || ''}{agent.nom?.[0] || ''}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900">{agent.prenom} {agent.nom}</p>
-                        <p className="text-xs text-gray-500 truncate">{agent.email}</p>
-                      </div>
-                      <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
-                        {t('modals.assignment.local_badge')}
-                      </span>
-                    </button>
-                  ))}
-                  
-                  {/* Autres agents */}
-                  {agents.filter(a => a.role !== 'AUTORITE_LOCALE').length > 0 && (
-                    <p className="text-xs text-gray-500 font-medium mt-3 mb-1 uppercase">{t('modals.assignment.other_agents')}</p>
-                  )}
-                  {agents.filter(a => a.role !== 'AUTORITE_LOCALE').map(agent => (
-                    <button
-                      key={agent.id}
-                      onClick={() => handleAffectation(agent.id)}
-                      disabled={actionLoading}
-                      className={`w-full p-3 text-left rounded-lg hover:bg-blue-50 flex items-center gap-3 border ${
-                        selectedReclamation.affecteeAAutorite?.id === agent.id 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200'
-                      }`}
-                    >
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
-                        {agent.prenom?.[0] || ''}{agent.nom?.[0] || ''}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900">{agent.prenom} {agent.nom}</p>
-                        <p className="text-xs text-gray-500 truncate">{agent.email}</p>
-                      </div>
-                      <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
-                        agent.role === 'DELEGATION' ? 'bg-purple-100 text-purple-700' :
-                        agent.role === 'ADMIN' ? 'bg-emerald-100 text-emerald-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {agent.role === 'DELEGATION' ? t('modals.assignment.delegate_badge') : 
-                         agent.role === 'ADMIN' ? t('modals.assignment.admin_badge') : agent.role}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                
-                {actionLoading && (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </PermissionGuard>
-        )}
-
-        {/* Modal Statut (Accepter/Rejeter) */}
-        {showStatutModal && selectedReclamation && (
-          <PermissionGuard permission="reclamations.validate">
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-                    {t('modals.status.title')}
-                  </h3>
-                  <button 
-                    onClick={() => { setShowStatutModal(false); setRejetMotif(''); }} 
-                    className="p-1 hover:bg-gray-100 rounded"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-                
-                <p className="text-sm text-gray-500 mb-4">
-                  <strong>{selectedReclamation.code}</strong> - {selectedReclamation.titre}
-                </p>
-                
-                <div className="space-y-3">
-                  {/* Bouton Accepter */}
-                  <button
-                    onClick={() => handleStatut('ACCEPTEE')}
-                    disabled={actionLoading}
-                    className="w-full p-4 text-left rounded-xl flex items-center gap-4 border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-400 transition-all disabled:opacity-50"
-                  >
-                    <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
-                      <Check size={24} className="text-white" />
+        {/* --- DETAIL DRAWER --- */}
+        <AnimatePresence>
+          {showDetail && selectedReclamation && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowDetail(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+              />
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed top-0 ltr:right-0 rtl:left-0 bottom-0 w-full max-w-2xl bg-background shadow-2xl z-[101] flex flex-col border-l border-border"
+              >
+                {/* Drawer Header */}
+                <div className="p-6 border-b border-border bg-card/30 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] rounded-xl flex items-center justify-center">
+                      <Flag size={24} />
                     </div>
                     <div>
-                      <p className="font-semibold text-emerald-700 text-lg">{t('modals.status.accept_btn')}</p>
-                      <p className="text-sm text-emerald-600">{t('modals.status.accept_desc')}</p>
+                      <h2 className="text-xl font-black text-foreground">
+                        {t('table.ref')} #{selectedReclamation.reference || selectedReclamation.id}
+                      </h2>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                        {tCategories(selectedReclamation.categorie)}
+                      </p>
                     </div>
+                  </div>
+                  <button
+                    onClick={() => setShowDetail(false)}
+                    className="p-2 hover:bg-muted rounded-full transition-colors"
+                  >
+                    <X size={24} />
                   </button>
-                  
-                  {/* Bouton Rejeter */}
-                  <div className="border-2 border-red-200 bg-red-50 rounded-xl p-4">
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-                        <Ban size={24} className="text-white" />
+                </div>
+
+                {/* Drawer Content */}
+                <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+                  {/* Status & Quick Actions */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                    <div>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">{t('table.statut')}</p>
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedReclamation.statut]?.bg} ${STATUT_CONFIG[selectedReclamation.statut]?.color} border-current/10`}>
+                        {(() => {
+                          const Icon = STATUT_CONFIG[selectedReclamation.statut]?.icon || Clock;
+                          return <Icon size={14} className="stroke-[3]" />;
+                        })()}
+                        {t(STATUT_CONFIG[selectedReclamation.statut]?.labelKey || 'status_labels.pending')}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => setShowAffectationModal(true)}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-xs hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+                      >
+                        <UserPlus size={14} />
+                        {t('actions.assign')}
+                      </button>
+                      <button 
+                        onClick={() => setShowStatutModal(true)}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
+                      >
+                        <Edit size={14} />
+                        {t('actions.update_status')}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Main Info */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <FileText size={12} className="text-[hsl(var(--gov-blue))]" />
+                        {t('table.sujet')}
+                      </h3>
+                      <p className="text-xl font-black text-foreground leading-tight">{selectedReclamation.titre}</p>
+                    </div>
+
+                    <div className="gov-card p-6 bg-card/50 border-dashed">
+                      <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                        {selectedReclamation.description}
+                      </p>
+                    </div>
+
+                    {selectedReclamation.photoUrl && (
+                      <div>
+                        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">{t('table.photo')}</h3>
+                        <div className="rounded-2xl overflow-hidden border border-border shadow-md group">
+                          <img 
+                            src={selectedReclamation.photoUrl} 
+                            alt="Reclamation" 
+                            className="w-full h-auto object-cover max-h-[400px] group-hover:scale-105 transition-transform duration-700"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Citoyen Info */}
+                  <div className="pt-6 border-t border-border">
+                    <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <User size={12} className="text-[hsl(var(--gov-blue))]" />
+                      {t('table.citoyen')}
+                    </h3>
+                    <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
+                        {selectedReclamation.auteur?.nom?.[0] || 'U'}
                       </div>
                       <div>
-                        <p className="font-semibold text-red-700 text-lg">{t('modals.status.reject_btn')}</p>
-                        <p className="text-sm text-red-600">{t('modals.status.reject_desc')}</p>
+                        <p className="text-lg font-black text-foreground">{selectedReclamation.auteur?.nom || 'Anonyme'}</p>
+                        <div className="flex flex-wrap items-center gap-4 mt-1">
+                          <p className="text-sm font-bold text-muted-foreground flex items-center gap-1.5">
+                            <Phone size={14} className="text-[hsl(var(--gov-blue))]" />
+                            {selectedReclamation.auteur?.telephone || 'No phone'}
+                          </p>
+                          <p className="text-sm font-bold text-muted-foreground flex items-center gap-1.5">
+                            <MapPin size={14} className="text-[hsl(var(--gov-blue))]" />
+                            {selectedReclamation.commune?.nom}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <textarea
-                      value={rejetMotif}
-                      onChange={(e) => setRejetMotif(e.target.value)}
-                      placeholder={t('modals.status.reject_placeholder')}
-                      className="w-full p-3 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
-                      rows={3}
-                    />
-                    <button
-                      onClick={() => handleStatut('REJETEE')}
-                      disabled={actionLoading || rejetMotif.trim().length < 10}
-                      className="mt-3 w-full py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {t('modals.status.confirm_reject')}
-                    </button>
                   </div>
-                </div>
-                
-                {actionLoading && (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </PermissionGuard>
-        )}
 
-        {/* Modal de suppression */}
-        {showDeleteModal && selectedReclamation && (
-          <PermissionGuard permission="reclamations.delete">
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-                    {t('modals.delete.title')}
-                  </h3>
-                  <button 
-                    onClick={() => setShowDeleteModal(false)} 
-                    className="p-1 hover:bg-gray-100 rounded"
-                  >
-                    <X size={20} />
-                  </button>
+                  {/* Affectation Info */}
+                  {selectedReclamation.agentAffecte && (
+                    <div className="pt-6 border-t border-border">
+                      <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Shield size={12} className="text-emerald-600" />
+                        Agent en charge
+                      </h3>
+                      <div className="flex items-center gap-4 p-4 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl border border-emerald-100 dark:border-emerald-500/20">
+                        <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">
+                          {selectedReclamation.agentAffecte.nom?.[0]}
+                        </div>
+                        <div>
+                          <p className="text-lg font-black text-emerald-900 dark:text-emerald-400">{selectedReclamation.agentAffecte.nom}</p>
+                          <p className="text-sm font-bold text-emerald-700/70">{selectedReclamation.agentAffecte.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-                  <p className="text-red-700 text-sm">
-                    {t('modals.delete.confirm_question')}
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* --- MODALS --- */}
+        {/* Affectation Modal */}
+        {showAffectationModal && selectedReclamation && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="gov-card w-full max-w-lg overflow-hidden border-border bg-background"
+            >
+              <div className="p-6 border-b border-border flex items-center justify-between bg-muted/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center">
+                    <UserPlus size={20} />
+                  </div>
+                  <h3 className="text-lg font-black text-foreground uppercase tracking-tight">{t('actions.assign')}</h3>
+                </div>
+                <button onClick={() => setShowAffectationModal(false)} className="p-2 hover:bg-muted rounded-lg transition-colors"><X size={20} /></button>
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Sélectionner un agent ou autorité</label>
+                  <select 
+                    id="agent-select"
+                    className="gov-input h-12"
+                    defaultValue={selectedReclamation.agentId || ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) handleAffectation(parseInt(val));
+                    }}
+                  >
+                    <option value="">Choisir un agent...</option>
+                    {agents.map(a => (
+                      <option key={a.id} value={a.id}>{a.nom} ({a.role})</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                  <p className="text-xs font-bold text-blue-700 leading-relaxed">
+                    <Info size={14} className="inline mr-2 -mt-0.5" />
+                    L'agent recevra une notification immédiate et pourra commencer le traitement de la réclamation.
                   </p>
                 </div>
-                
-                <p className="text-sm text-gray-500 mb-4">
-                  <strong>{selectedReclamation.code}</strong> - {selectedReclamation.titre}
-                </p>
-                
-                <div className="flex gap-3">
-                  <button
+              </div>
+              <div className="p-6 bg-muted/20 border-t border-border flex justify-end gap-3">
+                <button onClick={() => setShowAffectationModal(false)} className="px-6 py-2.5 font-bold text-sm text-muted-foreground hover:text-foreground transition-colors">{tCommon('cancel')}</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Statut Modal */}
+        {showStatutModal && selectedReclamation && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="gov-card w-full max-w-lg overflow-hidden border-border bg-background"
+            >
+              <div className="p-6 border-b border-border flex items-center justify-between bg-muted/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center">
+                    <Edit size={20} />
+                  </div>
+                  <h3 className="text-lg font-black text-foreground uppercase tracking-tight">{t('actions.update_status')}</h3>
+                </div>
+                <button onClick={() => setShowStatutModal(false)} className="p-2 hover:bg-muted rounded-lg transition-colors"><X size={20} /></button>
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="grid grid-cols-1 gap-3">
+                  {['EN_ATTENTE', 'ACCEPTEE', 'REJETEE', 'TO_DISPATCH'].map(statut => (
+                    <button
+                      key={statut}
+                      onClick={() => handleStatutChange(statut)}
+                      className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all group ${
+                        selectedReclamation.statut === statut 
+                          ? 'border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)]' 
+                          : 'border-border hover:border-border-muted hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${STATUT_CONFIG[statut]?.bg} ${STATUT_CONFIG[statut]?.color}`}>
+                          {(() => {
+                            const Icon = STATUT_CONFIG[statut]?.icon || Clock;
+                            return <Icon size={16} />;
+                          })()}
+                        </div>
+                        <span className={`font-black text-xs uppercase tracking-widest ${selectedReclamation.statut === statut ? 'text-[hsl(var(--gov-blue))]' : 'text-foreground'}`}>
+                          {t(STATUT_CONFIG[statut]?.labelKey)}
+                        </span>
+                      </div>
+                      {selectedReclamation.statut === statut && <CheckCircle size={20} className="text-[hsl(var(--gov-blue))]" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="p-6 bg-muted/20 border-t border-border flex justify-end gap-3">
+                <button onClick={() => setShowStatutModal(false)} className="px-6 py-2.5 font-bold text-sm text-muted-foreground hover:text-foreground transition-colors">{tCommon('cancel')}</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Delete Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="gov-card w-full max-w-md overflow-hidden border-rose-500/20 bg-background"
+            >
+              <div className="p-8 text-center space-y-6">
+                <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-rose-50 group">
+                  <Trash2 size={40} className="group-hover:scale-110 transition-transform" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-foreground mb-2 uppercase tracking-tight">{tCommon('confirm_delete')}</h3>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {t('delete_confirmation')}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <button 
                     onClick={() => setShowDeleteModal(false)}
-                    className="flex-1 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex-1 px-6 py-3 font-bold text-sm bg-muted text-foreground rounded-xl hover:bg-muted/80 transition-all active:scale-95"
                   >
                     {tCommon('cancel')}
                   </button>
-                  <button
+                  <button 
                     onClick={handleDelete}
-                    disabled={actionLoading}
-                    className="flex-1 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 px-6 py-3 font-bold text-sm bg-rose-600 text-white rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-500/20 active:scale-95"
                   >
-                    {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={16} />}
-                    {t('actions.delete')}
+                    {tCommon('delete')}
                   </button>
                 </div>
               </div>
-            </div>
-          </PermissionGuard>
+            </motion.div>
+          </div>
         )}
       </div>
     </PermissionGuard>

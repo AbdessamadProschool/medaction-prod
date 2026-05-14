@@ -1,15 +1,27 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { ArrowLeft, Loader2, Save, CalendarIcon, Clock } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Loader2, 
+  Save, 
+  CalendarIcon, 
+  Clock, 
+  Building2, 
+  FileText, 
+  MapPin, 
+  Users, 
+  User, 
+  Sparkles, 
+  CheckCircle2,
+  XCircle,
+  Layout,
+  Info
+} from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { motion } from "framer-motion";
 
 export default function AdminNouveauProgrammePage() {
   const t = useTranslations('admin_activity_create');
@@ -106,219 +118,289 @@ export default function AdminNouveauProgrammePage() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl space-y-6">
+    <div className="space-y-8 max-w-[1200px] mx-auto pb-20">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link 
-          href="/admin/programmes-activites"
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-        >
-          <ArrowLeft className="h-6 w-6 rtl:rotate-180" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
-          <p className="text-muted-foreground text-sm">
-            {t('subtitle')}
-          </p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="flex items-center gap-6">
+          <Link 
+            href="/admin/programmes-activites"
+            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted transition-all shadow-sm group"
+          >
+            <ArrowLeft className="text-muted-foreground group-hover:text-foreground group-hover:-translate-x-1 transition-all rtl:rotate-180 rtl:group-hover:translate-x-1" size={20} />
+          </Link>
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-[hsl(var(--gov-blue))/0.1] rounded-xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+                <Sparkles className="text-[hsl(var(--gov-blue))] w-5 h-5" />
+              </div>
+              <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+                {t('title')}
+              </h1>
+            </div>
+            <p className="text-muted-foreground font-medium text-lg ml-1">
+              {t('subtitle')}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-950 rounded-lg border p-6 shadow-sm">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-[hsl(var(--gov-blue))/0.02]">
+        <form onSubmit={handleSubmit(onSubmit)} className="divide-y divide-border">
           
           {/* Section 1: Informations Principales */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold border-b pb-2">{t('sections.general')}</h2>
+          <div className="p-8 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+                <Info className="text-[hsl(var(--gov-blue))] w-4 h-4" />
+              </div>
+              <h2 className="text-lg font-black uppercase tracking-widest text-foreground">{t('sections.general')}</h2>
+            </div>
             
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.etablissement')} <span className="text-red-500">*</span></label>
-                <select 
-                  {...register("etablissementId")}
-                  className="gov-select w-full"
-                  disabled={loadingEtabs}
-                >
-                  <option value="">{t('fields.select_etablissement')}</option>
-                  {etablissements.map(etab => (
-                    <option key={etab.id} value={etab.id}>{etab.nom}</option>
-                  ))}
-                </select>
-                {errors.etablissementId && <p className="text-sm text-red-500">{errors.etablissementId.message}</p>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                  {t('fields.etablissement')} <span className="text-[hsl(var(--gov-red))]">*</span>
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <Building2 size={16} />
+                  </div>
+                  <select 
+                    {...register("etablissementId")}
+                    className="gov-input pl-12 h-12 text-sm font-medium appearance-none cursor-pointer"
+                    disabled={loadingEtabs}
+                  >
+                    <option value="">{t('fields.select_etablissement')}</option>
+                    {etablissements.map(etab => (
+                      <option key={etab.id} value={etab.id}>{etab.nom}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                </div>
+                {errors.etablissementId && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.etablissementId.message}</p>}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.type_activity')} <span className="text-red-500">*</span></label>
-                <select 
-                  {...register("typeActivite")}
-                  className="gov-select w-full"
-                >
-                  <option value="Culturel">{t('activity_types.Culturel')}</option>
-                  <option value="Sportif">{t('activity_types.Sportif')}</option>
-                  <option value="Educatif">{t('activity_types.Educatif')}</option>
-                  <option value="Social">{t('activity_types.Social')}</option>
-                  <option value="Formation">{t('activity_types.Formation')}</option>
-                  <option value="Reunion">{t('activity_types.Reunion')}</option>
-                  <option value="Autre">{t('activity_types.Autre')}</option>
-                </select>
-                {errors.typeActivite && <p className="text-sm text-red-500">{errors.typeActivite.message}</p>}
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                  {t('fields.type_activity')} <span className="text-[hsl(var(--gov-red))]">*</span>
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <Layout size={16} />
+                  </div>
+                  <select 
+                    {...register("typeActivite")}
+                    className="gov-input pl-12 h-12 text-sm font-medium appearance-none cursor-pointer"
+                  >
+                    {["Culturel", "Sportif", "Educatif", "Social", "Formation", "Reunion", "Autre"].map(type => (
+                      <option key={type} value={type}>{t(`activity_types.${type}`)}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                </div>
+                {errors.typeActivite && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.typeActivite.message}</p>}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('fields.activity_title')} <span className="text-red-500">*</span></label>
-              <input
-                {...register("titre")}
-                className="gov-input w-full"
-              />
-              {errors.titre && <p className="text-sm text-red-500">{errors.titre.message}</p>}
+            <div className="space-y-2.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                {t('fields.activity_title')} <span className="text-[hsl(var(--gov-red))]">*</span>
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                  <FileText size={16} />
+                </div>
+                <input
+                  {...register("titre")}
+                  className="gov-input pl-12 h-12 text-sm font-black"
+                  placeholder="Ex: Caravane médicale de dépistage précoce..."
+                />
+              </div>
+              {errors.titre && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.titre.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('fields.description')}</label>
+            <div className="space-y-2.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">{t('fields.description')}</label>
               <textarea
                 {...register("description")}
                 placeholder={t('fields.description_placeholder')}
-                className="gov-textarea w-full"
+                className="gov-textarea p-6 text-sm font-medium min-h-[120px]"
               />
             </div>
           </div>
 
           {/* Section 2: Planification */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold border-b pb-2">{t('sections.planning')}</h2>
+          <div className="p-8 space-y-8 bg-muted/20">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+                <CalendarIcon className="text-[hsl(var(--gov-blue))] w-4 h-4" />
+              </div>
+              <h2 className="text-lg font-black uppercase tracking-widest text-foreground">{t('sections.planning')}</h2>
+            </div>
             
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.date')} <span className="text-red-500">*</span></label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                  {t('fields.date')} <span className="text-[hsl(var(--gov-red))]">*</span>
+                </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
-                    <CalendarIcon className="h-4 w-4" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <CalendarIcon size={16} />
                   </div>
                   <input
                     type="date"
-                    lang="fr"
-                    dir="ltr"
                     {...register("date")}
-                    className="gov-input w-full pl-10 text-right md:text-left"
-                    style={{ colorScheme: 'light' }}
+                    className="gov-input pl-12 h-12 text-sm font-bold"
                   />
                 </div>
-                {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
+                {errors.date && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.date.message}</p>}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.start_time')} <span className="text-red-500">*</span></label>
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                  {t('fields.start_time')} <span className="text-[hsl(var(--gov-red))]">*</span>
+                </label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
-                    <Clock className="h-4 w-4" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <Clock size={16} />
                   </div>
                   <input
                     type="time"
-                    lang="fr"
-                    dir="ltr"
                     {...register("heureDebut")}
-                    className="gov-input w-full pl-10 text-right md:text-left"
-                    style={{ colorScheme: 'light' }}
+                    className="gov-input pl-12 h-12 text-sm font-bold"
                   />
                 </div>
-                {errors.heureDebut && <p className="text-sm text-red-500">{errors.heureDebut.message}</p>}
+                {errors.heureDebut && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.heureDebut.message}</p>}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.end_time')} <span className="text-red-500">*</span></label>
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
+                  {t('fields.end_time')} <span className="text-[hsl(var(--gov-red))]">*</span>
+                </label>
                 <div className="relative group">
-                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground z-10">
-                    <Clock className="h-4 w-4" />
+                   <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <Clock size={16} />
                   </div>
                   <input
                     type="time"
-                    lang="fr"
-                    dir="ltr"
                     {...register("heureFin")}
-                    className="gov-input w-full pl-10 text-right md:text-left"
-                    style={{ colorScheme: 'light' }}
+                    className="gov-input pl-12 h-12 text-sm font-bold"
                   />
                 </div>
-                {errors.heureFin && <p className="text-sm text-red-500">{errors.heureFin.message}</p>}
+                {errors.heureFin && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.heureFin.message}</p>}
               </div>
             </div>
           </div>
 
           {/* Section 3: Détails Logistiques */}
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold border-b pb-2">{t('sections.logistics')}</h2>
+          <div className="p-8 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+                <MapPin className="text-[hsl(var(--gov-blue))] w-4 h-4" />
+              </div>
+              <h2 className="text-lg font-black uppercase tracking-widest text-foreground">{t('sections.logistics')}</h2>
+            </div>
             
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.location')}</label>
-                <input
-                  {...register("lieu")}
-                  className="gov-input w-full"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">{t('fields.location')}</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <MapPin size={16} />
+                  </div>
+                  <input
+                    {...register("lieu")}
+                    className="gov-input pl-12 h-12 text-sm font-medium"
+                    placeholder="Ex: Salle de conférence, Terrain de sport..."
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('fields.manager')}</label>
-                <input
-                  {...register("responsableNom")}
-                  className="gov-input w-full"
-                />
+              <div className="space-y-2.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">{t('fields.manager')}</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <User size={16} />
+                  </div>
+                  <input
+                    {...register("responsableNom")}
+                    className="gov-input pl-12 h-12 text-sm font-medium"
+                  />
+                </div>
               </div>
 
-               <div className="space-y-2">
-                 <label className="text-sm font-medium">{t('fields.participants')}</label>
-                <input
-                  type="number"
-                  className="gov-input w-full"
-                />
-                {errors.participantsAttendus && <p className="text-sm text-red-500">{errors.participantsAttendus.message}</p>}
+               <div className="space-y-2.5">
+                 <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">{t('fields.participants')}</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
+                    <Users size={16} />
+                  </div>
+                  <input
+                    type="number"
+                    {...register("participantsAttendus")}
+                    className="gov-input pl-12 h-12 text-sm font-bold"
+                  />
+                </div>
+                {errors.participantsAttendus && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.participantsAttendus.message}</p>}
               </div>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-2 mt-4 pt-4 border-t">
-              <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
-                <div className="pt-0.5">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
-                  />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-border">
+              <label className="relative flex items-center gap-4 p-5 rounded-2xl border border-border bg-muted/20 hover:bg-muted/40 cursor-pointer transition-all hover:scale-[1.01] group">
+                <input
+                  type="checkbox"
+                  {...register("isOrganiseParProvince")}
+                  className="w-5 h-5 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] transition-all"
+                />
+                <div className="flex flex-col">
+                  <span className="text-xs font-black text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors uppercase tracking-widest">
+                    منظمة من طرف العمالة
+                  </span>
+                  <p className="text-[10px] font-bold text-muted-foreground mt-0.5 opacity-60">Lier l'activité à la province de Médiouna</p>
                 </div>
-                <div className="text-start">
-                  <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
-                  <p className="text-[10px] text-gray-500 mt-1">سيتم ربط النشاط مباشرة بعمالة مديونة</p>
-                </div>
+                {form.watch("isOrganiseParProvince") && (
+                  <CheckCircle2 size={16} className="absolute right-5 text-[hsl(var(--gov-green))]" />
+                )}
               </label>
 
-              <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
-                <div className="pt-0.5">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
-                  />
+              <label className="relative flex items-center gap-4 p-5 rounded-2xl border border-border bg-muted/20 hover:bg-muted/40 cursor-pointer transition-all hover:scale-[1.01] group">
+                <input
+                  type="checkbox"
+                  {...register("sousCouvertProvince")}
+                  className="w-5 h-5 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))] transition-all"
+                />
+                <div className="flex flex-col">
+                  <span className="text-xs font-black text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors uppercase tracking-widest">
+                    تحت غطاء العمالة
+                  </span>
+                  <p className="text-[10px] font-bold text-muted-foreground mt-0.5 opacity-60">"Sous le couvert de Monsieur le Gouverneur"</p>
                 </div>
-                <div className="text-start">
-                  <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
-                  <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
-                </div>
+                {form.watch("sousCouvertProvince") && (
+                  <CheckCircle2 size={16} className="absolute right-5 text-[hsl(var(--gov-green))]" />
+                )}
               </label>
             </div>
           </div>
 
-          <div className="flex justify-end pt-6">
+          <div className="p-8 bg-muted/10 flex items-center justify-between">
             <button
               type="button"
               onClick={() => router.back()}
-              className="gov-btn gov-btn-secondary mr-4"
+              className="px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all border border-transparent hover:border-border"
             >
               {t('buttons.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="gov-btn gov-btn-primary px-8"
+              className="gov-btn-primary h-12 px-10 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
             >
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-               {t('buttons.create')}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save size={18} />
+              )}
+              {t('buttons.create')}
             </button>
           </div>
         </form>

@@ -29,6 +29,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { fr, arMA } from 'date-fns/locale';
 import { useTranslations, useLocale } from 'next-intl';
+import { toast } from 'sonner';
 
 interface ProgrammeActivite {
   id: number;
@@ -56,24 +57,24 @@ interface ProgrammeActivite {
   };
 }
 
-const STATUT_CONFIG: Record<string, { color: string; icon: React.ElementType }> = {
-  BROUILLON: { color: 'bg-gray-100 text-gray-600 border-gray-300', icon: FileText },
-  EN_ATTENTE_VALIDATION: { color: 'bg-amber-100 text-amber-700 border-amber-300', icon: Clock },
-  PLANIFIEE: { color: 'bg-blue-100 text-blue-700 border-blue-300', icon: Calendar },
-  EN_COURS: { color: 'bg-green-100 text-green-700 border-green-300', icon: PlayCircle },
-  TERMINEE: { color: 'bg-gray-100 text-gray-700 border-gray-300', icon: CheckCircle },
-  RAPPORT_COMPLETE: { color: 'bg-emerald-100 text-emerald-700 border-emerald-300', icon: FileText },
-  ANNULEE: { color: 'bg-red-100 text-red-700 border-red-300', icon: XCircle },
-  REPORTEE: { color: 'bg-amber-100 text-amber-700 border-amber-300', icon: PauseCircle },
+const STATUT_CONFIG: Record<string, { color: string; icon: React.ElementType; label: string }> = {
+  BROUILLON: { color: 'hsl(var(--gov-muted))', icon: FileText, label: 'draft' },
+  EN_ATTENTE_VALIDATION: { color: 'hsl(var(--gov-red))', icon: Clock, label: 'to_validate' },
+  PLANIFIEE: { color: 'hsl(var(--gov-blue))', icon: Calendar, label: 'planned' },
+  EN_COURS: { color: 'hsl(var(--gov-green))', icon: PlayCircle, label: 'in_progress' },
+  TERMINEE: { color: 'hsl(var(--gov-muted))', icon: CheckCircle, label: 'finished' },
+  RAPPORT_COMPLETE: { color: 'hsl(var(--gov-green))', icon: FileText, label: 'report_ok' },
+  ANNULEE: { color: 'hsl(var(--gov-red))', icon: XCircle, label: 'cancelled' },
+  REPORTEE: { color: 'hsl(var(--gov-yellow))', icon: PauseCircle, label: 'postponed' },
 };
 
 const SECTEUR_COLORS: Record<string, string> = {
-  EDUCATION: 'bg-blue-500',
-  SANTE: 'bg-rose-500',
-  SPORT: 'bg-green-500',
-  SOCIAL: 'bg-purple-500',
-  CULTUREL: 'bg-amber-500',
-  AUTRE: 'bg-gray-500',
+  EDUCATION: 'hsl(var(--gov-blue))',
+  SANTE: 'hsl(var(--gov-red))',
+  SPORT: 'hsl(var(--gov-green))',
+  SOCIAL: 'hsl(var(--gov-purple))',
+  CULTUREL: 'hsl(var(--gov-yellow))',
+  AUTRE: 'hsl(var(--gov-muted))',
 };
 
 export default function AdminProgrammesActivitesPage() {
@@ -142,44 +143,58 @@ export default function AdminProgrammesActivitesPage() {
 
   // Actions - Utiliser l'API de validation dédiée
   const handleValidate = async (id: number, validate: boolean) => {
-    setActionLoading(id);
-    try {
-      const res = await fetch(`/api/programmes-activites/${id}/valider`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: validate ? 'validate' : 'reject' }),
-      });
-      
-      if (res.ok) {
-        fetchActivites();
-      } else {
-        const data = await res.json();
-        alert(`Erreur: ${data.error || 'Erreur inconnue'}`);
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/programmes-activites/${id}/valider`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: validate ? 'validate' : 'reject' }),
+        });
+        
+        if (res.ok) {
+          fetchActivites();
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || 'Erreur inconnue'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
       }
-    } catch (error) {
-      console.error('Erreur validation:', error);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: validate ? 'Validation en cours...' : 'Annulation de la validation...',
+      success: validate ? 'Programme validé avec succès' : 'Validation annulée',
+      error: (err) => err.message,
+    });
   };
 
   const handleToggleVisibility = async (id: number, visible: boolean) => {
-    setActionLoading(id);
-    try {
-      const res = await fetch(`/api/programmes-activites/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isVisiblePublic: visible }),
-      });
-      
-      if (res.ok) {
-        fetchActivites();
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/programmes-activites/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isVisiblePublic: visible }),
+        });
+        
+        if (res.ok) {
+          fetchActivites();
+          resolve(true);
+        } else {
+          reject(new Error('Erreur lors du changement de visibilité'));
+        }
+      } catch (error) {
+        reject(new Error('Erreur de connexion'));
       }
-    } catch (error) {
-      console.error('Erreur visibilité:', error);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+
+    toast.promise(promise, {
+      loading: 'Mise à jour de la visibilité...',
+      success: visible ? 'Programme désormais visible' : 'Programme masqué',
+      error: (err) => err.message,
+    });
   };
 
   const openDetail = (activite: ProgrammeActivite) => {
@@ -188,28 +203,36 @@ export default function AdminProgrammesActivitesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header unifié avec la palette de l'application (Emerald/Teal) */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  return (
+    <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t('title')}
-          </h1>
-          <p className="text-gray-500">{t('subtitle')}</p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
+              <ClipboardList className="text-[hsl(var(--gov-blue))] w-6 h-6" />
+            </div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+              {t('title')}
+            </h1>
+          </div>
+          <p className="text-muted-foreground font-medium text-lg ml-15">
+            {t('subtitle')}
+          </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={fetchActivites}
             disabled={loading}
-            className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group disabled:opacity-50"
           >
-            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />
           </button>
           
           <Link
             href="/admin/programmes-activites/nouvelle"
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg hover:shadow-lg transition-all"
+            className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
           >
             <Plus size={18} />
             {t('create')}
@@ -218,169 +241,190 @@ export default function AdminProgrammesActivitesPage() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {[
-          { label: t('stats.total'), value: stats.total, color: 'from-blue-500 to-blue-600', icon: ClipboardList },
-          { label: t('stats.pending'), value: stats.enAttente, color: 'from-amber-500 to-orange-500', icon: Clock },
-          { label: t('stats.validated'), value: stats.validees, color: 'from-emerald-500 to-green-600', icon: CheckCircle },
-          { label: t('stats.finished'), value: stats.terminees, color: 'from-gray-500 to-gray-600', icon: Calendar },
-          { label: t('stats.reports_ok'), value: stats.rapportsComplets, color: 'from-purple-500 to-violet-600', icon: FileText },
+          { label: t('stats.total'), value: stats.total, icon: ClipboardList, color: 'hsl(var(--gov-muted))' },
+          { label: t('stats.pending'), value: stats.enAttente, icon: Clock, color: 'hsl(var(--gov-red))', highlight: true },
+          { label: t('stats.validated'), value: stats.validees, icon: CheckCircle, color: 'hsl(var(--gov-blue))' },
+          { label: t('stats.finished'), value: stats.terminees, icon: Calendar, color: 'hsl(var(--gov-green))' },
+          { label: t('stats.reports_ok'), value: stats.rapportsComplets, icon: FileText, color: 'hsl(var(--gov-green))' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700"
+            className={`gov-stat-card group relative overflow-hidden ${stat.highlight && stat.value > 0 ? 'ring-2 ring-[hsl(var(--gov-red))/0.3]' : ''}`}
           >
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white`}>
-                <stat.icon className="w-5 h-5" />
+            <div 
+              className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] transition-transform group-hover:scale-110 group-hover:rotate-12"
+              style={{ color: stat.color }}
+            >
+              <stat.icon className="w-full h-full" />
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-current/10"
+                  style={{ backgroundColor: `${stat.color}08`, color: stat.color }}
+                >
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                {stat.highlight && stat.value > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-[hsl(var(--gov-red))] animate-ping" />
+                )}
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                <p className="text-xs text-gray-500">{stat.label}</p>
-              </div>
+              <p className="text-3xl font-black text-foreground mb-1 tracking-tight">{stat.value}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="bg-card border border-border rounded-3xl p-6 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Search */}
-          <div className="flex-1 relative">
-            <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 ${locale === 'ar' ? 'right-3' : 'left-3'}`} />
+          <div className="relative group">
+            <Search className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors ${locale === 'ar' ? 'right-4' : 'left-4'}`} size={18} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('filters.search')}
-              className={`w-full py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white ${locale === 'ar' ? 'pr-10 pl-4 text-right' : 'pl-10 pr-4 text-left'}`}
+              className="gov-input pl-12 h-12 text-sm font-medium"
             />
           </div>
           
           {/* Filter by status */}
-          <select
-            value={filterStatut}
-            onChange={(e) => setFilterStatut(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-          >
-            <option value="">{t('filters.all_statuses')}</option>
-            <option value="BROUILLON">{t('status.draft')}</option>
-            <option value="EN_ATTENTE_VALIDATION">{t('status.to_validate')}</option>
-            <option value="PLANIFIEE">{t('status.planned')}</option>
-            <option value="EN_COURS">{t('status.in_progress')}</option>
-            <option value="TERMINEE">{t('status.finished')}</option>
-            <option value="RAPPORT_COMPLETE">{t('status.report_ok')}</option>
-            <option value="ANNULEE">{t('status.cancelled')}</option>
-            <option value="REPORTEE">{t('status.postponed')}</option>
-          </select>
+          <div className="relative">
+            <select
+              value={filterStatut}
+              onChange={(e) => setFilterStatut(e.target.value)}
+              className="gov-input h-12 text-sm font-medium appearance-none cursor-pointer"
+            >
+              <option value="">{t('filters.all_statuses')}</option>
+              {Object.keys(STATUT_CONFIG).map(key => (
+                <option key={key} value={key}>{t(`status.${STATUT_CONFIG[key].label}`)}</option>
+              ))}
+            </select>
+            <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          </div>
           
           {/* Filter by validation */}
-          <select
-            value={filterValidation}
-            onChange={(e) => setFilterValidation(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-          >
-            <option value="">{t('filters.all_validations')}</option>
-            <option value="pending">{t('filters.pending_validation')}</option>
-            <option value="validated">{t('filters.validated')}</option>
-          </select>
+          <div className="relative">
+            <select
+              value={filterValidation}
+              onChange={(e) => setFilterValidation(e.target.value)}
+              className="gov-input h-12 text-sm font-medium appearance-none cursor-pointer"
+            >
+              <option value="">{t('filters.all_validations')}</option>
+              <option value="pending">{t('filters.pending_validation')}</option>
+              <option value="validated">{t('filters.validated')}</option>
+            </select>
+            <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-[hsl(var(--gov-blue))/0.05]">
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-12 h-12 border-4 border-[hsl(var(--gov-blue))/0.1] border-t-[hsl(var(--gov-blue))] rounded-full animate-spin" />
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Chargement des activités...</p>
           </div>
         ) : filteredActivites.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-            <ClipboardList className="w-12 h-12 mb-4 text-gray-300" />
-            <p className="font-medium">{t('empty.title')}</p>
-            <p className="text-sm">{t('empty.subtitle')}</p>
+          <div className="flex flex-col items-center justify-center py-24 text-center px-8">
+            <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center mb-6 border border-border shadow-inner">
+              <ClipboardList className="w-10 h-10 text-muted-foreground/30" />
+            </div>
+            <h3 className="text-xl font-extrabold text-foreground mb-2">{t('empty.title')}</h3>
+            <p className="text-muted-foreground max-w-md mx-auto text-sm">{t('empty.subtitle')}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                <tr>
-                  <th className={`px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('table.activity')}</th>
-                  <th className={`px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('table.establishment')}</th>
-                  <th className={`px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('table.date')}</th>
-                  <th className={`px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('table.status')}</th>
-                  <th className={`px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('table.validation')}</th>
-                  <th className={`px-4 py-3 text-center text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider ${locale === 'ar' ? 'text-left' : 'text-right'}`}>{t('table.actions')}</th>
+            <table className="gov-table">
+              <thead>
+                <tr className="bg-muted/30">
+                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.activity')}</th>
+                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.establishment')}</th>
+                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.date')}</th>
+                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.status')}</th>
+                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.validation')}</th>
+                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-right whitespace-nowrap">{t('table.actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {filteredActivites.map((activite) => {
                   const statutConfig = STATUT_CONFIG[activite.statut] || STATUT_CONFIG.PLANIFIEE;
                   const StatusIcon = statutConfig.icon;
-                  const statusKeyMap: Record<string, string> = {
-                    'BROUILLON': 'draft',
-                    'EN_ATTENTE_VALIDATION': 'to_validate',
-                    'PLANIFIEE': 'planned',
-                    'EN_COURS': 'in_progress',
-                    'TERMINEE': 'finished',
-                    'RAPPORT_COMPLETE': 'report_ok',
-                    'ANNULEE': 'cancelled',
-                    'REPORTEE': 'postponed'
-                  };
-                  const statusLabel = t('status.' + (statusKeyMap[activite.statut] || 'planned'));
+                  const statusLabel = t('status.' + statutConfig.label);
                   
                   return (
-                    <tr key={activite.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-2 h-10 rounded-full ${SECTEUR_COLORS[activite.etablissement.secteur] || SECTEUR_COLORS.AUTRE}`} />
+                    <tr key={activite.id} className="group hover:bg-muted/50 transition-colors">
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-4">
+                          <div 
+                            className="w-1.5 h-12 rounded-full flex-shrink-0" 
+                            style={{ backgroundColor: SECTEUR_COLORS[activite.etablissement.secteur] || SECTEUR_COLORS.AUTRE }} 
+                          />
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white line-clamp-1">{activite.titre}</p>
-                            <p className="text-sm text-gray-500">{t(`types.${activite.typeActivite}`) || activite.typeActivite}</p>
+                            <p className="font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight line-clamp-1">{activite.titre}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60 mt-0.5">{t(`types.${activite.typeActivite}`) || activite.typeActivite}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600 dark:text-gray-300">{activite.etablissement.nom}</span>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border shadow-inner">
+                            <Building2 size={14} className="text-muted-foreground/60" />
+                          </div>
+                          <span className="text-sm font-bold text-foreground line-clamp-1">{activite.etablissement.nom}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {format(parseISO(activite.date), 'dd MMM yyyy', { locale: locale === 'ar' ? arMA : fr })}
-                          </p>
-                          <p className="text-xs text-gray-500">{activite.heureDebut}h - {activite.heureFin}h</p>
+                      <td className="px-6 py-5">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-foreground">
+                            <Calendar size={14} className="text-[hsl(var(--gov-blue))]" />
+                            <span className="text-sm font-black">
+                              {format(parseISO(activite.date), 'dd MMM yyyy', { locale: locale === 'ar' ? arMA : fr })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Clock size={12} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">{activite.heureDebut}h - {activite.heureFin}h</span>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-4 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${statutConfig.color}`}>
-                          <StatusIcon className="w-3.5 h-3.5" />
+                      <td className="px-6 py-5">
+                        <span 
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm"
+                          style={{ backgroundColor: `${statutConfig.color}10`, color: statutConfig.color, borderColor: `${statutConfig.color}20` }}
+                        >
+                          <StatusIcon size={12} />
                           {statusLabel}
                         </span>
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="px-6 py-5">
                         {activite.isValideParAdmin ? (
-                          <span className="inline-flex items-center gap-1 text-emerald-600">
-                            <CheckCircle className="w-4 h-4" />
-                            <span className="text-sm">{t('table.valide')}</span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-green))/0.2]">
+                            <CheckCircle size={12} />
+                            {t('table.valide')}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-amber-600">
-                            <Clock className="w-4 h-4" />
-                            <span className="text-sm">{t('table.waiting')}</span>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-red))/0.2] animate-pulse">
+                            <Clock size={12} />
+                            {t('table.waiting')}
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-4">
-                        <div className={`flex items-center gap-2 ${locale === 'ar' ? 'justify-start' : 'justify-end'}`}>
+                      <td className="px-8 py-5">
+                        <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openDetail(activite)}
-                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                            className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] hover:border-[hsl(var(--gov-blue))/0.2] rounded-xl transition-all shadow-sm"
                             title="Voir détails"
                           >
                             <Eye size={16} />
@@ -388,26 +432,41 @@ export default function AdminProgrammesActivitesPage() {
                           
                           <button
                             onClick={async () => {
-                              if (confirm('Voulez-vous vraiment supprimer ce programme ? (Action Super Admin)')) {
-                                try {
-                                  const res = await fetch(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
-                                  if (res.ok) fetchActivites();
-                                } catch (e) {
-                                  console.error(e);
-                                }
+                              if (confirm('Voulez-vous vraiment supprimer ce programme ?')) {
+                                const promise = new Promise(async (resolve, reject) => {
+                                  try {
+                                    const res = await fetch(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
+                                    if (res.ok) {
+                                      fetchActivites();
+                                      resolve(true);
+                                    } else {
+                                      reject(new Error('Erreur lors de la suppression'));
+                                    }
+                                  } catch (e) {
+                                    reject(new Error('Erreur de connexion'));
+                                  }
+                                });
+
+                                toast.promise(promise, {
+                                  loading: 'Suppression en cours...',
+                                  success: 'Programme supprimé',
+                                  error: (err) => err.message,
+                                });
                               }
                             }}
-                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                            className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05] hover:border-[hsl(var(--gov-red))/0.2] rounded-xl transition-all shadow-sm"
                             title="Supprimer"
                           >
                             <Trash2 size={16} />
                           </button>
                           
+                          <div className="w-px h-6 bg-border mx-1" />
+                          
                           {!activite.isValideParAdmin ? (
                             <button
                               onClick={() => handleValidate(activite.id, true)}
                               disabled={actionLoading === activite.id}
-                              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded disabled:opacity-50"
+                              className="w-9 h-9 flex items-center justify-center bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] border border-[hsl(var(--gov-green))/0.2] hover:bg-[hsl(var(--gov-green))] hover:text-white rounded-xl transition-all shadow-sm disabled:opacity-50"
                               title="Valider"
                             >
                               <CheckCircle size={16} />
@@ -416,7 +475,7 @@ export default function AdminProgrammesActivitesPage() {
                             <button
                               onClick={() => handleValidate(activite.id, false)}
                               disabled={actionLoading === activite.id}
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
+                              className="w-9 h-9 flex items-center justify-center bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] border border-[hsl(var(--gov-red))/0.2] hover:bg-[hsl(var(--gov-red))] hover:text-white rounded-xl transition-all shadow-sm disabled:opacity-50"
                               title="Retirer validation"
                             >
                               <XCircle size={16} />
@@ -433,132 +492,180 @@ export default function AdminProgrammesActivitesPage() {
         )}
       </div>
 
-      {/* Detail Modal */}
+      {/* Detail Modal (Institutional Sidebar) */}
       <AnimatePresence>
         {showDetailModal && selectedActivite && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowDetailModal(false)}
-          >
+          <>
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDetailModal(false)}
+              className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
+            />
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-[101] overflow-y-auto border-l border-border"
             >
               {/* Header */}
-              <div className="relative bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
-                <h3 className="text-xl font-bold">{selectedActivite.titre}</h3>
-                <p className="text-white/70 mt-1">{t(`types.${selectedActivite.typeActivite}`) || selectedActivite.typeActivite}</p>
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <div>
+                  <h2 className="text-xl font-extrabold text-foreground">
+                    {t('modal.title') || 'Détails de l\'activité'}
+                  </h2>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
+                    Gestion du programme institutionnel
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw size={20} className="rotate-45" />
+                </button>
               </div>
-              
+ 
               {/* Content */}
-              <div className="p-6 space-y-6">
-                {/* Info grid */}
+              <div className="p-8 space-y-10">
+                {/* Header Profile */}
+                <div className="flex items-center gap-6">
+                  <div 
+                    className="w-20 h-20 rounded-3xl flex items-center justify-center text-white border border-white/10 shadow-lg group-hover:scale-105 transition-transform"
+                    style={{ backgroundColor: SECTEUR_COLORS[selectedActivite.etablissement.secteur] || SECTEUR_COLORS.AUTRE }}
+                  >
+                    <ClipboardList className="w-10 h-10" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-foreground mb-1 leading-tight">
+                      {selectedActivite.titre}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 bg-muted rounded-full text-[9px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
+                        {t(`types.${selectedActivite.typeActivite}`) || selectedActivite.typeActivite}
+                      </span>
+                      <span className="px-3 py-1 bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] rounded-full text-[9px] font-bold uppercase tracking-widest border border-[hsl(var(--gov-blue))/0.2]">
+                        {selectedActivite.etablissement.secteur}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+ 
+                {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.establishment')}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">{selectedActivite.etablissement.nom}</p>
-                  </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.sector')}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">{selectedActivite.etablissement.secteur}</p>
-                  </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.date')}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {format(parseISO(selectedActivite.date), 'EEEE dd MMMM yyyy', { locale: locale === 'ar' ? arMA : fr })}
+                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">Établissement</p>
+                    <p className="text-sm font-black text-foreground leading-tight">
+                      {selectedActivite.etablissement.nom}
                     </p>
                   </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.hours')}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">
+                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">Date prévue</p>
+                    <p className="text-sm font-black text-foreground leading-tight">
+                      {format(parseISO(selectedActivite.date), 'EEEE dd MMMM yyyy', { locale: locale === 'ar' ? arMA : fr })}
+                    </p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-40 mt-1">
                       {selectedActivite.heureDebut}h - {selectedActivite.heureFin}h
                     </p>
                   </div>
-                  {selectedActivite.lieu && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.location')}</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{selectedActivite.lieu}</p>
-                    </div>
-                  )}
-                  {selectedActivite.participantsAttendus && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('modal.participants')}</p>
-                      <p className="font-medium text-gray-900 dark:text-white">{selectedActivite.participantsAttendus}</p>
-                    </div>
-                  )}
                 </div>
-                
-                {/* Status badges */}
-                <div className="flex flex-wrap gap-3">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${STATUT_CONFIG[selectedActivite.statut]?.color || ''}`}>
-                    {t('status.' + (
-                      {
-                        'BROUILLON': 'draft',
-                        'EN_ATTENTE_VALIDATION': 'to_validate',
-                        'PLANIFIEE': 'planned',
-                        'EN_COURS': 'in_progress',
-                        'TERMINEE': 'finished',
-                        'RAPPORT_COMPLETE': 'report_ok',
-                        'ANNULEE': 'cancelled',
-                        'REPORTEE': 'postponed'
-                      }[selectedActivite.statut] || 'planned'
-                    ))}
-                  </span>
-                  {selectedActivite.isValideParAdmin ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
-                      <CheckCircle className="w-4 h-4" />
-                      {t('modal.validated_by_admin')}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                      <Clock className="w-4 h-4" />
-                      {t('modal.waiting_validation')}
-                    </span>
-                  )}
-                  {selectedActivite.isVisiblePublic && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      <Eye className="w-4 h-4" />
-                      {t('modal.visible_public')}
-                    </span>
-                  )}
+ 
+                {/* Details Section */}
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
+                    Informations Complémentaires
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    {selectedActivite.lieu && (
+                      <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-red))]">
+                          <MapPin size={18} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Lieu de l'activité</span>
+                          <span className="text-sm font-bold text-foreground">{selectedActivite.lieu}</span>
+                        </div>
+                      </div>
+                    )}
+                    {selectedActivite.participantsAttendus && (
+                      <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                          <Users size={18} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Participants Attendus</span>
+                          <span className="text-sm font-bold text-foreground">{selectedActivite.participantsAttendus} personnes</span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                      <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-muted))]">
+                        <RefreshCw size={18} />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Statut Actuel</span>
+                        <span 
+                          className="text-sm font-black uppercase tracking-widest"
+                          style={{ color: STATUT_CONFIG[selectedActivite.statut]?.color || 'inherit' }}
+                        >
+                          {t('status.' + (STATUT_CONFIG[selectedActivite.statut]?.label || 'planned'))}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
+ 
                 {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
-                  <button
-                    onClick={() => setShowDetailModal(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    {t('modal.close')}
-                  </button>
-                  {!selectedActivite.isValideParAdmin ? (
+                <div className="space-y-4 pt-10 border-t border-border">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-green))] rounded-full" />
+                    Actions Administratives
+                  </h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    {!selectedActivite.isValideParAdmin ? (
+                      <button
+                        onClick={() => {
+                          handleValidate(selectedActivite.id, true);
+                          setShowDetailModal(false);
+                        }}
+                        className="w-full flex items-center justify-between p-5 bg-[hsl(var(--gov-green))/0.05] text-[hsl(var(--gov-green))] border border-[hsl(var(--gov-green))/0.2] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[hsl(var(--gov-green))] hover:text-white transition-all shadow-sm group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <CheckCircle size={18} />
+                          {t('modal.validate')}
+                        </div>
+                        <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleToggleVisibility(selectedActivite.id, !selectedActivite.isVisiblePublic)}
+                        className={`w-full flex items-center justify-between p-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all border ${
+                          selectedActivite.isVisiblePublic
+                            ? 'bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] border-[hsl(var(--gov-red))/0.2] hover:bg-[hsl(var(--gov-red))] hover:text-white'
+                            : 'bg-[hsl(var(--gov-blue))/0.05] text-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))/0.2] hover:bg-[hsl(var(--gov-blue))] hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {selectedActivite.isVisiblePublic ? <XCircle size={18} /> : <Eye size={18} />}
+                          {selectedActivite.isVisiblePublic ? t('modal.hide') : t('modal.show')}
+                        </div>
+                        <ChevronRight size={16} />
+                      </button>
+                    )}
+ 
                     <button
-                      onClick={() => {
-                        handleValidate(selectedActivite.id, true);
-                        setShowDetailModal(false);
-                      }}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all"
+                      onClick={() => setShowDetailModal(false)}
+                      className="w-full px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
                     >
-                      {t('modal.validate')}
+                      {t('modal.close')}
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => handleToggleVisibility(selectedActivite.id, !selectedActivite.isVisiblePublic)}
-                      className="flex-1 px-4 py-2.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all"
-                    >
-                      {selectedActivite.isVisiblePublic ? t('modal.hide') : t('modal.show')}
-                    </button>
-                  )}
+                  </div>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

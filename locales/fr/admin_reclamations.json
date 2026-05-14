@@ -1,0 +1,77 @@
+{
+  "admin": {
+    "reclamations_page": {
+      "page_title": "Gestion des Réclamations",
+      "total_reclamations": "{count} réclamations au total",
+      "search_placeholder": "Rechercher par référence, titre ou citoyen...",
+      "status_filter": "Statut administratif",
+      "category_filter": "Toutes les catégories",
+      "affectation": "État d'affectation",
+      "not_assigned": "Non affectée",
+      "communeId": "Commune / Territoire",
+      "categorie": "Thématique",
+      "status_labels": {
+        "pending": "En attente",
+        "accepted": "Acceptée",
+        "rejected": "Rejetée",
+        "assigned": "Affectée",
+        "to_dispatch": "À affecter"
+      },
+      "stats": {
+        "total": "Total Flux",
+        "pending": "À Valider",
+        "to_dispatch": "À Affecter",
+        "in_progress": "En Traitement",
+        "rejected": "Classées Sans Suite"
+      },
+      "table": {
+        "ref": "Référence",
+        "citoyen": "Citoyen Plaignant",
+        "sujet": "Sujet & Catégorie",
+        "statut": "Décision",
+        "affectation": "Entité en charge",
+        "date": "Date de dépôt",
+        "photo": "Preuves Photographiques"
+      },
+      "modals": {
+        "assignment": {
+          "title": "Affectation de Dossier",
+          "unassign": "Désaffecter le dossier",
+          "no_agents": "Aucun agent disponible",
+          "create_agents_hint": "Veuillez créer des agents pour ce territoire",
+          "local_authorities": "Autorités Locales",
+          "other_agents": "Services Centraux",
+          "local_badge": "Locale",
+          "delegate_badge": "Délégué",
+          "admin_badge": "Admin"
+        },
+        "status": {
+          "title": "Arbitrage Administratif",
+          "accept_btn": "Accepter le dossier",
+          "accept_desc": "La réclamation est recevable et sera traitée.",
+          "reject_btn": "Rejeter le dossier",
+          "reject_desc": "La réclamation est irrecevable ou hors périmètre.",
+          "reject_placeholder": "Motif obligatoire du rejet (min. 10 caractères)...",
+          "confirm_reject": "Confirmer le rejet"
+        },
+        "delete": {
+          "title": "Suppression Définitive",
+          "confirm_question": "Êtes-vous certain de vouloir supprimer cette réclamation ?"
+        }
+      },
+      "messages": {
+        "deleting": "Suppression du dossier...",
+        "deleted_success": "Dossier supprimé avec succès",
+        "updating": "Mise à jour en cours..."
+      },
+      "no_reclamations": "Aucune réclamation trouvée",
+      "pagination": "Page {page} sur {total}",
+      "empty": {
+        "title": "Flux vide"
+      },
+      "filters_labels": {
+        "all_communes": "Tout Médiouna"
+      }
+    }
+  }
+}

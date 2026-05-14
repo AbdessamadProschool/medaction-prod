@@ -203,64 +203,79 @@ export default function ValidationPage() {
   }, [activeTab]);
 
   const handleApprove = async (item: PendingItem) => {
-    try {
-      const res = await fetch('/api/admin/validation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: item.id,
-          type: item.type,
-          action: 'approve',
-        }),
-      });
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/admin/validation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: item.id,
+            type: item.type,
+            action: 'approve',
+          }),
+        });
 
-      if (res.ok) {
-        toast.success(t('messages.approved'));
-        // Retirer de la liste localement
-        setItems(prev => prev.filter(i => i.id !== item.id));
-        setCounts(prev => ({
-          ...prev,
-          [activeTab]: Math.max(0, prev[activeTab] - 1),
-        }));
-      } else {
-        const data = await res.json();
-        toast.error(data.error || t('messages.error'));
+        if (res.ok) {
+          setItems(prev => prev.filter(i => i.id !== item.id));
+          setCounts(prev => ({
+            ...prev,
+            [activeTab]: Math.max(0, prev[activeTab] - 1),
+          }));
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || t('messages.error')));
+        }
+      } catch (error) {
+        reject(new Error(t('messages.error')));
       }
-    } catch (error) {
-      toast.error(t('messages.error'));
-    }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.approving') || 'Approbation en cours...',
+      success: t('messages.approved'),
+      error: (err) => err.message,
+    });
   };
 
   const handleReject = async (item: PendingItem) => {
     const reason = prompt(t('messages.reject_reason'));
-    if (reason === null) return; // Annulé
+    if (reason === null) return;
     
-    try {
-      const res = await fetch('/api/admin/validation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: item.id,
-          type: item.type,
-          action: 'reject',
-          motifRejet: reason,
-        }),
-      });
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/admin/validation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: item.id,
+            type: item.type,
+            action: 'reject',
+            motifRejet: reason,
+          }),
+        });
 
-      if (res.ok) {
-        toast.success(t('messages.rejected'));
-        setItems(prev => prev.filter(i => i.id !== item.id));
-        setCounts(prev => ({
-          ...prev,
-          [activeTab]: Math.max(0, prev[activeTab] - 1),
-        }));
-      } else {
-        const data = await res.json();
-        toast.error(data.error || t('messages.error'));
+        if (res.ok) {
+          setItems(prev => prev.filter(i => i.id !== item.id));
+          setCounts(prev => ({
+            ...prev,
+            [activeTab]: Math.max(0, prev[activeTab] - 1),
+          }));
+          resolve(true);
+        } else {
+          const data = await res.json();
+          reject(new Error(data.error || t('messages.error')));
+        }
+      } catch (error) {
+        reject(new Error(t('messages.error')));
       }
-    } catch (error) {
-      toast.error(t('messages.error'));
-    }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.rejecting') || 'Rejet en cours...',
+      success: t('messages.rejected'),
+      error: (err) => err.message,
+    });
   };
 
   const handleView = (item: PendingItem) => {
@@ -286,36 +301,29 @@ export default function ValidationPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`p-5 rounded-2xl border-2 transition-all text-left ${
+            className={`gov-stat-card transition-all text-left relative cursor-pointer ${
               activeTab === tab.id
-                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                : 'border-transparent bg-white dark:bg-gray-800 hover:border-gray-200'
+                ? 'ring-2 ring-[hsl(var(--gov-gold))] shadow-lg'
+                : 'hover:shadow-md'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                tab.color === 'emerald' ? 'bg-emerald-100 text-emerald-600' :
-                tab.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                tab.color === 'orange' ? 'bg-orange-100 text-orange-600' :
-                'bg-purple-100 text-purple-600'
-              }`}>
+              <div className="gov-stat-icon">
                 <tab.icon size={22} />
               </div>
               {counts[tab.id] > 0 && (
-                <span className="px-2.5 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">
+                <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
                   {counts[tab.id]}
                 </span>
               )}
             </div>
-            <p className="font-semibold text-gray-900 dark:text-white">{tab.label}</p>
-            <p className="text-sm text-gray-500">
-              {t('subtitle', { count: counts[tab.id] })}
-            </p>
+            <p className="gov-stat-value text-xl">{counts[tab.id]}</p>
+            <p className="gov-stat-label">{tab.label}</p>
           </button>
         ))}
       </div>

@@ -52,7 +52,7 @@ export default function CoordinateurLayout({
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login?redirect=/coordinateur');
-    } else if (status === 'authenticated' && session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
+    } else if (status === 'authenticated' && session?.user?.role && !ALLOWED_ROLES.includes(session?.user.role)) {
       router.push('/acces-refuse');
     }
   }, [status, session, router]);
@@ -71,7 +71,7 @@ export default function CoordinateurLayout({
     );
   }
 
-  if (session?.user?.role && !ALLOWED_ROLES.includes(session.user.role)) {
+  if (session?.user?.role && !ALLOWED_ROLES.includes(session?.user.role)) {
     return null;
   }
 
@@ -137,13 +137,13 @@ export default function CoordinateurLayout({
           <div className="p-4">
             <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">
-                {session.user?.prenom?.[0]}{session.user?.nom?.[0]}
+                {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-bold text-sm truncate">
-                  {session.user?.prenom} {session.user?.nom}
+                  {session?.user?.prenom} {session?.user?.nom}
                 </p>
-                <p className="text-blue-200 text-xs truncate opacity-80">{session.user?.email}</p>
+                <p className="text-blue-200 text-xs truncate opacity-80">{session?.user?.email}</p>
               </div>
             </div>
           </div>
@@ -254,10 +254,10 @@ export default function CoordinateurLayout({
                 className="flex items-center gap-3 p-1.5 pr-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200"
               >
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                  {session.user?.prenom?.[0]}{session.user?.nom?.[0]}
+                  {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
                 </div>
                 <div className="hidden md:block text-right">
-                    <span className="block text-sm font-bold text-gray-900 leading-none mb-1">{session.user?.prenom}</span>
+                    <span className="block text-sm font-bold text-gray-900 leading-none mb-1">{session?.user?.prenom}</span>
                     <span className="block text-xs text-gray-500">{t('dashboard')}</span>
                 </div>
                 <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -284,9 +284,9 @@ export default function CoordinateurLayout({
                       <div className="relative z-[102] bg-white dark:bg-gray-800 rounded-2xl overflow-hidden">
                         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50">
                           <p className="font-bold text-gray-900 dark:text-white text-right">
-                            {session.user?.prenom} {session.user?.nom}
+                            {session?.user?.prenom} {session?.user?.nom}
                           </p>
-                          <p className="text-xs text-gray-500 font-medium truncate mt-0.5 text-right">{session.user?.email}</p>
+                          <p className="text-xs text-gray-500 font-medium truncate mt-0.5 text-right">{session?.user?.email}</p>
                         </div>
                         
                         <div className="p-2">

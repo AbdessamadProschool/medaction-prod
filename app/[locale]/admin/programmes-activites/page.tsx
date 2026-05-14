@@ -4,6 +4,8 @@ import { Link } from '@/i18n/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  MapPin,
+  ChevronRight,
   ClipboardList,
   Search,
   Filter,
@@ -202,7 +204,6 @@ export default function AdminProgrammesActivitesPage() {
     setShowDetailModal(true);
   };
 
-  return (
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
       {/* Header */}

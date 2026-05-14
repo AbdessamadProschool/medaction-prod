@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PermissionGuard } from '@/hooks/use-permission';
 import EmptyState from '@/components/ui/EmptyState';
 import CreateUserModal from './CreateUserModal';
 import EditRoleModal from './EditRoleModal';
@@ -238,7 +240,7 @@ export default function UsersPage() {
     toast.promise(promise, {
       loading: t('messages.resetting'),
       success: (password) => {
-        alert(t('messages.reset_password_alert', { password }));
+        alert(t('messages.reset_password_alert', { password: password as string }));
         return t('messages.reset_password_success');
       },
       error: (err) => err.message,

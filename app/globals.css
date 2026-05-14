@@ -380,7 +380,7 @@
     @apply w-full px-4 py-2.5 text-sm shadow-sm;
     @apply border border-input rounded-xl bg-background text-foreground;
     @apply focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))] focus:ring-offset-2;
-    @apply hover:border-border-dark;
+    @apply hover:border-[hsl(var(--gov-blue))];
     @apply transition-all duration-200;
     @apply placeholder:text-muted-foreground;
     @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/50;

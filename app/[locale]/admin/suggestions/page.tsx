@@ -338,7 +338,6 @@ export default function AdminSuggestionsPage() {
               </tbody>
             </table>
           </div>
-        )}
 
         {/* Pagination */}
         {totalPages > 1 && (

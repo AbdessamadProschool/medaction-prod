@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import {
-  Search,
+import { Info, Minus, Edit, Search,
   Filter,
   ChevronLeft,
   ChevronRight,
@@ -45,6 +44,7 @@ import EmptyState from '@/components/ui/EmptyState';
 
 interface Reclamation {
   id: number;
+  reference?: string;
   code: string;
   titre: string;
   description: string;
@@ -54,11 +54,15 @@ interface Reclamation {
   affectationReclamation: string;
   createdAt: string;
   updatedAt?: string;
+  photoUrl?: string;
   citoyen: { id: number; nom: string; prenom: string; email?: string; telephone?: string } | null;
   user: { nom: string; prenom: string; email: string; telephone?: string } | null;
+  auteur?: { nom: string; telephone?: string };
   commune: { id: number; nom: string; nomArabe?: string };
   etablissement: { id: number; nom: string; nomArabe?: string } | null;
   affecteeAAutorite: { id: number; nom: string; prenom: string; role?: string; email?: string } | null;
+  agentAffecte?: { id: number; nom: string; prenom?: string; email?: string; role?: string };
+  agentId?: number;
 }
 
 interface Agent {
@@ -636,7 +640,7 @@ export default function AdminReclamationsPage() {
                 <tbody className="divide-y divide-border">
                   {reclamations.length > 0 ? (
                     reclamations.map((r, i) => {
-                      const status = STATUT_CONFIG[r.statut] || STATUT_CONFIG.EN_ATTENTE;
+                      const status = STATUT_CONFIG[r.statut ?? "EN_ATTENTE"] || STATUT_CONFIG.EN_ATTENTE;
                       return (
                         <motion.tr
                           key={r.id}
@@ -651,17 +655,17 @@ export default function AdminReclamationsPage() {
                         >
                           <td className="px-6 py-4">
                             <span className="font-mono text-xs font-black text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] px-2 py-1 rounded border border-[hsl(var(--gov-blue)/0.1)]">
-                              #{r.reference || r.id.toString().padStart(4, '0')}
+                              #{(r as any).reference || r.id.toString().padStart(4, '0')}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center text-[hsl(var(--gov-blue))] font-black shadow-sm group-hover:scale-110 transition-transform">
-                                {r.auteur?.nom?.[0] || 'U'}
+                                {r.user?.nom?.[0] || 'U'}
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-foreground line-clamp-1">{r.auteur?.nom || 'Anonyme'}</p>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{r.auteur?.telephone || 'No phone'}</p>
+                                <p className="text-sm font-bold text-foreground line-clamp-1">{r.user?.nom || 'Anonyme'}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{r.user?.telephone || 'No phone'}</p>
                               </div>
                             </div>
                           </td>
@@ -684,11 +688,11 @@ export default function AdminReclamationsPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            {r.agentAffecte ? (
+                            {(r as any).agentAffecte ? (
                               <div className="flex items-center gap-2 text-blue-700 bg-blue-50 px-2.5 py-1.5 rounded-lg border border-blue-100 w-fit">
                                 <User size={12} className="shrink-0" />
                                 <span className="text-[10px] font-black uppercase tracking-widest line-clamp-1">
-                                  {r.agentAffecte.nom}
+                                  {(r as any).agentAffecte.nom}
                                 </span>
                               </div>
                             ) : (
@@ -811,7 +815,7 @@ export default function AdminReclamationsPage() {
                     </div>
                     <div>
                       <h2 className="text-xl font-black text-foreground">
-                        {t('table.ref')} #{selectedReclamation.reference || selectedReclamation.id}
+                        {t('table.ref')} #{(selectedReclamation as any).reference || selectedReclamation.id}
                       </h2>
                       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                         {tCategories(selectedReclamation.categorie)}
@@ -832,12 +836,12 @@ export default function AdminReclamationsPage() {
                   <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
                     <div>
                       <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">{t('table.statut')}</p>
-                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedReclamation.statut]?.bg} ${STATUT_CONFIG[selectedReclamation.statut]?.color} border-current/10`}>
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedReclamation.statut ?? "EN_ATTENTE"]?.bg} ${STATUT_CONFIG[selectedReclamation.statut ?? "EN_ATTENTE"]?.color} border-current/10`}>
                         {(() => {
-                          const Icon = STATUT_CONFIG[selectedReclamation.statut]?.icon || Clock;
+                          const Icon = STATUT_CONFIG[selectedReclamation.statut ?? "EN_ATTENTE"]?.icon || Clock;
                           return <Icon size={14} className="stroke-[3]" />;
                         })()}
-                        {t(STATUT_CONFIG[selectedReclamation.statut]?.labelKey || 'status_labels.pending')}
+                        {t(STATUT_CONFIG[selectedReclamation.statut ?? "EN_ATTENTE"]?.labelKey || 'status_labels.pending')}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -896,14 +900,14 @@ export default function AdminReclamationsPage() {
                     </h3>
                     <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
                       <div className="w-14 h-14 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
-                        {selectedReclamation.auteur?.nom?.[0] || 'U'}
+                        {selectedReclamation.user?.nom?.[0] || 'U'}
                       </div>
                       <div>
-                        <p className="text-lg font-black text-foreground">{selectedReclamation.auteur?.nom || 'Anonyme'}</p>
+                        <p className="text-lg font-black text-foreground">{selectedReclamation.user?.nom || 'Anonyme'}</p>
                         <div className="flex flex-wrap items-center gap-4 mt-1">
                           <p className="text-sm font-bold text-muted-foreground flex items-center gap-1.5">
                             <Phone size={14} className="text-[hsl(var(--gov-blue))]" />
-                            {selectedReclamation.auteur?.telephone || 'No phone'}
+                            {selectedReclamation.user?.telephone || 'No phone'}
                           </p>
                           <p className="text-sm font-bold text-muted-foreground flex items-center gap-1.5">
                             <MapPin size={14} className="text-[hsl(var(--gov-blue))]" />
@@ -1010,7 +1014,7 @@ export default function AdminReclamationsPage() {
                   {['EN_ATTENTE', 'ACCEPTEE', 'REJETEE', 'TO_DISPATCH'].map(statut => (
                     <button
                       key={statut}
-                      onClick={() => handleStatutChange(statut)}
+                      onClick={() => handleStatut(statut as any)}
                       className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all group ${
                         selectedReclamation.statut === statut 
                           ? 'border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)]' 

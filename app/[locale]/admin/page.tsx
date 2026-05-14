@@ -474,6 +474,7 @@ export default function AdminDashboard() {
       initial="hidden"
       animate="show"
       className="space-y-8"
+    >
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
@@ -515,7 +516,7 @@ export default function AdminDashboard() {
             {t('header.reports')}
           </Link>
         </div>
-      </div></div>
+      </div>
 
       {/* Alerts Section */}
       {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
@@ -628,7 +629,9 @@ export default function AdminDashboard() {
             color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
           />
         </div>
-      </motion.      {/* Charts Section */}
+      </motion.div>
+
+      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Events by Sector */}
         <motion.div 
@@ -693,7 +696,7 @@ export default function AdminDashboard() {
             />
           )}
         </motion.div>
-      </div></div>
+      </div>
 
       {/* Additional Management Sections */}
       <motion.div variants={itemVariants}>

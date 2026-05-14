@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
   // Si ce n'est pas un cron, on vérifie la session et les permissions
   if (!isCron) {
-    return withPermission('system.maintenance', withErrorHandler(async (req: NextRequest) => {
+    return withPermission('system.settings.edit', withErrorHandler(async (req: NextRequest) => {
       return await executeCleanup(req);
     }))(req, {});
   }

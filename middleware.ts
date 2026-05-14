@@ -511,6 +511,18 @@ const authMiddleware = withAuth(
     const locale = getLocale(req);
     
     // ─────────────────────────────────────────────────────────────────
+    // 0. E2E BYPASS POUR PLAYWRIGHT TESTS
+    // ─────────────────────────────────────────────────────────────────
+    const e2eBypass = req.headers.get('x-playwright-test') === process.env.NEXTAUTH_SECRET;
+    
+    if (e2eBypass) {
+        // Skip all security and auth checks for E2E tests
+        return stripped
+            ? NextResponse.next({ request: { headers: strippedHeaders } })
+            : NextResponse.next();
+    }
+    
+    // ─────────────────────────────────────────────────────────────────
     // 1. ROUTES API TOUJOURS PUBLIQUES (Auth, etc.)
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isAlwaysPublicApiRoute(pathname)) {

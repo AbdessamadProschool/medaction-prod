@@ -877,7 +877,7 @@ export default function AdminLogsPage() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="text-sm">
-                            <span className="text-gray-900 dark:text-gray-200 font-medium">{t(`entities.${log.resourceType}`, { fallback: log.resourceType })}</span>
+                            <span className="text-gray-900 dark:text-gray-200 font-medium">{t(`entities.${log.resourceType ?? ''}`, { fallback: log.resourceType ?? '' })}</span>
                             {log.resourceId && (
                               <span className="text-gray-400 ml-1 font-mono text-xs">#{log.resourceId}</span>
                             )}
@@ -1045,7 +1045,7 @@ export default function AdminLogsPage() {
                                 <Monitor size={16} className="text-purple-500" />
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">USER AGENT</p>
                             </div>
-                            <p className="text-[11px] text-gray-600 dark:text-gray-400 font-medium leading-relaxed truncate" title={selectedLog.userAgent || ''}>{selectedLog.userAgent || '?'}</p>
+                            <p className="text-[11px] text-gray-600 dark:text-gray-400 font-medium leading-relaxed truncate" title={(selectedLog as any).userAgent || ''}>{(selectedLog as any).userAgent || '?'}</p>
                          </div>
                     </div>
                 )}
@@ -1089,7 +1089,7 @@ export default function AdminLogsPage() {
                                 try {
                                     detailsObj = JSON.parse(detailsObj);
                                 } catch {
-                                    return <pre className="text-slate-300">{detailsObj}</pre>;
+                                    return <pre className="text-slate-300">{String(detailsObj)}</pre>;
                                 }
                             }
                             

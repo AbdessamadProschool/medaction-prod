@@ -1,5 +1,6 @@
 'use client';
-
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import TalentForm from '@/components/admin/talents/TalentForm';
 import Image from 'next/image';
 import { 

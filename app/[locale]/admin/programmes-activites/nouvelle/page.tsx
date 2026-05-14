@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import { 
   ArrowLeft, 
   Loader2, 
@@ -15,13 +16,18 @@ import {
   CheckCircle2,
   XCircle,
   Layout,
-  Info
+  Info,
+  ChevronDown
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
 
 export default function AdminNouveauProgrammePage() {
   const t = useTranslations('admin_activity_create');

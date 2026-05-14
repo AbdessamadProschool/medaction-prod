@@ -279,7 +279,6 @@ export default function BilansPage() {
     if (!photos || photos.length === 0) return null;
     
     return (
-    return (
       <div className="mt-6">
         <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
           <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
@@ -305,7 +304,6 @@ export default function BilansPage() {
         </div>
       </div>
     );
-    );
   };
 
   // Media Gallery for events/campaigns
@@ -315,7 +313,6 @@ export default function BilansPage() {
     const images = medias.filter(m => m.type === 'IMAGE');
     const documents = medias.filter(m => m.type === 'DOCUMENT' || m.type === 'EVENT_REPORT');
     
-    return (
     return (
       <div className="mt-6 space-y-6">
         {/* Documents Section */}
@@ -377,7 +374,6 @@ export default function BilansPage() {
           </div>
         )}
       </div>
-    );
     );
   };
 
@@ -546,6 +542,9 @@ export default function BilansPage() {
               <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_events')}</p>
             </div>
           ) : (
+            filteredEvenements.map((evt) => {
+              const isExpanded = expandedItems.has(`evt-${evt.id}`);
+              return (
                 <motion.div 
                   key={evt.id} 
                   layout
@@ -905,7 +904,6 @@ export default function BilansPage() {
               );
             })
           )}
-        </div>
         </div>
       )}
 

@@ -91,7 +91,7 @@ export default function LocalisationSection({
     <div className="space-y-8">
       {/* Commune */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="gov-label">
           {t('reclamation.form.commune')} <span className="text-red-500">*</span>
         </label>
         <div className="relative group">
@@ -101,14 +101,10 @@ export default function LocalisationSection({
           <select
             {...register('communeId', { valueAsNumber: true })}
             className={`
-              w-full ltr:pl-12 rtl:pr-12 ltr:pr-10 rtl:pl-10 py-3 
-              bg-gray-50/50 focus:bg-white border rounded-xl appearance-none
-              text-gray-900 font-bold text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600
-              transition-all duration-200
+              gov-select ltr:pl-12 rtl:pr-12 
               ${errors.communeId 
                 ? 'border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-500' 
-                : 'border-gray-200 hover:border-gray-300'
+                : ''
               }
             `}
             disabled={loading}
@@ -139,7 +135,7 @@ export default function LocalisationSection({
       {/* Quartier/Douar + Adresse en grid */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="gov-label">
             {t('reclamation.form.district')}
           </label>
           <div className="relative group">
@@ -151,19 +147,12 @@ export default function LocalisationSection({
               {...register('quartierDouar')}
               placeholder={t('reclamation.form.district_placeholder')}
               maxLength={100}
-              className="
-                w-full ltr:pl-4 rtl:pr-12 ltr:pr-12 rtl:pl-4 py-3 
-                bg-gray-50/50 focus:bg-white border rounded-xl
-                text-gray-900 placeholder:text-gray-300 font-bold text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600
-                transition-all duration-200
-                border-gray-200 hover:border-gray-300
-              "
+              className="gov-input ltr:pl-12 rtl:pr-12"
             />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="gov-label">
             {t('reclamation.form.address')}
           </label>
           <div className="relative group">
@@ -175,23 +164,16 @@ export default function LocalisationSection({
               {...register('adresseComplete')}
               placeholder={t('reclamation.form.address_placeholder')}
               maxLength={200}
-              className="
-                w-full ltr:pl-4 rtl:pr-12 ltr:pr-12 rtl:pl-4 py-3 
-                bg-gray-50/50 focus:bg-white border rounded-xl
-                text-gray-900 placeholder:text-gray-300 font-bold text-sm
-                focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600
-                transition-all duration-200
-                border-gray-200 hover:border-gray-300
-              "
+              className="gov-input ltr:pl-12 rtl:pr-12"
             />
           </div>
         </div>
       </div>
 
       {/* Carte Interactive */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+      <div className="gov-card overflow-hidden">
         {/* Header carte */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
+        <div className="gov-card-header">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[hsl(213,80%,35%)]/10 flex items-center justify-center">
               <MapPin className="w-5 h-5 text-[hsl(213,80%,35%)]" strokeWidth={1.5} />
@@ -205,7 +187,7 @@ export default function LocalisationSection({
             type="button"
             onClick={getGPSPosition}
             disabled={gpsLoading}
-            className="flex items-center gap-2 px-5 py-3 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="gov-btn gov-btn-primary text-xs"
           >
             {gpsLoading ? (
               <>

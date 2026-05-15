@@ -23,6 +23,12 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { GovButton } from '@/components/ui/GovButton';
+import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { StatusBadge } from '@/components/ui/StatusBadge';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { cn } from '@/lib/utils';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface Suggestion {
   id: number;
@@ -59,6 +65,14 @@ const CATEGORIES: Record<string, { emoji: string }> = {
   culture: { emoji: '🎭' },
   numerique: { emoji: '💻' },
   autre: { emoji: '💡' },
+};
+
+const suggestionColorMap: Record<string, any> = {
+  SOUMISE: 'gold',
+  EN_EXAMEN: 'blue',
+  APPROUVEE: 'green',
+  REJETEE: 'red',
+  IMPLEMENTEE: 'purple'
 };
 
 export default function AdminSuggestionsPage() {
@@ -193,177 +207,191 @@ export default function AdminSuggestionsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {Object.entries(STATUT_CONFIG).map(([key, config]) => {
-          const count = stats[key] || 0;
-          const Icon = config.icon;
-          
-          return (
-            <button
-              key={key}
-              onClick={() => setStatutFilter(statutFilter === key ? '' : key)}
-              className={`gov-stat-card transition-all cursor-pointer text-start ${
-                statutFilter === key
-                  ? 'ring-2 ring-[hsl(var(--gov-gold))] shadow-lg'
-                  : 'hover:shadow-md'
-              }`}
-            >
-              <div className="gov-stat-icon">
-                <Icon className={`w-6 h-6 ${config.text}`} />
-              </div>
-              <p className="gov-stat-value">{count}</p>
-              <p className={`gov-stat-label ${config.text}`}>{t(`statuses.${key}`)}</p>
-            </button>
-          );
-        })}
-      </div>
+      <KpiGrid cols={5}>
+        {Object.entries(STATUT_CONFIG).map(([key, config], i) => (
+          <KpiCard
+            key={key}
+            index={i}
+            label={t(`statuses.${key}`)}
+            value={stats[key] || 0}
+            icon={config.icon}
+            variant={key === 'APPROUVEE' ? 'green' : key === 'REJETEE' ? 'red' : key === 'EN_EXAMEN' ? 'blue' : key === 'IMPLEMENTEE' ? 'muted' : 'gold'}
+            onClick={() => setStatutFilter(statutFilter === key ? '' : key)}
+            className={statutFilter === key ? 'ring-2 ring-[hsl(var(--gov-blue))]' : ''}
+          />
+        ))}
+      </KpiGrid>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+      <div className="bg-card rounded-2xl shadow-sm border border-border p-4">
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className="relative flex-1 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_placeholder')}
-              className="w-full pl-12 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 dark:text-white"
+              className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-muted/30 focus:ring-2 focus:ring-[hsl(var(--gov-blue))/0.2] focus:border-[hsl(var(--gov-blue))] transition-all"
             />
           </div>
           
           {statutFilter && (
-            <button
+            <GovButton
               onClick={() => setStatutFilter('')}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              variant="outline"
+              leftIcon={<XCircle className="w-4 h-4" />}
             >
-              <XCircle className="w-4 h-4" />
               {t('reset_filters')}
-            </button>
+            </GovButton>
           )}
         </div>
       </div>
 
       {/* Table */}
-      <div className="gov-card overflow-hidden">
-        <div className="gov-table-wrapper">
-          <table className="gov-table">
-            <thead className="bg-gray-50 dark:bg-gray-700/50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                  {t('table.suggestion')}
-                </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.category')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.citizen')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.status')}
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.date')}
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {t('table.actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {suggestions.map((suggestion) => {
-                  const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
-                  const StatutIcon = statutInfo.icon;
-                  const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;
+      <GovTable>
+        <thead>
+          <tr>
+            <GovTh>{t('table.suggestion')}</GovTh>
+            <GovTh>{t('table.category')}</GovTh>
+            <GovTh>{t('table.citizen')}</GovTh>
+            <GovTh>{t('table.status')}</GovTh>
+            <GovTh>{t('table.date')}</GovTh>
+            <GovTh className="text-right">{t('table.actions')}</GovTh>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {suggestions.length > 0 ? (
+            suggestions.map((suggestion) => {
+              const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
+              const StatutIcon = statutInfo.icon;
+              const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;
 
-                  return (
-                    <tr
-                      key={suggestion.id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
-                      onClick={() => openDetail(suggestion)}
-                    >
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-gray-900 dark:text-white line-clamp-1">
-                          {suggestion.titre}
-                        </p>
-                        <p className="text-sm text-gray-500 line-clamp-1">
-                          {suggestion.description.substring(0, 60)}...
-                        </p>
-                      </td>
-                      <td className="px-6 py-4">
-                        {catInfo ? (
-                          <span className="inline-flex items-center gap-1 text-sm">
-                            <span>{catInfo.emoji}</span>
-                            <span className="text-gray-600 dark:text-gray-300">{tCat(suggestion.categorie!)}</span>
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                            <span className="text-xs font-bold text-emerald-600">
-                              {suggestion.user.prenom.charAt(0)}{suggestion.user.nom.charAt(0)}
-                            </span>
-                          </div>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            {suggestion.user.prenom} {suggestion.user.nom}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statutInfo.bg} ${statutInfo.text}`}>
-                          <StatutIcon className="w-3 h-3" />
-                          {t(`statuses.${suggestion.statut}`)}
+              // Map status to StatusBadge colors
+              const statusColorMap: Record<string, any> = {
+                SOUMISE: 'gold',
+                EN_EXAMEN: 'blue',
+                APPROUVEE: 'green',
+                REJETEE: 'red',
+                IMPLEMENTEE: 'purple'
+              };
+
+              return (
+                <GovTr
+                  key={suggestion.id}
+                  onClick={() => openDetail(suggestion)}
+                >
+                  <GovTd>
+                    <p className="font-bold text-foreground line-clamp-1 group-hover:text-[hsl(var(--gov-blue))] transition-colors">
+                      {suggestion.titre}
+                    </p>
+                    <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                      {suggestion.description.substring(0, 60)}...
+                    </p>
+                  </GovTd>
+                  <GovTd>
+                    {catInfo ? (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-muted rounded-lg text-xs font-bold border border-border">
+                        <span>{catInfo.emoji}</span>
+                        <span className="text-muted-foreground uppercase tracking-widest text-[9px]">{tCat(suggestion.categorie!)}</span>
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground opacity-30 font-mono">-</span>
+                    )}
+                  </GovTd>
+                  <GovTd>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[hsl(var(--gov-blue)/0.1)] to-[hsl(var(--gov-blue)/0.2)] flex items-center justify-center border border-[hsl(var(--gov-blue)/0.2)]">
+                        <span className="text-[10px] font-black text-[hsl(var(--gov-blue))]">
+                          {suggestion.user.prenom.charAt(0)}{suggestion.user.nom.charAt(0)}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {formatDate(suggestion.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openDetail(suggestion);
-                          }}
-                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                        >
-                          <Eye className="w-4 h-4 text-gray-500" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                      <span className="text-sm font-bold text-foreground/80">
+                        {suggestion.user.prenom} {suggestion.user.nom}
+                      </span>
+                    </div>
+                  </GovTd>
+                  <GovTd>
+                    <StatusBadge status={suggestion.statut} animate={suggestion.statut === 'SOUMISE'} />
+                  </GovTd>
+                  <GovTd>
+                    <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {formatDate(suggestion.createdAt)}
+                    </div>
+                  </GovTd>
+                  <GovTd className="text-right">
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
+                      <GovButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openDetail(suggestion);
+                        }}
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-[hsl(var(--gov-blue))]"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </GovButton>
+                    </div>
+                  </GovTd>
+                </GovTr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan={6}>
+                <EmptyState
+                  icon={<Lightbulb className="w-10 h-10" />}
+                  title={t('empty.title') || "Aucune suggestion"}
+                  description={search ? t('empty.no_results') : t('empty.description')}
+                />
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </GovTable>
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+          <div className="px-6 py-5 bg-muted/20 border-t border-border flex items-center justify-between">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               {t('page_info', { page, total: totalPages, count: total})}
             </p>
-            <div className="flex items-center gap-2">
-              <button
+            <div className="flex items-center gap-3">
+              <GovButton
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                variant="outline"
+                size="icon"
               >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
+                {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+              </GovButton>
+              <div className="flex items-center gap-1">
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <GovButton
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      variant={page === pageNum ? "primary" : "outline"}
+                      className="w-10 h-10 p-0"
+                    >
+                      {pageNum}
+                    </GovButton>
+                  );
+                })}
+              </div>
+              <GovButton
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                variant="outline"
+                size="icon"
               >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+                {locale === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+              </GovButton>
             </div>
           </div>
         )}
-      </div>
 
       {/* Detail Modal */}
       <AnimatePresence>
@@ -380,98 +408,120 @@ export default function AdminSuggestionsPage() {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-white dark:bg-gray-800 shadow-2xl z-50 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-xl bg-card shadow-2xl z-50 overflow-y-auto border-l border-border flex flex-col"
             >
               {/* Modal Header */}
-              <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                  {t('detail_modal.title')} #{selectedSuggestion.id}
-                </h2>
-                <button
+              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <Lightbulb size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">
+                      {t('detail_modal.title')} #{selectedSuggestion.id}
+                    </h2>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
+                      {selectedSuggestion.user.prenom} {selectedSuggestion.user.nom}
+                    </p>
+                  </div>
+                </div>
+                <GovButton
                   onClick={() => setShowDetailModal(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
                 >
-                  <XCircle className="w-5 h-5" />
-                </button>
+                  <XCircle size={24} />
+                </GovButton>
               </div>
 
               {/* Modal Content */}
               <div className="p-6 space-y-6">
                 {/* Statut actuel */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    {t('detail_modal.current_status')}
-                  </label>
-                  {(() => {
-                    const info = STATUT_CONFIG[selectedSuggestion.statut];
-                    const Icon = info.icon;
-                    return (
-                      <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${info.bg} ${info.text} font-medium`}>
-                        <Icon className="w-4 h-4" />
-                        {t(`statuses.${selectedSuggestion.statut}`)}
-                      </span>
-                    );
-                  })()}
-                </div>
-
-                {/* Titre */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    {t('detail_modal.suggestion_title')}
-                  </label>
-                  <p className="text-gray-900 dark:text-white font-semibold">
-                    {selectedSuggestion.titre}
-                  </p>
-                </div>
-
-                {/* Catégorie */}
-                {selectedSuggestion.categorie && CATEGORIES[selectedSuggestion.categorie] && (
+                <div className="bg-muted/30 p-6 rounded-2xl border border-border flex items-center justify-between">
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      {t('detail_modal.category')}
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">
+                      {t('detail_modal.current_status')}
                     </label>
-                    <span className="inline-flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                      <span className="text-xl">{CATEGORIES[selectedSuggestion.categorie].emoji}</span>
-                      {tCat(selectedSuggestion.categorie)}
-                    </span>
+                    <StatusBadge 
+                      color={suggestionColorMap[selectedSuggestion.statut] || 'muted'} 
+                      icon={STATUT_CONFIG[selectedSuggestion.statut]?.icon}
+                      pulse={selectedSuggestion.statut === 'SOUMISE'}
+                    >
+                      {t(`statuses.${selectedSuggestion.statut}`)}
+                    </StatusBadge>
                   </div>
-                )}
+                  <div className="text-right">
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">
+                      {t('table.date')}
+                    </label>
+                    <p className="text-xs font-bold text-foreground">
+                      {formatDate(selectedSuggestion.createdAt)}
+                    </p>
+                  </div>
+                </div>
 
-                {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    {t('detail_modal.description')}
-                  </label>
-                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    {selectedSuggestion.description}
-                  </p>
+                {/* Contenu */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">
+                      {t('detail_modal.suggestion_title')}
+                    </label>
+                    <h3 className="text-2xl font-black text-foreground leading-tight">
+                      {selectedSuggestion.titre}
+                    </h3>
+                  </div>
+
+                  {selectedSuggestion.categorie && CATEGORIES[selectedSuggestion.categorie] && (
+                    <div>
+                      <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">
+                        {t('detail_modal.category')}
+                      </label>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-xl border border-border text-sm font-bold">
+                        <span className="text-xl">{CATEGORIES[selectedSuggestion.categorie].emoji}</span>
+                        {tCat(selectedSuggestion.categorie)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">
+                      {t('detail_modal.description')}
+                    </label>
+                    <div className="p-6 bg-card border-2 border-dashed border-border rounded-2xl">
+                      <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                        {selectedSuggestion.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Citoyen */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                <div className="pt-8 border-t border-border">
+                  <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
                     {t('detail_modal.submitted_by')}
                   </label>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                      <span className="font-bold text-emerald-600">
-                        {selectedSuggestion.user.prenom.charAt(0)}{selectedSuggestion.user.nom.charAt(0)}
-                      </span>
+                  <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-card to-muted/20 rounded-2xl border border-border shadow-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white text-xl font-black shadow-lg">
+                      {selectedSuggestion.user.prenom.charAt(0)}{selectedSuggestion.user.nom.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="text-lg font-black text-foreground">
                         {selectedSuggestion.user.prenom} {selectedSuggestion.user.nom}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        {formatDate(selectedSuggestion.createdAt)}
-                      </p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                          <Mail size={12} className="text-[hsl(var(--gov-blue))]" />
+                          {selectedSuggestion.user.email || 'Email non fourni'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Réponse Admin */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                <div className="pt-8 border-t border-border">
+                  <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
                     {t('detail_modal.admin_response')}
                   </label>
                   <textarea
@@ -479,39 +529,33 @@ export default function AdminSuggestionsPage() {
                     onChange={(e) => setReponseAdmin(e.target.value)}
                     rows={4}
                     placeholder={t('detail_modal.response_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-emerald-500 dark:text-white"
+                    className="w-full px-5 py-4 rounded-2xl border border-border bg-muted/20 focus:ring-4 focus:ring-[hsl(var(--gov-blue))/0.1] focus:border-[hsl(var(--gov-blue))] transition-all text-sm font-medium"
                   />
                 </div>
 
                 {/* Actions */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+                <div className="pt-8 border-t border-border pb-10">
+                  <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
                     {t('detail_modal.change_status')}
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {Object.entries(STATUT_CONFIG).map(([key, config]) => {
-                      const Icon = config.icon;
                       const isActive = selectedSuggestion.statut === key;
                       const isLoading = actionLoading === `${selectedSuggestion.id}-${key}`;
+                      const color = suggestionColorMap[key] || 'muted';
 
                       return (
-                        <button
+                        <GovButton
                           key={key}
                           onClick={() => handleChangeStatut(selectedSuggestion.id, key)}
                           disabled={isActive || !!actionLoading}
-                          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all disabled:opacity-50 ${
-                            isActive
-                              ? `${config.bg} ${config.text} border-2 border-current`
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                          }`}
+                          loading={isLoading}
+                          variant={isActive ? "primary" : "outline"}
+                          leftIcon={!isLoading && <config.icon size={16} />}
+                          className={`justify-start h-14 ${isActive ? "" : `hover:text-[hsl(var(--gov-${color}))] hover:bg-[hsl(var(--gov-${color}))/0.05] hover:border-[hsl(var(--gov-${color}))/0.2]`}`}
                         >
-                          {isLoading ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <Icon className="w-4 h-4" />
-                          )}
-                          {t(`statuses.${key}`)}
-                        </button>
+                          <span className="truncate">{t(`statuses.${key}`)}</span>
+                        </GovButton>
                       );
                     })}
                   </div>

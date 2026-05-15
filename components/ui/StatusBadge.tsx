@@ -3,17 +3,7 @@
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-
-/**
- * StatusBadge — Badge de Statut Universel
- * Design System Gouvernemental Marocain — Province de Médiouna
- *
- * Remplace tous les spans ad-hoc de statut dans les tableaux admin.
- * Supporte une icône optionnelle + animation pulse pour les états urgents.
- *
- * Couleurs : blue | green | gold | red | purple | muted
- * Tailles  : sm | md | lg
- */
+import { useTranslations } from 'next-intl';
 
 const statusBadgeVariants = cva(
   [
@@ -74,61 +64,118 @@ const statusBadgeVariants = cva(
   }
 );
 
+export type StatusType = 
+  | 'SOUMISE' 
+  | 'ACCEPTEE' 
+  | 'EN_COURS' 
+  | 'RESOLUE' 
+  | 'REJETEE' 
+  | 'ANNULEE' 
+  | 'EN_ATTENTE_VALIDATION' 
+  | 'VALIDEE' 
+  | 'PUBLIEE' 
+  | 'CLOTUREE'
+  | string;
+
 export interface StatusBadgeProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof statusBadgeVariants> {
-  /** Icône lucide-react */
   icon?: React.ElementType;
-  /** Ajoute animation pulse (pour statuts urgents/en attente) */
   pulse?: boolean;
+  status?: StatusType; // Added for new Etape 6 usage
+  animate?: boolean; // Added for new Etape 6 usage
 }
+
+import {
+  Send,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Ban,
+  Clock,
+  ShieldCheck,
+  Globe,
+  Lock,
+  Archive,
+  FileText,
+  PlayCircle,
+  FlagOff,
+  AlertTriangle,
+  CheckSquare
+} from 'lucide-react';
+
+const NEW_STATUS_CONFIG: Record<string, { color: "blue" | "green" | "gold" | "red" | "purple" | "muted", icon: React.ElementType, pulse?: boolean }> = {
+  SOUMISE: { color: 'blue', icon: Send },
+  ACCEPTEE: { color: 'blue', icon: CheckSquare },
+  EN_COURS: { color: 'gold', icon: Loader2, pulse: true },
+  RESOLUE: { color: 'green', icon: CheckCircle2 },
+  REJETEE: { color: 'red', icon: XCircle },
+  ANNULEE: { color: 'muted', icon: Ban },
+  EN_ATTENTE_VALIDATION: { color: 'gold', icon: Clock, pulse: true },
+  VALIDEE: { color: 'green', icon: ShieldCheck },
+  PUBLIEE: { color: 'blue', icon: Globe },
+  CLOTUREE: { color: 'muted', icon: Lock },
+};
 
 export function StatusBadge({
   children,
-  icon: Icon,
-  color,
+  icon: IconProp,
+  color: colorProp,
   size,
-  pulse = false,
+  pulse: pulseProp,
+  status,
+  animate,
   className,
   ...props
 }: StatusBadgeProps) {
+  const t = useTranslations('admin.status');
+  
+  // If status is provided (New Étape 6 API)
+  let finalColor = colorProp;
+  let finalIcon = IconProp;
+  let finalPulse = pulseProp;
+  let finalChildren = children;
+
+  if (status) {
+    const normalizedStatus = status.toUpperCase();
+    const config = NEW_STATUS_CONFIG[normalizedStatus] || { color: 'muted', icon: Clock };
+    
+    finalColor = config.color;
+    finalIcon = config.icon;
+    finalPulse = animate !== undefined ? animate : config.pulse;
+    
+    const translationKey = status.toLowerCase();
+    finalChildren = t.has(translationKey) ? t(translationKey) : status;
+  }
+
+  const FinalIcon = finalIcon;
+
   return (
     <span
       className={cn(
-        statusBadgeVariants({ color, size }),
-        pulse && 'animate-pulse',
+        statusBadgeVariants({ color: finalColor, size }),
+        finalPulse && 'animate-pulse opacity-80',
+        FinalIcon && FinalIcon === Loader2 && 'animate-spin',
         className
       )}
       {...props}
     >
-      {Icon && <Icon aria-hidden="true" />}
-      {children}
+      {FinalIcon && <FinalIcon aria-hidden="true" />}
+      {finalChildren}
     </span>
   );
 }
 
 // ─────────────────────────────────────────────
-// Helpers pré-configurés pour les statuts métier
+// Helpers pré-configurés pour les statuts métier (BACKWARDS COMPATIBILITY)
 // ─────────────────────────────────────────────
 
-/**
- * Mappe un statut Prisma → props StatusBadge
- * Usage : <StatusBadge {...resolveReclamationStatus(reclamation.statut)} />
- */
 export type ReclamationStatut =
   | 'SOUMISE'
   | 'EN_COURS_TRAITEMENT'
   | 'RESOLUE'
   | 'REJETEE'
   | 'FERMEE';
-
-import {
-  Clock,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Archive,
-} from 'lucide-react';
 
 export function resolveReclamationStatus(statut: ReclamationStatut): Pick<StatusBadgeProps, 'color' | 'icon' | 'pulse'> {
   const map: Record<ReclamationStatut, Pick<StatusBadgeProps, 'color' | 'icon' | 'pulse'>> = {
@@ -150,14 +197,6 @@ export type EvenementStatut =
   | 'A_CLOTURER'
   | 'CLOTURE'
   | 'ANNULE';
-
-import {
-  FileText,
-  ShieldCheck,
-  PlayCircle,
-  FlagOff,
-  AlertTriangle,
-} from 'lucide-react';
 
 export function resolveEvenementStatus(statut: EvenementStatut): Pick<StatusBadgeProps, 'color' | 'icon' | 'pulse'> {
   const map: Record<EvenementStatut, Pick<StatusBadgeProps, 'color' | 'icon' | 'pulse'>> = {

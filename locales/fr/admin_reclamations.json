@@ -30,6 +30,7 @@
         "sujet": "Sujet & Catégorie",
         "statut": "Décision",
         "affectation": "Entité en charge",
+        "agent_in_charge": "Agent en charge",
         "date": "Date de dépôt",
         "photo": "Preuves Photographiques"
       },
@@ -38,6 +39,8 @@
           "title": "Affectation de Dossier",
           "unassign": "Désaffecter le dossier",
           "no_agents": "Aucun agent disponible",
+          "select_label": "Sélectionner un agent ou autorité",
+          "notification_hint": "L'agent recevra une notification immédiate et pourra commencer le traitement de la réclamation.",
           "create_agents_hint": "Veuillez créer des agents pour ce territoire",
           "local_authorities": "Autorités Locales",
           "other_agents": "Services Centraux",
@@ -47,6 +50,7 @@
         },
         "status": {
           "title": "Arbitrage Administratif",
+          "subtitle": "Mise à jour de l'état de la réclamation",
           "accept_btn": "Accepter le dossier",
           "accept_desc": "La réclamation est recevable et sera traitée.",
           "reject_btn": "Rejeter le dossier",

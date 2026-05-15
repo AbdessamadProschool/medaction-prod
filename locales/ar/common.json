@@ -661,7 +661,8 @@
         "change_status": "تغيير الحالة",
         "toggle_featured": "تمييز المقال",
         "toggle_featured_off": "إلغاء التمييز",
-        "delete": "حذف المقال"
+        "delete": "حذف المقال",
+        "contributor": "المساهم"
       },
       "messages": {
         "status_changed": "تم تغيير الحالة بنجاح",
@@ -788,7 +789,8 @@
         "view_online": "عرض على الموقع",
         "remove_highlight": "إزالة التمييز",
         "add_highlight": "تمييز الخبر",
-        "delete": "حذف الخبر"
+        "delete": "حذف الخبر",
+        "author": "الكاتب"
       },
       "statuses": {
         "BROUILLON": "مسودة",
@@ -1118,7 +1120,12 @@
         "category": "الفئة",
         "assigned_to": "المكلف",
         "date": "التاريخ",
-        "actions": "إجراءات"
+        "actions": "إجراءات",
+        "ref": "المرجع",
+        "citoyen": "المواطن",
+        "sujet": "الموضوع",
+        "statut": "الحالة",
+        "affectation": "التعيين"
       },
       "empty": {
         "title": "لا توجد شكايات"
@@ -1133,7 +1140,8 @@
         "decide": "اتخاذ قرار",
         "assign": "تعيين",
         "edit_assignment": "تعديل التعيين",
-        "delete": "حذف"
+        "delete": "حذف",
+        "update_status": "تحديث الحالة"
       },
       "modals": {
         "assignment": {
@@ -1302,7 +1310,8 @@
       },
       "page": "صفحة",
       "limit": "حد",
-      "includeNonPublie": "تضمين غير المنشور"
+      "includeNonPublie": "تضمين غير المنشور",
+      "loading": "جاري تحميل المؤسسات..."
     },
     "programs_page": {
       "title": "البرامج والأنشطة",
@@ -1581,7 +1590,8 @@
       },
       "form": {
         "sector": "Secteur de l'événement"
-      }
+      },
+      "loading": "جاري تحميل الأحداث..."
     },
     "users_page": {
       "page_title": "إدارة المستخدمين",
@@ -2723,7 +2733,13 @@
       "in_progress": "جارية",
       "completed": "منتهية"
     },
-    "explorer": "استكشاف"
+    "explorer": "استكشاف",
+    "governance_secure": "نظام حكامة آمن",
+    "refresh": "تحديث",
+    "export": "تصدير",
+    "actions": "إجراءات",
+    "previous": "السابق",
+    "next": "التالي"
   },
   "directory": {
     "title": "دليل المؤسسات",
@@ -4048,47 +4064,106 @@
   },
   "audit_page": {
     "title": "السجلات والأنشطة",
-    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات",
-    "search": "بحث",
-    "search_placeholder": "البحث عن مستخدم، إجراء...",
-    "view_details": "عرض التفاصيل",
-    "no_logs": "لم يتم العثور على سجلات",
-    "modify_filters_hint": "حاول تعديل الفلاتر أو البحث",
-    "columns": {
-      "date": "التاريخ والوقت",
-      "user": "المستخدم",
-      "action": "الإجراء",
-      "target": "الكيان / المعرف",
-      "details": "التفاصيل"
-    },
-    "filters": {
-      "all_actions": "جميع الإجراءات",
-      "all_entities": "جميع الكيانات"
-    },
-    "total_entries": "إجمالي السجلات",
+    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات الإدارية",
+    "total_entries": "إجمالي المدخلات",
     "last_update": "آخر تحديث",
+    "live": "مباشر",
     "auto": "تلقائي",
-    "filters_btn": "تصفية",
-    "refresh_now": "تحديث الآن",
+    "filters_btn": "الفلاتر",
+    "advanced_filters": "فلاتر متقدمة",
+    "reset": "إعادة تعيين",
+    "apply_filters": "تطبيق الفلاتر",
+    "refresh_now": "تحديث",
     "export_csv": "تصدير CSV",
     "export_json": "تصدير JSON",
     "user_activity": "نشاط المستخدم",
     "system_logs": "سجلات النظام",
     "security_audit": "تدقيق الأمان",
-    "date": "التاريخ",
-    "user": "المستخدم",
-    "action_label": "الإجراء",
+    "search_placeholder": "البحث عن مستخدم، إجراء أو تاريخ...",
+    "search": "بحث",
+    "view_details": "عرض التفاصيل",
+    "no_logs": "لم يتم العثور على سجلات",
+    "modify_filters_hint": "قم بتعديل الفلاتر أو البحث لرؤية المزيد من النتائج",
+    "filters": {
+      "all_entities": "جميع الكيانات",
+      "all_actions": "جميع الإجراءات"
+    },
+    "columns": {
+      "date": "التاريخ والوقت",
+      "user": "المستخدم",
+      "action": "الإجراء",
+      "target": "الهدف / الكيان",
+      "details": "التفاصيل"
+    },
+    "action": "الإجراء",
     "entity": "الكيان",
+    "user": "المستخدم",
     "ip": "عنوان IP",
+    "source": "المصدر",
+    "level": "المستوى",
+    "date_from": "من تاريخ",
+    "date_to": "إلى تاريخ",
+    "message": "الرسالة",
+    "date": "التاريخ",
+    "resource": "المورد",
+    "status": "الحالة",
+    "success": "نجاح",
+    "failure": "فشل",
     "details": "التفاصيل",
-    "page_x_of_y": "صفحة {{x}} من {{y}}",
+    "close": "إغلاق",
+    "none": "لا يوجد",
+    "changes_comparison": "مقارنة التغييرات",
+    "previous_value": "القيمة السابقة",
+    "new_value": "القيمة الجديدة",
+    "all": "الكل",
+    "export_btn": "تصدير",
+    "page_x_of_y": "الصفحة {current} من {total}",
+    "details_modal_title": "تفاصيل السجل رقم {id}",
+    "type_level": "النوع / المستوى",
+    "source_action": "المصدر / الإجراء",
+    "system_user": "النظام",
+    "all_actions": "الكل",
+    "technical_data": "بيانات تقنية",
+    "no_tech_data": "لا توجد بيانات إضافية",
+    "cleanup": "تنظيف",
+    "confirm_cleanup": "هل أنت متأكد من رغبتك في حذف سجلات التدقيق التي مر عليها أكثر من 12 شهرًا نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه.",
+    "toasts": {
+      "export_success": "تم تحميل التصدير بنجاح!"
+    },
+    "levels": {
+      "info": "معلومات",
+      "warning": "تحذير",
+      "error": "خطأ",
+      "debug": "تصحيح"
+    },
     "actions": {
+      "CREATE": "إنشاء",
+      "UPDATE": "تحديث",
+      "DELETE": "حذف",
       "LOGIN": "تسجيل الدخول",
-      "UPDATE": "تحديث"
+      "LOGOUT": "تسجيل الخروج",
+      "VALIDATE": "مصادقة",
+      "REJECT": "رفض",
+      "EXPORT": "تصدير",
+      "EXPORT_LOGS": "تصدير السجلات",
+      "UPDATE_PERMISSIONS": "تعديل الصلاحيات",
+      "CREATE_USER": "إنشاء مستخدم",
+      "UPDATE_USER": "تعديل مستخدم",
+      "DELETE_USER": "حذف مستخدم",
+      "CREATE_ESTABLISHMENT": "إنشاء مؤسسة",
+      "UPDATE_ETABLISSEMENT": "تعديل مؤسسة",
+      "DELETE_ETABLISSEMENT": "حذف مؤسسة",
+      "AFFECT_RECLAMATION": "إسناد الشكاية",
+      "UPDATE_SETTINGS": "تحديث الإعدادات"
     },
     "entities": {
-      "User": "المستخدم"
-    }
+      "User": "مستخدم",
+      "Reclamation": "شكاية",
+      "Evenement": "حدث",
+      "Actualite": "خبر",
+      "Etablissement": "مؤسسة"
+    },
+    "action_label": "الإجراء"
   },
   "import_page": {
     "title": "استيراد البيانات بالجملة",
@@ -6021,108 +6096,5 @@
     "UPDATE": "تحديث الملف",
     "ACCEPTATION": "قبول الشكاية",
     "AJOUT_MEDIA": "إضافة مرفقات"
-  },
-  "audit_page": {
-    "title": "السجلات والأنشطة",
-    "subtitle": "سجل تدقيق النظام وتتبع الإجراءات الإدارية",
-    "total_entries": "إجمالي المدخلات",
-    "last_update": "آخر تحديث",
-    "live": "مباشر",
-    "auto": "تلقائي",
-    "filters_btn": "الفلاتر",
-    "advanced_filters": "فلاتر متقدمة",
-    "reset": "إعادة تعيين",
-    "apply_filters": "تطبيق الفلاتر",
-    "refresh_now": "تحديث",
-    "export_csv": "تصدير CSV",
-    "export_json": "تصدير JSON",
-    "user_activity": "نشاط المستخدم",
-    "system_logs": "سجلات النظام",
-    "security_audit": "تدقيق الأمان",
-    "search_placeholder": "البحث عن مستخدم، إجراء أو تاريخ...",
-    "search": "بحث",
-    "view_details": "عرض التفاصيل",
-    "no_logs": "لم يتم العثور على سجلات",
-    "modify_filters_hint": "قم بتعديل الفلاتر أو البحث لرؤية المزيد من النتائج",
-    "filters": {
-      "all_entities": "جميع الكيانات",
-      "all_actions": "جميع الإجراءات"
-    },
-    "columns": {
-      "date": "التاريخ والوقت",
-      "user": "المستخدم",
-      "action": "الإجراء",
-      "target": "الهدف / الكيان",
-      "details": "التفاصيل"
-    },
-    "action": "الإجراء",
-    "entity": "الكيان",
-    "user": "المستخدم",
-    "ip": "عنوان IP",
-    "source": "المصدر",
-    "level": "المستوى",
-    "date_from": "من تاريخ",
-    "date_to": "إلى تاريخ",
-    "message": "الرسالة",
-    "date": "التاريخ",
-    "resource": "المورد",
-    "status": "الحالة",
-    "success": "نجاح",
-    "failure": "فشل",
-    "details": "التفاصيل",
-    "close": "إغلاق",
-    "none": "لا يوجد",
-    "changes_comparison": "مقارنة التغييرات",
-    "previous_value": "القيمة السابقة",
-    "new_value": "القيمة الجديدة",
-    "all": "الكل",
-    "export_btn": "تصدير",
-    "page_x_of_y": "الصفحة {current} من {total}",
-    "details_modal_title": "تفاصيل السجل رقم {id}",
-    "type_level": "النوع / المستوى",
-    "source_action": "المصدر / الإجراء",
-    "system_user": "النظام",
-    "all_actions": "الكل",
-    "technical_data": "بيانات تقنية",
-    "no_tech_data": "لا توجد بيانات إضافية",
-    "cleanup": "تنظيف",
-    "confirm_cleanup": "هل أنت متأكد من رغبتك في حذف سجلات التدقيق التي مر عليها أكثر من 12 شهرًا نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه.",
-    "toasts": {
-      "export_success": "تم تحميل التصدير بنجاح!"
-    },
-    "levels": {
-      "info": "معلومات",
-      "warning": "تحذير",
-      "error": "خطأ",
-      "debug": "تصحيح"
-    },
-    "actions": {
-      "CREATE": "إنشاء",
-      "UPDATE": "تحديث",
-      "DELETE": "حذف",
-      "LOGIN": "تسجيل الدخول",
-      "LOGOUT": "تسجيل الخروج",
-      "VALIDATE": "مصادقة",
-      "REJECT": "رفض",
-      "EXPORT": "تصدير",
-      "EXPORT_LOGS": "تصدير السجلات",
-      "UPDATE_PERMISSIONS": "تعديل الصلاحيات",
-      "CREATE_USER": "إنشاء مستخدم",
-      "UPDATE_USER": "تعديل مستخدم",
-      "DELETE_USER": "حذف مستخدم",
-      "CREATE_ESTABLISHMENT": "إنشاء مؤسسة",
-      "UPDATE_ETABLISSEMENT": "تعديل مؤسسة",
-      "DELETE_ETABLISSEMENT": "حذف مؤسسة",
-      "AFFECT_RECLAMATION": "إسناد الشكاية",
-      "UPDATE_SETTINGS": "تحديث الإعدادات"
-    },
-    "entities": {
-      "User": "مستخدم",
-      "Reclamation": "شكاية",
-      "Evenement": "حدث",
-      "Actualite": "خبر",
-      "Etablissement": "مؤسسة"
-    },
-    "action_label": "الإجراء"
   }
 }

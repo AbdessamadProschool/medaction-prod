@@ -25,6 +25,9 @@ import {
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
+import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const LocationMap = dynamic(() => import('../maps/LocationMap'), { 
   ssr: false,
@@ -261,410 +264,474 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
         </div>
 
         {/* Steps Progress */}
-        <div className="flex items-center justify-center gap-4 py-4 bg-gray-50/50 dark:bg-gray-900/20 border-b border-gray-100 dark:border-gray-700">
-          {STEPS.map((step) => (
-            <div key={step.id} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                currentStep === step.id 
-                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-500/10' 
-                  : currentStep > step.id 
-                    ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30' 
-                    : 'bg-gray-200 text-gray-500 dark:bg-gray-700'
-              }`}>
-                {currentStep > step.id ? <Check size={16} /> : step.id}
+        <div className="px-8 py-6 bg-muted/20 border-b border-border">
+          <div className="flex items-center justify-between max-w-2xl mx-auto relative">
+            {/* Connection Line */}
+            <div className="absolute top-5 left-0 right-0 h-[2px] bg-border z-0" />
+            <div 
+              className="absolute top-5 left-0 h-[2px] bg-[hsl(var(--gov-blue))] z-0 transition-all duration-500" 
+              style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+            />
+
+            {STEPS.map((step) => (
+              <div key={step.id} className="relative z-10 flex flex-col items-center gap-3">
+                <motion.div 
+                  initial={false}
+                  animate={{
+                    scale: currentStep === step.id ? 1.2 : 1,
+                    backgroundColor: currentStep >= step.id ? 'hsl(var(--gov-blue))' : 'hsl(var(--muted))',
+                    color: currentStep >= step.id ? 'white' : 'hsl(var(--muted-foreground))'
+                  }}
+                  className={cn(
+                    "w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black shadow-xl transition-colors",
+                    currentStep === step.id ? "ring-4 ring-[hsl(var(--gov-blue)/0.2)]" : ""
+                  )}
+                >
+                  {currentStep > step.id ? <Check size={18} strokeWidth={3} /> : step.id}
+                </motion.div>
+                <span className={cn(
+                  "text-[9px] font-black uppercase tracking-widest transition-colors hidden sm:block",
+                  currentStep >= step.id ? "text-foreground" : "text-muted-foreground/60"
+                )}>
+                  {step.title}
+                </span>
               </div>
-              <span className={`text-sm font-medium hidden sm:inline ${
-                currentStep === step.id ? 'text-gray-900 dark:text-white' : 'text-gray-400'
-              }`}>
-                {step.title}
-              </span>
-              {step.id < STEPS.length && <div className="w-12 h-[2px] bg-gray-200 dark:bg-gray-700 mx-2 hidden sm:block" />}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="gov-label">
-                    {t('form.title')} *
-                  </label>
-                  <input
-                    {...register('titre')}
-                    type="text"
-                    placeholder="Ex: Nettoyage de la plage"
-                    className={`gov-input ${errors.titre ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
-                  />
-                  {errors.titre && <p className="text-red-500 text-xs mt-1">{errors.titre.message?.toString()}</p>}
-                </div>
+        <div className="flex-1 overflow-y-auto p-8 bg-gradient-to-br from-muted/20 to-transparent">
+          <AnimatePresence mode="wait">
+            {currentStep === 1 && (
+              <motion.div 
+                key="step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="md:col-span-2">
+                    <GovInput
+                      label={t('form.title') + " *"}
+                      placeholder="Ex: Nettoyage de la plage de Médiouna"
+                      error={errors.titre?.message?.toString()}
+                      className="text-lg font-black tracking-tight"
+                      {...register('titre')}
+                    />
+                  </div>
 
-                <div>
-                  <label className="gov-label">
-                    {t('form.sector')} *
-                  </label>
-                  <select
+                  <GovSelect
+                    label={t('form.sector') + " *"}
+                    error={errors.secteur?.message?.toString()}
+                    leftIcon={<Building2 size={18} />}
+                    options={[
+                      { label: "Sélectionner un secteur...", value: "" },
+                      ...SECTEURS.map(s => ({
+                        label: tSectors(s.value as any),
+                        value: s.value
+                      }))
+                    ]}
                     {...register('secteur')}
-                    className="gov-select"
-                  >
-                    <option value="">Sélectionner...</option>
-                    {SECTEURS.map(s => (
-                      <option key={s.value} value={s.value}>{tSectors(s.value as any)}</option>
-                    ))}
-                  </select>
-                </div>
+                  />
 
-                <div>
-                  <label className="gov-label">
-                    Catégorie d'événement *
-                  </label>
-                  <input
+                  <GovInput
+                    label="Catégorie d'événement *"
+                    placeholder="Ex: Concours de dessin, Marathon..."
+                    leftIcon={<Target size={18} />}
                     {...register('typeCategorique')}
-                    type="text"
-                    placeholder="Ex: Concours de dessin"
-                    className="gov-input"
                   />
-                </div>
 
-                <div className="md:col-span-2">
-                  <label className="gov-label">
-                    Description détaillée *
-                  </label>
-                  <textarea
-                    {...register('description')}
-                    rows={4}
-                    placeholder="Détails de l'événement..."
-                    className="gov-textarea"
-                  />
-                </div>
+                  <div className="md:col-span-2">
+                    <GovTextarea
+                      label="Description détaillée *"
+                      placeholder="Décrivez l'événement, son but et ses activités..."
+                      error={errors.description?.message?.toString()}
+                      {...register('description')}
+                    />
+                  </div>
 
-                <div className="md:col-span-2 pt-4 border-t border-gray-100">
-                   <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-emerald-500" />
-                      Organisation & Établissement
-                   </h4>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
-                        <div className="pt-0.5">
+                  <div className="md:col-span-2 pt-6 border-t border-border">
+                    <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
+                        Organisation & Établissement
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <label className={cn(
+                          "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                          formData.isOrganiseParProvince 
+                            ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
+                            : "border-border bg-muted/10 hover:border-border/80"
+                        )}>
                           <input
                             type="checkbox"
                             {...register('isOrganiseParProvince')}
-                            className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                            className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
                           />
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">Organisé par la Province</span>
-                          <p className="text-xs text-gray-500 mt-1">L'événement sera rattaché à la Province de Médiouna</p>
-                        </div>
-                      </label>
+                          <div>
+                            <span className={cn(
+                              "text-xs font-black uppercase tracking-widest block transition-colors",
+                              formData.isOrganiseParProvince ? "text-emerald-700" : "text-foreground"
+                            )}>Organisé par la Province</span>
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">L'événement sera rattaché à la Province</p>
+                          </div>
+                        </label>
 
-                      <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors group">
-                        <div className="pt-0.5">
+                        <label className={cn(
+                          "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                          formData.sousCouvertProvince 
+                            ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
+                            : "border-border bg-muted/10 hover:border-border/80"
+                        )}>
                           <input
                             type="checkbox"
                             {...register('sousCouvertProvince')}
-                            className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                            className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
                           />
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">Sous le couvert de la Province</span>
-                          <p className="text-xs text-gray-500 mt-1">Affichage "Sous le couvert de Monsieur le Gouverneur"</p>
-                        </div>
-                      </label>
-                   </div>
+                          <div>
+                            <span className={cn(
+                              "text-xs font-black uppercase tracking-widest block transition-colors",
+                              formData.sousCouvertProvince ? "text-emerald-700" : "text-foreground"
+                            )}>Sous le couvert de la Province</span>
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">Affichage protocolaire spécial</p>
+                          </div>
+                        </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
 
           {currentStep === 2 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="gov-label">
-                    Commune *
-                  </label>
-                  <select
-                    {...register('communeId', { valueAsNumber: true })}
-                    className="gov-select"
-                  >
-                    {communes.map(c => (
-                      <option key={c.id} value={c.id}>{locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}</option>
-                    ))}
-                  </select>
-                </div>
+            <motion.div 
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <GovSelect
+                  label="Commune *"
+                  leftIcon={<MapPin size={18} />}
+                  options={communes.map(c => ({
+                    label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom,
+                    value: c.id
+                  }))}
+                  {...register('communeId', { valueAsNumber: true })}
+                />
 
-                <div className="md:col-span-2 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Type de lieu d'événement *
-                    </label>
-                    <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                      <button
-                        type="button"
-                        onClick={() => setLocationMode('manuel')}
-                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white dark:bg-gray-700 text-emerald-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
-                      >
-                        Saisie Manuelle
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setLocationMode('etablissement')}
-                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white dark:bg-gray-700 text-emerald-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
-                      >
-                        Établissement Existant
-                      </button>
-                    </div>
+                <div className="md:col-span-2 space-y-6">
+                  <div className="flex items-center justify-between bg-muted/30 p-2 rounded-2xl border border-border">
+                    <button
+                      type="button"
+                      onClick={() => setLocationMode('manuel')}
+                      className={cn(
+                        "flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
+                        locationMode === 'manuel' ? "bg-card text-[hsl(var(--gov-blue))] shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Saisie Manuelle
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLocationMode('etablissement')}
+                      className={cn(
+                        "flex-1 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
+                        locationMode === 'etablissement' ? "bg-card text-[hsl(var(--gov-blue))] shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Établissement Existant
+                    </button>
                   </div>
 
                   {locationMode === 'etablissement' ? (
-                    <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
-                      <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">Secteur du lieu (optionnel)</label>
-                        <select
-                          value={lieuSecteur}
-                          onChange={(e) => setLieuSecteur(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all text-sm"
-                        >
-                          <option value="">Tous les secteurs</option>
-                          <option value="EDUCATION">Éducation</option>
-                          <option value="SANTE">Santé</option>
-                          <option value="SPORT">Sport</option>
-                          <option value="SOCIAL">Social</option>
-                          <option value="CULTUREL">Culturel</option>
-                          <option value="AUTRE">Autre</option>
-                        </select>
-                      </div>
-                      <div className="space-y-3">
-                        <label className="block text-xs font-bold text-gray-600 dark:text-gray-400">Établissement (Emplacement)</label>
-                        <select
-                          {...register('lieuEtablissementId', { valueAsNumber: true })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 outline-none dark:bg-gray-700 dark:text-white transition-all text-sm"
-                        >
-                          <option value="">Sélectionnez un établissement...</option>
-                          {etablissements
+                    <div className="grid md:grid-cols-2 gap-6 p-6 bg-card/40 rounded-3xl border border-border">
+                      <GovSelect
+                        label="Secteur du lieu"
+                        value={lieuSecteur}
+                        onChange={(e) => setLieuSecteur(e.target.value)}
+                        leftIcon={<Building2 size={18} />}
+                        options={[
+                          { label: "Tous les secteurs", value: "" },
+                          { label: "Éducation", value: "EDUCATION" },
+                          { label: "Santé", value: "SANTE" },
+                          { label: "Sport", value: "SPORT" },
+                          { label: "Social", value: "SOCIAL" },
+                          { label: "Culturel", value: "CULTUREL" },
+                          { label: "Autre", value: "AUTRE" }
+                        ]}
+                      />
+                      <GovSelect
+                        label="Établissement *"
+                        leftIcon={<Target size={18} />}
+                        options={[
+                          { label: "Sélectionnez un établissement...", value: "" },
+                          ...etablissements
                             .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
-                            .map(e => (
-                            <option key={e.id} value={e.id} className="truncate max-w-[200px]">
-                              {locale === 'ar' ? (e.nomArabe || e.nom) : e.nom} {e.secteur ? `(${e.secteur})` : ''}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                            .map(e => ({
+                              label: locale === 'ar' ? (e.nomArabe || e.nom) : e.nom,
+                              value: e.id
+                            }))
+                        ]}
+                        {...register('lieuEtablissementId', { valueAsNumber: true })}
+                      />
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <div className="md:col-span-2">
-                        <label className="gov-label">
-                          Lieu exact ou Nom de la salle *
-                        </label>
-                        <input
-                          {...register('lieu')}
-                          type="text"
-                          placeholder="Ex: Grande Salle du Conseil"
-                          className="gov-input"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <div className="space-y-6">
+                      <GovInput
+                        label="Lieu exact ou Nom de la salle *"
+                        placeholder="Ex: Grande Salle du Conseil, Stade Municipal..."
+                        leftIcon={<MapPin size={18} />}
+                        {...register('lieu')}
+                      />
+                      
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">
                           Position sur la carte
                         </label>
-                        <LocationMap 
-                          position={{ lat: formData.latitude || 33.45, lng: formData.longitude || -7.52 }}
-                          onPositionChange={(lat, lng) => {
-                            updateField('latitude', lat);
-                            updateField('longitude', lng);
-                          }}
-                          height="h-64"
-                        />
-                        <p className="text-xs text-gray-400 mt-2 italic">Glissez le marqueur pour définir l'emplacement exact</p>
+                        <div className="rounded-[2rem] overflow-hidden border-4 border-border shadow-inner">
+                          <LocationMap 
+                            position={{ lat: formData.latitude || 33.45, lng: formData.longitude || -7.52 }}
+                            onPositionChange={(lat, lng) => {
+                              updateField('latitude', lat);
+                              updateField('longitude', lng);
+                            }}
+                            height="h-64"
+                          />
+                        </div>
+                        <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest text-center italic">Glissez le marqueur pour définir l'emplacement exact</p>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {currentStep === 3 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="gov-label">
-                    Date de début *
-                  </label>
-                  <input
-                    {...register('dateDebut')}
-                    type="date"
-                    min={new Date().toISOString().split('T')[0]}
-                    className="gov-input"
-                  />
-                </div>
-                <div>
-                  <label className="gov-label">
-                    Date de fin
-                  </label>
-                  <input
-                    {...register('dateFin')}
-                    type="date"
-                    min={formData.dateDebut || new Date().toISOString().split('T')[0]}
-                    className="gov-input"
-                  />
-                </div>
+            <motion.div 
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <GovInput
+                  label="Date de début *"
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  leftIcon={<Calendar size={18} />}
+                  {...register('dateDebut')}
+                />
+                <GovInput
+                  label="Date de fin"
+                  type="date"
+                  min={formData.dateDebut || new Date().toISOString().split('T')[0]}
+                  leftIcon={<Calendar size={18} />}
+                  {...register('dateFin')}
+                />
 
-                <div>
-                  <label className="gov-label">
-                    Heure de début
-                  </label>
-                  <input
-                    {...register('heureDebut')}
-                    type="time"
-                    className="gov-input"
-                  />
-                </div>
-                <div>
-                  <label className="gov-label">
-                    Heure de fin
-                  </label>
-                  <input
-                    {...register('heureFin')}
-                    type="time"
-                    className="gov-input"
-                  />
-                </div>
+                <GovInput
+                  label="Heure de début"
+                  type="time"
+                  leftIcon={<Clock size={18} />}
+                  {...register('heureDebut')}
+                />
+                <GovInput
+                  label="Heure de fin"
+                  type="time"
+                  leftIcon={<Clock size={18} />}
+                  {...register('heureFin')}
+                />
 
-                <div>
-                  <label className="gov-label">
-                    Capacité maximale
-                  </label>
-                  <input
-                    {...register('capaciteMax', { valueAsNumber: true })}
-                    type="number"
-                    placeholder="Ex: 500"
-                    className="gov-input"
-                  />
-                </div>
+                <GovInput
+                  label="Capacité maximale"
+                  type="number"
+                  placeholder="Ex: 500"
+                  leftIcon={<Users size={18} />}
+                  {...register('capaciteMax', { valueAsNumber: true })}
+                />
 
                 <div className="flex flex-col justify-end">
-                   <label className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors w-full">
-                      <input
-                        type="checkbox"
-                        {...register('isGratuit')}
-                        className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span className="font-medium text-gray-900">Participation gratuite</span>
-                    </label>
+                   <label className={cn(
+                    "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all w-full group shadow-sm",
+                    formData.isGratuit 
+                      ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                      : "border-border bg-muted/10 hover:border-border/80"
+                  )}>
+                    <input
+                      type="checkbox"
+                      {...register('isGratuit')}
+                      className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
+                    />
+                    <div>
+                      <span className={cn(
+                        "text-xs font-black uppercase tracking-widest block transition-colors",
+                        formData.isGratuit ? "text-emerald-700" : "text-foreground"
+                      )}>Participation gratuite</span>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">L'accès à l'événement est-il gratuit ?</p>
+                    </div>
+                  </label>
                 </div>
 
-                {!formData.isGratuit && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Prix d'entrée (DH) *
-                    </label>
-                    <input
-                      {...register('prixEntree', { valueAsNumber: true })}
-                      type="number"
-                      placeholder="Ex: 50"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none"
-                    />
-                  </div>
-                )}
+                <AnimatePresence>
+                  {!formData.isGratuit && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden md:col-span-2"
+                    >
+                      <GovInput
+                        label="Prix d'entrée (DH) *"
+                        type="number"
+                        placeholder="Ex: 50"
+                        leftIcon={<Sparkles size={18} />}
+                        {...register('prixEntree', { valueAsNumber: true })}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {currentStep === 4 && (
-            <div className="space-y-6">
+            <motion.div 
+              key="step4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8"
+            >
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4 block">
                   Photos de l'événement
                 </label>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
                   {uploadedImages.map((img, idx) => (
-                    <div key={idx} className="relative aspect-video rounded-xl overflow-hidden group border border-gray-100 dark:border-gray-700">
+                    <motion.div 
+                      layout
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      key={idx} 
+                      className="relative aspect-video rounded-3xl overflow-hidden group border border-border shadow-md"
+                    >
                       <img src={img.url} className="w-full h-full object-cover" />
-                      <button 
-                        onClick={() => removeImage(idx)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <GovButton 
+                          onClick={() => removeImage(idx)}
+                          variant="danger"
+                          size="icon"
+                          className="rounded-full h-10 w-10"
+                        >
+                          <Trash2 size={16} />
+                        </GovButton>
+                      </div>
+                    </motion.div>
                   ))}
-                  <label className="aspect-video rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                  <label className="aspect-video rounded-3xl border-4 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-muted/30 hover:border-[hsl(var(--gov-blue)/0.3)] transition-all group relative overflow-hidden">
                     <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
-                    {uploading ? <Loader2 className="w-6 h-6 animate-spin text-emerald-500" /> : <Upload className="w-6 h-6 text-gray-400 group-hover:text-emerald-500 transition-colors" />}
-                    <span className="text-xs text-gray-400 mt-2 font-medium">Ajouter</span>
+                    {uploading ? (
+                      <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--gov-blue))]" />
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                          <Upload className="w-6 h-6 text-muted-foreground group-hover:text-[hsl(var(--gov-blue))]" />
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Ajouter</span>
+                      </>
+                    )}
                   </label>
                 </div>
               </div>
 
               {/* Résumé Final */}
-              <div className="p-6 bg-gray-50 dark:bg-gray-900/40 rounded-2xl border border-gray-100 dark:border-gray-700">
-                 <h4 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <div className="p-8 bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-border shadow-xl">
+                 <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
                     <Target className="w-5 h-5 text-emerald-500" />
                     Résumé de l'événement
                  </h4>
-                 <div className="grid grid-cols-2 gap-y-3 text-sm">
-                    <span className="text-gray-500">Titre :</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{formData.titre || '-'}</span>
-                    <span className="text-gray-500">Secteur :</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{formData.secteur ? tSectors(formData.secteur as any) : '-'}</span>
-                    <span className="text-gray-500">Lieu :</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{formData.lieu || '-'}</span>
-                    <span className="text-gray-500">Date :</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{formData.dateDebut || '-'}</span>
-                    <span className="text-gray-500">Organisation :</span>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                       {formData.isOrganiseParProvince ? 'Province de Médiouna' : 'Établissement'}
-                    </span>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Titre</span>
+                      <span className="font-black text-foreground truncate max-w-[200px]">{formData.titre || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secteur</span>
+                      <span className="font-black text-foreground">{formData.secteur ? tSectors(formData.secteur as any) : '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Lieu</span>
+                      <span className="font-black text-foreground truncate max-w-[200px]">{formData.lieu || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Date</span>
+                      <span className="font-black text-foreground">{formData.dateDebut || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Organisation</span>
+                      <span className="font-black text-[hsl(var(--gov-blue))]">
+                         {formData.isOrganiseParProvince ? 'Province de Médiouna' : 'Établissement'}
+                      </span>
+                    </div>
                  </div>
               </div>
-            </div>
+            </motion.div>
           )}
+        </AnimatePresence>
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800 flex-shrink-0">
-           <button
+        <div className="px-10 py-8 border-t border-border bg-card flex items-center justify-between flex-shrink-0">
+           <GovButton
              onClick={saveDraft}
-             disabled={savingDraft}
-             className="gov-btn gov-btn-secondary flex items-center gap-2 text-sm"
+             loading={savingDraft}
+             variant="outline"
+             size="sm"
+             leftIcon={!savingDraft && <Save size={16} />}
+             className="rounded-full px-8"
            >
-             {savingDraft ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-             <span className="hidden sm:inline">Brouillon</span>
-           </button>
+             Brouillon
+           </GovButton>
 
-           <div className="flex items-center gap-3">
+           <div className="flex items-center gap-4">
              {currentStep > 1 && (
-               <button
+               <GovButton
                  onClick={goPrev}
-                 className="gov-btn gov-btn-secondary flex items-center gap-1.5 text-sm"
+                 variant="outline"
+                 size="sm"
+                 leftIcon={<ChevronLeft size={16} />}
+                 className="rounded-full px-8"
                >
-                 <ChevronLeft size={16} />
-                 <span className="hidden sm:inline">Retour</span>
-               </button>
+                 Retour
+               </GovButton>
              )}
              {currentStep < 4 ? (
-               <button
+               <GovButton
                  onClick={goNext}
-                 className="gov-btn gov-btn-primary flex items-center gap-1.5 text-sm"
+                 variant="primary"
+                 size="sm"
+                 rightIcon={<ChevronRight size={16} />}
+                 className="rounded-full px-10 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
                >
-                 <span className="hidden sm:inline">Suivant</span>
-                 <ChevronRight size={16} />
-               </button>
+                 Suivant
+               </GovButton>
              ) : (
-               <button
+               <GovButton
                  onClick={handleSubmit(onSubmit)}
-                 disabled={loading}
-                 className="gov-btn gov-btn-success flex items-center gap-2 text-sm"
+                 loading={loading}
+                 variant="primary"
+                 size="sm"
+                 leftIcon={!loading && <Check size={18} />}
+                 className="rounded-full px-12 shadow-xl shadow-[hsl(var(--gov-blue))/0.3] bg-emerald-600 hover:bg-emerald-700 border-none"
                >
-                 {loading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
                  Créer l'événement
-               </button>
+               </GovButton>
              )}
            </div>
         </div>

@@ -15,11 +15,16 @@ import {
   Newspaper,
   Globe,
   Tag,
-  Send
+  Send,
+  Trash2,
+  Sparkles
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 const actualiteSchema = z.object({
   titre: z.string().min(5).max(150),
@@ -96,7 +101,6 @@ export default function AdminNouvelleActualitePage() {
               });
 
               if (!uploadRes.ok) {
-                  const text = await uploadRes.text();
                   reject(new Error(`Upload Failed: ${uploadRes.status}`));
                   return;
               }
@@ -147,229 +151,273 @@ export default function AdminNouvelleActualitePage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="mb-8">
-        <Link 
-          href="/admin/actualites"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-4 transition-colors"
-        >
-          <ArrowLeft size={18} />
-          <span>{t('back_list')}</span>
-        </Link>
-        
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Newspaper className="w-6 h-6 text-white" />
-              </div>
-              {t('create_title')}
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              {t('create_subtitle')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        
-        {/* Section Image */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-              <ImageIcon className="w-5 h-5 text-emerald-600" />
-              {t('sections.image')}
-            </h2>
-          </div>
-          
-          <div className="p-5">
-            {previewUrl ? (
-              <div className="relative w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden group">
-                <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                    <span className="text-white text-sm font-medium">{t('form.selected_image')}</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedImage(null);
-                        setPreviewUrl(null);
-                      }}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
-                    >
-                      {t('form.delete_image')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <label className="block border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl p-12 text-center bg-gray-50/50 dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-300 transition-all cursor-pointer group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <ImageIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">{t('form.select_image')}</p>
-                <p className="text-gray-400 text-sm">{t('form.image_help')}</p>
-                <input 
-                  type="file" 
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </label>
-            )}
-          </div>
-        </div>
-
-        {/* Section Contenu */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-blue-50/50 dark:from-blue-900/20 to-transparent">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-              <PenTool className="w-5 h-5 text-blue-600" />
-              {t('sections.content')}
-            </h2>
-          </div>
-          
-          <div className="p-5 space-y-5">
-            {/* Titre */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.title')} <span className="text-red-500">*</span>
-              </label>
-              <input
-                {...register('titre')}
-                type="text"
-                className="gov-input text-lg font-medium"
-              />
-              {errors.titre && <p className="text-red-500 text-sm mt-2">{errors.titre.message}</p>}
-            </div>
-
-            {/* Résumé */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.summary')}
-              </label>
-              <textarea
-                {...register('resume')}
-                rows={2}
-                className="gov-textarea"
-              />
-            </div>
-
-            {/* Contenu */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.content')} <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                {...register('contenu')}
-                rows={12}
-                className="gov-textarea leading-relaxed"
-              />
-              {errors.contenu && <p className="text-red-500 text-sm mt-2">{errors.contenu.message}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* Section Contexte */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-blue-500" />
-              {t('sections.sector')}
-            </h3>
-            
-            <select
-              {...register('secteur')}
-              className="gov-select"
-            >
-              <option value="">{t('form.select_sector')}</option>
-              {SECTEURS.map(s => (
-                <option key={s.value} value={s.value}>{s.label}</option>
-              ))}
-            </select>
-            {errors.secteur && <p className="text-red-500 text-sm mt-2">{errors.secteur.message}</p>}
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <Tag className="w-4 h-4 text-purple-500" />
-              {t('sections.category')}
-            </h3>
-            
-            <select
-              {...register('categorie')}
-              className="gov-select"
-            >
-              <option value="">{t('form.general_category')}</option>
-              <option value="TRAVAUX">{t('categories.TRAVAUX')}</option>
-              <option value="ANNONCE">{t('categories.ANNONCE')}</option>
-              <option value="PARTENARIAT">{t('categories.PARTENARIAT')}</option>
-              <option value="SUCCESS_STORY">{t('categories.SUCCESS_STORY')}</option>
-              <option value="EVENEMENT">{t('categories.EVENEMENT')}</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Section Statut */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-          <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-            <Send className="w-4 h-4 text-green-500" />
-            {t('sections.status')}
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {STATUTS.map(statut => (
-              <label 
-                key={statut.value}
-                className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  selectedStatut === statut.value
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                }`}
-              >
-                <input
-                  type="radio"
-                  {...register('statut')}
-                  value={statut.value}
-                  className="sr-only"
-                />
-                <span className="font-medium text-gray-900 dark:text-white">{statut.label}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">{statut.description}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-          <Link
+    <div className="max-w-6xl mx-auto space-y-12 pb-24">
+      {/* Header Premium */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div className="space-y-4">
+          <Link 
             href="/admin/actualites"
-            className="gov-btn gov-btn-secondary"
+            className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
-            {t('actions.cancel')}
+            <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
+              <ArrowLeft size={14} />
+            </div>
+            <span>{t('back_list')}</span>
           </Link>
           
-          <button
-            type="submit"
-            disabled={loading}
-            className="gov-btn gov-btn-primary px-8 py-4 text-lg"
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-indigo-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-[hsl(var(--gov-blue))/0.3] ring-8 ring-[hsl(var(--gov-blue))/0.1]">
+              <Newspaper className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black tracking-tight text-foreground uppercase italic">
+                {t('create_title')}
+              </h1>
+              <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] opacity-70 mt-1">
+                {t('create_subtitle')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+           <GovButton
+            onClick={handleSubmit(onSubmit)}
+            loading={loading}
+            variant="primary"
+            leftIcon={!loading && <Send size={18} />}
+            className="rounded-full px-10 shadow-xl shadow-[hsl(var(--gov-blue))/0.2]"
           >
-            {loading ? (
-              <>
-                <Loader2 size={22} className="animate-spin" />
-                {t('actions.creating')}
-              </>
-            ) : (
-              <>
-                <Save size={22} />
-                {t('actions.create')}
-              </>
-            )}
-          </button>
+            {t('actions.create')}
+          </GovButton>
+        </div>
+      </motion.div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        {/* Left Column: Content */}
+        <div className="lg:col-span-2 space-y-10">
+          {/* Section Image */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-[hsl(var(--gov-blue))/0.03]"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                {t('sections.image')}
+              </h2>
+            </div>
+            
+            <div className="p-10">
+              <AnimatePresence mode="wait">
+                {previewUrl ? (
+                  <motion.div 
+                    key="preview"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="relative aspect-video bg-muted/20 rounded-[2rem] overflow-hidden group border border-border shadow-inner"
+                  >
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+                       <div className="flex justify-between items-center">
+                          <p className="text-white text-[10px] font-black uppercase tracking-widest">{t('form.selected_image')}</p>
+                          <GovButton
+                            onClick={() => {
+                              setSelectedImage(null);
+                              setPreviewUrl(null);
+                            }}
+                            variant="danger"
+                            size="sm"
+                            leftIcon={<Trash2 size={16} />}
+                            className="rounded-full"
+                          >
+                            {t('form.delete_image')}
+                          </GovButton>
+                       </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.label 
+                    key="upload"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="block aspect-video border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-[hsl(var(--gov-blue))/0.3] transition-all cursor-pointer group relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--gov-blue))/0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-card">
+                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors" />
+                    </div>
+                    <p className="text-foreground font-black uppercase tracking-widest text-xs mb-2">{t('form.select_image')}</p>
+                    <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-60">{t('form.image_help')}</p>
+                    <input 
+                      type="file" 
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </motion.label>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Section Contenu */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-[hsl(var(--gov-blue))/0.03]"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-[hsl(var(--gov-blue))] rounded-full" />
+                {t('sections.content')}
+              </h2>
+            </div>
+            
+            <div className="p-10 space-y-10">
+              <GovInput
+                label={t('form.title')}
+                placeholder="Ex: Inauguration du nouveau complexe sportif..."
+                leftIcon={<Sparkles size={18} />}
+                error={errors.titre?.message}
+                {...register('titre')}
+                className="text-xl font-bold"
+              />
+
+              <GovTextarea
+                label={t('form.summary')}
+                placeholder={t('form.summary_placeholder') || "Un court résumé pour les cartes..."}
+                rows={3}
+                {...register('resume')}
+              />
+
+              <GovTextarea
+                label={t('form.content')}
+                placeholder="Développement de l'actualité..."
+                rows={15}
+                error={errors.contenu?.message}
+                {...register('contenu')}
+                className="leading-relaxed"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right Column: Settings */}
+        <div className="space-y-10">
+          {/* Section Contexte */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
+                  {t('sections.sector')}
+                </h3>
+                <GovSelect
+                  label=""
+                  options={[
+                    { label: t('form.select_sector'), value: "" },
+                    ...SECTEURS.map(s => ({ label: s.label, value: s.value }))
+                  ]}
+                  error={errors.secteur?.message}
+                  {...register('secteur')}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                  <Tag className="w-5 h-5 text-purple-500" />
+                  {t('sections.category')}
+                </h3>
+                <GovSelect
+                  label=""
+                  options={[
+                    { label: t('form.general_category'), value: "" },
+                    { label: t('categories.TRAVAUX'), value: "TRAVAUX" },
+                    { label: t('categories.ANNONCE'), value: "ANNONCE" },
+                    { label: t('categories.PARTENARIAT'), value: "PARTENARIAT" },
+                    { label: t('categories.SUCCESS_STORY'), value: "SUCCESS_STORY" },
+                    { label: t('categories.EVENEMENT'), value: "EVENEMENT" }
+                  ]}
+                  {...register('categorie')}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Section Statut */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
+              <Send className="w-5 h-5 text-emerald-500" />
+              {t('sections.status')}
+            </h3>
+            
+            <div className="space-y-4">
+              {STATUTS.map(statut => (
+                <label 
+                  key={statut.value}
+                  className={cn(
+                    "relative flex flex-col p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                    selectedStatut === statut.value
+                      ? "border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue))/0.05] shadow-[hsl(var(--gov-blue))/0.1] shadow-lg scale-[1.02]"
+                      : "border-border bg-muted/10 hover:border-border/80"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    {...register('statut')}
+                    value={statut.value}
+                    className="sr-only"
+                  />
+                  <div className="flex justify-between items-center mb-1">
+                    <span className={cn(
+                      "text-[10px] font-black uppercase tracking-widest transition-colors",
+                      selectedStatut === statut.value ? "text-[hsl(var(--gov-blue))]" : "text-foreground"
+                    )}>{statut.label}</span>
+                    {selectedStatut === statut.value && <div className="w-2 h-2 rounded-full bg-[hsl(var(--gov-blue))] shadow-[0_0_8px_hsl(var(--gov-blue))]" />}
+                  </div>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-tight">{statut.description}</span>
+                </label>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Tips Card */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4 }}
+            className="p-8 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-indigo-800 rounded-[2.5rem] text-white shadow-2xl shadow-[hsl(var(--gov-blue))/0.2] relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16" />
+            <Sparkles className="w-8 h-8 mb-4 text-blue-200" />
+            <h4 className="text-xs font-black uppercase tracking-widest mb-2">Conseil Editorial</h4>
+            <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed opacity-80">
+              Utilisez des titres percutants et un résumé clair pour maximiser l'impact sur le portail citoyen.
+            </p>
+          </motion.div>
         </div>
       </form>
     </div>
   );
 }
+

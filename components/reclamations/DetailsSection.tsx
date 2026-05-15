@@ -53,7 +53,7 @@ export default function DetailsSection({
     <div className="space-y-8">
       {/* Catégorie */}
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-4">
+        <label className="gov-label mb-4">
           {t('reclamation.form.category')} <span className="text-red-500">*</span>
         </label>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -116,7 +116,7 @@ export default function DetailsSection({
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="gov-label">
           {t('reclamation.form.title')} <span className="text-red-500">*</span>
         </label>
         <div className="relative group">
@@ -128,14 +128,10 @@ export default function DetailsSection({
             {...register('titre')}
             placeholder={t('reclamation.form.title_placeholder')}
             className={`
-              w-full ltr:pl-12 rtl:pr-12 ltr:pr-12 rtl:pl-12 py-3 
-              bg-gray-50/50 focus:bg-white border rounded-xl
-              text-gray-900 placeholder:text-gray-300 font-bold text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600
-              transition-all duration-200
+              gov-input ltr:pl-12 rtl:pr-12 
               ${errors.titre 
                 ? 'border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-500' 
-                : 'border-gray-200 hover:border-gray-300'
+                : ''
               }
             `}
             maxLength={100}
@@ -157,7 +153,7 @@ export default function DetailsSection({
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2">
+        <label className="gov-label">
            {t('reclamation.form.description')} <span className="text-red-500">*</span>
         </label>
         <div className="relative group">
@@ -166,14 +162,10 @@ export default function DetailsSection({
             placeholder={t('reclamation.form.description_placeholder')}
             rows={6}
             className={`
-              w-full px-4 py-3 
-              bg-gray-50/50 focus:bg-white border rounded-xl
-              text-gray-900 placeholder:text-gray-300 font-bold text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600
-              transition-all duration-200 resize-none
+              gov-textarea px-4 py-3 
               ${errors.description 
                 ? 'border-red-300 bg-red-50 focus:ring-red-100 focus:border-red-500' 
-                : 'border-gray-200 hover:border-gray-300'
+                : ''
               }
             `}
             maxLength={2000}

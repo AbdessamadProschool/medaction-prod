@@ -37,6 +37,9 @@ import {
 } from 'recharts';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { GovButton } from '@/components/ui/GovButton';
+import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 
 interface DashboardStats {
   utilisateurs: { total: number; nouveaux: number; variation: number };
@@ -75,82 +78,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0 }
 };
 
-// KPI Card Component with enhanced design following gov-* standards
-function MetricCard({
-  title,
-  value,
-  change,
-  changeType,
-  icon: Icon,
-  color,
-  subValue,
-  subLabel,
-  i
-}: {
-  title: string;
-  value: number | string;
-  change?: number;
-  changeType?: 'up' | 'down' | 'neutral';
-  icon: React.ElementType;
-  color: string;
-  subValue?: number | string;
-  subLabel?: string;
-  i: number;
-}) {
-  const t = useTranslations('admin.dashboard.metrics');
-  
-  return (
-    <motion.div
-      variants={itemVariants}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.1 }}
-      className="gov-stat-card group relative overflow-hidden"
-    >
-      <div 
-        className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] transition-transform group-hover:scale-110 group-hover:rotate-12"
-        style={{ color: color }}
-      >
-        <Icon className="w-full h-full" />
-      </div>
-      
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div 
-            className="w-10 h-10 rounded-xl flex items-center justify-center border border-current/10"
-            style={{ backgroundColor: `${color}08`, color: color }}
-          >
-            <Icon className="w-5 h-5" />
-          </div>
-          {change !== undefined && (
-            <span className={`text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 ${
-              changeType === 'up' 
-                ? 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]'
-                : changeType === 'down'
-                ? 'bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))]'
-                : 'bg-muted text-muted-foreground'
-            }`}>
-              {changeType === 'up' && <TrendingUp size={10} />}
-              {changeType === 'down' && <TrendingDown size={10} />}
-              {change > 0 ? '+' : ''}{change}%
-            </span>
-          )}
-        </div>
-        <p className="text-3xl font-black text-foreground mb-1 tracking-tight">
-          {typeof value === 'number' ? value.toLocaleString() : value}
-        </p>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{title}</p>
-        
-        {subValue !== undefined && (
-          <div className="flex items-center gap-2 pt-3 border-t border-border/50">
-            <span className="text-xs font-black text-foreground">{subValue}</span>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{subLabel}</span>
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
+// MetricCard is replaced by the global KpiCard component
 
 // Quick Action Card
 function QuickActionCard({
@@ -177,7 +105,7 @@ function QuickActionCard({
       <motion.div
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className={`relative p-5 rounded-2xl bg-gradient-to-br ${color} text-white overflow-hidden group cursor-pointer shadow-lg`}
+        className={`relative p-5 rounded-2xl bg-gradient-to-br ${color} text-white overflow-hidden group cursor-pointer shadow-lg shadow-black/5 hover:shadow-xl transition-all duration-300`}
       >
         {/* Motif Royal Overlay */}
         <div className="absolute inset-0 opacity-10 gov-pattern" />
@@ -208,8 +136,8 @@ function QuickActionCard({
 // Mini Bar Chart Component
 function MiniBarChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   return (
-    <div className="h-64 mt-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-64 mt-4 relative">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <BarChart data={data} layout="vertical" margin={{ left: 20 }}>
           <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
           <XAxis 
@@ -261,8 +189,8 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
   }
 
   return (
-    <div className="h-64 mt-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-64 mt-4 relative">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <PieChart>
           <Pie
             data={data}
@@ -492,29 +420,33 @@ export default function AdminDashboard() {
         </div>
  
         <div className="flex items-center gap-3">
-          <button
+          <GovButton
             onClick={handleRefresh}
             disabled={refreshing}
-            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group disabled:opacity-50"
-          >
-            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${refreshing ? 'animate-spin' : ''}`} />
-          </button>
+            variant="outline"
+            size="icon"
+            loading={refreshing}
+            title={tCommon('refresh')}
+          />
           
-          <button
+          <GovButton
             onClick={handleExport}
-            className="gov-btn-outline h-12 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-sm"
+            variant="outline"
+            leftIcon={<Download size={18} />}
           >
-            <Download size={18} />
             {t('header.export')}
-          </button>
+          </GovButton>
           
-          <Link
-            href="/admin/rapports"
-            className="gov-btn-primary h-12 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
+          <GovButton
+            asChild
+            variant="primary"
+            leftIcon={<FileText size={18} />}
+            className="shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
           >
-            <FileText size={18} />
-            {t('header.reports')}
-          </Link>
+            <Link href="/admin/rapports">
+              {t('header.reports')}
+            </Link>
+          </GovButton>
         </div>
       </div>
 
@@ -542,52 +474,52 @@ export default function AdminDashboard() {
       )}
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          i={0}
-          title={t('metrics.users')}
+      <KpiGrid cols={4}>
+        <KpiCard
+          index={0}
+          label={t('metrics.users')}
           value={stats?.utilisateurs?.total ?? 0}
-          change={stats?.utilisateurs?.variation ?? 0}
+          change={stats?.utilisateurs?.variation}
           changeType={stats?.utilisateurs?.variation && stats?.utilisateurs?.variation > 0 ? 'up' : 'neutral'}
           icon={Users}
-          color="hsl(var(--gov-blue))"
-          subValue={stats?.utilisateurs?.nouveaux ?? 0}
+          variant="blue"
+          subValue={stats?.utilisateurs?.nouveaux}
           subLabel={t('metrics.new_this_month')}
         />
-        <MetricCard
-          i={1}
-          title={t('metrics.establishments')}
+        <KpiCard
+          index={1}
+          label={t('metrics.establishments')}
           value={stats?.etablissements?.total ?? 0}
-          change={stats?.etablissements?.variation ?? 0}
+          change={stats?.etablissements?.variation}
           changeType={stats?.etablissements?.variation && stats?.etablissements?.variation > 0 ? 'up' : 'neutral'}
           icon={Building2}
-          color="hsl(var(--gov-green))"
-          subValue={stats?.etablissements?.valides ?? 0}
+          variant="green"
+          subValue={stats?.etablissements?.valides}
           subLabel={t('metrics.validated')}
         />
-        <MetricCard
-          i={2}
-          title={t('metrics.events')}
+        <KpiCard
+          index={2}
+          label={t('metrics.events')}
           value={stats?.evenements?.total ?? 0}
-          change={stats?.evenements?.variation ?? 0}
+          change={stats?.evenements?.variation}
           changeType={stats?.evenements?.variation && stats?.evenements?.variation > 0 ? 'up' : 'neutral'}
           icon={Calendar}
-          color="hsl(var(--gov-yellow))"
-          subValue={stats?.evenements?.enCours ?? 0}
+          variant="gold"
+          subValue={stats?.evenements?.enCours}
           subLabel={t('metrics.in_progress')}
         />
-        <MetricCard
-          i={3}
-          title={t('metrics.reclamations')}
+        <KpiCard
+          index={3}
+          label={t('metrics.reclamations')}
           value={stats?.reclamations?.total ?? 0}
           change={reclamationVariation}
           changeType={reclamationVariation > 0 ? 'up' : reclamationVariation < 0 ? 'down' : 'neutral'}
           icon={MessageSquare}
-          color="hsl(var(--gov-red))"
-          subValue={stats?.reclamations?.enAttente ?? 0}
+          variant="red"
+          subValue={stats?.reclamations?.enAttente}
           subLabel={t('metrics.pending')}
         />
-      </div>
+      </KpiGrid>
 
       {/* Quick Actions */}
       <motion.div variants={itemVariants}>
@@ -707,16 +639,16 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link href="/admin/actualites">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue))]"
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue))] hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
                   <Newspaper className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-blue))] transition-colors">{t('other_sections.news')}</h3>
-                  <p className="text-sm text-gray-500">{t('other_sections.news_desc')}</p>
+                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.news')}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.news_desc')}</p>
                 </div>
               </div>
             </motion.div>
@@ -724,16 +656,16 @@ export default function AdminDashboard() {
 
           <Link href="/admin/campagnes">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-gold))]"
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="gov-card p-5 group hover:border-[hsl(var(--gov-gold))] hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold)/0.1)] flex items-center justify-center text-[hsl(var(--gov-gold-dark))]">
+                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold)/0.1)] flex items-center justify-center text-[hsl(var(--gov-gold-dark))] group-hover:scale-110 transition-transform">
                   <Megaphone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-gold-dark))] transition-colors">{t('other_sections.campaigns')}</h3>
-                  <p className="text-sm text-gray-500">{t('other_sections.campaigns_desc')}</p>
+                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-gold-dark))] transition-colors tracking-tight">{t('other_sections.campaigns')}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.campaigns_desc')}</p>
                 </div>
               </div>
             </motion.div>
@@ -741,16 +673,16 @@ export default function AdminDashboard() {
 
           <Link href="/admin/suggestions">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue-light))]"
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue-light))] hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue-light)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue-light)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
                   <Lightbulb className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-blue))] transition-colors">{t('other_sections.suggestions')}</h3>
-                  <p className="text-sm text-gray-500">{t('other_sections.suggestions_desc')}</p>
+                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.suggestions')}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.suggestions_desc')}</p>
                 </div>
               </div>
             </motion.div>
@@ -758,16 +690,16 @@ export default function AdminDashboard() {
 
           <Link href="/admin/talents">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-green))]"
+              whileHover={{ scale: 1.02, y: -2 }}
+              className="gov-card p-5 group hover:border-[hsl(var(--gov-green))] hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green)/0.1)] flex items-center justify-center text-[hsl(var(--gov-green))]">
+                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green)/0.1)] flex items-center justify-center text-[hsl(var(--gov-green))] group-hover:scale-110 transition-transform">
                   <Star className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-green))] transition-colors">{t('other_sections.talents')}</h3>
-                  <p className="text-sm text-gray-500">{t('other_sections.talents_desc')}</p>
+                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-green))] transition-colors tracking-tight">{t('other_sections.talents')}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.talents_desc')}</p>
                 </div>
               </div>
             </motion.div>

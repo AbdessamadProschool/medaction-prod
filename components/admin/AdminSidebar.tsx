@@ -6,11 +6,11 @@ import { useSession } from 'next-auth/react';
 import {
   LayoutDashboard,
   Users,
-  MessageSquare,
-  Calendar,
+  MessageSquareWarning,
+  CalendarDays,
   Building2,
   CheckSquare,
-  Settings,
+  Settings2,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -28,7 +28,9 @@ import {
   Globe,
   Mail,
   Clock,
+  Newspaper,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { usePermission } from '@/hooks/use-permission';
 import { PermissionCode } from '@/lib/permissions-types';
@@ -48,7 +50,7 @@ interface NavItem {
 // Navigation items with translation keys
 const NAV_ITEMS_CONFIG: NavItem[] = [
   { href: '/admin', labelKey: 'dashboard', icon: LayoutDashboard },
-  { href: '/admin/reclamations', labelKey: 'reclamations', icon: MessageSquare, badgeKey: 'reclamations', permission: 'reclamations.read' },
+  { href: '/admin/reclamations', labelKey: 'reclamations', icon: MessageSquareWarning, badgeKey: 'reclamations', permission: 'reclamations.read' },
   { href: '/admin/messages', labelKey: 'messages', icon: Mail, badgeKey: 'messages', permission: 'reclamations.read' },
   { href: '/admin/suggestions', labelKey: 'suggestions', icon: Lightbulb, badgeKey: 'suggestions', permission: 'suggestions.read.own' },
   { href: '/admin/utilisateurs', labelKey: 'users', icon: Users, badgeKey: 'utilisateurs', permission: 'users.read' },
@@ -56,17 +58,17 @@ const NAV_ITEMS_CONFIG: NavItem[] = [
   { href: '/admin/etablissements/demandes', labelKey: 'etablissements_requests', icon: Clock, badgeKey: 'etablissementsRequests', permission: 'etablissements.request.edit' },
   { href: '/admin/programmes-activites', labelKey: 'activities', icon: ClipboardList, badgeKey: 'activites', permission: 'programmes.read' },
   { href: '/admin/validation', labelKey: 'validation', icon: CheckSquare, badgeKey: 'validation', permission: 'reclamations.validate' },
-  { href: '/admin/evenements', labelKey: 'events', icon: Calendar, badgeKey: 'evenements', permission: 'evenements.read' },
-  { href: '/admin/actualites', labelKey: 'news', icon: FileText, permission: 'actualites.read' },
+  { href: '/admin/evenements', labelKey: 'events', icon: CalendarDays, badgeKey: 'evenements', permission: 'evenements.read' },
+  { href: '/admin/actualites', labelKey: 'news', icon: Newspaper, permission: 'actualites.read' },
   { href: '/admin/articles', labelKey: 'articles', icon: FileText, permission: 'actualites.read' },
-  { href: '/admin/campagnes', labelKey: 'campaigns', icon: BarChart3, permission: 'campagnes.read' },
+  { href: '/admin/campagnes', labelKey: 'campaigns', icon: Megaphone, permission: 'campagnes.read' },
   { href: '/admin/bilans', labelKey: 'reports', icon: FileText, permission: 'stats.view.global' },
   { href: '/admin/stats', labelKey: 'statistics', icon: BarChart3, permission: 'stats.view.global' },
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
   { href: '/', labelKey: 'home_page', icon: Home },
-  { href: '/admin/settings', labelKey: 'settings', icon: Settings, permission: 'system.settings.read' },
+  { href: '/admin/settings', labelKey: 'settings', icon: Settings2, permission: 'system.settings.read' },
 ];
 
 // Super Admin items
@@ -174,26 +176,43 @@ export default function AdminSidebar() {
       <Link
         href={item.href}
         onClick={() => setMobileOpen(false)}
-        className={`gov-sidebar-nav-item group relative ${
-          active ? 'active' : ''
+        className={`gov-sidebar-nav-item group relative flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg mx-2 my-1 transition-all duration-200 ${
+          active 
+            ? 'text-white bg-[hsl(var(--gov-blue-dark))/10] border-s-4 border-s-[hsl(var(--gov-gold))] bg-white/10' 
+            : 'text-white/70 hover:text-white hover:bg-white/5'
         }`}
       >
-        <Icon 
-          size={20} 
-          className={active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} 
-        />
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
+          <Icon 
+            size={20} 
+            className={active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} 
+          />
+        </motion.div>
+        
         {!collapsed && (
           <span className="flex-1">{t(item.labelKey)}</span>
         )}
-        {item.badge !== undefined && item.badge > 0 && (
-          <span className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center ${
-            active 
-              ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
-              : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
-          }`}>
-            {item.badge > 99 ? '99+' : item.badge}
-          </span>
-        )}
+        
+        <AnimatePresence>
+          {item.badge !== undefined && item.badge > 0 && (
+            <motion.span 
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 15 }}
+              className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center shadow-sm ${
+                active 
+                  ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
+                  : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
+              }`}
+            >
+              {item.badge > 99 ? '99+' : item.badge}
+            </motion.span>
+          )}
+        </AnimatePresence>
         
         {collapsed && (
           <div className="absolute px-2 py-1 bg-[hsl(var(--gov-blue-dark))] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2 shadow-xl border border-white/10">
@@ -307,29 +326,33 @@ export default function AdminSidebar() {
       )}
 
       {/* Mobile sidebar */}
-      <aside
-        className={`lg:hidden fixed inset-y-0 z-50 w-72 bg-gradient-to-b from-[hsl(213,80%,20%)] to-[hsl(213,80%,15%)] transform transition-transform duration-300 shadow-2xl ${
-          mobileOpen 
-            ? 'translate-x-0' 
-            : 'ltr:-translate-x-full rtl:translate-x-full'
-        } start-0`}
-      >
-        <div className="flex flex-col h-full"> 
-            <button
-            onClick={() => setMobileOpen(false)}
-            className="absolute top-4 right-4 rtl:right-auto rtl:left-4 p-2 text-white/60 hover:text-white"
-            >
-            <X size={24} />
-            </button>
-            <SidebarContent />
-        </div>
-      </aside>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.aside
+            initial={{ x: isRTL ? '100%' : '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: isRTL ? '100%' : '-100%' }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+            className={`lg:hidden fixed inset-y-0 z-50 w-72 bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] shadow-2xl start-0`}
+          >
+            <div className="flex flex-col h-full"> 
+                <button
+                onClick={() => setMobileOpen(false)}
+                className="absolute top-4 right-4 rtl:right-auto rtl:left-4 p-2 text-white/60 hover:text-white"
+                >
+                <X size={24} />
+                </button>
+                <SidebarContent />
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
 
       {/* Desktop sidebar - Gouvernemental */}
-      <aside
-        className={`hidden lg:flex flex-col fixed inset-y-0 z-30 bg-gradient-to-b from-[hsl(213,80%,20%)] to-[hsl(213,80%,15%)] transition-all duration-300 border-e border-[hsl(45,93%,47%)]/20 ${
-          collapsed ? 'w-20' : 'w-64'
-        } start-0`}
+      <motion.aside
+        animate={{ width: collapsed ? 80 : 256 }}
+        transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+        className={`hidden lg:flex flex-col fixed inset-y-0 z-30 bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] border-e border-[hsl(var(--gov-gold))]/20 start-0`}
       >
         {/* Top gold accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
@@ -347,7 +370,7 @@ export default function AdminSidebar() {
             : (isRTL ? <ChevronRight size={16} /> : <ChevronLeft size={16} />) // Si ouvert: < en FR, > en AR
             }
         </button>
-      </aside>
+      </motion.aside>
     </>
   );
 }

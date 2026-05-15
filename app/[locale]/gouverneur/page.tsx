@@ -1346,7 +1346,7 @@ export default function GouverneurDashboard() {
                                 </div>
                              </div>
                              <div className="h-64 w-full flex-1">
-                                <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                                    <BarChart data={stats?.charts.auditTrends}>
                                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
@@ -1375,7 +1375,7 @@ export default function GouverneurDashboard() {
                              
                              <div className="flex flex-col md:flex-row items-center gap-8">
                                 <div className="h-64 w-full md:w-1/2 relative">
-                                   <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                   <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                                       <RePieChart>
                                       <Pie
                                         data={Array.isArray(stats?.charts?.compliance) ? stats?.charts.compliance : []}

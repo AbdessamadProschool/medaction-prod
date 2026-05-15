@@ -5,6 +5,10 @@ import { X, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
+import { GovSelect, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
 
 interface User {
   id: number;
@@ -159,22 +163,33 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="bg-card/95 backdrop-blur-xl rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col border border-border"
+      >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('title')}</h2>
-            <p className="text-sm text-gray-500">
-              {user.prenom} {user.nom} ({user.email})
-            </p>
+        <div className="px-8 py-6 border-b border-border flex items-center justify-between shrink-0 bg-gradient-to-br from-card/50 to-muted/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg">
+              <Shield size={24} />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-foreground uppercase tracking-tight">{t('title')}</h2>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
+                {user.prenom} {user.nom} • {user.email}
+              </p>
+            </div>
           </div>
-          <button
+          <GovButton
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
             <X size={20} />
-          </button>
+          </GovButton>
         </div>
 
         {/* Form */}
@@ -186,28 +201,33 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
           )}
 
           {/* Current Role */}
-          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-            <p className="text-sm text-gray-500 mb-1">{t('current_role')}</p>
-            <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
-              <Shield size={16} className="text-emerald-500" />
-              {tRolesMain(user.role)}
-            </p>
+          <div className="mb-8 p-5 bg-gradient-to-br from-muted/30 to-muted/10 border border-border rounded-2xl shadow-sm">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">{t('current_role')}</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                <Shield size={20} />
+              </div>
+              <p className="text-sm font-black text-foreground uppercase tracking-tight">
+                {tRolesMain(user.role)}
+              </p>
+            </div>
           </div>
 
           {/* Role Selection */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <div className="mb-8">
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
               {t('new_role')}
             </label>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {ROLES.map((role) => (
                 <label
                   key={role.value}
-                  className={`relative flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  className={cn(
+                    "relative flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all",
                     selectedRole === role.value
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
-                  }`}
+                      ? "border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] shadow-md shadow-[hsl(var(--gov-blue)/0.1)]"
+                      : "border-border bg-muted/20 hover:border-border/80"
+                  )}
                 >
                   <input
                     type="radio"
@@ -217,21 +237,30 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                     onChange={(e) => setSelectedRole(e.target.value)}
                     className="sr-only"
                   />
-                  {role.value === 'COORDINATEUR_ACTIVITES' ? (
-                    <Calendar className={`w-5 h-5 ${selectedRole === role.value ? 'text-emerald-500' : 'text-gray-400'}`} />
-                  ) : (
-                    <Shield className={`w-5 h-5 ${selectedRole === role.value ? 'text-emerald-500' : 'text-gray-400'}`} />
-                  )}
+                  <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center transition-colors shadow-sm",
+                    selectedRole === role.value ? "bg-[hsl(var(--gov-blue))] text-white" : "bg-muted text-muted-foreground"
+                  )}>
+                    {role.value === 'COORDINATEUR_ACTIVITES' ? (
+                      <Calendar size={24} />
+                    ) : (
+                      <Shield size={24} />
+                    )}
+                  </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white">{tRolesMain(role.value)}</p>
-                    <p className="text-sm text-gray-500">{tRoles(role.value)}</p>
+                    <p className="text-xs font-black text-foreground uppercase tracking-tight">{tRolesMain(role.value)}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{tRoles(role.value)}</p>
                   </div>
                   {selectedRole === role.value && (
-                    <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="w-6 h-6 bg-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center shadow-lg"
+                    >
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
-                    </div>
+                    </motion.div>
                   )}
                 </label>
               ))}
@@ -240,76 +269,75 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
 
           {/* Secteur (pour DELEGATION) */}
           {selectedRole === 'DELEGATION' && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                 {tCreate('fields.sector')} *
-              </label>
-              <select
+            <div className="mb-8">
+              <GovSelect
+                label={tCreate('fields.sector') + ' *'}
                 required
                 value={secteurResponsable}
                 onChange={(e) => setSecteurResponsable(e.target.value)}
-                className="gov-select"
-              >
-                <option value="">{tCreate('select_option.sector')}</option>
-                {SECTEURS.map((s) => (
-                  <option key={s} value={s}>{tSectors(s)}</option>
-                ))}
-              </select>
+                options={[
+                  { label: tCreate('select_option.sector'), value: '' },
+                  ...SECTEURS.map(s => ({ label: tSectors(s), value: s }))
+                ]}
+                leftIcon={<Shield size={18} />}
+              />
             </div>
           )}
 
           {/* Commune (pour AUTORITE_LOCALE) */}
           {selectedRole === 'AUTORITE_LOCALE' && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                 {tCreate('fields.commune')} *
-              </label>
-              <div className="relative">
-                <MapPin className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <select
-                  required
-                  value={communeResponsableId}
-                  onChange={(e) => setCommuneResponsableId(e.target.value)}
-                  className="gov-select ltr:pl-10 rtl:pr-10"
-                >
-                  <option value="">{tCreate('select_option.commune')}</option>
-                  {communes.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="mb-8">
+              <GovSelect
+                label={tCreate('fields.commune') + ' *'}
+                required
+                value={communeResponsableId}
+                onChange={(e) => setCommuneResponsableId(e.target.value)}
+                options={[
+                  { label: tCreate('select_option.commune'), value: '' },
+                  ...communes.map(c => ({ 
+                    label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom, 
+                    value: c.id 
+                  }))
+                ]}
+                leftIcon={<MapPin size={18} />}
+              />
             </div>
           )}
 
           {/* Établissements (pour COORDINATEUR_ACTIVITES) */}
           {selectedRole === 'COORDINATEUR_ACTIVITES' && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="mb-8">
+              <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
                  {tCreate('fields.establishments', { count: etablissementsGeres.length })} *
               </label>
-              <div className="max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-xl p-2 space-y-1">
+              <div className="max-h-60 overflow-y-auto border border-border bg-muted/20 rounded-[1.5rem] p-3 space-y-1 custom-scrollbar shadow-inner">
                 {etablissements.length === 0 ? (
-                  <p className="text-sm text-gray-500 p-2">{t('loading')}</p>
+                  <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40">
+                    <Loader2 className="w-8 h-8 animate-spin mb-3" />
+                    <p className="text-[10px] font-black uppercase tracking-widest">{t('loading')}</p>
+                  </div>
                 ) : (
                   etablissements.map((etab) => (
                     <label
                       key={etab.id}
-                      className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                      className={cn(
+                        "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border border-transparent",
                         etablissementsGeres.includes(etab.id)
-                          ? 'bg-emerald-50 dark:bg-emerald-900/20'
-                          : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                      }`}
+                          ? "bg-[hsl(var(--gov-blue)/0.1)] border-[hsl(var(--gov-blue)/0.2)] shadow-sm"
+                          : "hover:bg-muted/40"
+                      )}
                     >
                       <input
                         type="checkbox"
                         checked={etablissementsGeres.includes(etab.id)}
                         onChange={() => toggleEtablissement(etab.id)}
-                        className="w-4 h-4 rounded text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
+                        className="w-5 h-5 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))/0.2]"
                       />
-                      <Building2 className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                      <Building2 className={cn("w-4 h-4", etablissementsGeres.includes(etab.id) ? "text-[hsl(var(--gov-blue))]" : "text-muted-foreground")} />
+                      <span className={cn(
+                        "text-xs font-black uppercase tracking-tight",
+                        etablissementsGeres.includes(etab.id) ? "text-foreground" : "text-muted-foreground"
+                      )}>
                         {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
                       </span>
                     </label>
@@ -320,25 +348,25 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 shrink-0">
-            <button
+          <div className="flex items-center justify-end gap-4 mt-8 pt-8 border-t border-border shrink-0">
+            <GovButton
               type="button"
               onClick={onClose}
-              className="gov-btn gov-btn-secondary"
+              variant="outline"
+              className="h-12 px-8"
             >
               {tCreate('cancel_btn')}
-            </button>
-            <button
+            </GovButton>
+            <GovButton
               type="submit"
-              disabled={loading}
-              className="gov-btn gov-btn-primary"
+              loading={loading}
+              className="h-12 px-10"
             >
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {t('submit_btn')}
-            </button>
+            </GovButton>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

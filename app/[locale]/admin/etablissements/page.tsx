@@ -32,6 +32,10 @@ import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
+import { GovButton } from '@/components/ui/GovButton';
+import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 
 interface Etablissement {
   id: number;
@@ -289,91 +293,90 @@ export default function AdminEtablissementsPage() {
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
-          <button
+          <GovButton
             onClick={fetchEtablissements}
-            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group"
-          >
-            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />
-          </button>
+            variant="outline"
+            size="icon"
+            loading={loading && etablissements.length > 0}
+            title={t('refresh') || "Actualiser"}
+          />
 
           <div className="flex items-center gap-1 bg-card border border-border rounded-2xl p-1 shadow-sm">
-            <button
+            <GovButton
               onClick={handlePublishAll}
+              variant="outline"
+              size="icon"
               title={t('bulk_publish') || "Tout Publier"}
-              className="w-10 h-10 flex items-center justify-center text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] rounded-xl transition-colors"
+              className="text-[hsl(var(--gov-blue))] border-none hover:bg-[hsl(var(--gov-blue))/0.05]"
             >
               <Globe size={18} />
-            </button>
+            </GovButton>
             <div className="w-px h-6 bg-border" />
-            <button
+            <GovButton
               onClick={handleDeleteAll}
+              variant="outline"
+              size="icon"
               title={t('bulk_delete') || "Tout Supprimer"}
-              className="w-10 h-10 flex items-center justify-center text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05] rounded-xl transition-colors"
+              className="text-[hsl(var(--gov-red))] border-none hover:bg-[hsl(var(--gov-red))/0.05]"
             >
               <Trash2 size={18} />
-            </button>
+            </GovButton>
           </div>
 
-          <button
+          <GovButton
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-6 h-12 rounded-2xl border font-bold text-xs uppercase tracking-widest transition-all ${
-              showFilters 
-                ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue))/0.2]' 
-                : 'bg-card border-border text-foreground hover:bg-muted shadow-sm'
-            }`}
+            variant={showFilters ? "primary" : "outline"}
+            leftIcon={<Filter size={16} />}
+            className={showFilters ? "shadow-lg shadow-[hsl(var(--gov-blue))/0.2]" : ""}
           >
-            <Filter size={16} />
             {t('filters')}
-          </button>
+          </GovButton>
 
-          <Link
-            href="/admin/etablissements/nouveau"
-            className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
+          <GovButton
+            asChild
+            variant="primary"
+            leftIcon={<Plus size={18} />}
+            className="shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
           >
-            <Plus size={18} />
-            {t('new_establishment')}
-          </Link>
+            <Link href="/admin/etablissements/nouveau">
+              {t('new_establishment')}
+            </Link>
+          </GovButton>
         </div>
-      </div>
+      </div>      {/* Stats Cards */}
+      <KpiGrid cols={4}>
+        <KpiCard
+          index={0}
+          label={t('stats.total')}
+          value={stats.total}
+          icon={Building2}
+          variant="blue"
+        />
+        <KpiCard
+          index={1}
+          label={t('stats.validated')}
+          value={stats.valides}
+          icon={CheckCircle}
+          variant="green"
+        />
+        <KpiCard
+          index={2}
+          label={t('stats.published')}
+          value={stats.publies}
+          icon={Globe}
+          variant="blue"
+        />
+        <KpiCard
+          index={3}
+          label={t('stats.average_rating')}
+          value={stats.averageRating.toFixed(1)}
+          icon={Star}
+          variant="gold"
+        />
+      </KpiGrid>
 
-      {/* Stats Cards */      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: t('stats.total'), value: stats.total, icon: Building2, color: 'hsl(var(--gov-blue))' },
-          { label: t('stats.validated'), value: stats.valides, icon: CheckCircle, color: 'hsl(var(--gov-green))' },
-          { label: t('stats.published'), value: stats.publies, icon: Globe, color: 'hsl(var(--gov-blue))' },
-          { label: t('stats.average_rating'), value: stats.averageRating.toFixed(1), icon: Star, color: 'hsl(var(--gov-yellow))' },
-        ].map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="gov-stat-card group relative overflow-hidden"
-          >
-            <div 
-              className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] transition-transform group-hover:scale-110 group-hover:rotate-12"
-              style={{ color: stat.color }}
-            >
-              <stat.icon className="w-full h-full" />
-            </div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-current/10"
-                  style={{ backgroundColor: `${stat.color}08`, color: stat.color }}
-                >
-                  <stat.icon className="w-5 h-5" />
-                </div>
-              </div>
-              <p className="text-3xl font-black text-foreground mb-1 tracking-tight">{stat.value}</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>}
-
-      {/* Filters */}      <AnimatePresence>
+      {/* Filters */}
+      <AnimatePresence>
         {showFilters && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -418,13 +421,14 @@ export default function AdminEtablissementsPage() {
  
                 {/* Reset */}
                 <div className="flex items-end">
-                  <button
+                  <GovButton
                     onClick={() => { setSearch(''); setSecteurFilter(''); setValidFilter(''); }}
-                    className="flex items-center gap-2 px-6 h-12 text-muted-foreground hover:text-foreground font-bold text-[10px] uppercase tracking-widest transition-colors w-full justify-center bg-muted/30 rounded-2xl border border-border/50 hover:bg-muted"
+                    variant="outline"
+                    leftIcon={<X size={14} />}
+                    className="w-full justify-center"
                   >
-                    <X size={14} />
                     {t('reset')}
-                  </button>
+                  </GovButton>
                 </div>
               </div>
             </div>
@@ -432,58 +436,60 @@ export default function AdminEtablissementsPage() {
         )}
       </AnimatePresence>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {loading ? (
-          [...Array(6)].map((_, i) => (
-            <div key={i} className="bg-card border border-border rounded-3xl p-8 animate-pulse shadow-sm">
-              <div className="flex items-start gap-6 mb-6">
-                <div className="w-16 h-16 bg-muted rounded-2xl" />
-                <div className="flex-1 space-y-3">
-                  <div className="h-5 w-3/4 bg-muted rounded-full" />
-                  <div className="h-4 w-1/2 bg-muted rounded-full opacity-60" />
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="h-4 w-full bg-muted rounded-full opacity-40" />
-                <div className="h-4 w-2/3 bg-muted rounded-full opacity-40" />
-              </div>
-            </div>
-          ))
-        ) : etablissements.length === 0 ? (
-          <div className="col-span-full">
-            <EmptyState
-              icon={<Building2 className="w-10 h-10" />}
-              title={t('empty.title')}
-              description={search || secteurFilter ? t('empty.no_results') : t('empty.description')}
-              action={
-                (search || secteurFilter || validFilter) ? (
-                  <button 
-                    onClick={() => { setSearch(''); setSecteurFilter(''); setValidFilter(''); }}
-                    className="px-8 py-3 bg-[hsl(var(--gov-blue))] text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-[hsl(var(--gov-blue))/0.2] transition-all hover:scale-105 active:scale-95"
-                  >
-                    {t('reset')}
-                  </button>
-                ) : undefined
-              }
-            />
-          </div>
-        ) : (
-          etablissements.map((etablissement) => {
-            const secteurConfig = getSecteurConfig(etablissement.secteur);
-            
-            return (
-              <motion.div
+      {/* Table View */}
+      <GovTable>
+        <thead>
+          <tr>
+            <GovTh>{t('card.name') || "Établissement"}</GovTh>
+            <GovTh>{t('card.sector') || "Secteur"}</GovTh>
+            <GovTh>{t('card.location') || "Localisation"}</GovTh>
+            <GovTh>{t('card.status') || "Statut"}</GovTh>
+            <GovTh>{t('card.rating') || "Note"}</GovTh>
+            <GovTh className="text-right">{t('card.actions') || "Actions"}</GovTh>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {loading ? (
+            [...Array(5)].map((_, i) => (
+              <GovTr key={i} className="animate-pulse">
+                <GovTd><div className="h-4 w-32 bg-muted rounded" /></GovTd>
+                <GovTd><div className="h-4 w-20 bg-muted rounded" /></GovTd>
+                <GovTd><div className="h-4 w-24 bg-muted rounded" /></GovTd>
+                <GovTd><div className="h-4 w-16 bg-muted rounded" /></GovTd>
+                <GovTd><div className="h-4 w-12 bg-muted rounded" /></GovTd>
+                <GovTd><div className="h-4 w-24 bg-muted rounded ml-auto" /></GovTd>
+              </GovTr>
+            ))
+          ) : etablissements.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="px-6 py-20">
+                <EmptyState
+                  icon={<Building2 className="w-10 h-10" />}
+                  title={t('empty.title')}
+                  description={search || secteurFilter ? t('empty.no_results') : t('empty.description')}
+                  action={
+                    (search || secteurFilter || validFilter) ? (
+                      <GovButton
+                        onClick={() => { setSearch(''); setSecteurFilter(''); setValidFilter(''); }}
+                        variant="primary"
+                        className="shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
+                      >
+                        {t('reset')}
+                      </GovButton>
+                    ) : undefined
+                  }
+                />
+              </td>
+            </tr>
+          ) : (
+            etablissements.map((etablissement) => (
+              <GovTr
                 key={etablissement.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="group bg-card border border-border rounded-3xl shadow-xl shadow-[hsl(var(--gov-blue))/0.02] hover:shadow-[hsl(var(--gov-blue))/0.08] hover:border-[hsl(var(--gov-blue))/0.3] transition-all overflow-hidden relative"
+                onClick={() => { setSelectedEtablissement(etablissement); setShowDetailModal(true); }}
               >
-                <div className="p-8">
-                  {/* Header */}
-                  <div className="flex items-start gap-6 mb-8">
-                    <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform overflow-hidden border border-border shadow-inner">
+                <GovTd>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-sm overflow-hidden shrink-0">
                       {etablissement.photoPrincipale ? (
                         <img 
                           src={etablissement.photoPrincipale} 
@@ -491,104 +497,91 @@ export default function AdminEtablissementsPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Building2 className="w-8 h-8" />
+                        <Building2 size={18} />
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors truncate">
-                          {etablissement.nom}
-                        </h3>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-extrabold text-foreground">{etablissement.nom}</span>
                         {etablissement.isMisEnAvant && (
-                          <Star className="w-4 h-4 text-[hsl(var(--gov-yellow))] fill-current" />
+                          <Star size={12} className="text-[hsl(var(--gov-gold))] fill-current" />
                         )}
                       </div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{etablissement.code}</p>
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">
+                        {etablissement.code}
+                      </span>
                     </div>
                   </div>
- 
-                  {/* Status badges */}
-                  <div className="flex flex-wrap items-center gap-2 mb-8">
-                    <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
-                      {getSecteurLabel(etablissement.secteur)}
-                    </span>
-                    {etablissement.isValide ? (
-                      <span className="px-3 py-1 bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-green))/0.2]">
-                        {t('card.validated')}
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-red))/0.2]">
-                        {t('card.pending')}
-                      </span>
-                    )}
-                    {etablissement.isPublie && (
-                      <span className="px-3 py-1 bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-blue))/0.2]">
-                        {t('card.published')}
-                      </span>
-                    )}
-                  </div>
- 
-                  {/* Location & Stats */}
-                  <div className="space-y-4 mb-8">
-                    {etablissement.commune && (
-                      <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground">
-                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border">
-                          <MapPin size={14} className="text-[hsl(var(--gov-red))]" />
-                        </div>
-                        <span className="line-clamp-1">{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
-                      </div>
-                    )}
- 
-                    <div className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl border border-border/50">
-                      <div className="flex items-center gap-2">
-                        <Star size={16} className="text-[hsl(var(--gov-yellow))] fill-current" />
-                        <span className="text-sm font-black text-foreground">{etablissement.noteMoyenne.toFixed(1)}</span>
-                        <span className="text-[10px] font-bold uppercase text-muted-foreground opacity-60">
-                          ({etablissement.nombreEvaluations})
-                        </span>
-                      </div>
-                      <div className="h-4 w-px bg-border/50" />
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Users size={16} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">
-                          {etablissement._count?.evaluations || 0} avis
-                        </span>
-                      </div>
+                </GovTd>
+                <GovTd>
+                  <span className="px-2.5 py-0.5 bg-muted rounded-full text-[9px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
+                    {getSecteurLabel(etablissement.secteur)}
+                  </span>
+                </GovTd>
+                <GovTd>
+                  {etablissement.commune && (
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                      <MapPin size={12} className="text-[hsl(var(--gov-red))]" />
+                      <span>{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
                     </div>
+                  )}
+                </GovTd>
+                <GovTd>
+                  <div className="flex flex-wrap gap-1">
+                    <StatusBadge status={etablissement.isValide ? "VALIDEE" : "REJETEE"} size="sm" />
+                    {etablissement.isPublie && <StatusBadge status="PUBLIEE" size="sm" />}
                   </div>
- 
-                  {/* Actions */}
-                  <div className="flex items-center gap-3 pt-6 border-t border-border">
-                    <button
-                      onClick={() => { setSelectedEtablissement(etablissement); setShowDetailModal(true); }}
-                      className="flex-1 h-12 flex items-center justify-center gap-2 bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05] hover:border-[hsl(var(--gov-blue))/0.2] rounded-2xl transition-all shadow-sm font-bold text-[10px] uppercase tracking-widest"
-                    >
-                      <Eye size={16} />
-                      {t('card.details')}
-                    </button>
-                    <button
-                      onClick={() => handleValidate(etablissement.id, 'publier')}
-                      disabled={!!actionLoading}
-                      className={`flex-1 h-12 flex items-center justify-center gap-2 rounded-2xl transition-all shadow-sm font-bold text-[10px] uppercase tracking-widest ${
-                        etablissement.isPublie
-                          ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))]'
-                          : 'bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue))/0.05]'
-                      }`}
-                    >
-                      {actionLoading === `publier-${etablissement.id}` ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Globe size={16} />
-                      )}
-                      {etablissement.isPublie ? t('card.published') : t('card.publish')}
-                    </button>
+                </GovTd>
+                <GovTd>
+                  <div className="flex items-center gap-1.5">
+                    <Star size={14} className="text-[hsl(var(--gov-gold))] fill-current" />
+                    <span className="text-xs font-black text-foreground">{etablissement.noteMoyenne.toFixed(1)}</span>
+                    <span className="text-[9px] font-bold text-muted-foreground">({etablissement.nombreEvaluations})</span>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })
-        )}
-      </div>
+                </GovTd>
+                <GovTd className="text-right">
+                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
+                    <GovButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedEtablissement(etablissement);
+                        setShowDetailModal(true);
+                      }}
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-[hsl(var(--gov-blue))]"
+                    >
+                      <Eye size={18} />
+                    </GovButton>
+                    <GovButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleValidate(etablissement.id, 'publier');
+                      }}
+                      variant="ghost"
+                      size="icon"
+                      className={etablissement.isPublie ? "text-[hsl(var(--gov-blue))]" : "text-muted-foreground hover:text-[hsl(var(--gov-blue))]"}
+                      loading={actionLoading === `publier-${etablissement.id}`}
+                    >
+                      <Globe size={18} />
+                    </GovButton>
+                    <GovButton
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-[hsl(var(--gov-blue))]"
+                    >
+                      <Link href={`/admin/etablissements/${etablissement.id}/edit`}>
+                        <Edit size={18} />
+                      </Link>
+                    </GovButton>
+                  </div>
+                </GovTd>
+              </GovTr>
+            ))
+          )}
+        </tbody>
+      </GovTable>
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -597,38 +590,37 @@ export default function AdminEtablissementsPage() {
             {t('pagination.info', { page, total: totalPages })}
           </p>
           <div className="flex items-center gap-3">
-            <button
+            <GovButton
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="w-10 h-10 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 rounded-xl transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              variant="outline"
+              size="icon"
             >
               {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            </button>
+            </GovButton>
             <div className="flex items-center gap-1">
               {[...Array(Math.min(5, totalPages))].map((_, i) => {
                 const pageNum = i + 1;
                 return (
-                  <button
+                  <GovButton
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${
-                      page === pageNum 
-                        ? 'bg-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue))/0.2]' 
-                        : 'bg-card border border-border text-muted-foreground hover:bg-muted'
-                    }`}
+                    variant={page === pageNum ? "primary" : "outline"}
+                    className="w-10 h-10 p-0"
                   >
                     {pageNum}
-                  </button>
+                  </GovButton>
                 );
               })}
             </div>
-            <button
+            <GovButton
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="w-10 h-10 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 rounded-xl transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              variant="outline"
+              size="icon"
             >
               {locale === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-            </button>
+            </GovButton>
           </div>
         </div>
       )}
@@ -691,9 +683,9 @@ export default function AdminEtablissementsPage() {
                       <span className="px-3 py-1 bg-muted rounded-full text-[9px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
                         {selectedEtablissement.code}
                       </span>
-                      <span className="px-3 py-1 bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] rounded-full text-[9px] font-bold uppercase tracking-widest border border-[hsl(var(--gov-blue))/0.2]">
+                      <StatusBadge color="blue">
                         {getSecteurLabel(selectedEtablissement.secteur)}
-                      </span>
+                      </StatusBadge>
                     </div>
                   </div>
                 </div>
@@ -765,65 +757,53 @@ export default function AdminEtablissementsPage() {
                     Actions Administratives
                   </h4>
                   <div className="grid grid-cols-1 gap-4">
-                    <button
+                    <GovButton
                       onClick={() => handleValidate(selectedEtablissement.id, 'valider')}
                       disabled={!!actionLoading}
-                      className={`w-full flex items-center justify-between p-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all border ${
-                        selectedEtablissement.isValide
-                          ? 'bg-[hsl(var(--gov-green))/0.05] text-[hsl(var(--gov-green))] border-[hsl(var(--gov-green))/0.2]'
-                          : 'bg-card text-muted-foreground border-border hover:bg-[hsl(var(--gov-green))/0.05] hover:text-[hsl(var(--gov-green))] hover:border-[hsl(var(--gov-green))/0.2]'
-                      }`}
+                      loading={actionLoading === `valider-${selectedEtablissement.id}`}
+                      variant={selectedEtablissement.isValide ? "outline" : "primary"}
+                      leftIcon={!(actionLoading === `valider-${selectedEtablissement.id}`) && (selectedEtablissement.isValide ? <CheckCircle size={18} /> : <Award size={18} />)}
+                      className={`w-full justify-between h-16 ${selectedEtablissement.isValide ? "text-[hsl(var(--gov-green))] bg-[hsl(var(--gov-green))/0.05] border-[hsl(var(--gov-green))/0.2]" : ""}`}
                     >
-                      <div className="flex items-center gap-3">
-                        {actionLoading === `valider-${selectedEtablissement.id}` ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
-                        {selectedEtablissement.isValide ? t('card.validated') : t('card.validate')}
-                      </div>
+                      <span>{selectedEtablissement.isValide ? t('card.validated') : t('card.validate')}</span>
                       <ChevronRight size={16} />
-                    </button>
+                    </GovButton>
  
-                    <button
+                    <GovButton
                       onClick={() => handleValidate(selectedEtablissement.id, 'publier')}
                       disabled={!!actionLoading}
-                      className={`w-full flex items-center justify-between p-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all border ${
-                        selectedEtablissement.isPublie
-                          ? 'bg-[hsl(var(--gov-blue))/0.05] text-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))/0.2]'
-                          : 'bg-card text-muted-foreground border-border hover:bg-[hsl(var(--gov-blue))/0.05] hover:text-[hsl(var(--gov-blue))] hover:border-[hsl(var(--gov-blue))/0.2]'
-                      }`}
+                      loading={actionLoading === `publier-${selectedEtablissement.id}`}
+                      variant={selectedEtablissement.isPublie ? "outline" : "primary"}
+                      leftIcon={!(actionLoading === `publier-${selectedEtablissement.id}`) && <Globe size={18} />}
+                      className={`w-full justify-between h-16 ${selectedEtablissement.isPublie ? "text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.2]" : ""}`}
                     >
-                      <div className="flex items-center gap-3">
-                        {actionLoading === `publier-${selectedEtablissement.id}` ? <Loader2 size={18} className="animate-spin" /> : <Globe size={18} />}
-                        {selectedEtablissement.isPublie ? t('card.unpublish') : t('card.publish')}
-                      </div>
+                      <span>{selectedEtablissement.isPublie ? t('card.unpublish') : t('card.publish')}</span>
                       <ChevronRight size={16} />
-                    </button>
+                    </GovButton>
  
-                    <button
+                    <GovButton
                       onClick={() => handleValidate(selectedEtablissement.id, 'misEnAvant')}
                       disabled={!!actionLoading}
-                      className={`w-full flex items-center justify-between p-5 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all border ${
-                        selectedEtablissement.isMisEnAvant
-                          ? 'bg-[hsl(var(--gov-yellow))/0.05] text-[hsl(var(--gov-yellow))] border-[hsl(var(--gov-yellow))/0.2]'
-                          : 'bg-card text-muted-foreground border-border hover:bg-[hsl(var(--gov-yellow))/0.05] hover:text-[hsl(var(--gov-yellow))] hover:border-[hsl(var(--gov-yellow))/0.2]'
-                      }`}
+                      loading={actionLoading === `misEnAvant-${selectedEtablissement.id}`}
+                      variant={selectedEtablissement.isMisEnAvant ? "outline" : "primary"}
+                      leftIcon={!(actionLoading === `misEnAvant-${selectedEtablissement.id}`) && <Star size={18} />}
+                      className={`w-full justify-between h-16 ${selectedEtablissement.isMisEnAvant ? "text-[hsl(var(--gov-yellow))] bg-[hsl(var(--gov-yellow))/0.05] border-[hsl(var(--gov-yellow))/0.2]" : ""}`}
                     >
-                      <div className="flex items-center gap-3">
-                        {actionLoading === `misEnAvant-${selectedEtablissement.id}` ? <Loader2 size={18} className="animate-spin" /> : <Star size={18} className={selectedEtablissement.isMisEnAvant ? 'fill-current' : ''} />}
-                        {selectedEtablissement.isMisEnAvant ? t('card.remove_highlight') : t('card.highlight')}
-                      </div>
+                      <span>{selectedEtablissement.isMisEnAvant ? t('card.featured') || "Mis en avant" : t('card.feature') || "Mettre en avant"}</span>
                       <ChevronRight size={16} />
-                    </button>
+                    </GovButton>
  
-                    <button
-                      onClick={() => handleDelete(selectedEtablissement.id)}
-                      disabled={!!actionLoading}
-                      className="w-full flex items-center justify-between p-5 bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] border border-[hsl(var(--gov-red))/0.2] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[hsl(var(--gov-red))] hover:text-white transition-all shadow-sm"
-                    >
-                      <div className="flex items-center gap-3">
-                        {actionLoading === `delete-${selectedEtablissement.id}` ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+                    <div className="pt-6">
+                      <GovButton
+                        onClick={() => handleDelete(selectedEtablissement.id)}
+                        disabled={!!actionLoading}
+                        variant="outline"
+                        leftIcon={<Trash2 size={18} />}
+                        className="w-full justify-center h-16 border-dashed border-[hsl(var(--gov-red))/0.3] text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05]"
+                      >
                         {t('card.delete')}
-                      </div>
-                      <ChevronRight size={16} />
-                    </button>
+                      </GovButton>
+                    </div>
                   </div>
                 </div>
  

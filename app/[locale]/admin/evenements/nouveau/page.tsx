@@ -29,6 +29,9 @@ import {
   Globe
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 export default function NouveauEventPage() {
@@ -189,69 +192,90 @@ export default function NouveauEventPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         
         {/* Header */}
-        <div className="mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-10"
+        >
           <Link 
             href="/admin/evenements"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-[10px] font-black text-muted-foreground hover:text-[hsl(var(--gov-blue))] mb-6 transition-all uppercase tracking-widest group"
           >
-            <ArrowLeft size={18} />
+            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center group-hover:bg-[hsl(var(--gov-blue)/0.1)] transition-colors">
+              <ArrowLeft size={12} />
+            </div>
             <span>{t('back_list')}</span>
           </Link>
           
-          <div className="flex items-start justify-between">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-[hsl(var(--gov-blue)/0.3)] ring-4 ring-white dark:ring-slate-900">
+              <Sparkles className="w-10 h-10" />
+            </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
+              <h1 className="text-4xl font-black text-foreground uppercase tracking-tight leading-none mb-2">
                 {t('title_new')}
               </h1>
-              <p className="text-gray-500">
+              <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest opacity-70">
                 {t('subtitle_new')}
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           
           {/* Section 1: Image de couverture */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <ImageIcon className="w-5 h-5 text-emerald-600" />
-                {t('sections.visual')}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">{t('sections.visual_hint')}</p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-border overflow-hidden"
+          >
+            <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                  <ImageIcon size={20} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-foreground uppercase tracking-widest">
+                    {t('sections.visual')}
+                  </h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{t('sections.visual_hint')}</p>
+                </div>
+              </div>
             </div>
             
-            <div className="p-6">
+            <div className="p-8">
               {previewUrl ? (
-                <div className="relative w-full h-72 bg-gray-100 rounded-xl overflow-hidden group">
-                  <img src={previewUrl} alt="Prévisualisation" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                      <span className="text-white text-sm font-medium">{tForm('image_selected')}</span>
-                      <button
+                <div className="relative w-full h-80 bg-muted/30 rounded-[2rem] overflow-hidden group shadow-inner border border-border">
+                  <img src={previewUrl} alt="Prévisualisation" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-8">
+                    <div className="w-full flex justify-between items-center">
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">{tForm('image_selected')}</span>
+                      <GovButton
                         type="button"
                         onClick={() => {
                           setSelectedImage(null);
                           setPreviewUrl(null);
                         }}
-                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                        variant="danger"
+                        size="sm"
+                        className="rounded-full px-6"
                       >
                         {tForm('image_delete')}
-                      </button>
+                      </GovButton>
                     </div>
                   </div>
                 </div>
               ) : (
-                <label className="block border-2 border-dashed border-gray-200 rounded-xl p-12 text-center bg-gray-50/50 hover:bg-gray-50 hover:border-blue-300 transition-all cursor-pointer group">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <ImageIcon className="w-8 h-8 text-blue-600" />
+                <label className="block border-4 border-dashed border-border/50 rounded-[2.5rem] p-16 text-center bg-muted/10 hover:bg-muted/20 hover:border-[hsl(var(--gov-blue)/0.3)] transition-all cursor-pointer group relative overflow-hidden">
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-br from-[hsl(var(--gov-blue)/0.1)] to-emerald-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-500 shadow-sm">
+                      <ImageIcon className="w-10 h-10 text-[hsl(var(--gov-blue))]" />
+                    </div>
+                    <p className="text-sm font-black text-foreground uppercase tracking-tight mb-2">{tForm('upload_text')}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">{tForm('upload_hint')}</p>
                   </div>
-                  <p className="text-gray-700 font-medium mb-1">{tForm('upload_text')}</p>
-                  <p className="text-gray-400 text-sm">{tForm('upload_hint')}</p>
                   <input 
                     type="file" 
                     className="hidden"
@@ -261,366 +285,329 @@ export default function NouveauEventPage() {
                 </label>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Section 2: Informations Principales */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50/50 to-transparent">
-              <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <AlignLeft className="w-5 h-5 text-blue-600" />
-                {t('sections.info')}
-              </h2>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-border overflow-hidden"
+          >
+            <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                  <AlignLeft size={20} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-foreground uppercase tracking-widest">
+                    {t('sections.info')}
+                  </h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Informations essentielles de l'événement</p>
+                </div>
+              </div>
             </div>
             
-            <div className="p-6 space-y-6">
+            <div className="p-8 space-y-8">
               {/* Titre */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {tForm('title_label')} <span className="text-red-500">*</span>
-                </label>
-                <input
-                  {...register('titre')}
-                  type="text"
-                  placeholder={tForm('title_placeholder')}
-                  className="gov-input text-lg font-medium"
-                />
-                {errors.titre && (
-                  <p className="text-red-500 text-sm mt-2">{errors.titre.message}</p>
-                )}
-              </div>
+              <GovInput
+                label={tForm('title_label') + " *"}
+                placeholder={tForm('title_placeholder')}
+                error={errors.titre?.message}
+                className="text-lg font-black uppercase tracking-tight"
+                {...register('titre')}
+              />
 
               {/* Description */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {tForm('desc_label')} <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  {...register('description')}
-                  rows={5}
-                  placeholder={tForm('desc_placeholder')}
-                  className="gov-textarea leading-relaxed"
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm mt-2">{errors.description.message}</p>
-                )}
-              </div>
+              <GovTextarea
+                label={tForm('desc_label') + " *"}
+                placeholder={tForm('desc_placeholder')}
+                error={errors.description?.message}
+                className="leading-relaxed"
+                {...register('description')}
+              />
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-8">
                 {/* Établissement */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('establishment_label')} <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <select
-                      {...register('etablissementId')}
-                      className="gov-select ltr:pl-12 rtl:pr-12"
-                    >
-                      <option value="">{tForm('select_placeholder')}</option>
-                      {etablissements.map(e => (
-                        <option key={e.id} value={e.id}>
-                          {locale === 'ar' ? (e.nomArabe || e.nom) : e.nom}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {errors.etablissementId && (
-                    <p className="text-red-500 text-sm mt-2">{errors.etablissementId.message}</p>
-                  )}
-                </div>
+                <GovSelect
+                  label={tForm('establishment_label') + " *"}
+                  error={errors.etablissementId?.message}
+                  leftIcon={<Building2 size={18} />}
+                  options={[
+                    { label: tForm('select_placeholder'), value: "" },
+                    ...etablissements.map(e => ({
+                      label: locale === 'ar' ? (e.nomArabe || e.nom) : e.nom,
+                      value: e.id
+                    }))
+                  ]}
+                  {...register('etablissementId')}
+                />
 
                 {/* Type */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('type_label')} <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <select
-                      {...register('typeCategorique')}
-                      className="gov-select ltr:pl-12 rtl:pr-12"
-                    >
-                      <option value="">{tForm('select_placeholder')}</option>
-                      <option value="CULTUREL">🎭 Culturel</option>
-                      <option value="SPORTIF">⚽ Sportif</option>
-                      <option value="SOCIAL">🤝 Social</option>
-                      <option value="EDUCATIF">📚 Éducatif</option>
-                      <option value="SANTE">🏥 Santé</option>
-                      <option value="AUTRE">📌 Autre</option>
-                    </select>
-                  </div>
-                  {errors.typeCategorique && (
-                    <p className="text-red-500 text-sm mt-2">{errors.typeCategorique.message}</p>
-                  )}
-                </div>
+                <GovSelect
+                  label={tForm('type_label') + " *"}
+                  error={errors.typeCategorique?.message}
+                  leftIcon={<Tag size={18} />}
+                  options={[
+                    { label: tForm('select_placeholder'), value: "" },
+                    { label: "🎭 Culturel", value: "CULTUREL" },
+                    { label: "⚽ Sportif", value: "SPORTIF" },
+                    { label: "🤝 Social", value: "SOCIAL" },
+                    { label: "📚 Éducatif", value: "EDUCATIF" },
+                    { label: "🏥 Santé", value: "SANTE" },
+                    { label: "📌 Autre", value: "AUTRE" }
+                  ]}
+                  {...register('typeCategorique')}
+                />
               </div>
 
               {/* Tags */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {tForm('tags')} <span className="text-gray-400 font-normal">{tForm('tags_hint')}</span>
-                </label>
-                <input
-                  {...register('tags')}
-                  type="text"
-                  placeholder={tForm('tags_placeholder')}
-                  className="gov-input"
-                />
-              </div>
+              <GovInput
+                label={tForm('tags')}
+                placeholder={tForm('tags_placeholder')}
+                leftIcon={<Sparkles size={18} />}
+                {...register('tags')}
+              />
             </div>
-          </div>
+          </motion.div>
 
           {/* Section 3: Date, Heure et Lieu */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-amber-50/50 to-transparent">
-              <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-amber-600" />
-                {t('sections.date_location')}
-              </h2>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-border overflow-hidden"
+          >
+            <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+                  <Calendar size={20} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-foreground uppercase tracking-widest">
+                    {t('sections.date_location')}
+                  </h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Planification temporelle et spatiale</p>
+                </div>
+              </div>
             </div>
             
-            <div className="p-6">
+            <div className="p-8 space-y-8">
               {/* Dates */}
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('start_date')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    {...register('dateDebut')}
-                    type="date"
-                    className="gov-input"
-                  />
-                  {errors.dateDebut && (
-                    <p className="text-red-500 text-sm mt-2">{errors.dateDebut.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('end_date')} <span className="text-gray-400 font-normal">{tForm('optional')}</span>
-                  </label>
-                  <input
-                    {...register('dateFin')}
-                    type="date"
-                    className="gov-input"
-                  />
-                </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <GovInput
+                  label={tForm('start_date') + " *"}
+                  type="date"
+                  error={errors.dateDebut?.message}
+                  leftIcon={<Calendar size={18} />}
+                  {...register('dateDebut')}
+                />
+                <GovInput
+                  label={tForm('end_date')}
+                  type="date"
+                  leftIcon={<Calendar size={18} />}
+                  {...register('dateFin')}
+                />
               </div>
 
               {/* Heures */}
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Clock className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('start_time')}
-                  </label>
-                  <input
-                    {...register('heureDebut')}
-                    type="time"
-                    className="gov-input"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Clock className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('end_time')}
-                  </label>
-                  <input
-                    {...register('heureFin')}
-                    type="time"
-                    className="gov-input"
-                  />
-                </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <GovInput
+                  label={tForm('start_time')}
+                  type="time"
+                  leftIcon={<Clock size={18} />}
+                  {...register('heureDebut')}
+                />
+                <GovInput
+                  label={tForm('end_time')}
+                  type="time"
+                  leftIcon={<Clock size={18} />}
+                  {...register('heureFin')}
+                />
               </div>
 
               {/* Lieu */}
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <MapPin className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('location_label')}
-                  </label>
-                  <input
-                    {...register('lieu')}
-                    type="text"
-                    placeholder={tForm('location_placeholder')}
-                    className="gov-input"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('address')}
-                  </label>
-                  <input
-                    {...register('adresse')}
-                    type="text"
-                    placeholder={tForm('address_placeholder')}
-                    className="gov-input"
-                  />
-                </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <GovInput
+                  label={tForm('location_label')}
+                  placeholder={tForm('location_placeholder')}
+                  leftIcon={<MapPin size={18} />}
+                  {...register('lieu')}
+                />
+                <GovInput
+                  label={tForm('address')}
+                  placeholder={tForm('address_placeholder')}
+                  leftIcon={<MapPin size={18} />}
+                  {...register('adresse')}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {tForm('neighborhood')}
-                </label>
-                <input
-                  {...register('quartierDouar')}
-                  type="text"
-                  placeholder={tForm('neighborhood_placeholder')}
-                  className="gov-input"
+              <GovInput
+                label={tForm('neighborhood')}
+                placeholder={tForm('neighborhood_placeholder')}
+                leftIcon={<Globe size={18} />}
+                {...register('quartierDouar')}
+              />
+            </div>
+          </motion.div>
+
+          {/* Section 4: Organisateur & Contact */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-border overflow-hidden"
+          >
+            <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
+                  <User size={20} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-foreground uppercase tracking-widest">
+                    {t('sections.organizer')}
+                  </h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{t('sections.organizer_hint')}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-8">
+              <div className="grid md:grid-cols-3 gap-8">
+                <GovInput
+                  label={tForm('organizer_name')}
+                  placeholder={tForm('organizer_name_placeholder')}
+                  leftIcon={<User size={18} />}
+                  {...register('organisateur')}
+                />
+                <GovInput
+                  label={tForm('organizer_phone')}
+                  type="tel"
+                  placeholder={tForm('organizer_phone_placeholder')}
+                  leftIcon={<Phone size={18} />}
+                  {...register('contactOrganisateur')}
+                />
+                <GovInput
+                  label={tForm('organizer_email')}
+                  type="email"
+                  placeholder={tForm('organizer_email_placeholder')}
+                  error={errors.emailContact?.message}
+                  leftIcon={<Mail size={18} />}
+                  {...register('emailContact')}
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Section 4: Organisateur & Contact */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50/50 to-transparent">
-              <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <User className="w-5 h-5 text-purple-600" />
-                {t('sections.organizer')}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">{t('sections.organizer_hint')}</p>
-            </div>
-            
-            <div className="p-6">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <User className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('organizer_name')}
-                  </label>
-                  <input
-                    {...register('organisateur')}
-                    type="text"
-                    placeholder={tForm('organizer_name_placeholder')}
-                    className="gov-input"
-                  />
+          {/* Section 5: Participation & Inscription */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-border overflow-hidden"
+          >
+            <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                  <Users size={20} />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Phone className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('organizer_phone')}
-                  </label>
-                  <input
-                    {...register('contactOrganisateur')}
-                    type="tel"
-                    placeholder={tForm('organizer_phone_placeholder')}
-                    className="gov-input"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Mail className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('organizer_email')}
-                  </label>
-                  <input
-                    {...register('emailContact')}
-                    type="email"
-                    placeholder={tForm('organizer_email_placeholder')}
-                    className="gov-input"
-                  />
-                  {errors.emailContact && (
-                    <p className="text-red-500 text-sm mt-2">{errors.emailContact.message}</p>
-                  )}
+                  <h2 className="text-sm font-black text-foreground uppercase tracking-widest">
+                    {t('sections.participation')}
+                  </h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Gestion de la capacité et des inscriptions</p>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Section 5: Participation & Inscription */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50/50 to-transparent">
-              <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <Users className="w-5 h-5 text-green-600" />
-                {t('sections.participation')}
-              </h2>
-            </div>
             
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    {tForm('max_capacity')}
-                  </label>
-                  <input
-                    {...register('capaciteMax')}
-                    type="number"
-                    min="0"
-                    placeholder={tForm('capacity_placeholder')}
-                    className="gov-input"
-                  />
-                </div>
+            <div className="p-8 space-y-8">
+              <div className="grid md:grid-cols-2 gap-8">
+                <GovInput
+                  label={tForm('max_capacity')}
+                  type="number"
+                  placeholder={tForm('capacity_placeholder')}
+                  leftIcon={<Users size={18} />}
+                  {...register('capaciteMax')}
+                />
 
-                <div className="flex items-center">
-                  <label className="flex items-start gap-4 p-4 rounded-xl border border-gray-200 hover:border-green-300 cursor-pointer transition-colors w-full">
+                <div className="flex items-end">
+                  <label className={cn(
+                    "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all w-full group shadow-sm",
+                    watchedInscriptions 
+                      ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                      : "border-border bg-muted/10 hover:border-border/80"
+                  )}>
                     <input
                       type="checkbox"
                       {...register('inscriptionsOuvertes')}
-                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] mt-0.5 focus:ring-[hsl(var(--gov-blue))]"
+                      className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 transition-all cursor-pointer"
                     />
                     <div>
-                      <span className="font-medium text-gray-800 block">{tForm('open_registrations')}</span>
-                      <span className="text-sm text-gray-500">{tForm('open_registrations_hint')}</span>
+                      <span className={cn(
+                        "text-xs font-black uppercase tracking-widest block transition-colors",
+                        watchedInscriptions ? "text-emerald-700" : "text-foreground"
+                      )}>
+                        {tForm('open_registrations')}
+                      </span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+                        {tForm('open_registrations_hint')}
+                      </span>
                     </div>
                   </label>
                 </div>
               </div>
 
-              {watchedInscriptions && (
-                <div className="animate-in slide-in-from-top-2 duration-200">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <LinkIcon className="w-4 h-4 inline mr-1 text-gray-400" />
-                    {tForm('registration_link')}
-                  </label>
-                  <input
-                    {...register('lienInscription')}
-                    type="url"
-                    placeholder="Ex: https://forms.google.com/..."
-                    className="gov-input"
-                  />
-                  {errors.lienInscription && (
-                    <p className="text-red-500 text-sm mt-2">{errors.lienInscription.message}</p>
-                  )}
-                </div>
-              )}
+              <AnimatePresence>
+                {watchedInscriptions && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <GovInput
+                      label={tForm('registration_link')}
+                      placeholder="Ex: https://forms.google.com/..."
+                      error={errors.lienInscription?.message}
+                      leftIcon={<LinkIcon size={18} />}
+                      {...register('lienInscription')}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-100">
-            <Link
-              href="/admin/evenements"
-              className="gov-btn gov-btn-secondary"
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="flex items-center justify-between pt-10 border-t border-border"
+          >
+            <GovButton
+              asChild
+              variant="outline"
+              className="h-14 px-10 rounded-2xl"
             >
-              {t('buttons.cancel')}
-            </Link>
+              <Link href="/admin/evenements">
+                {t('buttons.cancel')}
+              </Link>
+            </GovButton>
             
-            <button
+            <GovButton
               type="submit"
-              disabled={loading}
-              className={`gov-btn gov-btn-primary ${watchedType ? typeColors[watchedType] || '' : ''} px-8 py-4 text-lg`}
-            >
-              {loading ? (
-                <>
-                  <Loader2 size={22} className="animate-spin" />
-                  {t('buttons.saving')}
-                </>
-              ) : (
-                <>
-                  <Save size={22} />
-                  {t('buttons.create')}
-                </>
+              loading={loading}
+              variant="primary"
+              className={cn(
+                "h-14 px-12 rounded-2xl text-lg shadow-2xl transition-all duration-500",
+                watchedType ? typeColors[watchedType] : "bg-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue-dark))]"
               )}
-            </button>
-          </div>
+              leftIcon={!loading && <Save size={22} />}
+            >
+              {t('buttons.create')}
+            </GovButton>
+          </motion.div>
         </form>
       </div>
     </div>

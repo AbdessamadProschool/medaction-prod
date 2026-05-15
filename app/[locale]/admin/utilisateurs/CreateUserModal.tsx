@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, User, Mail, Phone, Lock, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
+import { X, User, Mail, Phone, Lock, Shield, Building2, Loader2, MapPin, Calendar, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
+import { GovInput, GovSelect, GovButton } from '@/components/ui';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface CreateUserModalProps {
   onClose: () => void;
@@ -190,20 +193,31 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="bg-card/95 backdrop-blur-xl rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-border"
+      >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('title')}</h2>
-            <p className="text-sm text-gray-500">{t('subtitle')}</p>
+        <div className="px-8 py-6 border-b border-border flex items-center justify-between shrink-0 bg-gradient-to-br from-card/50 to-muted/30">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg">
+              <User size={24} />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-foreground uppercase tracking-tight">{t('title')}</h2>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{t('subtitle')}</p>
+            </div>
           </div>
-          <button
+          <GovButton
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
             <X size={20} />
-          </button>
+          </GovButton>
         </div>
 
         {/* Form */}
@@ -215,144 +229,81 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Prénom */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.first_name')} *
-              </label>
-              <div className="relative">
-                <User className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  required
-                  value={formData.prenom}
-                  onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.first_name')}
-                />
-              </div>
-              {fieldErrors.prenom && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.prenom[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.first_name') + ' *'}
+              required
+              value={formData.prenom}
+              onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+              placeholder={t('placeholders.first_name')}
+              leftIcon={<User size={18} />}
+              error={fieldErrors.prenom?.[0]}
+            />
 
-            {/* Nom */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.last_name')} *
-              </label>
-              <div className="relative">
-                <User className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  required
-                  value={formData.nom}
-                  onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.last_name')}
-                />
-              </div>
-              {fieldErrors.nom && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.nom[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.last_name') + ' *'}
+              required
+              value={formData.nom}
+              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              placeholder={t('placeholders.last_name')}
+              leftIcon={<User size={18} />}
+              error={fieldErrors.nom?.[0]}
+            />
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.email')} *
-              </label>
-              <div className="relative">
-                <Mail className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.email')}
-                />
-              </div>
-              {fieldErrors.email && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.email[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.email') + ' *'}
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder={t('placeholders.email')}
+              leftIcon={<Mail size={18} />}
+              error={fieldErrors.email?.[0]}
+            />
 
-            {/* Téléphone */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.phone')}
-              </label>
-              <div className="relative">
-                <Phone className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="tel"
-                  value={formData.telephone}
-                  onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.phone')}
-                />
-              </div>
-              {fieldErrors.telephone && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.telephone[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.phone')}
+              type="tel"
+              value={formData.telephone}
+              onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+              placeholder={t('placeholders.phone')}
+              leftIcon={<Phone size={18} />}
+              error={fieldErrors.telephone?.[0]}
+            />
 
-            {/* Mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.password')} *
-              </label>
-              <div className="relative">
-                <Lock className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  required
-                  value={formData.motDePasse}
-                  onChange={(e) => setFormData({ ...formData, motDePasse: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.password')}
-                />
-              </div>
-              {fieldErrors.motDePasse && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.motDePasse[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.password') + ' *'}
+              type="password"
+              required
+              value={formData.motDePasse}
+              onChange={(e) => setFormData({ ...formData, motDePasse: e.target.value })}
+              placeholder={t('placeholders.password')}
+              leftIcon={<Lock size={18} />}
+              error={fieldErrors.motDePasse?.[0]}
+            />
 
-            {/* Confirmer mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('fields.confirm_password')} *
-              </label>
-              <div className="relative">
-                <Lock className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="password"
-                  required
-                  value={formData.confirmMotDePasse}
-                  onChange={(e) => setFormData({ ...formData, confirmMotDePasse: e.target.value })}
-                  className="gov-input ltr:pl-10 rtl:pr-10"
-                  placeholder={t('placeholders.password')}
-                />
-              </div>
-              {fieldErrors.confirmMotDePasse && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.confirmMotDePasse[0]}</p>
-              )}
-            </div>
+            <GovInput
+              label={t('fields.confirm_password') + ' *'}
+              type="password"
+              required
+              value={formData.confirmMotDePasse}
+              onChange={(e) => setFormData({ ...formData, confirmMotDePasse: e.target.value })}
+              placeholder={t('placeholders.password')}
+              leftIcon={<Lock size={18} />}
+              error={fieldErrors.confirmMotDePasse?.[0]}
+            />
 
-            {/* Rôle */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-2">
                 {t('fields.role')} *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {ROLES.map((role) => (
                   <label
                     key={role.value}
-                    className={`relative flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    className={`relative flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
                       formData.role === role.value
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
+                        ? 'border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] shadow-md shadow-[hsl(var(--gov-blue)/0.1)]'
+                        : 'border-border bg-muted/20 hover:border-border/80'
                     }`}
                   >
                     <input
@@ -363,72 +314,68 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                       onChange={(e) => setFormData({ ...formData, role: e.target.value, communeResponsableId: '', etablissementsGeres: [] })}
                       className="sr-only"
                     />
-                    {role.value === 'COORDINATEUR_ACTIVITES' ? (
-                      <Calendar className={`w-5 h-5 ${formData.role === role.value ? 'text-emerald-500' : 'text-gray-400'}`} />
-                    ) : (
-                      <Shield className={`w-5 h-5 ${formData.role === role.value ? 'text-emerald-500' : 'text-gray-400'}`} />
-                    )}
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
+                      formData.role === role.value ? "bg-[hsl(var(--gov-blue))] text-white" : "bg-muted text-muted-foreground"
+                    )}>
+                      {role.value === 'COORDINATEUR_ACTIVITES' ? (
+                        <Calendar size={20} />
+                      ) : (
+                        <Shield size={20} />
+                      )}
+                    </div>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white text-sm">{tRolesMain(role.value)}</p>
-                      <p className="text-xs text-gray-500">{tRoles(role.value)}</p>
+                      <p className="font-black text-foreground uppercase tracking-tight text-xs">{tRolesMain(role.value)}</p>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5 line-clamp-1">{tRoles(role.value)}</p>
                     </div>
                   </label>
                 ))}
               </div>
               {fieldErrors.role && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.role[0]}</p>
+                <div className="flex items-center gap-1.5 px-1 mt-2 text-red-500">
+                  <AlertCircle size={12} />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">{fieldErrors.role[0]}</span>
+                </div>
               )}
             </div>
 
             {/* Secteur (pour DELEGATION) */}
             {formData.role === 'DELEGATION' && (
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                   {t('fields.sector')} *
-                </label>
-                <select
+                <GovSelect
+                  label={t('fields.sector') + ' *'}
                   required
                   value={formData.secteurResponsable}
                   onChange={(e) => setFormData({ ...formData, secteurResponsable: e.target.value })}
-                  className="gov-select"
-                >
-                  <option value="">{t('select_option.sector')}</option>
-                  {SECTEURS.map((s) => (
-                    <option key={s} value={s}>{tSectors(s)}</option>
-                  ))}
-                </select>
-                {fieldErrors.secteurResponsable && (
-                  <p className="mt-1 text-xs text-red-500">{fieldErrors.secteurResponsable[0]}</p>
-                )}
+                  options={[
+                    { label: t('select_option.sector'), value: '' },
+                    ...SECTEURS.map(s => ({ label: tSectors(s), value: s }))
+                  ]}
+                  leftIcon={<Shield size={18} />}
+                  error={fieldErrors.secteurResponsable?.[0]}
+                />
               </div>
             )}
 
             {/* Commune (pour AUTORITE_LOCALE) */}
             {formData.role === 'AUTORITE_LOCALE' && (
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                   {t('fields.commune')} *
-                </label>
-                <div className="relative">
-                  <MapPin className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <select
-                    required
-                    value={formData.communeResponsableId}
-                    onChange={(e) => setFormData({ ...formData, communeResponsableId: e.target.value })}
-                    className="gov-select ltr:pl-10 rtl:pr-10"
-                  >
-                    <option value="">{t('select_option.commune')}</option>
-                    {communes.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {locale === 'ar' ? (c.nomArabe || c.nom) : c.nom}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {fieldErrors.communeResponsableId && (
-                  <p className="mt-1 text-xs text-red-500">{fieldErrors.communeResponsableId[0]}</p>
-                )}
-                <p className="mt-1 text-xs text-gray-500">
+                <GovSelect
+                  label={t('fields.commune') + ' *'}
+                  required
+                  value={formData.communeResponsableId}
+                  onChange={(e) => setFormData({ ...formData, communeResponsableId: e.target.value })}
+                  options={[
+                    { label: t('select_option.commune'), value: '' },
+                    ...communes.map(c => ({ 
+                      label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom, 
+                      value: c.id 
+                    }))
+                  ]}
+                  leftIcon={<MapPin size={18} />}
+                  error={fieldErrors.communeResponsableId?.[0]}
+                />
+                <p className="mt-1.5 text-[9px] font-bold text-muted-foreground uppercase tracking-widest px-1 opacity-60">
                   {t('helpers.commune_helper')}
                 </p>
               </div>
@@ -437,30 +384,34 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
             {/* Établissements (pour COORDINATEUR_ACTIVITES) */}
             {formData.role === 'COORDINATEUR_ACTIVITES' && (
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-2">
                    {t('fields.establishments', { count: formData.etablissementsGeres.length })} *
                 </label>
-                <div className="max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-xl p-2 space-y-1">
+                <div className="max-h-48 overflow-y-auto border border-border bg-muted/20 rounded-2xl p-3 space-y-1 custom-scrollbar">
                   {etablissements.length === 0 ? (
-                    <p className="text-sm text-gray-500 p-2">{t('loading_establishments')}</p>
+                    <div className="flex flex-col items-center justify-center py-8 text-muted-foreground/40">
+                      <Loader2 className="w-6 h-6 animate-spin mb-2" />
+                      <p className="text-[10px] font-black uppercase tracking-widest">{t('loading_establishments')}</p>
+                    </div>
                   ) : (
                     etablissements.map((etab) => (
                       <label
                         key={etab.id}
-                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors ${
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border border-transparent",
                           formData.etablissementsGeres.includes(etab.id)
-                            ? 'bg-emerald-50 dark:bg-emerald-900/20'
-                            : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                        }`}
+                            ? 'bg-[hsl(var(--gov-blue)/0.1)] border-[hsl(var(--gov-blue)/0.2)]'
+                            : 'hover:bg-muted/40'
+                        )}
                       >
                         <input
                           type="checkbox"
                           checked={formData.etablissementsGeres.includes(etab.id)}
                           onChange={() => toggleEtablissement(etab.id)}
-                          className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500"
+                          className="w-4 h-4 rounded border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
                         />
-                        <Building2 className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                        <Building2 className={cn("w-4 h-4", formData.etablissementsGeres.includes(etab.id) ? "text-[hsl(var(--gov-blue))]" : "text-muted-foreground")} />
+                        <span className={cn("text-xs font-bold uppercase tracking-tight", formData.etablissementsGeres.includes(etab.id) ? "text-foreground" : "text-muted-foreground")}>
                           {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
                         </span>
                       </label>
@@ -468,9 +419,12 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                   )}
                 </div>
                 {fieldErrors.etablissementsGeres && (
-                  <p className="mt-1 text-xs text-red-500">{fieldErrors.etablissementsGeres[0]}</p>
+                  <div className="flex items-center gap-1.5 px-1 mt-2 text-red-500">
+                    <AlertCircle size={12} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{fieldErrors.etablissementsGeres[0]}</span>
+                  </div>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1.5 text-[9px] font-bold text-muted-foreground uppercase tracking-widest px-1 opacity-60">
                   {t('helpers.establishments_helper')}
                 </p>
               </div>
@@ -478,14 +432,16 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
 
             {/* Statut actif */}
             <div className="md:col-span-2">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
-                />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                    className="w-6 h-6 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))/0.2] transition-all cursor-pointer"
+                  />
+                </div>
+                <span className="text-xs font-black text-foreground uppercase tracking-widest group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                   {t('fields.active_account')}
                 </span>
               </label>
@@ -493,25 +449,25 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 shrink-0">
-            <button
+          <div className="flex items-center justify-end gap-4 mt-8 pt-8 border-t border-border shrink-0">
+            <GovButton
               type="button"
               onClick={onClose}
-              className="gov-btn gov-btn-secondary"
+              variant="outline"
+              className="h-12 px-8"
             >
               {t('cancel_btn')}
-            </button>
-            <button
+            </GovButton>
+            <GovButton
               type="submit"
-              disabled={loading}
-              className="gov-btn gov-btn-primary"
+              loading={loading}
+              className="h-12 px-10"
             >
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {t('submit_btn')}
-            </button>
+            </GovButton>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -42,7 +42,9 @@
       "resolve": "Marquer comme résolue",
       "comment": {
         "internal": "Ajouter commentaire interne"
-      }
+      },
+      "anonyme": "Citoyen Anonyme",
+      "no_phone": "N° non renseigné"
     },
     "evenements": {
       "read_own": "Voir événements",
@@ -153,7 +155,8 @@
   "pagination": {
     "prev": "Précédent",
     "next": "Suivant",
-    "page_info": "Page {page} sur {total}"
+    "page_info": "Page {page} sur {total}",
+    "results": "résultats"
   },
   "governor": {
     "sidebar": {
@@ -1396,7 +1399,13 @@
       "in_progress": "En cours",
       "completed": "Terminés"
     },
-    "explorer": "Explorer les établissements"
+    "explorer": "Explorer les établissements",
+    "governance_secure": "Gouvernance sécurisée",
+    "refresh": "Actualiser",
+    "export": "Exporter",
+    "actions": "Actions",
+    "previous": "Précédent",
+    "next": "Suivant"
   },
   "events_page": {
     "title": "Événements & Activités",
@@ -2371,7 +2380,8 @@
       },
       "form": {
         "sector": "Secteur de l'événement"
-      }
+      },
+      "loading": "Chargement des événements..."
     },
     "news_page": {
       "page_title": "Actualités",
@@ -2411,7 +2421,8 @@
         "remove_highlight": "Retirer de la une",
         "delete": "Supprimer l'actualité",
         "commune": "Commune",
-        "establishment": "Établissement"
+        "establishment": "Établissement",
+        "author": "Auteur"
       },
       "messages": {
         "loading_error": "Erreur de chargement",
@@ -2510,7 +2521,8 @@
         "change_status": "Changer le statut",
         "toggle_featured": "Mettre en avant",
         "toggle_featured_off": "Retirer de la une",
-        "delete": "Supprimer l'article"
+        "delete": "Supprimer l'article",
+        "contributor": "Contributeur"
       },
       "messages": {
         "status_changed": "Statut mis à jour",
@@ -2902,7 +2914,6 @@
         "created": "Sauvegarde créée avec succès"
       }
     },
-
     "reclamation_detail_page": {
       "title": "Réclamation #{id}",
       "citizen_title": "Citoyen",
@@ -3044,7 +3055,8 @@
       },
       "page": "Page",
       "limit": "Limite",
-      "includeNonPublie": "Inclure non publiés"
+      "includeNonPublie": "Inclure non publiés",
+      "loading": "Chargement des établissements..."
     },
     "programs_page": {
       "title": "Programmes et Activités",
@@ -3141,6 +3153,18 @@
         "top_5_establishments": "Top 5 des établissements"
       },
       "reviews_count": "Nombre d'avis"
+    },
+    "reclamations_page": {
+      "table": {
+        "ref": "Référence",
+        "citoyen": "Citoyen",
+        "sujet": "Sujet",
+        "statut": "Statut",
+        "affectation": "Affectation"
+      },
+      "actions": {
+        "update_status": "Mettre à jour le statut"
+      }
     }
   },
   "admin_campagnes": {
@@ -3263,7 +3287,6 @@
     },
     "info": "Les statistiques sont mises à jour en temps réel. Sélectionnez une période pour affiner les données."
   },
-
   "admin_announcement": {
     "title": "Popup d'Annonce Globale",
     "description": "Configurez le message qui s'affiche à l'ouverture du site (ex: Maintenance, Bêta, Info urgente).",

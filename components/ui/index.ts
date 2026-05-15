@@ -31,3 +31,8 @@ export { StarRating, RatingDistribution, RatingSummary } from './StarRating';
 export { default as Breadcrumb } from './Breadcrumb';
 export { default as CardSkeleton } from './CardSkeleton';
 
+// Governance Design System (Gov*)
+export * from './GovTable';
+export * from './GovInput';
+export * from './GovSelect';
+export * from './GovTextarea';

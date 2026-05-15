@@ -8,16 +8,23 @@ import {
   Phone, 
   Mail, 
   Globe, 
-  ChevronLeft, 
+  ArrowLeft, 
   Save, 
   Loader2,
   Trash2,
-  Plus,
-  Image as ImageIcon
+  Sparkles,
+  Shield,
+  FileText,
+  Calendar,
+  Users,
+  Target
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GovInput, GovSelect, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 export default function NouveauEtablissementPage() {
   const t = useTranslations('admin.establishments');
@@ -152,316 +159,362 @@ export default function NouveauEtablissementPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-4 space-y-10 animate-in fade-in duration-700">
-      <Link 
-        href="/admin/etablissements" 
-        className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-all mb-6 group w-fit"
+    <div className="max-w-6xl mx-auto space-y-12 pb-24">
+      {/* Header Premium */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-6"
       >
-        <div className="p-2 rounded-full group-hover:bg-emerald-50 transition-colors">
-          <ChevronLeft size={20} />
-        </div>
-        <span className="font-bold">{t('back_list')}</span>
-      </Link>
-
-      <div className="bg-white dark:bg-gray-800 rounded-[3rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
-        <div className="bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-12 text-white relative">
-          <div className="absolute top-0 ltr:right-0 rtl:left-0 p-12 opacity-10">
-            <Building2 size={120} />
-          </div>
-          <div className="relative z-10 flex items-center gap-6">
-            <div className="w-16 h-16 bg-white/20 rounded-[2rem] flex items-center justify-center backdrop-blur-xl border border-white/30 shadow-2xl">
-              <Plus size={32} />
+        <div className="space-y-4">
+          <Link 
+            href="/admin/etablissements"
+            className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
+              <ArrowLeft size={14} />
+            </div>
+            <span>{t('back_list')}</span>
+          </Link>
+          
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-[2rem] flex items-center justify-center shadow-2xl shadow-[hsl(var(--gov-blue))/0.3] ring-8 ring-[hsl(var(--gov-blue))/0.1]">
+              <Building2 className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-black tracking-tight">{t('create_title')}</h1>
-              <p className="text-emerald-50/80 text-lg mt-2 font-medium">{t('create_subtitle')}</p>
+              <h1 className="text-4xl font-black tracking-tight text-foreground uppercase italic">
+                {t('create_title')}
+              </h1>
+              <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] opacity-70 mt-1">
+                {t('create_subtitle')}
+              </p>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-12 space-y-12">
-          {/* SECTION 1: IDENTIFICATION & SECTEUR */}
-          <section className="space-y-6">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-               <div className="w-2 h-8 bg-emerald-500 rounded-full" />
-               {t('sections.general')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-50/50 dark:bg-gray-900/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">{t('form.name')} *</label>
-                <input
+        <div className="flex items-center gap-4">
+           <GovButton
+            onClick={handleSubmit}
+            loading={loading}
+            variant="primary"
+            leftIcon={!loading && <Save size={18} />}
+            className="rounded-full px-10 shadow-xl shadow-[hsl(var(--gov-blue))/0.2]"
+          >
+            {t('actions.save')}
+          </GovButton>
+        </div>
+      </motion.div>
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        {/* Left Column: Content */}
+        <div className="lg:col-span-2 space-y-10">
+          
+          {/* SECTION 1: IDENTIFICATION */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-[hsl(var(--gov-blue))/0.03]"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-[hsl(var(--gov-blue))] rounded-full" />
+                {t('sections.general')}
+              </h2>
+            </div>
+            
+            <div className="p-10 space-y-8">
+              <GovInput
+                label={t('form.name') + ' *'}
+                required
+                value={formData.nom}
+                onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                leftIcon={<Building2 size={18} />}
+                className="text-lg font-bold"
+              />
+
+              <GovInput
+                label={t('form.nameArabe')}
+                value={formData.nomArabe}
+                onChange={(e) => setFormData({ ...formData, nomArabe: e.target.value })}
+                className="text-xl font-arabic text-right"
+                dir="rtl"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <GovInput
+                  label={t('form.code') + ' *'}
                   required
-                  value={formData.nom}
-                  onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  className="gov-input text-lg"
+                  value={formData.code}
+                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                  leftIcon={<Shield size={18} />}
+                  className="font-mono"
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">{t('form.nameArabe')}</label>
-                <input
-                  dir="rtl"
-                  value={formData.nomArabe}
-                  onChange={(e) => setFormData({ ...formData, nomArabe: e.target.value })}
-                  className="gov-input text-2xl font-arabic"
+
+                <GovSelect
+                  label={t('form.sector') + ' *'}
+                  required
+                  value={formData.secteur}
+                  onChange={(e) => setFormData({ ...formData, secteur: e.target.value })}
+                  options={[
+                    { label: tSectors('EDUCATION'), value: 'EDUCATION' },
+                    { label: tSectors('SANTE'), value: 'SANTE' },
+                    { label: tSectors('SPORT'), value: 'SPORT' },
+                    { label: tSectors('SOCIAL'), value: 'SOCIAL' },
+                    { label: tSectors('CULTUREL'), value: 'CULTUREL' },
+                    { label: tSectors('AUTRE'), value: 'AUTRE' },
+                  ]}
+                  leftIcon={<Target size={18} />}
                 />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">{t('form.code')} *</label>
-                  <input
-                    required
-                    value={formData.code}
-                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                    className="gov-input font-mono"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">{t('form.sector')} *</label>
-                  <select
-                    value={formData.secteur}
-                    onChange={(e) => setFormData({ ...formData, secteur: e.target.value })}
-                    className="gov-select font-bold"
-                  >
-                    <option value="EDUCATION">{tSectors('EDUCATION')}</option>
-                    <option value="SANTE">{tSectors('SANTE')}</option>
-                    <option value="SPORT">{tSectors('SPORT')}</option>
-                    <option value="SOCIAL">{tSectors('SOCIAL')}</option>
-                    <option value="CULTUREL">{tSectors('CULTUREL')}</option>
-                    <option value="AUTRE">{tSectors('AUTRE')}</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">{t('form.nature')}</label>
-                  <select
-                    value={formData.nature}
-                    onChange={(e) => setFormData({ ...formData, nature: e.target.value })}
-                    className="gov-select"
-                  >
-                    <option value="PUBLIC">{t('options.natures.PUBLIC')}</option>
-                    <option value="PRIVE">{t('options.natures.PRIVE')}</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wider">{t('form.typeEtab')}</label>
-                  <input
-                    value={formData.typeEtablissement}
-                    onChange={(e) => setFormData({ ...formData, typeEtablissement: e.target.value })}
-                    placeholder={t('placeholders.typeEtab')}
-                    className="gov-input"
-                  />
-                </div>
+
+                <GovSelect
+                  label={t('form.nature')}
+                  value={formData.nature}
+                  onChange={(e) => setFormData({ ...formData, nature: e.target.value })}
+                  options={[
+                    { label: t('options.natures.PUBLIC'), value: 'PUBLIC' },
+                    { label: t('options.natures.PRIVE'), value: 'PRIVE' },
+                  ]}
+                />
+
+                <GovInput
+                  label={t('form.typeEtab')}
+                  value={formData.typeEtablissement}
+                  onChange={(e) => setFormData({ ...formData, typeEtablissement: e.target.value })}
+                  placeholder={t('placeholders.typeEtab')}
+                />
               </div>
             </div>
-          </section>
+          </motion.div>
 
           {/* SECTION 2: GÉOLOCALISATION */}
-          <section className="space-y-6">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-               <div className="w-2 h-8 bg-blue-500 rounded-full" />
-               {t('sections.localization')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-gray-50/50 dark:bg-gray-900/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
-               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.commune')} *</label>
-                <select
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-[hsl(var(--gov-blue))/0.03]"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-[hsl(var(--gov-red))] rounded-full" />
+                {t('sections.localization')}
+              </h2>
+            </div>
+            
+            <div className="p-10 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <GovSelect
+                  label={t('form.commune') + ' *'}
                   required
                   value={formData.communeId}
                   onChange={(e) => setFormData({ ...formData, communeId: e.target.value })}
-                  className="gov-select"
-                >
-                  <option value="">{t('form.select_commune')}</option>
-                  <option value="1">{t('options.communes.1')}</option>
-                  <option value="2">{t('options.communes.2')}</option>
-                  <option value="3">{t('options.communes.3')}</option>
-                  <option value="4">{t('options.communes.4')}</option>
-                  <option value="5">{t('options.communes.5')}</option>
-                  <option value="6">{t('options.communes.6')}</option>
-                </select>
-               </div>
-               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.quartier')}</label>
-                <input
+                  options={[
+                    { label: t('form.select_commune'), value: '' },
+                    { label: t('options.communes.1'), value: '1' },
+                    { label: t('options.communes.2'), value: '2' },
+                    { label: t('options.communes.3'), value: '3' },
+                    { label: t('options.communes.4'), value: '4' },
+                    { label: t('options.communes.5'), value: '5' },
+                    { label: t('options.communes.6'), value: '6' },
+                  ]}
+                  leftIcon={<MapPin size={18} />}
+                />
+
+                <GovInput
+                  label={t('form.quartier')}
                   value={formData.quartierDouar}
                   onChange={(e) => setFormData({ ...formData, quartierDouar: e.target.value })}
-                  className="gov-input"
+                  leftIcon={<MapPin size={18} />}
                 />
-               </div>
-               <div className="col-span-full space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.adresse_complete')}</label>
-                <input
-                  value={formData.adresseComplete}
-                  onChange={(e) => setFormData({ ...formData, adresseComplete: e.target.value })}
-                  className="gov-input"
-                />
-               </div>
-               <div className="grid grid-cols-3 gap-4 col-span-full">
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('form.latitude')} *</label>
-                    <input
-                      type="number" step="any" required
-                      value={formData.latitude}
-                      onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                      className="gov-input font-mono"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('form.longitude')} *</label>
-                    <input
-                      type="number" step="any" required
-                      value={formData.longitude}
-                      onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                      className="gov-input font-mono"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('form.altitude')}</label>
-                    <input
-                      type="number" step="any"
-                      value={formData.altitude}
-                      onChange={(e) => setFormData({ ...formData, altitude: e.target.value })}
-                      className="gov-input font-mono"
-                    />
-                  </div>
-               </div>
-            </div>
-          </section>
+              </div>
 
-          {/* SECTION 3: CONTACT & WEB */}
-          <section className="space-y-6">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-               <div className="w-2 h-8 bg-purple-500 rounded-full" />
-               {t('sections.contact')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-50/50 dark:bg-gray-900/50 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-800">
-               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.telephone')}</label>
-                <div className="relative">
-                  <Phone className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="tel"
-                    value={formData.telephone}
-                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                    className="gov-input ltr:pl-12 rtl:pr-12"
-                    placeholder={t('placeholders.telephone') || "+212 ..."}
-                  />
-                </div>
-               </div>
-               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.email')}</label>
-                <div className="relative">
-                  <Mail className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="gov-input ltr:pl-12 rtl:pr-12"
-                    placeholder={t('placeholders.email') || "contact@etablissement.ma"}
-                  />
-                </div>
-               </div>
-               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">{t('form.siteWeb')}</label>
-                <div className="relative">
-                  <Globe className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="url"
-                    value={formData.siteWeb}
-                    onChange={(e) => setFormData({ ...formData, siteWeb: e.target.value })}
-                    className="gov-input ltr:pl-12 rtl:pr-12"
-                    placeholder={t('placeholders.website') || "https://..."}
-                  />
-                </div>
-               </div>
+              <GovInput
+                label={t('form.adresse_complete')}
+                value={formData.adresseComplete}
+                onChange={(e) => setFormData({ ...formData, adresseComplete: e.target.value })}
+                leftIcon={<MapPin size={18} />}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <GovInput
+                  label={t('form.latitude') + ' *'}
+                  type="number"
+                  step="any"
+                  required
+                  value={formData.latitude}
+                  onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                  className="font-mono"
+                />
+                <GovInput
+                  label={t('form.longitude') + ' *'}
+                  type="number"
+                  step="any"
+                  required
+                  value={formData.longitude}
+                  onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                  className="font-mono"
+                />
+                <GovInput
+                  label={t('form.altitude')}
+                  type="number"
+                  step="any"
+                  value={formData.altitude}
+                  onChange={(e) => setFormData({ ...formData, altitude: e.target.value })}
+                  className="font-mono"
+                />
+              </div>
             </div>
-          </section>
+          </motion.div>
 
           {/* SECTION 3: SECTOR-SPECIFIC (Conditionnelle) */}
-          {formData.secteur === 'EDUCATION' && (
-            <section className="space-y-6 animate-in zoom-in-95 duration-500">
-               <h2 className="text-2xl font-black text-orange-600 flex items-center gap-3">
-                  <div className="w-2 h-8 bg-orange-500 rounded-full" />
-                  {t('sections.education')}
-               </h2>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-orange-50/30 dark:bg-orange-950/10 p-8 rounded-[2rem] border border-orange-100 dark:border-orange-900/30 shadow-xl shadow-orange-500/5">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-orange-900 dark:text-orange-100">{t('form.cycle')}</label>
-                    <select
+          <AnimatePresence>
+            {formData.secteur === 'EDUCATION' && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-[hsl(var(--gov-yellow))/0.2] overflow-hidden shadow-2xl shadow-[hsl(var(--gov-yellow))/0.03] mt-10">
+                  <div className="p-10 border-b border-[hsl(var(--gov-yellow))/0.1] bg-[hsl(var(--gov-yellow))/0.02]">
+                    <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                      <div className="w-2 h-5 bg-[hsl(var(--gov-yellow))] rounded-full" />
+                      {t('sections.education')}
+                    </h2>
+                  </div>
+                  
+                  <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <GovSelect
+                      label={t('form.cycle')}
                       value={formData.cycle}
                       onChange={(e) => setFormData({ ...formData, cycle: e.target.value })}
-                      className="gov-select"
-                    >
-                      <option value="">{t('actions.select') || 'Sélectionner...'}</option>
-                      <option value="PRIMAIRE">{t('options.cycles.PRIMAIRE')}</option>
-                      <option value="COLLEGE">{t('options.cycles.COLLEGE')}</option>
-                      <option value="LYCEE">{t('options.cycles.LYCEE')}</option>
-                      <option value="PRE-SCOLAIRE">{t('options.cycles.PRE-SCOLAIRE')}</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-orange-900">{t('form.nbClasses')}</label>
-                    <input
+                      options={[
+                        { label: t('actions.select') || 'Sélectionner...', value: '' },
+                        { label: t('options.cycles.PRIMAIRE'), value: 'PRIMAIRE' },
+                        { label: t('options.cycles.COLLEGE'), value: 'COLLEGE' },
+                        { label: t('options.cycles.LYCEE'), value: 'LYCEE' },
+                        { label: t('options.cycles.PRE-SCOLAIRE'), value: 'PRE-SCOLAIRE' },
+                      ]}
+                    />
+
+                    <GovInput
+                      label={t('form.nbClasses')}
                       type="number"
                       value={formData.nbClasses}
                       onChange={(e) => setFormData({ ...formData, nbClasses: e.target.value })}
-                      className="gov-input"
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-orange-900">{t('form.nbEnseignants')}</label>
-                    <input
+
+                    <GovInput
+                      label={t('form.nbEnseignants')}
                       type="number"
                       value={formData.nbEnseignants}
                       onChange={(e) => setFormData({ ...formData, nbEnseignants: e.target.value })}
-                      className="gov-input"
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-orange-900">{t('form.tauxReussite')}</label>
-                    <input
-                      type="number" step="0.01"
+
+                    <GovInput
+                      label={t('form.tauxReussite')}
+                      type="number"
+                      step="0.01"
                       value={formData.tauxReussite}
                       onChange={(e) => setFormData({ ...formData, tauxReussite: e.target.value })}
-                      className="gov-input"
                     />
                   </div>
-               </div>
-            </section>
-          )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {/* FOOTER ACTIONS */}
-          <div className="pt-12 border-t border-gray-100 dark:border-gray-700 flex flex-wrap items-center justify-between gap-6">
-            <label className="flex items-center gap-4 cursor-pointer group bg-gray-50 dark:bg-gray-900/50 px-6 py-4 rounded-2xl border border-gray-100 transition-all hover:bg-emerald-50/50">
-              <input
-                type="checkbox"
-                checked={formData.isPublie}
-                onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
-                className="w-6 h-6 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
+        </div>
+
+        {/* Right Column: Settings */}
+        <div className="space-y-10">
+          
+          {/* Section Contact */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
+              <Phone className="w-5 h-5 text-[hsl(var(--gov-green))]" />
+              {t('sections.contact')}
+            </h3>
+            
+            <div className="space-y-6">
+              <GovInput
+                label={t('form.telephone')}
+                type="tel"
+                value={formData.telephone}
+                onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                placeholder={t('placeholders.telephone') || "+212 ..."}
+                leftIcon={<Phone size={18} />}
               />
-              <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-emerald-700 transition-colors uppercase tracking-tight">{t('form.publish_now')}</span>
-            </label>
 
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="gov-btn gov-btn-secondary uppercase text-xs tracking-widest"
-              >
-                {t('actions.cancel')}
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="gov-btn gov-btn-primary px-12 py-4 text-lg font-black"
-              >
-                {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
-                {t('actions.save')}
-              </button>
+              <GovInput
+                label={t('form.email')}
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder={t('placeholders.email') || "contact@..."}
+                leftIcon={<Mail size={18} />}
+              />
+
+              <GovInput
+                label={t('form.siteWeb')}
+                type="url"
+                value={formData.siteWeb}
+                onChange={(e) => setFormData({ ...formData, siteWeb: e.target.value })}
+                placeholder={t('placeholders.website') || "https://..."}
+                leftIcon={<Globe size={18} />}
+              />
             </div>
-          </div>
-        </form>
-      </div>
+          </motion.div>
+
+          {/* Section Statut */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
+              <Globe className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
+              Visibilité
+            </h3>
+            
+            <div className="space-y-4">
+              <label 
+                className={cn(
+                  "relative flex flex-col p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                  formData.isPublie
+                    ? "border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue))/0.05] shadow-[hsl(var(--gov-blue))/0.1] shadow-lg scale-[1.02]"
+                    : "border-border bg-muted/10 hover:border-border/80"
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.isPublie}
+                  onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
+                  className="sr-only"
+                />
+                <div className="flex justify-between items-center mb-1">
+                  <span className={cn(
+                    "text-[10px] font-black uppercase tracking-widest transition-colors",
+                    formData.isPublie ? "text-[hsl(var(--gov-blue))]" : "text-foreground"
+                  )}>{t('form.publish_now')}</span>
+                  {formData.isPublie && <div className="w-2 h-2 rounded-full bg-[hsl(var(--gov-blue))] shadow-[0_0_8px_hsl(var(--gov-blue))]" />}
+                </div>
+                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-tight">
+                  Rendre l'établissement visible sur le portail public
+                </span>
+              </label>
+            </div>
+          </motion.div>
+
+        </div>
+      </form>
     </div>
   );
 }

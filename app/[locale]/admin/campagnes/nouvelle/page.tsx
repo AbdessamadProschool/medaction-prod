@@ -16,11 +16,16 @@ import {
   Loader2,
   ArrowLeft,
   Send,
-  Building2
+  Building2,
+  Sparkles,
+  Trash2
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 const TYPES_LIST = ['SOLIDARITE', 'ECOLOGIE', 'CITOYENNETE', 'SANTE', 'EDUCATION', 'SPORT', 'CULTURE', 'AUTRE'] as const;
 const STATUTS_LIST = ['BROUILLON', 'ACTIVE', 'TERMINEE'] as const;
@@ -134,315 +139,318 @@ export default function AdminNouvelleCampagnePage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="mb-8">
-        <Link 
-          href="/admin/campagnes"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-4 transition-colors"
-        >
-          <ArrowLeft size={18} />
-          <span>{t('back_to_list')}</span>
-        </Link>
-        
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Megaphone className="w-6 h-6 text-white" />
-              </div>
-              {t('title')}
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        
-        {/* Infos Principales */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-emerald-50/50 dark:from-emerald-900/20 to-transparent">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-              <Megaphone className="w-5 h-5 text-emerald-600" />
-              {t('details_section')}
-            </h2>
-          </div>
-          
-          <div className="p-5 space-y-5">
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('form.short_name')} <span className="text-red-500">*</span>
-                </label>
-                <input
-                  {...register('nom')}
-                  type="text"
-                  className="gov-input"
-                />
-                {errors.nom && <p className="text-red-500 text-sm mt-1">{errors.nom.message}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  {t('form.type')} <span className="text-red-500">*</span>
-                </label>
-                <select
-                  {...register('type')}
-                  className="gov-select"
-                >
-                  <option value="">{t('form.type_placeholder')}</option>
-                  {TYPES_LIST.map(val => (
-                    <option key={val} value={val}>{t(`types.${val}`)}</option>
-                  ))}
-                </select>
-                {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.public_title')} <span className="text-red-500">*</span>
-              </label>
-              <input
-                {...register('titre')}
-                type="text"
-                className="gov-input text-lg font-medium"
-              />
-              {errors.titre && <p className="text-red-500 text-sm mt-1">{errors.titre.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.short_desc')}
-              </label>
-              <textarea
-                {...register('description')}
-                rows={2}
-                className="gov-textarea"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.content')} <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                {...register('contenu')}
-                rows={8}
-                className="gov-textarea"
-              />
-              {errors.contenu && <p className="text-red-500 text-sm mt-1">{errors.contenu.message}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* Objectifs & Dates */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-              <Target className="w-5 h-5 text-amber-500" />
-              {t('goals_dates_section')}
-            </h2>
-          </div>
-          
-          <div className="p-5 grid md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.participants_goal')}
-              </label>
-              <input
-                {...register('objectifParticipations')}
-                type="number"
-                className="gov-input"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {t('form.theme_color')}
-              </label>
-              <div className="flex gap-3">
-                <input
-                  {...register('couleurTheme')}
-                  type="color"
-                  className="h-12 w-20 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer"
-                />
-                <input
-                  {...register('couleurTheme')}
-                  type="text"
-                  className="gov-input uppercase"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                <Calendar className="w-4 h-4 inline mr-1" />
-                {t('form.start_date')}
-              </label>
-              <input
-                {...register('dateDebut')}
-                type="date"
-                className="gov-input"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                <Calendar className="w-4 h-4 inline mr-1" />
-                {t('form.end_date')}
-              </label>
-              <input
-                {...register('dateFin')}
-                type="date"
-                className="gov-input"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Image */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-              <ImageIcon className="w-5 h-5 text-purple-500" />
-              {t('visual_section')}
-            </h2>
-          </div>
-          
-          <div className="p-5">
-            {previewUrl ? (
-              <div className="relative w-full h-64 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden group">
-                <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedImage(null);
-                      setPreviewUrl(null);
-                    }}
-                    className="p-3 bg-white rounded-full text-red-600 hover:bg-red-50"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <label className="block border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl p-12 text-center bg-gray-50/50 dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 transition-all cursor-pointer group">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <ImageIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-                </div>
-                <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">{t('form.image_banner')}</p>
-                <p className="text-gray-400 text-sm">{t('form.image_hint')}</p>
-                <input 
-                  type="file" 
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </label>
-            )}
-          </div>
-        </div>
-
-        {/* Statut & Options */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <Send className="w-4 h-4 text-green-500" />
-                {t('status_section')}
-              </h3>
-              
-              <div className="grid grid-cols-1 gap-4">
-                {STATUTS_LIST.map(statut => (
-                  <label 
-                    key={statut}
-                    className={`relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedStatut === statut
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      {...register('statut')}
-                      value={statut}
-                      className="sr-only"
-                    />
-                    <span className="font-medium text-gray-900 dark:text-white">{t(`statuses.${statut}_label`)}</span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t(`statuses.${statut}_desc`)}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-blue-500" />
-                {t('form.org_options')}
-              </h3>
-              
-              <div className="space-y-4">
-                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors group">
-                  <div className="pt-0.5">
-                    <input
-                      type="checkbox"
-                      {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
-                    />
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">{t('form.organized_by_province')}</span>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('form.organized_by_province_desc')}</p>
-                  </div>
-                </label>
-
-                <label className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors group">
-                  <div className="pt-0.5">
-                    <input
-                      type="checkbox"
-                      {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))]"
-                    />
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">{t('form.under_cover_province')}</span>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('form.under_cover_province_desc')}</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-          <Link
+    <div className="max-w-6xl mx-auto space-y-12 pb-24">
+      {/* Header Institutional */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-6"
+      >
+        <div className="space-y-4">
+          <Link 
             href="/admin/campagnes"
-            className="gov-btn gov-btn-secondary"
+            className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
-            {t('form.cancel')}
+            <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
+              <ArrowLeft size={14} />
+            </div>
+            <span>{t('back_to_list')}</span>
           </Link>
           
-          <button
-            type="submit"
-            disabled={loading}
-            className="gov-btn gov-btn-primary px-8 py-4 text-lg"
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-500/20 ring-8 ring-emerald-500/5">
+              <Megaphone className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black tracking-tight text-foreground uppercase italic">
+                {t('title')}
+              </h1>
+              <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] opacity-70 mt-1">
+                {t('subtitle')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+           <GovButton
+            onClick={handleSubmit(onSubmit)}
+            loading={loading}
+            variant="primary"
+            leftIcon={!loading && <Save size={18} />}
+            className="rounded-full px-10 shadow-xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 border-none"
           >
-            {loading ? (
-              <>
-                <Loader2 size={22} className="animate-spin" />
-                {t('form.creating')}
-              </>
-            ) : (
-              <>
-                <Save size={22} />
-                {t('form.create')}
-              </>
-            )}
-          </button>
+            {t('form.create')}
+          </GovButton>
+        </div>
+      </motion.div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        {/* Left Column: Info & Details */}
+        <div className="lg:col-span-2 space-y-10">
+          {/* Cover Image Section */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-purple-500 rounded-full" />
+                {t('visual_section')}
+              </h2>
+            </div>
+            
+            <div className="p-10">
+              <AnimatePresence mode="wait">
+                {previewUrl ? (
+                  <motion.div 
+                    key="preview"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="relative aspect-[21/9] bg-muted/20 rounded-[2rem] overflow-hidden group border border-border shadow-inner"
+                  >
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+                       <div className="flex justify-between items-center">
+                          <p className="text-white text-[10px] font-black uppercase tracking-widest">{t('form.image_banner')}</p>
+                          <GovButton
+                            onClick={() => {
+                              setSelectedImage(null);
+                              setPreviewUrl(null);
+                            }}
+                            variant="danger"
+                            size="sm"
+                            leftIcon={<Trash2 size={16} />}
+                            className="rounded-full"
+                          >
+                            {t('form.cancel')}
+                          </GovButton>
+                       </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.label 
+                    key="upload"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="block aspect-[21/9] border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-purple-500/30 transition-all cursor-pointer group relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/02 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-card">
+                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-purple-600 transition-colors" />
+                    </div>
+                    <p className="text-foreground font-black uppercase tracking-widest text-xs mb-2">{t('form.image_banner')}</p>
+                    <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-60">{t('form.image_hint')}</p>
+                    <input 
+                      type="file" 
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </motion.label>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Main Info Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+          >
+            <div className="p-10 border-b border-border/50 bg-muted/5">
+              <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
+                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                {t('details_section')}
+              </h2>
+            </div>
+            
+            <div className="p-10 space-y-10">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <GovInput
+                    label={t('form.short_name')}
+                    placeholder="Ex: MED-CIT-2024"
+                    error={errors.nom?.message}
+                    {...register('nom')}
+                  />
+                  <GovSelect
+                    label={t('form.type')}
+                    options={[
+                      { label: t('form.type_placeholder'), value: "" },
+                      ...TYPES_LIST.map(val => ({ label: t(`types.${val}`), value: val }))
+                    ]}
+                    error={errors.type?.message}
+                    {...register('type')}
+                  />
+               </div>
+
+              <GovInput
+                label={t('form.public_title')}
+                placeholder="Ex: Grande Campagne de Citoyenneté Active"
+                leftIcon={<Sparkles size={18} />}
+                error={errors.titre?.message}
+                {...register('titre')}
+                className="text-xl font-bold"
+              />
+
+              <GovTextarea
+                label={t('form.short_desc')}
+                placeholder="Un résumé percutant pour le public..."
+                rows={2}
+                {...register('description')}
+              />
+
+              <GovTextarea
+                label={t('form.content')}
+                placeholder="Détaillez les objectifs et les modalités de la campagne..."
+                rows={12}
+                error={errors.contenu?.message}
+                {...register('contenu')}
+                className="leading-relaxed"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right Column: Settings & Goals */}
+        <div className="space-y-10">
+          {/* Section Objectifs & Dates */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
+              <Target className="w-5 h-5 text-amber-500" />
+              {t('goals_dates_section')}
+            </h3>
+
+            <div className="space-y-8">
+              <GovInput
+                label={t('form.participants_goal')}
+                type="number"
+                placeholder="Ex: 5000"
+                {...register('objectifParticipations')}
+              />
+
+              <div className="grid grid-cols-1 gap-6">
+                <GovInput
+                  label={t('form.start_date')}
+                  type="date"
+                  leftIcon={<Calendar size={16} />}
+                  {...register('dateDebut')}
+                />
+                <GovInput
+                  label={t('form.end_date')}
+                  type="date"
+                  leftIcon={<Calendar size={16} />}
+                  {...register('dateFin')}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-foreground uppercase tracking-widest">{t('form.theme_color')}</label>
+                <div className="flex gap-4">
+                   <div className="relative w-14 h-14 rounded-2xl border border-border overflow-hidden p-1 bg-muted/20">
+                    <input
+                      {...register('couleurTheme')}
+                      type="color"
+                      className="w-full h-full cursor-pointer bg-transparent border-none scale-150"
+                    />
+                   </div>
+                  <GovInput
+                    label=""
+                    placeholder="#000000"
+                    {...register('couleurTheme')}
+                    className="uppercase flex-1"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Section Statut & Options */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
+          >
+            <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
+              <Send className="w-5 h-5 text-emerald-500" />
+              {t('status_section')}
+            </h3>
+            
+            <div className="space-y-4">
+              {STATUTS_LIST.map(statut => (
+                <label 
+                  key={statut}
+                  className={cn(
+                    "relative flex flex-col p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                    selectedStatut === statut
+                      ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg scale-[1.02]"
+                      : "border-border bg-muted/10 hover:border-border/80"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    {...register('statut')}
+                    value={statut}
+                    className="sr-only"
+                  />
+                  <div className="flex justify-between items-center mb-1">
+                    <span className={cn(
+                      "text-[10px] font-black uppercase tracking-widest transition-colors",
+                      selectedStatut === statut ? "text-emerald-700" : "text-foreground"
+                    )}>{t(`statuses.${statut}_label`)}</span>
+                    {selectedStatut === statut && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]" />}
+                  </div>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-tight">{t(`statuses.${statut}_desc`)}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-10 border-t border-border/50 space-y-6">
+               <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-2">
+                <Building2 className="w-5 h-5 text-blue-500" />
+                Options Structurelles
+              </h3>
+              
+              <label className="flex items-start gap-4 p-4 rounded-2xl border border-border/50 hover:bg-muted/5 transition-colors cursor-pointer group">
+                <input
+                  type="checkbox"
+                  {...register('isOrganiseParProvince')}
+                  className="w-5 h-5 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 mt-0.5"
+                />
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-emerald-700 transition-colors">{t('form.organized_by_province')}</span>
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-0.5">{t('form.organized_by_province_desc')}</p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-4 p-4 rounded-2xl border border-border/50 hover:bg-muted/5 transition-colors cursor-pointer group">
+                <input
+                  type="checkbox"
+                  {...register('sousCouvertProvince')}
+                  className="w-5 h-5 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 mt-0.5"
+                />
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-emerald-700 transition-colors">{t('form.under_cover_province')}</span>
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-0.5">{t('form.under_cover_province_desc')}</p>
+                </div>
+              </label>
+            </div>
+          </motion.div>
         </div>
       </form>
     </div>
   );
 }
+

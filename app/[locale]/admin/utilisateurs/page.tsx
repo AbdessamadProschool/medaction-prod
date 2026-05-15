@@ -26,6 +26,10 @@ import { PermissionGuard } from '@/hooks/use-permission';
 import EmptyState from '@/components/ui/EmptyState';
 import CreateUserModal from './CreateUserModal';
 import EditRoleModal from './EditRoleModal';
+import { GovButton } from '@/components/ui/GovButton';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { StatusBadge } from '@/components/ui/StatusBadge';
+import { cn } from '@/lib/utils';
 
 interface User {
   id: number;
@@ -273,24 +277,28 @@ export default function UsersPage() {
             </div>
             
             <div className="flex flex-wrap items-center gap-3">
-              <button
+              <GovButton
                 onClick={() => fetchUsers()}
-                className="p-3 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground active:scale-95"
+                variant="outline"
+                size="icon"
+                loading={loading}
+                title={t('refresh')}
+              />
+              <GovButton
+                variant="outline"
+                leftIcon={<Download size={18} />}
               >
-                <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-              </button>
-              <button className="flex items-center gap-2 px-6 py-3 text-foreground bg-card border border-border rounded-xl hover:bg-muted transition-all font-black text-xs uppercase tracking-widest shadow-sm active:scale-95">
-                <Download size={18} />
                 {t('export')}
-              </button>
+              </GovButton>
               <PermissionGuard permission="users.create">
-                <button
+                <GovButton
                   onClick={() => setShowCreateModal(true)}
-                  className="gov-btn gov-btn-primary px-8 py-3 h-auto shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] active:scale-95"
+                  variant="primary"
+                  leftIcon={<Plus size={20} />}
+                  className="shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]"
                 >
-                  <Plus size={20} className="mr-2" />
                   <span className="font-black uppercase tracking-widest text-xs">{t('add')}</span>
-                </button>
+                </GovButton>
               </PermissionGuard>
             </div>
           </div>
@@ -299,13 +307,13 @@ export default function UsersPage() {
           <div className="gov-card p-6 bg-card/50 backdrop-blur-sm border-dashed">
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex-1 min-w-[300px] relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
+                <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
                 <input
                   type="text"
                   placeholder={t('search_placeholder')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="gov-input pl-12 py-3.5 bg-muted/30 focus:bg-background transition-all"
+                  className="gov-input ltr:pl-12 rtl:pr-12 py-3.5 bg-muted/30 focus:bg-background transition-all"
                 />
               </div>
 
@@ -338,168 +346,176 @@ export default function UsersPage() {
                 </div>
 
                 {(search || roleFilter || statusFilter) && (
-                  <button
+                  <GovButton
                     onClick={() => { setSearch(''); setRoleFilter(''); setStatusFilter(''); }}
-                    className="flex items-center gap-2 px-4 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-rose-100 uppercase tracking-widest active:scale-95"
+                    variant="ghost"
+                    size="sm"
+                    className="text-rose-600 hover:bg-rose-50"
+                    leftIcon={<X size={14} />}
                   >
-                    <X size={14} />
                     {t('reset_filters')}
-                  </button>
+                  </GovButton>
                 )}
               </div>
             </div>
           </div>
 
           {/* Table Container */}
-          <div className="gov-card overflow-hidden shadow-2xl border-none">
-            <div className="gov-table-wrapper">
-              <table className="gov-table">
-                <thead>
-                  <tr className="bg-muted/50 border-b border-border">
-                    <th className="px-6 py-5 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.user')}</th>
-                    <th className="px-6 py-5 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.role')}</th>
-                    <th className="px-6 py-5 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.status')}</th>
-                    <th className="px-6 py-5 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.sector_establishment')}</th>
-                    <th className="px-6 py-5 text-left text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.activity')}</th>
-                    <th className="px-6 py-5 text-right text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('table.actions')}</th>
+          <GovTable>
+            <thead>
+              <tr>
+                <GovTh>{t('table.user')}</GovTh>
+                <GovTh>{t('table.role')}</GovTh>
+                <GovTh>{t('table.status')}</GovTh>
+                <GovTh>{t('table.sector_establishment')}</GovTh>
+                <GovTh>{t('table.activity')}</GovTh>
+                <GovTh className="text-right">{t('table.actions')}</GovTh>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/50">
+              {loading ? (
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="px-6 py-6"><div className="flex items-center gap-4"><div className="w-12 h-12 bg-muted rounded-2xl" /><div className="space-y-2"><div className="h-4 w-32 bg-muted rounded" /><div className="h-3 w-24 bg-muted rounded" /></div></div></td>
+                    <td className="px-6 py-6"><div className="h-6 w-24 bg-muted rounded-full" /></td>
+                    <td className="px-6 py-6"><div className="h-6 w-20 bg-muted rounded-full" /></td>
+                    <td className="px-6 py-6"><div className="h-4 w-32 bg-muted rounded" /></td>
+                    <td className="px-6 py-6"><div className="h-4 w-24 bg-muted rounded" /></td>
+                    <td className="px-6 py-6 text-right"><div className="h-10 w-10 bg-muted rounded-xl ml-auto" /></td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-border/50">
-                  {loading ? (
-                    [...Array(5)].map((_, i) => (
-                      <tr key={i} className="animate-pulse">
-                        <td className="px-6 py-6"><div className="flex items-center gap-4"><div className="w-12 h-12 bg-muted rounded-2xl" /><div className="space-y-2"><div className="h-4 w-32 bg-muted rounded" /><div className="h-3 w-24 bg-muted rounded" /></div></div></td>
-                        <td className="px-6 py-6"><div className="h-6 w-24 bg-muted rounded-full" /></td>
-                        <td className="px-6 py-6"><div className="h-6 w-20 bg-muted rounded-full" /></td>
-                        <td className="px-6 py-6"><div className="h-4 w-32 bg-muted rounded" /></td>
-                        <td className="px-6 py-6"><div className="h-4 w-24 bg-muted rounded" /></td>
-                        <td className="px-6 py-6 text-right"><div className="h-10 w-10 bg-muted rounded-xl ml-auto" /></td>
-                      </tr>
-                    ))
-                  ) : users.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="px-6 py-20 text-center">
-                        <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                          <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center text-muted-foreground mb-6 shadow-inner">
-                            <Users size={40} />
+                ))
+              ) : users.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-20 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
+                      <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center text-muted-foreground mb-6 shadow-inner">
+                        <Users size={40} />
+                      </div>
+                      <h3 className="text-xl font-black text-foreground mb-2">{t('no_users')}</h3>
+                      <p className="text-muted-foreground text-sm font-medium leading-relaxed">
+                        Aucun utilisateur ne correspond à vos critères actuels. Essayez de modifier vos filtres ou de créer un nouveau compte.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                users.map((user) => {
+                  // Role Mapping for StatusBadge
+                  const roleBadgeColor: Record<string, any> = {
+                    ADMIN: 'gold',
+                    SUPER_ADMIN: 'red',
+                    GOUVERNEUR: 'green',
+                    DELEGATION: 'blue',
+                    AUTORITE_LOCALE: 'purple',
+                    CITOYEN: 'muted',
+                    COORDINATEUR_ACTIVITES: 'blue'
+                  };
+
+                  return (
+                    <GovTr key={user.id}>
+                      <GovTd>
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] group-hover:scale-110 transition-transform duration-500">
+                            {(user.prenom?.[0] || '')}{(user.nom?.[0] || '') || 'U'}
                           </div>
-                          <h3 className="text-xl font-black text-foreground mb-2">{t('no_users')}</h3>
-                          <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                            Aucun utilisateur ne correspond à vos critères actuels. Essayez de modifier vos filtres ou de créer un nouveau compte.
-                          </p>
+                          <div>
+                            <p className="font-black text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight">{user.prenom || ''} {user.nom || ''}</p>
+                            <p className="text-[11px] text-muted-foreground font-bold tracking-wide mt-0.5">{user.email}</p>
+                          </div>
                         </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    users.map((user) => (
-                      <tr key={user.id} className="hover:bg-muted/30 transition-all group">
-                        <td className="px-6 py-6">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white font-black text-sm shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] group-hover:scale-110 transition-transform duration-500">
-                              {(user.prenom?.[0] || '')}{(user.nom?.[0] || '') || 'U'}
-                            </div>
-                            <div>
-                              <p className="font-black text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-tight">{user.prenom || ''} {user.nom || ''}</p>
-                              <p className="text-[11px] text-muted-foreground font-bold tracking-wide mt-0.5">{user.email}</p>
-                            </div>
+                      </GovTd>
+                      <GovTd>
+                        <StatusBadge color={roleBadgeColor[user.role] || 'muted'} icon={Shield}>
+                          {t(`roles.${user.role}`)}
+                        </StatusBadge>
+                      </GovTd>
+                      <GovTd>
+                        <StatusBadge 
+                          color={user.isActive ? 'green' : 'red'} 
+                          icon={user.isActive ? UserCheck : UserX}
+                        >
+                          {user.isActive ? t('statuses.active') : t('statuses.inactive')}
+                        </StatusBadge>
+                      </GovTd>
+                      <GovTd>
+                        <p className="text-xs text-foreground font-black opacity-70">
+                          {user.secteurResponsable || (locale === 'ar' ? (user.communeResponsable?.nomArabe || user.communeResponsable?.nom) : user.communeResponsable?.nom) || 
+                           (user.etablissementsGeres && user.etablissementsGeres.length > 0 
+                             ? t('table.estab_count', { count: user.etablissementsGeres.length }) 
+                             : '-')}
+                        </p>
+                      </GovTd>
+                      <GovTd>
+                        <div className="flex items-center gap-2">
+                          <div className="px-2 py-1 bg-muted rounded-lg text-[10px] font-black text-muted-foreground uppercase shadow-inner">
+                            {t('table.actions_count', { count: user._count.evenementsCrees + user._count.reclamationsCreees })}
                           </div>
-                        </td>
-                        <td className="px-6 py-6">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
-                            user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' 
-                              ? 'bg-orange-50 text-orange-600 border-orange-200' 
-                              : user.role === 'DELEGATION'
-                              ? 'bg-blue-50 text-blue-600 border-blue-200'
-                              : user.role === 'GOUVERNEUR'
-                              ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                              : 'bg-muted text-muted-foreground border-border'
-                          }`}>
-                            <Shield size={12} className="stroke-[2.5]" />
-                            {t(`roles.${user.role}`)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-6">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
-                            user.isActive 
-                              ? 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] border-[hsl(var(--gov-green))/0.2]' 
-                              : 'bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] border-[hsl(var(--gov-red))/0.2]'
-                          }`}>
-                            {user.isActive ? <UserCheck size={12} className="stroke-[2.5]" /> : <UserX size={12} className="stroke-[2.5]" />}
-                            {user.isActive ? t('statuses.active') : t('statuses.inactive')}
-                          </span>
-                        </td>
-                        <td className="px-6 py-6">
-                          <p className="text-xs text-foreground font-black opacity-70">
-                            {user.secteurResponsable || (locale === 'ar' ? (user.communeResponsable?.nomArabe || user.communeResponsable?.nom) : user.communeResponsable?.nom) || 
-                             (user.etablissementsGeres && user.etablissementsGeres.length > 0 
-                               ? t('table.estab_count', { count: user.etablissementsGeres.length }) 
-                               : '-')}
-                          </p>
-                        </td>
-                        <td className="px-6 py-6">
-                          <div className="flex items-center gap-2">
-                            <div className="px-2 py-1 bg-muted rounded-lg text-[10px] font-black text-muted-foreground uppercase shadow-inner">
-                              {t('table.actions_count', { count: user._count.evenementsCrees + user._count.reclamationsCreees })}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-6 text-right relative">
-                          <button
+                        </div>
+                      </GovTd>
+                      <GovTd className="text-right relative">
+                        <div className={cn(
+                          "flex items-center justify-end gap-2 transition-all duration-300 transform",
+                          activeDropdown === user.id ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100"
+                        )}>
+                          <GovButton
                             onClick={() => setActiveDropdown(activeDropdown === user.id ? null : user.id)}
-                            className={`p-2.5 rounded-xl transition-all shadow-sm border ${activeDropdown === user.id ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))] scale-90' : 'bg-card text-muted-foreground border-border hover:text-[hsl(var(--gov-blue))] hover:bg-muted active:scale-95'}`}
+                            variant="outline"
+                            size="icon"
+                            className={activeDropdown === user.id ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))]' : ''}
                           >
                             <MoreVertical size={18} />
-                          </button>
+                          </GovButton>
+                        </div>
 
-                          <AnimatePresence>
-                            {activeDropdown === user.id && (
-                              <motion.div 
-                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                className="absolute right-0 mt-3 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-50 backdrop-blur-xl bg-card/95 overflow-hidden"
+                        <AnimatePresence>
+                          {activeDropdown === user.id && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                              className="absolute ltr:right-0 rtl:left-0 mt-3 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-50 backdrop-blur-xl bg-card/95 overflow-hidden"
+                            >
+                              <button
+                                onClick={() => handleEditRole(user)}
+                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
                               >
-                                <button
-                                  onClick={() => handleEditRole(user)}
-                                  className="w-full px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
-                                >
-                                  <Edit size={16} />
-                                  {t('actions.edit_role')}
-                                </button>
-                                <button
-                                  onClick={() => handleResetPassword(user)}
-                                  className="w-full px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
-                                >
-                                  <KeyRound size={16} />
-                                  {t('actions.reset_password')}
-                                </button>
-                                <button
-                                  onClick={() => handleToggleStatus(user)}
-                                  className="w-full px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-foreground hover:bg-muted flex items-center gap-3 transition-colors"
-                                >
-                                  {user.isActive 
-                                    ? <UserX size={16} className="text-rose-600" /> 
-                                    : <UserCheck size={16} className="text-emerald-600" />}
-                                  {user.isActive ? t('actions.deactivate') : t('actions.activate')}
-                                </button>
-                                <div className="h-px bg-border my-2 mx-2 opacity-50" />
-                                <button
-                                  onClick={() => handleDelete(user)}
-                                  className="w-full px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 flex items-center gap-3 transition-colors"
-                                >
-                                  <Trash2 size={16} />
-                                  {t('actions.delete')}
-                                </button>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                                <Edit size={16} />
+                                {t('actions.edit_role')}
+                              </button>
+                              <button
+                                onClick={() => handleResetPassword(user)}
+                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
+                              >
+                                <KeyRound size={16} />
+                                {t('actions.reset_password')}
+                              </button>
+                              <button
+                                onClick={() => handleToggleStatus(user)}
+                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-muted flex items-center gap-3 transition-colors"
+                              >
+                                {user.isActive 
+                                  ? <UserX size={16} className="text-rose-600" /> 
+                                  : <UserCheck size={16} className="text-emerald-600" />}
+                                {user.isActive ? t('actions.deactivate') : t('actions.activate')}
+                              </button>
+                              <div className="h-px bg-border my-2 mx-2 opacity-50" />
+                              <button
+                                onClick={() => handleDelete(user)}
+                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 flex items-center gap-3 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                                {t('actions.delete')}
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </GovTd>
+                    </GovTr>
+                  );
+                })
+              )}
+            </tbody>
+          </GovTable>
 
             {/* Pagination Container */}
             {pagination.totalPages > 1 && (
@@ -570,7 +586,6 @@ export default function UsersPage() {
         {activeDropdown && (
           <div className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px]" onClick={() => setActiveDropdown(null)} />
         )}
-      </div>
     </PermissionGuard>
   );
 }

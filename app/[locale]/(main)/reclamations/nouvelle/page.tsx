@@ -571,13 +571,13 @@ export default function NouvelleReclamationPage() {
                   disabled={currentStep === 1 || isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all ${
+                  className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-all ${
                     currentStep === 1 || isSubmitting
                       ? 'text-gray-300 cursor-not-allowed'
                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-5 h-5" />
                   {t('reclamation.actions.prev')}
                 </motion.button>
 
@@ -587,10 +587,10 @@ export default function NouvelleReclamationPage() {
                     onClick={nextStep}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--gov-blue))] text-white rounded-xl font-mdeium shadow-lg shadow-blue-200 hover:bg-[hsl(var(--gov-blue-dark))] transition-all"
+                    className="flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] text-white rounded-2xl font-bold shadow-lg shadow-blue-900/20 hover:shadow-xl hover:shadow-blue-900/40 transition-all"
                   >
                     {t('reclamation.actions.next')}
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 ) : (
                   <motion.button
@@ -599,7 +599,7 @@ export default function NouvelleReclamationPage() {
                     disabled={isSubmitting}
                     whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                     whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                    className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-light))] text-white rounded-xl font-semibold shadow-lg shadow-emerald-200 hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-10 py-3.5 bg-gradient-to-r from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))] text-white rounded-2xl font-bold shadow-lg shadow-emerald-900/20 hover:shadow-xl hover:shadow-emerald-900/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>
@@ -626,19 +626,19 @@ export default function NouvelleReclamationPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
+            className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm"
           >
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[hsl(var(--gov-green))]" />
-              <span>{t('reclamation.trust.secure')}</span>
+            <div className="flex items-center gap-2.5 px-4 py-2 bg-white/50 backdrop-blur-sm rounded-full border border-white shadow-sm">
+              <Shield className="w-4 h-4 text-[hsl(var(--gov-green))]" strokeWidth={2.5} />
+              <span className="font-bold text-gray-600 uppercase tracking-tight">{t('reclamation.trust.secure')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[hsl(var(--gov-blue))]" />
-              <span>{t('reclamation.trust.compliance')}</span>
+            <div className="flex items-center gap-2.5 px-4 py-2 bg-white/50 backdrop-blur-sm rounded-full border border-white shadow-sm">
+              <Clock className="w-4 h-4 text-[hsl(var(--gov-blue))]" strokeWidth={2.5} />
+              <span className="font-bold text-gray-600 uppercase tracking-tight">{t('reclamation.trust.compliance')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[hsl(var(--gov-gold))]" />
-              <span>{t('reclamation.trust.tracking')}</span>
+            <div className="flex items-center gap-2.5 px-4 py-2 bg-white/50 backdrop-blur-sm rounded-full border border-white shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-[hsl(var(--gov-gold))]" strokeWidth={2.5} />
+              <span className="font-bold text-gray-600 uppercase tracking-tight">{t('reclamation.trust.tracking')}</span>
             </div>
           </motion.div>
         </div>

@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-
 import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
+import { RefreshCw, Home, ServerCrash, ShieldAlert } from 'lucide-react';
 
 export default function Error({
   error,
@@ -15,54 +16,73 @@ export default function Error({
   const tAccess = useTranslations('access_denied');
 
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center bg-gray-50 px-4 text-center">
-      <div className="mb-6 rounded-full bg-red-100 p-4">
-        <svg
-          className="h-10 w-10 text-red-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center px-4 text-center relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.05),transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
+      
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 max-w-lg w-full bg-slate-800/40 border border-slate-700/40 p-8 sm:p-12 rounded-[2.5rem] shadow-2xl backdrop-blur-md"
+      >
+        {/* Animated Icon Container */}
+        <motion.div 
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+          className="mx-auto w-20 h-20 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mb-8 shadow-lg shadow-red-950/20"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-      </div>
-      <h2 className="mb-2 text-2xl font-bold text-gray-900">
-        {t('server_error')}
-      </h2>
-      <p className="mb-4 max-w-md text-gray-600">
-        {t('server_error_desc')}
-      </p>
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mb-8 p-4 bg-red-50 text-red-700 rounded-lg text-left text-xs font-mono max-w-lg overflow-auto">
-          <p className="font-bold">{error.name}: {error.message}</p>
-          {error.digest && <p className="mt-1">Digest: {error.digest}</p>}
-        </div>
-      )}
-      <div className="flex gap-4">
-        <button
-          onClick={() => reset()}
-          className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-        >
-          {t('retry')}
-        </button>
-        <button
+          <ServerCrash size={36} className="stroke-[1.5]" />
+        </motion.div>
+
+        {/* Status Code / Warning */}
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-widest mb-4">
+          <ShieldAlert size={12} />
+          Erreur Serveur
+        </span>
+
+        {/* Server Error Title */}
+        <h2 className="text-2xl font-bold text-white mb-3">
+          {t('server_error') || "Une erreur est survenue"}
+        </h2>
+        
+        {/* Description */}
+        <p className="text-slate-400 mb-8 leading-relaxed text-sm">
+          {t('server_error_desc') || "Nos services rencontrent actuellement des difficultés. Veuillez réessayer dans quelques instants."}
+        </p>
+
+        {/* Dev Diagnostics */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mb-8 p-4 bg-red-950/30 border border-red-900/30 text-red-400 rounded-2xl text-left text-xs font-mono max-w-full overflow-auto max-h-40">
+            <p className="font-bold">{error.name}: {error.message}</p>
+            {error.digest && <p className="mt-1">Digest: {error.digest}</p>}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => reset()}
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-red-600 to-red-500 text-white font-bold rounded-2xl hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-950/20 active:scale-[0.98]"
+          >
+            <RefreshCw size={16} />
+            {t('retry') || "Réessayer"}
+          </button>
+          
+          <button
             onClick={() => window.location.href = '/'}
-            className="rounded-lg bg-white px-6 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-        >
-            {tAccess('back_home')}
-        </button>
-      </div>
+            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-bold rounded-2xl transition-all active:scale-[0.98]"
+          >
+            <Home size={16} />
+            {tAccess('back_home') || "Retour à l'accueil"}
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }

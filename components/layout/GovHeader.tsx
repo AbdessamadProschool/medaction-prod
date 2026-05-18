@@ -5,6 +5,9 @@ import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, usePathname } from '@/i18n/navigation';
+import { useRouter } from 'next/navigation';
+import GlobalSearch from '@/components/search/GlobalSearch';
+
 import {
   Home,
   Building2,
@@ -37,6 +40,7 @@ import { useTranslations, useLocale } from 'next-intl';
 
 export default function GovHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
   const t = useTranslations();
   const locale = useLocale();
@@ -45,7 +49,23 @@ export default function GovHeader() {
   const [kiosqueOpen, setKiosqueOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Keyboard shortcut to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
   
   // Navigation items with translations
   const primaryNavItems = [
@@ -324,12 +344,13 @@ export default function GovHeader() {
               </div>
 
               {/* Recherche */}
-              <Link
-                href="/recherche"
+              <button
+                onClick={() => setSearchOpen(true)}
                 className="p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
+                aria-label="Recherche"
               >
                 <Search size={20} />
-              </Link>
+              </button>
 
               {/* Notifications */}
               {session && (
@@ -688,6 +709,76 @@ export default function GovHeader() {
                 ))}
               </div>
             </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Search Overlay Modal */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4 bg-slate-950/80 backdrop-blur-md"
+            onClick={() => setSearchOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: -20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: -20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header inside modal */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-[hsl(45,93%,47%)] animate-pulse" />
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+                    {t('search_page.title')}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-200/50 dark:bg-slate-800 text-[10px] font-bold text-gray-500 uppercase tracking-widest border border-gray-200 dark:border-slate-700">
+                    ESC
+                  </span>
+                  <button
+                    onClick={() => setSearchOpen(false)}
+                    className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Global Search Component */}
+              <div className="p-6">
+                <GlobalSearch
+                  placeholder={t('search_page.placeholder')}
+                  autoFocus
+                  showFilters
+                  onResultClick={(result) => {
+                    setSearchOpen(false);
+                    router.push(result.url);
+                  }}
+                />
+              </div>
+
+              {/* Footer inside modal */}
+              <div className="px-6 py-3 bg-gray-50 dark:bg-slate-900/30 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs text-gray-400">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 font-mono text-[10px]">↵</kbd> Sélectionner
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 font-mono text-[10px]">↑↓</kbd> Naviguer
+                  </span>
+                </div>
+                <span>Portail Médiouna</span>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

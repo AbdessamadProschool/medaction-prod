@@ -135,14 +135,13 @@ const GovButton = React.forwardRef<HTMLButtonElement, GovButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
 
-    return (
-      <Comp
-        ref={ref}
-        disabled={disabled || loading}
-        aria-disabled={disabled || loading}
-        className={cn(govButtonVariants({ variant, size }), className)}
-        {...props}
-      >
+    /**
+     * Radix Slot requires exactly ONE child element.
+     * When asChild=true we wrap everything in a single <span> so that
+     * the Slot can clone it without throwing React.Children.only.
+     */
+    const inner = asChild ? (
+      <span className="inline-flex items-center justify-center gap-2 w-full">
         {loading ? (
           <Loader2 className="animate-spin" aria-hidden="true" />
         ) : (
@@ -152,6 +151,30 @@ const GovButton = React.forwardRef<HTMLButtonElement, GovButtonProps>(
         {!loading && rightIcon && (
           <span aria-hidden="true">{rightIcon}</span>
         )}
+      </span>
+    ) : (
+      <>
+        {loading ? (
+          <Loader2 className="animate-spin" aria-hidden="true" />
+        ) : (
+          leftIcon && <span aria-hidden="true">{leftIcon}</span>
+        )}
+        {children}
+        {!loading && rightIcon && (
+          <span aria-hidden="true">{rightIcon}</span>
+        )}
+      </>
+    );
+
+    return (
+      <Comp
+        ref={ref}
+        disabled={disabled || loading}
+        aria-disabled={disabled || loading}
+        className={cn(govButtonVariants({ variant, size }), className)}
+        {...props}
+      >
+        {inner}
       </Comp>
     );
   }

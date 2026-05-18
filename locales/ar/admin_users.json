@@ -1,0 +1,132 @@
+{
+  "admin": {
+    "users_page": {
+      "page_title": "إدارة حسابات المستخدمين",
+      "total_users": "{count} حساب مسجل",
+      "search_placeholder": "البحث بالاسم أو البريد الإلكتروني أو الرقم التعريفي...",
+      "add": "إنشاء مستخدم جديد",
+      "export": "تصدير القائمة (Excel/CSV)",
+      "reset_filters": "إعادة تعيين المرشحات",
+      "filter_roles_all": "جميع الأدوار المؤسسية",
+      "filter_status_all": "جميع الحالات",
+      "no_users": "لا يوجد مستخدم يطابق معاييرك",
+      "pagination": "عرض من {start} إلى {end} من أصل {total} مستخدم",
+      "roles": {
+        "CITOYEN": "مواطن",
+        "DELEGATION": "مندوب قطاع",
+        "AUTORITE_LOCALE": "السلطة المحلية",
+        "COORDINATEUR_ACTIVITES": "منسق الأنشطة",
+        "ADMIN": "مسؤول",
+        "SUPER_ADMIN": "المسؤول العام",
+        "GOUVERNEUR": "والي الإقليم"
+      },
+      "role_descriptions": {
+        "CITOYEN": "الوصول القياسي للمواطن (الشكايات، الأخبار، الفعاليات)",
+        "DELEGATION": "ممثل إقليمي (إدارة المحتوى القطاعي)",
+        "AUTORITE_LOCALE": "مدير ترابي (جماعة / ملحقة)",
+        "COORDINATEUR_ACTIVITES": "الإشراف التشغيلي على الأنشطة الميدانية",
+        "ADMIN": "الإدارة التقنية والإشراف الوظيفي",
+        "SUPER_ADMIN": "التحكم الكامل في البنية التحتية والأمان",
+        "GOUVERNEUR": "الإشراف الاستراتيجي على الأداء الإقليمي"
+      },
+      "sectors": {
+        "EDUCATION": "التعليم",
+        "SANTE": "الصحة",
+        "SPORT": "الرياضة",
+        "SOCIAL": "الاجتماعي",
+        "CULTUREL": "الثقافة",
+        "AUTRE": "قطاع آخر"
+      },
+      "table": {
+        "user": "الهوية والتواصل",
+        "role": "الملف والصلاحيات",
+        "status": "حالة الحساب",
+        "sector_establishment": "الانتماء المؤسسي",
+        "activity": "آخر نشاط",
+        "actions": "إجراءات الإدارة",
+        "actions_count": "{count} إجراء منجز",
+        "estab_count": "{count} مؤسسة يديرها"
+      },
+      "statuses": {
+        "active": "حساب نشط",
+        "inactive": "حساب موقوف",
+        "activated": "مفعّل",
+        "deactivated": "موقوف"
+      },
+      "actions": {
+        "edit_role": "تعديل الدور والانتماء",
+        "reset_password": "إعادة تعيين كلمة المرور",
+        "deactivate": "إيقاف الوصول",
+        "activate": "استعادة الوصول",
+        "delete": "حذف الحساب"
+      },
+      "messages": {
+        "error": "حدث خطأ تقني",
+        "status_changed": "تم تحديث حالة الحساب: {status}",
+        "delete_confirm": "هل تريد فعلاً حذف حساب {name} بشكل نهائي؟ هذا الإجراء لا رجعة فيه.",
+        "user_deleted": "تم حذف المستخدم بنجاح",
+        "reset_password_confirm": "هل تريد إنشاء كلمة مرور جديدة آمنة لـ {name}؟",
+        "reset_password_alert": "كلمة المرور الجديدة: {password}\n\nيرجى إرسالها للمستخدم بطريقة آمنة.",
+        "reset_password_success": "تمت إعادة تعيين كلمة المرور بنجاح"
+      },
+      "create_modal": {
+        "title": "إنشاء حساب جديد",
+        "subtitle": "أدخل المعلومات لإنشاء وصول آمن",
+        "fields": {
+          "first_name": "الاسم الشخصي",
+          "last_name": "اسم العائلة",
+          "email": "البريد الإلكتروني المهني",
+          "phone": "رقم الهاتف",
+          "password": "كلمة المرور الأولية",
+          "confirm_password": "تأكيد كلمة المرور",
+          "role": "الدور المؤسسي",
+          "sector": "قطاع النشاط",
+          "commune": "الجماعة المرتبطة",
+          "establishments": "المؤسسات التابعة ({count})",
+          "active_account": "تفعيل الحساب فوراً"
+        },
+        "placeholders": {
+          "first_name": "أدخل الاسم الشخصي",
+          "last_name": "أدخل اسم العائلة",
+          "email": "مثال@نطاق.ma",
+          "phone": "06XXXXXXXX",
+          "password": "كلمة مرور معقدة"
+        },
+        "helpers": {
+          "commune_helper": "المنطقة الجغرافية للاختصاص",
+          "establishments_helper": "حدد المؤسسات التي يديرها هذا المستخدم"
+        },
+        "select_option": {
+          "sector": "اختر قطاعاً موضوعياً",
+          "commune": "اختر جماعة"
+        },
+        "cancel_btn": "إلغاء العملية",
+        "submit_btn": "إتمام الإنشاء",
+        "errors": {
+          "password_mismatch": "كلمتا المرور غير متطابقتين",
+          "password_length": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+          "sector_required": "قطاع النشاط إلزامي لهذا الدور",
+          "commune_required": "الجماعة المرتبطة مطلوبة",
+          "establishment_required": "يرجى تحديد مؤسسة واحدة على الأقل",
+          "create_error": "خطأ أثناء إنشاء الحساب",
+          "server_error": "لم يتمكن الخادم من معالجة الطلب"
+        },
+        "success": "تم إنشاء حساب المستخدم {name} بنجاح",
+        "loading_establishments": "جاري تحميل قائمة المؤسسات..."
+      },
+      "edit_role_modal": {
+        "title": "تعديل الصلاحيات والانتماء",
+        "current_role": "الدور الحالي",
+        "new_role": "الدور المؤسسي الجديد",
+        "errors": {
+          "edit_error": "خطأ أثناء تعديل الصلاحيات",
+          "sector_required": "القطاع مطلوب لهذا الملف",
+          "commune_required": "الجماعة مطلوبة لهذا الملف",
+          "establishment_required": "الانتماء لمؤسسة مطلوب",
+          "server_error": "خطأ في التواصل مع الخادم"
+        },
+        "loading": "جاري التحديث..."
+      }
+    }
+  }
+}

@@ -237,10 +237,12 @@ export default function ReclamationDetailPage() {
             href="/admin/reclamations"
             className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
-            <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
-              <ArrowLeft size={14} />
-            </div>
-            <span>{t('back_to_list')}</span>
+            <>
+              <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
+                <ArrowLeft size={14} />
+              </div>
+              <span>{t('back_to_list')}</span>
+            </>
           </Link>
           
           <div className="flex items-center gap-5">

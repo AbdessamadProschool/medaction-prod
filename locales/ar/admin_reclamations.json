@@ -1,0 +1,81 @@
+{
+  "admin": {
+    "reclamations_page": {
+      "page_title": "إدارة الشكايات",
+      "total_reclamations": "{count} شكاية في المجموع",
+      "search_placeholder": "البحث بالمرجع أو العنوان أو المواطن...",
+      "status_filter": "الحالة الإدارية",
+      "category_filter": "جميع الفئات",
+      "affectation": "حالة التعيين",
+      "not_assigned": "غير معينة",
+      "communeId": "الجماعة / الإقليم",
+      "categorie": "الموضوع",
+      "status_labels": {
+        "pending": "قيد الانتظار",
+        "accepted": "مقبولة",
+        "rejected": "مرفوضة",
+        "assigned": "معينة",
+        "to_dispatch": "للتعيين"
+      },
+      "stats": {
+        "total": "مجموع التدفق",
+        "pending": "للمصادقة",
+        "to_dispatch": "للتعيين",
+        "in_progress": "قيد المعالجة",
+        "rejected": "مصنفة بدون متابعة"
+      },
+      "table": {
+        "ref": "المرجع",
+        "citoyen": "المواطن المشتكي",
+        "sujet": "الموضوع والفئة",
+        "statut": "القرار",
+        "affectation": "الجهة المسؤولة",
+        "agent_in_charge": "العون المكلف",
+        "date": "تاريخ الإيداع",
+        "photo": "الأدلة الفوتوغرافية"
+      },
+      "modals": {
+        "assignment": {
+          "title": "تعيين الملف",
+          "unassign": "إلغاء تعيين الملف",
+          "no_agents": "لا يوجد عون متاح",
+          "select_label": "اختر عوناً أو سلطة",
+          "notification_hint": "سيتلقى العون إشعاراً فورياً ويمكنه البدء في معالجة الشكاية.",
+          "create_agents_hint": "يرجى إنشاء عوناً لهذا الإقليم",
+          "local_authorities": "السلطات المحلية",
+          "other_agents": "الخدمات المركزية",
+          "local_badge": "محلي",
+          "delegate_badge": "مندوب",
+          "admin_badge": "مسؤول"
+        },
+        "status": {
+          "title": "التحكيم الإداري",
+          "subtitle": "تحديث حالة الشكاية",
+          "accept_btn": "قبول الملف",
+          "accept_desc": "الشكاية مقبولة وستتم معالجتها.",
+          "reject_btn": "رفض الملف",
+          "reject_desc": "الشكاية غير مقبولة أو خارج نطاق الاختصاص.",
+          "reject_placeholder": "سبب الرفض الإلزامي (10 أحرف كحد أدنى)...",
+          "confirm_reject": "تأكيد الرفض"
+        },
+        "delete": {
+          "title": "الحذف النهائي",
+          "confirm_question": "هل أنت متأكد من رغبتك في حذف هذه الشكاية؟"
+        }
+      },
+      "messages": {
+        "deleting": "جاري حذف الملف...",
+        "deleted_success": "تم حذف الملف بنجاح",
+        "updating": "جاري التحديث..."
+      },
+      "no_reclamations": "لم يتم العثور على أي شكاية",
+      "pagination": "الصفحة {page} من {total}",
+      "empty": {
+        "title": "التدفق فارغ"
+      },
+      "filters_labels": {
+        "all_communes": "كل مديونة"
+      }
+    }
+  }
+}

@@ -550,6 +550,312 @@
       "admin": "Administration"
     }
   },
+  "admin": {
+    "sidebar": {
+      "portal_name": "PORTAIL MEDIOUNA",
+      "administration": "Administration",
+      "dashboard": "Tableau de bord",
+      "reclamations": "Réclamations",
+      "suggestions": "Suggestions",
+      "users": "Utilisateurs",
+      "etablissements": "Établissements",
+      "etablissements_requests": "Demandes Établissements",
+      "activities": "Activités",
+      "validation": "Validation",
+      "events": "Événements",
+      "news": "Actualités",
+      "articles": "Articles",
+      "campaigns": "Campagnes",
+      "reports": "Rapports",
+      "statistics": "Statistiques",
+      "home_page": "Accueil",
+      "settings": "Paramètres",
+      "super_admin": "Super Admin",
+      "popup_announcements": "Annonces Pop-up",
+      "roles_permissions": "Rôles & Permissions",
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "audit_logs": "Logs d'audit",
+      "system_config": "Config Système",
+      "backup": "Sauvegarde",
+      "backups": "Sauvegardes",
+      "legal": "Mentions Légales",
+      "help": "Aide & Support",
+      "logout": "Déconnexion"
+    },
+    "dashboard": {
+      "header": {
+        "title": "Tableau de bord",
+        "subtitle": "Aperçu de l'activité de la plateforme",
+        "export": "Exporter",
+        "reports": "Rapports"
+      },
+      "metrics": {
+        "users": "Utilisateurs",
+        "establishments": "Établissements",
+        "events": "Événements",
+        "reclamations": "Réclamations",
+        "new_this_month": "Nouveaux ce mois",
+        "validated": "Validés",
+        "in_progress": "En cours",
+        "pending": "En attente",
+        "this_month": "Ce mois"
+      },
+      "quick_actions": {
+        "title": "Actions rapides",
+        "claims": "Réclamations",
+        "claims_desc": "Traiter les réclamations entrantes",
+        "validation": "Validation",
+        "validation_desc": "Valider les établissements",
+        "campaigns": "Campagnes",
+        "campaigns_desc": "Gérer les campagnes de volontariat",
+        "users": "Utilisateurs",
+        "users_desc": "Gérer les comptes utilisateurs",
+        "access": "Accéder"
+      }
+    },
+    "reclamations_page": {
+      "page_title": "Gestion des Réclamations",
+      "total_reclamations": "Total des réclamations",
+      "search_placeholder": "Rechercher...",
+      "status_filter": "Statut",
+      "category_filter": "Catégorie",
+      "filters": "Filtres",
+      "not_assigned": "Non affecté",
+      "anonymous": "Anonyme",
+      "pagination": "Page {page} sur {total}",
+      "stats": {
+        "total": "Total",
+        "pending": "En attente",
+        "to_dispatch": "À distribuer",
+        "in_progress": "En traitement",
+        "rejected": "Rejetées"
+      },
+      "status_labels": {
+        "pending": "En attente",
+        "accepted": "Acceptée",
+        "rejected": "Rejetée",
+        "assigned": "Affectée",
+        "to_dispatch": "À distribuer"
+      },
+      "columns": {
+        "reclamation": "Réclamation",
+        "citizen": "Citoyen",
+        "commune": "Commune",
+        "status": "Statut",
+        "category": "Catégorie",
+        "assigned_to": "Affecté à",
+        "date": "Date",
+        "actions": "Actions"
+      }
+    },
+    "suggestions_page": {
+      "page_title": "Gestion des Suggestions",
+      "page_subtitle": "Modération des suggestions citoyennes",
+      "statuses": {
+        "SOUMISE": "Soumise",
+        "EN_EXAMEN": "En examen",
+        "APPROUVEE": "Approuvée",
+        "REJETEE": "Rejetée",
+        "IMPLEMENTEE": "Réalisée"
+      },
+      "search_placeholder": "Rechercher...",
+      "no_suggestions": "Aucune suggestion",
+      "waiting_suggestions": "Suggestions en attente",
+      "table": {
+        "suggestion": "Suggestion",
+        "category": "Catégorie",
+        "citizen": "Citoyen",
+        "status": "Statut",
+        "date": "Date",
+        "actions": "Actions"
+      }
+    },
+    "establishments_page": {
+      "page_title": "Gestion des Établissements",
+      "total_establishments": "{count} établissements",
+      "filters": "Filtres",
+      "new_establishment": "Nouvel établissement",
+      "bulk_publish": "Publier la sélection",
+      "bulk_delete": "Supprimer la sélection",
+      "search_placeholder": "Rechercher un établissement...",
+      "reset": "Réinitialiser",
+      "all_sectors": "Tous les secteurs",
+      "empty": {
+        "title": "Aucun établissement",
+        "no_results": "Aucun établissement ne correspond à votre recherche",
+        "description": "Commencez par ajouter votre premier établissement."
+      },
+      "stats": {
+        "total": "Total",
+        "validated": "Validés",
+        "published": "Publiés",
+        "average_rating": "Note moyenne"
+      },
+      "card": {
+        "validated": "Validé",
+        "pending": "En attente",
+        "published": "Publié",
+        "publish": "Publier",
+        "unpublish": "Dépublier",
+        "reviews": "{count} avis",
+        "details": "Détails",
+        "details_title": "Fiche Établissement",
+        "validate": "Valider",
+        "highlight": "Mettre en avant",
+        "remove_highlight": "Retirer la mise en avant",
+        "delete": "Supprimer",
+        "name": "Nom",
+        "sector": "Secteur",
+        "location": "Localisation",
+        "status": "Statut",
+        "rating": "Note",
+        "actions": "Actions"
+      }
+    },
+    "users_page": {
+      "roles": {
+        "CITOYEN": "Citoyen",
+        "DELEGATION": "Délégation",
+        "AUTORITE_LOCALE": "Autorité Locale",
+        "COORDINATEUR_ACTIVITES": "Coordinateur d'Activités",
+        "ADMIN": "Administrateur",
+        "SUPER_ADMIN": "Super Administrateur",
+        "GOUVERNEUR": "Gouverneur"
+      },
+      "page_title": "Gestion des Utilisateurs",
+      "total_users": "Utilisateurs totaux",
+      "export": "Exporter",
+      "add": "Ajouter",
+      "search_placeholder": "Rechercher...",
+      "filter_roles_all": "Tous les rôles",
+      "filter_status_all": "Tous les statuts",
+      "reset_filters": "Réinitialiser",
+      "no_users": "Aucun utilisateur trouvé",
+      "pagination": "Page {start}-{end} sur {total}",
+      "role_descriptions": {
+        "CITOYEN": "Accès citoyen standard",
+        "DELEGATION": "Représentant provincial",
+        "AUTORITE_LOCALE": "Administration territoriale",
+        "COORDINATEUR_ACTIVITES": "Supervision de terrain",
+        "ADMIN": "Administration technique",
+        "SUPER_ADMIN": "Accès complet",
+        "GOUVERNEUR": "Supervision globale"
+      },
+      "sectors": {
+        "EDUCATION": "Éducation",
+        "SANTE": "Santé",
+        "SPORT": "Sport",
+        "SOCIAL": "Social",
+        "CULTUREL": "Culture",
+        "AUTRE": "Autre"
+      },
+      "table": {
+        "user": "Utilisateur",
+        "role": "Rôle",
+        "status": "Statut",
+        "sector_establishment": "Secteur / Établissement",
+        "activity": "Activité",
+        "actions": "Actions",
+        "actions_count": "{count} actions",
+        "estab_count": "{count} établissements"
+      },
+      "statuses": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "activated": "Activé",
+        "deactivated": "Désactivé"
+      },
+      "actions": {
+        "edit_role": "Modifier le rôle",
+        "reset_password": "Réinitialiser le mot de passe",
+        "deactivate": "Désactiver",
+        "activate": "Activer",
+        "delete": "Supprimer"
+      },
+      "messages": {
+        "error": "Une erreur est survenue",
+        "status_changed": "Statut {status}",
+        "delete_confirm": "Supprimer {name} ?",
+        "user_deleted": "Utilisateur supprimé",
+        "reset_password_confirm": "Réinitialiser pour {name} ?",
+        "reset_password_alert": "Nouveau mot de passe : {password}",
+        "reset_password_success": "Mot de passe réinitialisé"
+      },
+      "create_modal": {
+        "title": "Nouvel Utilisateur",
+        "subtitle": "Créer un compte",
+        "fields": {
+          "first_name": "Prénom",
+          "last_name": "Nom",
+          "email": "Email",
+          "phone": "Téléphone",
+          "password": "Mot de passe",
+          "confirm_password": "Confirmer",
+          "role": "Rôle",
+          "sector": "Secteur",
+          "commune": "Commune",
+          "establishments": "Établissements ({count})",
+          "active_account": "Compte actif"
+        },
+        "placeholders": {
+          "first_name": "Prénom",
+          "last_name": "Nom",
+          "email": "email@exemple.com",
+          "phone": "06XXXXXXXX",
+          "password": "Mot de passe"
+        },
+        "helpers": {
+          "commune_helper": "Commune rattachée",
+          "establishments_helper": "Établissements gérés (sélection multiple)"
+        },
+        "select_option": {
+          "sector": "Choisir un secteur",
+          "commune": "Choisir une commune"
+        },
+        "cancel_btn": "Annuler",
+        "submit_btn": "Créer",
+        "errors": {
+          "password_mismatch": "Les mots de passe ne correspondent pas",
+          "password_length": "6 caractères minimum",
+          "sector_required": "Le secteur est obligatoire",
+          "commune_required": "La commune est obligatoire",
+          "establishment_required": "L'établissement est obligatoire",
+          "create_error": "Erreur lors de la création",
+          "server_error": "Erreur serveur"
+        },
+        "success": "Compte de {name} créé avec succès"
+      },
+      "edit_role_modal": {
+        "title": "Modifier le rôle",
+        "current_role": "Rôle actuel",
+        "new_role": "Nouveau rôle",
+        "errors": {
+          "edit_error": "Erreur lors de la modification",
+          "sector_required": "Le secteur est obligatoire",
+          "commune_required": "La commune est obligatoire",
+          "establishment_required": "L'établissement est obligatoire",
+          "server_error": "Erreur serveur"
+        },
+        "loading": "Chargement..."
+      }
+    },
+    "backups": {
+      "title": "Sauvegardes Système",
+      "subtitle": "Historique des points de restauration de la base de données.",
+      "create": "Nouvelle sauvegarde",
+      "restore": "Restaurer",
+      "empty_title": "Aucune sauvegarde",
+      "empty_desc": "Vous n'avez pas encore créé de points de restauration du système.",
+      "create_first": "Créer la première sauvegarde",
+      "success_create": "Sauvegarde créée avec succès",
+      "success_restore": "Système restauré avec succès",
+      "messages": {
+        "confirm_restore": "Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cela écrasera les données actuelles.",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
+      }
+    }
+  },
   "campaigns": {
     "title": "Campagnes Citoyennes",
     "subtitle": "Participez aux initiatives de votre province",

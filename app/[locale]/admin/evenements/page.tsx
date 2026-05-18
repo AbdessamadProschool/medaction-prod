@@ -810,8 +810,10 @@ function AdminEvenementsContent() {
                     href={`/admin/evenements/${selectedEvenement.id}/modifier`}
                     className="gov-btn-primary py-4 rounded-2xl justify-center text-xs uppercase tracking-widest font-bold"
                   >
-                    <Edit2 size={16} />
-                    Modifier complet
+                    <>
+                      <Edit2 size={16} />
+                      Modifier complet
+                    </>
                   </Link>
                 </div>
               </div>

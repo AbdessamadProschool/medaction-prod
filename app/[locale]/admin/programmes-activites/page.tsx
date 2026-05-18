@@ -235,8 +235,10 @@ export default function AdminProgrammesActivitesPage() {
             href="/admin/programmes-activites/nouvelle"
             className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
           >
-            <Plus size={18} />
-            {t('create')}
+            <>
+              <Plus size={18} />
+              {t('create')}
+            </>
           </Link>
         </div>
       </div>

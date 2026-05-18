@@ -109,8 +109,10 @@ export default function AdminHeader() {
             href="/"
             className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue)/0.1)] rounded-lg transition-all font-bold"
           >
-            <ExternalLink size={16} />
-            {t('site_public')}
+            <>
+              <ExternalLink size={16} />
+              {t('site_public')}
+            </>
           </Link>
 
           {/* Dark mode toggle */}
@@ -165,9 +167,11 @@ export default function AdminHeader() {
                         onClick={() => setShowNotifications(false)}
                         className="block px-4 py-3 hover:bg-[hsl(var(--gov-blue))/0.05] cursor-pointer border-l-4 border-transparent hover:border-[hsl(var(--gov-gold))] transition-all"
                       >
-                        <p className="text-sm font-bold text-foreground">{notif.titre}</p>
-                        <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">{notif.message}</p>
-                        <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-bold mt-1.5">{formatTime(notif.createdAt)}</p>
+                        <>
+                          <p className="text-sm font-bold text-foreground">{notif.titre}</p>
+                          <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">{notif.message}</p>
+                          <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-bold mt-1.5">{formatTime(notif.createdAt)}</p>
+                        </>
                       </Link>
                     ))
                   )}
@@ -215,15 +219,19 @@ export default function AdminHeader() {
                     href="/admin/profil"
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
                   >
-                    <User size={18} className="text-muted-foreground" />
-                    {t('my_profile')}
+                    <>
+                      <User size={18} className="text-muted-foreground" />
+                      {t('my_profile')}
+                    </>
                   </Link>
                   <Link
                     href="/admin/settings"
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
                   >
-                    <Settings size={18} className="text-muted-foreground" />
-                    {t('settings')}
+                    <>
+                      <Settings size={18} className="text-muted-foreground" />
+                      {t('settings')}
+                    </>
                   </Link>
                 </div>
                 <div className="p-1 border-t border-border bg-muted/10">

@@ -40,6 +40,8 @@
       "assign": "تعيين شكاية",
       "validate": "قبول/رفض القرار",
       "resolve": "تحديد كمحلولة",
+      "anonyme": "إرسال شكاية مجهولة",
+      "no_phone": "إرسال بدون رقم هاتف",
       "comment": {
         "internal": "إضافة تعليق داخلي"
       }
@@ -153,7 +155,8 @@
   "pagination": {
     "prev": "السابق",
     "next": "التالي",
-    "page_info": "الصفحة {page} من {total}"
+    "page_info": "الصفحة {page} من {total}",
+    "results": "نتائج"
   },
   "governor": {
     "sidebar": {
@@ -1288,7 +1291,13 @@
         "validate": "تصديق",
         "highlight": "تمييز",
         "remove_highlight": "إزالة التمييز",
-        "delete": "حذف"
+        "delete": "حذف",
+        "name": "الاسم",
+        "sector": "القطاع",
+        "location": "الموقع",
+        "status": "الحالة",
+        "rating": "التقييم",
+        "actions": "الإجراءات"
       },
       "messages": {
         "error": "حدث خطأ",
@@ -1311,7 +1320,8 @@
       "page": "صفحة",
       "limit": "حد",
       "includeNonPublie": "تضمين غير المنشور",
-      "loading": "جاري تحميل المؤسسات..."
+      "loading": "جاري تحميل المؤسسات...",
+      "refresh": "تحديث القائمة"
     },
     "programs_page": {
       "title": "البرامج والأنشطة",
@@ -1719,7 +1729,8 @@
         "reset_password_confirm": "تغيير كلمة مرور {name}؟",
         "reset_password_alert": "كلمة المرور الجديدة: {password}",
         "reset_password_success": "تم تغيير كلمة المرور"
-      }
+      },
+      "refresh": "تحديث القائمة"
     },
     "events": {
       "new_title": "حدث جديد",
@@ -2262,7 +2273,25 @@
     "read": "اقرأ",
     "tags": "الوسوم",
     "showing": "عرض {start}-{end} من أصل {total} مقال",
-    "filter_title": "تصفية المقالات"
+    "filter_title": "تصفية المقالات",
+    "categories": {
+      "ANNONCE": "إعلان",
+      "EVENEMENT": "حدث",
+      "RENOVATION": "تجديد",
+      "SERVICE": "خدمة",
+      "PROJET": "مشروع",
+      "PARTENARIAT": "شراكة",
+      "AUTRE": "أخرى",
+      "ACTUALITE": "خبر",
+      "E_SERVICES": "الخدمات الإلكترونية",
+      "CULTURE": "ثقافة",
+      "URBANISME": "التعمير",
+      "SUCCESS_STORY": "قصة نجاح",
+      "TRAVAUX": "أشغال",
+      "SOLIDARITE": "تضامن",
+      "CITOYENNETE": "المواطنة",
+      "ECOLOGIE": "البيئة"
+    }
   },
   "about_page": {
     "title": "حول مديونة أكشن",

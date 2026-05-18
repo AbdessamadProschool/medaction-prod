@@ -201,10 +201,12 @@ export default function NouveauEventPage() {
             href="/admin/evenements"
             className="inline-flex items-center gap-2 text-[10px] font-black text-muted-foreground hover:text-[hsl(var(--gov-blue))] mb-6 transition-all uppercase tracking-widest group"
           >
-            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center group-hover:bg-[hsl(var(--gov-blue)/0.1)] transition-colors">
-              <ArrowLeft size={12} />
-            </div>
-            <span>{t('back_list')}</span>
+            <>
+              <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center group-hover:bg-[hsl(var(--gov-blue)/0.1)] transition-colors">
+                <ArrowLeft size={12} />
+              </div>
+              <span>{t('back_list')}</span>
+            </>
           </Link>
           
           <div className="flex items-center gap-6">

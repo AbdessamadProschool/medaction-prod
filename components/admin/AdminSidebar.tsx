@@ -182,43 +182,45 @@ export default function AdminSidebar() {
             : 'text-white/70 hover:text-white hover:bg-white/5'
         }`}
       >
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        >
-          <Icon 
-            size={20} 
-            className={active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} 
-          />
-        </motion.div>
-        
-        {!collapsed && (
-          <span className="flex-1">{t(item.labelKey)}</span>
-        )}
-        
-        <AnimatePresence>
-          {item.badge !== undefined && item.badge > 0 && (
-            <motion.span 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 500, damping: 15 }}
-              className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center shadow-sm ${
-                active 
-                  ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
-                  : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
-              }`}
-            >
-              {item.badge > 99 ? '99+' : item.badge}
-            </motion.span>
+        <>
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <Icon 
+              size={20} 
+              className={active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} 
+            />
+          </motion.div>
+          
+          {!collapsed && (
+            <span className="flex-1">{t(item.labelKey)}</span>
           )}
-        </AnimatePresence>
-        
-        {collapsed && (
-          <div className="absolute px-2 py-1 bg-[hsl(var(--gov-blue-dark))] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2 shadow-xl border border-white/10">
-            {t(item.labelKey)}
-          </div>
-        )}
+          
+          <AnimatePresence>
+            {item.badge !== undefined && item.badge > 0 && (
+              <motion.span 
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center shadow-sm ${
+                  active 
+                    ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
+                    : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
+                }`}
+              >
+                {item.badge > 99 ? '99+' : item.badge}
+              </motion.span>
+            )}
+          </AnimatePresence>
+          
+          {collapsed && (
+            <div className="absolute px-2 py-1 bg-[hsl(var(--gov-blue-dark))] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2 shadow-xl border border-white/10">
+              {t(item.labelKey)}
+            </div>
+          )}
+        </>
       </Link>
     );
   };
@@ -273,12 +275,14 @@ export default function AdminSidebar() {
           locale={locale === 'ar' ? 'fr' : 'ar'}
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-gray-400 hover:bg-white/10 hover:text-white ${collapsed ? 'justify-center' : ''}`}
         >
-          <Globe size={20} />
-          {!collapsed && (
-            <span className="font-medium">
-              {locale === 'ar' ? 'Français' : 'العربية'}
-            </span>
-          )}
+          <>
+            <Globe size={20} />
+            {!collapsed && (
+              <span className="font-medium">
+                {locale === 'ar' ? 'Français' : 'العربية'}
+              </span>
+            )}
+          </>
         </Link>
       </div>
 

@@ -3,6 +3,8 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { Camera } from 'lucide-react';
+
 
 interface PreuvesSectionProps {
   photos: File[];

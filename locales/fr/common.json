@@ -3872,7 +3872,11 @@
       "Reclamation": "Réclamation",
       "Evenement": "Événement",
       "Actualite": "Actualité",
-      "Etablissement": "Établissement"
+      "Etablissement": "Établissement",
+      "RECLAMATION": "Réclamation",
+      "ACTUALITE": "Actualité",
+      "establishment_workflow": "Workflow d'établissement",
+      "ETABLISSEMENT": "Établissement"
     },
     "action_label": "Action"
   },
@@ -6136,13 +6140,5 @@
     "UPDATE": "Mise à jour du dossier",
     "ACCEPTATION": "Acceptation de la réclamation",
     "AJOUT_MEDIA": "Ajout de pièces jointes"
-  },
-  "audit_page": {
-    "entities": {
-      "RECLAMATION": "Réclamation",
-      "ACTUALITE": "Actualité",
-      "establishment_workflow": "Workflow d'établissement",
-      "ETABLISSEMENT": "Établissement"
-    }
   }
 }

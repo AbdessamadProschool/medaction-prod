@@ -2888,6 +2888,7 @@
         "select_status": "Sélectionner un statut...",
         "select_image": "Sélectionner une image",
         "summary": "Résumé",
+        "summary_placeholder": "Un court résumé pour les cartes...",
         "general_category": "Catégorie Générale",
         "tags": "Tags (séparés par virgule)",
         "tags_placeholder": "tag1, tag2, tag3",
@@ -3220,6 +3221,10 @@
         "next": "Suivant",
         "create": "Créer l'événement",
         "save_draft_success": "Brouillon enregistré"
+      },
+      "validation": {
+        "success": "Événement créé avec succès",
+        "error": "Erreur lors de la création de l'événement"
       }
     },
     "backups": {

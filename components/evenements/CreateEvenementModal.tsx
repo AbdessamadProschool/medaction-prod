@@ -63,10 +63,10 @@ const SECTEURS = [
 ];
 
 const STEPS = [
-  { id: 1, title: 'Informations' },
-  { id: 2, title: 'Lieu & Organisation' },
-  { id: 3, title: 'Participation' },
-  { id: 4, title: 'Médias' },
+  { id: 1, titleKey: 'steps.info' },
+  { id: 2, titleKey: 'steps.location' },
+  { id: 3, titleKey: 'steps.participation' },
+  { id: 4, titleKey: 'steps.media' },
 ];
 
 export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: CreateEvenementModalProps) {
@@ -293,7 +293,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   "text-[9px] font-black uppercase tracking-widest transition-colors hidden sm:block",
                   currentStep >= step.id ? "text-foreground" : "text-muted-foreground/60"
                 )}>
-                  {step.title}
+                  {t(step.titleKey as any)}
                 </span>
               </div>
             ))}
@@ -315,7 +315,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   <div className="md:col-span-2">
                     <GovInput
                       label={t('form.title') + " *"}
-                      placeholder="Ex: Nettoyage de la plage de Médiouna"
+                      placeholder={t('placeholders.title') || "Ex: Nettoyage de la plage de Médiouna"}
                       error={errors.titre?.message?.toString()}
                       className="text-lg font-black tracking-tight"
                       {...register('titre')}
@@ -327,7 +327,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                     error={errors.secteur?.message?.toString()}
                     leftIcon={<Building2 size={18} />}
                     options={[
-                      { label: "Sélectionner un secteur...", value: "" },
+                      { label: t('form.select_sector') || "Sélectionner un secteur...", value: "" },
                       ...SECTEURS.map(s => ({
                         label: tSectors(s.value as any),
                         value: s.value
@@ -337,16 +337,16 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   />
 
                   <GovInput
-                    label="Catégorie d'événement *"
-                    placeholder="Ex: Concours de dessin, Marathon..."
+                    label={t('form.category') + " *"}
+                    placeholder={t('placeholders.category') || "Ex: Concours de dessin, Marathon..."}
                     leftIcon={<Target size={18} />}
                     {...register('typeCategorique')}
                   />
 
                   <div className="md:col-span-2">
                     <GovTextarea
-                      label="Description détaillée *"
-                      placeholder="Décrivez l'événement, son but et ses activités..."
+                      label={t('form.description') + " *"}
+                      placeholder={t('placeholders.description') || "Décrivez l'événement, son but et ses activités..."}
                       error={errors.description?.message?.toString()}
                       {...register('description')}
                     />
@@ -355,49 +355,49 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   <div className="md:col-span-2 pt-6 border-t border-border">
                     <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
                         <div className="w-1.5 h-4 bg-emerald-500 rounded-full" />
-                        Organisation & Établissement
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <label className={cn(
-                          "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
-                          formData.isOrganiseParProvince 
-                            ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
-                            : "border-border bg-muted/10 hover:border-border/80"
-                        )}>
-                          <input
-                            type="checkbox"
-                            {...register('isOrganiseParProvince')}
-                            className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
-                          />
-                          <div>
-                            <span className={cn(
-                              "text-xs font-black uppercase tracking-widest block transition-colors",
-                              formData.isOrganiseParProvince ? "text-emerald-700" : "text-foreground"
-                            )}>Organisé par la Province</span>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">L'événement sera rattaché à la Province</p>
-                          </div>
-                        </label>
+                        {t('form.organization') || "Organisation & Établissement"}
+                     </h4>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <label className={cn(
+                           "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                           formData.isOrganiseParProvince 
+                             ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
+                             : "border-border bg-muted/10 hover:border-border/80"
+                         )}>
+                           <input
+                             type="checkbox"
+                             {...register('isOrganiseParProvince')}
+                             className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
+                           />
+                           <div>
+                             <span className={cn(
+                               "text-xs font-black uppercase tracking-widest block transition-colors",
+                               formData.isOrganiseParProvince ? "text-emerald-700" : "text-foreground"
+                             )}>{t('form.organized_by_province') || "Organisé par la Province"}</span>
+                             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">{t('form.organized_by_province_hint') || "L'événement sera rattaché à la Province"}</p>
+                           </div>
+                         </label>
 
-                        <label className={cn(
-                          "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
-                          formData.sousCouvertProvince 
-                            ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
-                            : "border-border bg-muted/10 hover:border-border/80"
-                        )}>
-                          <input
-                            type="checkbox"
-                            {...register('sousCouvertProvince')}
-                            className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
-                          />
-                          <div>
-                            <span className={cn(
-                              "text-xs font-black uppercase tracking-widest block transition-colors",
-                              formData.sousCouvertProvince ? "text-emerald-700" : "text-foreground"
-                            )}>Sous le couvert de la Province</span>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">Affichage protocolaire spécial</p>
-                          </div>
-                        </label>
-                    </div>
+                         <label className={cn(
+                           "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
+                           formData.sousCouvertProvince 
+                             ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10" 
+                             : "border-border bg-muted/10 hover:border-border/80"
+                         )}>
+                           <input
+                             type="checkbox"
+                             {...register('sousCouvertProvince')}
+                             className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 cursor-pointer"
+                           />
+                           <div>
+                             <span className={cn(
+                               "text-xs font-black uppercase tracking-widest block transition-colors",
+                               formData.sousCouvertProvince ? "text-emerald-700" : "text-foreground"
+                             )}>{t('form.under_province_patronage') || "Sous le couvert de la Province"}</span>
+                             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">{t('form.under_province_patronage_hint') || "Affichage protocolaire spécial"}</p>
+                           </div>
+                         </label>
+                     </div>
                   </div>
                 </div>
               </motion.div>
@@ -413,7 +413,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <GovSelect
-                  label="Commune *"
+                  label={t('form.district') || "Commune *"}
                   leftIcon={<MapPin size={18} />}
                   options={communes.map(c => ({
                     label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom,
@@ -432,7 +432,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                         locationMode === 'manuel' ? "bg-card text-[hsl(var(--gov-blue))] shadow-sm" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      Saisie Manuelle
+                      {t('form.manual_entry') || "Saisie Manuelle"}
                     </button>
                     <button
                       type="button"
@@ -442,32 +442,32 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                         locationMode === 'etablissement' ? "bg-card text-[hsl(var(--gov-blue))] shadow-sm" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      Établissement Existant
+                      {t('form.existing_establishment') || "Établissement Existant"}
                     </button>
                   </div>
 
                   {locationMode === 'etablissement' ? (
                     <div className="grid md:grid-cols-2 gap-6 p-6 bg-card/40 rounded-3xl border border-border">
                       <GovSelect
-                        label="Secteur du lieu"
+                        label={t('form.venue_sector') || "Secteur du lieu"}
                         value={lieuSecteur}
                         onChange={(e) => setLieuSecteur(e.target.value)}
                         leftIcon={<Building2 size={18} />}
                         options={[
-                          { label: "Tous les secteurs", value: "" },
-                          { label: "Éducation", value: "EDUCATION" },
-                          { label: "Santé", value: "SANTE" },
-                          { label: "Sport", value: "SPORT" },
-                          { label: "Social", value: "SOCIAL" },
-                          { label: "Culturel", value: "CULTUREL" },
-                          { label: "Autre", value: "AUTRE" }
+                          { label: t('form.all_sectors') || "Tous les secteurs", value: "" },
+                          { label: tSectors('EDUCATION'), value: "EDUCATION" },
+                          { label: tSectors('SANTE'), value: "SANTE" },
+                          { label: tSectors('SPORT'), value: "SPORT" },
+                          { label: tSectors('SOCIAL'), value: "SOCIAL" },
+                          { label: tSectors('CULTUREL'), value: "CULTUREL" },
+                          { label: tSectors('AUTRE'), value: "AUTRE" }
                         ]}
                       />
                       <GovSelect
-                        label="Établissement *"
+                        label={t('form.establishment') + " *"}
                         leftIcon={<Target size={18} />}
                         options={[
-                          { label: "Sélectionnez un établissement...", value: "" },
+                          { label: t('form.select_establishment') || "Sélectionner un établissement...", value: "" },
                           ...etablissements
                             .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
                             .map(e => ({
@@ -481,15 +481,15 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                   ) : (
                     <div className="space-y-6">
                       <GovInput
-                        label="Lieu exact ou Nom de la salle *"
-                        placeholder="Ex: Grande Salle du Conseil, Stade Municipal..."
+                        label={t('form.venue_name') + " *"}
+                        placeholder={t('placeholders.venue') || "Ex: Grande Salle du Conseil, Stade Municipal..."}
                         leftIcon={<MapPin size={18} />}
                         {...register('lieu')}
                       />
                       
                       <div className="space-y-3">
                         <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1">
-                          Position sur la carte
+                          {t('form.map_position') || "Position sur la carte"}
                         </label>
                         <div className="rounded-[2rem] overflow-hidden border-4 border-border shadow-inner">
                           <LocationMap 
@@ -501,7 +501,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                             height="h-64"
                           />
                         </div>
-                        <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest text-center italic">Glissez le marqueur pour définir l'emplacement exact</p>
+                        <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest text-center italic">{t('form.map_hint') || "Glissez le marqueur pour définir l'emplacement exact"}</p>
                       </div>
                     </div>
                   )}
@@ -520,14 +520,14 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <GovInput
-                  label="Date de début *"
+                  label={t('form.date_start') + " *"}
                   type="date"
                   min={new Date().toISOString().split('T')[0]}
                   leftIcon={<Calendar size={18} />}
                   {...register('dateDebut')}
                 />
                 <GovInput
-                  label="Date de fin"
+                  label={t('form.date_end')}
                   type="date"
                   min={formData.dateDebut || new Date().toISOString().split('T')[0]}
                   leftIcon={<Calendar size={18} />}
@@ -535,22 +535,22 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                 />
 
                 <GovInput
-                  label="Heure de début"
+                  label={t('form.time_start')}
                   type="time"
                   leftIcon={<Clock size={18} />}
                   {...register('heureDebut')}
                 />
                 <GovInput
-                  label="Heure de fin"
+                  label={t('form.time_end')}
                   type="time"
                   leftIcon={<Clock size={18} />}
                   {...register('heureFin')}
                 />
 
                 <GovInput
-                  label="Capacité maximale"
+                  label={t('form.max_capacity')}
                   type="number"
-                  placeholder="Ex: 500"
+                  placeholder={t('placeholders.capacity') || "Ex: 500"}
                   leftIcon={<Users size={18} />}
                   {...register('capaciteMax', { valueAsNumber: true })}
                 />
@@ -571,8 +571,8 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                       <span className={cn(
                         "text-xs font-black uppercase tracking-widest block transition-colors",
                         formData.isGratuit ? "text-emerald-700" : "text-foreground"
-                      )}>Participation gratuite</span>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">L'accès à l'événement est-il gratuit ?</p>
+                      )}>{t('form.is_free') || "Participation gratuite"}</span>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1">{t('form.open_registration_hint') || "L'accès à l'événement est-il gratuit ?"}</p>
                     </div>
                   </label>
                 </div>
@@ -586,9 +586,9 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                       className="overflow-hidden md:col-span-2"
                     >
                       <GovInput
-                        label="Prix d'entrée (DH) *"
+                        label={t('form.price') + " *"}
                         type="number"
-                        placeholder="Ex: 50"
+                        placeholder={t('placeholders.price') || "Ex: 50"}
                         leftIcon={<Sparkles size={18} />}
                         {...register('prixEntree', { valueAsNumber: true })}
                       />
@@ -609,7 +609,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
             >
               <div>
                 <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4 block">
-                  Photos de l'événement
+                  {t('form.event_photos') || "Photos de l'événement"}
                 </label>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
@@ -643,7 +643,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                         <div className="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                           <Upload className="w-6 h-6 text-muted-foreground group-hover:text-[hsl(var(--gov-blue))]" />
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Ajouter</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{t('form.add_photo') || "Ajouter"}</span>
                       </>
                     )}
                   </label>
@@ -654,29 +654,29 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
               <div className="p-8 bg-card/60 backdrop-blur-md rounded-[2.5rem] border border-border shadow-xl">
                  <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
                     <Target className="w-5 h-5 text-emerald-500" />
-                    Résumé de l'événement
+                    {t('summary.title') || "Résumé de l'événement"}
                  </h4>
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-sm">
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Titre</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('summary.field_title') || "Titre"}</span>
                       <span className="font-black text-foreground truncate max-w-[200px]">{formData.titre || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Secteur</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('summary.field_sector') || "Secteur"}</span>
                       <span className="font-black text-foreground">{formData.secteur ? tSectors(formData.secteur as any) : '-'}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Lieu</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('summary.field_location') || "Lieu"}</span>
                       <span className="font-black text-foreground truncate max-w-[200px]">{formData.lieu || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Date</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('summary.field_date') || "Date"}</span>
                       <span className="font-black text-foreground">{formData.dateDebut || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/50">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Organisation</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('summary.field_org') || "Organisation"}</span>
                       <span className="font-black text-[hsl(var(--gov-blue))]">
-                         {formData.isOrganiseParProvince ? 'Province de Médiouna' : 'Établissement'}
+                         {formData.isOrganiseParProvince ? (t('summary.province_org') || 'Province de Médiouna') : (t('summary.establishment_org') || 'Établissement')}
                       </span>
                     </div>
                  </div>
@@ -696,7 +696,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
              leftIcon={!savingDraft && <Save size={16} />}
              className="rounded-full px-8"
            >
-             Brouillon
+             {t('buttons.draft') || "Brouillon"}
            </GovButton>
 
            <div className="flex items-center gap-4">
@@ -708,7 +708,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                  leftIcon={<ChevronLeft size={16} />}
                  className="rounded-full px-8"
                >
-                 Retour
+                 {t('buttons.prev') || "Retour"}
                </GovButton>
              )}
              {currentStep < 4 ? (
@@ -719,7 +719,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                  rightIcon={<ChevronRight size={16} />}
                  className="rounded-full px-10 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
                >
-                 Suivant
+                 {t('buttons.next') || "Suivant"}
                </GovButton>
              ) : (
                <GovButton
@@ -730,7 +730,7 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
                  leftIcon={!loading && <Check size={18} />}
                  className="rounded-full px-12 shadow-xl shadow-[hsl(var(--gov-blue))/0.3] bg-emerald-600 hover:bg-emerald-700 border-none"
                >
-                 Créer l'événement
+                 {t('buttons.create') || "Créer l'événement"}
                </GovButton>
              )}
            </div>

@@ -708,6 +708,7 @@
         "select_status": "حدد الحالة...",
         "select_image": "اختر صورة",
         "summary": "ملخص",
+        "summary_placeholder": "ملخص قصير للخبر...",
         "general_category": "الفئة العامة",
         "tags": "الوسوم (مفصولة بفاصلة)",
         "tags_placeholder": "وسم1، وسم2، وسم3",
@@ -1038,6 +1039,9 @@
           "PUBLIC": "عام",
           "PRIVE": "خاص"
         }
+      },
+      "common": {
+        "select": "تحديد"
       },
       "placeholders": {
         "nom": "مثال: مدرسة المنار",
@@ -1834,6 +1838,10 @@
         "next": "التالي",
         "create": "إنشاء الحدث",
         "save_draft_success": "تم حفظ المسودة"
+      },
+      "validation": {
+        "success": "تم إنشاء الحدث بنجاح",
+        "error": "حدث خطأ أثناء إنشاء الحدث"
       }
     },
     "reports_page": {

@@ -650,11 +650,11 @@ export default function AdminReclamationsPage() {
                         />
                       </GovTd>
                       <GovTd>
-                        {(r as any).agentAffecte ? (
+                        {(r as any).affecteeAAutorite ? (
                           <div className="flex items-center gap-2 text-blue-700 bg-blue-50 px-2.5 py-1.5 rounded-lg border border-blue-100 w-fit">
                             <User size={12} className="shrink-0" />
                             <span className="text-[10px] font-black uppercase tracking-widest line-clamp-1">
-                              {(r as any).agentAffecte.nom}
+                              {(r as any).affecteeAAutorite.nom} {(r as any).affecteeAAutorite.prenom}
                             </span>
                           </div>
                         ) : (

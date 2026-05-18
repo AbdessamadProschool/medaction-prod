@@ -1256,7 +1256,12 @@
         "change_status": "تغيير الحالة"
       },
       "reset_filters": "إعادة تعيين",
-      "no_results": "لم يتم العثور على نتائج للبحث."
+      "no_results": "لم يتم العثور على نتائج للبحث.",
+      "empty": {
+        "title": "لا توجد مقترحات",
+        "description": "لم يتم تقديم أي مقترحات من المواطنين بعد.",
+        "no_results": "لا توجد نتائج مطابقة لبحثك"
+      }
     },
     "establishments_page": {
       "page_title": "إدارة المؤسسات",
@@ -1491,6 +1496,7 @@
       "dateFin": "تاريخ الانتهاء",
       "page": "الصفحة",
       "limit": "الحد",
+      "refresh": "تحديث",
       "create_modal": {
         "title": "Nouvel événement",
         "step_indicator": "Étape {current} sur {total}",
@@ -2768,7 +2774,20 @@
     "export": "تصدير",
     "actions": "إجراءات",
     "previous": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "nav": {
+      "user_menu": {
+        "admin": "الإدارة"
+      }
+    },
+    "reclamations": {
+      "anonyme": "مواطن مجهول",
+      "no_phone": "رقم غير مسجل"
+    },
+    "pagination": {
+      "page_info": "الصفحة {page} من {total}",
+      "results": "نتائج"
+    }
   },
   "directory": {
     "title": "دليل المؤسسات",

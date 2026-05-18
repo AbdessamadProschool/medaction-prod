@@ -669,6 +669,11 @@
         "status": "Statut",
         "date": "Date",
         "actions": "Actions"
+      },
+      "empty": {
+        "title": "Aucune suggestion",
+        "description": "Il n'y a pas encore de suggestions citoyennes soumises.",
+        "no_results": "Aucun résultat ne correspond à votre recherche"
       }
     },
     "establishments_page": {
@@ -1711,7 +1716,20 @@
     "export": "Exporter",
     "actions": "Actions",
     "previous": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "nav": {
+      "user_menu": {
+        "admin": "Administration"
+      }
+    },
+    "reclamations": {
+      "anonyme": "Citoyen Anonyme",
+      "no_phone": "N° non renseigné"
+    },
+    "pagination": {
+      "page_info": "Page {page} sur {total}",
+      "results": "résultats"
+    }
   },
   "events_page": {
     "title": "Événements & Activités",
@@ -2577,6 +2595,7 @@
       "dateFin": "Date de fin",
       "page": "Page",
       "limit": "Limite",
+      "refresh": "Actualiser",
       "create_modal": {
         "title": "Nouvel événement",
         "step_indicator": "Étape {current} sur {total}",
@@ -3304,7 +3323,12 @@
         "change_status": "Changer le statut"
       },
       "reset_filters": "Réinitialiser",
-      "no_results": "Aucun résultat pour votre recherche."
+      "no_results": "Aucun résultat pour votre recherche.",
+      "empty": {
+        "title": "Aucune suggestion",
+        "description": "Il n'y a pas encore de suggestions citoyennes soumises.",
+        "no_results": "Aucun résultat ne correspond à votre recherche"
+      }
     },
     "establishments_page": {
       "page_title": "Gestion des Etablissements",

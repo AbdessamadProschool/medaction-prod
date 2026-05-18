@@ -444,7 +444,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
               Évolution des réclamations
             </h3>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={250} minWidth={0} minHeight={0}>
               <AreaChart data={evolution.slice(-14)}>
                 <defs>
                   <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
@@ -494,7 +494,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
               Établissements par secteur
             </h3>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={250} minWidth={0} minHeight={0}>
               <PieChart>
                 <Pie
                   data={parSecteur}
@@ -536,7 +536,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
               Distribution des notes
             </h3>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={250} minWidth={0} minHeight={0}>
               <BarChart data={satisfactionDistribution}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                 <XAxis 
@@ -570,7 +570,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
               Statut des réclamations
             </h3>
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={250} minWidth={0} minHeight={0}>
               <PieChart>
                 <Pie
                   data={[

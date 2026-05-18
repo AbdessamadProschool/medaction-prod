@@ -264,7 +264,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <PieChart>
                 <Pie
                   data={reclamationsData?.byStatus || []}
@@ -309,7 +309,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <AreaChart data={reclamationsData?.evolution || []}>
                 <defs>
                   <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
@@ -366,7 +366,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart data={reclamationsData?.byCommune || []} layout="vertical" margin={{ left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
                 <XAxis 

@@ -6153,5 +6153,13 @@
     "UPDATE": "تحديث الملف",
     "ACCEPTATION": "قبول الشكاية",
     "AJOUT_MEDIA": "إضافة مرفقات"
+  },
+  "audit_page": {
+    "entities": {
+      "RECLAMATION": "الشكاية",
+      "ACTUALITE": "الخبر",
+      "establishment_workflow": "مراحل المؤسسة",
+      "ETABLISSEMENT": "المؤسسة"
+    }
   }
 }

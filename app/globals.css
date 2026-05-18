@@ -567,3 +567,85 @@
   background: hsl(var(--gov-blue) / 0.2);
   color: hsl(var(--gov-blue-dark));
 }
+
+/* === P6 - OPTIMISATIONS D'IMPRESSION (PDF & PAPIER) === */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Masquer les éléments inutiles à l'impression */
+  .no-print,
+  nav,
+  header,
+  footer,
+  aside,
+  .gov-sidebar,
+  button,
+  .animate-marquee,
+  .gov-loading {
+    display: none !important;
+  }
+
+  /* S'assurer que le contenu principal prend toute la largeur */
+  main,
+  .print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  /* Gérer les sauts de page pour les cartes et tableaux */
+  .gov-card,
+  table,
+  tr,
+  img,
+  svg {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Afficher les URLs des liens importants */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+    color: #555 !important;
+  }
+
+  /* Améliorer les contrastes */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* Bordures fines pour les cartes au lieu d'ombres */
+  .gov-card,
+  .gov-stat-card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+
+  /* Couleurs de badges préservées */
+  .gov-badge,
+  .bg-emerald-50,
+  .bg-red-50,
+  .bg-blue-50,
+  .bg-amber-50 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

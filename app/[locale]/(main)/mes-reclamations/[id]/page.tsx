@@ -17,7 +17,8 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
-  Check
+  Check,
+  Printer
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
@@ -195,10 +196,19 @@ export default function MaReclamationDetailsPage() {
               <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-wider">
                 Réf: {reclamation.code}
               </span>
-              <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold ${config.bg} ${config.color}`}>
-                <StatusIcon size={16} />
-                {config.label}
-              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => window.print()}
+                  className="no-print inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition-all"
+                >
+                  <Printer size={14} />
+                  Imprimer le reçu
+                </button>
+                <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold ${config.bg} ${config.color}`}>
+                  <StatusIcon size={16} />
+                  {config.label}
+                </span>
+              </div>
             </div>
 
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">

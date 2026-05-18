@@ -346,7 +346,7 @@ export default function GovHeader() {
               {/* Recherche */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
+                className="gov-search-trigger p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
                 aria-label="Recherche"
               >
                 <Search size={20} />

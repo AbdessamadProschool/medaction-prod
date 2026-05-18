@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     if (communeId) where.communeId = safeParseInt(communeId, 0);
     if (secteur) where.secteurAffecte = secteur;
     if (session.user.role === 'AUTORITE_LOCALE') {
-      where.communeId = session.user.communeResponsableId;
+      where.affecteeAAutoriteId = parseInt(session.user.id as string);
     }
 
     // Requêtes parallèles optimisées

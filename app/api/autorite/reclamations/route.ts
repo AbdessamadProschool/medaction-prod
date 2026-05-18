@@ -43,10 +43,11 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const sortBy = searchParams.get('sortBy') || 'dateAffectation';
   const sortOrder = searchParams.get('sortOrder') === 'asc' ? 'asc' : 'desc';
 
-  // Construire le filtre - basé sur la commune
+  // Construire le filtre - basé sur la commune et l'assignation de l'autorité
   const where: any = {
     communeId,
     affectationReclamation: 'AFFECTEE',
+    affecteeAAutoriteId: parseInt(session.user.id as string),
   };
 
   // Filtre par statut de résolution
@@ -116,6 +117,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     where: { 
       communeId,
       affectationReclamation: 'AFFECTEE',
+      affecteeAAutoriteId: parseInt(session.user.id as string),
     },
     _count: true,
   });

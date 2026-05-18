@@ -63,6 +63,17 @@ export async function soumettreDemandeEtablissement(params: {
       // On s'assure que le secteur n'est pas changé dans la demande
       params.donneesModifiees.secteur = userSecteur;
     }
+  } else if (params.type === 'CREATION') {
+    // Vérifier que le code n'existe pas déjà
+    const code = params.donneesModifiees.code;
+    if (code) {
+      const existingEtablissement = await prisma.etablissement.findUnique({
+        where: { code }
+      });
+      if (existingEtablissement) {
+        return { success: false, error: "Ce code d'établissement existe déjà dans la base de données." };
+      }
+    }
   }
 
   try {
@@ -110,6 +121,7 @@ export async function traiterDemandeEtablissement(params: {
   demandeId: number;
   action: 'APPROUVER' | 'REJETER';
   motifRejet?: string;
+  donneesCorrigees?: any; // NOUVEAU: Permet aux admins de corriger les erreurs (comme un code dupliqué) avant d'approuver
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
@@ -128,7 +140,7 @@ export async function traiterDemandeEtablissement(params: {
 
   try {
     if (params.action === 'APPROUVER') {
-      const dataToApply = demande.donneesModifiees as any;
+      const dataToApply = params.donneesCorrigees ? { ...(demande.donneesModifiees as any), ...params.donneesCorrigees } : demande.donneesModifiees as any;
       const extraFields = demande.champsComplementaires as any;
 
       if (demande.type === 'CREATION') {

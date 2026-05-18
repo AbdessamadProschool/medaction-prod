@@ -55,11 +55,7 @@ export const GET = withErrorHandler(async (
     reclamation.userId === userId;
 
   if (!canAccess && role === 'AUTORITE_LOCALE') {
-    const autorite = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { communeResponsableId: true },
-    });
-    canAccess = autorite?.communeResponsableId === reclamation.communeId;
+    canAccess = (reclamation as any).affecteeAAutoriteId === userId;
   }
 
   if (!canAccess) {

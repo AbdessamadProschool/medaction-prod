@@ -160,13 +160,13 @@ export default function AdminReclamationsPage() {
           setCommunes(data.communes || []);
         }
         
-        // Charger les agents (AUTORITE_LOCALE, DELEGATION et ADMIN peuvent être affectés)
+        // Charger les agents (Uniquement AUTORITE_LOCALE peut être affecté)
         // On charge tous les utilisateurs actifs puis on filtre côté client
         const agentsRes = await fetch('/api/users?isActive=true&limit=100');
         if (agentsRes.ok) {
           const data = await agentsRes.json();
           // Filtrer pour garder uniquement les rôles pouvant traiter des réclamations
-          const eligibleRoles = ['AUTORITE_LOCALE', 'DELEGATION', 'ADMIN', 'SUPER_ADMIN'];
+          const eligibleRoles = ['AUTORITE_LOCALE'];
           const filteredAgents = (data.data || []).filter(
             (u: any) => eligibleRoles.includes(u.role)
           );

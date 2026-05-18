@@ -79,7 +79,8 @@ export default function AdminDemandesPage() {
       const res = await traiterDemandeEtablissement({
         demandeId: selectedDemande.id,
         action,
-        motifRejet
+        motifRejet,
+        donneesCorrigees: action === 'APPROUVER' ? selectedDemande.donneesModifiees : undefined
       });
 
       if (res.success) {
@@ -303,15 +304,30 @@ export default function AdminDemandesPage() {
                             <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700 shadow-sm">
                               {groupFields.map(([k, v]: [string, any]) => (
                                 <div key={k} className="flex justify-between items-center py-4 first:pt-0 last:pb-0">
-                                  <div className="flex flex-col">
+                                  <div className="flex flex-col w-full">
                                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">
                                       {te(`form.${k}`) || k}
                                     </span>
+                                    {selectedDemande.statut === 'EN_ATTENTE_VALIDATION' && k === 'code' ? (
+                                      <input 
+                                        type="text" 
+                                        value={v || ''} 
+                                        onChange={(e) => {
+                                          setSelectedDemande((prev: any) => ({
+                                            ...prev, 
+                                            donneesModifiees: { ...prev.donneesModifiees, [k]: e.target.value }
+                                          }))
+                                        }}
+                                        className="text-sm font-bold border-b border-gray-300 dark:border-gray-600 px-1 py-0.5 bg-transparent text-[hsl(213,80%,28%)] focus:outline-none focus:border-[hsl(213,80%,28%)] w-full"
+                                        title="Vous pouvez modifier ce code avant d'approuver"
+                                      />
+                                    ) : (
                                     <span className={`text-sm font-bold ${v === null || v === '' ? 'text-gray-300 italic' : 'text-gray-900 dark:text-gray-100'}`}>
                                        {v === null || v === undefined || v === '' ? t('admin_validation.not_available') : 
                                         typeof v === 'boolean' ? (v ? t('admin_validation.yes') : t('admin_validation.no')) : 
                                         k === 'budgetAnnuel' ? v.toLocaleString() + ' ' + te('placeholders.dh') : String(v)}
                                     </span>
+                                    )}
                                   </div>
                                 </div>
                               ))}

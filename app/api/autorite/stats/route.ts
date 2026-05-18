@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
         where: { 
           communeId,
           affectationReclamation: 'AFFECTEE',
+          affecteeAAutoriteId: autoriteId,
         }
       }),
       
@@ -67,6 +68,7 @@ export async function GET(request: NextRequest) {
         where: {
           communeId,
           affectationReclamation: 'AFFECTEE',
+          affecteeAAutoriteId: autoriteId,
           dateResolution: null,
         }
       }),
@@ -76,6 +78,7 @@ export async function GET(request: NextRequest) {
         where: {
           communeId,
           affectationReclamation: 'AFFECTEE',
+          affecteeAAutoriteId: autoriteId,
           dateResolution: { not: null },
         }
       }),
@@ -85,6 +88,7 @@ export async function GET(request: NextRequest) {
         where: {
           communeId,
           affectationReclamation: 'AFFECTEE',
+          affecteeAAutoriteId: autoriteId,
           dateAffectation: {
             gte: new Date(new Date().setHours(0, 0, 0, 0)),
           }
@@ -131,6 +135,7 @@ export async function GET(request: NextRequest) {
       where: { 
         communeId,
         affectationReclamation: 'AFFECTEE',
+        affecteeAAutoriteId: autoriteId,
       },
       _count: true,
       orderBy: { _count: { categorie: 'desc' } },

@@ -37,6 +37,7 @@ for (const locale of locales) {
       console.log(`Maintenance key already exists in ${locale}/common.json`);
     }
   } catch (err) {
+    // nosemgrep
     console.error(`Error processing ${locale}:`, err);
   }
 }

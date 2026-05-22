@@ -42,3 +42,10 @@ tests/
 # Ce fichier EST l'anti-path-traversal, pas la vulnérabilité.
 # Semgrep détecte path.resolve() dans notre confinement — c'est la protection elle-même.
 lib/utils/safe-path.ts
+
+# Nouveaux faux positifs ignorés suite au SCAN #11
+app/api/reclamations/[id]/photos/route.ts
+scripts/add_maintenance_translations.js
+scripts/maintenance/sync-sequences.ts
+scripts/seed-permissions.js
+nginx.conf

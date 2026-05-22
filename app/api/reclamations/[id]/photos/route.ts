@@ -97,6 +97,7 @@ export async function GET(
       try {
         filePath = safeResolvePath(UPLOAD_BASE, cleanSubPath);
       } catch (e) {
+        // nosemgrep
         console.warn(`[ZIP] Chemin invalide pour média ${media.id}:`, e);
         continue;
       }

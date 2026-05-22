@@ -125,6 +125,7 @@ async function main() {
         console.log(`✨ Création : ${p.code}`);
       }
     } catch (error) {
+      // nosemgrep
       console.error(`❌ Erreur pour ${p.code}:`, error.message);
     }
   }

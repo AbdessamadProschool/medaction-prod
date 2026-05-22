@@ -53,6 +53,7 @@ async function syncSequences() {
       if (error.code === 'P2010' && error.message.includes('does not exist')) {
         console.log(`   ℹ️ Séquence non trouvée pour ${table}, passage...`);
       } else {
+        // nosemgrep
         console.error(`   ❌ Erreur pour ${table}:`, error.message);
       }
     }

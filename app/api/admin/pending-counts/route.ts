@@ -17,13 +17,17 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const { checkPermission } = await import("@/lib/permissions");
   const hasPermission = await checkPermission(userId, 'stats.view.global');
 
-  if (!hasPermission) {
-    const canValidate = await checkPermission(userId, 'evenements.validate') || 
-                        await checkPermission(userId, 'actualites.validate');
-    
-    if (!canValidate) {
-       throw new ForbiddenError('Accès non autorisé');
-    }
+  const canValidateEvents = await checkPermission(userId, 'evenements.validate');
+  const canValidateNews = await checkPermission(userId, 'actualites.validate');
+  const canValidateEtab = await checkPermission(userId, 'etablissements.validate');
+  const canValidateProgs = await checkPermission(userId, 'programmes.validate');
+  const canViewReclamations = await checkPermission(userId, 'reclamations.view');
+  const canViewSuggestions = await checkPermission(userId, 'suggestions.view');
+  
+  const canValidate = canValidateEvents || canValidateNews || canValidateEtab || canValidateProgs;
+
+  if (!hasPermission && !canValidate) {
+    throw new ForbiddenError('Accès non autorisé');
   }
 
   // Récupérer les compteurs en parallèle
@@ -74,13 +78,13 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const validationTotal = evenementsEnAttente + actualitesEnAttente + articlesEnAttente;
 
   return successResponse({
-    reclamations: reclamationsNonAffectees,
-    suggestions: suggestionsEnAttente,
-    activites: activitesEnAttente,
-    validation: validationTotal,
-    evenements: evenementsEnAttente,
+    reclamations: (hasPermission || canViewReclamations) ? reclamationsNonAffectees : 0,
+    suggestions: (hasPermission || canViewSuggestions) ? suggestionsEnAttente : 0,
+    activites: (hasPermission || canValidateProgs) ? activitesEnAttente : 0,
+    validation: (hasPermission || canValidateNews || canValidateEvents) ? validationTotal : 0,
+    evenements: (hasPermission || canValidateEvents) ? evenementsEnAttente : 0,
     utilisateurs: 0,
-    messages: messagesNonLus,
-    etablissementRequests: etablissementsEnAttente,
+    messages: hasPermission ? messagesNonLus : 0,
+    etablissementRequests: (hasPermission || canValidateEtab) ? etablissementsEnAttente : 0,
   });
 });

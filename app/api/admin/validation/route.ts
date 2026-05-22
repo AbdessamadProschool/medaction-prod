@@ -31,142 +31,162 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type') || 'all';
 
     // 1. Récupérer les événements en attente
-    const evenements = await prisma.evenement.findMany({
-      where: { statut: 'EN_ATTENTE_VALIDATION' },
-      select: {
-        id: true,
-        titre: true,
-        description: true,
-        dateDebut: true,
-        dateFin: true,
-        lieu: true,
-        secteur: true,
-        createdAt: true,
-        statut: true,
-        etablissement: { select: { nom: true } },
-        createdByUser: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    let evenements: any[] = [];
+    if (canValidateEvents && (type === 'evenements' || type === 'all')) {
+      evenements = await prisma.evenement.findMany({
+        where: { statut: 'EN_ATTENTE_VALIDATION' },
+        select: {
+          id: true,
+          titre: true,
+          description: true,
+          dateDebut: true,
+          dateFin: true,
+          lieu: true,
+          secteur: true,
+          createdAt: true,
+          statut: true,
+          etablissement: { select: { nom: true } },
+          createdByUser: { select: { nom: true, prenom: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      });
+    }
 
     // 2. Récupérer les actualités en attente
-    const actualites = await prisma.actualite.findMany({
-      where: { statut: 'EN_ATTENTE_VALIDATION' },
-      select: {
-        id: true,
-        titre: true,
-        description: true,
-        contenu: true,
-        categorie: true,
-        createdAt: true,
-        statut: true,
-        etablissement: { select: { nom: true, secteur: true } },
-        createdByUser: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    let actualites: any[] = [];
+    if (canValidateNews && (type === 'actualites' || type === 'all')) {
+      actualites = await prisma.actualite.findMany({
+        where: { statut: 'EN_ATTENTE_VALIDATION' },
+        select: {
+          id: true,
+          titre: true,
+          description: true,
+          contenu: true,
+          categorie: true,
+          createdAt: true,
+          statut: true,
+          etablissement: { select: { nom: true, secteur: true } },
+          createdByUser: { select: { nom: true, prenom: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      });
+    }
 
     // 3. Récupérer les articles en attente
     let articles: any[] = [];
-    try {
-      articles = await prisma.article.findMany({
-        where: { isPublie: false, isMisEnAvant: false },
+    if (canValidateNews && (type === 'articles' || type === 'all')) {
+      try {
+        articles = await prisma.article.findMany({
+          where: { isPublie: false, isMisEnAvant: false },
+          select: {
+            id: true,
+            titre: true,
+            description: true,
+            contenu: true,
+            imagePrincipale: true,
+            categorie: true,
+            createdAt: true,
+            isPublie: true,
+            createdByUser: { select: { nom: true, prenom: true } },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        });
+      } catch (e) {
+        // Ignorer si le modèle n'existe pas encore
+      }
+    }
+
+    // 4. Récupérer les campagnes en attente
+    let campagnes: any[] = [];
+    if (canValidateNews && (type === 'campagnes' || type === 'all')) {
+      campagnes = await prisma.campagne.findMany({
+        where: { statut: 'EN_ATTENTE' },
         select: {
           id: true,
           titre: true,
           description: true,
           contenu: true,
           imagePrincipale: true,
-          categorie: true,
+          dateDebut: true,
+          dateFin: true,
+          objectifParticipations: true,
           createdAt: true,
-          isPublie: true,
+          statut: true,
           createdByUser: { select: { nom: true, prenom: true } },
         },
         orderBy: { createdAt: 'desc' },
         take: 50,
       });
-    } catch (e) {
-      // Ignorer si le modèle n'existe pas encore
     }
 
-    // 4. Récupérer les campagnes en attente
-    const campagnes = await prisma.campagne.findMany({
-      where: { statut: 'EN_ATTENTE' },
-      select: {
-        id: true,
-        titre: true,
-        description: true,
-        contenu: true,
-        imagePrincipale: true,
-        dateDebut: true,
-        dateFin: true,
-        objectifParticipations: true,
-        createdAt: true,
-        statut: true,
-        createdByUser: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
-
     // 5. Récupérer les demandes d'établissements en attente
-    const etablissementRequests = await prisma.demandeModificationEtablissement.findMany({
-      where: { statut: 'EN_ATTENTE_VALIDATION' },
-      select: {
-        id: true,
-        type: true,
-        justification: true,
-        createdAt: true,
-        statut: true,
-        etablissement: { select: { nom: true } },
-        soumisPar: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    let etablissementRequests: any[] = [];
+    if (canValidateEtab && (type === 'etablissement_requests' || type === 'all')) {
+      etablissementRequests = await prisma.demandeModificationEtablissement.findMany({
+        where: { statut: 'EN_ATTENTE_VALIDATION' },
+        select: {
+          id: true,
+          type: true,
+          justification: true,
+          createdAt: true,
+          statut: true,
+          etablissement: { select: { nom: true } },
+          soumisPar: { select: { nom: true, prenom: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      });
+    }
 
     // 6. Récupérer les programmes d'activités en attente
-    const programmes = await prisma.programmeActivite.findMany({
-      where: { statut: 'EN_ATTENTE_VALIDATION' },
-      select: {
-        id: true,
-        titre: true,
-        description: true,
-        date: true,
-        heureDebut: true,
-        heureFin: true,
-        createdAt: true,
-        statut: true,
-        etablissement: { select: { nom: true } },
-        createdByUser: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    let programmes: any[] = [];
+    if (canValidateProgs && (type === 'programmes' || type === 'all')) {
+      programmes = await prisma.programmeActivite.findMany({
+        where: { statut: 'EN_ATTENTE_VALIDATION' },
+        select: {
+          id: true,
+          titre: true,
+          description: true,
+          date: true,
+          heureDebut: true,
+          heureFin: true,
+          createdAt: true,
+          statut: true,
+          etablissement: { select: { nom: true } },
+          createdByUser: { select: { nom: true, prenom: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      });
+    }
 
     // 7. Récupérer les évaluations à modérer
-    const evaluations = await prisma.evaluation.findMany({
-      where: { 
-        OR: [
-          { isValidee: false },
-          { isSignalee: true }
-        ]
-      },
-      select: {
-        id: true,
-        noteGlobale: true,
-        commentaire: true,
-        isSignalee: true,
-        motifSignalement: true,
-        createdAt: true,
-        etablissement: { select: { nom: true } },
-        user: { select: { nom: true, prenom: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
+    let evaluations: any[] = [];
+    if (canValidateEvals && (type === 'evaluations' || type === 'all')) {
+      evaluations = await prisma.evaluation.findMany({
+        where: { 
+          OR: [
+            { isValidee: false },
+            { isSignalee: true }
+          ]
+        },
+        select: {
+          id: true,
+          noteGlobale: true,
+          commentaire: true,
+          isSignalee: true,
+          motifSignalement: true,
+          createdAt: true,
+          etablissement: { select: { nom: true } },
+          user: { select: { nom: true, prenom: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      });
+    }
 
     // Formater toutes les données pour l'interface unifiée
     const formattedEvenements = evenements.map(e => ({
@@ -253,15 +273,16 @@ export async function GET(request: NextRequest) {
       statut: ev.isSignalee ? 'SIGNALEE' : 'EN_ATTENTE',
     }));
 
-    // Fusionner et filtrer par type
-    let items: any[] = [];
-    if (type === 'evenements' || type === 'all') items = [...items, ...formattedEvenements];
-    if (type === 'actualites' || type === 'all') items = [...items, ...formattedActualites];
-    if (type === 'articles' || type === 'all') items = [...items, ...formattedArticles];
-    if (type === 'campagnes' || type === 'all') items = [...items, ...formattedCampagnes];
-    if (type === 'etablissement_requests' || type === 'all') items = [...items, ...formattedEtablissementRequests];
-    if (type === 'programmes' || type === 'all') items = [...items, ...formattedProgrammes];
-    if (type === 'evaluations' || type === 'all') items = [...items, ...formattedEvaluations];
+    // Fusionner les tableaux (ils seront vides si l'utilisateur n'a pas la permission)
+    let items: any[] = [
+      ...formattedEvenements,
+      ...formattedActualites,
+      ...formattedArticles,
+      ...formattedCampagnes,
+      ...formattedEtablissementRequests,
+      ...formattedProgrammes,
+      ...formattedEvaluations
+    ];
 
     // Trier par date décroissante
     items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

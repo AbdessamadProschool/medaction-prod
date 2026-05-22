@@ -1,11 +1,11 @@
 # MedAction - Province de Médiouna
-# https://medaction.ma
+# https://bo.provincemediouna.ma
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://medaction.ma/sitemap.xml
+Sitemap: https://bo.provincemediouna.ma/sitemap.xml
 
 # Disallow admin routes
 Disallow: /admin/

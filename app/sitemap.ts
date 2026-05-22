@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://medaction.ma';
+  const baseUrl = 'https://bo.provincemediouna.ma';
 
   // Routes statiques
   const staticRoutes = [

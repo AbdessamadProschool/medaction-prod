@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description: 'Plateforme citoyenne officielle de la Province de Médiouna',
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://mediouna-action.ma',
+    url: 'https://bo.provincemediouna.ma',
     siteName: 'PORTAIL MEDIOUNA',
     images: [
       {
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://province-rhamna.gov.ma',
+    canonical: 'https://bo.provincemediouna.ma',
   },
 };
 

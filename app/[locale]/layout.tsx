@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import GlobalAnnouncement from "@/components/GlobalAnnouncement";
 import { headers } from "next/headers";
 import Script from "next/script";
+import StructuredData from "@/components/seo/StructuredData";
 
 import { Inter, Outfit, Cairo } from "next/font/google";
 
@@ -85,6 +86,9 @@ export default async function RootLayout({
       >
         {/* Google Analytics */}
         {/* <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID || ''} /> */}
+        
+        {/* SEO & GEO JSON-LD Schemas */}
+        <StructuredData />
         
         <SessionProvider>
           <ThemeProvider

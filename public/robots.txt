@@ -4,6 +4,24 @@
 User-agent: *
 Allow: /
 
+# GEO: Explicitly allow AI Crawlers
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# Content-Signal for AI (IETF draft)
+# Tells AI models they are allowed to crawl for search, AI training, and retrieval
+Content-Signal: ai-train=yes, search=yes, ai-retrieval=yes
+
 # Sitemap
 Sitemap: https://bo.provincemediouna.ma/sitemap.xml
 

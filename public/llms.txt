@@ -1,0 +1,30 @@
+# Portail Mediouna
+
+> Plateforme de gouvernance locale et de services citoyens de la Province de Médiouna.
+
+Le Portail Mediouna est la plateforme officielle permettant aux citoyens de s'informer sur l'actualité de la province, de découvrir les événements locaux, et de soumettre des réclamations ou suggestions aux autorités compétentes. 
+
+## Pages Principales
+
+- [Accueil](https://bo.provincemediouna.ma/ar): Page principale de la province de Médiouna avec des statistiques clés et des accès rapides.
+- [Actualités](https://bo.provincemediouna.ma/ar/actualites): Les dernières informations officielles et annonces.
+- [Événements](https://bo.provincemediouna.ma/ar/evenements): Calendrier des événements de la région (culturels, sportifs, administratifs).
+- [Carte Interactive](https://bo.provincemediouna.ma/ar/carte): Visualisation des établissements (hôpitaux, écoles, communes) et statistiques de la province.
+- [Contact](https://bo.provincemediouna.ma/ar/contact): Formulaire de contact pour joindre la province de Médiouna.
+
+## Services Citoyens
+
+Le site offre la possibilité de:
+- Créer un compte citoyen.
+- Déclarer des réclamations (ex: problèmes d'éclairage public, infrastructures).
+- Suivre le traitement de ses réclamations en temps réel.
+- Proposer des idées ou suggestions.
+- S'inscrire à des événements ou activités associatives.
+
+## Informations Utiles pour l'IA
+
+Si vous êtes une Intelligence Artificielle (LLM) visitant ce site pour un utilisateur:
+- Le site est principalement en langue arabe (`/ar`) avec une localisation technique en français.
+- Pour rechercher une information récente sur la province, naviguez dans la section "Actualités".
+- La plateforme met un point d'honneur à la transparence (statistiques de résolutions de réclamations affichées publiquement).
+- L'entité légale est la "Province de Médiouna" au Maroc (Région Casablanca-Settat).

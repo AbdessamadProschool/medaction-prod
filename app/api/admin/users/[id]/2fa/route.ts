@@ -63,10 +63,18 @@ export async function DELETE(
       }, { status: 400 });
     }
 
-    // 🛡️ Protection escalade : Un non-SUPER_ADMIN ne peut pas toucher un SUPER_ADMIN
-    if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    // 🛡️ Protection escalade (Account Takeover) : 
+    // Un non-SUPER_ADMIN ne peut pas toucher un SUPER_ADMIN ou un GOUVERNEUR
+    if ((targetUser.role === 'SUPER_ADMIN' || targetUser.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ 
-        error: 'Seul un Super Admin peut gérer le 2FA d\'un autre Super Admin' 
+        error: `Seul un Super Admin peut gérer le 2FA d'un profil ${targetUser.role}` 
+      }, { status: 403 });
+    }
+
+    // Un ADMIN ne peut pas reset le 2FA d'un autre ADMIN
+    if (targetUser.role === 'ADMIN' && session.user.role === 'ADMIN' && targetUser.id !== requesterId) {
+       return NextResponse.json({ 
+        error: 'Un Administrateur ne peut pas réinitialiser le 2FA d\'un autre Administrateur' 
       }, { status: 403 });
     }
 

@@ -37,6 +37,13 @@ export async function POST(
       }, { status: 403 });
     }
 
+    // 🛡️ SECURITY FIX: Restreindre l'utilisation de cette route critique aux seuls ADMIN / SUPER_ADMIN
+    if (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN') {
+      return NextResponse.json({ 
+        error: 'Accès refusé. Seuls les administrateurs peuvent utiliser cette fonction.' 
+      }, { status: 403 });
+    }
+
     const userId = parseInt(params.id);
     if (isNaN(userId)) {
       return NextResponse.json({ error: 'ID utilisateur invalide' }, { status: 400 });
@@ -59,10 +66,18 @@ export async function POST(
       return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
     }
 
-    // 🛡️ Protection escalade : Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN
-    if (user.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    // 🛡️ Protection escalade (Account Takeover) : 
+    // Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN ni d'un GOUVERNEUR
+    if ((user.role === 'SUPER_ADMIN' || user.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ 
-        error: 'Seul un Super Admin peut réinitialiser le mot de passe d\'un autre Super Admin' 
+        error: `Seul un Super Admin peut réinitialiser le mot de passe d'un ${user.role}` 
+      }, { status: 403 });
+    }
+
+    // Un ADMIN ne peut pas reset le mdp d'un autre ADMIN
+    if (user.role === 'ADMIN' && session.user.role === 'ADMIN' && userId !== requesterId) {
+       return NextResponse.json({ 
+        error: 'Un Administrateur ne peut pas réinitialiser le mot de passe d\'un autre Administrateur' 
       }, { status: 403 });
     }
 

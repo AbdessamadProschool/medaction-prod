@@ -56,14 +56,19 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
   const targetUser = await prisma.user.findUnique({ where: { id }, select: { role: true } });
   if (!targetUser) throw new NotFoundError('Utilisateur non trouvé');
 
-  // 🛡️ Protection escalade : seul SUPER_ADMIN peut modifier un SUPER_ADMIN
-  if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Seul un Super Admin peut modifier un autre Super Admin');
+  // 🛡️ Protection escalade : seul SUPER_ADMIN peut modifier un SUPER_ADMIN ou un GOUVERNEUR
+  if ((targetUser.role === 'SUPER_ADMIN' || targetUser.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Seul un Super Admin peut modifier un profil ${targetUser.role}`);
   }
 
-  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut promouvoir vers SUPER_ADMIN
-  if (data.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Vous ne pouvez pas assigner le rôle Super Admin');
+  // 🛡️ Protection escalade inter-admin
+  if (targetUser.role === 'ADMIN' && session.user.role === 'ADMIN' && id !== parseInt(session.user.id)) {
+    throw new ForbiddenError('Un Administrateur ne peut pas modifier le profil d\'un autre Administrateur');
+  }
+
+  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut promouvoir vers SUPER_ADMIN ou GOUVERNEUR
+  if ((data.role === 'SUPER_ADMIN' || data.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Vous ne pouvez pas assigner le rôle ${data.role}`);
   }
   
   const updateData: any = { ...data };
@@ -114,9 +119,14 @@ export const DELETE = withPermission('users.delete', withErrorHandler(async (req
   const targetUser = await prisma.user.findUnique({ where: { id }, select: { role: true } });
   if (!targetUser) throw new NotFoundError('Utilisateur non trouvé');
 
-  // 🛡️ Protection : seul SUPER_ADMIN peut supprimer un SUPER_ADMIN
-  if (targetUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Impossible de supprimer un compte Super Admin');
+  // 🛡️ Protection : seul SUPER_ADMIN peut supprimer un SUPER_ADMIN ou un GOUVERNEUR
+  if ((targetUser.role === 'SUPER_ADMIN' || targetUser.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Impossible de supprimer un compte ${targetUser.role}`);
+  }
+
+  // 🛡️ Protection : un ADMIN ne peut pas supprimer un ADMIN
+  if (targetUser.role === 'ADMIN' && session.user.role === 'ADMIN') {
+    throw new ForbiddenError('Impossible de supprimer un autre Administrateur');
   }
 
   // Protection contre l'auto-suppression

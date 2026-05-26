@@ -211,6 +211,7 @@ const ALWAYS_PUBLIC_API_ROUTES = [
   '/api/auth/mobile/refresh',
   '/api/license/check',
   '/api/suggestions', // Autoriser GET et POST pour la boîte à idées anonyme
+  '/api/contact', // Autoriser le formulaire de contact public
 ];
 
 const SENSITIVE_API_ROUTES = [

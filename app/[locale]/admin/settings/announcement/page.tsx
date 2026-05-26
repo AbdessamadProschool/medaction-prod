@@ -326,7 +326,7 @@ export default function AnnouncementSettingsPage() {
                  }`}>
                     <div 
                         className="animate-marquee inline-block font-bold text-sm"
-                        style={{ animationDuration: `${config.speed || 100}s` }}
+                        style={{ animationDuration: `${Math.max(30, Math.round((config.speed || 100) * (config.message || '').length / 200))}s` }}
                     >
                         {config.message} {config.startTime && `• ${config.startTime} - ${config.endTime}`}
                     </div>

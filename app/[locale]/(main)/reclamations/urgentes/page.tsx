@@ -19,6 +19,7 @@ import {
   ArrowUpRight,
   Flame,
 } from 'lucide-react';
+import { PermissionGuard } from '@/hooks/use-permission';
 
 interface Reclamation {
   id: number;
@@ -137,7 +138,17 @@ export default function ReclamationsUrgentesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <PermissionGuard permission="reclamations.read" fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-8">
+          <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès restreint</h2>
+          <p className="text-gray-500 mb-6">Vous n'avez pas les permissions nécessaires pour voir cette page.</p>
+          <Link href="/" className="text-blue-600 hover:underline">Retour à l'accueil</Link>
+        </div>
+      </div>
+    }>
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-r from-red-600 to-orange-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -366,5 +377,6 @@ export default function ReclamationsUrgentesPage() {
         )}
       </div>
     </div>
+    </PermissionGuard>
   );
 }

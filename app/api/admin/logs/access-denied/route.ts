@@ -8,6 +8,10 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id ? parseInt(session.user.id) : null;
     
+    if (!userId) {
+      return NextResponse.json({ logged: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    
     // Obtenir l'IP (approximatif pour Next.js App Router sans headers() complexité)
     // En production on utiliserait les headers x-forwarded-for
     const forwarded = req.headers.get("x-forwarded-for");

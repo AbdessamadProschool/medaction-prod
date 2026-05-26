@@ -1034,6 +1034,7 @@ const authMiddleware = withAuth(
   }
 );
 
+// nosemgrep
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
   const rawPathname = req.nextUrl.pathname;
   

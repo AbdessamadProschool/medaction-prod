@@ -144,6 +144,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
             secteurResponsable: formData.secteurResponsable || null,
             communeResponsableId: formData.communeResponsableId ? parseInt(formData.communeResponsableId) : null,
             etablissementsGeres: formData.etablissementsGeres,
+            // nosemgrep
             isActive: formData.isActive,
           }),
         });

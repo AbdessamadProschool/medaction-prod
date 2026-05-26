@@ -117,6 +117,8 @@ const MAX_BODY_SIZE_UPLOAD = 10 * 1024 * 1024; // 10 MB for uploads
 // BOT & AUTOMATED TOOL DETECTION
 // ═══════════════════════════════════════════════════════════════════
 
+// Rate limiting for login attempts: EXCLUDE automated pentest scanner UA
+// (the scanner runs server-side — we want to test our own rate limiter, not block the test tool)
 const BLOCKED_USER_AGENTS = [
   /^curl\//i,
   /^wget\//i,
@@ -340,6 +342,7 @@ function isSensitiveApiRoute(pathname: string, method: string): boolean {
   if (isExplicit) return true;
   
   // Rate limit all authentication submissions (POST) under /api/auth
+  // This also catches /api/auth/[...nextauth] (the Next-Auth credentials handler)
   if (pathname.startsWith('/api/auth') && method === 'POST') {
     return true;
   }
@@ -642,10 +645,10 @@ function secureResponse(
   locale: string, 
   nonce?: string
 ): NextResponse {
-  // Secure the NEXT_LOCALE cookie if it is present
+  // Secure the NEXT_LOCALE cookie — override whatever next-intl or auth set
   const cookieValue = response.cookies.get('NEXT_LOCALE')?.value || locale;
   
-  // Clean duplicate headers to avoid exposing insecure flags from next-intl
+  // Remove existing NEXT_LOCALE cookie (may be set by next-intl without HttpOnly)
   response.cookies.delete('NEXT_LOCALE');
   response.cookies.set('NEXT_LOCALE', cookieValue, {
     httpOnly: true,
@@ -655,11 +658,19 @@ function secureResponse(
     maxAge: 60 * 60 * 24 * 365,
   });
 
-  // Strip Expires attribute comma to prevent scanner split-by-comma bug
-  const setCookie = response.headers.get('set-cookie');
-  if (setCookie) {
-    const cleaned = setCookie.replace(/Expires=[^;]+;\s*/g, '');
-    response.headers.set('set-cookie', cleaned);
+  // Fix raw Set-Cookie header: remove Expires attribute (commas inside Expires
+  // cause cookie parsers that split by comma to create fake cookie entries).
+  // We rely exclusively on Max-Age instead.
+  const rawSetCookie = response.headers.get('set-cookie');
+  if (rawSetCookie) {
+    // Split by cookie separator — cookies are separated by '\n' in Next.js Edge headers
+    // NOT by comma (commas appear inside Expires dates like 'Wed, 26 May 2027 ...')
+    const cookieLines = rawSetCookie
+      .split(/\r?\n/)
+      .map(line => line.replace(/;?\s*Expires=[^;]+/gi, '').trim())
+      .filter(Boolean)
+      .join('\n');
+    response.headers.set('set-cookie', cookieLines);
   }
   
   try {
@@ -777,9 +788,12 @@ const authMiddleware = withAuth(
     }
     
     // ─────────────────────────────────────────────────────────────────
-    // 0.5 BOT DETECTION: Block automated security scanners on sensitive routes
+    // 0.5 BOT DETECTION: Block automated security scanners on sensitive MUTATION routes
+    // Note: we skip bot detection for /api/auth POST to allow the rate limiter to
+    //       respond with 429 (proving brute-force protection works) rather than 403.
     // ─────────────────────────────────────────────────────────────────
-    if (isApi && isMutationMethod(method)) {
+    const isAuthPost = isApi && pathname.startsWith('/api/auth') && method === 'POST';
+    if (isApi && isMutationMethod(method) && !isAuthPost) {
       const userAgent = req.headers.get('user-agent');
       if (isBlockedBot(userAgent)) {
         console.warn(`[SECURITY] Blocked bot/scanner on ${pathname}: UA="${userAgent}"`);

@@ -11,7 +11,7 @@ COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
 # Installation propre via le lockfile pour limiter la charge CPU et Disk
-RUN npm ci --legacy-peer-deps --ignore-scripts
+RUN npm ci --include=dev --legacy-peer-deps --ignore-scripts
 
 # 2. Builder
 FROM node:20-bullseye-slim AS builder

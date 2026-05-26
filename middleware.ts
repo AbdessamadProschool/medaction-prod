@@ -388,6 +388,42 @@ function getClientIP(request: NextRequest): string {
   return '127.0.0.1';
 }
 
+function isSensitivePath(pathname: string): boolean {
+  const lowercasePath = pathname.toLowerCase();
+  const segments = lowercasePath.split('/').filter(Boolean);
+  
+  for (const segment of segments) {
+    // 1. Env files
+    if (segment.startsWith('.env')) return true;
+    
+    // 2. Git files
+    if (segment === '.git') return true;
+    
+    // 3. Docker Compose files
+    if (segment.startsWith('docker-compose') && (segment.endsWith('.yml') || segment.endsWith('.yaml'))) return true;
+    
+    // 4. Dockerfiles
+    if (segment === 'dockerfile' || segment.startsWith('dockerfile.')) return true;
+    
+    // 5. Package managers
+    if (segment === 'package.json' || segment === 'package-lock.json') return true;
+    
+    // 6. Next.js configurations
+    if (segment.startsWith('next.config.')) return true;
+    
+    // 7. Shell scripts and deployment scripts
+    if ((segment.startsWith('deploy') || segment.startsWith('push-to-server')) && (segment.endsWith('.sh') || segment.endsWith('.ps1'))) return true;
+    
+    // 8. Backups and database dumps (avoids matching path directories like /super-admin/backups)
+    if (segment === 'backup.json' || segment === 'database.dump' || segment.endsWith('.sql') || segment.endsWith('.dump')) return true;
+    
+    // 9. Prisma schemas and server entry
+    if (segment === 'schema.prisma' || segment === 'server.js') return true;
+  }
+  
+  return false;
+}
+
 function normalizePath(pathname: string): string {
   // 1. Décodage exhaustif pour neutraliser le double-encodage (ex: %2561 -> %61 -> a)
   let decoded = pathname;
@@ -964,6 +1000,18 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
   
   const nonce = btoa(crypto.randomUUID());
   req.headers.set('x-nonce', nonce);
+
+  // 1. Intercepter et bloquer immédiatement les fichiers sensibles (ex: .env, backup.json, etc.)
+  if (isSensitivePath(pathname)) {
+    console.warn(`[SECURITY] Blocked access to sensitive file: "${rawPathname}" -> "${pathname}"`);
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
+  }
 
   // Path traversal detection: if request started as an API request but resolved outside of /api
   if (rawPathname.startsWith('/api') && !pathname.startsWith('/api')) {

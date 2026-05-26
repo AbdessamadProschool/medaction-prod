@@ -333,10 +333,18 @@ function isAlwaysProtectedApiRoute(pathname: string): boolean {
   );
 }
 
-function isSensitiveApiRoute(pathname: string): boolean {
-  return SENSITIVE_API_ROUTES.some(
+function isSensitiveApiRoute(pathname: string, method: string): boolean {
+  const isExplicit = SENSITIVE_API_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
+  if (isExplicit) return true;
+  
+  // Rate limit all authentication submissions (POST) under /api/auth
+  if (pathname.startsWith('/api/auth') && method === 'POST') {
+    return true;
+  }
+  
+  return false;
 }
 
 function getProtectedRouteRoles(pathname: string): Role[] | undefined {
@@ -386,6 +394,41 @@ function getClientIP(request: NextRequest): string {
   if (realIP) return realIP;
 
   return '127.0.0.1';
+}
+
+function isValidLocaleOrPath(pathname: string): boolean {
+  const lowercase = pathname.toLowerCase();
+  
+  const allowedPrefixes = [
+    '/api',
+    '/_next',
+    '/uploads',
+    '/images',
+    '/data',
+    '/fr',
+    '/ar'
+  ];
+  
+  const allowedExact = [
+    '/',
+    '/favicon.ico',
+    '/robots.txt',
+    '/sitemap.xml',
+    '/llms.txt',
+    '/grid.svg'
+  ];
+  
+  if (allowedExact.includes(lowercase)) {
+    return true;
+  }
+  
+  for (const prefix of allowedPrefixes) {
+    if (lowercase === prefix || lowercase.startsWith(prefix + '/')) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 function isSensitivePath(pathname: string): boolean {
@@ -601,9 +644,12 @@ function secureResponse(
 ): NextResponse {
   // Secure the NEXT_LOCALE cookie if it is present
   const cookieValue = response.cookies.get('NEXT_LOCALE')?.value || locale;
+  
+  // Clean duplicate headers to avoid exposing insecure flags from next-intl
+  response.cookies.delete('NEXT_LOCALE');
   response.cookies.set('NEXT_LOCALE', cookieValue, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     sameSite: 'strict',
     path: '/',
     maxAge: 60 * 60 * 24 * 365,
@@ -754,7 +800,7 @@ const authMiddleware = withAuth(
     //     This ensures login/register/forgot-password are always rate-limited
     //     even though they are under /api/auth (which is "always public").
     // ─────────────────────────────────────────────────────────────────
-    if (isApi && isSensitiveApiRoute(pathname)) {
+    if (isApi && isSensitiveApiRoute(pathname, method)) {
       const rateLimit = await checkRateLimit(clientIP, 'login');
       
       if (!rateLimit.allowed) {
@@ -828,7 +874,7 @@ const authMiddleware = withAuth(
     let rateLimitType: 'public' | 'api' | 'login' = 'api';
     if (isApi && isPublicReadApiRoute(pathname) && isReadOnlyMethod(method)) {
       rateLimitType = 'public';
-    } else if (isApi && isSensitiveApiRoute(pathname)) {
+    } else if (isApi && isSensitiveApiRoute(pathname, method)) {
       rateLimitType = 'login';
     }
 
@@ -996,16 +1042,51 @@ const authMiddleware = withAuth(
 
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
   const rawPathname = req.nextUrl.pathname;
-  const pathname = normalizePath(rawPathname);
   
+  // 1. Détection de traversée de chemin directe ou chemin système non géré (ex: /etc/passwd)
+  if (!isValidLocaleOrPath(rawPathname)) {
+    console.warn(`[SECURITY] Blocked access to invalid path / traversal attempt: "${rawPathname}"`);
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
+  }
+
+  const pathname = normalizePath(rawPathname);
   const nonce = btoa(crypto.randomUUID());
   req.headers.set('x-nonce', nonce);
 
-  // 1. Intercepter et bloquer immédiatement les fichiers sensibles (ex: .env, backup.json, etc.)
+  // 2. Intercepter et bloquer immédiatement les fichiers sensibles (ex: .env, backup.json, etc.)
   if (isSensitivePath(pathname)) {
     console.warn(`[SECURITY] Blocked access to sensitive file: "${rawPathname}" -> "${pathname}"`);
     return new NextResponse('Not Found', {
       status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
+  }
+
+  // 3. Détection de double-encodage de chemin ou injection de caractères spéciaux sur routes protégées
+  const hasEncoding = rawPathname.includes('%') || rawPathname.includes('\\');
+  const isApi = isApiRoute(pathname);
+  const effectivePathname = isApi ? pathname : stripLocaleFromPath(pathname);
+  const isProtected = PROTECTED_ROUTES[effectivePathname] || 
+                      effectivePathname.startsWith('/admin') || 
+                      effectivePathname.startsWith('/super-admin') || 
+                      effectivePathname.startsWith('/gouverneur') || 
+                      effectivePathname.startsWith('/autorite') || 
+                      effectivePathname.startsWith('/coordinateur') || 
+                      effectivePathname.startsWith('/delegation');
+
+  if (hasEncoding && isProtected) {
+    console.warn(`[SECURITY] Blocked encoded path attempt to protected route: "${rawPathname}" -> "${pathname}"`);
+    return new NextResponse('Bad Request', {
+      status: 400,
       headers: {
         'Content-Type': 'text/plain',
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
@@ -1022,7 +1103,6 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
   req.nextUrl.pathname = pathname;
 
   const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
-  const isApi = isApiRoute(pathname);
   const locale = getLocale(req);
 
   if (pathname === '/') {

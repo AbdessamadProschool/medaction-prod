@@ -21,8 +21,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const canValidateNews = await checkPermission(userId, 'actualites.validate');
   const canValidateEtab = await checkPermission(userId, 'etablissements.validate');
   const canValidateProgs = await checkPermission(userId, 'programmes.validate');
-  const canViewReclamations = await checkPermission(userId, 'reclamations.view');
-  const canViewSuggestions = await checkPermission(userId, 'suggestions.view');
+  const canViewReclamations = await checkPermission(userId, 'reclamations.read.all');
+  const canViewSuggestions = await checkPermission(userId, 'suggestions.read.all');
   
   const canValidate = canValidateEvents || canValidateNews || canValidateEtab || canValidateProgs;
 

@@ -96,7 +96,7 @@ interface RateLimitEntry {
 
 const RATE_LIMIT_CONFIG = {
   windowMs: 60 * 1000, // 1 minute
-  publicMaxRequests: 15, // 15 req/min pour APIs publiques (détecte brute-force/DoS des scanners)
+  publicMaxRequests: 150, // 150 req/min pour APIs publiques (permet le chargement normal de la page avec ses multiples ressources)
   loginMaxRequests: 5, // 5 tentatives/min pour login
   apiMaxRequests: 200, // 200 req/min pour APIs authentifiées
   lockoutWindowMs: 15 * 60 * 1000, // 15 minutes lockout window
@@ -381,8 +381,8 @@ function isMutationMethod(method: string): boolean {
 }
 
 function getClientIP(request: NextRequest): string {
-  // 1. Priorité absolue : l'IP détectée par la plateforme/runtime
-  if (request.ip) return request.ip;
+  const reqIp = (request as any).ip;
+  if (reqIp) return reqIp;
 
   // 2. Lire l'IP sécurisée transmise par notre proxy Nginx via X-Forwarded-For
   const forwardedFor = request.headers.get('x-forwarded-for');

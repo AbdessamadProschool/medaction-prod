@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import annexesGeoData from './data/annexes-geo.json';
 import { getEtabScore, checkUrgency } from '@/lib/scoring';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 // Types updated with performance metrics

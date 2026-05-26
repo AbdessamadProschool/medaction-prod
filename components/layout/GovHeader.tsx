@@ -361,6 +361,8 @@ export default function GovHeader() {
                       setNotificationsOpen(!notificationsOpen);
                     }}
                     className="relative p-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-[0.98]"
+                    aria-label={t('notifications.title')}
+                    aria-expanded={notificationsOpen}
                   >
                     <Bell size={20} />
                     {unreadCount > 0 && (
@@ -373,7 +375,7 @@ export default function GovHeader() {
                         <>
                           {/* Overlay mobile pour fermer en cliquant à côté */}
                           <div 
-                            className="fixed inset-0 z-40 md:hidden bg-black/20 backdrop-blur-sm"
+                            className="fixed inset-0 z-40 md:hidden bg-[hsl(var(--gov-blue-dark)/0.32)]"
                             onClick={() => setNotificationsOpen(false)}
                           />
                           <motion.div

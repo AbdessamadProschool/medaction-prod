@@ -66,7 +66,7 @@ export default function CoordinateurLayout({
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gov-blue/30 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -122,7 +122,7 @@ export default function CoordinateurLayout({
               </div>
               <div className="min-w-0">
                 <span className="text-white font-bold text-lg block truncate">{tApp('name')}</span>
-                <p className="text-amber-400 text-xs font-medium truncate">{t('dashboard')}</p>
+                <p className="text-gov-gold text-xs font-medium truncate">{t('dashboard')}</p>
               </div>
             </Link>
             <button 
@@ -136,7 +136,7 @@ export default function CoordinateurLayout({
           {/* User info */}
           <div className="p-4">
             <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gov-gold to-gov-gold-dark flex items-center justify-center text-white font-bold shadow-lg">
                 {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
               </div>
               <div className="flex-1 min-w-0">
@@ -162,14 +162,14 @@ export default function CoordinateurLayout({
                       : 'text-blue-100 hover:bg-white/10'
                   }`}
                 >
-                  <item.icon className={`w-5 h-5 mt-0.5 shrink-0 ${active ? 'text-amber-500' : 'text-blue-300 group-hover:text-white'}`} />
+                  <item.icon className={`w-5 h-5 mt-0.5 shrink-0 ${active ? 'text-gov-gold' : 'text-blue-300 group-hover:text-white'}`} />
                   <div className="flex-1 relative z-10">
                     <span className={`font-bold block ${active ? 'text-blue-900' : ''}`}>{item.name}</span>
                     <span className={`text-xs block mt-0.5 ${active ? 'text-blue-600' : 'text-blue-300/70 group-hover:text-blue-200'}`}>
                       {item.description}
                     </span>
                   </div>
-                  {active && <ChevronLeft className="w-4 h-4 mt-1 text-amber-500" />}
+                  {active && <ChevronLeft className="w-4 h-4 mt-1 text-gov-gold" />}
                 </Link>
               );
             })}
@@ -253,7 +253,7 @@ export default function CoordinateurLayout({
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-3 p-1.5 pr-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gov-blue to-gov-blue-dark flex items-center justify-center text-white font-bold text-sm shadow-md">
                   {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
                 </div>
                 <div className="hidden md:block text-right">

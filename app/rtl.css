@@ -205,11 +205,6 @@
    border-right-width: 0;
 }
 
-[dir="rtl"] .border-l-4 {
-   border-right-width: 4px;
-   border-left-width: 0;
-}
-
 /* Position */
 [dir="rtl"] .left-0 {
    right: 0;

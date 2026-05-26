@@ -26,10 +26,10 @@ import {
 import { motion } from 'framer-motion';
 
 const ENTITIES = [
-  { id: 'etablissement', label: 'Établissements', icon: Building2, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+  { id: 'etablissement', label: 'Établissements', icon: Building2, color: 'text-gov-green-dark', bg: 'bg-gov-green/10' },
   { id: 'commune', label: 'Communes', icon: MapPin, color: 'text-teal-600', bg: 'bg-teal-100' },
   { id: 'annexe', label: 'Annexes', icon: Grid, color: 'text-indigo-600', bg: 'bg-indigo-100' },
-  { id: 'evenement', label: 'Événements', icon: Calendar, color: 'text-purple-600', bg: 'bg-purple-100' },
+  { id: 'evenement', label: 'Événements', icon: Calendar, color: 'text-gov-blue', bg: 'bg-gov-blue/10' },
   { id: 'campagne', label: 'Campagnes', icon: Megaphone, color: 'text-amber-600', bg: 'bg-amber-100' },
   { id: 'activite', label: 'Activités', icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-100' },
   { id: 'article', label: 'Articles', icon: FileText, color: 'text-pink-600', bg: 'bg-pink-100' },
@@ -261,7 +261,7 @@ export default function BulkImportPage() {
                   </label>
                 ) : (
                   <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-gov-green/10 text-gov-green-dark rounded-full flex items-center justify-center mb-4">
                       <FileSpreadsheet />
                     </div>
                     <p className="font-bold text-gray-800">{file.name}</p>
@@ -276,7 +276,7 @@ export default function BulkImportPage() {
                        <button 
                         onClick={handleUpload}
                         disabled={uploading}
-                        className="px-6 py-2 bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all font-bold flex items-center gap-2 disabled:opacity-50"
+                        className="px-6 py-2 bg-gov-green text-white rounded-lg shadow-lg shadow-gov-green/20 hover:bg-gov-green-dark transition-all font-bold flex items-center gap-2 disabled:opacity-50"
                        >
                          {uploading ? <Loader2 className="animate-spin" size={18} /> : <Upload size={18} />}
                          Lancer l'Import
@@ -288,13 +288,13 @@ export default function BulkImportPage() {
 
               {/* Import Report */}
               {report && (
-                <div className={`mt-6 p-4 rounded-xl border ${report.success ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`}>
+                <div className={`mt-6 p-4 rounded-xl border ${report.success ? 'bg-gov-green/10 border-gov-green/20' : 'bg-red-50 border-red-100'}`}>
                   {report.success ? (
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="text-emerald-500 mt-0.5" />
+                      <CheckCircle className="text-gov-green mt-0.5" />
                       <div className="flex-1">
-                        <h4 className="font-bold text-emerald-800">Import terminé</h4>
-                        <p className="text-emerald-700 text-sm">{report.count} éléments ont été ajoutés à la base de données.</p>
+                        <h4 className="font-bold text-gov-green-dark">Import terminé</h4>
+                        <p className="text-gov-green-dark text-sm">{report.count} éléments ont été ajoutés à la base de données.</p>
                         
                         {report.errors && Array.isArray(report.errors) && report.errors.length > 0 && (
                             <div className="mt-3 p-3 bg-red-50 rounded-lg text-xs text-red-700 border border-red-100 max-h-48 overflow-y-auto">

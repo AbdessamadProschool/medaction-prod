@@ -113,12 +113,12 @@ interface Evenement {
 }
 
 const getSecteurConfig = (t: any) => ({
-  EDUCATION: { gradient: 'from-blue-600 to-indigo-700', icon: GraduationCap, label: t('education'), bg: 'bg-blue-50', text: 'text-blue-700' },
-  SANTE: { gradient: 'from-red-600 to-pink-700', icon: Hospital, label: t('sante'), bg: 'bg-red-50', text: 'text-red-700' },
-  SPORT: { gradient: 'from-emerald-600 to-teal-700', icon: Trophy, label: t('sport'), bg: 'bg-emerald-50', text: 'text-emerald-700' },
-  SOCIAL: { gradient: 'from-purple-600 to-violet-700', icon: HeartHandshake, label: t('social'), bg: 'bg-purple-50', text: 'text-purple-700' },
-  CULTUREL: { gradient: 'from-orange-600 to-amber-700', icon: Drama, label: t('culture'), bg: 'bg-orange-50', text: 'text-orange-700' },
-  AUTRE: { gradient: 'from-gray-600 to-slate-700', icon: Building2, label: t('autre'), bg: 'bg-gray-50', text: 'text-gray-700' },
+  EDUCATION: { gradient: 'from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]', icon: GraduationCap, label: t('education'), badge: 'bg-[hsl(var(--gov-blue)/0.08)] text-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue)/0.2)]' },
+  SANTE: { gradient: 'from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]', icon: Hospital, label: t('sante'), badge: 'bg-[hsl(var(--gov-red)/0.08)] text-[hsl(var(--gov-red))] border-[hsl(var(--gov-red)/0.2)]' },
+  SPORT: { gradient: 'from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]', icon: Trophy, label: t('sport'), badge: 'bg-[hsl(var(--gov-green)/0.08)] text-[hsl(var(--gov-green))] border-[hsl(var(--gov-green)/0.2)]' },
+  SOCIAL: { gradient: 'from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]', icon: HeartHandshake, label: t('social'), badge: 'bg-[hsl(var(--gov-gold)/0.12)] text-[hsl(var(--gov-gold-dark))] border-[hsl(var(--gov-gold)/0.25)]' },
+  CULTUREL: { gradient: 'from-[hsl(var(--gov-blue-light))] to-[hsl(var(--gov-blue))]', icon: Drama, label: t('culture'), badge: 'bg-[hsl(var(--gov-blue)/0.08)] text-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue)/0.2)]' },
+  AUTRE: { gradient: 'from-muted-foreground to-foreground', icon: Building2, label: t('autre'), badge: 'bg-muted text-muted-foreground border-border' },
 });
 
 const getTabs = (t: any) => [
@@ -138,7 +138,7 @@ function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          className={`${sizeClass} ${star <= rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200'}`}
+          className={`${sizeClass} ${star <= rating ? 'text-gov-gold fill-amber-400' : 'text-gray-200'}`}
         />
       ))}
     </div>
@@ -288,7 +288,7 @@ export default function EtablissementDetailPage() {
           </div>
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#1e40af] to-[#1e3a8a]">
-             <div className="absolute inset-0 bg-black/10 pattern-grid-lg opacity-20" />
+             <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.1)] pattern-grid-lg opacity-20" />
           </div>
         )}
 
@@ -300,7 +300,7 @@ export default function EtablissementDetailPage() {
             <div className="absolute top-24 left-4 sm:left-6 lg:left-8 right-4 sm:right-6 lg:right-8 flex justify-between items-start">
               <Link 
                 href="/etablissements"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-md text-white rounded-full hover:bg-black/40 transition-all border border-white/10 text-sm font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[hsl(var(--gov-blue-dark)/0.36)] text-white rounded-full hover:bg-[hsl(var(--gov-blue-dark)/0.46)] transition-colors border border-white/10 text-sm font-medium"
               >
                  <ChevronLeft className="w-4 h-4" />
                  {t('buttons.back')}
@@ -317,7 +317,7 @@ export default function EtablissementDetailPage() {
                     alert(t('feedback_copied'));
                   }
                 }}
-                className="p-2 bg-black/30 backdrop-blur-md text-white rounded-full hover:bg-black/40 border border-white/10"
+                className="p-2 bg-[hsl(var(--gov-blue-dark)/0.36)] text-white rounded-full hover:bg-[hsl(var(--gov-blue-dark)/0.46)] border border-white/10"
               >
                 <Share2 className="w-5 h-5" />
               </button>
@@ -351,7 +351,7 @@ export default function EtablissementDetailPage() {
                      <config.icon className="w-3.5 h-3.5" /> {t('sections.contact').split(' ')[0] === 'Coordonnées' && config.label === 'Autre' ? t('sections.about') : config.label}
                    </span>
                    {etablissement.statutFonctionnel && (
-                     <span className="px-3 py-1 bg-emerald-500/20 text-emerald-100 border border-emerald-500/30 rounded-full text-xs font-bold uppercase backdrop-blur-md">
+                     <span className="px-3 py-1 bg-gov-green/20 text-gov-green border border-gov-green/30/30 rounded-full text-xs font-bold uppercase backdrop-blur-md">
                        {etablissement.statutFonctionnel}
                      </span>
                    )}
@@ -371,13 +371,13 @@ export default function EtablissementDetailPage() {
 
                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm md:text-base text-white/90 font-medium">
                    <div className="flex items-center gap-2">
-                     <MapPin className="w-5 h-5 text-amber-400" />
+                     <MapPin className="w-5 h-5 text-gov-gold" />
                      {etablissement.commune.nom}
                      {etablissement.adresseComplete ? ` • ${etablissement.adresseComplete.split(',')[0]}` : ''}
                    </div>
                    <div className="flex items-center gap-2">
                      <div className="flex gap-0.5">
-                       {[1,2,3,4,5].map(s => <Star key={s} className={`w-4 h-4 ${s <= Math.round(etablissement.noteMoyenne) ? 'text-amber-400 fill-amber-400' : 'text-white/30'}`} />)}
+                       {[1,2,3,4,5].map(s => <Star key={s} className={`w-4 h-4 ${s <= Math.round(etablissement.noteMoyenne) ? 'text-gov-gold fill-amber-400' : 'text-white/30'}`} />)}
                      </div>
                       <span className="text-white font-bold text-lg">{etablissement.noteMoyenne.toFixed(1)}</span>
                       <span className="text-white/70">({etablissement.nombreEvaluations} {t('tabs.avis').toLowerCase()})</span>
@@ -393,7 +393,7 @@ export default function EtablissementDetailPage() {
                       fallback={
                         <Link 
                           href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
-                          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02]"
+                          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02]"
                         >
                             <Star className="w-5 h-5 fill-current" />
                             {t('buttons.subscribe')}
@@ -403,7 +403,7 @@ export default function EtablissementDetailPage() {
                       <SubscribeButton 
                         etablissementId={etablissement.id} 
                         etablissementNom={etablissement.nom}
-                        className="w-full px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-amber-300 transition-all transform hover:scale-[1.02] flex justify-center"
+                        className="w-full px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02] flex justify-center"
                       />
                     </PermissionGuard>
 
@@ -581,13 +581,13 @@ export default function EtablissementDetailPage() {
                           </div>
                           )}
                           {etablissement.disponibiliteElectricite && (
-                          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-amber-50 border-amber-100 text-amber-700">
+                          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-gov-gold/5 border-gov-gold/30 text-gov-gold">
                              <Zap className="w-4 h-4" />
                              <span className="text-sm font-medium">{t('labels.electricity_available')}</span>
                           </div>
                           )}
                           {etablissement.disponibiliteEau && (
-                          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-cyan-50 border-cyan-100 text-cyan-700">
+                          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border bg-[hsl(var(--gov-blue)/0.08)] border-[hsl(var(--gov-blue)/0.18)] text-[hsl(var(--gov-blue))]">
                              <Droplets className="w-4 h-4" />
                              <span className="text-sm font-medium">{t('labels.water_available')}</span>
                           </div>
@@ -601,7 +601,7 @@ export default function EtablissementDetailPage() {
                 {/* SECTION 2: DONNÉES SPÉCIFIQUES SECTEUR */}
                 <section className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100 space-y-6">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
-                        <span className={`w-1.5 h-6 rounded-full ${secteurConfig[etablissement.secteur as keyof typeof secteurConfig]?.bg.replace('bg-', 'bg-').replace('50', '500') || 'bg-gray-500'}`}/>
+                        <span className="w-1.5 h-6 rounded-full bg-[hsl(var(--gov-blue))]"/>
                         {t('sections.specific_details')}
                      </h2>
                     
@@ -609,26 +609,26 @@ export default function EtablissementDetailPage() {
                     {etablissement.secteur === 'SANTE' && (
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                           {/* Médecins - Always Show */}
-                          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                            <div className="flex items-center gap-2 mb-2 text-blue-700"><UserCheck className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.doctors')}</span></div>
+                          <div className="bg-[hsl(var(--gov-blue)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-blue)/0.18)]">
+                            <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-blue))]"><UserCheck className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.doctors')}</span></div>
                             <p className="text-2xl font-bold">{getValue(['nombre_medecins', 'medecins', 'medecin', 'effectif_medical']) ?? '-'}</p>
                           </div>
                           
                           {/* Infirmiers - Always Show */}
-                          <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                            <div className="flex items-center gap-2 mb-2 text-emerald-700"><Stethoscope className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.nurses')}</span></div>
+                          <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                            <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]"><Stethoscope className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.nurses')}</span></div>
                             <p className="text-2xl font-bold">{getValue(['nombre_infirmiers', 'infirmiers', 'infirmier', 'paramedical']) ?? '-'}</p>
                           </div>
                           
                           {/* Autre Personnel - Always Show */}
-                          <div className="bg-cyan-50 rounded-xl p-4 border border-cyan-100">
-                            <div className="flex items-center gap-2 mb-2 text-cyan-700"><Briefcase className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.other_staff')}</span></div>
+                          <div className="bg-[hsl(var(--gov-blue)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-blue)/0.18)]">
+                            <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-blue))]"><Briefcase className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.other_staff')}</span></div>
                             <p className="text-2xl font-bold">{getValue(['autres_personnel', 'autre_personnel', 'administratif', 'support']) ?? '-'}</p>
                           </div>
                           
                           {/* Lits - Always Show */}
-                          <div className="bg-pink-50 rounded-xl p-4 border border-pink-100">
-                            <div className="flex items-center gap-2 mb-2 text-pink-700"><Bed className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.beds')}</span></div>
+                          <div className="bg-[hsl(var(--gov-red)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-red)/0.18)]">
+                            <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-red))]"><Bed className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.beds')}</span></div>
                             <p className="text-2xl font-bold">{getValue(['nombre_lits', 'lits', 'lit', 'capacite_lits']) ?? '-'}</p>
                           </div>
                           
@@ -636,8 +636,8 @@ export default function EtablissementDetailPage() {
                           {(() => {
                             const val = getValue(['ambulances', 'nombre_ambulances']);
                             return (val !== undefined && val !== null) ? (
-                            <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-                              <div className="flex items-center gap-2 mb-2 text-red-700"><Activity className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.ambulances')}</span></div>
+                            <div className="bg-[hsl(var(--gov-red)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-red)/0.18)]">
+                              <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-red))]"><Activity className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.ambulances')}</span></div>
                               <p className="text-2xl font-bold">{val}</p>
                             </div>
                             ) : null;
@@ -648,25 +648,25 @@ export default function EtablissementDetailPage() {
                     {/* SECTOR: EDUCATION */}
                     {etablissement.secteur === 'EDUCATION' && (
                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                          <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
-                            <div className="flex items-center gap-2 mb-2 text-indigo-700"><GraduationCap className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.total_students')}</span></div>
+                          <div className="bg-[hsl(var(--gov-blue)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-blue)/0.18)]">
+                            <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-blue))]"><GraduationCap className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.total_students')}</span></div>
                             <p className="text-2xl font-bold text-gray-900">{etablissement.elevesTotal || getValue(['eleves', 'etudiants', 'nombre_eleves']) || '-'}</p>
                           </div>
                           {(etablissement.elevesFilles !== undefined || getValue(['filles'])) && (
-                            <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-                              <div className="flex items-center gap-2 mb-2 text-purple-700"><Baby className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.including_girls')}</span></div>
+                            <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                              <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]"><Baby className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.including_girls')}</span></div>
                               <p className="text-2xl font-bold text-gray-900">{etablissement.elevesFilles || getValue(['filles'])}</p>
                             </div>
                           )}
                           {(etablissement.tauxReussite !== undefined || getValue(['reussite', 'taux'])) && (
-                            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                              <div className="flex items-center gap-2 mb-2 text-emerald-700"><Trophy className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.success_rate')}</span></div>
+                            <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                              <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]"><Trophy className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.success_rate')}</span></div>
                               <p className="text-2xl font-bold text-gray-900">{etablissement.tauxReussite || getValue(['reussite', 'taux'])}%</p>
                             </div>
                           )}
                           {getValue(['enseignants', 'professeurs']) && (
-                            <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                              <div className="flex items-center gap-2 mb-2 text-amber-700"><School className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.teachers')}</span></div>
+                            <div className="bg-[hsl(var(--gov-gold)/0.12)] rounded-xl p-4 border border-[hsl(var(--gov-gold)/0.24)]">
+                              <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-gold-dark))]"><School className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.teachers')}</span></div>
                              <p className="text-2xl font-bold text-gray-900">{getValue(['enseignants', 'professeurs'])}</p>
                            </div>
                          )}
@@ -677,14 +677,14 @@ export default function EtablissementDetailPage() {
                     {etablissement.secteur === 'SPORT' && (
                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                            {getValue(['terrains', 'nombre_terrains']) && (
-                              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                                 <div className="flex items-center gap-2 mb-2 text-emerald-700"><Layout className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.fields')}</span></div>
+                              <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                                 <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]"><Layout className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.fields')}</span></div>
                                  <p className="text-2xl font-bold text-gray-900">{getValue(['terrains', 'nombre_terrains'])}</p>
                               </div>
                            )}
                            {getValue(['disciplines', 'activites_sportives']) && (
-                              <div className="col-span-2 bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                                 <div className="flex items-center gap-2 mb-2 text-emerald-700"><Trophy className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.disciplines')}</span></div>
+                              <div className="col-span-2 bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                                 <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]"><Trophy className="w-5 h-5" /><span className="text-xs font-bold uppercase">{t('labels.disciplines')}</span></div>
                                 <p className="font-medium text-gray-900">{String(getValue(['disciplines', 'activites_sportives']))}</p>
                              </div>
                           )}
@@ -708,8 +708,8 @@ export default function EtablissementDetailPage() {
                        return (beneficiaires || capacite) ? (
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {beneficiaires && (
-                               <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-                                  <div className="flex items-center gap-2 mb-2 text-purple-700">
+                               <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                                  <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]">
                                     <HeartHandshake className="w-5 h-5" />
                                     <span className="text-xs font-bold uppercase">{t('labels.beneficiaries')}</span>
                                   </div>
@@ -724,8 +724,8 @@ export default function EtablissementDetailPage() {
                                </div>
                             )}
                             {capacite && (
-                               <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-                                  <div className="flex items-center gap-2 mb-2 text-purple-700">
+                               <div className="bg-[hsl(var(--gov-green)/0.08)] rounded-xl p-4 border border-[hsl(var(--gov-green)/0.18)]">
+                                  <div className="flex items-center gap-2 mb-2 text-[hsl(var(--gov-green))]">
                                     <Bed className="w-5 h-5" />
                                     <span className="text-xs font-bold uppercase">{t('labels.capacity')}</span>
                                   </div>
@@ -746,7 +746,7 @@ export default function EtablissementDetailPage() {
                                  </h4>
                                  <div className="flex flex-wrap gap-2">
                                    {String(getValue(['activites', 'type_activites'])).split(/[-,;]/).map((act: string, i: number) => (
-                                     <span key={i} className="px-3 py-1 bg-orange-50 text-orange-700 rounded-lg text-sm font-medium border border-orange-100">
+                                     <span key={i} className="px-3 py-1 bg-gov-gold/5 text-gov-gold rounded-lg text-sm font-medium border border-gov-gold/30">
                                        {act.trim()}
                                      </span>
                                    ))}
@@ -922,14 +922,14 @@ export default function EtablissementDetailPage() {
                              const Icon = getIcon(key);
                              
                              return (
-                             <div key={key} className="group relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center h-full justify-center min-h-[180px]">
+                             <div key={key} className="group relative bg-card rounded-lg p-6 border border-border hover:border-[hsl(var(--gov-blue)/0.3)] hover:shadow-md transition-shadow duration-200 flex flex-col items-center text-center h-full justify-center min-h-[180px]">
                                 {String(value).startsWith('http') && (
                                    <a href={String(value)} target="_blank" rel="noopener noreferrer" className="absolute top-4 right-4 text-gray-400 hover:text-[hsl(213,80%,28%)] transition-colors">
                                      <Globe className="w-5 h-5" />
                                    </a>
                                 )}
                                 
-                                <div className={`mb-4 p-4 rounded-2xl ${config.bg} ${config.text} bg-opacity-30 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                                <div className={`mb-4 p-4 rounded-lg ${config.badge} transition-colors duration-200 shadow-sm`}>
                                   <Icon className="w-7 h-7" />
                                 </div>
                                 
@@ -981,7 +981,7 @@ export default function EtablissementDetailPage() {
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.educ_programs')}</h3>
                             <div className="flex flex-wrap gap-2">
                              {etablissement.programmes.map((p, i) => (
-                               <span key={i} className={`px-3 py-1.5 bg-${config.bg} ${config.text} rounded-lg text-sm font-medium border border-${config.text}/10`}>
+                               <span key={i} className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${config.badge}`}>
                                  {p}
                                </span>
                              ))}
@@ -996,7 +996,7 @@ export default function EtablissementDetailPage() {
                    <section className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100">
                      <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                           <span className="w-1.5 h-6 bg-purple-500 rounded-full"/>
+                           <span className="w-1.5 h-6 bg-[hsl(var(--gov-blue))] rounded-full"/>
                            {t('sections.gallery')}
                         </h2>
                         <span className="text-sm text-gray-500">{t('labels.photos_count', { count: allImages.length })}</span>
@@ -1015,7 +1015,7 @@ export default function EtablissementDetailPage() {
                                fill
                                className="object-cover group-hover:scale-110 transition-transform duration-500"
                              />
-                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                             <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0)] group-hover:bg-[hsl(var(--gov-blue-dark)/0.2)] transition-colors" />
                            </button>
                         ))}
                      </div>
@@ -1054,12 +1054,12 @@ export default function EtablissementDetailPage() {
                      <div className="space-y-6">
                         {etablissement.telephone && (
                           <div className="flex items-start gap-4">
-                             <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
+                             <div className="w-12 h-12 rounded-2xl bg-gov-green/5 text-gov-green-dark flex items-center justify-center shrink-0 shadow-sm">
                                 <Phone className="w-6 h-6" />
                              </div>
                              <div>
                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-1">{t('labels.phone')}</p>
-                               <a href={`tel:${etablissement.telephone}`} className="text-base font-bold text-gray-900 hover:text-emerald-600 font-mono tracking-tight">
+                               <a href={`tel:${etablissement.telephone}`} className="text-base font-bold text-gray-900 hover:text-gov-green-dark font-mono tracking-tight">
                                   {etablissement.telephone}
                                </a>
                             </div>
@@ -1080,12 +1080,12 @@ export default function EtablissementDetailPage() {
                         )}
                         {etablissement.siteWeb && (
                           <div className="flex items-start gap-4">
-                             <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 shadow-sm">
+                             <div className="w-12 h-12 rounded-2xl bg-[hsl(var(--gov-blue)/0.08)] text-[hsl(var(--gov-blue))] flex items-center justify-center shrink-0 shadow-sm">
                                 <Globe className="w-6 h-6" />
                              </div>
                              <div className="min-w-0">
                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-1">{t('labels.website')}</p>
-                                <a href={etablissement.siteWeb} target="_blank" rel="noopener" className="text-base font-bold text-gray-900 hover:text-purple-600 truncate block">
+                                <a href={etablissement.siteWeb} target="_blank" rel="noopener" className="text-base font-bold text-gray-900 hover:text-[hsl(var(--gov-blue))] truncate block">
                                    {t('buttons.visit_site')}
                                 </a>
                             </div>
@@ -1169,7 +1169,7 @@ export default function EtablissementDetailPage() {
                          </Link>
                       }
                    >
-                      <Link href={`/evaluer/${etablissement.id}`} className="inline-flex items-center gap-2 px-8 py-3 bg-[hsl(45,93%,47%)] text-gray-900 rounded-full font-bold shadow-lg hover:bg-amber-300 transition-all">
+                      <Link href={`/evaluer/${etablissement.id}`} className="inline-flex items-center gap-2 px-8 py-3 bg-[hsl(45,93%,47%)] text-gray-900 rounded-full font-bold shadow-lg hover:bg-gov-gold/10 transition-all">
                          <Star className="w-5 h-5 fill-current" />
                          {t('buttons.give_rating')}
                       </Link>
@@ -1218,7 +1218,7 @@ export default function EtablissementDetailPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-[hsl(var(--gov-blue-dark)/0.96)] flex items-center justify-center p-4"
             onClick={() => setShowGallery(false)}
           >
             <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors">

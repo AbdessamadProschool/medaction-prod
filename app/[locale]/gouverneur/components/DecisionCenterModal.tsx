@@ -468,7 +468,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                                 }}
                                                 className="flex-1 px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl text-[10px] font-black uppercase text-white transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-3 group"
                                              >
-                                                 <MapPin size={14} className="group-hover:animate-bounce" /> {t('labels.our_map')}
+                                                 <MapPin size={14} className="group-hover:animate-pulse" /> {t('labels.our_map')}
                                              </button>
                                          </div>
                                     </div>
@@ -532,7 +532,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                 <Sparkles className="absolute -top-12 -right-12 opacity-5 text-blue-500" size={200} />
                                 <div className="relative z-10">
                                     <h3 className="text-2xl font-black mb-6 uppercase tracking-tight text-blue-400 drop-shadow-sm">{t('performance.strategic_analysis')}</h3>
-                                    <p className="text-sm text-white font-black leading-relaxed italic border-l-4 border-blue-500 pl-6 mb-8">
+                                    <p className="text-sm text-white font-black leading-relaxed italic border-l-2 border-blue-500 pl-6 mb-8">
                                         {score > 75 ? t('performance.high_efficiency_msg') : t('performance.stable_performance_msg')}
                                     </p>
                                     <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -743,7 +743,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                  <h3 className="text-[10px] font-black uppercase mb-3 flex items-center gap-2">
                                      <AlignLeft size={12} /> Analyse Gouverneur
                                  </h3>
-                                 <p className="text-[10px] font-bold text-slate-700 leading-relaxed italic border-l-4 border-slate-400 pl-4 py-1">
+                                 <p className="text-[10px] font-bold text-slate-700 leading-relaxed italic border-l-2 border-slate-400 pl-4 py-1">
                                      {score > 75 ? t('performance.high_efficiency_msg') : t('performance.stable_performance_msg')}
                                  </p>
                              </div>

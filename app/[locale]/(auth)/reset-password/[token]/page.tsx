@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin w-12 h-12 border-4 border-gov-green border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-500">Validation du lien...</p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
           </p>
           <Link
             href="/forgot-password"
-            className="inline-block px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+            className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
           >
             Demander un nouveau lien
           </Link>
@@ -129,8 +129,8 @@ export default function ResetPasswordPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center"
         >
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 bg-gov-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-gov-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
           <p className="text-gray-500 mb-4">
             Votre mot de passe a été réinitialisé avec succès. Vous allez être redirigé vers la page de connexion.
           </p>
-          <div className="animate-pulse text-emerald-600">Redirection en cours...</div>
+          <div className="animate-pulse text-gov-green">Redirection en cours...</div>
         </motion.div>
       </div>
     );
@@ -154,7 +154,7 @@ export default function ResetPasswordPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gov-green hover:bg-gov-green-dark rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
@@ -166,8 +166,8 @@ export default function ResetPasswordPage() {
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-8 border border-gray-100">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-16 h-16 bg-gov-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gov-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
               </svg>
             </div>
@@ -196,7 +196,7 @@ export default function ResetPasswordPage() {
                 id="password"
                 type="password"
                 {...register('password')}
-                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
+                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green transition-all ${
                   errors.password ? 'border-red-300 bg-red-50' : 'border-gray-200'
                 }`}
                 placeholder="••••••••"
@@ -222,7 +222,7 @@ export default function ResetPasswordPage() {
                 id="confirmPassword"
                 type="password"
                 {...register('confirmPassword')}
-                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
+                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green transition-all ${
                   errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-200'
                 }`}
                 placeholder="••••••••"
@@ -235,7 +235,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-70"
+              className="w-full py-3.5 px-4 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl shadow-lg shadow-gov-green/25 hover:shadow-gov-green/40 transition-all disabled:opacity-70"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">

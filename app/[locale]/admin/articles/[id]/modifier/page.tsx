@@ -179,7 +179,7 @@ export default function ModifierArticlePage() {
       <div className="min-h-[60vh] flex items-center justify-center p-10">
         <div className="text-center space-y-6">
           <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto shadow-inner">
-             <AlertTriangle className="w-10 h-10 text-amber-500" />
+             <AlertTriangle className="w-10 h-10 text-gov-gold" />
           </div>
           <div>
             <h2 className="text-xl font-black uppercase tracking-tight text-foreground">{t('empty.title') || 'Article introuvable'}</h2>
@@ -215,7 +215,7 @@ export default function ModifierArticlePage() {
           </Link>
           
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-indigo-500/30 ring-8 ring-indigo-500/10">
+            <div className="w-16 h-16 bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-[2rem] flex items-center justify-center shadow-2xl shadow-gov-blue/20 ring-8 ring-gov-blue/20">
               <FileText className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -235,7 +235,7 @@ export default function ModifierArticlePage() {
             loading={saving}
             variant="primary"
             leftIcon={!saving && <Save size={18} />}
-            className="rounded-full px-10 shadow-xl shadow-indigo-500/20 bg-indigo-600 hover:bg-indigo-700 border-none"
+            className="rounded-full px-10 shadow-xl shadow-gov-blue/20 bg-gov-blue/10 hover:bg-gov-blue/10 border-none"
           >
             {t('actions.save')}
           </GovButton>
@@ -247,20 +247,20 @@ export default function ModifierArticlePage() {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="bg-indigo-500/03 backdrop-blur-xl border border-indigo-500/10 rounded-[2rem] p-8 shadow-inner"
+        className="bg-gov-blue/10/03 backdrop-blur-xl border border-gov-blue/30/10 rounded-[2rem] p-8 shadow-inner"
       >
         <div className="flex flex-wrap gap-8 items-center text-[10px] font-black uppercase tracking-widest">
           <div className="flex items-center gap-3 text-muted-foreground">
-            <UserIcon className="w-4 h-4 text-indigo-500" />
+            <UserIcon className="w-4 h-4 text-gov-blue-dark" />
             <span>{t('table.author')}: {article.createdByUser?.prenom} {article.createdByUser?.nom}</span>
           </div>
           <div className="flex items-center gap-3 text-muted-foreground">
-            <Calendar className="w-4 h-4 text-indigo-500" />
+            <Calendar className="w-4 h-4 text-gov-blue-dark" />
             <span>Créé le {new Date(article.createdAt).toLocaleDateString('fr-FR')}</span>
           </div>
           <div className={cn(
             "px-4 py-1.5 rounded-full ring-1 ring-inset shadow-sm",
-            article.isPublie ? "bg-emerald-500/10 text-emerald-600 ring-emerald-500/20" : "bg-amber-500/10 text-amber-600 ring-amber-500/20"
+            article.isPublie ? "bg-gov-green text-gov-green-dark ring-gov-green/20" : "bg-gov-gold/10/10 text-gov-gold ring-amber-500/20"
           )}>
             {article.isPublie ? t('status.published') : t('status.draft')}
           </div>
@@ -289,11 +289,11 @@ export default function ModifierArticlePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-indigo-500/03"
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-blue/20"
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-indigo-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-blue/10 rounded-full" />
                 {t('sections.content')}
               </h2>
             </div>
@@ -342,7 +342,7 @@ export default function ModifierArticlePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                  <Tag className="w-5 h-5 text-amber-500" />
+                  <Tag className="w-5 h-5 text-gov-gold" />
                   {t('sections.category')}
                 </h3>
                 <GovSelect
@@ -362,7 +362,7 @@ export default function ModifierArticlePage() {
 
               <div className="space-y-4">
                  <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                  <ChevronRight className="w-5 h-5 text-indigo-500" />
+                  <ChevronRight className="w-5 h-5 text-gov-blue-dark" />
                   {t('form.tags')}
                 </h3>
                 <GovInput
@@ -383,7 +383,7 @@ export default function ModifierArticlePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Eye className="w-5 h-5 text-emerald-500" />
+              <Eye className="w-5 h-5 text-gov-green" />
               {t('sections.publication')}
             </h3>
             
@@ -391,19 +391,19 @@ export default function ModifierArticlePage() {
                <label className={cn(
                 "relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
                 formData.isPublie 
-                  ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                  ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg" 
                   : "border-border bg-muted/10"
               )}>
                 <input
                   type="checkbox"
                   checked={formData.isPublie}
                   onChange={(e) => setFormData({ ...formData, isPublie: e.target.checked })}
-                  className="w-6 h-6 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 cursor-pointer"
+                  className="w-6 h-6 rounded-lg border-border text-gov-green-dark focus:ring-gov-green/20 cursor-pointer"
                 />
                 <div>
                   <span className={cn(
                     "text-[10px] font-black uppercase tracking-widest block transition-colors",
-                    formData.isPublie ? "text-emerald-700" : "text-foreground"
+                    formData.isPublie ? "text-gov-green-dark" : "text-foreground"
                   )}>{t('form.publish_now')}</span>
                 </div>
               </label>
@@ -411,19 +411,19 @@ export default function ModifierArticlePage() {
               <label className={cn(
                 "relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
                 formData.isMisEnAvant 
-                  ? "border-amber-500 bg-amber-500/5 shadow-amber-500/10 shadow-lg" 
+                  ? "border-gov-gold/30 bg-gov-gold/10/5 shadow-amber-500/10 shadow-lg" 
                   : "border-border bg-muted/10"
               )}>
                 <input
                   type="checkbox"
                   checked={formData.isMisEnAvant}
                   onChange={(e) => setFormData({ ...formData, isMisEnAvant: e.target.checked })}
-                  className="w-6 h-6 rounded-lg border-border text-amber-600 focus:ring-amber-500/20 cursor-pointer"
+                  className="w-6 h-6 rounded-lg border-border text-gov-gold focus:ring-amber-500/20 cursor-pointer"
                 />
                 <div>
                   <span className={cn(
                     "text-[10px] font-black uppercase tracking-widest block transition-colors",
-                    formData.isMisEnAvant ? "text-amber-700" : "text-foreground"
+                    formData.isMisEnAvant ? "text-gov-gold" : "text-foreground"
                   )}>{t('modal.toggle_featured')}</span>
                 </div>
               </label>

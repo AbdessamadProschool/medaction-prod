@@ -166,7 +166,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
   if (initialLoading) {
      return (
         <div className="min-h-screen flex items-center justify-center">
-           <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+           <Loader2 className="w-12 h-12 text-gov-gold animate-spin" />
         </div>
      );
   }
@@ -179,7 +179,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
         <div className="mb-5 relative">
           <Link 
             href="/delegation/actualites"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-600 mb-3 transition-colors group font-bold text-sm"
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-gov-gold mb-3 transition-colors group font-bold text-sm"
           >
             <ArrowRight size={20} className="rtl:rotate-0 rotate-180 group-hover:translate-x-[-4px] rtl:group-hover:translate-x-[4px] transition-transform" />
             <span>{t('back_to_list')}</span>
@@ -187,15 +187,15 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-gray-100">
              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full border border-amber-100 animate-fade-in-up">
-                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">{t('subtitle')}</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-gov-gold/5 rounded-full border border-gov-gold/30 animate-fade-in-up">
+                    <span className="w-2 h-2 rounded-full bg-gov-gold/10 animate-pulse"></span>
+                    <span className="text-xs font-bold text-gov-gold uppercase tracking-wider">{t('subtitle')}</span>
                 </div>
                 <h1 className="text-2xl font-black text-gray-900 tracking-tight leading-tight text-start">
                     {t('edit_title', { id: id })}
                 </h1>
              </div>
-             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 transform -rotate-3">
+             <div className="w-10 h-10 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 transform -rotate-3">
                 <Newspaper className="w-5 h-5 text-white" />
              </div>
           </div>
@@ -207,7 +207,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-all duration-300">
             <div className="px-5 py-3 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-orange-50/50 to-transparent">
               <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <div className="p-1.5 bg-orange-100 rounded-lg text-orange-600 shadow-sm">
+                <div className="p-1.5 bg-gov-gold/10 rounded-lg text-gov-gold shadow-sm">
                    <ImageIcon className="w-4 h-4" />
                 </div>
                 {t('sections.media.title')}
@@ -237,13 +237,13 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
                   </div>
                 </div>
               ) : (
-                <label className="relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 hover:bg-orange-50/50 hover:border-orange-300 transition-all cursor-pointer group overflow-hidden">
+                <label className="relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 hover:bg-gov-gold/5/50 hover:border-gov-gold/30 transition-all cursor-pointer group overflow-hidden">
                   <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10"></div>
                   
                   <div className="w-14 h-14 bg-white rounded-full shadow-md flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                    <ImageIcon className="w-6 h-6 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                    <ImageIcon className="w-6 h-6 text-gray-400 group-hover:text-gov-gold transition-colors" />
                   </div>
-                  <p className="text-sm font-bold text-gray-700 mb-1 group-hover:text-orange-700 transition-colors">{t('sections.media.placeholder')}</p>
+                  <p className="text-sm font-bold text-gray-700 mb-1 group-hover:text-gov-gold transition-colors">{t('sections.media.placeholder')}</p>
                   <p className="text-xs text-gray-400">{t('sections.media.hint')}</p>
                   <input 
                     type="file" 
@@ -321,9 +321,9 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
           {/* Section Contexte */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all duration-300 relative overflow-hidden group">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-[4rem] -mr-8 -mt-8 opacity-50 pointer-events-none group-hover:scale-110 transition-transform"></div>
+             <div className="absolute top-0 right-0 w-32 h-32 bg-gov-blue/5 rounded-bl-[4rem] -mr-8 -mt-8 opacity-50 pointer-events-none group-hover:scale-110 transition-transform"></div>
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-3 text-start">
-                 <div className="p-2.5 bg-purple-100 rounded-xl text-purple-600 shadow-sm">
+                 <div className="p-2.5 bg-gov-blue/10 rounded-xl text-gov-blue-dark shadow-sm">
                     <Tag className="w-5 h-5" />
                  </div>
                  {t('sections.context.category_title')}
@@ -332,7 +332,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
               <div className="relative group text-start">
                  <select
                     {...register('categorie')}
-                     className="w-full px-4 py-2.5 pr-6 pl-10 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none bg-white font-semibold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
+                     className="w-full px-4 py-2.5 pr-6 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-semibold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                  >
                     <option value="">{t('sections.context.category_options.general')}</option>
                     <option value="TRAVAUX">{t('sections.context.category_options.works')}</option>
@@ -340,16 +340,16 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
                     <option value="PARTENARIAT">{t('sections.context.category_options.partnership')}</option>
                     <option value="SUCCESS_STORY">{t('sections.context.category_options.success_story')}</option>
                  </select>
-                 <div className="absolute left-6 rtl:left-auto rtl:right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-purple-600 transition-colors">
+                 <div className="absolute left-6 rtl:left-auto rtl:right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-gov-blue-dark transition-colors">
                     <ArrowRight className="rotate-90" size={20} />
                  </div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all duration-300 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[4rem] -mr-8 -mt-8 opacity-50 pointer-events-none group-hover:scale-110 transition-transform"></div>
+               <div className="absolute top-0 right-0 w-32 h-32 bg-gov-blue/5 rounded-bl-[4rem] -mr-8 -mt-8 opacity-50 pointer-events-none group-hover:scale-110 transition-transform"></div>
               <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-3 text-start">
-                 <div className="p-2.5 bg-indigo-100 rounded-lg text-indigo-600 shadow-sm">
+                 <div className="p-2.5 bg-gov-blue/10 rounded-lg text-gov-blue-dark shadow-sm">
                     <Building2 className="w-5 h-5" />
                  </div>
                  {t('sections.context.establishment_title')} <span className="text-red-500">*</span>
@@ -358,14 +358,14 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
               <div className="relative group text-start">
                  <select
                     {...register('etablissementId')}
-                     className="w-full px-4 py-2.5 pr-6 pl-10 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-white font-semibold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
+                     className="w-full px-4 py-2.5 pr-6 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-semibold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                  >
                     <option value="">{t('sections.context.establishment_placeholder')}</option>
                     {etablissements.map(e => (
                     <option key={e.id} value={e.id}>{e.nom}</option>
                     ))}
                  </select>
-                 <div className="absolute left-6 rtl:left-auto rtl:right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-indigo-600 transition-colors">
+                 <div className="absolute left-6 rtl:left-auto rtl:right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-gov-blue-dark transition-colors">
                     <ArrowRight className="rotate-90" size={20} />
                  </div>
               </div>
@@ -386,7 +386,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-orange-500/30 font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="px-8 py-3 bg-gradient-to-r from-gov-red to-gov-red-dark text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-orange-500/30 font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <>

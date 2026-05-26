@@ -91,7 +91,7 @@ export default function CoordinateurRapportsPage() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-2xl flex items-center justify-center text-white shadow-lg">
               <FileText className="w-6 h-6" />
             </div>
             {t('title')}
@@ -118,7 +118,7 @@ export default function CoordinateurRapportsPage() {
           onClick={() => setFilterStatut('all')}
           className={`p-4 rounded-[2rem] border-2 transition-all shadow-sm ${
             filterStatut === 'all'
-              ? 'border-purple-500 bg-purple-50'
+              ? 'border-gov-blue/30 bg-gov-blue/5'
               : 'border-transparent bg-white hover:border-gray-200'
           }`}
         >
@@ -130,11 +130,11 @@ export default function CoordinateurRapportsPage() {
           onClick={() => setFilterStatut('pending')}
           className={`p-4 rounded-[2rem] border-2 transition-all shadow-sm ${
             filterStatut === 'pending'
-              ? 'border-amber-500 bg-amber-50'
+              ? 'border-gov-gold/30 bg-gov-gold/5'
               : 'border-transparent bg-white hover:border-gray-200'
           }`}
         >
-          <p className="text-3xl font-black text-amber-600">{pendingCount}</p>
+          <p className="text-3xl font-black text-gov-gold">{pendingCount}</p>
           <p className="text-sm text-gray-500 font-bold">{t('stats.pending')}</p>
         </button>
 
@@ -142,11 +142,11 @@ export default function CoordinateurRapportsPage() {
           onClick={() => setFilterStatut('completed')}
           className={`p-4 rounded-[2rem] border-2 transition-all shadow-sm ${
             filterStatut === 'completed'
-              ? 'border-emerald-500 bg-emerald-50'
+              ? 'border-gov-green/30 bg-gov-green/5'
               : 'border-transparent bg-white hover:border-gray-200'
           }`}
         >
-          <p className="text-3xl font-black text-emerald-600">{completedCount}</p>
+          <p className="text-3xl font-black text-gov-green-dark">{completedCount}</p>
           <p className="text-sm text-gray-500 font-bold">{t('stats.completed')}</p>
         </button>
       </div>
@@ -160,7 +160,7 @@ export default function CoordinateurRapportsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('search_placeholder')}
-            className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all font-medium"
+            className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue/30 outline-none transition-all font-medium"
           />
         </div>
       </div>
@@ -169,7 +169,7 @@ export default function CoordinateurRapportsPage() {
       <div className="space-y-4">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-10 h-10 text-purple-500 animate-spin" />
+            <Loader2 className="w-10 h-10 text-gov-blue animate-spin" />
           </div>
         ) : filteredRapports.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-[2rem] border border-gray-100">
@@ -190,8 +190,8 @@ export default function CoordinateurRapportsPage() {
             const isPending = rapport.statut === 'TERMINEE';
             // Config inline for now
             const config = isPending 
-                ? { bg: 'bg-amber-100', text: 'text-amber-700', icon: Clock, label: t('status.pending') }
-                : { bg: 'bg-emerald-100', text: 'text-emerald-700', icon: CheckCircle, label: t('status.completed') };
+                ? { bg: 'bg-gov-gold/10', text: 'text-gov-gold', icon: Clock, label: t('status.pending') }
+                : { bg: 'bg-gov-green/10', text: 'text-gov-green-dark', icon: CheckCircle, label: t('status.completed') };
             
             const StatusIcon = config.icon;
 
@@ -203,7 +203,7 @@ export default function CoordinateurRapportsPage() {
                 transition={{ delay: index * 0.05 }}
                 className={`bg-white rounded-[2rem] border ${
                   isPending 
-                    ? 'border-amber-100' 
+                    ? 'border-gov-gold/30' 
                     : 'border-gray-100'
                 } overflow-hidden hover:shadow-xl transition-all group`}
               >
@@ -211,8 +211,8 @@ export default function CoordinateurRapportsPage() {
                   <div className="flex items-start gap-4">
                     <div className={`flex-shrink-0 w-16 h-16 rounded-2xl ${
                       isPending 
-                        ? 'bg-gradient-to-br from-amber-100 to-amber-200 text-amber-600' 
-                        : 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-600'
+                        ? 'bg-gradient-to-br from-amber-100 to-amber-200 text-gov-gold' 
+                        : 'bg-gradient-to-br from-gov-green to-gov-green-dark text-gov-green-dark'
                     } flex items-center justify-center shadow-md`}>
                       <FileText className="w-7 h-7" />
                     </div>
@@ -246,7 +246,7 @@ export default function CoordinateurRapportsPage() {
                         {isPending ? (
                           <Link
                             href={`/coordinateur/calendrier?activite=${rapport.id}&action=rapport`}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gov-gold to-gov-gold-dark text-white rounded-xl font-bold hover:shadow-lg transition-all"
                           >
                             <Edit className="w-4 h-4" />
                             {t('actions.fill')}
@@ -254,7 +254,7 @@ export default function CoordinateurRapportsPage() {
                         ) : (
                           <Link
                             href={`/coordinateur/calendrier?activite=${rapport.id}`}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-emerald-50 hover:text-emerald-700 transition-all"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-gov-green/5 hover:text-gov-green-dark transition-all"
                           >
                             <Eye className="w-4 h-4" />
                             {t('actions.view')}

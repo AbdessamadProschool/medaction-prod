@@ -212,7 +212,7 @@ export default function AdminProfilePage() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className={`mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2 text-emerald-700 ${isRTL ? 'flex-row-reverse' : ''}`}
+              className={`mb-4 p-4 bg-gov-green/5 border border-gov-green/30 rounded-lg flex items-center gap-2 text-gov-green-dark ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <Check size={18} />
               {success}
@@ -246,7 +246,7 @@ export default function AdminProfilePage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               {/* En-tête */}
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-8">
+              <div className="bg-gradient-to-r from-gov-blue to-gov-blue-dark px-6 py-8">
                 <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className="relative">
                     <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white text-2xl font-bold">
@@ -261,7 +261,7 @@ export default function AdminProfilePage() {
                     <div className={`flex items-center gap-2 mt-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                         profile?.role === 'SUPER_ADMIN' 
-                          ? 'bg-purple-400/30 text-purple-100' 
+                          ? 'bg-gov-blue/10 text-gov-blue' 
                           : 'bg-blue-400/30 text-blue-100'
                       }`}>
                         {profile?.role === 'SUPER_ADMIN' ? t('role_label.super_admin') : t('role_label.admin')}
@@ -397,7 +397,7 @@ export default function AdminProfilePage() {
                 <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     {twoFactorStatus.enabled ? (
-                      <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                      <ShieldCheck className="w-5 h-5 text-gov-green" />
                     ) : (
                       <Key className="w-5 h-5 text-gray-400" />
                     )}
@@ -410,7 +410,7 @@ export default function AdminProfilePage() {
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     twoFactorStatus.enabled 
-                      ? 'bg-emerald-100 text-emerald-700' 
+                      ? 'bg-gov-green/10 text-gov-green-dark' 
                       : 'bg-gray-100 text-gray-600'
                   }`}>
                     {twoFactorStatus.enabled ? t('2fa.active') : t('2fa.setup')}

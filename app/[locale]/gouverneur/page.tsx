@@ -803,7 +803,7 @@ export default function GouverneurDashboard() {
                   >
                     <Bell size={20} />
                      {alerts.length > 0 && (
-                       <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-white text-[10px] font-black text-white flex items-center justify-center animate-bounce shadow-md">
+                       <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-white text-[10px] font-black text-white flex items-center justify-center animate-pulse shadow-md">
                           {alerts.length}
                        </span>
                      )}
@@ -1022,7 +1022,7 @@ export default function GouverneurDashboard() {
 
                          <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
                             <div className="md:w-1/3 space-y-4">
-                               <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-100">
+                               <div className="inline-flex items-center gap-2 px-3 py-1 bg-gov-blue/10 text-gov-blue rounded-full text-[10px] font-black uppercase tracking-widest border border-gov-blue/20">
                                   <Wand2 size={12} /> {t('reports.ai_synthesis.digital_analysis')}
                                </div>
                                <h3 className="text-2xl font-black text-slate-900 leading-tight">
@@ -1033,7 +1033,7 @@ export default function GouverneurDashboard() {
                                 </p>
                                <Link 
                                   href={`/gouverneur/bilans`}
-                                  className="inline-flex items-center gap-2 text-xs font-black text-purple-600 hover:text-purple-700 hover:underline mt-2"
+                                  className="inline-flex items-center gap-2 text-xs font-black text-gov-blue hover:text-gov-blue-dark hover:underline mt-2"
                                >
                                   {t('reports.view_all')} <ArrowUpRight size={14} />
                                </Link>
@@ -1083,7 +1083,7 @@ export default function GouverneurDashboard() {
                                
                             </div>
                          </div>
-                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-500/5 to-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-0" />
+                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-gov-blue/5 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-0" />
                       
                      </div>
 
@@ -1146,7 +1146,7 @@ export default function GouverneurDashboard() {
 
                        {/* RIGHT SIDEBAR - QUICK STATS & NEWS */}
                        <div className="lg:col-span-4 space-y-6">
-                          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden border border-slate-700/50 group">
+                          <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden border border-slate-700/50 group">
                               {/* Background Pattern */}
                               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
                               
@@ -1277,7 +1277,7 @@ export default function GouverneurDashboard() {
                                initial={{ opacity: 0, y: 20 }}
                                animate={{ opacity: 1, y: 0 }}
                                transition={{ delay: i * 0.1 }}
-                               className={`relative p-6 rounded-3xl ${kpi.urgent ? 'bg-gradient-to-br from-red-500 to-red-600 text-white' : 'bg-white border border-slate-100'} shadow-sm overflow-hidden group hover:shadow-lg transition-all`}
+                               className={`relative p-6 rounded-3xl ${kpi.urgent ? 'bg-gov-red text-white' : 'bg-white border border-slate-100'} shadow-sm overflow-hidden group hover:shadow-lg transition-all`}
                             >
                                <div className="flex items-start justify-between">
                                   <div>
@@ -1303,7 +1303,7 @@ export default function GouverneurDashboard() {
                          <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-gradient-to-r from-red-500 via-red-600 to-orange-500 rounded-[2rem] p-6 text-white shadow-xl"
+                            className="bg-gov-red rounded-[2rem] p-6 text-white shadow-xl"
                          >
                             <div className="flex items-center justify-between flex-wrap gap-4">
                                <div className="flex items-center gap-4">
@@ -1509,8 +1509,8 @@ export default function GouverneurDashboard() {
 
 
                           {/* ARCHIVE AND BILANS TRIGGER - SIMPLIFIED AS PER REQUEST */}
-                          <Link href="/gouverneur/bilans" className="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col border border-indigo-500/30 group">
-                              <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                          <Link href="/gouverneur/bilans" className="bg-slate-900 hover:bg-slate-800 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col border border-white/10 group transition-colors">
+                              <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                               <div className="relative z-10 flex items-center justify-between">
                                  <div className="flex items-center gap-5">
                                     <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
@@ -1518,7 +1518,7 @@ export default function GouverneurDashboard() {
                                     </div>
                                     <div>
                                        <h3 className="text-xl font-black tracking-tight">{t('reports.view_all')}</h3>
-                                       <p className="text-indigo-200 text-xs font-medium mt-1 opacity-80">{locale === 'ar' ? 'الوصول إلى سجل التقارير والمراجعات الميدانية' : 'Accéder à l\'historique des rapports et audits de terrain'}</p>
+                                       <p className="text-white/70 text-xs font-medium mt-1 opacity-80">{locale === 'ar' ? 'الوصول إلى سجل التقارير والمراجعات الميدانية' : 'Accéder à l\'historique des rapports et audits de terrain'}</p>
                                     </div>
                                  </div>
                                  <div className="w-12 h-12 bg-white text-slate-900 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">

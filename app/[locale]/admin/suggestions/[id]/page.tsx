@@ -34,7 +34,7 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
     EN_EXAMEN: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Eye, label: t('suggestions.status.EN_EXAMEN') },
     APPROUVEE: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('suggestions.status.APPROUVEE') },
     REJETEE: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t('suggestions.status.REJETEE') },
-    IMPLEMENTEE: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Sparkles, label: t('suggestions.status.IMPLEMENTEE') },
+    IMPLEMENTEE: { bg: 'bg-gov-blue/10', text: 'text-gov-blue-dark', icon: Sparkles, label: t('suggestions.status.IMPLEMENTEE') },
   };
 
   const CATEGORIES: Record<string, { label: string; emoji: string }> = {
@@ -127,7 +127,7 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-green-dark animate-spin" />
       </div>
     );
   }
@@ -187,7 +187,7 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
            {/* Section Meta User */}
            <div className="flex flex-col md:flex-row gap-6">
              <div className="flex-1 bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold text-xl">
+                <div className="w-12 h-12 bg-gov-green/10 rounded-full flex items-center justify-center text-gov-green-dark font-bold text-xl">
                   {suggestion.user.prenom[0]}{suggestion.user.nom[0]}
                 </div>
                 <div>
@@ -223,7 +223,7 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
                value={reponseAdmin}
                onChange={(e) => setReponseAdmin(e.target.value)}
                placeholder={t('suggestions.admin_response_placeholder')}
-               className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none resize-y"
+               className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gov-green/20 outline-none resize-y"
              />
            </div>
 

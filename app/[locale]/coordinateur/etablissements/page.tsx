@@ -42,11 +42,11 @@ const SECTEURS_LABELS: Record<string, string> = {
 };
 
 const SECTEURS_COLORS: Record<string, string> = {
-  EDUCATION: 'from-blue-500 to-indigo-600',
+  EDUCATION: 'from-gov-blue to-gov-blue-dark',
   SANTE: 'from-rose-500 to-red-600',
   SPORT: 'from-green-500 to-emerald-600',
-  SOCIAL: 'from-purple-500 to-violet-600',
-  CULTUREL: 'from-amber-500 to-orange-600',
+  SOCIAL: 'from-gov-blue to-gov-blue-dark',
+  CULTUREL: 'from-gov-gold to-gov-gold-dark',
   AUTRE: 'from-gray-500 to-gray-700',
 };
 
@@ -96,7 +96,7 @@ export default function CoordinateurEtablissementsPage() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-2xl flex items-center justify-center text-white shadow-lg">
               <Building2 className="w-6 h-6" />
             </div>
             {t('title')}
@@ -123,7 +123,7 @@ export default function CoordinateurEtablissementsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('search_placeholder')}
-            className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all font-medium"
+            className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green/30 outline-none transition-all font-medium"
           />
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function CoordinateurEtablissementsPage() {
                 <div className="space-y-3 text-sm text-gray-600 mb-6 font-medium">
                   {etablissement.commune && (
                     <div className="flex items-center gap-2">
-                      <MapPin size={16} className="text-emerald-500" />
+                      <MapPin size={16} className="text-gov-green" />
                       <span>{etablissement.commune.nom}</span>
                     </div>
                   )}
@@ -202,9 +202,9 @@ export default function CoordinateurEtablissementsPage() {
                       {etablissement._count?.evenements || 0}
                     </p>
                   </div>
-                  <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-100">
-                    <div className="flex items-center gap-1.5 text-xs text-amber-700 mb-1 font-bold">
-                      <Star size={14} className="text-amber-600" />
+                  <div className="p-3 bg-gov-gold/5/70 rounded-xl border border-gov-gold/30">
+                    <div className="flex items-center gap-1.5 text-xs text-gov-gold mb-1 font-bold">
+                      <Star size={14} className="text-gov-gold" />
                       {t('stats.evaluations')}
                     </div>
                     <p className="font-black text-xl text-gray-900">
@@ -217,7 +217,7 @@ export default function CoordinateurEtablissementsPage() {
                 <div className="space-y-2">
                   <Link
                     href={`/etablissements/${etablissement.id}`}
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl transition-all font-bold shadow-md hover:shadow-lg"
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-gov-green to-gov-green-dark hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl transition-all font-bold shadow-md hover:shadow-lg"
                   >
                     <Eye size={18} />
                     <span>{t('view_details')}</span>

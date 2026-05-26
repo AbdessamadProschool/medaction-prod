@@ -25,8 +25,8 @@ interface Reclamation {
 
 const tabs = [
   { id: 'all', label: 'all', icon: <ClipboardList className="w-4 h-4" /> },
-  { id: 'en_attente', label: 'pending', icon: <Clock className="w-4 h-4" />, color: 'text-amber-600' },
-  { id: 'ACCEPTEE', label: 'accepted', icon: <CheckCircle2 className="w-4 h-4" />, color: 'text-emerald-600' },
+  { id: 'en_attente', label: 'pending', icon: <Clock className="w-4 h-4" />, color: 'text-gov-gold' },
+  { id: 'ACCEPTEE', label: 'accepted', icon: <CheckCircle2 className="w-4 h-4" />, color: 'text-gov-green-dark' },
 ];
 
 export default function MesReclamationsPage() {
@@ -83,7 +83,7 @@ export default function MesReclamationsPage() {
           <div className="text-center p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('access_denied')}</h2>
             <p className="text-gray-500 mb-6">{t('permission_text')}</p>
-            <Link href="/" className="text-emerald-600 hover:underline">
+            <Link href="/" className="text-gov-green-dark hover:underline">
               {t('back_home')}
             </Link>
           </div>

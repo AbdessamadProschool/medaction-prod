@@ -162,7 +162,7 @@ export default function NouvelleActualitePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-5 py-3 border-b border-gray-100">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <ImageIcon className="w-5 h-5 text-emerald-600" />
+                <ImageIcon className="w-5 h-5 text-gov-green-dark" />
                 Image de couverture
               </h2>
             </div>
@@ -188,9 +188,9 @@ export default function NouvelleActualitePage() {
                   </div>
                 </div>
               ) : (
-                <label className="block border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-gray-50/50 hover:bg-gray-50 hover:border-orange-300 transition-all cursor-pointer group">
+                <label className="block border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-gray-50/50 hover:bg-gray-50 hover:border-gov-gold/30 transition-all cursor-pointer group">
                   <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-amber-100 rounded-xl flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                    <ImageIcon className="w-5 h-5 text-orange-600" />
+                    <ImageIcon className="w-5 h-5 text-gov-gold" />
                   </div>
                   <p className="text-gray-700 font-medium mb-1">Cliquez pour ajouter une image</p>
                   <p className="text-gray-400 text-sm">PNG, JPG jusqu'à 5MB</p>
@@ -209,7 +209,7 @@ export default function NouvelleActualitePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-5 py-3 border-b border-gray-100 bg-gradient-to-r from-orange-50/50 to-transparent">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                <PenTool className="w-5 h-5 text-orange-600" />
+                <PenTool className="w-5 h-5 text-gov-gold" />
                 Rédaction
               </h2>
             </div>
@@ -224,7 +224,7 @@ export default function NouvelleActualitePage() {
                   {...register('titre')}
                   type="text"
                   placeholder="Ex: Rénovation de la façade terminée"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-base font-medium placeholder:text-gray-300"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none transition-all text-base font-medium placeholder:text-gray-300"
                 />
                 {errors.titre && <p className="text-red-500 text-sm mt-2">{errors.titre.message}</p>}
               </div>
@@ -238,7 +238,7 @@ export default function NouvelleActualitePage() {
                   {...register('description')}
                   rows={2}
                   placeholder="Un résumé rapide pour l'aperçu..."
-                  className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all placeholder:text-gray-300"
+                  className="w-full px-5 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none transition-all placeholder:text-gray-300"
                 />
               </div>
 
@@ -251,7 +251,7 @@ export default function NouvelleActualitePage() {
                   {...register('contenu')}
                   rows={6}
                   placeholder="Rédigez votre article ici..."
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all placeholder:text-gray-300 leading-relaxed"
+                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none transition-all placeholder:text-gray-300 leading-relaxed"
                 />
                 {errors.contenu && <p className="text-red-500 text-sm mt-2">{errors.contenu.message}</p>}
               </div>
@@ -268,7 +268,7 @@ export default function NouvelleActualitePage() {
               
               <select
                 {...register('etablissementId')}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none bg-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none bg-white text-sm"
               >
                 <option value="">Sélectionner un établissement...</option>
                 {etablissements.map(e => (
@@ -277,19 +277,19 @@ export default function NouvelleActualitePage() {
               </select>
               {errors.etablissementId && <p className="text-red-500 text-sm mt-2">{errors.etablissementId.message}</p>}
               {etablissements.length === 0 && (
-                <p className="text-orange-500 text-sm mt-2">Aucun établissement trouvé.</p>
+                <p className="text-gov-gold text-sm mt-2">Aucun établissement trouvé.</p>
               )}
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <Tag className="w-4 h-4 text-purple-500" />
+                <Tag className="w-4 h-4 text-gov-blue" />
                 Catégorie
               </h3>
               
               <select
                 {...register('categorie')}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none bg-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none bg-white text-sm"
               >
                 <option value="">Général</option>
                 <option value="TRAVAUX">Travaux & Aménagements</option>

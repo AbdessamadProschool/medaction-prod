@@ -53,7 +53,7 @@
     /* Couleurs de base (Teintées vers le Bleu Administratif) */
     --background: 213 10% 98%;
     --foreground: 213 25% 12%;
-    --card: 213 10% 100%;
+    --card: 213 10% 99%;
     --card-foreground: 213 25% 12%;
     --popover: 213 10% 100%;
     --popover-foreground: 213 25% 12%;
@@ -345,20 +345,20 @@
   }
 
   .gov-sidebar-nav-item.active {
-    @apply text-white bg-white/15 border-l-4 border-[hsl(var(--gov-gold))];
+    @apply text-white bg-white/15 ring-1 ring-[hsl(var(--gov-gold)/0.45)];
   }
 
   /* === STATISTIQUES === */
   .gov-stat-card {
-    @apply bg-card rounded-2xl p-6 shadow-sm border border-border/60;
+    @apply bg-card rounded-lg p-5 sm:p-6 shadow-sm border border-border/60;
     @apply relative overflow-hidden;
-    @apply transition-all duration-300;
+    @apply transition-shadow duration-200 hover:shadow-md;
   }
 
   .gov-stat-card::before {
     content: '';
-    @apply absolute top-0 left-0 w-1 h-full;
-    @apply bg-gradient-to-b from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-gold))];
+    @apply absolute inset-x-0 top-0 h-1;
+    @apply bg-[hsl(var(--gov-blue))];
   }
 
   .gov-stat-value {
@@ -402,23 +402,23 @@
 
   /* === ALERTES GOUVERNEMENTALES === */
   .gov-alert {
-    @apply flex items-start gap-3 p-4 rounded-lg border-l-4;
+    @apply flex items-start gap-3 p-4 rounded-lg border;
   }
 
   .gov-alert-info {
-    @apply bg-[hsl(var(--info)/0.1)] border-info text-info dark:text-info-foreground dark:bg-info/20;
+    @apply bg-[hsl(var(--info)/0.1)] border-[hsl(var(--info)/0.35)] text-info dark:text-info-foreground dark:bg-info/20;
   }
 
   .gov-alert-success {
-    @apply bg-[hsl(var(--success)/0.1)] border-success text-success dark:text-success-foreground dark:bg-success/20;
+    @apply bg-[hsl(var(--success)/0.1)] border-[hsl(var(--success)/0.35)] text-success dark:text-success-foreground dark:bg-success/20;
   }
 
   .gov-alert-warning {
-    @apply bg-[hsl(var(--warning)/0.1)] border-warning text-[hsl(var(--gov-gold-dark))] dark:text-warning-foreground dark:bg-warning/20;
+    @apply bg-[hsl(var(--warning)/0.1)] border-[hsl(var(--warning)/0.35)] text-[hsl(var(--gov-gold-dark))] dark:text-warning-foreground dark:bg-warning/20;
   }
 
   .gov-alert-danger {
-    @apply bg-[hsl(var(--destructive)/0.1)] border-destructive text-destructive dark:text-destructive-foreground dark:bg-destructive/20;
+    @apply bg-[hsl(var(--destructive)/0.1)] border-[hsl(var(--destructive)/0.35)] text-destructive dark:text-destructive-foreground dark:bg-destructive/20;
   }
 
   /* === LOGO ET EMBLÈME === */
@@ -560,6 +560,17 @@
 :focus-visible {
   outline: 2px solid hsl(var(--gov-blue));
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* === SÉLECTION TEXTE === */

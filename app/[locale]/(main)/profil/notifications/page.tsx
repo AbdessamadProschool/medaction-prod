@@ -305,8 +305,8 @@ export default function NotificationsPage() {
           className="gov-card mb-6"
         >
           <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-lg bg-gov-blue/10 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-gov-blue-dark" />
             </div>
             <div>
               <h2 className="font-semibold text-gray-900">Notifications push</h2>
@@ -335,7 +335,7 @@ export default function NotificationsPage() {
                       onChange={(e) => handleToggle('push', cat.id, e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gov-blue/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gov-blue"></div>
                   </label>
                 </div>
               );

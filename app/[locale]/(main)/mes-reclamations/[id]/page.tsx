@@ -74,7 +74,7 @@ export default function MaReclamationDetailsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+        <Loader2 className="w-10 h-10 text-gov-green animate-spin" />
       </div>
     );
   }
@@ -83,9 +83,9 @@ export default function MaReclamationDetailsPage() {
 
   const getStatutConfig = (statut: string | null) => {
     switch (statut) {
-      case 'ACCEPTEE': return { label: 'Traitée / Acceptée', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle };
+      case 'ACCEPTEE': return { label: 'Traitée / Acceptée', color: 'text-gov-green-dark', bg: 'bg-gov-green/5', icon: CheckCircle };
       case 'REJETEE': return { label: 'Rejetée', color: 'text-red-600', bg: 'bg-red-50', icon: XCircle };
-      default: return { label: 'En attente', color: 'text-amber-600', bg: 'bg-amber-50', icon: Clock };
+      default: return { label: 'En attente', color: 'text-gov-gold', bg: 'bg-gov-gold/5', icon: Clock };
     }
   };
 
@@ -113,7 +113,7 @@ export default function MaReclamationDetailsPage() {
       {/* Return button */}
       <Link 
         href="/mes-reclamations" 
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-semibold"
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-gov-green-dark transition-colors font-semibold"
       >
         <ChevronLeft size={20} />
         Retour à mes réclamations
@@ -134,7 +134,7 @@ export default function MaReclamationDetailsPage() {
                 width: "100%",
                 height: "100%"
               }}
-              className="bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 h-full w-full"
+              className="bg-gradient-to-r bg-gov-green h-full w-full"
               style={{
                 transform: typeof window !== 'undefined' && window.innerWidth >= 768 
                   ? `scaleX(${(currentStepIndex - 1) / 3})` 
@@ -158,9 +158,9 @@ export default function MaReclamationDetailsPage() {
                   whileHover={{ scale: 1.08 }}
                   className={`w-11 h-11 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${
                     isCompleted
-                      ? 'bg-emerald-500 border-white dark:border-gray-800 text-white shadow-lg ring-4 ring-emerald-100 dark:ring-emerald-950'
+                      ? 'bg-gov-green border-white dark:border-gray-800 text-white shadow-lg ring-4 ring-gov-green/20 dark:ring-gov-green/20'
                       : isActive
-                      ? 'bg-white dark:bg-gray-800 border-emerald-500 text-emerald-500 shadow-xl ring-4 ring-emerald-500/20 animate-pulse'
+                      ? 'bg-white dark:bg-gray-800 border-gov-green/30 text-gov-green shadow-xl ring-4 ring-gov-green/20/20 animate-pulse'
                       : 'bg-gray-100 dark:bg-gray-700 border-white dark:border-gray-800 text-gray-400 dark:text-gray-500'
                   }`}
                 >
@@ -193,7 +193,7 @@ export default function MaReclamationDetailsPage() {
             className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-700"
           >
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-              <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="text-sm font-bold text-gov-green-dark bg-gov-green/5 px-3 py-1 rounded-full uppercase tracking-wider">
                 Réf: {reclamation.code}
               </span>
               <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function MaReclamationDetailsPage() {
               </div>
             </div>
 
-            <div className="prose prose-emerald max-w-none mb-10">
+            <div className="prose prose-gov-green max-w-none mb-10">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">Description</h3>
               <p className="text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
                 {reclamation.description}
@@ -264,17 +264,17 @@ export default function MaReclamationDetailsPage() {
               className={`p-8 rounded-3xl border shadow-lg ${
                 reclamation.statut === 'REJETEE' 
                 ? 'bg-red-50 border-red-100' 
-                : 'bg-emerald-50 border-emerald-100'
+                : 'bg-gov-green/5 border-gov-green/30'
               }`}
             >
               <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${
-                reclamation.statut === 'REJETEE' ? 'text-red-700' : 'text-emerald-700'
+                reclamation.statut === 'REJETEE' ? 'text-red-700' : 'text-gov-green-dark'
               }`}>
                 {reclamation.statut === 'REJETEE' ? <XCircle size={20} /> : <CheckCircle size={20} />}
                 {reclamation.statut === 'REJETEE' ? 'Motif du rejet' : 'Traitement de la réclamation'}
               </h3>
               <p className={`whitespace-pre-line ${
-                reclamation.statut === 'REJETEE' ? 'text-red-600' : 'text-emerald-600'
+                reclamation.statut === 'REJETEE' ? 'text-red-600' : 'text-gov-green-dark'
               }`}>
                 {reclamation.statut === 'REJETEE' ? reclamation.motifRejet : reclamation.solutionApportee || "Votre réclamation a été acceptée et est en cours de traitement par les services compétents."}
               </p>
@@ -290,7 +290,7 @@ export default function MaReclamationDetailsPage() {
             className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700"
           >
             <h3 className="font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <Clock className="text-emerald-500" size={20} />
+              <Clock className="text-gov-green" size={20} />
               Historique de traitement
             </h3>
             
@@ -300,22 +300,22 @@ export default function MaReclamationDetailsPage() {
                   const isExpanded = expandedStep === step.id;
                   
                   let StepIcon = Clock;
-                  let stepColor = "bg-amber-500";
+                  let stepColor = "bg-gov-gold/10";
                   if (step.action === 'CREATION') {
                     StepIcon = FileText;
                     stepColor = "bg-blue-500";
                   } else if (step.action === 'AFFECTATION') {
                     StepIcon = User;
-                    stepColor = "bg-indigo-500";
+                    stepColor = "bg-gov-blue/10";
                   } else if (step.action === 'ACCEPTATION') {
                     StepIcon = CheckCircle;
-                    stepColor = "bg-emerald-500";
+                    stepColor = "bg-gov-green";
                   } else if (step.action === 'REJET') {
                     StepIcon = XCircle;
                     stepColor = "bg-red-500";
                   } else if (step.action === 'RESOLUTION') {
                     StepIcon = CheckCircle;
-                    stepColor = "bg-emerald-500";
+                    stepColor = "bg-gov-green";
                   }
 
                   return (
@@ -327,13 +327,13 @@ export default function MaReclamationDetailsPage() {
                     >
                       {/* Ring and Connector */}
                       <div className={`absolute left-2.5 top-3 w-5 h-5 rounded-full border-4 border-white dark:border-gray-800 z-10 transition-transform duration-300 flex items-center justify-center ${stepColor} ${
-                        idx === 0 ? 'ring-4 ring-emerald-100 dark:ring-emerald-950 scale-110' : 'group-hover:scale-110'
+                        idx === 0 ? 'ring-4 ring-gov-green/20 dark:ring-gov-green/20 scale-110' : 'group-hover:scale-110'
                       }`} />
                       
                       {/* Card container */}
                       <div className={`bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-850 p-4 rounded-2xl border transition-all duration-300 ${
                         isExpanded 
-                          ? 'border-emerald-500/30 bg-emerald-50/5 dark:bg-emerald-950/5 ring-1 ring-emerald-500/10 shadow-sm' 
+                          ? 'border-gov-green/30/30 bg-gov-green/5/5 dark:bg-gov-green/10 ring-1 ring-gov-green/20/10 shadow-sm' 
                           : 'border-transparent'
                       }`}>
                         <div className="flex items-center justify-between gap-2">
@@ -368,14 +368,14 @@ export default function MaReclamationDetailsPage() {
                               className="overflow-hidden mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-400 space-y-2"
                             >
                               {step.action === 'CREATION' && (
-                                <p>Votre réclamation a été enregistrée avec succès. Elle est stockée de manière sécurisée sous la référence <span className="font-bold text-emerald-600">{reclamation.code}</span>.</p>
+                                <p>Votre réclamation a été enregistrée avec succès. Elle est stockée de manière sécurisée sous la référence <span className="font-bold text-gov-green-dark">{reclamation.code}</span>.</p>
                               )}
                               {step.action === 'AFFECTATION' && (
                                 <p>Le dossier a été transmis à la commune et au service compétent : <span className="font-bold text-gray-800 dark:text-white">{reclamation.affectationReclamation || 'Service technique local'}</span> pour instruction.</p>
                               )}
                               {step.action === 'RESOLUTION' && (
                                 <div>
-                                  <p className="font-semibold text-emerald-600">Solution apportée :</p>
+                                  <p className="font-semibold text-gov-green-dark">Solution apportée :</p>
                                   <p className="mt-1 italic">"{reclamation.solutionApportee || 'La situation a été résolue par nos agents de terrain.'}"</p>
                                 </div>
                               )}
@@ -399,7 +399,7 @@ export default function MaReclamationDetailsPage() {
                 })
               ) : (
                 <div className="relative pl-12">
-                  <div className="absolute left-2.5 top-3 w-5 h-5 rounded-full border-4 border-white bg-emerald-500 ring-4 ring-emerald-100 z-10" />
+                  <div className="absolute left-2.5 top-3 w-5 h-5 rounded-full border-4 border-white bg-gov-green ring-4 ring-gov-green/20 z-10" />
                   <div className="bg-gray-50/50 dark:bg-gray-800/50 p-4 rounded-2xl border border-transparent">
                     <p className="text-sm font-bold text-gray-800">Soumission de la réclamation</p>
                     <p className="text-xs text-gray-500 mt-1">{new Date(reclamation.createdAt).toLocaleString()}</p>

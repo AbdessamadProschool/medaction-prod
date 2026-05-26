@@ -284,7 +284,7 @@ export default function AutoriteReclamationsPage() {
                               reclamation.joursDepuisAffectation > 7
                                 ? 'bg-red-50 text-gov-red border border-red-100'
                                 : reclamation.joursDepuisAffectation > 3
-                                ? 'bg-orange-50 text-gov-gold-dark border border-orange-100'
+                                ? 'bg-gov-gold/5 text-gov-gold-dark border border-gov-gold/30'
                                 : 'bg-gray-100 text-gray-600 border border-gray-200'
                             }`}>
                               {reclamation.categorie}
@@ -341,7 +341,7 @@ export default function AutoriteReclamationsPage() {
                               {t('table.resolved_badge')}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-gov-gold-dark border border-orange-100">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gov-gold/5 text-gov-gold-dark border border-gov-gold/30">
                               <Clock size={14} />
                               {t('table.pending_badge')}
                             </span>

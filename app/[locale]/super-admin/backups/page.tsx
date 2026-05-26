@@ -211,13 +211,13 @@ export default function SuperAdminBackupsPage() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center gap-3 text-emerald-700 dark:text-emerald-400 shadow-sm"
+                className="p-4 bg-gov-green/10 dark:bg-gov-green/20 border border-gov-green/20 dark:border-gov-green/30 rounded-xl flex items-center gap-3 text-gov-green-dark dark:text-gov-green-light shadow-sm"
             >
-                <div className="p-1 bg-emerald-100 dark:bg-emerald-800 rounded-full">
+                <div className="p-1 bg-gov-green/20 dark:bg-gov-green/30 rounded-full">
                     <Check size={16} />
                 </div>
                 {success}
-                <button onClick={() => setSuccess(null)} className="ml-auto hover:bg-emerald-100 dark:hover:bg-emerald-800 p-1.5 rounded-lg transition-colors">
+                <button onClick={() => setSuccess(null)} className="ml-auto hover:bg-gov-green/20 dark:hover:bg-gov-green/30 p-1.5 rounded-lg transition-colors">
                 <X size={16} />
                 </button>
             </motion.div>

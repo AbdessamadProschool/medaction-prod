@@ -15,6 +15,7 @@ import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { safeResolvePath } from '@/lib/utils/safe-path';
 
 // MIME type mapping (OWASP: Always set correct Content-Type)
 const MIME_TYPES: Record<string, string> = {
@@ -192,12 +193,11 @@ export async function GET(
     // 4. RESOLVE FILE PATH
     // ═══════════════════════════════════════════════════════════════
     const storagePath = getStoragePath();
-    const filePath = normalize(join(storagePath, requestedPath));
-
-    // Security: Ensure resolved path is still within storage directory
-    const normalizedStoragePath = normalize(storagePath);
-    if (!filePath.startsWith(normalizedStoragePath)) {
-      console.warn(`[FILE-SERVE] ⚠️ Path escape attempt: ${filePath} (Storage: ${normalizedStoragePath})`);
+    let filePath: string;
+    try {
+      filePath = safeResolvePath(storagePath, ...pathSegments);
+    } catch (err) {
+      console.warn(`[FILE-SERVE] ⚠️ Path escape attempt: ${err}`);
       return new NextResponse('Forbidden', { status: 403 });
     }
 
@@ -218,10 +218,14 @@ export async function GET(
         const folder = parts[0];
         const rest = parts.slice(1).join('/');
         const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
-        const alternativePath = normalize(join(storagePath, alternativeFolder, rest));
+        
+        let alternativePath = '';
+        try {
+          alternativePath = safeResolvePath(storagePath, alternativeFolder, rest);
+        } catch {}
         
         console.log(`[FILE-SERVE] 🔄 Trying fallback 1: ${alternativePath}`);
-        if (existsSync(alternativePath)) {
+        if (alternativePath && existsSync(alternativePath)) {
           finalPath = alternativePath;
           exists = true;
           console.log(`[FILE-SERVE] ✅ Found at fallback 1 path`);
@@ -231,9 +235,14 @@ export async function GET(
 
     // Fallback 2: Try public/uploads directly relative to CWD
     if (!exists) {
-      const publicPath = normalize(join(process.cwd(), 'public', 'uploads', requestedPath));
+      const publicUploadsRoot = join(process.cwd(), 'public', 'uploads');
+      let publicPath = '';
+      try {
+        publicPath = safeResolvePath(publicUploadsRoot, ...pathSegments);
+      } catch {}
+      
       console.log(`[FILE-SERVE] 🔄 Trying fallback 2: ${publicPath}`);
-      if (publicPath !== filePath && existsSync(publicPath)) {
+      if (publicPath && publicPath !== filePath && existsSync(publicPath)) {
         finalPath = publicPath;
         exists = true;
         console.log(`[FILE-SERVE] ✅ Found at fallback 2 path`);
@@ -243,9 +252,14 @@ export async function GET(
           const folder = parts[0];
           const rest = parts.slice(1).join('/');
           const alternativeFolder = folder.endsWith('s') ? folder.slice(0, -1) : folder + 's';
-          const altPublicPath = normalize(join(process.cwd(), 'public', 'uploads', alternativeFolder, rest));
+          
+          let altPublicPath = '';
+          try {
+            altPublicPath = safeResolvePath(publicUploadsRoot, alternativeFolder, rest);
+          } catch {}
+          
           console.log(`[FILE-SERVE] 🔄 Trying fallback 2 (alt): ${altPublicPath}`);
-          if (existsSync(altPublicPath)) {
+          if (altPublicPath && existsSync(altPublicPath)) {
             finalPath = altPublicPath;
             exists = true;
             console.log(`[FILE-SERVE] ✅ Found at fallback 2 (alt) path`);

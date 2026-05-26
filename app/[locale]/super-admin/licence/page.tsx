@@ -48,7 +48,7 @@ export default function LicensePage() {
     if (!license) return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700';
     if (!license.valid) return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
     if (license.daysRemaining && license.daysRemaining <= 30) return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800';
-    return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800';
+    return 'bg-gov-green/10 text-gov-green-dark border-gov-green/20 dark:bg-gov-green/20 dark:text-gov-green-light dark:border-gov-green/30';
   };
 
   const getStatusIcon = () => {

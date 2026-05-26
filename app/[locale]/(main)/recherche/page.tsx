@@ -62,9 +62,9 @@ const SECTEURS = [
 
 const getIconForType = (type: string) => {
   switch (type) {
-    case 'etablissement': return <Building2 size={20} className="text-indigo-600" />;
-    case 'evenement': return <Calendar size={20} className="text-purple-600" />;
-    case 'actualite': return <Newspaper size={20} className="text-orange-600" />;
+    case 'etablissement': return <Building2 size={20} className="text-gov-blue-dark" />;
+    case 'evenement': return <Calendar size={20} className="text-gov-blue-dark" />;
+    case 'actualite': return <Newspaper size={20} className="text-gov-gold" />;
     case 'commune': return <MapPin size={20} className="text-red-600" />;
     default: return <Search size={20} className="text-gray-400" />;
   }
@@ -539,7 +539,7 @@ function SearchPageContent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: groupIndex * 0.1 }}
-                  className="gov-card p-6 border-l-4 border-[hsl(213,80%,28%)]"
+                  className="gov-card p-6 border-l-2 border-[hsl(213,80%,28%)]"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -660,17 +660,17 @@ function SearchPageContent() {
                   <Building2 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                   <span className="text-sm font-bold text-blue-900 block">{t('tabs.etablissements')}</span>
                </button>
-               <button className="p-4 bg-purple-50/50 rounded-xl text-center border border-purple-100 hover:bg-purple-50 transition-colors cursor-pointer" onClick={() => handleTypeChange('evenements')}>
-                  <Calendar className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                  <span className="text-sm font-bold text-purple-900 block">{t('tabs.evenements')}</span>
+               <button className="p-4 bg-gov-blue/5/50 rounded-xl text-center border border-gov-blue/30 hover:bg-gov-blue/5 transition-colors cursor-pointer" onClick={() => handleTypeChange('evenements')}>
+                  <Calendar className="w-8 h-8 text-gov-blue-dark mx-auto mb-2" />
+                  <span className="text-sm font-bold text-gov-blue-dark block">{t('tabs.evenements')}</span>
                </button>
-               <button className="p-4 bg-orange-50/50 rounded-xl text-center border border-orange-100 hover:bg-orange-50 transition-colors cursor-pointer" onClick={() => handleTypeChange('actualites')}>
-                  <Newspaper className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-                  <span className="text-sm font-bold text-orange-900 block">{t('tabs.actualites')}</span>
+               <button className="p-4 bg-gov-gold/5/50 rounded-xl text-center border border-gov-gold/30 hover:bg-gov-gold/5 transition-colors cursor-pointer" onClick={() => handleTypeChange('actualites')}>
+                  <Newspaper className="w-8 h-8 text-gov-gold mx-auto mb-2" />
+                  <span className="text-sm font-bold text-gov-gold block">{t('tabs.actualites')}</span>
                </button>
-               <Link href="/carte" className="p-4 bg-indigo-50/50 rounded-xl text-center border border-indigo-100 hover:bg-indigo-50 transition-colors cursor-pointer block">
-                  <MapPin className="w-8 h-8 text-indigo-600 mx-auto mb-2" />
-                  <span className="text-sm font-bold text-indigo-900 block">{t('empty_state.interactive_map')}</span>
+               <Link href="/carte" className="p-4 bg-gov-blue/5/50 rounded-xl text-center border border-gov-blue/30 hover:bg-gov-blue/5 transition-colors cursor-pointer block">
+                  <MapPin className="w-8 h-8 text-gov-blue-dark mx-auto mb-2" />
+                  <span className="text-sm font-bold text-gov-blue-dark block">{t('empty_state.interactive_map')}</span>
                </Link>
             </div>
           </div>

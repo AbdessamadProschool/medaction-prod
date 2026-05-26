@@ -24,18 +24,25 @@ interface Secteur {
   id: string;
   labelKey: string;
   Icon: LucideIcon;
-  gradient: string;
+  tone: string;
   count: number;
 }
 
 const secteursData: Secteur[] = [
-  { id: 'EDUCATION', labelKey: 'education', Icon: GraduationCap, gradient: 'from-blue-500 to-indigo-600', count: 45 },
-  { id: 'SANTE', labelKey: 'sante', Icon: Hospital, gradient: 'from-rose-500 to-pink-600', count: 23 },
-  { id: 'SPORT', labelKey: 'sport', Icon: Trophy, gradient: 'from-amber-500 to-orange-600', count: 18 },
-  { id: 'SOCIAL', labelKey: 'social', Icon: HeartHandshake, gradient: 'from-purple-500 to-violet-600', count: 31 },
-  { id: 'CULTUREL', labelKey: 'culture', Icon: Drama, gradient: 'from-teal-500 to-cyan-600', count: 12 },
-  { id: 'JEUNESSE', labelKey: 'jeunesse', Icon: Users, gradient: 'from-emerald-500 to-green-600', count: 15 },
+  { id: 'EDUCATION', labelKey: 'education', Icon: GraduationCap, tone: 'blue', count: 45 },
+  { id: 'SANTE', labelKey: 'sante', Icon: Hospital, tone: 'red', count: 23 },
+  { id: 'SPORT', labelKey: 'sport', Icon: Trophy, tone: 'gold', count: 18 },
+  { id: 'SOCIAL', labelKey: 'social', Icon: HeartHandshake, tone: 'green', count: 31 },
+  { id: 'CULTUREL', labelKey: 'culture', Icon: Drama, tone: 'blue', count: 12 },
+  { id: 'JEUNESSE', labelKey: 'jeunesse', Icon: Users, tone: 'green', count: 15 },
 ];
+
+const secteurToneClasses: Record<string, string> = {
+  blue: 'bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] group-hover:bg-[hsl(var(--gov-blue))] group-hover:text-[hsl(var(--primary-foreground))]',
+  green: 'bg-[hsl(var(--gov-green)/0.1)] text-[hsl(var(--gov-green))] group-hover:bg-[hsl(var(--gov-green))] group-hover:text-[hsl(var(--success-foreground))]',
+  gold: 'bg-[hsl(var(--gov-gold)/0.14)] text-[hsl(var(--gov-gold-dark))] group-hover:bg-[hsl(var(--gov-gold))] group-hover:text-[hsl(var(--warning-foreground))]',
+  red: 'bg-[hsl(var(--gov-red)/0.1)] text-[hsl(var(--gov-red))] group-hover:bg-[hsl(var(--gov-red))] group-hover:text-[hsl(var(--destructive-foreground))]',
+};
 
 interface Commune {
   id: number;
@@ -134,31 +141,31 @@ export default function QuickFiltersSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -8, scale: 1.05 }}
+                  whileHover={{ y: -3 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedSecteur(isSelected ? null : secteur.id)}
                   aria-pressed={isSelected}
                   aria-label={t('sectors.filter_by', { sector: label })}
                   className={`
-                    relative p-6 rounded-2xl border transition-all duration-300 
+                    relative p-6 rounded-lg border transition-shadow duration-200 
                     flex flex-col items-center justify-center text-center group
                     ${isSelected
-                      ? 'border-gov-blue bg-gov-blue/5 shadow-xl ring-2 ring-gov-blue/20'
-                      : 'border-gray-100 bg-white hover:border-gov-gold/30 hover:shadow-xl hover:shadow-gov-gold/5'
+                      ? 'border-gov-blue bg-gov-blue/5 shadow-md ring-2 ring-gov-blue/20'
+                      : 'border-border bg-card hover:border-gov-gold/30 hover:shadow-md'
                     }
                   `}
                 >
                   {/* Icon */}
                   <div className={`
-                    w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300
-                    ${secteur.gradient} /* Apply color variables always */
+                    w-16 h-16 rounded-lg flex items-center justify-center mb-4 transition-colors duration-200
+                    ${secteurToneClasses[secteur.tone]}
                     ${isSelected 
-                      ? `bg-gradient-to-br shadow-lg scale-110` 
-                      : `bg-gray-50 group-hover:bg-gradient-to-br group-hover:scale-110 group-hover:shadow-md`
+                      ? `shadow-sm` 
+                      : ``
                     }
                   `}>
                     <secteur.Icon 
-                      className={`w-8 h-8 transition-colors duration-300 ${isSelected ? 'text-white' : 'text-gray-600 group-hover:text-white'}`} 
+                      className="w-8 h-8 transition-colors duration-200"
                       strokeWidth={1.5} 
                       aria-hidden="true"
                     />

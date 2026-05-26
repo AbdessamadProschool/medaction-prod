@@ -67,7 +67,7 @@ export default function AdminSidebar() {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg lg:hidden"
+        className="fixed top-4 left-4 z-50 p-2 bg-card text-foreground rounded-lg shadow-md border border-border lg:hidden"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -76,7 +76,7 @@ export default function AdminSidebar() {
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] z-40 lg:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -84,24 +84,24 @@ export default function AdminSidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed left-0 top-0 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
-          text-white shadow-2xl z-50 transition-all duration-300 flex flex-col
+          fixed left-0 top-0 h-screen bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)]
+          text-white shadow-lg z-50 transition-all duration-300 flex flex-col
           ${isCollapsed ? 'w-20' : 'w-72'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Header */}
-        <div className="p-4 border-b border-slate-700/50">
+        <div className="p-4 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg">
-              <Shield className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-lg bg-[hsl(var(--gov-gold))] flex items-center justify-center shadow-sm">
+              <Shield className="w-6 h-6 text-[hsl(var(--gov-blue-dark))]" />
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="font-bold text-lg bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                <h1 className="font-bold text-lg text-white">
                   {t('portal_name')}
                 </h1>
-                <p className="text-xs text-slate-400">{t('administration')}</p>
+                <p className="text-xs text-[hsl(var(--gov-gold-light))]">{t('administration')}</p>
               </div>
             )}
           </div>
@@ -120,15 +120,15 @@ export default function AdminSidebar() {
                 className={`
                   flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
                   ${active
-                    ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
+                    ? 'bg-white/15 text-white ring-1 ring-[hsl(var(--gov-gold)/0.45)]'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
                   }
                   ${isCollapsed ? 'justify-center px-3' : ''}
                 `}
               >
                 <Icon
                   size={22}
-                  className={`${active ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-400'} transition-colors`}
+                  className={`${active ? 'text-[hsl(var(--gov-gold))]' : 'text-white/70 group-hover:text-white'} transition-colors`}
                 />
                 {!isCollapsed && (
                   <>
@@ -146,16 +146,16 @@ export default function AdminSidebar() {
         </nav>
 
         {/* User Section */}
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="p-4 border-t border-white/10">
           {session?.user && (
             <div className={`flex items-center gap-3 mb-4 ${isCollapsed ? 'justify-center' : ''}`}>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-[hsl(var(--gov-gold))] flex items-center justify-center text-[hsl(var(--gov-blue-dark))] font-bold">
                 {session.user.prenom?.[0]?.toUpperCase() || 'U'}
               </div>
               {!isCollapsed && (
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm truncate">{session.user.prenom} {session.user.nom}</p>
-                  <p className="text-xs text-slate-400 truncate">{session.user.role}</p>
+                  <p className="text-xs text-white/60 truncate">{session.user.role}</p>
                 </div>
               )}
             </div>
@@ -164,8 +164,8 @@ export default function AdminSidebar() {
           <button
             onClick={() => signOut({ callbackUrl: window.location.origin + '/login' })}
             className={`
-              flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-slate-300
-              hover:bg-red-500/20 hover:text-red-400 transition-all duration-200
+              flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-white/70
+              hover:bg-[hsl(var(--gov-red)/0.16)] hover:text-white transition-colors duration-200
               ${isCollapsed ? 'justify-center px-3' : ''}
             `}
           >
@@ -177,7 +177,7 @@ export default function AdminSidebar() {
         {/* Collapse Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-700 rounded-full items-center justify-center text-slate-300 hover:bg-emerald-500 hover:text-white transition-all shadow-lg"
+          className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-card rounded-full items-center justify-center text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-gold))] transition-colors shadow-md border border-border"
         >
           {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>

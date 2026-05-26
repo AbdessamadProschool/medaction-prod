@@ -255,7 +255,7 @@ function CampagnesContent() {
                                  initial={{ y: 20, opacity: 0 }}
                                  animate={{ y: 0, opacity: 1 }}
                                  transition={{ delay: 0.2 }}
-                                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-sm text-sm font-medium mb-6"
+                                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gov-green/20 text-gov-green border border-gov-green/30/30 backdrop-blur-sm text-sm font-medium mb-6"
                               >
                                  <Sparkles className="w-4 h-4" />
                                  {t('featured')}
@@ -381,7 +381,7 @@ function CampagnesContent() {
               <div className="bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] rounded-2xl p-5 text-white shadow-lg shadow-blue-900/20">
                  <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                       <Megaphone className="w-5 h-5 text-amber-300" />
+                       <Megaphone className="w-5 h-5 text-gov-gold" />
                     </div>
                     <div>
                        <div className="text-[10px] font-bold uppercase tracking-wider opacity-80">{t('badge')}</div>
@@ -481,7 +481,7 @@ function CampagnesContent() {
                         className="w-full h-full object-cover"
                      />
                   ) : (
-                     <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center">
+                     <div className="w-full h-full bg-gradient-to-br from-gov-green to-gov-green-dark flex items-center justify-center">
                         <Megaphone className="w-20 h-20 text-white/20" />
                      </div>
                   )}
@@ -496,7 +496,7 @@ function CampagnesContent() {
 
                   <div className="absolute bottom-6 left-6 right-6 text-white z-10">
                      {selectedCampagne.type && (
-                        <span className="inline-block px-3 py-1 bg-emerald-600/90 backdrop-blur-md rounded-lg text-xs font-bold mb-3 border border-emerald-400/30 shadow-sm text-white">
+                        <span className="inline-block px-3 py-1 bg-gov-green/90 backdrop-blur-md rounded-lg text-xs font-bold mb-3 border border-gov-green/30/30 shadow-sm text-white">
                            {t(`types.${selectedCampagne.type}`)}
                         </span>
                      )}
@@ -513,8 +513,8 @@ function CampagnesContent() {
                       animate={{ scale: 1, opacity: 1 }}
                       className="flex flex-col items-center text-center py-10"
                     >
-                      <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
-                        <CheckCircle className="w-12 h-12 text-emerald-600" />
+                      <div className="w-24 h-24 bg-gov-green/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                        <CheckCircle className="w-12 h-12 text-gov-green-dark" />
                       </div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">
                         {t('success_title')}
@@ -550,7 +550,7 @@ function CampagnesContent() {
                        </div>
 
                       <div 
-                         className="prose prose-emerald max-w-none mb-8 text-gray-600"
+                         className="prose prose-gov-green max-w-none mb-8 text-gray-600"
                          dir={locale === 'ar' ? 'rtl' : 'ltr'}
                       >
                           {selectedCampagne.description && <p className="lead">{selectedCampagne.description}</p>}
@@ -561,20 +561,20 @@ function CampagnesContent() {
 
                       {/* Progress Bar inside Modal */}
                       {selectedCampagne.objectifParticipations && (
-                        <div className="bg-emerald-50/50 rounded-2xl p-5 mb-8 border border-emerald-100">
+                        <div className="bg-gov-green/5/50 rounded-2xl p-5 mb-8 border border-gov-green/30">
                           <div className="flex items-center justify-between mb-3">
-                             <span className="font-bold text-emerald-900 text-sm">{t('objective_progress')}</span>
-                             <span className="text-emerald-700 font-bold text-sm">
+                             <span className="font-bold text-gov-green-dark text-sm">{t('objective_progress')}</span>
+                             <span className="text-gov-green-dark font-bold text-sm">
                                 {Math.round(getProgress(selectedCampagne))}%
                              </span>
                           </div>
-                          <div className="h-4 bg-emerald-100 rounded-full overflow-hidden">
+                          <div className="h-4 bg-gov-green/10 rounded-full overflow-hidden">
                              <div 
-                                className="h-full rounded-full transition-all duration-1000 bg-emerald-500"
+                                className="h-full rounded-full transition-all duration-1000 bg-gov-green"
                                 style={{ width: `${getProgress(selectedCampagne)}%`}}
                              />
                           </div>
-                          <p className="text-center text-xs text-emerald-600/80 mt-2 font-medium">
+                          <p className="text-center text-xs text-gov-green-dark/80 mt-2 font-medium">
                              {selectedCampagne.nombreParticipations} sur {selectedCampagne.objectifParticipations} {t('participants_required')}
                           </p>
                         </div>

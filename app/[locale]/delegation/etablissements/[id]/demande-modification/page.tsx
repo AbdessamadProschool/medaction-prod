@@ -38,7 +38,7 @@ export default function DemandeModificationPage({ params: paramsPromise }: { par
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900/50">
-        <Loader2 className="animate-spin text-emerald-500" size={32} />
+        <Loader2 className="animate-spin text-gov-green" size={32} />
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default function DemandeModificationPage({ params: paramsPromise }: { par
     <div className="p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in">
       <Link 
         href="/delegation/etablissements" 
-        className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-bold text-sm"
+        className="flex items-center gap-2 text-gray-500 hover:text-gov-green-dark transition-colors font-bold text-sm"
       >
         <ChevronLeft size={16} />
         {t('back_list')}
@@ -64,10 +64,10 @@ export default function DemandeModificationPage({ params: paramsPromise }: { par
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-3">
-           <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none rounded-lg px-3 py-1">#{etablissement.code}</Badge>
+           <Badge className="bg-gov-green/10 text-gov-green-dark hover:bg-gov-green/10 border-none rounded-lg px-3 py-1">#{etablissement.code}</Badge>
            <h1 className="text-3xl font-black text-gray-900 dark:text-white">{t('request_edit')}</h1>
         </div>
-        <p className="text-gray-500 mt-2">{t('update_etab')}: <span className="text-emerald-600 font-bold">{etablissement.nom}</span></p>
+        <p className="text-gray-500 mt-2">{t('update_etab')}: <span className="text-gov-green-dark font-bold">{etablissement.nom}</span></p>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 p-8 pt-10 relative">

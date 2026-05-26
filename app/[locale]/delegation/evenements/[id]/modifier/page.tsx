@@ -269,7 +269,7 @@ export default function ModifierEvenementPage() {
   };
   
     const typeColors: Record<string, string> = {
-    CULTUREL: 'from-purple-500 to-pink-500',
+    CULTUREL: 'from-gov-blue to-gov-blue-dark',
     SPORTIF: 'from-green-500 to-emerald-500',
     SOCIAL: 'from-orange-500 to-amber-500',
     EDUCATIF: 'from-blue-500 to-cyan-500',
@@ -323,7 +323,7 @@ export default function ModifierEvenementPage() {
                     {tEdit('title')}
                 </h1>
              </div>
-             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+             <div className="w-10 h-10 bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
                 <Calendar className="w-5 h-5 text-white" />
              </div>
           </div>
@@ -365,7 +365,7 @@ export default function ModifierEvenementPage() {
                 <div className="space-y-2">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider text-start">{previewUrl ? t('sections.visual.new_preview') : t('sections.visual.change_image')}</p>
                   {previewUrl ? (
-                    <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-indigo-200 shadow-md group">
+                    <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-gov-blue/30 shadow-md group">
                       <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                       <button
                         type="button"
@@ -379,9 +379,9 @@ export default function ModifierEvenementPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="relative flex flex-col items-center justify-center aspect-video border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 hover:bg-indigo-50/50 hover:border-indigo-300 transition-all cursor-pointer group overflow-hidden">
+                    <label className="relative flex flex-col items-center justify-center aspect-video border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 hover:bg-gov-blue/5/50 hover:border-gov-blue/30 transition-all cursor-pointer group overflow-hidden">
                       <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                        <ImageIcon className="w-5 h-5 text-gray-400 group-hover:text-indigo-500 transition-colors" />
+                        <ImageIcon className="w-5 h-5 text-gray-400 group-hover:text-gov-blue-dark transition-colors" />
                       </div>
                       <p className="text-xs font-bold text-gray-600">{t('sections.visual.click_to_add')}</p>
                       <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
@@ -396,7 +396,7 @@ export default function ModifierEvenementPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className={`px-5 py-2.5 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-indigo-50/50 to-transparent ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                 <div className="p-1.5 bg-indigo-100 rounded-lg text-indigo-600 shadow-sm">
+                 <div className="p-1.5 bg-gov-blue/10 rounded-lg text-gov-blue-dark shadow-sm">
                    <AlignLeft className="w-4 h-4" />
                  </div>
                  {t('sections.general.title')}
@@ -414,9 +414,9 @@ export default function ModifierEvenementPage() {
                       {...register('titre')}
                       type="text"
                       placeholder={t('sections.general.event_title_placeholder')}
-                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm text-start"
+                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm text-start"
                     />
-                     <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                     <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                         <LayoutTemplate size={20} />
                      </div>
                 </div>
@@ -432,7 +432,7 @@ export default function ModifierEvenementPage() {
                 {...register('description')}
                 rows={4}
                 placeholder={t('sections.general.description_placeholder')}
-                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all font-medium placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm leading-relaxed resize-none text-start"
+                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all font-medium placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm leading-relaxed resize-none text-start"
                 />
                 {errors.description && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.description.message}</p>}
               </div>
@@ -446,7 +446,7 @@ export default function ModifierEvenementPage() {
                   <div className="relative group">
                     <select
                       {...register('typeCategorique')}
-                      className="w-full px-4 py-2 pr-11 pl-10 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-white text-sm text-start"
+                      className="w-full px-4 py-2 pr-11 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-white text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_type')}</option>
                       <option value="CULTUREL">{t('types.culturel')}</option>
@@ -456,7 +456,7 @@ export default function ModifierEvenementPage() {
                       <option value="SANTE">{t('types.sante')}</option>
                       <option value="AUTRE">{t('types.autre')}</option>
                     </select>
-                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-indigo-500 transition-colors">
+                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-gov-blue-dark transition-colors">
                         <Tag size={20} />
                     </div>
                   </div>
@@ -471,14 +471,14 @@ export default function ModifierEvenementPage() {
                   <div className="relative group">
                     <select
                       {...register('etablissementId')}
-                      className="w-full px-4 py-2 pr-11 pl-10 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-white text-sm text-start"
+                      className="w-full px-4 py-2 pr-11 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-white text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_establishment')}</option>
                       {etablissements.map(e => (
                         <option key={e.id} value={e.id}>{e.nom}</option>
                       ))}
                     </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-indigo-500 transition-colors">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-gov-blue-dark transition-colors">
                         <Building2 size={20} />
                     </div>
                   </div>
@@ -496,9 +496,9 @@ export default function ModifierEvenementPage() {
                       {...register('tags')}
                       type="text"
                       placeholder={t('sections.general.tags_placeholder')}
-                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm text-start"
+                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-sm text-start"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                         <Tag size={20} />
                     </div>
                 </div>
@@ -510,7 +510,7 @@ export default function ModifierEvenementPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className={`px-5 py-2.5 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-amber-50/50 to-transparent ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2 font-cairo">
-                 <div className="p-1.5 bg-amber-100 rounded-lg text-amber-600 shadow-sm">
+                 <div className="p-1.5 bg-gov-gold/10 rounded-lg text-gov-gold shadow-sm">
                    <Calendar className="w-4 h-4" />
                  </div>
                  {t('sections.datetime.title')}
@@ -527,7 +527,7 @@ export default function ModifierEvenementPage() {
                     {...register('dateDebut')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all"
                   />
                   {errors.dateDebut && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.dateDebut.message}</p>}
                 </div>
@@ -537,7 +537,7 @@ export default function ModifierEvenementPage() {
                     {...register('dateFin')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -550,9 +550,9 @@ export default function ModifierEvenementPage() {
                       {...register('heureDebut')}
                       type="text"
                       placeholder="00:00"
-                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-gold transition-colors pointer-events-none">
                       <Clock size={18} />
                     </div>
                   </div>
@@ -564,9 +564,9 @@ export default function ModifierEvenementPage() {
                       {...register('heureFin')}
                       type="text"
                       placeholder="00:00"
-                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                      className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-gold transition-colors pointer-events-none">
                       <Clock size={18} />
                     </div>
                   </div>
@@ -583,14 +583,14 @@ export default function ModifierEvenementPage() {
                     <button
                       type="button"
                       onClick={() => setLocationMode('manuel')}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white text-gov-gold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                       Saisie Manuelle
                     </button>
                     <button
                       type="button"
                       onClick={() => setLocationMode('etablissement')}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white text-gov-gold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                       Établissement
                     </button>
@@ -604,7 +604,7 @@ export default function ModifierEvenementPage() {
                       <select
                         value={lieuSecteur}
                         onChange={(e) => setLieuSecteur(e.target.value)}
-                         className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                         className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">Tous les secteurs</option>
                         <option value="EDUCATION">Éducation</option>
@@ -619,7 +619,7 @@ export default function ModifierEvenementPage() {
                       <label className="block text-xs font-bold text-gray-600 text-start">Établissement (Emplacement)</label>
                       <select
                         {...register('lieuEtablissementId')}
-                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">Sélectionnez un établissement...</option>
                         {allEtablissements
@@ -639,9 +639,9 @@ export default function ModifierEvenementPage() {
                               {...register('lieu')}
                               type="text"
                               placeholder={t('sections.datetime.location_placeholder')}
-                              className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
+                              className="w-full px-4 py-2 pr-11 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
                           />
-                          <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-500 transition-colors pointer-events-none">
+                          <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-gold transition-colors pointer-events-none">
                               <MapPin size={20} />
                           </div>
                         </div>
@@ -651,7 +651,7 @@ export default function ModifierEvenementPage() {
                           {...register('adresse')}
                           type="text"
                           placeholder={t('sections.datetime.address_placeholder')}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
                         />
                       </div>
                     </div>
@@ -663,7 +663,7 @@ export default function ModifierEvenementPage() {
                         {...register('quartierDouar')}
                         type="text"
                         placeholder={t('sections.datetime.neighborhood_placeholder')}
-                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
                       />
                     </div>
                   </div>
@@ -676,7 +676,7 @@ export default function ModifierEvenementPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className="px-5 py-2.5 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-purple-50/50 to-transparent">
               <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                <div className="p-1.5 bg-purple-100 rounded-lg text-purple-600 shadow-sm">
+                <div className="p-1.5 bg-gov-blue/10 rounded-lg text-gov-blue-dark shadow-sm">
                    <User className="w-4 h-4" />
                 </div>
                 {t('sections.organizer.title')}
@@ -694,9 +694,9 @@ export default function ModifierEvenementPage() {
                         {...register('organisateur')}
                         type="text"
                         placeholder={t('sections.organizer.name_placeholder')}
-                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
+                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
                         <User size={18} />
                     </div>
                   </div>
@@ -711,9 +711,9 @@ export default function ModifierEvenementPage() {
                         {...register('contactOrganisateur')}
                         type="tel"
                         placeholder={t('sections.organizer.phone_placeholder')}
-                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm ltr:text-left text-right"
+                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm ltr:text-left text-right"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
                         <Phone size={18} />
                     </div>
                   </div>
@@ -728,9 +728,9 @@ export default function ModifierEvenementPage() {
                         {...register('emailContact')}
                         type="email"
                         placeholder={t('sections.organizer.email_placeholder')}
-                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
+                        className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
                         <Mail size={18} />
                     </div>
                   </div>
@@ -744,11 +744,11 @@ export default function ModifierEvenementPage() {
                     <input
                       type="checkbox"
                       {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">منظمة من طرف العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحدث مباشرة بعمالة مديونة</p>
                   </div>
                 </label>
@@ -758,11 +758,11 @@ export default function ModifierEvenementPage() {
                     <input
                       type="checkbox"
                       {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">تحت غطاء العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
                   </div>
                 </label>
@@ -847,7 +847,7 @@ export default function ModifierEvenementPage() {
             <button
               type="submit"
               disabled={saving}
-              className={`px-8 py-2.5 bg-gradient-to-r ${watchedType ? typeColors[watchedType] || 'from-blue-600 to-indigo-600' : 'from-blue-600 to-indigo-600'} text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-blue-500/20 font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0`}
+              className={`px-8 py-2.5 bg-gradient-to-r ${watchedType ? typeColors[watchedType] || 'from-gov-blue to-gov-blue-dark' : 'from-gov-blue to-gov-blue-dark'} text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-blue-500/20 font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0`}
             >
               {saving ? (
                 <>

@@ -39,9 +39,9 @@ const statusBadgeVariants = cva(
         ].join(' '),
 
         purple: [
-          'bg-purple-50 dark:bg-purple-950/30',
-          'text-purple-700 dark:text-purple-300',
-          'border-purple-200 dark:border-purple-800',
+          'bg-[hsl(var(--gov-blue)/0.08)]',
+          'text-[hsl(var(--gov-blue))]',
+          'border-[hsl(var(--gov-blue)/0.2)]',
         ].join(' '),
 
         muted: [

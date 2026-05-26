@@ -56,10 +56,10 @@ interface Actualite {
 
 const STATUT_STYLES: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
   BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit },
-  EN_ATTENTE_VALIDATION: { bg: 'bg-amber-500/10', text: 'text-amber-600', icon: Clock },
+  EN_ATTENTE_VALIDATION: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Clock },
   VALIDEE: { bg: 'bg-[hsl(var(--gov-blue))/0.1]', text: 'text-[hsl(var(--gov-blue))]', icon: CheckCircle },
   PUBLIEE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Globe },
-  DEPUBLIEE: { bg: 'bg-orange-500/10', text: 'text-orange-600', icon: Archive },
+  DEPUBLIEE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Archive },
   ARCHIVEE: { bg: 'bg-slate-500/10', text: 'text-slate-600', icon: Archive },
 };
 
@@ -408,7 +408,7 @@ export default function AdminActualitesPage() {
                       {t(`statuses.${actualite.statut}`)}
                     </span>
                     {actualite.isMisEnAvant && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-500/90 text-white border border-amber-400/50 shadow-sm backdrop-blur-md">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gov-gold/10/90 text-white border border-gov-gold/30/50 shadow-sm backdrop-blur-md">
                         <Star className="w-3 h-3 fill-current" />
                         {t('highlight')}
                       </span>
@@ -577,7 +577,7 @@ export default function AdminActualitesPage() {
                       );
                     })()}
                     {selectedActualite.isMisEnAvant && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-600 border border-amber-500/20 shadow-sm">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gov-gold/10/10 text-gov-gold border border-gov-gold/30/20 shadow-sm">
                         <Star className="w-3 h-3 fill-current" />
                         {t('highlight')}
                       </span>
@@ -696,7 +696,7 @@ export default function AdminActualitesPage() {
                       disabled={!!actionLoading}
                       className={`flex items-center justify-center gap-2 px-4 py-4 rounded-2xl font-bold text-sm transition-all border shadow-sm ${
                         selectedActualite.isMisEnAvant
-                          ? 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500 hover:text-white'
+                          ? 'bg-gov-gold/10/10 text-gov-gold border-gov-gold/30/20 hover:bg-gov-gold/10 hover:text-white'
                           : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                       }`}
                     >

@@ -160,7 +160,7 @@ export default function ReclamationDetailPage() {
             <span className={`px-3 py-1 rounded-full text-sm font-bold shadow-sm ${
               isResolue
                 ? 'bg-green-100 text-green-700 border border-green-200'
-                : 'bg-amber-100 text-amber-700 border border-amber-200'
+                : 'bg-gov-gold/10 text-gov-gold border border-gov-gold/30'
             }`}>
               {isResolue ? t('status.resolved') : t('status.pending')}
             </span>
@@ -217,8 +217,8 @@ export default function ReclamationDetailPage() {
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
-                    <ImageIcon size={20} className="text-indigo-600" />
+                  <div className="w-10 h-10 rounded-lg bg-gov-blue/5 flex items-center justify-center">
+                    <ImageIcon size={20} className="text-gov-blue-dark" />
                   </div>
                   {t('photos', { count: reclamation.medias.filter(m => m.type === 'IMAGE').length })}
                 </h2>
@@ -435,9 +435,9 @@ export default function ReclamationDetailPage() {
                 <Building2 size={18} className="text-gov-blue" />
                 {t('establishment.title')}
               </h3>
-              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
+              <div className="p-4 bg-gov-gold/5 rounded-xl border border-gov-gold/30">
                 <p className="font-bold text-gray-900">{reclamation.etablissement.nom}</p>
-                <p className="text-sm text-amber-700 font-medium mt-1">{reclamation.etablissement.secteur}</p>
+                <p className="text-sm text-gov-gold font-medium mt-1">{reclamation.etablissement.secteur}</p>
               </div>
               {/* Link disabled until generic page is ready */}
               {/* <Link

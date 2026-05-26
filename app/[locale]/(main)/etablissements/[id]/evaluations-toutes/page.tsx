@@ -97,7 +97,7 @@ export default function ToutesEvaluationsPage() {
       <Star
         key={i}
         className={`w-4 h-4 ${
-          i < Math.round(rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'
+          i < Math.round(rating) ? 'fill-amber-400 text-gov-gold' : 'text-gray-300'
         }`}
       />
     ));
@@ -170,12 +170,12 @@ export default function ToutesEvaluationsPage() {
                       return (
                         <div key={star} className="flex items-center gap-3">
                           <span className="text-sm text-gray-600 w-4">{star}</span>
-                          <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                          <Star className="w-4 h-4 fill-amber-400 text-gov-gold" />
                           <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${percentage}%` }}
-                              className="h-full bg-amber-400 rounded-full"
+                              className="h-full bg-gov-gold/10 rounded-full"
                             />
                           </div>
                           <span className="text-sm text-gray-500 w-8">{count}</span>

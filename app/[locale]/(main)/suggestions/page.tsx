@@ -50,22 +50,22 @@ interface Suggestion {
 }
 
 const STATUT_CONFIG: Record<string, { icon: React.ElementType; colorClass: string; bgClass: string; dotClass: string }> = {
-  SOUMISE:     { icon: Clock,        colorClass: 'text-amber-700',  bgClass: 'bg-amber-50 border-amber-100',   dotClass: 'bg-amber-400' },
+  SOUMISE:     { icon: Clock,        colorClass: 'text-gov-gold',  bgClass: 'bg-gov-gold/5 border-gov-gold/30',   dotClass: 'bg-gov-gold/10' },
   EN_EXAMEN:   { icon: Eye,          colorClass: 'text-blue-700',   bgClass: 'bg-blue-50 border-blue-100',     dotClass: 'bg-blue-500' },
   APPROUVEE:   { icon: CheckCircle,  colorClass: 'text-green-700',  bgClass: 'bg-green-50 border-green-100',   dotClass: 'bg-green-500' },
   REJETEE:     { icon: XCircle,      colorClass: 'text-red-700',    bgClass: 'bg-red-50 border-red-100',       dotClass: 'bg-red-500' },
-  IMPLEMENTEE: { icon: Sparkles,     colorClass: 'text-purple-700', bgClass: 'bg-purple-50 border-purple-100', dotClass: 'bg-purple-500' },
+  IMPLEMENTEE: { icon: Sparkles,     colorClass: 'text-gov-blue-dark', bgClass: 'bg-gov-blue/5 border-gov-blue/30', dotClass: 'bg-gov-blue' },
 };
 
 const CATEGORIES: Record<string, { label: string; icon: React.ElementType; color: string }> = {
-  infrastructure: { label: 'Infrastructure',    icon: Building2,    color: 'text-orange-600' },
+  infrastructure: { label: 'Infrastructure',    icon: Building2,    color: 'text-gov-gold' },
   services:       { label: 'Services publics',  icon: Landmark,     color: 'text-blue-600' },
   environnement:  { label: 'Environnement',     icon: Leaf,         color: 'text-green-600' },
-  education:      { label: 'Éducation',         icon: GraduationCap,color: 'text-indigo-600' },
-  sante:          { label: 'Santé',             icon: HeartPulse,   color: 'text-pink-600' },
+  education:      { label: 'Éducation',         icon: GraduationCap,color: 'text-gov-blue-dark' },
+  sante:          { label: 'Santé',             icon: HeartPulse,   color: 'text-gov-red' },
   transport:      { label: 'Transport',          icon: Bus,          color: 'text-sky-600' },
   culture:        { label: 'Culture & Loisirs', icon: Palette,      color: 'text-violet-600' },
-  numerique:      { label: 'Numérique',          icon: Laptop,       color: 'text-cyan-600' },
+  numerique:      { label: 'Numérique',          icon: Laptop,       color: 'text-gov-blue' },
   autre:          { label: 'Autre',              icon: Lightbulb,    color: 'text-gray-600' },
 };
 

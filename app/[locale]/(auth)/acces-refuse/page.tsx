@@ -49,7 +49,7 @@ export default function AccesRefusePage() {
           <div className="space-y-3">
             <Link
               href="/"
-              className="block w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:from-emerald-700 hover:to-teal-700 transition-all duration-200"
+              className="block w-full py-3 px-4 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl shadow-lg shadow-gov-green/25 hover:shadow-gov-green/40 hover:bg-gov-green-dark transition-all duration-200"
             >
               {t('back_home')}
             </Link>
@@ -65,7 +65,7 @@ export default function AccesRefusePage() {
         {/* Help */}
         <p className="mt-6 text-sm text-gray-400">
           {t('need_help')}{' '}
-          <Link href="/contact" className="text-emerald-600 hover:text-emerald-700 font-medium">
+          <Link href="/contact" className="text-gov-green hover:text-gov-green-dark font-medium">
             {t('contact_us')}
           </Link>
         </p>

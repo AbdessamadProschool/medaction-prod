@@ -19,9 +19,18 @@ const BLOCKED_INTERNAL_HEADERS = [
   'x-middleware-prefetch',
 ];
 
+const IP_HEADERS_TO_STRIP = [
+  'x-client-ip',
+  'true-client-ip',
+  'x-originating-ip',
+  'x-forwarded-host',
+];
+
 function getStrippedHeaders(request: NextRequest): { headers: Headers; stripped: boolean } {
   const headers = new Headers(request.headers);
   let stripped = false;
+  
+  // 1. Strip internal next.js headers
   for (const h of BLOCKED_INTERNAL_HEADERS) {
     if (headers.has(h)) {
       headers.delete(h);
@@ -29,6 +38,16 @@ function getStrippedHeaders(request: NextRequest): { headers: Headers; stripped:
       console.warn(`[SECURITY] Stripped forbidden internal header: ${h} from ${request.nextUrl.pathname}`);
     }
   }
+  
+  // 2. Strip client-supplied IP spoofing headers
+  for (const h of IP_HEADERS_TO_STRIP) {
+    if (headers.has(h)) {
+      headers.delete(h);
+      stripped = true;
+      console.warn(`[SECURITY] Stripped spoofed IP header: ${h} from ${request.nextUrl.pathname}`);
+    }
+  }
+  
   return { headers, stripped };
 }
 
@@ -80,9 +99,51 @@ const RATE_LIMIT_CONFIG = {
   publicMaxRequests: 60, // 60 req/min pour APIs publiques
   loginMaxRequests: 5, // 5 tentatives/min pour login
   apiMaxRequests: 200, // 200 req/min pour APIs authentifiées
+  lockoutWindowMs: 15 * 60 * 1000, // 15 minutes lockout window
+  lockoutMaxAttempts: 10, // 10 tentatives avant lockout de 15 min
 };
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
+const lockoutStore = new Map<string, { count: number; firstAttempt: number; lockedUntil?: number }>();
+
+// ═══════════════════════════════════════════════════════════════════
+// BODY SIZE LIMITS (Protection DoS)
+// ═══════════════════════════════════════════════════════════════════
+
+const MAX_BODY_SIZE = 2 * 1024 * 1024; // 2 MB max body size
+const MAX_BODY_SIZE_UPLOAD = 10 * 1024 * 1024; // 10 MB for uploads
+
+// ═══════════════════════════════════════════════════════════════════
+// BOT & AUTOMATED TOOL DETECTION
+// ═══════════════════════════════════════════════════════════════════
+
+const BLOCKED_USER_AGENTS = [
+  /^curl\//i,
+  /^wget\//i,
+  /^python-requests/i,
+  /^python-urllib/i,
+  /^httpclient/i,
+  /^java\//i,
+  /^libwww-perl/i,
+  /^go-http-client/i,
+  /^sqlmap/i,
+  /^nikto/i,
+  /^nmap/i,
+  /^masscan/i,
+  /^dirbuster/i,
+  /^gobuster/i,
+  /^wpscan/i,
+  /^nuclei/i,
+  /^burpsuite/i,
+  /^hydra/i,
+  /^zgrab/i,
+  /^scanbot/i,
+];
+
+function isBlockedBot(userAgent: string | null): boolean {
+  if (!userAgent || userAgent.length < 5) return true; // Empty/tiny UA = suspicious
+  return BLOCKED_USER_AGENTS.some(pattern => pattern.test(userAgent));
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // ROUTES PUBLIQUES (Pages accessibles sans authentification)
@@ -310,35 +371,105 @@ function isMutationMethod(method: string): boolean {
 
 function getClientIP(request: NextRequest): string {
   // 1. Priorité absolue : l'IP détectée par la plateforme/runtime
-  if ((request as any).ip) return (request as any).ip;
+  if (request.ip) return request.ip;
 
-  // 2. En production, on ne fait pas confiance aux en-têtes HTTP arbitraires
-  // car ils peuvent être falsifiés par le client si le proxy n'est pas configuré pour les écraser.
-  if (process.env.NODE_ENV === 'production') {
-    return 'proxied-unknown';
+  // 2. Lire l'IP sécurisée transmise par notre proxy Nginx via X-Forwarded-For
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    const ips = forwardedFor.split(',').map(ip => ip.trim());
+    const clientIp = ips[ips.length - 1];
+    if (clientIp) return clientIp;
   }
 
-  // 3. En développement ou environnements spécifiques, on vérifie les headers standards
+  // 3. Fallback sur X-Real-IP
   const realIP = request.headers.get('x-real-ip');
   if (realIP) return realIP;
 
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    const ips = forwarded.split(',').map(ip => ip.trim());
-    return ips[ips.length - 1];
+  return '127.0.0.1';
+}
+
+function normalizePath(pathname: string): string {
+  // 1. Décodage exhaustif pour neutraliser le double-encodage (ex: %2561 -> %61 -> a)
+  let decoded = pathname;
+  let prev = '';
+  let attempts = 0;
+  while (decoded !== prev && attempts < 5) {
+    prev = decoded;
+    try {
+      decoded = decodeURIComponent(decoded);
+    } catch (e) {
+      break;
+    }
+    attempts++;
   }
 
-  return 'unknown';
+  // 2. Remplacer les antislashs par des slashs
+  decoded = decoded.replace(/\\/g, '/');
+
+  // 3. Remplacer les slashs multiples par un seul slash
+  decoded = decoded.replace(/\/+/g, '/');
+
+  // 4. Résoudre les segments de traversée de chemin (. et ..)
+  const segments = decoded.split('/');
+  const cleanSegments: string[] = [];
+  for (const segment of segments) {
+    if (segment === '.' || segment === '') {
+      continue;
+    }
+    if (segment === '..') {
+      cleanSegments.pop();
+    } else {
+      cleanSegments.push(segment);
+    }
+  }
+
+  let result = '/' + cleanSegments.join('/');
+  if (pathname.endsWith('/') && result !== '/') {
+    result += '/';
+  }
+  return result;
 }
 
 
 async function checkRateLimit(
   ip: string, 
   type: 'public' | 'api' | 'login' = 'api'
-): Promise<{ allowed: boolean; remaining: number }> {
+): Promise<{ allowed: boolean; remaining: number; retryAfter?: number }> {
   let maxRequests = RATE_LIMIT_CONFIG.apiMaxRequests;
   if (type === 'public') maxRequests = RATE_LIMIT_CONFIG.publicMaxRequests;
   if (type === 'login') maxRequests = RATE_LIMIT_CONFIG.loginMaxRequests;
+
+  // ─── LOCKOUT CHECK (progressive lockout for login) ───
+  if (type === 'login') {
+    const lockoutKey = `lockout:${ip}`;
+    const lockout = lockoutStore.get(lockoutKey);
+    const now = Date.now();
+    
+    if (lockout) {
+      // If currently locked out
+      if (lockout.lockedUntil && now < lockout.lockedUntil) {
+        const retryAfter = Math.ceil((lockout.lockedUntil - now) / 1000);
+        return { allowed: false, remaining: 0, retryAfter };
+      }
+      
+      // Reset if lockout window expired
+      if ((now - lockout.firstAttempt) > RATE_LIMIT_CONFIG.lockoutWindowMs) {
+        lockoutStore.delete(lockoutKey);
+      } else {
+        lockout.count++;
+        
+        // Trigger lockout after max attempts
+        if (lockout.count >= RATE_LIMIT_CONFIG.lockoutMaxAttempts) {
+          lockout.lockedUntil = now + RATE_LIMIT_CONFIG.lockoutWindowMs;
+          const retryAfter = Math.ceil(RATE_LIMIT_CONFIG.lockoutWindowMs / 1000);
+          console.warn(`[SECURITY] IP ${ip} locked out after ${lockout.count} login attempts for ${retryAfter}s`);
+          return { allowed: false, remaining: 0, retryAfter };
+        }
+      }
+    } else {
+      lockoutStore.set(lockoutKey, { count: 1, firstAttempt: now });
+    }
+  }
 
   const key = `rate-limit:${type}:${ip}`;
   
@@ -349,7 +480,7 @@ async function checkRateLimit(
       const redis = new Redis({
         url: process.env.UPSTASH_REDIS_REST_URL!,
         token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-        enableTelemetry: false, // Prevents "process.version" usage in Edge Runtime
+        enableTelemetry: false,
       });
       
       const requests = await redis.incr(key);
@@ -413,6 +544,9 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
       
       response.headers.set('Content-Security-Policy', cspValue);
       response.headers.set('x-nonce', nonce);
+    } else {
+      // Default CSP for API routes and other non-HTML resources
+      response.headers.set('Content-Security-Policy', "default-src 'self'; frame-ancestors 'none'; object-src 'none';");
     }
 
     response.headers.delete('X-Powered-By');
@@ -421,6 +555,31 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     console.warn('Error adding security headers', e);
   }
   return response;
+}
+
+function secureResponse(
+  req: NextRequest, 
+  response: NextResponse, 
+  locale: string, 
+  nonce?: string
+): NextResponse {
+  // Secure the NEXT_LOCALE cookie if it is present
+  const cookieValue = response.cookies.get('NEXT_LOCALE')?.value || locale;
+  response.cookies.set('NEXT_LOCALE', cookieValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+  
+  try {
+    if (!response.headers.has('X-Request-ID')) {
+      response.headers.set('X-Request-ID', crypto.randomUUID());
+    }
+  } catch (e) {}
+  
+  return addSecurityHeaders(response, nonce);
 }
 
 function createApiErrorResponse(
@@ -476,10 +635,16 @@ const authMiddleware = withAuth(
     // ═══════════════════════════════════════════════════════════
     const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
 
-    // BLOC 6.4 - Generate per-request nonce
-    const nonce = btoa(crypto.randomUUID());
+    // Retrieve nonce from header passed by the outer middleware or fallback
+    const nonce = req.headers.get('x-nonce') || btoa(crypto.randomUUID());
 
-    const { pathname } = req.nextUrl;
+    const rawPathname = req.nextUrl.pathname;
+    const pathname = normalizePath(rawPathname);
+    
+    if (rawPathname !== pathname) {
+      console.warn(`[SECURITY] Normalized request path from "${rawPathname}" to "${pathname}"`);
+    }
+
     const method = req.method;
 
     // ─────────────────────────────────────────────────────────────────
@@ -523,20 +688,76 @@ const authMiddleware = withAuth(
     }
     
     // ─────────────────────────────────────────────────────────────────
+    // 0.5 BOT DETECTION: Block automated security scanners on sensitive routes
+    // ─────────────────────────────────────────────────────────────────
+    if (isApi && isMutationMethod(method)) {
+      const userAgent = req.headers.get('user-agent');
+      if (isBlockedBot(userAgent)) {
+        console.warn(`[SECURITY] Blocked bot/scanner on ${pathname}: UA="${userAgent}"`);
+        return createApiErrorResponse(403, 'Automated tools are not permitted.', 'BOT_BLOCKED', nonce);
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 0.6 BODY SIZE ENFORCEMENT: Reject oversized payloads early
+    // ─────────────────────────────────────────────────────────────────
+    if (isApi && isMutationMethod(method)) {
+      const contentLength = req.headers.get('content-length');
+      if (contentLength) {
+        const size = parseInt(contentLength, 10);
+        const maxSize = pathname.startsWith('/api/upload') ? MAX_BODY_SIZE_UPLOAD : MAX_BODY_SIZE;
+        if (size > maxSize) {
+          console.warn(`[SECURITY] Rejected oversized payload: ${size} bytes on ${pathname}`);
+          return createApiErrorResponse(413, `Payload too large. Maximum size is ${Math.floor(maxSize / 1024 / 1024)}MB.`, 'PAYLOAD_TOO_LARGE', nonce);
+        }
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 0.7 RATE LIMIT SENSITIVE ROUTES *BEFORE* PUBLIC BYPASS
+    //     This ensures login/register/forgot-password are always rate-limited
+    //     even though they are under /api/auth (which is "always public").
+    // ─────────────────────────────────────────────────────────────────
+    if (isApi && isSensitiveApiRoute(pathname)) {
+      const rateLimit = await checkRateLimit(clientIP, 'login');
+      
+      if (!rateLimit.allowed) {
+        const response = createApiErrorResponse(
+          429, 
+          'Too many attempts. Your IP has been temporarily blocked. Please try again later.', 
+          'RATE_LIMIT_EXCEEDED', 
+          nonce
+        );
+        response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
+        response.headers.set('X-RateLimit-Limit', String(RATE_LIMIT_CONFIG.loginMaxRequests));
+        return secureResponse(req, response, locale, nonce);
+      }
+      
+      // Allow the request to continue, but attach rate limit headers
+      const response = stripped 
+        ? NextResponse.next({ request: { headers: strippedHeaders } })
+        : NextResponse.next();
+      response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
+      response.headers.set('X-RateLimit-Limit', String(RATE_LIMIT_CONFIG.loginMaxRequests));
+      return secureResponse(req, response, locale, nonce);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
     // 1. ROUTES API TOUJOURS PUBLIQUES (Auth, etc.)
     // ─────────────────────────────────────────────────────────────────
     if (isApi && isAlwaysPublicApiRoute(pathname)) {
       const response = stripped 
         ? NextResponse.next({ request: { headers: strippedHeaders } })
         : NextResponse.next();
-      return addSecurityHeaders(response, nonce);
+      return secureResponse(req, response, locale, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
     // 2. PAGES PUBLIQUES - Déléguer à next-intl
     // ─────────────────────────────────────────────────────────────────
     if (!isApi && isPublicPage(effectivePathname)) {
-      return handleI18nRouting(req);
+      const response = handleI18nRouting(req);
+      return secureResponse(req, response, locale, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -554,7 +775,7 @@ const authMiddleware = withAuth(
         : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Mobile-API', 'true');
-      return addSecurityHeaders(response, nonce);
+      return secureResponse(req, response, locale, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -594,7 +815,7 @@ const authMiddleware = withAuth(
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
       response.headers.set('X-Public-API', 'true');
       response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
-      return addSecurityHeaders(response, nonce);
+      return secureResponse(req, response, locale, nonce);
     }
     
     // ─────────────────────────────────────────────────────────────────
@@ -724,27 +945,10 @@ const authMiddleware = withAuth(
         ? NextResponse.next({ request: { headers: strippedHeaders } })
         : NextResponse.next();
       response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
-      try {
-        response.headers.set('X-Request-ID', crypto.randomUUID());
-      } catch (e) {}
-      return addSecurityHeaders(response, nonce);
+      return secureResponse(req, response, locale, nonce);
     } else {
       const response = handleI18nRouting(req);
-      try {
-        response.headers.set('X-Request-ID', crypto.randomUUID());
-      } catch (e) {}
-
-      // PDF#2 FIX: Secure the NEXT_LOCALE cookie
-      const localeCookieValue = response.cookies.get('NEXT_LOCALE')?.value || locale;
-      response.cookies.set('NEXT_LOCALE', localeCookieValue, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 365,
-      });
-
-      return addSecurityHeaders(response, nonce);
+      return secureResponse(req, response, locale, nonce);
     }
   },
   {
@@ -755,19 +959,34 @@ const authMiddleware = withAuth(
 );
 
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
-  const { pathname } = req.nextUrl;
+  const rawPathname = req.nextUrl.pathname;
+  const pathname = normalizePath(rawPathname);
+  
+  const nonce = btoa(crypto.randomUUID());
+  req.headers.set('x-nonce', nonce);
+
+  // Path traversal detection: if request started as an API request but resolved outside of /api
+  if (rawPathname.startsWith('/api') && !pathname.startsWith('/api')) {
+    console.warn(`[SECURITY] Blocked path traversal attempt escaping API: "${rawPathname}" -> "${pathname}"`);
+    return createApiErrorResponse(400, 'Path traversal attempt blocked', 'PATH_TRAVERSAL_BLOCKED', nonce);
+  }
+
+  req.nextUrl.pathname = pathname;
+
   const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
   const isApi = isApiRoute(pathname);
+  const locale = getLocale(req);
 
   if (pathname === '/') {
-    return handleI18nRouting(req);
+    const response = handleI18nRouting(req);
+    return secureResponse(req, response, locale, nonce);
   }
 
   if (isApi && isAlwaysPublicApiRoute(pathname)) {
     const response = stripped 
       ? NextResponse.next({ request: { headers: strippedHeaders } })
       : NextResponse.next();
-    return addSecurityHeaders(response);
+    return secureResponse(req, response, locale);
   }
 
   return (authMiddleware as any)(req, event);

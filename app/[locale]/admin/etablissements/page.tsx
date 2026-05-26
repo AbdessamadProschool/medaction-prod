@@ -70,8 +70,8 @@ const SECTEURS = [
   { value: 'EDUCATION', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
   { value: 'SANTE', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' },
   { value: 'SPORT', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-  { value: 'SOCIAL', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' },
-  { value: 'CULTUREL', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
+  { value: 'SOCIAL', color: 'bg-gov-blue/10 text-gov-blue-dark dark:bg-gov-blue dark:text-gov-blue' },
+  { value: 'CULTUREL', color: 'bg-gov-gold/10 text-gov-gold dark:bg-gov-gold/10/30 dark:text-gov-gold' },
   { value: 'AUTRE', color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300' },
 ];
 

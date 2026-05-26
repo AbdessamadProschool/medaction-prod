@@ -579,7 +579,7 @@ export default function AdminReclamationsPage() {
                     <div className="lg:col-span-2 flex items-end">
                       <button
                         onClick={resetFilters}
-                        className="flex items-center gap-2 px-6 py-3 text-rose-600 hover:bg-rose-500/10 rounded-xl transition-all font-bold text-sm border border-transparent hover:border-rose-500/20 active:scale-95"
+                        className="flex items-center gap-2 px-6 py-3 text-gov-red hover:bg-gov-red/10/10 rounded-xl transition-all font-bold text-sm border border-transparent hover:border-rose-500/20 active:scale-95"
                       >
                         <Trash2 size={16} />
                         {tCommon('reset_filters')}
@@ -693,7 +693,7 @@ export default function AdminReclamationsPage() {
                             }}
                             variant="ghost"
                             size="icon"
-                            className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                            className="text-gov-green-dark hover:text-gov-green-dark hover:bg-gov-green/5"
                             title={t('actions.update_status')}
                           >
                             <Edit size={18} />
@@ -706,7 +706,7 @@ export default function AdminReclamationsPage() {
                             }}
                             variant="ghost"
                             size="icon"
-                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            className="text-gov-red hover:text-gov-red hover:bg-gov-red/5"
                             title={tActions('delete')}
                           >
                             <Trash2 size={18} />
@@ -823,7 +823,7 @@ export default function AdminReclamationsPage() {
                       <GovButton 
                         onClick={() => setShowStatutModal(true)}
                         variant="primary"
-                        className="bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 border-none"
+                        className="bg-gov-green hover:bg-gov-green shadow-lg shadow-gov-green/20 border-none"
                         leftIcon={<Edit size={14} />}
                       >
                         {t('actions.update_status')}
@@ -891,16 +891,16 @@ export default function AdminReclamationsPage() {
                   {selectedReclamation.agentAffecte && (
                     <div className="pt-6 border-t border-border">
                       <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <Shield size={12} className="text-emerald-600" />
+                        <Shield size={12} className="text-gov-green-dark" />
                         {t('table.agent_in_charge')}
                       </h3>
-                      <div className="flex items-center gap-4 p-4 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl border border-emerald-100 dark:border-emerald-500/20">
-                        <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">
+                      <div className="flex items-center gap-4 p-4 bg-gov-green/5 dark:bg-gov-green rounded-2xl border border-gov-green/30 dark:border-gov-green/30/20">
+                        <div className="w-14 h-14 bg-gov-green rounded-2xl flex items-center justify-center text-white text-xl font-black">
                           {selectedReclamation.agentAffecte.nom?.[0]}
                         </div>
                         <div>
-                          <p className="text-lg font-black text-emerald-900 dark:text-emerald-400">{selectedReclamation.agentAffecte.nom}</p>
-                          <p className="text-sm font-bold text-emerald-700/70">{selectedReclamation.agentAffecte.email}</p>
+                          <p className="text-lg font-black text-gov-green-dark dark:text-gov-green">{selectedReclamation.agentAffecte.nom}</p>
+                          <p className="text-sm font-bold text-gov-green-dark/70">{selectedReclamation.agentAffecte.email}</p>
                         </div>
                       </div>
                     </div>
@@ -978,7 +978,7 @@ export default function AdminReclamationsPage() {
             >
               <div className="p-8 border-b border-border flex items-center justify-between bg-gradient-to-br from-card/50 to-muted/30">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-2xl flex items-center justify-center text-white shadow-lg">
                     <Edit size={24} />
                   </div>
                   <div>
@@ -1039,7 +1039,7 @@ export default function AdminReclamationsPage() {
               className="bg-card/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col border border-rose-500/20"
             >
               <div className="p-10 text-center space-y-8">
-                <div className="w-24 h-24 bg-rose-500/10 text-rose-600 rounded-[2rem] flex items-center justify-center mx-auto ring-8 ring-rose-500/5 group">
+                <div className="w-24 h-24 bg-gov-red/10/10 text-gov-red rounded-[2rem] flex items-center justify-center mx-auto ring-8 ring-rose-500/5 group">
                   <Trash2 size={48} className="group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div>
@@ -1059,7 +1059,7 @@ export default function AdminReclamationsPage() {
                   <GovButton 
                     onClick={handleDelete}
                     variant="primary"
-                    className="flex-1 h-14 bg-rose-600 hover:bg-rose-700 shadow-xl shadow-rose-500/25 border-none"
+                    className="flex-1 h-14 bg-gov-red/10 hover:bg-gov-red/10 shadow-xl shadow-rose-500/25 border-none"
                     loading={actionLoading}
                   >
                     {tCommon('delete')}

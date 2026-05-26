@@ -209,7 +209,7 @@ export default function ModifierActualitePage() {
       <div className="min-h-[60vh] flex items-center justify-center p-10">
         <div className="text-center space-y-6">
           <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto shadow-inner">
-             <AlertTriangle className="w-10 h-10 text-amber-500" />
+             <AlertTriangle className="w-10 h-10 text-gov-gold" />
           </div>
           <div>
             <h2 className="text-xl font-black uppercase tracking-tight text-foreground">{tNewsPage('messages.not_found')}</h2>
@@ -266,7 +266,7 @@ export default function ModifierActualitePage() {
                 onClick={() => handleValidate(true)}
                 variant="primary"
                 leftIcon={<CheckCircle size={18} />}
-                className="rounded-full px-6 shadow-lg shadow-emerald-500/10 bg-emerald-600 hover:bg-emerald-700 border-none"
+                className="rounded-full px-6 shadow-lg shadow-gov-green/20 bg-gov-green hover:bg-gov-green border-none"
               >
                 {t('actions.validate')}
               </GovButton>
@@ -318,9 +318,9 @@ export default function ModifierActualitePage() {
           )}
           <div className={cn(
             "px-4 py-1.5 rounded-full ring-1 ring-inset shadow-sm",
-            actualite.isPublie ? "bg-emerald-500/10 text-emerald-600 ring-emerald-500/20" :
+            actualite.isPublie ? "bg-gov-green text-gov-green-dark ring-gov-green/20" :
             actualite.isValide ? "bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] ring-[hsl(var(--gov-blue))/0.2]" :
-            "bg-amber-500/10 text-amber-600 ring-amber-500/20"
+            "bg-gov-gold/10/10 text-gov-gold ring-amber-500/20"
           )}>
             {actualite.isPublie ? t('form.is_publie') : actualite.isValide ? t('form.is_valide') : tNewsPage('statuses.EN_ATTENTE_VALIDATION')}
           </div>
@@ -404,7 +404,7 @@ export default function ModifierActualitePage() {
 
               <div className="space-y-4">
                  <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-purple-500" />
+                  <FileText className="w-5 h-5 text-gov-blue" />
                   {t('form.tags')}
                 </h3>
                 <GovInput
@@ -425,7 +425,7 @@ export default function ModifierActualitePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Eye className="w-5 h-5 text-emerald-500" />
+              <Eye className="w-5 h-5 text-gov-green" />
               Visibilité & Validation
             </h3>
             
@@ -433,19 +433,19 @@ export default function ModifierActualitePage() {
                <label className={cn(
                 "relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
                 formData.isValide 
-                  ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                  ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg" 
                   : "border-border bg-muted/10"
               )}>
                 <input
                   type="checkbox"
                   checked={formData.isValide}
                   onChange={(e) => setFormData({ ...formData, isValide: e.target.checked })}
-                  className="w-6 h-6 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 cursor-pointer"
+                  className="w-6 h-6 rounded-lg border-border text-gov-green-dark focus:ring-gov-green/20 cursor-pointer"
                 />
                 <div>
                   <span className={cn(
                     "text-[10px] font-black uppercase tracking-widest block transition-colors",
-                    formData.isValide ? "text-emerald-700" : "text-foreground"
+                    formData.isValide ? "text-gov-green-dark" : "text-foreground"
                   )}>{t('form.is_valide')}</span>
                 </div>
               </label>

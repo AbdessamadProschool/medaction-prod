@@ -83,7 +83,7 @@ const JSONValue = ({ value }: { value: any }) => {
   }
   
   if (typeof value === 'number') {
-    return <span className="text-purple-600 dark:text-purple-400 font-mono dir-ltr inline-block" dir="ltr">{value}</span>;
+    return <span className="text-gov-blue dark:text-gov-blue-light font-mono dir-ltr inline-block" dir="ltr">{value}</span>;
   }
   
   if (Array.isArray(value)) {
@@ -309,10 +309,10 @@ export default function AuditClient() {
     if (action === 'REGISTER') return { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300', icon: User };
     if (action.includes('LOGIN')) return { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-700 dark:text-cyan-300', icon: User };
     if (action.includes('RECLAMATION')) return { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300', icon: Mail };
-    if (action.includes('CREATE')) return { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300', icon: Database };
+    if (action.includes('CREATE')) return { bg: 'bg-gov-green/10 dark:bg-gov-green/30', text: 'text-gov-green-dark dark:text-gov-green-light', icon: Database };
     if (action.includes('UPDATE')) return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', icon: RefreshCw };
     if (action.includes('DELETE')) return { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-300', icon: X };
-    if (action.includes('BACKUP')) return { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-300', icon: Server };
+    if (action.includes('BACKUP')) return { bg: 'bg-gov-blue/10 dark:bg-gov-blue/30', text: 'text-gov-blue dark:text-gov-blue-light', icon: Server };
     if (action === 'ACCESS_DENIED') return { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-300', icon: AlertOctagon };
     if (action === 'LOGOUT') return { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', icon: LogOut };
     return { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-700 dark:text-gray-300', icon: Activity };
@@ -627,7 +627,7 @@ export default function AuditClient() {
                         return (
                             <>
                                 <div className="flex flex-col items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm text-center h-full">
-                                    <div className="p-3 bg-purple-100 dark:bg-purple-900/20 text-purple-600 rounded-full mb-3">
+                                    <div className="p-3 bg-gov-blue/10 dark:bg-gov-blue/20 text-gov-blue rounded-full mb-3">
                                         <Globe size={20} />
                                     </div>
                                     <div className="w-full">

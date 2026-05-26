@@ -60,8 +60,8 @@ interface PermissionGroup {
 const GROUP_ICONS: Record<string, { icon: React.ElementType; color: string }> = {
   USERS: { icon: Users, color: 'from-blue-500 to-indigo-600' },
   RECLAMATIONS: { icon: MessageSquare, color: 'from-orange-500 to-red-600' },
-  ETABLISSEMENTS: { icon: Building2, color: 'from-emerald-500 to-teal-600' },
-  EVENEMENTS: { icon: Calendar, color: 'from-purple-500 to-violet-600' },
+  ETABLISSEMENTS: { icon: Building2, color: 'from-gov-green to-gov-green-dark' },
+  EVENEMENTS: { icon: Calendar, color: 'from-gov-blue to-gov-blue-dark' },
   CONTENT: { icon: FileText, color: 'from-pink-500 to-rose-600' },
   SETTINGS: { icon: Settings, color: 'from-gray-500 to-gray-700' },
   SYSTEM: { icon: Database, color: 'from-cyan-500 to-blue-600' },
@@ -239,7 +239,7 @@ export default function SuperAdminPermissionsPage() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
       </div>
     );
   }
@@ -313,7 +313,7 @@ export default function SuperAdminPermissionsPage() {
             <p className="text-sm text-gray-500">{t('total')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-            <p className="text-2xl font-bold text-emerald-600">{permissions.filter(p => p.isActive).length}</p>
+            <p className="text-2xl font-bold text-gov-green">{permissions.filter(p => p.isActive).length}</p>
             <p className="text-sm text-gray-500">{t('active')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
@@ -321,7 +321,7 @@ export default function SuperAdminPermissionsPage() {
             <p className="text-sm text-gray-500">{t('inactive')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-            <p className="text-2xl font-bold text-purple-600">{groupedPermissions.length}</p>
+            <p className="text-2xl font-bold text-gov-blue">{groupedPermissions.length}</p>
             <p className="text-sm text-gray-500">{t('groups')}</p>
           </div>
         </div>
@@ -378,7 +378,7 @@ export default function SuperAdminPermissionsPage() {
                             disabled={!!actionLoading}
                             className={`p-2 rounded-lg transition-colors ${
                               perm.isActive
-                                ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                                ? 'text-gov-green hover:bg-gov-green/10 dark:hover:bg-gov-green/20'
                                 : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                             }`}
                             title={perm.isActive ? 'Désactiver' : 'Activer'}

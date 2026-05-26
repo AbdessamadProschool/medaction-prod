@@ -248,7 +248,7 @@ export default function CampagneDetailPage() {
                 )}
                 
                 <span className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-lg border border-white/10">
-                  <Eye className="w-5 h-5 text-emerald-300" />
+                  <Eye className="w-5 h-5 text-gov-green" />
                   {t('views', { count: campagne.nombreVues || 0 })}
                 </span>
               </div>

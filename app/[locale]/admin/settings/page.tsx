@@ -73,9 +73,9 @@ const DEFAULT_SETTINGS: SettingsData = {
 
   const tabs = [
     { id: 'general', label: t('tabs.general'), icon: Settings, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { id: 'notifications', label: t('tabs.notifications'), icon: Bell, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { id: 'security', label: t('tabs.security'), icon: Shield, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { id: 'email', label: t('tabs.email'), icon: Mail, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { id: 'notifications', label: t('tabs.notifications'), icon: Bell, color: 'text-gov-gold', bg: 'bg-gov-gold/5' },
+    { id: 'security', label: t('tabs.security'), icon: Shield, color: 'text-gov-blue-dark', bg: 'bg-gov-blue/5' },
+    { id: 'email', label: t('tabs.email'), icon: Mail, color: 'text-gov-green-dark', bg: 'bg-gov-green/5' },
   ];
 
   // Vérifier l'authentification
@@ -203,7 +203,7 @@ const DEFAULT_SETTINGS: SettingsData = {
             <motion.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl flex items-center gap-3 text-amber-700 dark:text-amber-400 mb-8 shadow-sm"
+              className="p-4 bg-gov-gold/5 dark:bg-gov-gold/10/10 border border-gov-gold/30 dark:border-gov-gold/30/20 rounded-2xl flex items-center gap-3 text-gov-gold dark:text-gov-gold mb-8 shadow-sm"
             >
               <AlertCircle size={20} className="shrink-0" />
               <p className="text-sm font-bold">{t('super_admin_only')}</p>
@@ -290,9 +290,9 @@ const DEFAULT_SETTINGS: SettingsData = {
                           />
                         </div>
 
-                        <div className="p-6 bg-rose-500/5 rounded-2xl border border-rose-500/10 flex items-center justify-between group hover:bg-rose-500/10 transition-colors">
+                        <div className="p-6 bg-gov-red/10/5 rounded-2xl border border-rose-500/10 flex items-center justify-between group hover:bg-gov-red/10/10 transition-colors">
                           <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${settings.general.modeMaintenance ? 'bg-rose-500 text-white animate-pulse' : 'bg-muted text-muted-foreground'}`}>
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${settings.general.modeMaintenance ? 'bg-gov-red/10 text-white animate-pulse' : 'bg-muted text-muted-foreground'}`}>
                               <AlertCircle size={24} />
                             </div>
                             <div>
@@ -302,7 +302,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                           </div>
                           <div 
                             onClick={() => isSuperAdmin && updateSetting('general', 'modeMaintenance', !settings.general.modeMaintenance)}
-                            className={`w-14 h-8 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.general.modeMaintenance ? 'bg-rose-500' : 'bg-muted'}`}
+                            className={`w-14 h-8 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.general.modeMaintenance ? 'bg-gov-red/10' : 'bg-muted'}`}
                           >
                             <motion.div 
                               animate={{ x: settings.general.modeMaintenance ? 24 : 4 }}
@@ -317,7 +317,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                   {activeTab === 'notifications' && (
                     <div className="space-y-8">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-12 bg-amber-500/10 text-amber-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gov-gold/10/10 text-gov-gold rounded-xl flex items-center justify-center">
                           <Bell size={24} />
                         </div>
                         <h3 className="text-xl font-black text-foreground uppercase tracking-tight">{t('notifications.title')}</h3>
@@ -336,7 +336,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                             </div>
                             <div 
                               onClick={() => isSuperAdmin && updateSetting('notifications', item.id, !settings.notifications[item.id as keyof typeof settings.notifications])}
-                              className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.notifications[item.id as keyof typeof settings.notifications] ? 'bg-emerald-500' : 'bg-muted-foreground/20'}`}
+                              className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.notifications[item.id as keyof typeof settings.notifications] ? 'bg-gov-green' : 'bg-muted-foreground/20'}`}
                             >
                               <motion.div 
                                 animate={{ x: settings.notifications[item.id as keyof typeof settings.notifications] ? 26 : 2 }}
@@ -352,7 +352,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                   {activeTab === 'security' && (
                     <div className="space-y-8">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-12 bg-purple-500/10 text-purple-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gov-blue text-gov-blue-dark rounded-xl flex items-center justify-center">
                           <Shield size={24} />
                         </div>
                         <h3 className="text-xl font-black text-foreground uppercase tracking-tight">{t('security.title')}</h3>
@@ -397,9 +397,9 @@ const DEFAULT_SETTINGS: SettingsData = {
                           </div>
                         </div>
 
-                        <div className="p-6 bg-purple-500/5 rounded-2xl border border-purple-500/10 flex items-center justify-between hover:bg-purple-500/10 transition-colors group">
+                        <div className="p-6 bg-gov-blue rounded-2xl border border-gov-blue/30/10 flex items-center justify-between hover:bg-gov-blue transition-colors group">
                           <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${settings.security.doubleAuthentification ? 'bg-purple-600 text-white shadow-lg' : 'bg-muted text-muted-foreground'}`}>
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${settings.security.doubleAuthentification ? 'bg-gov-blue text-white shadow-lg' : 'bg-muted text-muted-foreground'}`}>
                               <Shield size={22} className="stroke-[2.5]" />
                             </div>
                             <div>
@@ -409,7 +409,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                           </div>
                           <div 
                             onClick={() => isSuperAdmin && updateSetting('security', 'doubleAuthentification', !settings.security.doubleAuthentification)}
-                            className={`w-14 h-8 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.security.doubleAuthentification ? 'bg-purple-600' : 'bg-muted'}`}
+                            className={`w-14 h-8 rounded-full relative cursor-pointer transition-colors duration-300 ${settings.security.doubleAuthentification ? 'bg-gov-blue' : 'bg-muted'}`}
                           >
                             <motion.div 
                               animate={{ x: settings.security.doubleAuthentification ? 24 : 4 }}
@@ -424,7 +424,7 @@ const DEFAULT_SETTINGS: SettingsData = {
                   {activeTab === 'email' && (
                     <div className="space-y-8">
                       <div className="flex items-center gap-4 mb-2">
-                        <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gov-green text-gov-green-dark rounded-xl flex items-center justify-center">
                           <Mail size={24} />
                         </div>
                         <h3 className="text-xl font-black text-foreground uppercase tracking-tight">{t('email.title')}</h3>

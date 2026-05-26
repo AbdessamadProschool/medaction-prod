@@ -279,11 +279,11 @@ function EvenementsContent() {
                           onClick={() => updateFilter('secteur', s.id)}
                           className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all group ${
                             secteur === s.id
-                              ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/50 shadow-sm'
+                              ? 'bg-gov-green/5 text-gov-green-dark font-bold border border-gov-green/30/50 shadow-sm'
                               : 'text-gray-600 hover:bg-gray-50 border border-transparent hover:translate-x-1'
                           }`}
                         >
-                          <s.icon className={`w-4 h-4 transition-colors ${secteur === s.id ? 'text-emerald-600' : 'text-gray-400 group-hover:text-emerald-500'}`} />
+                          <s.icon className={`w-4 h-4 transition-colors ${secteur === s.id ? 'text-gov-green-dark' : 'text-gray-400 group-hover:text-gov-green'}`} />
                           {s.id === '' ? tCommon('filters.all_sectors') : tCommon(`sectors.${s.id === 'CULTUREL' ? 'culture' : s.id.toLowerCase()}`)}
                         </button>
                       ))}

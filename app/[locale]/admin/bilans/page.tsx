@@ -101,8 +101,8 @@ const SECTEUR_COLORS: Record<string, string> = {
   'EDUCATION': 'bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))]',
   'SANTE': 'bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))]',
   'SPORT': 'bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))]',
-  'SOCIAL': 'bg-purple-500/10 text-purple-600',
-  'CULTUREL': 'bg-amber-500/10 text-amber-600',
+  'SOCIAL': 'bg-gov-blue text-gov-blue-dark',
+  'CULTUREL': 'bg-gov-gold/10/10 text-gov-gold',
   'AUTRE': 'bg-muted text-muted-foreground',
 };
 
@@ -423,8 +423,8 @@ export default function BilansPage() {
 
         <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/10 group-hover:scale-110 transition-transform shadow-sm">
-              <ClipboardList className="w-7 h-7 text-purple-600" />
+            <div className="w-14 h-14 rounded-2xl bg-gov-blue flex items-center justify-center border border-gov-blue/30/10 group-hover:scale-110 transition-transform shadow-sm">
+              <ClipboardList className="w-7 h-7 text-gov-blue-dark" />
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.activities_with_report')}</p>
@@ -435,8 +435,8 @@ export default function BilansPage() {
 
         <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/10 group-hover:scale-110 transition-transform shadow-sm">
-              <Megaphone className="w-7 h-7 text-amber-600" />
+            <div className="w-14 h-14 rounded-2xl bg-gov-gold/10/10 flex items-center justify-center border border-gov-gold/30/10 group-hover:scale-110 transition-transform shadow-sm">
+              <Megaphone className="w-7 h-7 text-gov-gold" />
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('admin_bilans.stats.finished_campaigns')}</p>
@@ -745,7 +745,7 @@ export default function BilansPage() {
                         )}
                       </span>
                       {act.noteQualite && (
-                        <span className="flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 text-amber-600">
+                        <span className="flex items-center gap-2 bg-gov-gold/10/10 px-3 py-1.5 rounded-xl border border-gov-gold/30/20 text-gov-gold">
                           <Star className="w-4 h-4 fill-current" />
                           {act.noteQualite}/5
                         </span>
@@ -794,7 +794,7 @@ export default function BilansPage() {
                                 </div>
                               )}
                               {act.difficultes && (
-                                <div className="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10 text-amber-700 text-sm font-medium leading-relaxed">
+                                <div className="p-4 bg-gov-gold/10/5 rounded-2xl border border-gov-gold/30/10 text-gov-gold text-sm font-medium leading-relaxed">
                                   <div className="flex items-center gap-2 mb-1 font-bold uppercase text-[9px] tracking-widest opacity-60">
                                     <AlertCircle className="w-3 h-3" /> {t('admin_bilans.labels.difficulties')}
                                   </div>

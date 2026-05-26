@@ -246,7 +246,7 @@ export default function ReclamationDetailPage() {
           </Link>
           
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-orange-500/30 ring-8 ring-orange-500/10">
+            <div className="w-16 h-16 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-[2rem] flex items-center justify-center shadow-2xl shadow-orange-500/30 ring-8 ring-orange-500/10">
               <MessageSquare className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -455,7 +455,7 @@ export default function ReclamationDetailPage() {
               {t('citizen_title')}
             </h2>
             <div className="flex items-center gap-5 mb-6">
-              <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-black text-xl shadow-lg">
+              <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-gov-green to-gov-blue flex items-center justify-center text-white font-black text-xl shadow-lg">
                 {reclamation.user.prenom[0]}{reclamation.user.nom[0]}
               </div>
               <div>
@@ -537,7 +537,7 @@ export default function ReclamationDetailPage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 shadow-xl"
           >
             <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Calendar size={18} className="text-orange-500" />
+              <Calendar size={18} className="text-gov-gold" />
               {t('dates_title')}
             </h2>
             <div className="space-y-6">
@@ -579,13 +579,13 @@ export default function ReclamationDetailPage() {
               className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 shadow-xl"
             >
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-                <Clock size={18} className="text-purple-500" />
+                <Clock size={18} className="text-gov-blue" />
                 {t('history_title')}
               </h2>
               <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-border">
                 {reclamation.historique.map((h, i) => (
                   <div key={h.id} className="relative flex gap-4 text-sm pl-8">
-                    <div className="absolute left-0 top-1.5 w-6 h-6 bg-background rounded-full border-[3px] border-purple-500 shadow-sm" />
+                    <div className="absolute left-0 top-1.5 w-6 h-6 bg-background rounded-full border-[3px] border-gov-blue/30 shadow-sm" />
                     <div>
                       <p className="font-extrabold text-foreground uppercase tracking-tight text-xs mb-1">{tHistory(h.action)}</p>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

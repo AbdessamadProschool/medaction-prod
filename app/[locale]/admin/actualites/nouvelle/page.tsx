@@ -209,7 +209,7 @@ export default function AdminNouvelleActualitePage() {
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-green rounded-full" />
                 {t('sections.image')}
               </h2>
             </div>
@@ -340,7 +340,7 @@ export default function AdminNouvelleActualitePage() {
 
               <div className="space-y-4">
                 <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                  <Tag className="w-5 h-5 text-purple-500" />
+                  <Tag className="w-5 h-5 text-gov-blue" />
                   {t('sections.category')}
                 </h3>
                 <GovSelect
@@ -367,7 +367,7 @@ export default function AdminNouvelleActualitePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Send className="w-5 h-5 text-emerald-500" />
+              <Send className="w-5 h-5 text-gov-green" />
               {t('sections.status')}
             </h3>
             

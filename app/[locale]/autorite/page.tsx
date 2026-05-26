@@ -75,8 +75,8 @@ const secteurColors: Record<string, string> = {
   EDUCATION: 'bg-gov-blue text-white',
   SANTE: 'bg-gov-green text-white',
   SPORT: 'bg-gov-gold text-gray-900',
-  CULTUREL: 'bg-purple-600 text-white',
-  SOCIAL: 'bg-pink-600 text-white',
+  CULTUREL: 'bg-gov-blue text-white',
+  SOCIAL: 'bg-gov-red/10 text-white',
   AUTRE: 'bg-gray-500 text-white',
 };
 
@@ -271,7 +271,7 @@ export default function AutoriteDashboard() {
           className="gov-card p-6 border-b-4 border-gov-gold-dark hover:shadow-lg transition-shadow duration-300"
         >
           <div className="flex items-center justify-between mb-4">
-             <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-gov-gold-dark">
+             <div className="w-12 h-12 rounded-xl bg-gov-gold/5 flex items-center justify-center text-gov-gold-dark">
               <Clock className="w-6 h-6" />
             </div>
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">{t('pending_reclamations')}</p>
@@ -388,7 +388,7 @@ export default function AutoriteDashboard() {
                             reclamation.joursDepuisAffectation > 7
                               ? 'bg-red-50 text-gov-red border border-red-100'
                               : reclamation.joursDepuisAffectation > 3
-                              ? 'bg-orange-50 text-gov-gold-dark border border-orange-100'
+                              ? 'bg-gov-gold/5 text-gov-gold-dark border border-gov-gold/30'
                               : 'bg-green-50 text-gov-green border border-green-100'
                           }`}>
                             {reclamation.categorie}
@@ -445,7 +445,7 @@ export default function AutoriteDashboard() {
                           {etab.nom}
                         </p>
                          {/* Link inside Link is problematic, but we can use a span with onClick if needed or a separate icon */}
-                         <span className="p-1 text-gray-300 group-hover:text-emerald-500 transition-colors pointer-events-none">
+                         <span className="p-1 text-gray-300 group-hover:text-gov-green transition-colors pointer-events-none">
                             <FileText size={14} />
                          </span>
                       </div>
@@ -520,7 +520,7 @@ export default function AutoriteDashboard() {
                       'bg-gov-gold ring-gov-gold',
                       'bg-gov-green ring-gov-green',
                       'bg-gov-red ring-gov-red',
-                      'bg-purple-500 ring-purple-500',
+                      'bg-gov-blue ring-gov-blue/20',
                     ][index % 5];
                     
                    return (

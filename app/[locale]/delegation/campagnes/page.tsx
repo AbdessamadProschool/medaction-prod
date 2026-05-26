@@ -95,7 +95,7 @@ export default function MesCampagnesPage() {
   const typeColors: Record<string, string> = {
     SANTE: 'from-red-500 to-rose-500',
     ENVIRONNEMENT: 'from-green-500 to-emerald-500',
-    EDUCATION: 'from-blue-500 to-indigo-500',
+    EDUCATION: 'from-gov-blue to-gov-blue-dark',
     SOCIAL: 'from-orange-500 to-amber-500',
     AUTRE: 'from-gray-500 to-gray-600',
   };
@@ -110,13 +110,13 @@ export default function MesCampagnesPage() {
       <div className="relative overflow-hidden rounded-[2.5rem] bg-white text-gray-900 shadow-sm border border-gray-100 px-6 py-6 md:px-8 md:py-10">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-            <Megaphone className="w-48 h-48 transform rotate-12 text-emerald-600" />
+            <Megaphone className="w-48 h-48 transform rotate-12 text-gov-green-dark" />
         </div>
 
         <div className={`relative z-10 flex flex-col md:flex-row ${direction === 'rtl' ? 'md:items-start text-right' : 'md:items-end text-left'} justify-between gap-6`}>
             <div className={`space-y-3 flex flex-col ${direction === 'rtl' ? 'items-end' : 'items-start'}`}>
-                <div className={`flex items-center gap-2.5 text-emerald-600 font-bold bg-emerald-50 w-fit px-3 py-1 rounded-xl border border-emerald-100 text-xs uppercase tracking-wider ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div className={`flex items-center gap-2.5 text-gov-green-dark font-bold bg-gov-green/5 w-fit px-3 py-1 rounded-xl border border-gov-green/30 text-xs uppercase tracking-wider ${direction === 'rtl' ? 'flex-row-reverse' : ''}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-gov-green/10 animate-pulse"></span>
                     <span>{t('title')}</span>
                 </div>
                 <div className={direction === 'rtl' ? 'text-right' : 'text-left'}>
@@ -131,7 +131,7 @@ export default function MesCampagnesPage() {
             
             <Link
                 href="/delegation/campagnes/nouvelle"
-                className="group relative px-6 py-3 bg-emerald-600 text-white rounded-xl font-black text-sm shadow-xl shadow-emerald-500/20 hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
+                className="group relative px-6 py-3 bg-gov-green text-white rounded-xl font-black text-sm shadow-xl shadow-gov-green/20 hover:bg-gov-green hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
             >
                 <Plus size={18} className="stroke-[4px]" />
                 <span>{t('new_campaign')}</span>
@@ -142,7 +142,7 @@ export default function MesCampagnesPage() {
       {/* Control Bar */}
       <div className="sticky top-4 z-30 bg-white/80 backdrop-blur-md rounded-2xl p-2 border border-gray-100 shadow-lg shadow-gray-200/50 flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative group">
-              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-green transition-colors" size={20} />
               <input
                   type="text"
                   value={search}
@@ -161,7 +161,7 @@ export default function MesCampagnesPage() {
                 <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-emerald-200 text-start"
+                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-gov-green/30 text-start"
                 >
                 <option value="">{t('filter_all')}</option>
                 <option value="ACTIVE">{t('filter_active')}</option>
@@ -217,7 +217,7 @@ export default function MesCampagnesPage() {
                     <div className="relative flex items-start justify-between">
                       <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
                         campagne.statut === 'CLOTUREE'
-                          ? 'bg-indigo-600 text-white border border-indigo-400'
+                          ? 'bg-gov-blue/10 text-white border border-gov-blue/30'
                           : campagne.isActive 
                             ? 'bg-white/25 text-white border border-white/30' 
                             : 'bg-gray-900/30 text-gray-200 border border-gray-500/30'
@@ -285,7 +285,7 @@ export default function MesCampagnesPage() {
                           {campagne.dateFin && new Date(campagne.dateFin) < new Date() ? (
                             <Link
                               href={`/delegation/campagnes/${campagne.id}/cloture`}
-                              className="flex-1 py-3 text-center text-sm font-bold text-amber-600 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors flex items-center justify-center gap-2 border border-amber-200 animate-pulse"
+                              className="flex-1 py-3 text-center text-sm font-bold text-gov-gold bg-gov-gold/5 rounded-xl hover:bg-gov-gold/10 transition-colors flex items-center justify-center gap-2 border border-gov-gold/30 animate-pulse"
                             >
                               <CheckCircle size={16} />
                               {t('close_action') || 'إغلاق'}

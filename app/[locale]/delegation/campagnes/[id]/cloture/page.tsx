@@ -146,7 +146,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
 
   if (!campagne) return (
      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-emerald-600" />
+        <Loader2 className="w-10 h-10 animate-spin text-gov-green-dark" />
       </div>
   );
 
@@ -157,7 +157,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
             <div className={`mb-6 flex flex-col ${direction === 'rtl' ? 'items-start text-right' : 'items-start text-left'}`}>
                 <Link 
                     href="/delegation/campagnes"
-                    className="inline-flex items-center gap-2 text-gray-500 hover:text-emerald-600 mb-4 transition-colors group font-bold text-sm no-underline"
+                    className="inline-flex items-center gap-2 text-gray-500 hover:text-gov-green-dark mb-4 transition-colors group font-bold text-sm no-underline"
                     dir={direction}
                 >
                     <ArrowRight size={20} className={`${direction === 'rtl' ? 'rotate-180' : ''} group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform`} />
@@ -165,7 +165,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                 </Link>
 
                 <div className={`flex items-center gap-4 mb-2 w-full`}>
-                    <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl text-white shadow-lg shadow-emerald-200 shrink-0">
+                    <div className="p-3 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-2xl text-white shadow-lg shadow-gov-green/20 shrink-0">
                         <CheckCircle className="w-6 h-6" />
                     </div>
                     <div>
@@ -173,18 +173,18 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                             {t('title')}
                         </h1>
                         <p className={`text-gray-500 font-medium italic text-start`}>
-                            {t('campaign_label')} <span className="font-bold text-emerald-600 not-italic">{campagne.titre}</span>
+                            {t('campaign_label')} <span className="font-bold text-gov-green-dark not-italic">{campagne.titre}</span>
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100/50 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-amber-100 transition-colors" />
-                <div className="p-2.5 bg-white rounded-xl text-amber-600 shadow-sm shrink-0 relative z-10">
+            <div className="bg-gov-gold/5 border border-gov-gold/30 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gov-gold/10/50 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-gov-gold/10 transition-colors" />
+                <div className="p-2.5 bg-white rounded-xl text-gov-gold shadow-sm shrink-0 relative z-10">
                     <AlertCircle size={22} />
                 </div>
-                <div className={`text-amber-900 py-0.5 relative z-10 w-full text-start`}>
+                <div className={`text-gov-gold py-0.5 relative z-10 w-full text-start`}>
                     <p className="font-bold text-base mb-1">{t('info_box.title')}</p>
                     <p className="text-sm font-medium opacity-90 leading-relaxed font-cairo">{t('info_box.text')}</p>
                 </div>
@@ -193,9 +193,9 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
         <form onSubmit={handleSubmit} className="space-y-4">
             
                 {/* Bilan Chiffré */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-gov-green/20 transition-all duration-300">
                     <div className={`flex items-center gap-3 mb-6`} dir={direction}>
-                        <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600 shrink-0">
+                        <div className="p-2 bg-gov-green/5 rounded-xl text-gov-green-dark shrink-0">
                             <Users className="w-5 h-5" />
                         </div>
                         <h2 className={`text-lg font-bold text-gray-800 text-start w-full`}>
@@ -213,10 +213,10 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                                 value={nbParticipations}
                                 onChange={(e) => setNbParticipations(e.target.value)}
                                 placeholder={t('participation.placeholder')}
-                                className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold text-sm ${direction === 'rtl' ? 'text-right pr-4 pl-12' : 'text-left pl-4 pr-12'}`}
+                                className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green/30 outline-none transition-all font-bold text-sm ${direction === 'rtl' ? 'text-right pr-4 pl-12' : 'text-left pl-4 pr-12'}`}
                                 required
                             />
-                            <div className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors pointer-events-none ${direction === 'rtl' ? 'left-4' : 'right-4'}`}>
+                            <div className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-green transition-colors pointer-events-none ${direction === 'rtl' ? 'left-4' : 'right-4'}`}>
                                 <Target size={20} />
                             </div>
                         </div>
@@ -224,9 +224,9 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                 </div>
 
                 {/* Bilan Qualitatif */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-gov-green/20 transition-all duration-300">
                     <div className={`flex items-center gap-3 mb-6`} dir={direction}>
-                        <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600 shrink-0">
+                        <div className="p-2 bg-gov-green/5 rounded-xl text-gov-green-dark shrink-0">
                             <FileText className="w-5 h-5" />
                         </div>
                         <h2 className={`text-lg font-bold text-gray-800 text-start w-full`}>
@@ -243,7 +243,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                             value={bilanDescription}
                             onChange={(e) => setBilanDescription(e.target.value)}
                             placeholder={t('qualitative.placeholder')}
-                            className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all font-bold text-sm leading-relaxed resize-none ${direction === 'rtl' ? 'text-right' : 'text-left'}`}
+                            className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green/30 outline-none transition-all font-bold text-sm leading-relaxed resize-none ${direction === 'rtl' ? 'text-right' : 'text-left'}`}
                             required
                         />
                     </div>
@@ -253,7 +253,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                 {/* Compte Rendu (Document) */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-teal-500/5 transition-all duration-300">
                     <div className={`flex items-center gap-3 mb-6`} dir={direction}>
-                        <div className="p-2 bg-teal-50 rounded-xl text-teal-600">
+                        <div className="p-2 bg-gov-green/5 rounded-xl text-gov-green">
                             <FileText className="w-5 h-5" />
                         </div>
                         <h2 className={`text-lg font-bold text-gray-800 w-full ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
@@ -264,8 +264,8 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                         <label className={`block text-sm font-bold text-gray-700 text-start w-full`}>{t('report.label')}</label>
                         
                         {compteRenduUrl ? (
-                            <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-200 rounded-xl shadow-inner">
-                            <div className="flex items-center gap-3 text-emerald-700">
+                            <div className="flex items-center justify-between p-4 bg-gov-green/5 border border-gov-green/30 rounded-xl shadow-inner">
+                            <div className="flex items-center gap-3 text-gov-green-dark">
                                 <CheckCircle size={22} className="fill-emerald-100" />
                                 <span className="font-bold">{t('report.success')}</span>
                             </div>
@@ -278,13 +278,13 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                             </button>
                             </div>
                         ) : (
-                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-emerald-50/30 hover:border-emerald-400 transition-all group relative overflow-hidden">
+                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-gov-green/5/30 hover:border-gov-green/30 transition-all group relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-emerald-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
                                     <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all">
-                                        <Upload className="w-7 h-7 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+                                        <Upload className="w-7 h-7 text-gray-400 group-hover:text-gov-green-dark transition-colors" />
                                     </div>
-                                    <p className="text-base font-bold text-gray-700 mb-1 group-hover:text-emerald-800 transition-colors">{t('report.upload_text')}</p>
+                                    <p className="text-base font-bold text-gray-700 mb-1 group-hover:text-gov-green-dark transition-colors">{t('report.upload_text')}</p>
                                     <p className="text-sm text-gray-400 font-medium italic">{t('report.formats')}</p>
                                 </div>
                                 <input 
@@ -300,9 +300,9 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                 </div>
 
                 {/* Galerie Photos */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-gov-green/20 transition-all duration-300">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                        <div className="p-2 bg-gov-green/5 rounded-xl text-gov-green-dark">
                             <ImageIcon className="w-5 h-5" />
                         </div>
                         <h2 className="text-lg font-bold text-gray-800">
@@ -326,16 +326,16 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                             </div>
                         ))}
                         
-                        <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-50/30 hover:border-emerald-400 transition-all group relative overflow-hidden">
+                        <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gov-green/5/30 hover:border-gov-green/30 transition-all group relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 to-emerald-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                             {uploading ? (
-                                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                                <Loader2 className="w-8 h-8 text-gov-green animate-spin" />
                             ) : (
                                 <div className="flex flex-col items-center relative z-10 transition-transform group-hover:translate-y-[-2px]">
                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all">
-                                        <Upload className="w-6 h-6 text-gray-400 group-hover:text-emerald-600 transition-colors" />
+                                        <Upload className="w-6 h-6 text-gray-400 group-hover:text-gov-green-dark transition-colors" />
                                     </div>
-                                    <span className="text-sm font-bold text-gray-600 group-hover:text-emerald-800 transition-colors">{t('gallery.add')}</span>
+                                    <span className="text-sm font-bold text-gray-600 group-hover:text-gov-green-dark transition-colors">{t('gallery.add')}</span>
                                 </div>
                             )}
                             <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
@@ -358,7 +358,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-10 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:transform-none"
+                        className="px-10 py-3.5 bg-gradient-to-r from-gov-green to-gov-green-dark text-white rounded-xl hover:shadow-xl hover:shadow-gov-green/20 hover:-translate-y-0.5 transition-all font-bold text-sm flex items-center gap-3 disabled:opacity-50 disabled:transform-none"
                     >
                         {loading ? (
                              <>

@@ -39,10 +39,10 @@ interface Actualite {
 }
 
 const SECTEUR_CONFIG: Record<string, { gradient: string; label: string }> = {
-  EDUCATION: { gradient: 'from-blue-600 to-indigo-700', label: 'Éducation' },
+  EDUCATION: { gradient: 'from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]', label: 'Éducation' },
   SANTE: { gradient: 'from-red-600 to-pink-700', label: 'Santé' },
-  SPORT: { gradient: 'from-emerald-600 to-teal-700', label: 'Sport' },
-  SOCIAL: { gradient: 'from-purple-600 to-violet-700', label: 'Social' },
+  SPORT: { gradient: 'from-gov-green to-gov-green-dark', label: 'Sport' },
+  SOCIAL: { gradient: 'from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]', label: 'Social' },
   CULTUREL: { gradient: 'from-orange-600 to-amber-700', label: 'Culturel' },
   AUTRE: { gradient: 'from-gray-600 to-slate-700', label: 'Autre' },
 };
@@ -176,7 +176,7 @@ export default function ActualiteDetailPage() {
           </div>
         ) : (
           <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient}`}>
-             <div className="absolute inset-0 bg-black/20 pattern-grid-lg opacity-20" />
+             <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.2)] pattern-grid-lg opacity-20" />
           </div>
         )}
 
@@ -184,7 +184,7 @@ export default function ActualiteDetailPage() {
         <div className={`absolute top-28 ${locale === 'ar' ? 'right-6' : 'left-6'} z-10`}>
            <Link 
              href="/actualites"
-             className="inline-flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-md text-white rounded-full hover:bg-black/40 transition-all border border-white/10 text-sm font-medium"
+             className="inline-flex items-center gap-2 px-4 py-2 bg-[hsl(var(--gov-blue-dark)/0.36)] text-white rounded-full hover:bg-[hsl(var(--gov-blue-dark)/0.46)] transition-colors border border-white/10 text-sm font-medium"
            >
              <ArrowLeft className={`w-4 h-4 ${locale === 'ar' ? 'rotate-180' : ''}`} />
              {t('detail.back')}
@@ -263,7 +263,7 @@ export default function ActualiteDetailPage() {
                 onClick={handleShare}
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-              {copied ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
+              {copied ? <CheckCircle className="w-4 h-4 text-gov-green" /> : <Share2 className="w-4 h-4" />}
                  {copied ? t('detail.shared') : t('detail.share')}
               </button>
            </div>
@@ -281,7 +281,7 @@ export default function ActualiteDetailPage() {
                  className={`prose prose-lg prose-slate max-w-none 
                  prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-[hsl(213,80%,28%)]
                  prose-a:text-[hsl(45,93%,47%)] prose-a:no-underline hover:prose-a:underline
-                 prose-blockquote:border-l-4 prose-blockquote:border-[hsl(45,93%,47%)] prose-blockquote:bg-amber-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-r-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
+                 prose-blockquote:border prose-blockquote:border-[hsl(var(--gov-gold)/0.35)] prose-blockquote:bg-gov-gold/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
                  html={locale === 'ar' && actualite.contenuAr ? actualite.contenuAr : actualite.contenu}
               />
 
@@ -338,7 +338,7 @@ export default function ActualiteDetailPage() {
                           fill
                           className="object-cover"
                        />
-                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                       <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0)] group-hover:bg-[hsl(var(--gov-blue-dark)/0.2)] transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                           <Eye className="w-8 h-8 text-white drop-shadow-md" />
                        </div>
                     </button>
@@ -355,7 +355,7 @@ export default function ActualiteDetailPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-[hsl(var(--gov-blue-dark)/0.96)] flex items-center justify-center p-4"
             onClick={() => setShowGallery(false)}
           >
             <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors p-2">

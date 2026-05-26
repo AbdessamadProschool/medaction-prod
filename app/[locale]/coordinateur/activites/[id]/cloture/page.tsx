@@ -123,7 +123,7 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
   if (dataLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-gov-green/30 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -140,7 +140,7 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
             <span>Rapport</span>
         </div>
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <CheckCircle className="text-emerald-600" />
+            <CheckCircle className="text-gov-green-dark" />
             Rapport de Clôture d'Activité
         </h1>
         <div className="mt-2 bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
@@ -153,9 +153,9 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
         </div>
       </div>
 
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6 flex items-start gap-3">
-        <Lightbulb className="text-emerald-600 shrink-0 mt-0.5" size={20} />
-        <div className="text-sm text-emerald-800">
+      <div className="bg-gov-green/5 border border-gov-green/30 rounded-lg p-4 mb-6 flex items-start gap-3">
+        <Lightbulb className="text-gov-green-dark shrink-0 mt-0.5" size={20} />
+        <div className="text-sm text-gov-green-dark">
             <p className="font-semibold">Pourquoi ce rapport ?</p>
             <p>Ce rapport permet de capitaliser sur l'expérience, d'améliorer les futures activités et de justifier les actions menées auprès de l'administration provinciale.</p>
         </div>
@@ -195,7 +195,7 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
           {/* Qualité Globale */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-500" />
+              <Star className="w-5 h-5 text-gov-gold" />
               Note de Qualité*
             </h2>
             <div className="flex items-center justify-between px-4 py-2">
@@ -208,7 +208,7 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
                  >
                    <Star 
                      size={32} 
-                     className={noteQualite >= star ? "fill-amber-400 text-amber-400" : "text-gray-300"} 
+                     className={noteQualite >= star ? "fill-amber-400 text-gov-gold" : "text-gray-300"} 
                    />
                    <span className="block text-xs text-center text-gray-400 mt-1">{star}</span>
                  </button>
@@ -252,7 +252,7 @@ export default function ClotureActivitePage({ params }: { params: Promise<{ id: 
                </div>
                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
-                    <AlertTriangle size={14} className="text-orange-500" /> Difficultés rencontrées
+                    <AlertTriangle size={14} className="text-gov-gold" /> Difficultés rencontrées
                   </label>
                   <textarea
                     rows={3}

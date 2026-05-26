@@ -76,10 +76,10 @@ function PendingCard({
       <div className="flex items-start gap-4">
         {/* Icon */}
         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-          type === 'evenements' ? 'bg-emerald-100 text-emerald-600' :
+          type === 'evenements' ? 'bg-gov-green/10 text-gov-green-dark' :
           type === 'actualites' ? 'bg-blue-100 text-blue-600' :
-          type === 'campagnes' ? 'bg-orange-100 text-orange-600' :
-          'bg-purple-100 text-purple-600'
+          type === 'campagnes' ? 'bg-gov-gold/10 text-gov-gold' :
+          'bg-gov-blue/10 text-gov-blue-dark'
         }`}>
           {type === 'evenements' ? <Calendar size={24} /> :
            type === 'actualites' ? <Newspaper size={24} /> :
@@ -418,7 +418,7 @@ export default function ValidationPage() {
                    </span>
                  )}
                  {selectedItem.secteur && (
-                   <span className="px-3 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg text-sm font-bold">
+                   <span className="px-3 py-1 bg-gov-blue/5 dark:bg-gov-blue text-gov-blue-dark dark:text-gov-blue rounded-lg text-sm font-bold">
                     {selectedItem.secteur}
                    </span>
                  )}
@@ -460,7 +460,7 @@ export default function ValidationPage() {
 
                {/* Description & Contenu Principal */}
                {selectedItem.description && (
-                 <div className="mb-8 p-6 bg-orange-50/50 dark:bg-orange-900/10 rounded-2xl border-l-4 border-orange-400">
+                 <div className="mb-8 p-6 bg-gov-gold/5/50 dark:bg-gov-gold/10/10 rounded-2xl border-l-2 border-gov-gold/30">
                    <p className="text-lg text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
                      {selectedItem.description}
                    </p>
@@ -507,7 +507,7 @@ export default function ValidationPage() {
                </button>
                <button
                  onClick={() => { setSelectedItem(null); handleApprove(selectedItem); }}
-                 className="px-8 py-3 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 hover:-translate-y-0.5 transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                 className="px-8 py-3 bg-gov-green text-white font-bold rounded-xl hover:bg-gov-green hover:-translate-y-0.5 transition-all flex items-center gap-2 shadow-lg shadow-gov-green/20"
                >
                  <CheckCircle size={20} /> {t('actions.approve')}
                </button>

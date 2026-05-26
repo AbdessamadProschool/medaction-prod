@@ -38,9 +38,9 @@ interface Etablissement {
 
 const CATEGORIES: Record<string, { label: string; color: string }> = {
   ANNONCE: { label: 'Annonce', color: 'bg-blue-100 text-blue-700' },
-  EVENEMENT: { label: 'Événement', color: 'bg-purple-100 text-purple-700' },
+  EVENEMENT: { label: 'Événement', color: 'bg-gov-blue/10 text-gov-blue-dark' },
   COMMUNIQUE: { label: 'Communiqué', color: 'bg-green-100 text-green-700' },
-  PROJET: { label: 'Projet', color: 'bg-orange-100 text-orange-700' },
+  PROJET: { label: 'Projet', color: 'bg-gov-gold/10 text-gov-gold' },
   AUTRE: { label: 'Autre', color: 'bg-gray-100 text-gray-700' },
 };
 

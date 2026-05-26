@@ -199,7 +199,7 @@ export default function RecentContentSection() {
                           <Icon className={`w-12 h-12 ${config.color} opacity-50`} />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--gov-blue-dark)/0.48)] to-transparent" />
                       
                       {/* Type Badge */}
                       <div className="absolute top-3 left-3">
@@ -211,7 +211,7 @@ export default function RecentContentSection() {
                       
                       {/* Time ago */}
                       <div className="absolute bottom-3 right-3">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-black/50 text-white rounded-full text-xs backdrop-blur-sm">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[hsl(var(--gov-blue-dark)/0.62)] text-white rounded-full text-xs">
                           <Clock className="w-3 h-3" />
                           {formatTimeAgo(item.date)}
                         </span>

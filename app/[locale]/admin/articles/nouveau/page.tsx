@@ -148,7 +148,7 @@ export default function NouvelArticlePage() {
           </Link>
           
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-500/20 ring-8 ring-emerald-500/5">
+            <div className="w-16 h-16 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-[2rem] flex items-center justify-center shadow-2xl shadow-gov-green/20 ring-8 ring-gov-green/20">
               <FileText className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -168,7 +168,7 @@ export default function NouvelArticlePage() {
             loading={loading}
             variant="primary"
             leftIcon={!loading && <Save size={18} />}
-            className="rounded-full px-10 shadow-xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 border-none"
+            className="rounded-full px-10 shadow-xl shadow-gov-green/20 bg-gov-green hover:bg-gov-green border-none"
           >
             {t('actions.save')}
           </GovButton>
@@ -183,11 +183,11 @@ export default function NouvelArticlePage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-green rounded-full" />
                 {t('sections.image')}
               </h2>
             </div>
@@ -227,11 +227,11 @@ export default function NouvelArticlePage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="block aspect-[21/9] border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-emerald-500/30 transition-all cursor-pointer group relative overflow-hidden"
+                    className="block aspect-[21/9] border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-gov-green/30/30 transition-all cursor-pointer group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/02 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-card">
-                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-emerald-500 transition-colors" />
+                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-gov-green transition-colors" />
                     </div>
                     <p className="text-foreground font-black uppercase tracking-widest text-xs mb-2">{t('form.select_image')}</p>
                     <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-60">{t('form.image_help')}</p>
@@ -252,11 +252,11 @@ export default function NouvelArticlePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-green rounded-full" />
                 {t('sections.content')}
               </h2>
             </div>
@@ -302,7 +302,7 @@ export default function NouvelArticlePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                  <Tag className="w-5 h-5 text-amber-500" />
+                  <Tag className="w-5 h-5 text-gov-gold" />
                   {t('sections.category')}
                 </h3>
                 <GovSelect
@@ -336,26 +336,26 @@ export default function NouvelArticlePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Eye className="w-5 h-5 text-purple-500" />
+              <Eye className="w-5 h-5 text-gov-blue" />
               {t('sections.publication')}
             </h3>
             
             <label className={cn(
               "relative flex flex-col p-6 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
               isPublie 
-                ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg" 
                 : "border-border bg-muted/10 hover:border-border/80"
             )}>
               <div className="flex items-start gap-4">
                 <input
                   type="checkbox"
                   {...register('isPublie')}
-                  className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-0.5 focus:ring-emerald-500/20 cursor-pointer"
+                  className="w-6 h-6 rounded-lg border-border text-gov-green-dark mt-0.5 focus:ring-gov-green/20 cursor-pointer"
                 />
                 <div>
                   <span className={cn(
                     "text-[10px] font-black uppercase tracking-widest block transition-colors",
-                    isPublie ? "text-emerald-700" : "text-foreground"
+                    isPublie ? "text-gov-green-dark" : "text-foreground"
                   )}>{t('form.publish_now')}</span>
                   <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-1 leading-tight">
                     L'article sera visible immédiatement par les citoyens
@@ -370,10 +370,10 @@ export default function NouvelArticlePage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
-            className="p-8 bg-gradient-to-br from-emerald-600 to-teal-800 rounded-[2.5rem] text-white shadow-2xl shadow-emerald-500/20 relative overflow-hidden"
+            className="p-8 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-[2.5rem] text-white shadow-2xl shadow-gov-green/20 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16" />
-            <Sparkles className="w-8 h-8 mb-4 text-emerald-200" />
+            <Sparkles className="w-8 h-8 mb-4 text-gov-green" />
             <h4 className="text-xs font-black uppercase tracking-widest mb-2">Qualité Éditoriale</h4>
             <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed opacity-80">
               Un article avec une image de haute qualité et des tags pertinents obtient 3x plus de lectures.

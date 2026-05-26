@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -62,6 +62,7 @@ export function KpiCard({
   onClick,
 }: KpiCardProps) {
   const color = VARIANT_COLORS[variant];
+  const prefersReducedMotion = useReducedMotion();
 
   const changeColors = {
     up:      'bg-[hsl(var(--gov-green)/0.12)] text-[hsl(var(--gov-green))]',
@@ -71,21 +72,21 @@ export function KpiCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.35 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+      animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ delay: prefersReducedMotion ? 0 : index * 0.04, duration: 0.2 }}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       className={cn(
-        'gov-stat-card group relative overflow-hidden',
+        'gov-stat-card group relative overflow-hidden rounded-lg',
         onClick && 'cursor-pointer focus-visible:ring-2 focus-visible:ring-[hsl(var(--gov-blue))]',
         className
       )}
     >
       {/* Icône fantôme décorative en arrière-plan */}
       <div
-        className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 opacity-[0.03] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12"
+        className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 opacity-[0.03] transition-transform duration-300 motion-reduce:transition-none group-hover:scale-105"
         style={{ color }}
         aria-hidden="true"
       >

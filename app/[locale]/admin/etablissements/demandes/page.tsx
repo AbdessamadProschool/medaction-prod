@@ -184,8 +184,8 @@ export default function AdminDemandesPage() {
                     
                     <div className="flex items-center gap-3 mb-4">
                       <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                        d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-amber-100 text-amber-700' : 
-                        d.statut === 'APPROUVEE' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                        d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-gov-gold/10 text-gov-gold' : 
+                        d.statut === 'APPROUVEE' ? 'bg-gov-green/10 text-gov-green-dark' : 'bg-red-100 text-red-700'
                       }`}>
                         {t(`status.${d.statut}`)}
                       </div>
@@ -274,7 +274,7 @@ export default function AdminDemandesPage() {
                         <h4 className="text-[hsl(213,80%,28%)] dark:text-blue-300 font-black text-sm mb-1 uppercase tracking-wide">
                           {t('justification')}
                         </h4>
-                        <p className="text-amber-900/70 dark:text-amber-100/70 leading-relaxed text-lg italic font-medium">
+                        <p className="text-gov-gold/70 dark:text-gov-gold/70 leading-relaxed text-lg italic font-medium">
                           "{selectedDemande.justification || t('admin_validation.no_justification')}"
                         </p>
                       </div>
@@ -285,10 +285,10 @@ export default function AdminDemandesPage() {
                       {[
                         { id: 'general', label: te('sections.general'), icon: Building2, color: 'text-[hsl(213,80%,28%)]', fields: ['nom', 'nomArabe', 'code', 'secteur', 'typeEtablissement', 'nature', 'tutelle', 'statutJuridique', 'gestionnaire', 'responsableNom', 'anneeCreation', 'anneeOuverture'] },
                         { id: 'location', label: te('sections.localization'), icon: MapPin, color: 'text-blue-600', fields: ['communeId', 'annexeId', 'quartierDouar', 'adresseComplete', 'latitude', 'longitude', 'altitude', 'distanceChefLieu', 'transportPublic', 'voieAcces'] },
-                        { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-indigo-600', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
+                        { id: 'infra', label: te('sections.infra'), icon: Layers, color: 'text-gov-blue-dark', fields: ['etatInfrastructure', 'statutFonctionnel', 'surfaceTotale', 'disponibiliteEau', 'disponibiliteElectricite', 'connexionInternet', 'nombreSalles'] },
                         { id: 'education', label: te('sections.education'), icon: GraduationCap, color: 'text-blue-500', fields: ['cycle', 'nbClasses', 'nbEnseignants', 'nbCadres', 'elevesPrescolaire', 'elevesPrescolaireFilles', 'elevesTotal', 'elevesFilles', 'nouveauxInscrits', 'nouveauxInscritsFilles', 'tauxReussite', 'fillesDerniereAnnee'] },
                         { id: 'financial', label: te('sections.financial'), icon: Coins, color: 'text-[hsl(213,80%,40%)]', fields: ['budgetAnnuel', 'sourcesFinancement', 'partenaires'] },
-                        { id: 'observations', label: t('admin_validation.observations'), icon: FileText, color: 'text-indigo-500', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
+                        { id: 'observations', label: t('admin_validation.observations'), icon: FileText, color: 'text-gov-blue-dark', fields: ['remarques', 'besoinsUrgents', 'projetsFuturs'] },
                       ].map(group => {
                         const groupFields = Object.entries(selectedDemande.donneesModifiees)
                           .filter(([k]) => group.fields.includes(k));
@@ -435,9 +435,9 @@ export default function AdminDemandesPage() {
                     className="border-none bg-transparent"
                     action={
                       <div className="mt-4 flex gap-2 justify-center">
-                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce" />
-                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.2s]" />
-                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-bounce [animation-delay:0.4s]" />
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-pulse" />
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-pulse [animation-delay:0.2s]" />
+                        <div className="w-2 h-2 bg-[hsl(213,80%,28%)] rounded-full animate-pulse [animation-delay:0.4s]" />
                       </div>
                     }
                   />

@@ -174,7 +174,7 @@ export default function AbonnementsPage() {
           <div className="text-center p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('access_denied')}</h2>
             <p className="text-gray-500 mb-6">{t('access_denied_desc')}</p>
-            <Link href="/profil" className="text-emerald-600 hover:underline">
+            <Link href="/profil" className="text-gov-green-dark hover:underline">
               {t('back_to_profile')}
             </Link>
           </div>

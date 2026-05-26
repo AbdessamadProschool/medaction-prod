@@ -159,7 +159,7 @@ function TalentsContent() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher un talent..."
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all shadow-sm"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-gov-green/30 focus:ring-2 focus:ring-gov-green/20 transition-all shadow-sm"
               />
               <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -175,7 +175,7 @@ function TalentsContent() {
                 onClick={() => setDomaine(d)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   domaine === d
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105'
+                    ? 'bg-gov-green text-white shadow-lg shadow-gov-green/20 scale-105'
                     : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
                 }`}
               >
@@ -207,7 +207,7 @@ function TalentsContent() {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <div className="inline-block w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+            <div className="inline-block w-8 h-8 border-4 border-gov-green/30 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 

@@ -171,7 +171,7 @@ export default function EvaluationPage() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-green animate-spin" />
       </div>
     );
   }
@@ -184,7 +184,7 @@ export default function EvaluationPage() {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{error}</h2>
           <button
             onClick={() => router.back()}
-            className="text-emerald-600 hover:underline"
+            className="text-gov-green-dark hover:underline"
           >
               {t('back')}
           </button>
@@ -197,8 +197,8 @@ export default function EvaluationPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-gov-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-10 h-10 text-gov-green-dark" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {existingEval ? t('success_edit_title') : t('success_title')}
@@ -231,7 +231,7 @@ export default function EvaluationPage() {
           </div>
           <button
             onClick={() => router.push(`/etablissements/${etablissementId}`)}
-            className="w-full py-3 bg-emerald-500 text-white rounded-xl font-semibold hover:bg-emerald-600 transition-colors"
+            className="w-full py-3 bg-gov-green text-white rounded-xl font-semibold hover:bg-gov-green transition-colors"
           >
             {t('view_establishment_btn')}
           </button>
@@ -282,7 +282,7 @@ export default function EvaluationPage() {
           {etablissement && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center overflow-hidden">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-gov-green to-gov-green-dark flex items-center justify-center overflow-hidden">
                   {etablissement.photoPrincipale ? (
                     <Image
                       src={etablissement.photoPrincipale}
@@ -373,7 +373,7 @@ export default function EvaluationPage() {
                 placeholder={t('comment_placeholder')}
                 rows={4}
                 maxLength={1000}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green/30 transition-all resize-none"
               />
               <p className="text-xs text-gray-400 mt-2 text-right">
                 {commentaire.length}/1000
@@ -413,7 +413,7 @@ export default function EvaluationPage() {
             <button
               type="submit"
               disabled={submitting || note === 0}
-              className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-gradient-to-r from-gov-green to-gov-green-dark text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

@@ -117,7 +117,7 @@ export default function StatistiquesPage() {
       title: t('tabs.events') || 'الفعاليات',
       icon: Calendar,
       color: 'hsl(280,60%,50%)',
-      bgColor: 'bg-purple-50',
+      bgColor: 'bg-gov-blue/5',
       total: stats?.evenements.total || 0,
       published: stats?.evenements.publies || 0,
       drafts: stats?.evenements.brouillons || 0,
@@ -133,7 +133,7 @@ export default function StatistiquesPage() {
       title: t('tabs.news') || 'المستجدات',
       icon: Newspaper,
       color: 'hsl(25,95%,53%)',
-      bgColor: 'bg-orange-50',
+      bgColor: 'bg-gov-gold/5',
       total: stats?.actualites.total || 0,
       published: stats?.actualites.publiees || 0,
       drafts: stats?.actualites.brouillons || 0,
@@ -185,12 +185,12 @@ export default function StatistiquesPage() {
       <div className="relative overflow-hidden rounded-[2.5rem] bg-white text-gray-900 shadow-sm border border-gray-100 px-8 py-10 md:px-12 md:py-14">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-            <BarChart3 className="w-64 h-64 transform rotate-12 text-indigo-600" />
+            <BarChart3 className="w-64 h-64 transform rotate-12 text-gov-blue-dark" />
         </div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-4">
-                <div className="flex items-center gap-3 text-indigo-600 font-medium bg-indigo-50 w-fit px-4 py-1.5 rounded-full border border-indigo-100 text-sm">
+                <div className="flex items-center gap-3 text-gov-blue-dark font-medium bg-gov-blue/5 w-fit px-4 py-1.5 rounded-full border border-gov-blue/30 text-sm">
                     <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
                     <span>{t('badge') || 'الإحصائيات العامة'}</span>
                 </div>
@@ -224,10 +224,10 @@ export default function StatistiquesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-bold text-gray-500 mb-2">{t('total_content') || 'إجمالي المحتوى'}</p>
-              <p className="text-4xl font-black text-gray-900 group-hover:text-indigo-600 transition-colors">{totalContent}</p>
+              <p className="text-4xl font-black text-gray-900 group-hover:text-gov-blue-dark transition-colors">{totalContent}</p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-              <Presentation className="w-8 h-8 text-indigo-600" />
+            <div className="w-16 h-16 rounded-2xl bg-gov-blue/5 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+              <Presentation className="w-8 h-8 text-gov-blue-dark" />
             </div>
           </div>
         </motion.div>
@@ -241,10 +241,10 @@ export default function StatistiquesPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-bold text-gray-500 mb-2">{t('total_views') || 'إجمالي المشاهدات'}</p>
-              <p className="text-4xl font-black text-gray-900 group-hover:text-orange-600 transition-colors">{totalViews.toLocaleString()}</p>
+              <p className="text-4xl font-black text-gray-900 group-hover:text-gov-gold transition-colors">{totalViews.toLocaleString()}</p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-              <Eye className="w-8 h-8 text-orange-600" />
+            <div className="w-16 h-16 rounded-2xl bg-gov-gold/5 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+              <Eye className="w-8 h-8 text-gov-gold" />
             </div>
           </div>
         </motion.div>

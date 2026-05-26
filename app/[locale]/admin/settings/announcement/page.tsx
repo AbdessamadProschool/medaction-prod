@@ -281,8 +281,8 @@ export default function AnnouncementSettingsPage() {
             
             <div className="bg-gray-900 rounded-[2rem] p-4 shadow-xl border-4 border-gray-800 relative aspect-[9/16] lg:aspect-auto lg:h-[600px] overflow-hidden">
                {/* Simulation écran tel */}
-               <div className="absolute top-0 left-0 right-0 h-6 bg-black z-20 flex justify-center">
-                 <div className="w-20 h-4 bg-black rounded-b-xl"></div>
+               <div className="absolute top-0 left-0 right-0 h-6 bg-slate-950 z-20 flex justify-center">
+                 <div className="w-20 h-4 bg-slate-950 rounded-b-xl"></div>
                </div>
                
                {/* Contenu fake du site */}
@@ -319,7 +319,7 @@ export default function AnnouncementSettingsPage() {
 
                {config.isActive && config.type === 'TICKER' && (
                  <div className={`absolute top-0 left-0 right-0 z-30 py-2 px-4 overflow-hidden whitespace-nowrap ${
-                    config.variant === 'CELEBRATION' ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white' :
+                    config.variant === 'CELEBRATION' ? 'bg-gradient-to-r from-gov-gold to-gov-gold-dark text-white' :
                     config.variant === 'WARNING' ? 'bg-red-600 text-white' :
                     config.variant === 'INFO' ? 'bg-blue-600 text-white' :
                     'bg-gray-900 text-white'

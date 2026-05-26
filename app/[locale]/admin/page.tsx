@@ -302,7 +302,7 @@ export default function AdminDashboard() {
           <div className="flex gap-3">
             <div className="h-[46px] w-[46px] bg-gray-200 dark:bg-gray-700 rounded-xl" />
             <div className="h-[46px] w-28 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-            <div className="h-[46px] w-32 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl" />
+            <div className="h-[46px] w-32 bg-gov-green/10 dark:bg-gov-green rounded-xl" />
           </div>
         </div>
 
@@ -452,21 +452,21 @@ export default function AdminDashboard() {
 
       {/* Alerts Section */}
       {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
-        <motion.div variants={itemVariants} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+        <motion.div variants={itemVariants} className="bg-gov-gold/5 border border-gov-gold/30 rounded-2xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
+            <div className="w-10 h-10 bg-gov-gold/10 rounded-full flex items-center justify-center text-gov-gold">
                <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
-               <h3 className="font-semibold text-amber-900">{t('alerts.events_action_required')}</h3>
-               <p className="text-sm text-amber-700">
+               <h3 className="font-semibold text-gov-gold">{t('alerts.events_action_required')}</h3>
+               <p className="text-sm text-gov-gold">
                  {t('alerts.events_pending_closure', { count: stats?.evenements?.aCloturer })}
                </p>
             </div>
           </div>
           <Link 
             href="/admin/evenements?statut=A_CLOTURER" 
-            className="px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
+            className="px-4 py-2 bg-gov-gold/10 text-white rounded-lg text-sm font-medium hover:bg-gov-gold/10 transition-colors"
           >
             {t('alerts.manage_now')}
           </Link>

@@ -132,7 +132,7 @@ export default function ReclamationsUrgentesPage() {
   const getUrgencyLevel = (dateString: string) => {
     const days = Math.floor((Date.now() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24));
     if (days >= 7) return { level: 'critical', label: 'Critique', color: 'bg-red-500' };
-    if (days >= 3) return { level: 'high', label: 'Élevée', color: 'bg-orange-500' };
+    if (days >= 3) return { level: 'high', label: 'Élevée', color: 'bg-gov-gold/10' };
     return { level: 'normal', label: 'Normale', color: 'bg-yellow-500' };
   };
 

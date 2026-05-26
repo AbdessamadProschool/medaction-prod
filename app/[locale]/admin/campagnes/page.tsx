@@ -52,9 +52,9 @@ interface Campagne {
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
   BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit, label: 'Brouillon' },
-  EN_ATTENTE: { bg: 'bg-amber-500/10', text: 'text-amber-600', icon: Clock, label: 'En attente' },
+  EN_ATTENTE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Clock, label: 'En attente' },
   ACTIVE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Play, label: 'Active' },
-  EN_PAUSE: { bg: 'bg-orange-500/10', text: 'text-orange-600', icon: Pause, label: 'En pause' },
+  EN_PAUSE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Pause, label: 'En pause' },
   TERMINEE: { bg: 'bg-[hsl(var(--gov-blue))/0.1]', text: 'text-[hsl(var(--gov-blue))]', icon: CheckCircle, label: 'Terminée' },
   ANNULEE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle, label: 'Annulée' },
 };
@@ -254,7 +254,7 @@ export default function AdminCampagnesPage() {
           { label: t('stats.total'), value: stats.total, icon: BarChart3, gradient: 'from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]' },
           { label: t('stats.active'), value: stats.actives, icon: Play, gradient: 'from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]' },
           { label: t('stats.pending'), value: stats.enAttente, icon: Clock, gradient: 'from-amber-400 to-amber-600' },
-          { label: t('stats.participants'), value: stats.totalParticipants, icon: Users, gradient: 'from-purple-500 to-purple-700' },
+          { label: t('stats.participants'), value: stats.totalParticipants, icon: Users, gradient: 'from-purple-500 to-gov-blue-dark' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}

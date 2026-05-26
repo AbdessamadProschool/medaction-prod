@@ -176,12 +176,12 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                 </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100/50 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-amber-100 transition-colors" />
-                <div className="p-2.5 bg-white rounded-xl text-amber-600 shadow-sm shrink-0 relative z-10">
+            <div className="bg-gov-gold/5 border border-gov-gold/30 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gov-gold/10/50 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:bg-gov-gold/10 transition-colors" />
+                <div className="p-2.5 bg-white rounded-xl text-gov-gold shadow-sm shrink-0 relative z-10">
                     <AlertCircle size={22} />
                 </div>
-                <div className={`text-amber-900 py-0.5 relative z-10 w-full text-start`}>
+                <div className={`text-gov-gold py-0.5 relative z-10 w-full text-start`}>
                     <p className="font-bold text-base mb-1">{t('info_box.title')}</p>
                     <p className="text-sm font-medium opacity-90 leading-relaxed font-cairo">{t('info_box.text')}</p>
                 </div>
@@ -221,9 +221,9 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 {/* Bilan Qualitatif */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-purple-500/5 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-gov-blue/20 transition-all duration-300">
                     <div className={`flex items-center gap-3 mb-6`} dir={direction}>
-                        <div className="p-2 bg-purple-50 rounded-xl text-purple-600 shrink-0">
+                        <div className="p-2 bg-gov-blue/5 rounded-xl text-gov-blue-dark shrink-0">
                             <FileText className="w-5 h-5" />
                         </div>
                         <h2 className={`text-lg font-bold text-gray-800 text-start w-full`}>
@@ -240,7 +240,7 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                             value={bilanDescription}
                             onChange={(e) => setBilanDescription(e.target.value)}
                             placeholder={t('qualitative.placeholder')}
-                            className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-purple-500/10 focus:border-purple-500 outline-none transition-all font-bold text-sm leading-relaxed resize-none ${direction === 'rtl' ? 'text-right' : 'text-left'}`}
+                            className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue/30 outline-none transition-all font-bold text-sm leading-relaxed resize-none ${direction === 'rtl' ? 'text-right' : 'text-left'}`}
                             required
                         />
                     </div>
@@ -250,7 +250,7 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                 {/* Compte Rendu (Document) */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300">
                     <div className={`flex items-center gap-3 mb-6`} dir={direction}>
-                        <div className="p-2 bg-orange-50 rounded-xl text-orange-600">
+                        <div className="p-2 bg-gov-gold/5 rounded-xl text-gov-gold">
                             <FileText className="w-5 h-5" />
                         </div>
                         <h2 className={`text-lg font-bold text-gray-800 w-full ${direction === 'rtl' ? 'text-right' : 'text-left'}`}>
@@ -275,13 +275,13 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                             </button>
                             </div>
                         ) : (
-                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-orange-50/30 hover:border-orange-400 transition-all group relative overflow-hidden">
+                            <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-gov-gold/5/30 hover:border-gov-gold/30 transition-all group relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-br from-orange-50/0 to-orange-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6 relative z-10">
                                     <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all">
-                                        <Upload className="w-7 h-7 text-gray-400 group-hover:text-orange-600 transition-colors" />
+                                        <Upload className="w-7 h-7 text-gray-400 group-hover:text-gov-gold transition-colors" />
                                     </div>
-                                    <p className="text-base font-bold text-gray-700 mb-1 group-hover:text-orange-800 transition-colors">{t('report.upload_text')}</p>
+                                    <p className="text-base font-bold text-gray-700 mb-1 group-hover:text-gov-gold transition-colors">{t('report.upload_text')}</p>
                                     <p className="text-sm text-gray-400 font-medium italic">{t('report.formats')}</p>
                                 </div>
                                 <input 
@@ -297,9 +297,9 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                 </div>
 
                 {/* Galerie Photos */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:shadow-gov-blue/20 transition-all duration-300">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+                        <div className="p-2 bg-gov-blue/5 rounded-xl text-gov-blue-dark">
                             <ImageIcon className="w-5 h-5" />
                         </div>
                         <h2 className="text-lg font-bold text-gray-800">
@@ -323,16 +323,16 @@ export default function ClotureEventPage({ params }: { params: Promise<{ id: str
                             </div>
                         ))}
                         
-                        <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50/30 hover:border-indigo-400 transition-all group relative overflow-hidden">
+                        <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gov-blue/5/30 hover:border-gov-blue/30 transition-all group relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
                             {uploading ? (
-                                <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+                                <Loader2 className="w-8 h-8 text-gov-blue-dark animate-spin" />
                             ) : (
                                 <div className="flex flex-col items-center relative z-10 transition-transform group-hover:translate-y-[-2px]">
                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all">
-                                        <Upload className="w-6 h-6 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                                        <Upload className="w-6 h-6 text-gray-400 group-hover:text-gov-blue-dark transition-colors" />
                                     </div>
-                                    <span className="text-sm font-bold text-gray-600 group-hover:text-indigo-800 transition-colors">{t('gallery.add')}</span>
+                                    <span className="text-sm font-bold text-gray-600 group-hover:text-gov-blue-dark transition-colors">{t('gallery.add')}</span>
                                 </div>
                             )}
                             <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={uploading} />

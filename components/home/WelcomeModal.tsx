@@ -45,7 +45,7 @@ export default function WelcomeModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)]"
             onClick={() => handleClose(true)}
           />
 
@@ -54,22 +54,23 @@ export default function WelcomeModal() {
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-white/20"
+            className="relative bg-card rounded-lg shadow-lg max-w-lg w-full overflow-hidden border border-border"
           >
             {/* Decoration Background */}
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-blue-600 to-purple-600" />
+            <div className="absolute top-0 left-0 w-full h-32 bg-[hsl(var(--gov-blue))]" />
             
             {/* Close Button */}
             <button
               onClick={() => handleClose(true)}
-              className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white transition-colors z-10"
+              className="absolute top-4 right-4 p-2 bg-white/15 hover:bg-white/25 rounded-lg text-white transition-colors z-10"
+              aria-label={t('dont_show_again')}
             >
               <X size={20} />
             </button>
 
             <div className="relative pt-12 px-8 pb-8 flex flex-col items-center text-center">
               {/* Icon/Logo */}
-              <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6 transform rotate-3">
+              <div className="w-20 h-20 bg-card rounded-lg shadow-md flex items-center justify-center mb-6">
                  <Image src="/images/logo-portal-mediouna.png" alt="Logo" width={50} height={50} className="w-12 h-12 object-contain" />
               </div>
 
@@ -83,7 +84,7 @@ export default function WelcomeModal() {
 
               <button
                 onClick={() => handleClose(true)}
-                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 transform hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue-dark))] text-white rounded-lg font-semibold shadow-sm active:scale-[0.98] transition-colors flex items-center justify-center gap-2"
               >
                 <Sparkles size={20} />
                 {t('start_button')}

@@ -32,6 +32,21 @@ import { toast } from 'sonner';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { useTranslations, useLocale } from 'next-intl';
 
+const responsibilityToneClasses: Record<string, { box: string; icon: string }> = {
+  blue: {
+    box: 'bg-[hsl(var(--gov-blue)/0.1)]',
+    icon: 'text-[hsl(var(--gov-blue))]',
+  },
+  green: {
+    box: 'bg-[hsl(var(--gov-green)/0.1)]',
+    icon: 'text-[hsl(var(--gov-green))]',
+  },
+  gold: {
+    box: 'bg-[hsl(var(--gov-gold)/0.14)]',
+    icon: 'text-[hsl(var(--gov-gold-dark))]',
+  },
+};
+
 
 
 // Composant Popup Responsabilité
@@ -54,7 +69,7 @@ function ResponsibilityDisclaimer({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[hsl(var(--gov-blue-dark)/0.72)]"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -94,15 +109,15 @@ function ResponsibilityDisclaimer({
           {/* Contenu Scrollable */}
           <div className="p-5 space-y-4 overflow-y-auto custom-scrollbar">
             {/* Avertissement principal */}
-            <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="flex gap-3 p-3 bg-gov-gold/5 border border-gov-gold/30 rounded-xl">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <div className="w-8 h-8 rounded-lg bg-gov-gold/10 flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4 text-gov-gold" />
                 </div>
               </div>
               <div>
-                <h3 className="text-sm font-bold text-amber-800 mb-0.5">{t('reclamation.disclaimer.warning')}</h3>
-                <p className="text-xs text-amber-700 leading-relaxed">
+                <h3 className="text-sm font-bold text-gov-gold mb-0.5">{t('reclamation.disclaimer.warning')}</h3>
+                <p className="text-xs text-gov-gold leading-relaxed">
                   {t('reclamation.disclaimer.warning_text')}
                 </p>
               </div>
@@ -112,12 +127,12 @@ function ResponsibilityDisclaimer({
             <div className="grid gap-2">
               {[
                 { icon: FileWarning, color: 'blue', titleKey: 'text_verified', subKey: 'sub_verified' },
-                { icon: Camera, color: 'purple', titleKey: 'text_photos', subKey: 'sub_photos' },
-                { icon: Eye, color: 'emerald', titleKey: 'text_official', subKey: 'sub_official' }
+                { icon: Camera, color: 'gold', titleKey: 'text_photos', subKey: 'sub_photos' },
+                { icon: Eye, color: 'green', titleKey: 'text_official', subKey: 'sub_official' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3 p-3 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md hover:border-[hsl(var(--gov-blue)/0.2)] transition-all group">
-                  <div className={`w-8 h-8 rounded-lg bg-${item.color}-50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                    <item.icon className={`w-4 h-4 text-${item.color}-600`} />
+                  <div className={`w-8 h-8 rounded-lg ${responsibilityToneClasses[item.color].box} flex items-center justify-center flex-shrink-0 transition-transform duration-300`}>
+                    <item.icon className={`w-4 h-4 ${responsibilityToneClasses[item.color].icon}`} />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-0.5">{t(`reclamation.disclaimer.${item.titleKey}`)}</p>
@@ -322,7 +337,7 @@ export default function NouvelleReclamationPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('reclamation.actions.restricted')}</h2>
           <p className="text-gray-500 mb-6">{t('reclamation.actions.no_permission')}</p>
-          <button onClick={() => router.back()} className="text-emerald-600 hover:underline">
+          <button onClick={() => router.back()} className="text-gov-green-dark hover:underline">
             {t('reclamation.actions.back')}
           </button>
         </div>
@@ -334,7 +349,7 @@ export default function NouvelleReclamationPage() {
         onAccept={handleAcceptTerms}
         onDecline={handleDeclineTerms}
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         {/* Background Pattern */}
         <div 
           className="fixed inset-0 z-[-1] opacity-[0.08] pointer-events-none"
@@ -599,7 +614,7 @@ export default function NouvelleReclamationPage() {
                     disabled={isSubmitting}
                     whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                     whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                    className="flex items-center gap-2 px-10 py-3.5 bg-gradient-to-r from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))] text-white rounded-2xl font-bold shadow-lg shadow-emerald-900/20 hover:shadow-xl hover:shadow-emerald-900/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-10 py-3.5 bg-gradient-to-r from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))] text-white rounded-2xl font-bold shadow-lg shadow-gov-green/20/20 hover:shadow-xl hover:shadow-gov-green/20/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>

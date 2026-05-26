@@ -84,7 +84,7 @@ export default function AutoriteStatistiquesPage() {
 
   const colorClasses: Record<string, { bg: string; text: string; iconBg: string; border: string }> = {
     blue: { bg: 'bg-blue-50', text: 'text-blue-600', iconBg: 'bg-blue-100', border: 'border-blue-100' },
-    amber: { bg: 'bg-amber-50', text: 'text-amber-600', iconBg: 'bg-amber-100', border: 'border-amber-100' },
+    amber: { bg: 'bg-gov-gold/5', text: 'text-gov-gold', iconBg: 'bg-gov-gold/10', border: 'border-gov-gold/30' },
     green: { bg: 'bg-green-50', text: 'text-green-600', iconBg: 'bg-green-100', border: 'border-green-100' },
     red: { bg: 'bg-red-50', text: 'text-red-600', iconBg: 'bg-red-100', border: 'border-red-100' },
   };
@@ -206,8 +206,8 @@ export default function AutoriteStatistiquesPage() {
                 className="lg:col-span-1 bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm"
             >
             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
-                    <PieChart className="w-5 h-5 text-purple-600" />
+                <div className="w-8 h-8 rounded-lg bg-gov-blue/5 flex items-center justify-center">
+                    <PieChart className="w-5 h-5 text-gov-blue-dark" />
                 </div>
                 {t('charts.category_title')}
             </h2>

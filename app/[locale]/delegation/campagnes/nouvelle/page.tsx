@@ -127,9 +127,9 @@ export default function NouvelleCampagnePage() {
   const typeColors: Record<string, string> = {
     SANTE: 'from-red-500 to-rose-500',
     ENVIRONNEMENT: 'from-green-500 to-emerald-500',
-    EDUCATION: 'from-blue-500 to-indigo-500',
+    EDUCATION: 'from-gov-blue to-gov-blue-dark',
     SOCIAL: 'from-orange-500 to-amber-500',
-    SOLIDARITE: 'from-purple-500 to-violet-500',
+    SOLIDARITE: 'from-gov-blue to-gov-blue-dark',
     ECOLOGIE: 'from-lime-500 to-green-500',
     CITOYENNETE: 'from-cyan-500 to-teal-500',
     AUTRE: 'from-gray-500 to-gray-600',
@@ -231,7 +231,7 @@ export default function NouvelleCampagnePage() {
                   </label>
                   <select
                     {...register('type')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-white font-bold text-gray-800 text-sm appearance-none cursor-pointer transition-all text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-bold text-gray-800 text-sm appearance-none cursor-pointer transition-all text-start"
                   >
                     <option value="">{t('sections.general.type_placeholder')}</option>
                     <option value="SANTE">{tTypes('sante')}</option>
@@ -253,9 +253,9 @@ export default function NouvelleCampagnePage() {
                       {...register('nom')}
                       type="text"
                       placeholder="مثال: شتاء التضامن 2025"
-                      className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
+                      className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
                     />
-                    <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                    <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                       <LayoutTemplate size={20} />
                     </div>
                   </div>
@@ -273,9 +273,9 @@ export default function NouvelleCampagnePage() {
                     {...register('titre')}
                     type="text"
                     placeholder={t('sections.general.campaign_title_placeholder')}
-                    className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
+                    className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
                   />
-                    <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                    <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                       <Megaphone size={20} />
                     </div>
                 </div>
@@ -291,7 +291,7 @@ export default function NouvelleCampagnePage() {
                   {...register('description')}
                   rows={2}
                   placeholder={t('sections.general.description_placeholder')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-start resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 bg-gray-50/50 focus:bg-white text-start resize-none"
                 />
               </div>
 
@@ -304,7 +304,7 @@ export default function NouvelleCampagnePage() {
                   {...register('contenu')}
                   rows={4}
                   placeholder="شرح تفصيلي للحملة..."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 leading-relaxed bg-gray-50/50 focus:bg-white text-start"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 leading-relaxed bg-gray-50/50 focus:bg-white text-start"
                 />
                 {errors.contenu && <p className="text-red-500 text-sm font-medium bg-red-50 p-2 rounded-lg max-w-fit px-4 text-start">⚠️ {errors.contenu.message}</p>}
               </div>
@@ -329,7 +329,7 @@ export default function NouvelleCampagnePage() {
                     {...register('dateDebut')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm text-start"
                   />
                   {errors.dateDebut && <p className="text-red-500 text-sm mt-2 font-medium flex items-center gap-2 ltr:flex-row-reverse text-start"><AlertCircle className="w-4 h-4" /> {errors.dateDebut.message}</p>}
                 </div>
@@ -339,7 +339,7 @@ export default function NouvelleCampagnePage() {
                     {...register('dateFin')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm text-start"
                   />
                 </div>
               </div>
@@ -353,7 +353,7 @@ export default function NouvelleCampagnePage() {
                     {...register('lieu')}
                     type="text"
                     placeholder={t('sections.datetime.location_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm text-start"
                   />
                   <div className="absolute left-6 rtl:left-auto rtl:right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                     <MapPin size={20} />
@@ -382,9 +382,9 @@ export default function NouvelleCampagnePage() {
                       {...register('objectifParticipations')}
                       type="number"
                       placeholder={t('sections.objectives.target_placeholder')}
-                      className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
+                      className="w-full px-4 py-3 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
                       <Users size={18} />
                     </div>
                   </div>
@@ -403,7 +403,7 @@ export default function NouvelleCampagnePage() {
                     <input
                       {...register('couleurTheme')}
                       type="text"
-                      className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none font-mono uppercase text-sm font-bold bg-gray-50/50 focus:bg-white text-start"
+                      className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none font-mono uppercase text-sm font-bold bg-gray-50/50 focus:bg-white text-start"
                     />
                   </div>
                 </div>
@@ -415,11 +415,11 @@ export default function NouvelleCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">منظمة من طرف العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحملة مباشرة بعمالة مديونة</p>
                   </div>
                 </label>
@@ -429,11 +429,11 @@ export default function NouvelleCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">تحت غطاء العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
                   </div>
                 </label>

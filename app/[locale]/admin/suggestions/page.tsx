@@ -52,7 +52,7 @@ const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.Elem
   EN_EXAMEN: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Eye },
   APPROUVEE: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle },
   REJETEE: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle },
-  IMPLEMENTEE: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Sparkles },
+  IMPLEMENTEE: { bg: 'bg-gov-blue/10', text: 'text-gov-blue-dark', icon: Sparkles },
 };
 
 const CATEGORIES: Record<string, { emoji: string }> = {
@@ -195,7 +195,7 @@ export default function AdminSuggestionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white">
+            <div className="w-10 h-10 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-xl flex items-center justify-center text-white">
               <Lightbulb className="w-5 h-5" />
             </div>
             {t('page_title')}
@@ -413,7 +413,7 @@ export default function AdminSuggestionsPage() {
               {/* Modal Header */}
               <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-xl flex items-center justify-center text-white shadow-lg">
                     <Lightbulb size={24} />
                   </div>
                   <div>

@@ -260,7 +260,7 @@ export default function AdminSidebar() {
         {/* Super Admin only items */}
         {session?.user?.role === 'SUPER_ADMIN' && (
           <>
-            <div className="my-2 border-t border-purple-500/30" />
+            <div className="my-2 border-t border-[hsl(var(--gov-gold)/0.25)]" />
             {SUPER_ADMIN_ITEMS.map((item) => (
               <NavLink key={item.href} item={item} />
             ))}
@@ -273,7 +273,7 @@ export default function AdminSidebar() {
         <Link
           href={pathname}
           locale={locale === 'ar' ? 'fr' : 'ar'}
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-gray-400 hover:bg-white/10 hover:text-white ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 text-white/70 hover:bg-white/10 hover:text-white ${collapsed ? 'justify-center' : ''}`}
         >
           <>
             <Globe size={20} />
@@ -324,7 +324,7 @@ export default function AdminSidebar() {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] z-40"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -337,7 +337,7 @@ export default function AdminSidebar() {
             animate={{ x: 0 }}
             exit={{ x: isRTL ? '100%' : '-100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className={`lg:hidden fixed inset-y-0 z-50 w-72 bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] shadow-2xl start-0`}
+            className={`lg:hidden fixed inset-y-0 z-50 w-72 bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] shadow-lg start-0`}
           >
             <div className="flex flex-col h-full"> 
                 <button

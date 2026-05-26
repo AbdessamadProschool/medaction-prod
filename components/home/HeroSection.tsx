@@ -87,7 +87,7 @@ export default function HeroSection() {
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           />
           <div className={`absolute inset-0 bg-gradient-to-r ${slides[currentSlide].gradient}`} />
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.2)]" />
         </motion.div>
       </AnimatePresence>
 

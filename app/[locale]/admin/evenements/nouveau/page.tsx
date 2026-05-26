@@ -179,7 +179,7 @@ export default function NouveauEventPage() {
   };
 
   const typeColors: Record<string, string> = {
-    CULTUREL: 'from-purple-500 to-pink-500',
+    CULTUREL: 'from-gov-blue to-gov-blue-dark',
     SPORTIF: 'from-green-500 to-emerald-500',
     SOCIAL: 'from-orange-500 to-amber-500',
     EDUCATIF: 'from-blue-500 to-cyan-500',
@@ -235,7 +235,7 @@ export default function NouveauEventPage() {
           >
             <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                <div className="w-10 h-10 rounded-xl bg-gov-green flex items-center justify-center text-gov-green-dark">
                   <ImageIcon size={20} />
                 </div>
                 <div>
@@ -382,7 +382,7 @@ export default function NouveauEventPage() {
           >
             <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+                <div className="w-10 h-10 rounded-xl bg-gov-gold/10/10 flex items-center justify-center text-gov-gold">
                   <Calendar size={20} />
                 </div>
                 <div>
@@ -462,7 +462,7 @@ export default function NouveauEventPage() {
           >
             <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
+                <div className="w-10 h-10 rounded-xl bg-gov-blue flex items-center justify-center text-gov-blue-dark">
                   <User size={20} />
                 </div>
                 <div>
@@ -510,7 +510,7 @@ export default function NouveauEventPage() {
           >
             <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                <div className="w-10 h-10 rounded-xl bg-gov-green flex items-center justify-center text-gov-green-dark">
                   <Users size={20} />
                 </div>
                 <div>
@@ -536,18 +536,18 @@ export default function NouveauEventPage() {
                   <label className={cn(
                     "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all w-full group shadow-sm",
                     watchedInscriptions 
-                      ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg" 
+                      ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg" 
                       : "border-border bg-muted/10 hover:border-border/80"
                   )}>
                     <input
                       type="checkbox"
                       {...register('inscriptionsOuvertes')}
-                      className="w-6 h-6 rounded-lg border-border text-emerald-600 mt-1 focus:ring-emerald-500/20 transition-all cursor-pointer"
+                      className="w-6 h-6 rounded-lg border-border text-gov-green-dark mt-1 focus:ring-gov-green/20 transition-all cursor-pointer"
                     />
                     <div>
                       <span className={cn(
                         "text-xs font-black uppercase tracking-widest block transition-colors",
-                        watchedInscriptions ? "text-emerald-700" : "text-foreground"
+                        watchedInscriptions ? "text-gov-green-dark" : "text-foreground"
                       )}>
                         {tForm('open_registrations')}
                       </span>

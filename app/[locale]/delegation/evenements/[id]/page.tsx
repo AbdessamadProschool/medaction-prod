@@ -117,7 +117,7 @@ export default function EvenementDetailPage() {
         </div>
         <Link 
           href="/delegation/evenements" 
-          className="px-6 py-3 bg-gray-900 text-white rounded-xl font-black font-cairo hover:bg-black transition-all shadow-lg active:scale-95 no-underline text-sm"
+          className="px-6 py-3 bg-gray-900 text-white rounded-xl font-black font-cairo hover:bg-slate-950 transition-all shadow-lg active:scale-95 no-underline text-sm"
         >
           {t('back_to_list')}
         </Link>
@@ -128,9 +128,9 @@ export default function EvenementDetailPage() {
   const getTypeGradient = (type?: string) => {
     switch(type) {
       case 'CULTUREL': return 'from-indigo-600 to-violet-700';
-      case 'SPORTIF': return 'from-emerald-600 to-teal-700';
+      case 'SPORTIF': return 'from-gov-green to-gov-green-dark';
       case 'SOCIAL': return 'from-orange-500 to-rose-600';
-      case 'EDUCATIF': return 'from-blue-600 to-indigo-700';
+      case 'EDUCATIF': return 'from-gov-blue to-gov-blue-dark';
       case 'SANTE': return 'from-rose-500 to-red-600';
       default: return 'from-slate-700 to-slate-900';
     }
@@ -178,7 +178,7 @@ export default function EvenementDetailPage() {
                 {evenement.statut === 'PUBLIEE' && new Date(evenement.dateDebut) < new Date() && (
                     <Link 
                       href={`/delegation/evenements/${id}/cloture`} 
-                      className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl transition-all font-black text-xs shadow-xl shadow-emerald-500/20 no-underline transform hover:-translate-y-1 active:scale-95 flex items-center gap-2"
+                      className="px-4 py-2 bg-gov-green hover:bg-gov-green/10 text-white rounded-xl transition-all font-black text-xs shadow-xl shadow-gov-green/20 no-underline transform hover:-translate-y-1 active:scale-95 flex items-center gap-2"
                     >
                       <CheckCircle size={16} />
                       {t('close')}
@@ -188,9 +188,9 @@ export default function EvenementDetailPage() {
                 {evenement.statut !== 'CLOTUREE' && (
                   <Link 
                     href={`/delegation/evenements/${id}/modifier?from=detail`} 
-                    className="px-4 py-2 bg-white text-indigo-900 hover:bg-indigo-50 rounded-xl transition-all font-black text-xs shadow-xl no-underline transform hover:-translate-y-1 active:scale-95 flex items-center gap-2"
+                    className="px-4 py-2 bg-white text-gov-blue-dark hover:bg-gov-blue/5 rounded-xl transition-all font-black text-xs shadow-xl no-underline transform hover:-translate-y-1 active:scale-95 flex items-center gap-2"
                   >
-                    <Edit2 size={16} className="text-indigo-400" />
+                    <Edit2 size={16} className="text-gov-blue-dark" />
                     {t('edit')}
                   </Link>
                 )}
@@ -218,7 +218,7 @@ export default function EvenementDetailPage() {
                     {evenement.typeCategorique || evenement.type}
                   </span>
                   <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 border backdrop-blur-md shadow-sm
-                    ${status.color === 'emerald' ? 'bg-emerald-500/30 border-emerald-400/40' : 
+                    ${status.color === 'emerald' ? 'bg-gov-green border-gov-green/30/40' : 
                       status.color === 'red' ? 'bg-red-500/30 border-red-400/40' : 
                       'bg-white/10 border-white/10'}`}>
                     {status.icon}
@@ -258,8 +258,8 @@ export default function EvenementDetailPage() {
                </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-orange-50/20 border border-orange-50/50 hover:bg-orange-50 transition-colors group">
-               <div className="w-10 h-10 bg-white text-orange-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-orange-50 group-hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-gov-gold/5/20 border border-orange-50/50 hover:bg-gov-gold/5 transition-colors group">
+               <div className="w-10 h-10 bg-white text-gov-gold rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-orange-50 group-hover:scale-105 transition-transform">
                  <MapPin size={18} />
                </div>
                <div className="min-w-0">
@@ -268,8 +268,8 @@ export default function EvenementDetailPage() {
                </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-indigo-50/20 border border-indigo-50/50 hover:bg-indigo-50 transition-colors group">
-               <div className="w-10 h-10 bg-white text-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-indigo-50 group-hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-gov-blue/5/20 border border-gov-blue/10/50 hover:bg-gov-blue/5 transition-colors group">
+               <div className="w-10 h-10 bg-white text-gov-blue-dark rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-gov-blue/10 group-hover:scale-105 transition-transform">
                  <Globe size={18} />
                </div>
                <div className="min-w-0">
@@ -278,8 +278,8 @@ export default function EvenementDetailPage() {
                </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50/20 border border-emerald-50/50 hover:bg-emerald-50 transition-colors group">
-               <div className="w-10 h-10 bg-white text-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-emerald-50 group-hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-gov-green/5/20 border border-gov-green/10/50 hover:bg-gov-green/5 transition-colors group">
+               <div className="w-10 h-10 bg-white text-gov-green-dark rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm border border-gov-green/10 group-hover:scale-105 transition-transform">
                  <Users size={18} />
                </div>
                <div>
@@ -350,27 +350,27 @@ export default function EvenementDetailPage() {
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
                transition={{ delay: 0.3 }}
-               className="bg-emerald-50/50 rounded-3xl p-6 shadow-sm border border-emerald-100 relative overflow-hidden group"
+               className="bg-gov-green/5/50 rounded-3xl p-6 shadow-sm border border-gov-green/30 relative overflow-hidden group"
              >
                 <div className="absolute top-0 right-0 p-6 opacity-5">
                    <Award className="w-24 h-24" />
                 </div>
                 
-                <h3 className="text-lg font-black text-emerald-900 mb-4 flex items-center gap-3 border-b border-emerald-200/50 pb-3">
-                  <Award size={20} className="text-emerald-500" />
+                <h3 className="text-lg font-black text-gov-green-dark mb-4 flex items-center gap-3 border-b border-gov-green/30/50 pb-3">
+                  <Award size={20} className="text-gov-green" />
                   {t('report_title')}
                 </h3>
                 
                 <div className="space-y-4 text-start">
-                   <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-emerald-100 shadow-sm">
+                   <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gov-green/30 shadow-sm">
                       <div className="flex items-center gap-2">
-                         <Users size={16} className="text-emerald-500" />
+                         <Users size={16} className="text-gov-green" />
                          <span className="text-[9px] font-black uppercase text-gray-400">{t('participants_count')}</span>
                       </div>
-                      <span className="text-xl font-black text-emerald-900">{(evenement.bilanNbParticipants || 0).toLocaleString(locale)}</span>
+                      <span className="text-xl font-black text-gov-green-dark">{(evenement.bilanNbParticipants || 0).toLocaleString(locale)}</span>
                    </div>
 
-                   <p className="text-emerald-900/70 text-sm font-medium leading-relaxed bg-white/40 p-4 rounded-xl border border-emerald-100/30">
+                   <p className="text-gov-green-dark/70 text-sm font-medium leading-relaxed bg-white/40 p-4 rounded-xl border border-gov-green/30/30">
                      {evenement.bilanDescription || '-'}
                    </p>
 
@@ -379,7 +379,7 @@ export default function EvenementDetailPage() {
                        href={compteRendu.urlPublique} 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-600 text-white rounded-xl font-black text-xs shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all transform hover:-translate-y-1 no-underline"
+                       className="w-full flex items-center justify-center gap-2 py-3 bg-gov-green text-white rounded-xl font-black text-xs shadow-xl shadow-gov-green/20 hover:bg-gov-green transition-all transform hover:-translate-y-1 no-underline"
                      >
                         <Download size={16} />
                         {t('download_report')}

@@ -392,7 +392,7 @@ export default function SuperAdminAdminsPage() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[hsl(var(--gov-blue))] animate-spin" />
       </div>
     );
   }
@@ -406,7 +406,7 @@ export default function SuperAdminAdminsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Messages */}
         {success && (
-          <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2 text-emerald-700">
+          <div className="mb-4 p-4 bg-gov-green/10 border border-gov-green/20 rounded-lg flex items-center gap-2 text-gov-green-dark">
             <Check size={18} />
             {success}
           </div>
@@ -426,7 +426,7 @@ export default function SuperAdminAdminsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg">
+              <div className="p-2 bg-[hsl(var(--gov-blue))] rounded-lg">
                 <ShieldCheck className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -448,7 +448,7 @@ export default function SuperAdminAdminsPage() {
             <button
               onClick={handleSyncPermissions}
               disabled={syncing || refreshing}
-              className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-indigo-600"
+              className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-[hsl(var(--gov-blue))]"
               title={t('admin_management.sync_permissions')}
             >
               <ShieldCheck size={18} className={syncing ? 'animate-spin' : ''} />
@@ -458,7 +458,7 @@ export default function SuperAdminAdminsPage() {
                 setCreateForm({ email: '', telephone: '', nom: '', prenom: '', motDePasse: '', permissions: [] });
                 setShowCreateModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--gov-blue))] text-white rounded-lg hover:bg-[hsl(var(--gov-blue-dark))] transition-colors font-medium"
             >
               <Plus size={18} />
               {t('admin_management.new_admin')}
@@ -475,7 +475,7 @@ export default function SuperAdminAdminsPage() {
               placeholder={t('admin_management.search_placeholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
             />
           </div>
         </div>
@@ -513,8 +513,8 @@ export default function SuperAdminAdminsPage() {
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-medium ${
                           admin.role === 'SUPER_ADMIN' 
-                            ? 'bg-gradient-to-br from-purple-500 to-indigo-600' 
-                            : 'bg-gradient-to-br from-blue-500 to-cyan-600'
+                            ? 'bg-[hsl(var(--gov-blue))]' 
+                            : 'bg-[hsl(var(--gov-green))]'
                         }`}>
                           {admin.prenom?.[0]?.toUpperCase()}{admin.nom?.[0]?.toUpperCase()}
                         </div>
@@ -543,7 +543,7 @@ export default function SuperAdminAdminsPage() {
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                         admin.role === 'SUPER_ADMIN'
-                          ? 'bg-purple-100 text-purple-700'
+                          ? 'bg-[hsl(var(--gov-blue)/0.12)] text-[hsl(var(--gov-blue))]'
                           : 'bg-blue-100 text-blue-700'
                       }`}>
                         {admin.role === 'SUPER_ADMIN' ? <ShieldCheck size={12} /> : <Shield size={12} />}
@@ -553,7 +553,7 @@ export default function SuperAdminAdminsPage() {
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
                         <span className={`text-sm font-medium ${
-                          admin.role === 'SUPER_ADMIN' ? 'text-purple-600' : 'text-blue-600'
+                          admin.role === 'SUPER_ADMIN' ? 'text-[hsl(var(--gov-blue))]' : 'text-[hsl(var(--gov-green))]'
                         }`}>
                           {admin.role === 'SUPER_ADMIN' ? t('admin_management.all_permissions') : admin.permissions?.length || 0}
                         </span>
@@ -565,7 +565,7 @@ export default function SuperAdminAdminsPage() {
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                         admin.isActive
-                          ? 'bg-emerald-100 text-emerald-700'
+                          ? 'bg-gov-green/10 text-gov-green-dark'
                           : 'bg-red-100 text-red-700'
                       }`}>
                         {admin.isActive ? <CheckCircle size={12} /> : <XCircle size={12} />}
@@ -576,7 +576,7 @@ export default function SuperAdminAdminsPage() {
                       <div className="flex items-center justify-end gap-2">
                         {admin.role !== 'SUPER_ADMIN' && (
                           <>
-                            <button onClick={() => openPermissionsModal(admin)} className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title="Gérer les permissions">
+                            <button onClick={() => openPermissionsModal(admin)} className="p-2 text-gray-400 hover:text-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue)/0.08)] rounded-lg transition-colors" title="Gérer les permissions">
                               <ShieldCheck size={18} />
                             </button>
                             <button onClick={() => openEditModal(admin)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Modifier">
@@ -627,12 +627,12 @@ export default function SuperAdminAdminsPage() {
 
       {/* Modal Créer Admin */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white dark:bg-gray-800 px-6 py-4 border-b border-gray-100 flex items-center justify-between z-10">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Plus className="w-5 h-5 text-purple-600" />
+                <div className="p-2 bg-[hsl(var(--gov-blue)/0.1)] rounded-lg">
+                  <Plus className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
                 </div>
                 <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
                   {t('admin_management.modal.create_title')}
@@ -647,7 +647,7 @@ export default function SuperAdminAdminsPage() {
               {/* Informations personnelles */}
               <div>
                 <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  <span className="w-6 h-6 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-sm font-bold">1</span>
                   {t('admin_management.modal.personal_info')}
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
@@ -657,7 +657,7 @@ export default function SuperAdminAdminsPage() {
                       type="text"
                       value={createForm.prenom}
                       onChange={(e) => setCreateForm({ ...createForm, prenom: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
                       placeholder="Jean"
                     />
                   </div>
@@ -667,7 +667,7 @@ export default function SuperAdminAdminsPage() {
                       type="text"
                       value={createForm.nom}
                       onChange={(e) => setCreateForm({ ...createForm, nom: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
                       placeholder="Dupont"
                     />
                   </div>
@@ -677,7 +677,7 @@ export default function SuperAdminAdminsPage() {
               {/* Contact & Auth */}
               <div>
                 <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="w-6 h-6 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-sm font-bold">2</span>
                   {t('admin_management.modal.contact_auth')}
                 </h4>
                 <div className="space-y-4">
@@ -687,7 +687,7 @@ export default function SuperAdminAdminsPage() {
                       type="email"
                       value={createForm.email}
                       onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
                       placeholder="admin@medaction.ma"
                     />
                   </div>
@@ -697,7 +697,7 @@ export default function SuperAdminAdminsPage() {
                       type="tel"
                       value={createForm.telephone}
                       onChange={(e) => setCreateForm({ ...createForm, telephone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
                       placeholder="+212 6XX XXX XXX"
                     />
                   </div>
@@ -709,7 +709,7 @@ export default function SuperAdminAdminsPage() {
                           type={showPassword ? 'text' : 'password'}
                           value={createForm.motDePasse}
                           onChange={(e) => setCreateForm({ ...createForm, motDePasse: e.target.value })}
-                          className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                          className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] focus:border-[hsl(var(--gov-blue))]"
                           placeholder={t('admin_management.modal.password_hint')}
                         />
                         <button
@@ -735,7 +735,7 @@ export default function SuperAdminAdminsPage() {
               {/* Permissions */}
               <div>
                 <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="w-6 h-6 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-sm font-bold">3</span>
                   {t('admin_management.modal.permissions_title')}
                   <span className="text-sm font-normal text-gray-500 ml-2">
                     {t('admin_management.modal.selected_count', { count: createForm.permissions.length })}
@@ -749,7 +749,7 @@ export default function SuperAdminAdminsPage() {
                         <button
                           type="button"
                           onClick={() => toggleGroup(permissions, 'create')}
-                          className="text-xs text-purple-600 hover:text-purple-800 font-medium"
+                          className="text-xs text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] font-medium"
                         >
                           {permissions.every(p => createForm.permissions.includes(p.code)) ? t('admin_management.groups.deselect_all') : t('admin_management.groups.select_all')}
                         </button>
@@ -762,7 +762,7 @@ export default function SuperAdminAdminsPage() {
                             onClick={() => togglePermission(perm.code, 'create')}
                             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                               createForm.permissions.includes(perm.code)
-                                ? 'bg-purple-500 text-white shadow-sm'
+                                ? 'bg-[hsl(var(--gov-blue))] text-white shadow-sm'
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                           >
@@ -790,7 +790,7 @@ export default function SuperAdminAdminsPage() {
                 <button
                   onClick={handleCreate}
                   disabled={creating}
-                  className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:shadow-lg disabled:opacity-50 font-medium"
+                  className="flex items-center gap-2 px-5 py-2 bg-[hsl(var(--gov-blue))] text-white rounded-lg hover:bg-[hsl(var(--gov-blue-dark))] disabled:opacity-50 font-medium transition-colors"
                 >
                   {creating && <Loader2 size={16} className="animate-spin" />}
                   {t('admin_management.modal.create_submit')}
@@ -803,12 +803,12 @@ export default function SuperAdminAdminsPage() {
 
       {/* Modal Permissions */}
       {showPermissionsModal && selectedAdmin && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white dark:bg-gray-800 px-6 py-4 border-b border-gray-100 flex items-center justify-between z-10">
               <div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-medium">
+                  <div className="w-10 h-10 bg-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-white font-medium">
                     {selectedAdmin.prenom?.[0]?.toUpperCase()}{selectedAdmin.nom?.[0]?.toUpperCase()}
                   </div>
                   <div>
@@ -827,7 +827,7 @@ export default function SuperAdminAdminsPage() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h4 className="font-medium text-gray-900">{t('admin_management.modal.permissions_title')}</h4>
-                <span className="text-sm text-purple-600 font-medium">
+                <span className="text-sm text-[hsl(var(--gov-blue))] font-medium">
                   {t('admin_management.modal.selected_count', { count: selectedPermissions.length })}
                 </span>
               </div>
@@ -840,7 +840,7 @@ export default function SuperAdminAdminsPage() {
                       <button
                         type="button"
                         onClick={() => toggleGroup(permissions, 'edit')}
-                        className="text-xs text-purple-600 hover:text-purple-800 font-medium"
+                        className="text-xs text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] font-medium"
                       >
                         {permissions.every(p => selectedPermissions.includes(p.code)) ? t('admin_management.groups.deselect_all') : t('admin_management.groups.select_all')}
                       </button>
@@ -853,7 +853,7 @@ export default function SuperAdminAdminsPage() {
                           onClick={() => togglePermission(perm.code, 'edit')}
                           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                             selectedPermissions.includes(perm.code)
-                              ? 'bg-purple-500 text-white shadow-sm'
+                              ? 'bg-[hsl(var(--gov-blue))] text-white shadow-sm'
                               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                           }`}
                         >
@@ -876,7 +876,7 @@ export default function SuperAdminAdminsPage() {
               <button
                 onClick={handleSavePermissions}
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:shadow-lg disabled:opacity-50 font-medium"
+                className="flex items-center gap-2 px-5 py-2 bg-[hsl(var(--gov-blue))] text-white rounded-lg hover:bg-[hsl(var(--gov-blue-dark))] disabled:opacity-50 font-medium transition-colors"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 {t('admin_management.modal.update_submit')}
@@ -888,7 +888,7 @@ export default function SuperAdminAdminsPage() {
 
       {/* Modal Suppression */}
       {showDeleteModal && adminToDelete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full shadow-2xl p-6">
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
@@ -923,7 +923,7 @@ export default function SuperAdminAdminsPage() {
 
       {/* Modal Edition */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white dark:bg-gray-800 px-6 py-4 border-b border-gray-100 flex items-center justify-between z-10">
               <h3 className="font-semibold text-xl text-gray-900 dark:text-white">{t('admin_management.modal.edit_title')}</h3>
@@ -985,7 +985,7 @@ export default function SuperAdminAdminsPage() {
               {/* Statut */}
               <div className="bg-gray-50 p-4 rounded-xl">
                 <label className="flex items-center gap-3 cursor-pointer">
-                  <div className={`w-12 h-6 rounded-full p-1 transition-colors ${editForm.isActive ? 'bg-emerald-500' : 'bg-gray-300'}`}>
+                  <div className={`w-12 h-6 rounded-full p-1 transition-colors ${editForm.isActive ? 'bg-gov-green' : 'bg-gray-300'}`}>
                     <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${editForm.isActive ? 'translate-x-6' : 'translate-x-0'}`} />
                   </div>
                   <input
@@ -1012,7 +1012,7 @@ export default function SuperAdminAdminsPage() {
               <button
                 onClick={handleUpdate}
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-lg hover:shadow-lg disabled:opacity-50 font-medium"
+                className="flex items-center gap-2 px-5 py-2 bg-[hsl(var(--gov-green))] text-white rounded-lg hover:bg-[hsl(var(--gov-green-dark))] disabled:opacity-50 font-medium transition-colors"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 {t('admin_management.modal.update_submit')}

@@ -84,14 +84,14 @@ export default function CoordinateurDashboard() {
       labelKey: 'in_progress' 
     },
     TERMINEE: { 
-      bg: 'bg-emerald-100', 
-      text: 'text-emerald-700', 
+      bg: 'bg-gov-green/10', 
+      text: 'text-gov-green-dark', 
       icon: CheckCircle, 
       labelKey: 'completed' 
     },
     RAPPORT_COMPLETE: { 
-      bg: 'bg-purple-100', 
-      text: 'text-purple-700', 
+      bg: 'bg-gov-blue/10', 
+      text: 'text-gov-blue-dark', 
       icon: FileText, 
       labelKey: 'report_done' 
     },
@@ -102,8 +102,8 @@ export default function CoordinateurDashboard() {
       labelKey: 'cancelled' 
     },
     REPORTEE: { 
-      bg: 'bg-amber-100', 
-      text: 'text-amber-700', 
+      bg: 'bg-gov-gold/10', 
+      text: 'text-gov-gold', 
       icon: Clock, 
       labelKey: 'postponed' 
     },
@@ -267,12 +267,12 @@ export default function CoordinateurDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 p-8 md:p-12 text-white shadow-xl"
       >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gov-gold/10/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl" />
         
         <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-amber-300 text-sm font-bold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-gov-gold text-sm font-bold">
               <Sparkles className="w-4 h-4" />
               <span>{t('title')}</span>
             </div>
@@ -295,7 +295,7 @@ export default function CoordinateurDashboard() {
             </button>
             <Link
               href="/coordinateur/calendrier"
-              className="flex items-center gap-2 px-6 py-3 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition-all shadow-lg hover:shadow-xl shadow-amber-500/20"
+              className="flex items-center gap-2 px-6 py-3 bg-gov-gold/10 text-white rounded-xl font-bold hover:bg-gov-gold/10 transition-all shadow-lg hover:shadow-xl shadow-amber-500/20"
             >
               <Plus className="w-5 h-5" />
               {t('new_activity')}
@@ -371,7 +371,7 @@ export default function CoordinateurDashboard() {
               </p>
               <p className="text-xs text-gray-500 font-medium">{t('stats.programmed')}</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-2xl bg-gov-green/5 flex items-center justify-center text-gov-green-dark shadow-sm group-hover:scale-110 transition-transform">
               <TrendingUp className="w-6 h-6" />
             </div>
           </div>
@@ -390,7 +390,7 @@ export default function CoordinateurDashboard() {
               </p>
               <p className="text-xs text-gray-500 font-medium">{t('stats.now')}</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 shadow-sm group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-2xl bg-gov-gold/5 flex items-center justify-center text-gov-gold shadow-sm group-hover:scale-110 transition-transform">
               <Activity className="w-6 h-6" />
             </div>
           </div>
@@ -409,14 +409,14 @@ export default function CoordinateurDashboard() {
               </p>
               <p className="text-xs text-gray-500 font-medium">{t('stats.to_complete')}</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 shadow-sm group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-2xl bg-gov-red/5 flex items-center justify-center text-gov-red shadow-sm group-hover:scale-110 transition-transform">
               <FileText className="w-6 h-6" />
             </div>
           </div>
           {(stats?.rapportsEnAttente || 0) > 0 && (
             <span className="absolute top-4 right-4 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gov-red/10 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-gov-red/10"></span>
             </span>
           )}
         </motion.div>
@@ -537,7 +537,7 @@ export default function CoordinateurDashboard() {
           <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-50 bg-gradient-to-l from-amber-50 to-transparent">
               <h2 className="font-bold text-gray-900 flex items-center gap-3 text-lg">
-                <div className="p-2 bg-amber-100 rounded-xl text-amber-600">
+                <div className="p-2 bg-gov-gold/10 rounded-xl text-gov-gold">
                    <Sparkles className="w-5 h-5" />
                 </div>
                 {t('quick_actions.title')}
@@ -560,13 +560,13 @@ export default function CoordinateurDashboard() {
 
               <Link
                 href="/coordinateur/etablissements"
-                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-emerald-50 transition-colors group border border-transparent hover:border-emerald-100"
+                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gov-green/5 transition-colors group border border-transparent hover:border-gov-green/30"
               >
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-gov-green/10 flex items-center justify-center text-gov-green-dark group-hover:scale-110 transition-transform shadow-sm">
                   <Building2 className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900 group-hover:text-emerald-700">{t('quick_actions.establishments.title')}</p>
+                  <p className="font-bold text-gray-900 group-hover:text-gov-green-dark">{t('quick_actions.establishments.title')}</p>
                   <p className="text-xs text-gray-500 font-medium">{t('quick_actions.establishments.subtitle')}</p>
                 </div>
                 <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:-translate-x-1 transition-transform" />
@@ -574,17 +574,17 @@ export default function CoordinateurDashboard() {
 
               <Link
                 href="/coordinateur/calendrier?filter=rapport"
-                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-rose-50 transition-colors group border border-transparent hover:border-rose-100"
+                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gov-red/5 transition-colors group border border-transparent hover:border-rose-100"
               >
-                <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 group-hover:scale-110 transition-transform shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-gov-red/10 flex items-center justify-center text-gov-red group-hover:scale-110 transition-transform shadow-sm">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-gray-900 group-hover:text-rose-700">{t('quick_actions.report.title')}</p>
+                  <p className="font-bold text-gray-900 group-hover:text-gov-red">{t('quick_actions.report.title')}</p>
                   <p className="text-xs text-gray-500 font-medium">{t('quick_actions.report.subtitle')}</p>
                 </div>
                 {(stats?.rapportsEnAttente || 0) > 0 && (
-                  <span className="px-3 py-1 bg-rose-500 text-white text-xs font-bold rounded-full shadow-lg shadow-rose-500/30">
+                  <span className="px-3 py-1 bg-gov-red/10 text-white text-xs font-bold rounded-full shadow-lg shadow-rose-500/30">
                     {stats?.rapportsEnAttente}
                   </span>
                 )}
@@ -608,7 +608,7 @@ export default function CoordinateurDashboard() {
           </div>
 
           {/* Statistiques rapides */}
-          <div className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
             
             <div className="flex items-center justify-between mb-8 relative z-10">
@@ -627,7 +627,7 @@ export default function CoordinateurDashboard() {
               <div className="space-y-2">
                  <div className="h-3 bg-black/20 rounded-full overflow-hidden backdrop-blur-sm">
                     <div 
-                    className="h-full bg-amber-400 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,191,36,0.5)]"
+                    className="h-full bg-gov-gold/10 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,191,36,0.5)]"
                     style={{ 
                         width: `${stats?.activitesSemaine ? ((stats.activitesTerminees || 0) / stats.activitesSemaine) * 100 : 0}%` 
                     }}

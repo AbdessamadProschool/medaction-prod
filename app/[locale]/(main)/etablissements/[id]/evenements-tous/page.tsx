@@ -45,7 +45,7 @@ const STATUT_CONFIG: Record<string, { bg: string; text: string; label: string }>
   VALIDE: { bg: 'bg-green-100', text: 'text-green-700', label: 'Validé' },
   PUBLIE: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Publié' },
   ANNULE: { bg: 'bg-red-100', text: 'text-red-700', label: 'Annulé' },
-  TERMINE: { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Terminé' },
+  TERMINE: { bg: 'bg-gov-blue/10', text: 'text-gov-blue-dark', label: 'Terminé' },
 };
 
 const FILTER_OPTIONS = [

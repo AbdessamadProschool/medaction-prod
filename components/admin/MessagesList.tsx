@@ -68,10 +68,10 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-4">
-            <div className="p-3.5 bg-[hsl(var(--gov-blue))] rounded-2xl shadow-xl shadow-[hsl(var(--gov-blue))]/20">
+            <div className="p-3 bg-[hsl(var(--gov-blue))] rounded-lg shadow-sm">
                <Mail className="w-8 h-8 text-white" />
             </div>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+            <span className="text-foreground">
               {t('title')}
             </span>
           </h1>
@@ -89,7 +89,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
               placeholder={t('search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-[hsl(var(--gov-blue))] outline-none transition-all shadow-sm ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+              className={`w-full py-3 bg-background border border-input rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] outline-none transition-colors shadow-sm ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
             />
           </div>
           <div className="flex flex-col items-end">
@@ -100,7 +100,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
       </div>
 
       {dbError ? (
-        <div className="bg-red-50 p-6 rounded-2xl border border-red-200 flex gap-4 items-center animate-pulse">
+        <div className="bg-[hsl(var(--gov-red)/0.08)] p-6 rounded-lg border border-[hsl(var(--gov-red)/0.25)] flex gap-4 items-center">
           <AlertCircle className="w-8 h-8 text-red-600" />
           <div>
             <h3 className="font-bold text-red-900">{t('db_error_title')}</h3>
@@ -108,7 +108,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-100/50 border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
@@ -139,7 +139,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                     key={msg.id} 
                     className={`
                       hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-colors cursor-pointer group
-                      ${!msg.isRead ? 'bg-blue-50/40 dark:bg-blue-900/10 border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'}
+                      ${!msg.isRead ? 'bg-[hsl(var(--gov-blue)/0.06)] ring-inset ring-1 ring-[hsl(var(--gov-blue)/0.18)]' : ''}
                     `}
                     onClick={() => handleViewMessage(msg)}
                   >
@@ -219,7 +219,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[hsl(var(--gov-blue-dark)/0.72)]"
             onClick={() => setSelectedMessage(null)}
           >
             <motion.div 
@@ -227,7 +227,7 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden"
+              className="bg-card rounded-lg w-full max-w-2xl shadow-lg overflow-hidden border border-border"
               dir={locale === 'ar' ? 'rtl' : 'ltr'}
             >
               {/* Modal Header */}

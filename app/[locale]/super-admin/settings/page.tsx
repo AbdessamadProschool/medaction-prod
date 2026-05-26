@@ -114,7 +114,7 @@ function Toggle({
       onClick={() => !disabled && onChange(!enabled)}
       disabled={disabled}
       className={`relative w-12 h-6 rounded-full transition-colors ${
-        enabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'
+        enabled ? 'bg-gov-green' : 'bg-gray-300 dark:bg-gray-600'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <span
@@ -480,7 +480,7 @@ export default function SuperAdminSettingsPage() {
           title={t('system_settings.reclamations.title')}
           description={t('system_settings.reclamations.description')}
           icon={MessageSquare}
-          color="from-purple-500 to-violet-600"
+          color="from-gov-blue to-gov-blue-dark"
         >
           <SettingRow
             label={t('system_settings.reclamations.auto_assign')}

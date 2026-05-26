@@ -100,12 +100,12 @@ export default function MesActualitesPage() {
       <div className="relative overflow-hidden rounded-[2.5rem] bg-white text-gray-900 shadow-sm border border-gray-100 px-6 py-6 md:px-8 md:py-10">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-            <Newspaper className="w-48 h-48 transform rotate-12 text-orange-600" />
+            <Newspaper className="w-48 h-48 transform rotate-12 text-gov-gold" />
         </div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3">
-                <div className="flex items-center gap-2.5 text-orange-600 font-bold bg-orange-50 w-fit px-3 py-1 rounded-xl border border-orange-100 text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-2.5 text-gov-gold font-bold bg-gov-gold/5 w-fit px-3 py-1 rounded-xl border border-gov-gold/30 text-xs uppercase tracking-wider">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                     <span>{t('title')}</span>
                 </div>
@@ -121,7 +121,7 @@ export default function MesActualitesPage() {
             
             <Link
                 href="/delegation/actualites/nouvelle"
-                className="group relative px-6 py-3 bg-orange-600 text-white rounded-xl font-black text-sm shadow-xl shadow-orange-500/20 hover:bg-orange-700 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
+                className="group relative px-6 py-3 bg-gov-gold/10 text-white rounded-xl font-black text-sm shadow-xl shadow-orange-500/20 hover:bg-gov-gold/10 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
             >
                 <Plus size={18} className="stroke-[4px]" />
                 <span>{t('create_new')}</span>
@@ -132,7 +132,7 @@ export default function MesActualitesPage() {
       {/* Control Bar */}
       <div className="sticky top-4 z-30 bg-white/80 backdrop-blur-md rounded-2xl p-2 border border-gray-100 shadow-lg shadow-gray-200/50 flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative group">
-              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={20} />
+              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-gold transition-colors" size={20} />
               <input
                   type="text"
                   value={search}
@@ -151,7 +151,7 @@ export default function MesActualitesPage() {
                 <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-orange-200 text-start"
+                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-gov-gold/30 text-start"
                 >
                 <option value="">{t('status_filter')}</option>
                 <option value="PUBLIEE">{t('status_published')}</option>
@@ -165,8 +165,8 @@ export default function MesActualitesPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="relative">
-                  <div className="w-16 h-16 border-4 border-orange-100 border-t-orange-500 rounded-full animate-spin"></div>
-                  <Newspaper className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-orange-500 w-6 h-6" />
+                  <div className="w-16 h-16 border-4 border-gov-gold/30 border-t-orange-500 rounded-full animate-spin"></div>
+                  <Newspaper className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gov-gold w-6 h-6" />
               </div>
               <p className="text-gray-400 font-medium animate-pulse">جاري تحميل المستجدات...</p>
             </div>
@@ -176,8 +176,8 @@ export default function MesActualitesPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-gray-100 border-dashed text-center"
             >
-              <div className="w-28 h-28 bg-orange-50 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                <FileText className="w-12 h-12 text-orange-400" />
+              <div className="w-28 h-28 bg-gov-gold/5 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                <FileText className="w-12 h-12 text-gov-gold" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 {t('empty_state.title')}
@@ -185,7 +185,7 @@ export default function MesActualitesPage() {
               <p className="text-gray-500 mb-8 max-w-md mx-auto text-lg leading-relaxed">
                 {t('empty_state.description')}
               </p>
-              <Link href="/delegation/actualites/nouvelle" className="px-10 py-4 bg-orange-600 text-white rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/20 font-bold flex items-center gap-3 hover:-translate-y-1">
+              <Link href="/delegation/actualites/nouvelle" className="px-10 py-4 bg-gov-gold/10 text-white rounded-2xl hover:bg-gov-gold/10 transition-all shadow-lg shadow-orange-500/20 font-bold flex items-center gap-3 hover:-translate-y-1">
                 <Plus size={22} />
                 {t('empty_state.action')}
               </Link>
@@ -207,9 +207,9 @@ export default function MesActualitesPage() {
                             {/* Card Header / Image Area */}
                             <div className="h-48 rounded-[1.5rem] bg-gray-100 overflow-hidden relative mb-5 flex-shrink-0">
                                 {/* Decorator or Image would go here */}
-                                <div className={`absolute inset-0 ${actu.isPublie ? 'bg-gradient-to-br from-orange-50 to-red-50' : 'bg-gradient-to-br from-gray-50 to-gray-100'}`}></div>
+                                <div className={`absolute inset-0 ${actu.isPublie ? 'bg-gradient-to-br from-gov-red to-gov-red-dark' : 'bg-gradient-to-br from-gray-50 to-gray-100'}`}></div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:scale-110 transition-transform duration-700">
-                                    <Newspaper size={64} className={actu.isPublie ? "text-orange-900" : "text-gray-400"} />
+                                    <Newspaper size={64} className={actu.isPublie ? "text-gov-gold" : "text-gray-400"} />
                                 </div>
                                 
                                 {/* Status Badge */}
@@ -228,7 +228,7 @@ export default function MesActualitesPage() {
                                 {actu.categorie && (
                                     <div className="absolute bottom-4 left-4">
                                         <span className="px-3 py-1 bg-white/90 backdrop-blur text-gray-800 text-xs font-bold rounded-lg shadow-sm border border-black/5 flex items-center gap-1.5">
-                                            <Tag size={12} className="text-orange-500" />
+                                            <Tag size={12} className="text-gov-gold" />
                                             {actu.categorie}
                                         </span>
                                     </div>
@@ -237,7 +237,7 @@ export default function MesActualitesPage() {
 
                             {/* Card Content */}
                             <div className="flex-1 flex flex-col px-2 pb-2">
-                                <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors cursor-pointer" onClick={() => window.location.href = `/delegation/actualites/${actu.id}`}>
+                                <h3 className="text-lg font-bold text-gray-900 mb-3 leading-snug line-clamp-2 group-hover:text-gov-gold transition-colors cursor-pointer" onClick={() => window.location.href = `/delegation/actualites/${actu.id}`}>
                                     {actu.titre}
                                 </h3>
                                 

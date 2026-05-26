@@ -38,7 +38,7 @@ const JSONValue = ({ value }: { value: any }) => {
   if (value === null || value === undefined) return <span className="text-gray-400 italic text-xs">null</span>;
   if (typeof value === 'boolean') return <span className={`text-xs font-bold ${value ? 'text-green-600' : 'text-red-600'}`}>{value.toString()}</span>;
   if (typeof value === 'string') return <span className="text-blue-600 break-all">"{value}"</span>;
-  if (typeof value === 'number') return <span className="text-purple-600">{value}</span>;
+  if (typeof value === 'number') return <span className="text-gov-blue-dark">{value}</span>;
   if (Array.isArray(value)) return (
     <div className="pl-2 border-l-2 border-gray-100">
       {value.map((v, i) => <div key={i}><span className="text-xs text-gray-400 mr-1">{i}:</span><JSONValue value={v} /></div>)}
@@ -108,28 +108,28 @@ type TabType = 'activity' | 'system' | 'audit';
 
 // Styles des actions
 const ACTION_STYLES: Record<string, string> = {
-  'CREATE': 'bg-emerald-100 text-emerald-700',
+  'CREATE': 'bg-gov-green/10 text-gov-green-dark',
   'UPDATE': 'bg-blue-100 text-blue-700',
   'DELETE': 'bg-red-100 text-red-700',
-  'LOGIN': 'bg-purple-100 text-purple-700',
+  'LOGIN': 'bg-gov-blue/10 text-gov-blue-dark',
   'LOGOUT': 'bg-gray-100 text-gray-700',
-  'VALIDATE': 'bg-teal-100 text-teal-700',
-  'REJECT': 'bg-orange-100 text-orange-700',
-  'EXPORT': 'bg-indigo-100 text-indigo-700',
-  'EXPORT_LOGS': 'bg-indigo-100 text-indigo-700',
-  'UPDATE_PERMISSIONS': 'bg-amber-100 text-amber-700',
+  'VALIDATE': 'bg-gov-green/10 text-gov-green',
+  'REJECT': 'bg-gov-gold/10 text-gov-gold',
+  'EXPORT': 'bg-gov-blue/10 text-gov-blue-dark',
+  'EXPORT_LOGS': 'bg-gov-blue/10 text-gov-blue-dark',
+  'UPDATE_PERMISSIONS': 'bg-gov-gold/10 text-gov-gold',
 };
 
 const LEVEL_ICONS: Record<string, React.ReactNode> = {
   info: <Info size={14} className="text-blue-500" />,
-  warning: <AlertTriangle size={14} className="text-amber-500" />,
+  warning: <AlertTriangle size={14} className="text-gov-gold" />,
   error: <AlertCircle size={14} className="text-red-500" />,
   debug: <Bug size={14} className="text-gray-500" />,
 };
 
 const LEVEL_COLORS: Record<string, string> = {
   info: 'bg-blue-50 text-blue-700 border-blue-200',
-  warning: 'bg-amber-50 text-amber-700 border-amber-200',
+  warning: 'bg-gov-gold/5 text-gov-gold border-gov-gold/30',
   error: 'bg-red-50 text-red-700 border-red-200',
   debug: 'bg-gray-50 text-gray-700 border-gray-200',
 };
@@ -858,7 +858,7 @@ export default function AdminLogsPage() {
                         <td className="px-4 py-3">
                           {log.user ? (
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-gov-blue to-gov-blue-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
                                 {log.user.name?.[0]}
                               </div>
                               <div className="min-w-0">
@@ -1035,14 +1035,14 @@ export default function AdminLogsPage() {
                     <div className="grid grid-cols-2 gap-5">
                          <div className="p-5 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700">
                             <div className={`flex items-center gap-2 mb-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                <Globe size={16} className="text-emerald-500" />
+                                <Globe size={16} className="text-gov-green" />
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{t('ip')}</p>
                             </div>
                             <p className="text-sm font-mono text-gray-900 dark:text-white font-bold">{selectedLog.ipAddress || '?'}</p>
                          </div>
                          <div className="p-5 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700">
                             <div className={`flex items-center gap-2 mb-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                <Monitor size={16} className="text-purple-500" />
+                                <Monitor size={16} className="text-gov-blue" />
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">USER AGENT</p>
                             </div>
                             <p className="text-[11px] text-gray-600 dark:text-gray-400 font-medium leading-relaxed truncate" title={(selectedLog as any).userAgent || ''}>{(selectedLog as any).userAgent || '?'}</p>
@@ -1054,7 +1054,7 @@ export default function AdminLogsPage() {
                 {'previousValue' in selectedLog && (selectedLog.previousValue || selectedLog.newValue) && (
                     <div className="space-y-4">
                         <h4 className={`text-sm font-black text-gray-900 dark:text-white flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                            <History size={18} className="text-amber-500" />
+                            <History size={18} className="text-gov-gold" />
                             {t('changes_comparison') || 'Comparaison des changements'}
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

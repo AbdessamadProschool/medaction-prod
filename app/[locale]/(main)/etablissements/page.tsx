@@ -405,7 +405,7 @@ function EtablissementsContent() {
                         key={n.id}
                         className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all border ${
                           noteMin === n.id 
-                            ? 'bg-amber-50 border-amber-200' 
+                            ? 'bg-gov-gold/5 border-gov-gold/30' 
                             : 'border-transparent hover:bg-gray-50'
                         }`}
                         onClick={() => { setNoteMin(n.id); updateUrlParams('noteMin', n.id.toString()); }}
@@ -419,16 +419,16 @@ function EtablissementsContent() {
                               className="sr-only" 
                           />
                           <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                             noteMin === n.id ? 'border-amber-500 bg-amber-500' : 'border-gray-300 bg-white'
+                             noteMin === n.id ? 'border-gov-gold/30 bg-gov-gold/10' : 'border-gray-300 bg-white'
                           }`}>
                             {noteMin === n.id && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
                           </span>
-                          <span className={`text-sm ${noteMin === n.id ? 'font-medium text-amber-900' : 'text-gray-600'}`}>
+                          <span className={`text-sm ${noteMin === n.id ? 'font-medium text-gov-gold' : 'text-gray-600'}`}>
                             {n.id === 0 ? t('filters.all_notes') : n.id === 4 ? t('filters.excellent') : n.id === 3 ? t('filters.very_good') : t('filters.good')}
                           </span>
                         </div>
                         {n.stars > 0 && (
-                          <div className="flex text-amber-400">
+                          <div className="flex text-gov-gold">
                              {[...Array(n.stars)].map((_, i) => (
                                <svg key={i} className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                              ))}

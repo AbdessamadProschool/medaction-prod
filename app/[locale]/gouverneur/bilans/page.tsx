@@ -398,7 +398,7 @@ export default function GouverneurBilansPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-gov-blue-dark rounded-2xl flex items-center justify-center text-white shadow-lg">
                <FileText size={24} />
             </div>
             {t('reports.bilans_page.title')}
@@ -423,7 +423,7 @@ export default function GouverneurBilansPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-5 text-white">
+        <div className="bg-gradient-to-br from-purple-500 to-gov-blue-dark rounded-xl p-5 text-white">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
               <ClipboardList className="w-6 h-6" />
@@ -651,7 +651,7 @@ export default function GouverneurBilansPage() {
 
                     {/* Bilan Description */}
                     {evt.bilanDescription && (
-                      <div className="bg-gradient-to-r from-gray-50 to-emerald-50 dark:bg-gray-700 rounded-lg p-4 border-l-4 border-emerald-500">
+                      <div className="bg-gradient-to-r from-gray-50 to-emerald-50 dark:bg-gray-700 rounded-lg p-4 border-l-2 border-emerald-500">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                             <FileText className="w-4 h-4 text-emerald-600" />
@@ -754,7 +754,7 @@ export default function GouverneurBilansPage() {
                     </div>
 
                     {/* Rapport */}
-                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:bg-gray-700 rounded-lg p-4 border-l-4 border-purple-500">
+                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:bg-gray-700 rounded-lg p-4 border-l-2 border-purple-500">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                           <FileText className="w-4 h-4 text-purple-600" />
@@ -935,7 +935,7 @@ export default function GouverneurBilansPage() {
                     </div>
 
                     {/* Success indicator */}
-                    <div className="bg-gradient-to-r from-amber-50 to-green-50 rounded-lg p-4 border-l-4 border-amber-500">
+                    <div className="bg-gradient-to-r from-amber-50 to-green-50 rounded-lg p-4 border-l-2 border-amber-500">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 text-amber-700">
                           <CheckCircle2 className="w-5 h-5" />

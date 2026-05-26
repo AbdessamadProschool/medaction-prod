@@ -253,12 +253,12 @@ export default function EventsSection() {
                       />
                     ) : (
                       <div className={`absolute inset-0 flex flex-col items-center justify-center ${
-                        event.typeCategorique === 'CULTUREL' ? 'bg-gradient-to-br from-purple-500 to-pink-600' :
-                        event.typeCategorique === 'SPORTIF' ? 'bg-gradient-to-br from-emerald-500 to-teal-600' :
-                        event.typeCategorique === 'EDUCATIF' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' :
-                        event.typeCategorique === 'SOCIAL' ? 'bg-gradient-to-br from-orange-500 to-amber-600' :
-                        event.typeCategorique === 'SANTE' ? 'bg-gradient-to-br from-red-500 to-rose-600' :
-                        'bg-gradient-to-br from-gray-500 to-slate-600'
+                        event.typeCategorique === 'CULTUREL' ? 'bg-[hsl(var(--gov-blue))]' :
+                        event.typeCategorique === 'SPORTIF' ? 'bg-[hsl(var(--gov-green))]' :
+                        event.typeCategorique === 'EDUCATIF' ? 'bg-[hsl(var(--gov-blue-light))]' :
+                        event.typeCategorique === 'SOCIAL' ? 'bg-[hsl(var(--gov-gold))]' :
+                        event.typeCategorique === 'SANTE' ? 'bg-[hsl(var(--gov-red))]' :
+                        'bg-muted'
                       }`}>
                         <Calendar className="w-12 h-12 text-white/80 mb-2" />
                         <span className={`text-white/90 font-semibold text-sm ${locale === 'ar' ? '' : 'uppercase tracking-wide'}`}>

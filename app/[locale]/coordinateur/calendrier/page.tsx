@@ -90,9 +90,9 @@ interface CreateActivityData {
 const secteurColors: Record<string, { bg: string; border: string; text: string }> = {
   EDUCATION: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700' },
   SANTE: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700' },
-  SPORT: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700' },
-  CULTUREL: { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700' },
-  SOCIAL: { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-700' },
+  SPORT: { bg: 'bg-gov-gold/5', border: 'border-gov-gold/30', text: 'text-gov-gold' },
+  CULTUREL: { bg: 'bg-gov-blue/5', border: 'border-gov-blue/30', text: 'text-gov-blue-dark' },
+  SOCIAL: { bg: 'bg-gov-red/5', border: 'border-pink-200', text: 'text-gov-red' },
   AUTRE: { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700' },
 };
 
@@ -272,11 +272,11 @@ export default function CalendrierPage() {
   const statusConfig = (statut: string) => {
     switch (statut) {
         case 'BROUILLON': return { bg: 'bg-gray-100', text: 'text-gray-600', Icon: FileText };
-        case 'EN_ATTENTE_VALIDATION': return { bg: 'bg-amber-100', text: 'text-amber-700', Icon: Hourglass };
+        case 'EN_ATTENTE_VALIDATION': return { bg: 'bg-gov-gold/10', text: 'text-gov-gold', Icon: Hourglass };
         case 'PLANIFIEE': return { bg: 'bg-blue-100', text: 'text-blue-700', Icon: Calendar };
         case 'EN_COURS': return { bg: 'bg-green-100', text: 'text-green-700', Icon: Play };
         case 'TERMINEE': return { bg: 'bg-gray-100', text: 'text-gray-500', Icon: CheckCircle };
-        case 'RAPPORT_COMPLETE': return { bg: 'bg-emerald-100', text: 'text-emerald-700', Icon: BarChart3 };
+        case 'RAPPORT_COMPLETE': return { bg: 'bg-gov-green/10', text: 'text-gov-green-dark', Icon: BarChart3 };
         case 'ANNULEE': return { bg: 'bg-red-100', text: 'text-red-700', Icon: XCircle };
         default: return { bg: 'bg-gray-100', text: 'text-gray-600', Icon: AlertCircle };
     }
@@ -319,7 +319,7 @@ export default function CalendrierPage() {
             <button
               onClick={submitAllForValidation}
               disabled={submitting}
-              className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-70"
+              className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-gov-gold to-gov-gold-dark text-white rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-70"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {t('submit_all', { count: brouillonsCount })}
@@ -328,7 +328,7 @@ export default function CalendrierPage() {
            
            <button
              onClick={() => setShowImportModal(true)}
-             className="flex items-center gap-2 px-4 py-3 border border-emerald-200 text-emerald-700 bg-emerald-50 rounded-xl font-bold hover:bg-emerald-100 transition-colors"
+             className="flex items-center gap-2 px-4 py-3 border border-gov-green/30 text-gov-green-dark bg-gov-green/5 rounded-xl font-bold hover:bg-gov-green/10 transition-colors"
            >
              <FileSpreadsheet className="w-5 h-5" />
              {t('import')}
@@ -626,7 +626,7 @@ function ActivityDetailModal({
 
                     {/* Times */}
                     <div className="flex items-center gap-3 text-gray-600">
-                        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-gov-gold/5 flex items-center justify-center text-gov-gold flex-shrink-0">
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
@@ -638,7 +638,7 @@ function ActivityDetailModal({
                      {/* Location */}
                      {activite.lieu && (
                         <div className="flex items-center gap-3 text-gray-600">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-gov-green/5 flex items-center justify-center text-gov-green-dark flex-shrink-0">
                                 <MapPin className="w-5 h-5" />
                             </div>
                             <div>
@@ -651,7 +651,7 @@ function ActivityDetailModal({
                     {/* Responsible */}
                     {activite.responsableNom && (
                         <div className="flex items-center gap-3 text-gray-600">
-                            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-gov-blue/5 flex items-center justify-center text-gov-blue-dark flex-shrink-0">
                                 <Users className="w-5 h-5" />
                             </div>
                             <div>

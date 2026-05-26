@@ -94,8 +94,8 @@ export default function CampagneDetailPage() {
     return (
       <div className="flex items-center justify-center min-h-[500px]">
         <div className="relative">
-          <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
-          <div className="absolute inset-0 blur-xl bg-emerald-400/20 animate-pulse" />
+          <Loader2 className="w-12 h-12 text-gov-green-dark animate-spin" />
+          <div className="absolute inset-0 blur-xl bg-gov-green/10 animate-pulse" />
         </div>
       </div>
     );
@@ -131,8 +131,8 @@ export default function CampagneDetailPage() {
   const getTypeGradient = (type?: string) => {
     const typeColors: Record<string, string> = {
       SANTE: 'from-rose-600 to-red-600',
-      ENVIRONNEMENT: 'from-emerald-600 to-teal-600',
-      EDUCATION: 'from-blue-600 to-indigo-600',
+      ENVIRONNEMENT: 'from-gov-green to-gov-green-dark',
+      EDUCATION: 'from-gov-blue to-gov-blue-dark',
       SOCIAL: 'from-orange-500 to-amber-600',
       AUTRE: 'from-slate-600 to-slate-800',
     };
@@ -168,7 +168,7 @@ export default function CampagneDetailPage() {
                     {campagne.type ? t(`types.${campagne.type.toLowerCase()}`) : 'عام'}
                  </span>
                  <span className={`px-4 py-1.5 rounded-xl text-xs font-black flex items-center gap-2 border shadow-sm ${
-                   campagne.statut === 'CLOTUREE' ? 'bg-indigo-500/20 text-white border-indigo-400/30' :
+                   campagne.statut === 'CLOTUREE' ? 'bg-gov-blue/10/20 text-white border-gov-blue/30/30' :
                    campagne.isActive ? 'bg-green-500/20 text-white border-green-400/30' : 
                    'bg-gray-800/30 text-gray-200 border-white/10'
                  }`}>
@@ -232,7 +232,7 @@ export default function CampagneDetailPage() {
              className="bg-white rounded-[2.5rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all"
            >
              <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-4 border-b border-gray-50 pb-6">
-                <div className="p-3.5 bg-emerald-500/10 rounded-2xl text-emerald-600 shadow-sm">
+                <div className="p-3.5 bg-gov-green rounded-2xl text-gov-green-dark shadow-sm">
                    <Megaphone className="w-6 h-6" />
                 </div>
                 {t('details.description_title')}
@@ -278,9 +278,9 @@ export default function CampagneDetailPage() {
                 {t('details.stats_title')}
              </h3>
              <div className="space-y-4">
-               <div className="flex items-center justify-between p-5 bg-emerald-50/30 rounded-2xl border border-emerald-100/50 hover:bg-emerald-50 transition-colors">
+               <div className="flex items-center justify-between p-5 bg-gov-green/5/30 rounded-2xl border border-gov-green/30/50 hover:bg-gov-green/5 transition-colors">
                  <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-emerald-500 rounded-xl text-white shadow-lg shadow-emerald-500/20">
+                    <div className="p-2.5 bg-gov-green rounded-xl text-white shadow-lg shadow-gov-green/20">
                       <Users size={20} />
                     </div>
                     <div>
@@ -322,8 +322,8 @@ export default function CampagneDetailPage() {
                <div className="absolute right-7 top-4 bottom-4 w-0.5 bg-gray-100" />
 
                <div className="flex gap-5 relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center flex-shrink-0 border border-orange-100 group-hover:scale-105 transition-transform">
-                    <Calendar size={22} className="text-orange-600" />
+                  <div className="w-14 h-14 rounded-2xl bg-gov-gold/10/10 flex items-center justify-center flex-shrink-0 border border-gov-gold/30 group-hover:scale-105 transition-transform">
+                    <Calendar size={22} className="text-gov-gold" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-400 font-black mb-1 uppercase tracking-widest">{t('details.start_date')}</p>
@@ -343,8 +343,8 @@ export default function CampagneDetailPage() {
                
                {campagne.lieu && (
                  <div className="flex gap-5 relative z-10 pt-6 border-t border-gray-50">
-                    <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center flex-shrink-0 border border-purple-100 group-hover:scale-105 transition-transform">
-                      <MapPin size={22} className="text-purple-600" />
+                    <div className="w-14 h-14 rounded-2xl bg-gov-blue flex items-center justify-center flex-shrink-0 border border-gov-blue/30 group-hover:scale-105 transition-transform">
+                      <MapPin size={22} className="text-gov-blue-dark" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-400 font-black mb-1 uppercase tracking-widest">{t('details.location')}</p>
@@ -367,10 +367,10 @@ export default function CampagneDetailPage() {
                   {campagne.dateFin && new Date(campagne.dateFin) < new Date() ? (
                     <Link 
                       href={`/delegation/campagnes/${campagne.id}/cloture`}
-                      className="flex-1 flex flex-col items-center justify-center gap-3 py-6 bg-amber-50 text-amber-700 rounded-3xl hover:bg-amber-600 hover:text-white transition-all transform hover:-translate-y-1 group"
+                      className="flex-1 flex flex-col items-center justify-center gap-3 py-6 bg-gov-gold/5 text-gov-gold rounded-3xl hover:bg-gov-gold/10 hover:text-white transition-all transform hover:-translate-y-1 group"
                     >
                       <div className="p-3 bg-white rounded-2xl shadow-sm animate-pulse">
-                        <CheckCircle2 size={24} className="text-amber-600" />
+                        <CheckCircle2 size={24} className="text-gov-gold" />
                       </div>
                       <span className="font-black text-sm">إغلاق الحملة</span>
                     </Link>

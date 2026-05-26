@@ -176,9 +176,9 @@ export default function ModifierCampagnePage() {
   const typeColors: Record<string, string> = {
     SANTE: 'from-red-500 to-rose-500',
     ENVIRONNEMENT: 'from-green-500 to-emerald-500',
-    EDUCATION: 'from-blue-500 to-indigo-500',
+    EDUCATION: 'from-gov-blue to-gov-blue-dark',
     SOCIAL: 'from-orange-500 to-amber-500',
-    SOLIDARITE: 'from-purple-500 to-violet-500',
+    SOLIDARITE: 'from-gov-blue to-gov-blue-dark',
     ECOLOGIE: 'from-lime-500 to-green-500',
     CITOYENNETE: 'from-cyan-500 to-teal-500',
     AUTRE: 'from-gray-500 to-gray-600',
@@ -227,15 +227,15 @@ export default function ModifierCampagnePage() {
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-gray-100">
              <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-amber-50 rounded-full border border-amber-100 animate-fade-in-up">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">{t('subtitle')}</span>
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-gov-gold/5 rounded-full border border-gov-gold/30 animate-fade-in-up">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gov-gold/10 animate-pulse"></span>
+                    <span className="text-[10px] font-bold text-gov-gold uppercase tracking-wider">{t('subtitle')}</span>
                 </div>
                 <h1 className="text-xl font-black text-gray-900 tracking-tight leading-tight">
                     {t('title')}
                 </h1>
              </div>
-             <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+             <div className="w-10 h-10 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
                 <Megaphone className="w-5 h-5 text-white" />
              </div>
           </div>
@@ -302,7 +302,7 @@ export default function ModifierCampagnePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className="px-5 py-3 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-indigo-50/50 to-transparent">
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                 <div className="p-1.5 bg-indigo-100 rounded-lg text-indigo-600 shadow-sm">
+                 <div className="p-1.5 bg-gov-blue/10 rounded-lg text-gov-blue-dark shadow-sm">
                    <AlignLeft className="w-4 h-4" />
                  </div>
                  {tCreate('sections.general.title')}
@@ -319,7 +319,7 @@ export default function ModifierCampagnePage() {
                   <div className="relative group">
                     <select
                       {...register('type')}
-                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 text-sm appearance-none cursor-pointer transition-all hover:bg-white text-start"
+                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 text-sm appearance-none cursor-pointer transition-all hover:bg-white text-start"
                     >
                       <option value="">{tCreate('sections.general.type_placeholder')}</option>
                       <option value="SANTE">{tTypes('sante')}</option>
@@ -328,7 +328,7 @@ export default function ModifierCampagnePage() {
                       <option value="SOCIAL">{tTypes('social')}</option>
                       <option value="AUTRE">{tTypes('autre')}</option>
                     </select>
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                        <LayoutTemplate size={18} />
                     </div>
                   </div>
@@ -345,9 +345,9 @@ export default function ModifierCampagnePage() {
                       {...register('nom')}
                       type="text"
                       placeholder="مثال: شتاء التضامن 2025"
-                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
+                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                       <LayoutTemplate size={18} />
                     </div>
                   </div>
@@ -365,9 +365,9 @@ export default function ModifierCampagnePage() {
                     {...register('titre')}
                     type="text"
                     placeholder={tCreate('sections.general.campaign_title_placeholder')}
-                    className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
+                    className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
                   />
-                  <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                  <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                     <Megaphone size={18} />
                   </div>
                 </div>
@@ -383,7 +383,7 @@ export default function ModifierCampagnePage() {
                   {...register('description')}
                   rows={2}
                   placeholder={tCreate('sections.general.description_placeholder')}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-medium placeholder:text-gray-300 bg-gray-50/50 focus:bg-white resize-none text-start"
+                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-medium placeholder:text-gray-300 bg-gray-50/50 focus:bg-white resize-none text-start"
                 />
               </div>
 
@@ -396,7 +396,7 @@ export default function ModifierCampagnePage() {
                   {...register('contenu')}
                   rows={4}
                   placeholder="شرح تفصيلي للحملة..."
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-medium placeholder:text-gray-300 leading-relaxed bg-gray-50/50 focus:bg-white resize-none text-start"
+                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-medium placeholder:text-gray-300 leading-relaxed bg-gray-50/50 focus:bg-white resize-none text-start"
                 />
                 {errors.contenu && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse text-start">{errors.contenu.message}</p>}
               </div>
@@ -407,7 +407,7 @@ export default function ModifierCampagnePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className="px-5 py-3 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-amber-50/50 to-transparent">
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                 <div className="p-1.5 bg-amber-100 rounded-lg text-amber-600 shadow-sm">
+                 <div className="p-1.5 bg-gov-gold/10 rounded-lg text-gov-gold shadow-sm">
                    <Calendar className="w-4 h-4" />
                  </div>
                  {tCreate('sections.datetime.title')}
@@ -424,7 +424,7 @@ export default function ModifierCampagnePage() {
                     {...register('dateDebut')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -433,7 +433,7 @@ export default function ModifierCampagnePage() {
                     {...register('dateFin')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
                   />
                 </div>
               </div>
@@ -447,9 +447,9 @@ export default function ModifierCampagnePage() {
                     {...register('lieu')}
                     type="text"
                     placeholder={tCreate('sections.datetime.location_placeholder')}
-                    className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
+                    className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white text-sm transition-all text-start"
                   />
-                  <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-500 transition-colors pointer-events-none">
+                  <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-gold transition-colors pointer-events-none">
                     <MapPin size={18} />
                   </div>
                 </div>
@@ -461,7 +461,7 @@ export default function ModifierCampagnePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
             <div className="px-5 py-3 border-b border-gray-50 bg-gradient-to-r rtl:bg-gradient-to-l from-purple-50/50 to-transparent">
               <h2 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                 <div className="p-1.5 bg-purple-100 rounded-lg text-purple-600 shadow-sm">
+                 <div className="p-1.5 bg-gov-blue/10 rounded-lg text-gov-blue-dark shadow-sm">
                    <Target className="w-4 h-4" />
                  </div>
                  {tCreate('sections.objectives.title')}
@@ -479,9 +479,9 @@ export default function ModifierCampagnePage() {
                       {...register('objectifParticipations')}
                       type="number"
                       placeholder={tCreate('sections.objectives.target_placeholder')}
-                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
+                      className="w-full px-4 py-2 pr-11 rtl:pr-11 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none font-bold bg-gray-50/50 focus:bg-white transition-all text-sm text-start"
                     />
-                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors pointer-events-none">
+                    <div className="absolute right-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue transition-colors pointer-events-none">
                       <Users size={18} />
                     </div>
                   </div>
@@ -501,7 +501,7 @@ export default function ModifierCampagnePage() {
                        <input
                         {...register('couleurTheme')}
                         type="text"
-                        className="w-full h-9 px-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none font-mono uppercase bg-gray-50/50 focus:bg-white text-xs font-bold transition-all text-start"
+                        className="w-full h-9 px-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none font-mono uppercase bg-gray-50/50 focus:bg-white text-xs font-bold transition-all text-start"
                         />
                     </div>
                   </div>
@@ -514,11 +514,11 @@ export default function ModifierCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">منظمة من طرف العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحملة مباشرة بعمالة مديونة</p>
                   </div>
                 </label>
@@ -528,11 +528,11 @@ export default function ModifierCampagnePage() {
                     <input
                       type="checkbox"
                       {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">تحت غطاء العمالة</span>
                     <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
                   </div>
                 </label>

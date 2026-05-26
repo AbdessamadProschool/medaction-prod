@@ -114,7 +114,7 @@ export default function EvaluationsPage() {
   if (loading && !etablissement) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-green animate-spin" />
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function EvaluationsPage() {
         <div className="text-center">
           <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{error}</h2>
-          <button onClick={() => router.back()} className="text-emerald-600 hover:underline">
+          <button onClick={() => router.back()} className="text-gov-green-dark hover:underline">
             Retour
           </button>
         </div>
@@ -155,7 +155,7 @@ export default function EvaluationsPage() {
           <PermissionGuard permission="evaluations.create">
             <Link
               href={`/evaluer/${etablissementId}`}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-gov-green text-white rounded-xl font-medium hover:bg-gov-green transition-colors"
             >
               <PenLine size={18} />
               Évaluer
@@ -248,7 +248,7 @@ export default function EvaluationsPage() {
                   <PermissionGuard permission="evaluations.create">
                     <Link
                       href={`/evaluer/${etablissementId}`}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gov-green text-white rounded-xl font-medium hover:bg-gov-green transition-colors"
                     >
                       <PenLine size={18} />
                       Donner mon avis
@@ -265,7 +265,7 @@ export default function EvaluationsPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gov-green to-gov-blue flex items-center justify-center text-white font-bold">
                             {evaluation.user.photo ? (
                               <img
                                 src={evaluation.user.photo}

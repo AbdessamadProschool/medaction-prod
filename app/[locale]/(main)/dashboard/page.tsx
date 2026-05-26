@@ -126,7 +126,7 @@ function KPICard({
           </motion.p>
           {trend && trendValue && (
             <div className={`flex items-center gap-1 mt-2 text-sm ${
-              trend === 'up' ? 'text-emerald-600' : 
+              trend === 'up' ? 'text-gov-green-dark' : 
               trend === 'down' ? 'text-red-500' : 'text-gray-500'
             }`}>
               {trend === 'up' ? <TrendingUp size={14} /> : 
@@ -172,7 +172,7 @@ function EvenementCard({ event, index }: { event: any; index: number }) {
       </div>
       <Link
         href={`/evenements/${event.id}`}
-        className="p-2 text-gray-400 hover:text-emerald-600 transition-colors"
+        className="p-2 text-gray-400 hover:text-gov-green-dark transition-colors"
       >
         <ChevronRight size={20} />
       </Link>
@@ -184,7 +184,7 @@ function EvenementCard({ event, index }: { event: any; index: number }) {
 function ReclamationCard({ reclamation, index }: { reclamation: any; index: number }) {
   const statusConfig: Record<string, { color: string; icon: React.ElementType }> = {
     null: { color: 'text-yellow-500 bg-yellow-50', icon: Clock },
-    ACCEPTEE: { color: 'text-emerald-500 bg-emerald-50', icon: CheckCircle },
+    ACCEPTEE: { color: 'text-gov-green bg-gov-green/5', icon: CheckCircle },
     REJETEE: { color: 'text-red-500 bg-red-50', icon: XCircle },
   };
   const config = statusConfig[reclamation.statut] || statusConfig['null'];
@@ -215,7 +215,7 @@ function ReclamationCard({ reclamation, index }: { reclamation: any; index: numb
       </div>
       <Link
         href={`/admin/reclamations/${reclamation.id}`}
-        className="p-2 text-gray-400 hover:text-emerald-600 transition-colors"
+        className="p-2 text-gray-400 hover:text-gov-green-dark transition-colors"
       >
         <ChevronRight size={20} />
       </Link>
@@ -330,7 +330,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-10 h-10 text-gov-green animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Chargement du dashboard...</p>
         </div>
       </div>
@@ -363,7 +363,7 @@ export default function DashboardPage() {
             <select
               value={periode}
               onChange={(e) => setPeriode(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
+              className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-gov-green/20"
             >
               <option value="7">7 derniers jours</option>
               <option value="30">30 derniers jours</option>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
             <select
               value={communeId}
               onChange={(e) => setCommuneId(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
+              className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-gov-green/20"
             >
               <option value="">Toutes les communes</option>
               {communes.map(c => (
@@ -385,7 +385,7 @@ export default function DashboardPage() {
             <button
               onClick={loadData}
               disabled={refreshing}
-              className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+              className="p-2 bg-gov-green text-white rounded-lg hover:bg-gov-green transition-colors disabled:opacity-50"
             >
               <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
             </button>
@@ -400,7 +400,7 @@ export default function DashboardPage() {
             icon={Building2}
             trend="up"
             trendValue="+12% ce mois"
-            color="bg-gradient-to-br from-blue-500 to-indigo-600"
+            color="bg-gradient-to-br from-gov-blue to-gov-blue-dark"
             delay={0}
           />
           <KPICard
@@ -409,7 +409,7 @@ export default function DashboardPage() {
             icon={Users}
             trend="up"
             trendValue="+8% ce mois"
-            color="bg-gradient-to-br from-emerald-500 to-teal-600"
+            color="bg-gradient-to-br from-gov-green to-gov-green-dark"
             delay={0.1}
           />
           <KPICard
@@ -418,7 +418,7 @@ export default function DashboardPage() {
             icon={Star}
             trend="up"
             trendValue={`Moyenne: ${kpiData?.noteMoyenneGlobale || '0'}/5`}
-            color="bg-gradient-to-br from-amber-500 to-orange-600"
+            color="bg-gradient-to-br from-gov-gold to-gov-gold-dark"
             delay={0.2}
           />
           <KPICard
@@ -427,7 +427,7 @@ export default function DashboardPage() {
             icon={MessageSquare}
             trend={reclamationsData?.enAttente ? 'neutral' : 'up'}
             trendValue={`${reclamationsData?.enAttente || 0} en attente`}
-            color="bg-gradient-to-br from-purple-500 to-pink-600"
+            color="bg-gradient-to-br from-gov-blue to-gov-blue-dark"
             delay={0.3}
           />
         </div>
@@ -615,7 +615,7 @@ export default function DashboardPage() {
               </h3>
               <Link 
                 href="/evenements"
-                className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
+                className="text-sm text-gov-green-dark hover:underline flex items-center gap-1"
               >
                 Voir tout <ChevronRight size={14} />
               </Link>
@@ -644,12 +644,12 @@ export default function DashboardPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <AlertTriangle className="text-amber-500" size={18} />
+                <AlertTriangle className="text-gov-gold" size={18} />
                 Réclamations en attente
               </h3>
               <Link 
                 href="/admin/reclamations"
-                className="text-sm text-emerald-600 hover:underline flex items-center gap-1"
+                className="text-sm text-gov-green-dark hover:underline flex items-center gap-1"
               >
                 Voir tout <ChevronRight size={14} />
               </Link>
@@ -663,7 +663,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <CheckCircle className="w-12 h-12 text-emerald-200 mx-auto mb-2" />
+                <CheckCircle className="w-12 h-12 text-gov-green mx-auto mb-2" />
                 <p className="text-gray-500">Aucune réclamation urgente</p>
               </div>
             )}

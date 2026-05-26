@@ -165,7 +165,7 @@ export default function AdminHeader() {
                         key={notif.id} 
                         href={notif.lien || '#'}
                         onClick={() => setShowNotifications(false)}
-                        className="block px-4 py-3 hover:bg-[hsl(var(--gov-blue))/0.05] cursor-pointer border-l-4 border-transparent hover:border-[hsl(var(--gov-gold))] transition-all"
+                        className="block px-4 py-3 hover:bg-[hsl(var(--gov-blue)/0.05)] cursor-pointer transition-colors"
                       >
                         <>
                           <p className="text-sm font-bold text-foreground">{notif.titre}</p>

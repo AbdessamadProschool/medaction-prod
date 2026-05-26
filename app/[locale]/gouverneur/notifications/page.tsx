@@ -144,7 +144,7 @@ export default function GovernorNotificationsPage() {
                     <p className="text-2xl font-black text-slate-900">{notifications.length}</p>
                 </div>
             </div>
-            <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-4 border-l-4 border-l-blue-500">
+            <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-4 border-l-2 border-l-blue-500">
                 <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-600">
                     <Clock size={24} />
                 </div>

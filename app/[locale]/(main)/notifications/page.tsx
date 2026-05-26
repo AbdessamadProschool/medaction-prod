@@ -57,12 +57,12 @@ const TYPE_COLORS: Record<string, string> = {
   NOUVELLE_RECLAMATION: 'bg-blue-100 text-blue-600',
   RECLAMATION_ACCEPTEE: 'bg-green-100 text-green-600',
   RECLAMATION_REJETEE: 'bg-red-100 text-red-600',
-  RECLAMATION_AFFECTEE: 'bg-orange-100 text-orange-600',
-  RECLAMATION_RESOLUE: 'bg-emerald-100 text-emerald-600',
-  EVENEMENT_VALIDE: 'bg-purple-100 text-purple-600',
+  RECLAMATION_AFFECTEE: 'bg-gov-gold/10 text-gov-gold',
+  RECLAMATION_RESOLUE: 'bg-gov-green/10 text-gov-green-dark',
+  EVENEMENT_VALIDE: 'bg-gov-blue/10 text-gov-blue-dark',
   EVENEMENT_REJETE: 'bg-red-100 text-red-600',
-  NOUVEL_EVENEMENT: 'bg-purple-100 text-purple-600',
-  ROLE_CHANGED: 'bg-indigo-100 text-indigo-600',
+  NOUVEL_EVENEMENT: 'bg-gov-blue/10 text-gov-blue-dark',
+  ROLE_CHANGED: 'bg-gov-blue/10 text-gov-blue-dark',
   ACCOUNT_ACTIVATED: 'bg-green-100 text-green-600',
   DEFAULT: 'bg-gray-100 text-gray-600',
 };
@@ -187,7 +187,7 @@ export default function NotificationsPage() {
              {unreadCount > 0 && (
                <button
                  onClick={markAllAsRead}
-                 className="flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                 className="flex items-center gap-2 px-4 py-2 text-sm text-gov-green-dark hover:bg-gov-green/5 rounded-lg transition-colors"
                >
                  <CheckCheck size={18} />
                  {t('notifications_page.mark_all_read')}
@@ -211,7 +211,7 @@ export default function NotificationsPage() {
               onClick={() => { setFilter('all'); setPagination(p => ({ ...p, page: 1 })); }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 filter === 'all'
-                  ? 'bg-emerald-100 text-emerald-700'
+                  ? 'bg-gov-green/10 text-gov-green-dark'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -221,7 +221,7 @@ export default function NotificationsPage() {
               onClick={() => { setFilter('unread'); setPagination(p => ({ ...p, page: 1 })); }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 filter === 'unread'
-                  ? 'bg-emerald-100 text-emerald-700'
+                  ? 'bg-gov-green/10 text-gov-green-dark'
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -270,7 +270,7 @@ export default function NotificationsPage() {
                   <div
                     key={notif.id}
                     className={`p-5 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
-                      !notif.isLue ? 'bg-emerald-50/50 dark:bg-emerald-900/10' : ''
+                      !notif.isLue ? 'bg-gov-green/5/50 dark:bg-gov-green/10' : ''
                     }`}
                   >
                     <div className="flex items-start gap-4">
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
                                 {notif.titre}
                               </h3>
                               {!notif.isLue && (
-                                <span className="w-2 h-2 bg-emerald-500 rounded-full" />
+                                <span className="w-2 h-2 bg-gov-green rounded-full" />
                               )}
                             </div>
                             {/* <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -305,7 +305,7 @@ export default function NotificationsPage() {
                               <Link
                                 href={notif.lien}
                                 onClick={() => !notif.isLue && markAsRead(notif.id)}
-                                className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                                className="p-2 text-gov-green-dark hover:bg-gov-green/5 rounded-lg transition-colors"
                                 title={t('notifications_page.actions.view')}
                               >
                                 <ExternalLink size={18} />
@@ -314,7 +314,7 @@ export default function NotificationsPage() {
                             {!notif.isLue && (
                               <button
                                 onClick={() => markAsRead(notif.id)}
-                                className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                className="p-2 text-gray-400 hover:text-gov-green-dark hover:bg-gray-100 rounded-lg transition-colors"
                                 title={t('notifications_page.actions.mark_read')}
                               >
                                 <Check size={18} />

@@ -186,7 +186,7 @@ export default function DelegationDashboard() {
         <div className="relative z-10 flex items-center gap-4 bg-gray-50/80 dark:bg-gray-900/40 px-5 py-2 rounded-xl border border-gray-100 dark:border-gray-800">
            <div className="flex flex-col items-end">
               <p className="text-[9px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest">{t('engagement')}</p>
-              <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 leading-none">
+              <p className="text-lg font-black text-gov-green-dark dark:text-gov-green leading-none">
                 {engagementRate}%
               </p>
            </div>
@@ -197,10 +197,10 @@ export default function DelegationDashboard() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Événements */}
         <Link href="/delegation/evenements" className="group">
-          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-purple-500/50">
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-blue/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 shadow-sm">
+                <div className="p-3 rounded-xl bg-gov-blue/5 dark:bg-gov-blue text-gov-blue-dark dark:text-gov-blue shadow-sm">
                   <Calendar size={24} strokeWidth={2.5} />
                 </div>
                 {stats?.evenements?.enAttente ? (
@@ -212,7 +212,7 @@ export default function DelegationDashboard() {
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.events')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.evenements.total || 0}</p>
               <div className="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} />
+                <div className="h-full bg-gov-blue rounded-full" style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -220,16 +220,16 @@ export default function DelegationDashboard() {
         
         {/* Actualités */}
         <Link href="/delegation/actualites" className="group">
-          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-orange-500/50">
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-gold/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 shadow-sm">
+                <div className="p-3 rounded-xl bg-gov-gold/5 dark:bg-gov-gold/10/20 text-gov-gold dark:text-gov-gold shadow-sm">
                   <Newspaper size={24} strokeWidth={2.5} />
                 </div>
               </div>
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.news')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.actualites.total || 0}</p>
-              <div className="flex items-center gap-2 p-2 bg-orange-50/50 dark:bg-orange-900/10 rounded-xl text-xs font-bold text-orange-700 dark:text-orange-400 border border-orange-100/50 dark:border-orange-900/30">
+              <div className="flex items-center gap-2 p-2 bg-gov-gold/5/50 dark:bg-gov-gold/10/10 rounded-xl text-xs font-bold text-gov-gold dark:text-gov-gold border border-gov-gold/30/50 dark:border-gov-gold/30/30">
                 <Eye size={14} />
                 <span>{t('kpi.views_this_month', { count: stats?.actualites.vues || 0 })}</span>
               </div>
@@ -239,16 +239,16 @@ export default function DelegationDashboard() {
 
         {/* Campagnes */}
         <Link href="/delegation/campagnes" className="group">
-          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-emerald-500/50">
+          <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-green/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 shadow-sm">
+                <div className="p-3 rounded-xl bg-gov-green/5 dark:bg-gov-green text-gov-green-dark dark:text-gov-green shadow-sm">
                   <Megaphone size={24} strokeWidth={2.5} />
                 </div>
               </div>
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.campaigns')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.campagnes.actives || 0}</p>
-              <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+              <p className="text-xs font-bold text-gov-green-dark dark:text-gov-green flex items-center gap-2">
                 <Users size={14} />
                 {t('kpi.participants', { count: stats?.campagnes.participations || 0 })}
               </p>
@@ -318,8 +318,8 @@ export default function DelegationDashboard() {
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-2 text-[10px] font-black text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg w-fit uppercase tracking-wider border border-gray-200/50 dark:border-gray-700">
-                          {item.type === 'evenement' && <Calendar size={12} className="text-purple-600" />}
-                          {item.type === 'actualite' && <Newspaper size={12} className="text-orange-600" />}
+                          {item.type === 'evenement' && <Calendar size={12} className="text-gov-blue-dark" />}
+                          {item.type === 'actualite' && <Newspaper size={12} className="text-gov-gold" />}
                           {item.type === 'article' && <FileText size={12} className="text-blue-600" />}
                           {item.type === 'campagne' && <Megaphone size={12} className="text-green-600" />}
                           {t(`recent_activity.types.${item.type}` as any)}
@@ -410,8 +410,8 @@ export default function DelegationDashboard() {
           {/* Rappels / Notifications */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-7">
             <h2 className="font-black text-lg text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-              <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
-                <AlertCircle size={22} className="text-orange-600 dark:text-orange-400" />
+              <div className="p-2 bg-gov-gold/5 dark:bg-gov-gold/10/20 rounded-xl">
+                <AlertCircle size={22} className="text-gov-gold dark:text-gov-gold" />
               </div>
               {t('todo.title')}
             </h2>
@@ -449,11 +449,11 @@ export default function DelegationDashboard() {
                     )}
                     
                     {toCloseCampaigns > 0 && (
-                      <div className="flex items-start gap-4 p-5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-400 rounded-2xl text-sm border border-emerald-100 dark:border-emerald-900/30 shadow-sm">
-                        <Megaphone size={20} className="mt-0.5 shrink-0 text-emerald-600" />
+                      <div className="flex items-start gap-4 p-5 bg-gov-green/5 dark:bg-emerald-950/20 text-gov-green-dark dark:text-gov-green rounded-2xl text-sm border border-gov-green/30 dark:border-gov-green/30/30 shadow-sm">
+                        <Megaphone size={20} className="mt-0.5 shrink-0 text-gov-green-dark" />
                         <div className="flex-1">
                           <span className="font-black block mb-2">{t('todo.to_close_campaigns', { count: toCloseCampaigns })}</span>
-                          <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-black bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all text-emerald-700 dark:text-emerald-400 no-underline shadow-sm active:scale-95">
+                          <Link href="/delegation/campagnes?statut=A_CLOTURER" className="inline-flex items-center text-xs font-black bg-white dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gov-green/30 dark:border-gov-green/30/50 hover:bg-gov-green/5 dark:hover:bg-gov-green transition-all text-gov-green-dark dark:text-gov-green no-underline shadow-sm active:scale-95">
                             {t('todo.manage_now')} &rarr;
                           </Link>
                         </div>
@@ -461,8 +461,8 @@ export default function DelegationDashboard() {
                     )}
 
                     {pendingValidation > 0 && (
-                      <div className="flex items-start gap-4 p-5 bg-orange-50 dark:bg-orange-900/20 text-orange-900 dark:text-orange-400 rounded-2xl text-sm border border-orange-100 dark:border-orange-900/30 shadow-sm font-black">
-                        <CheckCircle size={20} className="mt-0.5 shrink-0 text-orange-600" />
+                      <div className="flex items-start gap-4 p-5 bg-gov-gold/5 dark:bg-gov-gold/10/20 text-gov-gold dark:text-gov-gold rounded-2xl text-sm border border-gov-gold/30 dark:border-gov-gold/30/30 shadow-sm font-black">
+                        <CheckCircle size={20} className="mt-0.5 shrink-0 text-gov-gold" />
                         <div className="flex-1">
                           {t('todo.pending_validation', { count: pendingValidation })}
                         </div>

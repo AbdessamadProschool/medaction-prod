@@ -44,10 +44,10 @@ export default function StatistiquesPubliquesPage() {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { label: 'Réclamations Traitées', value: '85%', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { label: 'Réclamations Traitées', value: '85%', color: 'text-gov-green-dark', bg: 'bg-gov-green/5' },
             { label: 'Temps Moyen Réponse', value: '48h', color: 'text-blue-600', bg: 'bg-blue-50' },
-            { label: 'Citoyens Inscrits', value: '1,234', color: 'text-purple-600', bg: 'bg-purple-50' },
-            { label: 'Établissements', value: '256', color: 'text-orange-600', bg: 'bg-orange-50' },
+            { label: 'Citoyens Inscrits', value: '1,234', color: 'text-gov-blue-dark', bg: 'bg-gov-blue/5' },
+            { label: 'Établissements', value: '256', color: 'text-gov-gold', bg: 'bg-gov-gold/5' },
           ].map((stat, i) => (
             <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <p className="text-gray-500 text-sm font-medium mb-2">{stat.label}</p>

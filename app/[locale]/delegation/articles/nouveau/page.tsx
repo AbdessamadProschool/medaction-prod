@@ -120,7 +120,7 @@ export default function NouvelArticlePage() {
       <div className="relative overflow-hidden bg-[#0f172a] pt-10 pb-16 md:pt-14 md:pb-24 text-start">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-blue-600 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-600 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gov-blue/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
         </div>
         
         <div className="max-w-5xl mx-auto px-6 relative z-10">
@@ -142,7 +142,7 @@ export default function NouvelArticlePage() {
                 {t('title')}
               </h1>
             </div>
-            <div className="hidden md:flex w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl items-center justify-center shadow-xl transform rotate-3 border border-white/10">
+            <div className="hidden md:flex w-16 h-16 bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-2xl items-center justify-center shadow-xl transform rotate-3 border border-white/10">
               <BookOpen className="w-8 h-8 text-white" />
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function NouvelArticlePage() {
           <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/30">
               <h2 className="text-lg font-black text-gray-900 flex items-center gap-3">
-                 <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-600 shadow-sm">
+                 <div className="p-2.5 bg-gov-blue/10/10 rounded-xl text-gov-blue-dark shadow-sm">
                    <PenTool className="w-5 h-5" />
                  </div>
                  {t('sections.content.title')}
@@ -233,9 +233,9 @@ export default function NouvelArticlePage() {
                     {...register('titre')}
                     type="text"
                     placeholder={t('sections.content.article_title_placeholder')}
-                    className="w-full px-6 py-4 pr-12 rtl:pr-12 rtl:pl-6 rounded-2xl border-2 border-gray-100 focus:border-indigo-500 focus:ring-8 focus:ring-indigo-500/5 outline-none transition-all text-lg font-black placeholder:text-gray-200 bg-gray-50/30 focus:bg-white"
+                    className="w-full px-6 py-4 pr-12 rtl:pr-12 rtl:pl-6 rounded-2xl border-2 border-gray-100 focus:border-gov-blue/30 focus:ring-8 focus:ring-gov-blue/20 outline-none transition-all text-lg font-black placeholder:text-gray-200 bg-gray-50/30 focus:bg-white"
                   />
-                  <div className="absolute right-6 rtl:right-auto rtl:left-6 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                  <div className="absolute right-6 rtl:right-auto rtl:left-6 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                     <Megaphone size={24} />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function NouvelArticlePage() {
                   {...register('description')}
                   rows={2}
                   placeholder={t('sections.content.summary_placeholder')}
-                  className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-indigo-500 focus:ring-8 focus:ring-indigo-500/5 outline-none transition-all text-base font-bold placeholder:text-gray-200 bg-gray-50/30 focus:bg-white leading-relaxed"
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-gov-blue/30 focus:ring-8 focus:ring-gov-blue/20 outline-none transition-all text-base font-bold placeholder:text-gray-200 bg-gray-50/30 focus:bg-white leading-relaxed"
                 />
               </div>
 
@@ -267,7 +267,7 @@ export default function NouvelArticlePage() {
                   {...register('contenu')}
                   rows={10}
                   placeholder={t('sections.content.full_content_placeholder')}
-                  className="w-full px-6 py-5 rounded-2xl border-2 border-gray-100 focus:border-indigo-500 focus:ring-8 focus:ring-indigo-500/5 outline-none transition-all text-base font-medium placeholder:text-gray-200 leading-relaxed bg-gray-50/30 focus:bg-white shadow-inner"
+                  className="w-full px-6 py-5 rounded-2xl border-2 border-gray-100 focus:border-gov-blue/30 focus:ring-8 focus:ring-gov-blue/20 outline-none transition-all text-base font-medium placeholder:text-gray-200 leading-relaxed bg-gray-50/30 focus:bg-white shadow-inner"
                 />
                 {errors.contenu && (
                   <div className="flex items-center gap-3 text-red-600 bg-red-50 px-4 py-2 rounded-xl border border-red-100">
@@ -283,7 +283,7 @@ export default function NouvelArticlePage() {
             {/* Category & Tags Card */}
             <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 p-6">
               <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-3">
-                <div className="p-2.5 bg-amber-500/10 rounded-xl text-amber-600 shadow-sm">
+                <div className="p-2.5 bg-gov-gold/10/10 rounded-xl text-gov-gold shadow-sm">
                   <Tag className="w-5 h-5" />
                 </div>
                 {t('sections.metadata.title')}
@@ -295,7 +295,7 @@ export default function NouvelArticlePage() {
                   <div className="relative group">
                     <select
                       {...register('categorie')}
-                      className="w-full px-5 py-3.5 rounded-xl border-2 border-gray-100 focus:border-amber-500 focus:ring-8 focus:ring-amber-500/5 outline-none bg-gray-50/30 hover:bg-white font-black appearance-none cursor-pointer text-sm transition-all"
+                      className="w-full px-5 py-3.5 rounded-xl border-2 border-gray-100 focus:border-gov-gold/30 focus:ring-8 focus:ring-amber-500/5 outline-none bg-gray-50/30 hover:bg-white font-black appearance-none cursor-pointer text-sm transition-all"
                     >
                       <option value="">{t('sections.metadata.category_placeholder')}</option>
                       <option value="ACTUALITE">{t('sections.metadata.categories.actualite')}</option>
@@ -304,7 +304,7 @@ export default function NouvelArticlePage() {
                       <option value="REPORTAGE">{t('sections.metadata.categories.reportage')}</option>
                       <option value="TRIBUNE">{t('sections.metadata.categories.tribune')}</option>
                     </select>
-                    <div className="absolute right-5 rtl:right-auto rtl:left-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-focus-within:text-amber-500">
+                    <div className="absolute right-5 rtl:right-auto rtl:left-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 group-focus-within:text-gov-gold">
                       <ArrowRight size={18} className="rotate-90" />
                     </div>
                   </div>
@@ -318,7 +318,7 @@ export default function NouvelArticlePage() {
                     {...register('tags')}
                     type="text"
                     placeholder={t('sections.metadata.tags_placeholder')}
-                    className="w-full px-5 py-3.5 rounded-xl border-2 border-gray-100 focus:border-amber-500 focus:ring-8 focus:ring-amber-500/5 outline-none font-black placeholder:text-gray-200 text-sm bg-gray-50/30 hover:bg-white transition-all"
+                    className="w-full px-5 py-3.5 rounded-xl border-2 border-gray-100 focus:border-gov-gold/30 focus:ring-8 focus:ring-amber-500/5 outline-none font-black placeholder:text-gray-200 text-sm bg-gray-50/30 hover:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -327,21 +327,21 @@ export default function NouvelArticlePage() {
             {/* Visibility Card */}
             <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 p-6">
               <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-3">
-                <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-600 shadow-sm">
+                <div className="p-2.5 bg-gov-blue rounded-xl text-gov-blue-dark shadow-sm">
                   <Eye className="w-5 h-5" />
                 </div>
                 {t('sections.publication.title')}
               </h3>
               
               <div className="space-y-6">
-                <label className="flex items-start gap-5 p-6 rounded-2xl border-2 border-gray-50 bg-gray-50/30 hover:border-purple-200 hover:bg-purple-50/50 cursor-pointer transition-all group overflow-hidden relative shadow-inner">
+                <label className="flex items-start gap-5 p-6 rounded-2xl border-2 border-gray-50 bg-gray-50/30 hover:border-gov-blue/30 hover:bg-gov-blue/5/50 cursor-pointer transition-all group overflow-hidden relative shadow-inner">
                   <div className="absolute top-0 right-0 p-2 opacity-[0.05] group-hover:scale-110 transition-transform duration-700">
                     <Eye size={100} />
                   </div>
                   <input
                     type="checkbox"
                     {...register('isPublie')}
-                    className="w-7 h-7 rounded-lg border-gray-200 text-purple-600 focus:ring-4 focus:ring-purple-500/10 mt-0.5 cursor-pointer transition-all"
+                    className="w-7 h-7 rounded-lg border-gray-200 text-gov-blue-dark focus:ring-4 focus:ring-gov-blue/20 mt-0.5 cursor-pointer transition-all"
                   />
                   <div className="relative z-10 flex-1">
                     <span className="font-black text-gray-900 block text-lg mb-1 tracking-tight">{t('sections.publication.publish_now')}</span>
@@ -364,7 +364,7 @@ export default function NouvelArticlePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full md:w-auto px-14 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-blue-500/20 shadow-xl"
+              className="w-full md:w-auto px-14 py-4 bg-gradient-to-r from-gov-blue to-gov-blue-dark text-white rounded-xl hover:shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-blue-500/20 shadow-xl"
             >
               {loading ? (
                 <>

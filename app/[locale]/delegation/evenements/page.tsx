@@ -68,7 +68,7 @@ export default function MesEvenementsPage() {
         case 'TERMINEE': return { label: t('status_filter.finished'), color: 'text-blue-700', bg: 'bg-blue-100', border: 'border-blue-200' };
         case 'CLOTUREE': return { label: t('status_filter.closed'), color: 'text-gray-700', bg: 'bg-gray-100', border: 'border-gray-200' };
         case 'ANNULEE': return { label: t('status_filter.cancelled'), color: 'text-red-700', bg: 'bg-red-100', border: 'border-red-200' };
-        case 'EN_ACTION': return { label: t('status_filter.active'), color: 'text-emerald-700', bg: 'bg-emerald-100', border: 'border-emerald-200' };
+        case 'EN_ACTION': return { label: t('status_filter.active'), color: 'text-gov-green-dark', bg: 'bg-gov-green/10', border: 'border-gov-green/30' };
         default: return { label: status, color: 'text-gray-600', bg: 'bg-gray-100', border: 'border-gray-200' };
     }
   };
@@ -171,7 +171,7 @@ export default function MesEvenementsPage() {
       {/* Control Bar */}
       <div className="sticky top-4 z-30 bg-white/80 backdrop-blur-md rounded-2xl p-2 border border-gray-100 shadow-lg shadow-gray-200/50 flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative group">
-              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+              <Search className="absolute right-4 rtl:right-4 ltr:right-auto ltr:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors" size={20} />
               <input
                   type="text"
                   value={search}
@@ -190,7 +190,7 @@ export default function MesEvenementsPage() {
              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-indigo-200 text-start"
+                className="w-full bg-gray-50 hover:bg-gray-100 rtl:pr-12 rtl:pl-10 ltr:pl-12 ltr:pr-10 py-3.5 rounded-xl outline-none cursor-pointer appearance-none font-semibold text-gray-700 transition-colors border-transparent border focus:border-gov-blue/30 text-start"
              >
                 <option value="">{t('status_filter.all')}</option>
                 <option value="BROUILLON">{t('status_filter.draft')}</option>
@@ -205,14 +205,14 @@ export default function MesEvenementsPage() {
           <div className="flex bg-gray-100 p-1.5 rounded-xl border border-gray-200">
             <button
                 onClick={() => setViewMode('list')}
-                className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-indigo-600 font-bold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-gov-blue-dark font-bold' : 'text-gray-500 hover:text-gray-700'}`}
                 title={t('view_mode.list')}
             >
                 <ListIcon size={20} />
             </button>
             <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-indigo-600 font-bold' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-gov-blue-dark font-bold' : 'text-gray-500 hover:text-gray-700'}`}
                 title={t('view_mode.grid')}
             >
                 <LayoutGrid size={20} />
@@ -225,8 +225,8 @@ export default function MesEvenementsPage() {
         {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="relative">
-                  <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                  <Calendar className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-600 w-6 h-6" />
+                  <div className="w-16 h-16 border-4 border-gov-blue/30 border-t-indigo-600 rounded-full animate-spin"></div>
+                  <Calendar className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gov-blue-dark w-6 h-6" />
               </div>
               <p className="text-gray-400 font-medium animate-pulse">جاري تحميل الفعاليات...</p>
             </div>
@@ -236,8 +236,8 @@ export default function MesEvenementsPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-16 bg-white rounded-[2rem] border border-gray-100 border-dashed text-center"
             >
-            <div className="w-28 h-28 bg-indigo-50 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                <Calendar className="w-12 h-12 text-indigo-400" />
+            <div className="w-28 h-28 bg-gov-blue/5 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                <Calendar className="w-12 h-12 text-gov-blue-dark" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 {t('empty.title')}
@@ -245,7 +245,7 @@ export default function MesEvenementsPage() {
             <p className="text-gray-500 mb-8 max-w-md mx-auto text-lg leading-relaxed">
                 {t('empty.description')}
             </p>
-            <Link href="/delegation/evenements/nouveau" className="px-10 py-4 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 font-bold flex items-center gap-3 hover:-translate-y-1">
+            <Link href="/delegation/evenements/nouveau" className="px-10 py-4 bg-gov-blue/10 text-white rounded-2xl hover:bg-gov-blue/10 transition-all shadow-lg shadow-gov-blue/20 font-bold flex items-center gap-3 hover:-translate-y-1">
                 <Plus size={22} />
                 {t('empty.action')}
             </Link>
@@ -279,7 +279,7 @@ export default function MesEvenementsPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
-                                className="hover:bg-indigo-50/30 transition-colors group"
+                                className="hover:bg-gov-blue/5/30 transition-colors group"
                             >
                             <td className="px-8 py-5">
                                 <div className="flex items-start gap-5">
@@ -288,20 +288,20 @@ export default function MesEvenementsPage() {
                                         {event.medias && event.medias[0] ? (
                                             <img src={event.medias[0].urlPublique} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-indigo-300 bg-indigo-50">
+                                            <div className="w-full h-full flex items-center justify-center text-gov-blue-dark bg-gov-blue/5">
                                                 <Calendar size={28} />
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0 py-1">
-                                        <Link href={`/delegation/evenements/${event.id}`} className="block text-base font-bold text-gray-900 hover:text-indigo-600 transition-colors truncate mb-0.5">
+                                        <Link href={`/delegation/evenements/${event.id}`} className="block text-base font-bold text-gray-900 hover:text-gov-blue-dark transition-colors truncate mb-0.5">
                                             {event.titre}
                                         </Link>
                                         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500">
                                             <span className="px-2 py-0.5 bg-gray-100 rounded-md text-gray-500 border border-gray-200">#{event.id}</span>
                                             {event.etablissement && (
-                                            <span className="truncate max-w-[200px] flex items-center gap-1.5 bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md border border-indigo-100">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                            <span className="truncate max-w-[200px] flex items-center gap-1.5 bg-gov-blue/5 text-gov-blue-dark px-2 py-0.5 rounded-md border border-gov-blue/30">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-gov-blue/10"></span>
                                                 {event.etablissement.nom}
                                             </span>
                                             )}
@@ -347,7 +347,7 @@ export default function MesEvenementsPage() {
                                 event.dateFin && new Date(event.dateFin) < new Date() && (
                                     <Link
                                     href={`/delegation/evenements/${event.id}/cloture`}
-                                    className="flex items-center gap-2 px-3 py-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors animate-pulse border border-amber-200 hover:shadow-sm"
+                                    className="flex items-center gap-2 px-3 py-2 bg-gov-gold/5 text-gov-gold rounded-xl hover:bg-gov-gold/10 transition-colors animate-pulse border border-gov-gold/30 hover:shadow-sm"
                                     title={t('item.close_action')}
                                     >
                                     <CheckCircle size={18} />
@@ -406,9 +406,9 @@ export default function MesEvenementsPage() {
                                 />
                             ) : (
                                 <>
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-gov-blue to-gov-blue-dark" />
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <Calendar className="w-16 h-16 text-indigo-200/80" />
+                                    <Calendar className="w-16 h-16 text-gov-blue-dark/80" />
                                 </div>
                                 </>
                             )}
@@ -425,7 +425,7 @@ export default function MesEvenementsPage() {
                         {/* Content */}
                         <div className="p-6 flex-1 flex flex-col">
                         <div className="mb-4 flex-1">
-                            <Link href={`/delegation/evenements/${event.id}/modifier`} className="block text-xl font-bold text-gray-900 mb-3 leading-snug hover:text-indigo-600 transition-colors">
+                            <Link href={`/delegation/evenements/${event.id}/modifier`} className="block text-xl font-bold text-gray-900 mb-3 leading-snug hover:text-gov-blue-dark transition-colors">
                                 {event.titre}
                             </Link>
                             <div className="space-y-3 text-sm font-semibold text-gray-500">
@@ -458,7 +458,7 @@ export default function MesEvenementsPage() {
                                 event.dateFin && new Date(event.dateFin) < new Date() && (
                                     <Link
                                     href={`/delegation/evenements/${event.id}/cloture`}
-                                    className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors animate-pulse border border-amber-200"
+                                    className="p-2 bg-gov-gold/5 text-gov-gold rounded-xl hover:bg-gov-gold/10 transition-colors animate-pulse border border-gov-gold/30"
                                     title={t('item.close_action')}
                                     >
                                     <CheckCircle size={18} />

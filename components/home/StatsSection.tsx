@@ -22,6 +22,10 @@ function AnimatedNumber({
 
   useEffect(() => {
     if (!inView) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayValue(value);
+      return;
+    }
 
     let startTime: number;
     const duration = 2000;
@@ -68,7 +72,7 @@ export default function StatsSection() {
       label: t('stats.etablissements'),
       description: t('stats.desc_etablissements', { defaultMessage: 'Écoles, centres de santé et équipements sportifs' }),
       icon: <Building2 className="w-10 h-10" />,
-      colorClass: 'from-gov-blue to-gov-blue-light',
+      colorClass: 'text-gov-blue-light',
     },
     {
       id: 2,
@@ -77,7 +81,7 @@ export default function StatsSection() {
       label: t('stats.satisfaction'),
       description: t('stats.desc_reclamations', { defaultMessage: 'Des réclamations traitées avec succès' }),
       icon: <CheckCircle2 className="w-10 h-10" />,
-      colorClass: 'from-gov-green to-gov-green-light',
+      colorClass: 'text-gov-green-light',
     },
     {
       id: 3,
@@ -86,7 +90,7 @@ export default function StatsSection() {
       label: t('stats.citoyens'),
       description: t('stats.desc_citoyens', { defaultMessage: 'Participants aux initiatives locales' }),
       icon: <Users className="w-10 h-10" />,
-      colorClass: 'from-gov-gold-dark to-gov-gold',
+      colorClass: 'text-gov-gold',
     },
     {
       id: 4,
@@ -95,7 +99,7 @@ export default function StatsSection() {
       label: t('stats.delai', { defaultMessage: 'Délai Moyen' }),
       description: t('stats.desc_delai', { defaultMessage: 'De réponse aux réclamations urgentes' }),
       icon: <Zap className="w-10 h-10" />,
-      colorClass: 'from-gov-red to-gov-red-light',
+      colorClass: 'text-gov-red-light',
     },
   ];
 
@@ -104,11 +108,8 @@ export default function StatsSection() {
       {/* Bande tricolore en haut */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
       
-      {/* Background Effects - Gouvernemental */}
+      {/* Background pattern */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gov-gold/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gov-green/10 rounded-full blur-3xl" />
-        {/* Moroccan pattern */}
         <div className="absolute inset-0 opacity-5" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }} />
@@ -184,7 +185,7 @@ export default function StatsSection() {
                 <div className="text-4xl mb-4 text-white drop-shadow-md">{stat.icon}</div>
 
                 {/* Value */}
-                <div className={`font-bold bg-gradient-to-r ${stat.colorClass} bg-clip-text text-transparent mb-2 ${locale === 'ar' ? 'text-5xl md:text-6xl font-cairo' : 'text-4xl md:text-5xl'}`}>
+                <div className={`font-bold ${stat.colorClass} mb-2 ${locale === 'ar' ? 'text-5xl md:text-6xl font-cairo' : 'text-4xl md:text-5xl'}`}>
                   <AnimatedNumber value={stat.value} suffix={stat.suffix} inView={isInView} locale={locale} />
                 </div>
 

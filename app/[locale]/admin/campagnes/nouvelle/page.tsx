@@ -158,7 +158,7 @@ export default function AdminNouvelleCampagnePage() {
           </Link>
           
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-emerald-500/20 ring-8 ring-emerald-500/5">
+            <div className="w-16 h-16 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-[2rem] flex items-center justify-center shadow-2xl shadow-gov-green/20 ring-8 ring-gov-green/20">
               <Megaphone className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -178,7 +178,7 @@ export default function AdminNouvelleCampagnePage() {
             loading={loading}
             variant="primary"
             leftIcon={!loading && <Save size={18} />}
-            className="rounded-full px-10 shadow-xl shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700 border-none"
+            className="rounded-full px-10 shadow-xl shadow-gov-green/20 bg-gov-green hover:bg-gov-green border-none"
           >
             {t('form.create')}
           </GovButton>
@@ -193,11 +193,11 @@ export default function AdminNouvelleCampagnePage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-purple-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-blue rounded-full" />
                 {t('visual_section')}
               </h2>
             </div>
@@ -237,11 +237,11 @@ export default function AdminNouvelleCampagnePage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="block aspect-[21/9] border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-purple-500/30 transition-all cursor-pointer group relative overflow-hidden"
+                    className="block aspect-[21/9] border-4 border-dashed border-border rounded-[2.5rem] p-12 text-center bg-muted/5 hover:bg-muted/10 hover:border-gov-blue/30/30 transition-all cursor-pointer group relative overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/02 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="w-20 h-20 bg-muted rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-card">
-                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-purple-600 transition-colors" />
+                      <ImageIcon className="w-10 h-10 text-muted-foreground group-hover:text-gov-blue-dark transition-colors" />
                     </div>
                     <p className="text-foreground font-black uppercase tracking-widest text-xs mb-2">{t('form.image_banner')}</p>
                     <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-60">{t('form.image_hint')}</p>
@@ -262,11 +262,11 @@ export default function AdminNouvelleCampagnePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-emerald-500/05"
+            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
           >
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-emerald-500 rounded-full" />
+                <div className="w-2 h-5 bg-gov-green rounded-full" />
                 {t('details_section')}
               </h2>
             </div>
@@ -328,7 +328,7 @@ export default function AdminNouvelleCampagnePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Target className="w-5 h-5 text-amber-500" />
+              <Target className="w-5 h-5 text-gov-gold" />
               {t('goals_dates_section')}
             </h3>
 
@@ -384,7 +384,7 @@ export default function AdminNouvelleCampagnePage() {
             className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
           >
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
-              <Send className="w-5 h-5 text-emerald-500" />
+              <Send className="w-5 h-5 text-gov-green" />
               {t('status_section')}
             </h3>
             
@@ -395,7 +395,7 @@ export default function AdminNouvelleCampagnePage() {
                   className={cn(
                     "relative flex flex-col p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all group shadow-sm",
                     selectedStatut === statut
-                      ? "border-emerald-500 bg-emerald-500/5 shadow-emerald-500/10 shadow-lg scale-[1.02]"
+                      ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg scale-[1.02]"
                       : "border-border bg-muted/10 hover:border-border/80"
                   )}
                 >
@@ -408,9 +408,9 @@ export default function AdminNouvelleCampagnePage() {
                   <div className="flex justify-between items-center mb-1">
                     <span className={cn(
                       "text-[10px] font-black uppercase tracking-widest transition-colors",
-                      selectedStatut === statut ? "text-emerald-700" : "text-foreground"
+                      selectedStatut === statut ? "text-gov-green-dark" : "text-foreground"
                     )}>{t(`statuses.${statut}_label`)}</span>
-                    {selectedStatut === statut && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]" />}
+                    {selectedStatut === statut && <div className="w-2 h-2 rounded-full bg-gov-green shadow-[0_0_8px_rgba(16,185,129,1)]" />}
                   </div>
                   <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-tight">{t(`statuses.${statut}_desc`)}</span>
                 </label>
@@ -427,10 +427,10 @@ export default function AdminNouvelleCampagnePage() {
                 <input
                   type="checkbox"
                   {...register('isOrganiseParProvince')}
-                  className="w-5 h-5 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 mt-0.5"
+                  className="w-5 h-5 rounded-lg border-border text-gov-green-dark focus:ring-gov-green/20 mt-0.5"
                 />
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-emerald-700 transition-colors">{t('form.organized_by_province')}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-gov-green-dark transition-colors">{t('form.organized_by_province')}</span>
                   <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-0.5">{t('form.organized_by_province_desc')}</p>
                 </div>
               </label>
@@ -439,10 +439,10 @@ export default function AdminNouvelleCampagnePage() {
                 <input
                   type="checkbox"
                   {...register('sousCouvertProvince')}
-                  className="w-5 h-5 rounded-lg border-border text-emerald-600 focus:ring-emerald-500/20 mt-0.5"
+                  className="w-5 h-5 rounded-lg border-border text-gov-green-dark focus:ring-gov-green/20 mt-0.5"
                 />
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-emerald-700 transition-colors">{t('form.under_cover_province')}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest block group-hover:text-gov-green-dark transition-colors">{t('form.under_cover_province')}</span>
                   <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 mt-0.5">{t('form.under_cover_province_desc')}</p>
                 </div>
               </label>

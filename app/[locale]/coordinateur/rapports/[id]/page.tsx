@@ -164,8 +164,8 @@ export default function RapportActivitePage() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center"
         >
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-gov-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-gov-green-dark" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Rapport enregistré !</h2>
           <p className="text-gray-500">Redirection vers le calendrier...</p>
@@ -311,7 +311,7 @@ export default function RapportActivitePage() {
         {/* Points positifs */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-emerald-500" />
+            <CheckCircle className="w-5 h-5 text-gov-green" />
             Points positifs
           </h3>
           <textarea
@@ -326,7 +326,7 @@ export default function RapportActivitePage() {
         {/* Difficultés */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-amber-500" />
+            <AlertCircle className="w-5 h-5 text-gov-gold" />
             Difficultés rencontrées
           </h3>
           <textarea

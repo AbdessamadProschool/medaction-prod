@@ -71,7 +71,7 @@ export default function FAQPage() {
           {faqData.map((section, sIndex) => (
             <div key={sIndex}>
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <span className="w-8 h-1 bg-emerald-500 rounded-full"></span>
+                <span className="w-8 h-1 bg-gov-green rounded-full"></span>
                 {section.category}
               </h2>
               <div className="space-y-4">
@@ -89,7 +89,7 @@ export default function FAQPage() {
                         className="w-full px-6 py-4 text-left flex items-center justify-between gap-4 focus:outline-none"
                       >
                         <span className="font-medium text-gray-900 text-lg">{item.q}</span>
-                        <span className={`transform transition-transform duration-300 text-emerald-600 ${isOpen ? 'rotate-180' : ''}`}>
+                        <span className={`transform transition-transform duration-300 text-gov-green-dark ${isOpen ? 'rotate-180' : ''}`}>
                           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>

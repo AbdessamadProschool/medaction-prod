@@ -64,7 +64,7 @@ export default function AnnouncementModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-all duration-300"
+            className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)] transition-opacity duration-200"
           />
 
           <motion.div
@@ -72,7 +72,7 @@ export default function AnnouncementModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="relative w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20 ring-1 ring-black/5"
+            className="relative w-full max-w-lg bg-card rounded-lg shadow-lg overflow-hidden border border-border"
           >
             {/* Ruban décoratif supérieur */}
             <div className="h-1.5 w-full bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />

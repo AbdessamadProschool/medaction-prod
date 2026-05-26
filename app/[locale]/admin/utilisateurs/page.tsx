@@ -75,11 +75,11 @@ const ROLE_KEYS = [
 const ROLE_COLORS: Record<string, string> = {
   CITOYEN: 'bg-gray-100 text-gray-700',
   DELEGATION: 'bg-blue-100 text-blue-700',
-  AUTORITE_LOCALE: 'bg-purple-100 text-purple-700',
-  COORDINATEUR_ACTIVITES: 'bg-cyan-100 text-cyan-700',
-  ADMIN: 'bg-orange-100 text-orange-700',
+  AUTORITE_LOCALE: 'bg-gov-blue/10 text-gov-blue-dark',
+  COORDINATEUR_ACTIVITES: 'bg-gov-blue/10 text-gov-blue',
+  ADMIN: 'bg-gov-gold/10 text-gov-gold',
   SUPER_ADMIN: 'bg-red-100 text-red-700',
-  GOUVERNEUR: 'bg-emerald-100 text-emerald-700',
+  GOUVERNEUR: 'bg-gov-green/10 text-gov-green-dark',
 };
 
 export default function UsersPage() {
@@ -350,7 +350,7 @@ export default function UsersPage() {
                     onClick={() => { setSearch(''); setRoleFilter(''); setStatusFilter(''); }}
                     variant="ghost"
                     size="sm"
-                    className="text-rose-600 hover:bg-rose-50"
+                    className="text-gov-red hover:bg-gov-red/5"
                     leftIcon={<X size={14} />}
                   >
                     {t('reset_filters')}
@@ -494,14 +494,14 @@ export default function UsersPage() {
                                 className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-muted flex items-center gap-3 transition-colors"
                               >
                                 {user.isActive 
-                                  ? <UserX size={16} className="text-rose-600" /> 
-                                  : <UserCheck size={16} className="text-emerald-600" />}
+                                  ? <UserX size={16} className="text-gov-red" /> 
+                                  : <UserCheck size={16} className="text-gov-green-dark" />}
                                 {user.isActive ? t('actions.deactivate') : t('actions.activate')}
                               </button>
                               <div className="h-px bg-border my-2 mx-2 opacity-50" />
                               <button
                                 onClick={() => handleDelete(user)}
-                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 flex items-center gap-3 transition-colors"
+                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-gov-red hover:bg-gov-red/5 flex items-center gap-3 transition-colors"
                               >
                                 <Trash2 size={16} />
                                 {t('actions.delete')}

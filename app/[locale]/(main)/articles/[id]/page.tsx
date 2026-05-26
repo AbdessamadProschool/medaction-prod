@@ -228,7 +228,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Resume / Abstract */}
             {article.resume && (
-               <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-4 border-[hsl(45,93%,47%)]">
+               <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-2 border-[hsl(45,93%,47%)]">
                   <p className="text-lg text-gray-700 italic leading-relaxed font-medium">
                      {locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume}
                   </p>

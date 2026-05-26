@@ -64,11 +64,11 @@ interface Evenement {
 }
 
 const getSecteurConfig = (t: any): Record<string, { gradient: string; Icon: LucideIcon; label: string; bgLight: string }> => ({
-  EDUCATION: { gradient: 'from-blue-600 to-indigo-700', Icon: GraduationCap, label: t('education'), bgLight: 'bg-blue-50' },
+  EDUCATION: { gradient: 'from-gov-blue to-gov-blue-dark', Icon: GraduationCap, label: t('education'), bgLight: 'bg-blue-50' },
   SANTE: { gradient: 'from-red-600 to-pink-700', Icon: Heart, label: t('sante'), bgLight: 'bg-red-50' },
-  SPORT: { gradient: 'from-emerald-600 to-teal-700', Icon: Dumbbell, label: t('sport'), bgLight: 'bg-emerald-50' },
-  SOCIAL: { gradient: 'from-purple-600 to-violet-700', Icon: Handshake, label: t('social'), bgLight: 'bg-purple-50' },
-  CULTUREL: { gradient: 'from-amber-600 to-orange-700', Icon: Palette, label: t('culture'), bgLight: 'bg-amber-50' },
+  SPORT: { gradient: 'from-gov-green to-gov-green-dark', Icon: Dumbbell, label: t('sport'), bgLight: 'bg-gov-green/5' },
+  SOCIAL: { gradient: 'from-gov-blue to-gov-blue-dark', Icon: Handshake, label: t('social'), bgLight: 'bg-gov-blue/5' },
+  CULTUREL: { gradient: 'from-gov-gold to-gov-gold-dark', Icon: Palette, label: t('culture'), bgLight: 'bg-gov-gold/5' },
   AUTRE: { gradient: 'from-gray-600 to-slate-700', Icon: ClipboardList, label: t('autre'), bgLight: 'bg-gray-50' },
 });
 
@@ -317,7 +317,7 @@ export default function EvenementDetailPage() {
                {/* Location */}
                <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl backdrop-blur-sm border border-white/5 hover:bg-white/10 transition-colors">
                   <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
-                     <MapPin className="w-6 h-6 text-emerald-400" />
+                     <MapPin className="w-6 h-6 text-gov-green" />
                   </div>
                   <div>
                    <div>
@@ -341,7 +341,7 @@ export default function EvenementDetailPage() {
                        (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna'))}
                      </p>
                      {event.sousCouvertProvince ? (
-                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold shadow-sm backdrop-blur-md">
+                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gov-gold/10/20 border border-gov-gold/30/30 text-gov-gold text-xs font-bold shadow-sm backdrop-blur-md">
                              <Sparkles className="w-3 h-3" />
                              {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
                          </div>
@@ -407,8 +407,8 @@ export default function EvenementDetailPage() {
                 >
                    <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
-                         <div className="p-3 rounded-xl bg-purple-50">
-                            <Eye className="w-6 h-6 text-purple-600" />
+                         <div className="p-3 rounded-xl bg-gov-blue/5">
+                            <Eye className="w-6 h-6 text-gov-blue-dark" />
                          </div>
                          <h2 className="text-2xl font-bold text-gray-900">{t('labels.gallery')}</h2>
                       </div>
@@ -450,8 +450,8 @@ export default function EvenementDetailPage() {
                   className="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100"
                 >
                    <div className="flex items-center gap-3 mb-6">
-                       <div className="p-3 rounded-xl bg-emerald-50">
-                          <MapPin className="w-6 h-6 text-emerald-600" />
+                       <div className="p-3 rounded-xl bg-gov-green/5">
+                          <MapPin className="w-6 h-6 text-gov-green-dark" />
                        </div>
                        <h2 className="text-2xl font-bold text-gray-900">{t('labels.location')}</h2>
                     </div>
@@ -558,7 +558,7 @@ export default function EvenementDetailPage() {
                        (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna')}
                       </p>
                       {event.sousCouvertProvince ? (
-                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold shadow-sm">
+                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gov-gold/5 border border-gov-gold/30 text-gov-gold text-xs font-bold shadow-sm">
                              <Sparkles className="w-3.5 h-3.5" />
                              {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
                          </div>
@@ -593,20 +593,20 @@ export default function EvenementDetailPage() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4"
+                      className="bg-gradient-to-br from-gov-green to-gov-green-dark rounded-3xl p-6 border border-gov-green/30 shadow-sm space-y-4"
                    >
-                      <h3 className="text-lg font-bold text-emerald-900 flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-gov-green-dark flex items-center gap-2">
                          <CheckCircle className="w-5 h-5" />
                          {t('labels.report')}
                       </h3>
                       
                       {event.bilanDescription && (
-                         <div className="bg-white/50 p-4 rounded-xl text-emerald-800 text-sm font-medium leading-relaxed border border-emerald-100/50">
+                         <div className="bg-white/50 p-4 rounded-xl text-gov-green-dark text-sm font-medium leading-relaxed border border-gov-green/30/50">
                             {event.bilanDescription}
                          </div>
                       )}
 
-                      <p className="text-emerald-700/80 text-xs italic">
+                      <p className="text-gov-green-dark/80 text-xs italic">
                          {t('labels.report_hint')}
                       </p>
                       
@@ -615,7 +615,7 @@ export default function EvenementDetailPage() {
                            href={event.compteRenduUrl}
                            target="_blank" 
                            rel="noopener noreferrer"
-                           className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-md hover:bg-emerald-700 transition-all text-sm"
+                           className="flex items-center justify-center gap-2 w-full py-3 bg-gov-green text-white font-bold rounded-xl shadow-md hover:bg-gov-green transition-all text-sm"
                          >
                             <Download className="w-4 h-4" />
                             {t('buttons.download_report')}

@@ -135,20 +135,20 @@ export default function ReclamationsPage() {
           >
             <Link href={session ? '/mes-reclamations' : '/login?callbackUrl=/mes-reclamations'} className="block h-full">
               <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-emerald-200 transition-all" />
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-gov-green/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-gov-green/10 transition-all" />
 
-                <div className="w-16 h-16 bg-emerald-100/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <List size={32} className="text-emerald-700" />
+                <div className="w-16 h-16 bg-gov-green/10/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <List size={32} className="text-gov-green-dark" />
                 </div>
                 
-                <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-green-dark transition-colors">
                   Suivre mes dossiers
                 </h2>
                 <p className="text-gray-600 mb-8 leading-relaxed">
                   Consultez l'état d'avancement de vos réclamations et interagissez avec l'administration.
                 </p>
                 
-                <div className="mt-auto inline-flex items-center gap-2 text-emerald-800 font-bold bg-emerald-50 px-5 py-3 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                <div className="mt-auto inline-flex items-center gap-2 text-gov-green-dark font-bold bg-gov-green/5 px-5 py-3 rounded-xl group-hover:bg-gov-green group-hover:text-white transition-all">
                   <span>{session ? 'Accéder au suivi' : 'Se connecter'}</span>
                   <ArrowRight size={18} />
                 </div>
@@ -193,7 +193,7 @@ export default function ReclamationsPage() {
                 title: 'Résolution',
                 desc: 'Réponse officielle et clôture du dossier.',
                 icon: '✅',
-                color: 'bg-emerald-100 text-emerald-700'
+                color: 'bg-gov-green/10 text-gov-green-dark'
               },
             ].map((item, i) => (
               <div key={i} className="relative flex flex-col items-center text-center group">

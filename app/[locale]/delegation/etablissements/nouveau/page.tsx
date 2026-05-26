@@ -12,7 +12,7 @@ export default function NouvelleDemandeCreationPage() {
     <div className="p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in">
       <Link 
         href="/delegation/etablissements" 
-        className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-bold text-sm"
+        className="flex items-center gap-2 text-gray-500 hover:text-gov-green-dark transition-colors font-bold text-sm"
       >
         <ChevronLeft size={16} />
         {t('back_list')}

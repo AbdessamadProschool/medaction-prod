@@ -70,7 +70,7 @@ interface Filters {
 
 const STATUT_CONFIG: Record<string, { color: string; bg: string; icon: React.ElementType }> = {
   EN_ATTENTE_VALIDATION: { color: 'text-yellow-600', bg: 'bg-yellow-50', icon: Clock },
-  PUBLIEE: { color: 'text-emerald-600', bg: 'bg-emerald-50', icon: CheckCircle },
+  PUBLIEE: { color: 'text-gov-green-dark', bg: 'bg-gov-green/5', icon: CheckCircle },
   EN_ACTION: { color: 'text-blue-600', bg: 'bg-blue-50', icon: Play },
   CLOTUREE: { color: 'text-gray-600', bg: 'bg-gray-100', icon: Archive },
   REJETEE: { color: 'text-red-600', bg: 'bg-red-50', icon: XCircle },
@@ -557,7 +557,7 @@ function AdminEvenementsContent() {
                         variant="outline"
                         size="icon"
                         title={t('actions.edit')}
-                        className="text-amber-600 hover:bg-amber-50 hover:border-amber-200"
+                        className="text-gov-gold hover:bg-gov-gold/5 hover:border-gov-gold/30"
                       >
                         <Link href={`/admin/evenements/${evenement.id}/modifier`}>
                           <Edit2 size={16} />
@@ -791,7 +791,7 @@ function AdminEvenementsContent() {
                     </span>
                   </div>
                   {selectedEvenement.isMisEnAvant && (
-                    <div className="flex items-center gap-2 text-amber-600 bg-amber-500/5 px-4 py-2 rounded-xl border border-amber-500/10">
+                    <div className="flex items-center gap-2 text-gov-gold bg-gov-gold/10/5 px-4 py-2 rounded-xl border border-gov-gold/30/10">
                       <Star className="w-4 h-4 fill-current" />
                       <span className="text-[10px] font-black uppercase tracking-widest">Événement Mis en avant</span>
                     </div>
@@ -829,7 +829,7 @@ export default function AdminEvenementsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-green animate-spin" />
       </div>
     }>
       <AdminEvenementsContent />

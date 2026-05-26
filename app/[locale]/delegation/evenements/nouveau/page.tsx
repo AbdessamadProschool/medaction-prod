@@ -235,7 +235,7 @@ export default function NouveauEventPage() {
   };
 
   const typeColors: Record<string, string> = {
-    CULTUREL: 'from-purple-500 to-pink-500',
+    CULTUREL: 'from-gov-blue to-gov-blue-dark',
     SPORTIF: 'from-green-500 to-emerald-500',
     SOCIAL: 'from-orange-500 to-amber-500',
     EDUCATIF: 'from-blue-500 to-cyan-500',
@@ -267,7 +267,7 @@ export default function NouveauEventPage() {
                     {t('title')}
                 </h1>
              </div>
-             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform -rotate-3">
+             <div className="w-10 h-10 bg-gradient-to-br from-gov-blue to-gov-blue-dark rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform -rotate-3">
                 <Sparkles className="w-5 h-5 text-white" />
              </div>
           </div>
@@ -343,9 +343,9 @@ export default function NouveauEventPage() {
                       {...register('titre')}
                       type="text"
                       placeholder={t('sections.general.event_title_placeholder')}
-                      className="w-full px-4 py-3 pl-4 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
+                      className="w-full px-4 py-3 pl-4 pr-12 rtl:pr-12 rtl:pl-4 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none transition-all text-sm font-bold placeholder:text-gray-300 placeholder:font-normal bg-gray-50/50 focus:bg-white text-start"
                     />
-                     <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none">
+                     <div className="absolute right-5 rtl:right-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-blue-dark transition-colors pointer-events-none">
                         <LayoutTemplate size={20} />
                      </div>
                 </div>
@@ -357,7 +357,7 @@ export default function NouveauEventPage() {
                 <label className="block text-sm font-bold text-gray-700 text-start">
                   {t('sections.general.description')} <span className="text-red-500">*</span>
                 </label>
-                <div className="relative rounded-xl border border-gray-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/10 transition-all bg-gray-50/50 focus-within:bg-white overflow-hidden">
+                <div className="relative rounded-xl border border-gray-200 focus-within:border-gov-blue/30 focus-within:ring-2 focus-within:ring-gov-blue/20 transition-all bg-gray-50/50 focus-within:bg-white overflow-hidden">
                     <textarea
                     {...register('description')}
                     rows={3}
@@ -377,7 +377,7 @@ export default function NouveauEventPage() {
                   <div className="relative group">
                     <select
                       {...register('typeCategorique')}
-                      className="w-full px-4 py-3 pr-12 pl-10 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
+                      className="w-full px-4 py-3 pr-12 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_type')}</option>
                       <option value="CULTUREL">{t('types.culturel')}</option>
@@ -387,7 +387,7 @@ export default function NouveauEventPage() {
                       <option value="SANTE">{t('types.sante')}</option>
                       <option value="AUTRE">{t('types.autre')}</option>
                     </select>
-                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-indigo-600 transition-colors">
+                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-gov-blue-dark transition-colors">
                         <Tag size={20} />
                     </div>
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -405,14 +405,14 @@ export default function NouveauEventPage() {
                   <div className="relative group">
                     <select
                       {...register('etablissementId')}
-                      className="w-full px-4 py-3 pr-12 pl-10 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
+                      className="w-full px-4 py-3 pr-12 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_establishment')}</option>
                       {etablissements.map(e => (
                         <option key={e.id} value={e.id}>{e.nom}</option>
                       ))}
                     </select>
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-indigo-600 transition-colors">
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-hover:text-gov-blue-dark transition-colors">
                         <Building2 size={20} />
                     </div>
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -433,7 +433,7 @@ export default function NouveauEventPage() {
                   {...register('tags')}
                   type="text"
                   placeholder={t('sections.general.tags_placeholder')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
                 />
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function NouveauEventPage() {
                     {...register('dateDebut')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm"
                   />
                   {errors.dateDebut && <p className="text-red-500 text-sm mt-2 font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {errors.dateDebut.message}</p>}
                 </div>
@@ -471,7 +471,7 @@ export default function NouveauEventPage() {
                     {...register('dateFin')}
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer bg-gray-50/50 focus:bg-white text-sm"
                   />
                 </div>
               </div>
@@ -488,7 +488,7 @@ export default function NouveauEventPage() {
                       <select 
                         value={watchedHeureDebut ? watchedHeureDebut.split(':')[0] : '09'}
                         onChange={(e) => handleTimeChange('heureDebut', 'h', e.target.value)}
-                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
+                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
                       >
                         {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
                       </select>
@@ -498,7 +498,7 @@ export default function NouveauEventPage() {
                       <select 
                         value={watchedHeureDebut ? watchedHeureDebut.split(':')[1] : '00'}
                         onChange={(e) => handleTimeChange('heureDebut', 'm', e.target.value)}
-                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
+                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
                       >
                         {MINUTES.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
@@ -517,7 +517,7 @@ export default function NouveauEventPage() {
                       <select 
                         value={watchedHeureFin ? watchedHeureFin.split(':')[0] : '18'}
                         onChange={(e) => handleTimeChange('heureFin', 'h', e.target.value)}
-                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
+                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
                       >
                         {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
                       </select>
@@ -527,7 +527,7 @@ export default function NouveauEventPage() {
                       <select 
                         value={watchedHeureFin ? watchedHeureFin.split(':')[1] : '00'}
                         onChange={(e) => handleTimeChange('heureFin', 'm', e.target.value)}
-                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
+                        className="w-full px-3 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-800 text-center appearance-none bg-gray-50/50 cursor-pointer hover:bg-white transition-colors text-sm"
                       >
                         {MINUTES.map(m => <option key={m} value={m}>{m}</option>)}
                       </select>
@@ -549,14 +549,14 @@ export default function NouveauEventPage() {
                     <button
                       type="button"
                       onClick={() => setLocationMode('manuel')}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'manuel' ? 'bg-white text-gov-gold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                       {t('sections.datetime.manual_entry')}
                     </button>
                     <button
                       type="button"
                       onClick={() => setLocationMode('etablissement')}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${locationMode === 'etablissement' ? 'bg-white text-gov-gold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                       {t('sections.datetime.existing_establishment')}
                     </button>
@@ -570,7 +570,7 @@ export default function NouveauEventPage() {
                       <select
                         value={lieuSecteur}
                         onChange={(e) => setLieuSecteur(e.target.value)}
-                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">{t('sections.datetime.all_sectors')}</option>
                         <option value="EDUCATION">{tSectors('education')}</option>
@@ -585,7 +585,7 @@ export default function NouveauEventPage() {
                       <label className="block text-xs font-bold text-gray-600 text-start">{t('sections.datetime.establishment_location_label')}</label>
                       <select
                         {...register('lieuEtablissementId')}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">{t('sections.datetime.select_establishment_location')}</option>
                         {allEtablissements
@@ -604,7 +604,7 @@ export default function NouveauEventPage() {
                           {...register('lieu')}
                           type="text"
                           placeholder={t('sections.datetime.location_placeholder')}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
                         />
                       </div>
 
@@ -613,7 +613,7 @@ export default function NouveauEventPage() {
                           {...register('adresse')}
                           type="text"
                           placeholder={t('sections.datetime.address_placeholder')}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 bg-gray-50/50 focus:bg-white text-sm text-start"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 bg-gray-50/50 focus:bg-white text-sm text-start"
                         />
                       </div>
                     </div>
@@ -623,7 +623,7 @@ export default function NouveauEventPage() {
                         {...register('quartierDouar')}
                         type="text"
                         placeholder={t('sections.datetime.neighborhood_placeholder')}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none placeholder:text-gray-300 font-bold text-gray-800 text-sm bg-gray-50/50 focus:bg-white text-start"
                       />
                     </div>
                   </div>
@@ -651,7 +651,7 @@ export default function NouveauEventPage() {
                     {...register('organisateur')}
                     type="text"
                     placeholder={t('sections.organizer.name_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
                   />
                 </div>
 
@@ -664,7 +664,7 @@ export default function NouveauEventPage() {
                     {...register('contactOrganisateur')}
                     type="tel"
                     placeholder={t('sections.organizer.phone_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold transition-all text-start bg-gray-50/50 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold transition-all text-start bg-gray-50/50 focus:bg-white"
                   />
                 </div>
 
@@ -677,7 +677,7 @@ export default function NouveauEventPage() {
                     {...register('emailContact')}
                     type="email"
                     placeholder={t('sections.organizer.email_placeholder')}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none placeholder:text-gray-300 font-bold transition-all text-sm bg-gray-50/50 focus:bg-white text-start"
                   />
                   {errors.emailContact && <p className="text-red-500 text-sm mt-2 font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {errors.emailContact.message}</p>}
                 </div>
@@ -689,11 +689,11 @@ export default function NouveauEventPage() {
                     <input
                       type="checkbox"
                       {...register('isOrganiseParProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">{t('sections.organizer.is_organise_par_province')}</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">{t('sections.organizer.is_organise_par_province')}</span>
                     <p className="text-[10px] text-gray-500 mt-1">{t('sections.organizer.is_organise_par_province_desc')}</p>
                   </div>
                 </label>
@@ -703,11 +703,11 @@ export default function NouveauEventPage() {
                     <input
                       type="checkbox"
                       {...register('sousCouvertProvince')}
-                      className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                     />
                   </div>
                   <div className="text-start">
-                    <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">{t('sections.organizer.sous_couvert_province')}</span>
+                    <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">{t('sections.organizer.sous_couvert_province')}</span>
                     <p className="text-[10px] text-gray-500 mt-1">{t('sections.organizer.sous_couvert_province_desc')}</p>
                   </div>
                 </label>

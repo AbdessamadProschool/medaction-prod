@@ -60,7 +60,7 @@ function VerifyEmailContent() {
       >
         {/* Logo */}
         <Link href="/" className="inline-flex items-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gov-green hover:bg-gov-green-dark rounded-xl flex items-center justify-center">
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
@@ -72,7 +72,7 @@ function VerifyEmailContent() {
         {status === 'loading' && (
           <>
             <div className="w-16 h-16 mx-auto mb-6">
-              <div className="animate-spin w-full h-full border-4 border-emerald-500 border-t-transparent rounded-full"></div>
+              <div className="animate-spin w-full h-full border-4 border-gov-green border-t-transparent rounded-full"></div>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Vérification en cours...</h2>
             <p className="text-gray-500">Veuillez patienter pendant que nous vérifions votre adresse email.</p>
@@ -82,17 +82,17 @@ function VerifyEmailContent() {
         {/* Success */}
         {status === 'success' && (
           <>
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-16 h-16 bg-gov-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-gov-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Email vérifié !</h2>
             <p className="text-gray-500 mb-4">{message || 'Votre adresse email a été vérifiée avec succès.'}</p>
-            <div className="animate-pulse text-emerald-600 mb-6">Redirection vers la connexion...</div>
+            <div className="animate-pulse text-gov-green mb-6">Redirection vers la connexion...</div>
             <Link
               href="/login"
-              className="inline-block px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
             >
               Se connecter maintenant
             </Link>
@@ -112,7 +112,7 @@ function VerifyEmailContent() {
             <div className="space-y-3">
               <Link
                 href="/login"
-                className="block px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                className="block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
               >
                 Retour à la connexion
               </Link>
@@ -140,7 +140,7 @@ function VerifyEmailContent() {
             </p>
             <Link
               href="/login"
-              className="inline-block px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
             >
               Retour à la connexion
             </Link>

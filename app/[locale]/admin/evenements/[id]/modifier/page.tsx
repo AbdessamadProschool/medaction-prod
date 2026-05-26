@@ -61,10 +61,10 @@ interface Evenement {
 }
 
 const getStatuses = (t: any) => [
-  { value: 'EN_ATTENTE_VALIDATION', label: t('admin_evenement_modifier.statuts.EN_ATTENTE_VALIDATION'), color: 'bg-amber-100 text-amber-700' },
+  { value: 'EN_ATTENTE_VALIDATION', label: t('admin_evenement_modifier.statuts.EN_ATTENTE_VALIDATION'), color: 'bg-gov-gold/10 text-gov-gold' },
   { value: 'VALIDEE', label: t('admin_evenement_modifier.statuts.VALIDEE'), color: 'bg-blue-100 text-blue-700' },
-  { value: 'PUBLIEE', label: t('admin_evenement_modifier.statuts.PUBLIEE'), color: 'bg-emerald-100 text-emerald-700' },
-  { value: 'EN_ACTION', label: t('admin_evenement_modifier.statuts.EN_ACTION'), color: 'bg-purple-100 text-purple-700' },
+  { value: 'PUBLIEE', label: t('admin_evenement_modifier.statuts.PUBLIEE'), color: 'bg-gov-green/10 text-gov-green-dark' },
+  { value: 'EN_ACTION', label: t('admin_evenement_modifier.statuts.EN_ACTION'), color: 'bg-gov-blue/10 text-gov-blue-dark' },
   { value: 'CLOTUREE', label: t('admin_evenement_modifier.statuts.CLOTUREE'), color: 'bg-gray-100 text-gray-700' },
   { value: 'ANNULEE', label: t('admin_evenement_modifier.statuts.ANNULEE'), color: 'bg-red-100 text-red-700' },
 ];
@@ -383,7 +383,7 @@ export default function ModifierEvenementPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-emerald-600 mx-auto" />
+          <Loader2 className="w-12 h-12 animate-spin text-gov-green-dark mx-auto" />
           <p className="text-gray-500 mt-4">{t('admin_evenement_modifier.loading')}</p>
         </div>
       </div>
@@ -394,9 +394,9 @@ export default function ModifierEvenementPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
+          <AlertTriangle className="w-16 h-16 text-gov-gold mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900">{t('admin_evenement_modifier.not_found')}</h2>
-          <Link href="/admin/evenements" className="text-emerald-600 hover:underline mt-4 inline-block">
+          <Link href="/admin/evenements" className="text-gov-green-dark hover:underline mt-4 inline-block">
             {t('admin_evenement_modifier.back_list')}
           </Link>
         </div>
@@ -427,19 +427,19 @@ export default function ModifierEvenementPage() {
 
       {/* Alert pour clôture */}
       {canClose && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center justify-between">
+        <div className="bg-gov-gold/5 border border-gov-gold/30 rounded-xl p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Clock className="w-6 h-6 text-amber-600" />
+            <Clock className="w-6 h-6 text-gov-gold" />
             <div>
-              <h3 className="font-semibold text-amber-900">{t('admin_evenement_modifier.finished')}</h3>
-              <p className="text-sm text-amber-700">
+              <h3 className="font-semibold text-gov-gold">{t('admin_evenement_modifier.finished')}</h3>
+              <p className="text-sm text-gov-gold">
                 {t('admin_evenement_modifier.finished_desc')}
               </p>
             </div>
           </div>
           <button
             onClick={() => setShowClotureForm(true)}
-            className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
+            className="px-4 py-2 bg-gov-gold/10 text-white rounded-lg hover:bg-gov-gold/10"
           >
             {t('admin_evenement_modifier.close_now')}
           </button>
@@ -509,7 +509,7 @@ export default function ModifierEvenementPage() {
           {evenement.statut === 'VALIDEE' && (
             <button
               onClick={() => handleStatutChange('PUBLIEE')}
-              className="flex items-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
+              className="flex items-center gap-2 px-3 py-2 bg-gov-green text-white rounded-lg hover:bg-gov-green text-sm"
             >
               <Eye className="w-4 h-4" />
               {t('admin_evenement_modifier.publish')}
@@ -518,7 +518,7 @@ export default function ModifierEvenementPage() {
           {evenement.statut === 'PUBLIEE' && (
             <button
               onClick={() => handleStatutChange('EN_ACTION')}
-              className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm"
+              className="flex items-center gap-2 px-3 py-2 bg-gov-blue text-white rounded-lg hover:bg-gov-blue text-sm"
             >
               <PlayCircle className="w-4 h-4" />
               {t('admin_evenement_modifier.start')}
@@ -532,7 +532,7 @@ export default function ModifierEvenementPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-xl w-full p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <StopCircle className="w-6 h-6 text-amber-600" />
+              <StopCircle className="w-6 h-6 text-gov-gold" />
               {t('admin_evenement_modifier.close_title')}
             </h2>
             <p className="text-gray-500 mb-6">
@@ -579,7 +579,7 @@ export default function ModifierEvenementPage() {
               <button
                 onClick={handleCloturer}
                 disabled={saving}
-                className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-gov-gold/10 text-white rounded-lg hover:bg-gov-gold/10 disabled:opacity-50"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                 {t('admin_evenement_modifier.close_now')}
@@ -594,7 +594,7 @@ export default function ModifierEvenementPage() {
         {/* Section Image */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <ImageIcon className="w-5 h-5 text-emerald-600" />
+            <ImageIcon className="w-5 h-5 text-gov-green-dark" />
             {t('admin_evenement_modifier.image_section')}
           </h3>
           
@@ -606,7 +606,7 @@ export default function ModifierEvenementPage() {
                 className="w-full h-full object-cover" 
               />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                <label className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 cursor-pointer text-sm font-medium">
+                <label className="px-4 py-2 bg-gov-green text-white rounded-lg hover:bg-gov-green cursor-pointer text-sm font-medium">
                   {t('admin_evenement_modifier.change_image')}
                   <input 
                     type="file" 
@@ -652,7 +652,7 @@ export default function ModifierEvenementPage() {
               type="text"
               value={formData.titre}
               onChange={(e) => setFormData({ ...formData, titre: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
               required
             />
           </div>
@@ -665,7 +665,7 @@ export default function ModifierEvenementPage() {
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
               rows={5}
               required
             />
@@ -681,7 +681,7 @@ export default function ModifierEvenementPage() {
                 type="date"
                 value={formData.dateDebut}
                 onChange={(e) => setFormData({ ...formData, dateDebut: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
                 required
               />
             </div>
@@ -693,7 +693,7 @@ export default function ModifierEvenementPage() {
                 type="date"
                 value={formData.dateFin}
                 onChange={(e) => setFormData({ ...formData, dateFin: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
               />
             </div>
             
@@ -706,7 +706,7 @@ export default function ModifierEvenementPage() {
                 type="text"
                 value={formData.lieu}
                 onChange={(e) => setFormData({ ...formData, lieu: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
               />
             </div>
             
@@ -719,7 +719,7 @@ export default function ModifierEvenementPage() {
                 type="number"
                 value={formData.capaciteMax}
                 onChange={(e) => setFormData({ ...formData, capaciteMax: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
                 min="0"
               />
             </div>
@@ -732,11 +732,11 @@ export default function ModifierEvenementPage() {
                   type="checkbox"
                   checked={formData.isOrganiseParProvince}
                   onChange={(e) => setFormData({ ...formData, isOrganiseParProvince: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                 />
               </div>
               <div className="text-start">
-                <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">منظمة من طرف العمالة</span>
+                <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">منظمة من طرف العمالة</span>
                 <p className="text-[10px] text-gray-500 mt-1">سيتم ربط الحدث مباشرة بعمالة مديونة</p>
               </div>
             </label>
@@ -747,11 +747,11 @@ export default function ModifierEvenementPage() {
                   type="checkbox"
                   checked={formData.sousCouvertProvince}
                   onChange={(e) => setFormData({ ...formData, sousCouvertProvince: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  className="w-5 h-5 rounded border-gray-300 text-gov-green-dark focus:ring-gov-green/20"
                 />
               </div>
               <div className="text-start">
-                <span className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors text-xs">تحت غطاء العمالة</span>
+                <span className="font-bold text-gray-900 group-hover:text-gov-green-dark transition-colors text-xs">تحت غطاء العمالة</span>
                 <p className="text-[10px] text-gray-500 mt-1">إظهار عبارة "تحت غطاء السيد العامل"</p>
               </div>
             </label>
@@ -762,11 +762,11 @@ export default function ModifierEvenementPage() {
             <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 mt-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-emerald-600" />
+                  <FileText className="w-5 h-5 text-gov-green-dark" />
                   {t('admin_evenement_modifier.rapport_section')}
                 </h3>
                 {evenement.bilanNbParticipants && (
-                  <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">
+                  <span className="px-3 py-1 bg-gov-green/10 text-gov-green-dark rounded-full text-xs font-bold">
                     {t('admin_evenement_modifier.real_participants_badge', { count: evenement.bilanNbParticipants })}
                   </span>
                 )}
@@ -825,7 +825,7 @@ export default function ModifierEvenementPage() {
                           href={img.urlPublique}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-emerald-500 transition-colors group shadow-sm"
+                          className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-gov-green/30 transition-colors group shadow-sm"
                         >
                           <img 
                             src={img.urlPublique}
@@ -865,7 +865,7 @@ export default function ModifierEvenementPage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-3 bg-gov-green text-white rounded-lg hover:bg-gov-green transition-colors disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {t('admin_evenement_modifier.save')}

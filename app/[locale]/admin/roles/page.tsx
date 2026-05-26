@@ -72,12 +72,12 @@ export default function AdminRolesPage() {
 
   const roleColors: Record<string, { bg: string, text: string, border: string, icon: any }> = {
     CITOYEN: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-100', icon: Users },
-    DELEGATION: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-100', icon: Briefcase },
-    AUTORITE_LOCALE: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-100', icon: Globe },
-    ADMIN: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-100', icon: Shield },
-    SUPER_ADMIN: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-100', icon: Lock },
-    GOUVERNEUR: { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-100', icon: Award },
-    COORDINATEUR_ACTIVITES: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-100', icon: Calendar },
+    DELEGATION: { bg: 'bg-gov-green/5', text: 'text-gov-green-dark', border: 'border-gov-green/30', icon: Briefcase },
+    AUTORITE_LOCALE: { bg: 'bg-gov-gold/5', text: 'text-gov-gold', border: 'border-gov-gold/30', icon: Globe },
+    ADMIN: { bg: 'bg-gov-blue/5', text: 'text-gov-blue-dark', border: 'border-gov-blue/30', icon: Shield },
+    SUPER_ADMIN: { bg: 'bg-gov-red/5', text: 'text-gov-red', border: 'border-rose-100', icon: Lock },
+    GOUVERNEUR: { bg: 'bg-gov-blue/5', text: 'text-gov-blue-dark', border: 'border-gov-blue/30', icon: Award },
+    COORDINATEUR_ACTIVITES: { bg: 'bg-gov-green/5', text: 'text-gov-green', border: 'border-teal-100', icon: Calendar },
   };
 
   return (
@@ -121,9 +121,9 @@ export default function AdminRolesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
             {[
               { label: 'Profils Définis', value: roles.length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-500/10' },
-              { label: 'Groupes de Droits', value: Object.keys(GROUP_ICONS).length, icon: LayoutDashboard, color: 'text-purple-600', bg: 'bg-purple-500/10' },
-              { label: 'Total Permissions', value: Object.keys(PERMISSION_LABELS).length, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-              { label: 'Utilisateurs Actifs', value: '---', icon: Users, color: 'text-amber-600', bg: 'bg-amber-500/10' },
+              { label: 'Groupes de Droits', value: Object.keys(GROUP_ICONS).length, icon: LayoutDashboard, color: 'text-gov-blue-dark', bg: 'bg-gov-blue' },
+              { label: 'Total Permissions', value: Object.keys(PERMISSION_LABELS).length, icon: CheckCircle, color: 'text-gov-green-dark', bg: 'bg-gov-green' },
+              { label: 'Utilisateurs Actifs', value: '---', icon: Users, color: 'text-gov-gold', bg: 'bg-gov-gold/10/10' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -180,12 +180,12 @@ export default function AdminRolesPage() {
               </div>
 
               {/* Security Hint */}
-              <div className="p-6 bg-indigo-50 dark:bg-indigo-500/5 rounded-3xl border border-indigo-100 dark:border-indigo-500/20">
-                <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center mb-4">
+              <div className="p-6 bg-gov-blue/5 dark:bg-gov-blue/10/5 rounded-3xl border border-gov-blue/30 dark:border-gov-blue/30/20">
+                <div className="w-10 h-10 bg-gov-blue/10 text-white rounded-xl flex items-center justify-center mb-4">
                   <Shield size={20} />
                 </div>
-                <h4 className="text-xs font-black text-indigo-900 dark:text-indigo-400 uppercase tracking-widest mb-2">Note de Sécurité</h4>
-                <p className="text-[11px] font-medium text-indigo-800/70 dark:text-indigo-400/60 leading-relaxed">
+                <h4 className="text-xs font-black text-gov-blue-dark dark:text-gov-blue-dark uppercase tracking-widest mb-2">Note de Sécurité</h4>
+                <p className="text-[11px] font-medium text-gov-blue-dark/70 dark:text-gov-blue-dark/60 leading-relaxed">
                   Les permissions sont héritées par profil institutionnel. Toute modification de la matrice impacte l'ensemble des utilisateurs rattachés au rôle.
                 </p>
               </div>
@@ -211,7 +211,7 @@ export default function AdminRolesPage() {
                           </div>
                           <div className="h-4 w-px bg-border" />
                           <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                            <CheckCircle size={12} className="text-emerald-500" />
+                            <CheckCircle size={12} className="text-gov-green" />
                             {t('active_permissions', {count: ROLE_DEFAULT_PERMISSIONS[selectedRole]?.length || 0})}
                           </div>
                         </div>
@@ -261,7 +261,7 @@ export default function AdminRolesPage() {
                             {perms.map(perm => (
                               <div key={perm} className="group/perm">
                                 <div className="flex items-start gap-3">
-                                  <div className="w-5 h-5 rounded-md bg-emerald-500/10 text-emerald-600 flex items-center justify-center mt-0.5 shrink-0">
+                                  <div className="w-5 h-5 rounded-md bg-gov-green text-gov-green-dark flex items-center justify-center mt-0.5 shrink-0">
                                     <CheckCircle size={12} className="stroke-[3]" />
                                   </div>
                                   <div>

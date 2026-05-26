@@ -10,7 +10,7 @@ const InteractiveMap = dynamic(() => import('@/components/maps/InteractiveMap'),
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gov-green/30"></div>
     </div>
   ),
 });

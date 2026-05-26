@@ -140,16 +140,16 @@ export default function ContactPage() {
           {/* Formulaire */}
           <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 lg:p-10 border border-gray-100 order-2 lg:order-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-emerald-50 rounded-xl">
-                <MessageSquare className="w-6 h-6 text-emerald-600" />
+              <div className="p-3 bg-gov-green/5 rounded-xl">
+                <MessageSquare className="w-6 h-6 text-gov-green-dark" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900">{t('form_title')}</h2>
             </div>
 
             {/* Avertissement de responsabilité */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-amber-800">
+            <div className="bg-gov-gold/5 border border-gov-gold/30 rounded-xl p-4 mb-8 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-gov-gold flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-gov-gold">
                 <p className="font-bold mb-1">{t('warning.title')}</p>
                 <p>
                   {t('warning.text')}
@@ -158,15 +158,15 @@ export default function ContactPage() {
             </div>
             
             {success ? (
-              <div className="text-center py-12 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <div className="text-center py-12 bg-gov-green/5/50 rounded-2xl border border-gov-green/30">
+                <div className="w-20 h-20 bg-gov-green/10 text-gov-green-dark rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{t('success_title')}</h3>
                 <p className="text-gray-600 mb-8 max-w-sm mx-auto">{t('success_message')}</p>
                 <button 
                   onClick={() => setSuccess(false)}
-                  className="px-6 py-3 bg-white text-emerald-600 font-bold rounded-xl border-2 border-emerald-100 hover:border-emerald-200 hover:bg-emerald-50 transition-all"
+                  className="px-6 py-3 bg-white text-gov-green-dark font-bold rounded-xl border-2 border-gov-green/30 hover:border-gov-green/30 hover:bg-gov-green/5 transition-all"
                 >
                   {t('send_another')}
                 </button>
@@ -183,7 +183,7 @@ export default function ContactPage() {
                       <input
                         type="text"
                         {...register('nom')}
-                        className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none ${errors.nom ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                        className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none ${errors.nom ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-gov-green/30 focus:ring-gov-green/20'}`}
                         placeholder={t('name_placeholder')}
                       />
                     </div>
@@ -199,7 +199,7 @@ export default function ContactPage() {
                       <input
                         type="email"
                         {...register('email')}
-                        className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                        className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-gov-green/30 focus:ring-gov-green/20'}`}
                         placeholder={t('email_placeholder')}
                       />
                     </div>
@@ -215,7 +215,7 @@ export default function ContactPage() {
                     </div>
                     <select
                       {...register('sujet')}
-                      className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none appearance-none ${errors.sujet ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                      className={`w-full ltr:pl-12 ltr:pr-4 rtl:pr-12 rtl:pl-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none appearance-none ${errors.sujet ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-gov-green/30 focus:ring-gov-green/20'}`}
                     >
                       <option value="">{t('subject_placeholder')}</option>
                       <option value="info">{t('subjects.info')}</option>
@@ -236,7 +236,7 @@ export default function ContactPage() {
                     <textarea
                       rows={5}
                       {...register('message')}
-                      className={`w-full px-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none resize-none ${errors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-emerald-500'}`}
+                      className={`w-full px-4 py-3.5 bg-gray-50 border rounded-xl focus:bg-white focus:ring-2 transition-all outline-none resize-none ${errors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-gov-green/30 focus:ring-gov-green/20'}`}
                       placeholder={t('message_placeholder')}
                     />
                   </div>
@@ -246,7 +246,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold rounded-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gradient-to-r from-gov-green to-gov-green-dark hover:from-gov-green hover:to-gov-green-dark text-white font-bold rounded-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-gov-green/20 hover:shadow-xl hover:shadow-gov-green/20 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -269,7 +269,7 @@ export default function ContactPage() {
             {/* Coordonnées */}
             <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
-                <MapPin className="w-6 h-6 text-emerald-600" />
+                <MapPin className="w-6 h-6 text-gov-green-dark" />
                 {t('coords_title')}
               </h3>
               
@@ -285,30 +285,30 @@ export default function ContactPage() {
                 </div>
                 
                 <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-gov-green/5 text-gov-green-dark rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
                     <Phone className="w-6 h-6" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('phone_label')}</p>
                     <div className="flex flex-col" dir="ltr">
-                      <a href="tel:0522510051" className="text-lg font-medium text-gray-900 hover:text-emerald-600 transition-colors font-mono text-left">05 22 51 00 51 (Standard)</a>
-                      <a href="tel:0522510010" className="text-lg font-medium text-gray-900 hover:text-emerald-600 transition-colors font-mono text-left">05 22 51 00 10 (Fax)</a>
+                      <a href="tel:0522510051" className="text-lg font-medium text-gray-900 hover:text-gov-green-dark transition-colors font-mono text-left">05 22 51 00 51 (Standard)</a>
+                      <a href="tel:0522510010" className="text-lg font-medium text-gray-900 hover:text-gov-green-dark transition-colors font-mono text-left">05 22 51 00 10 (Fax)</a>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-gov-blue/5 text-gov-blue-dark rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
                     <Mail className="w-6 h-6" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('email_contact_label')}</p>
-                    <a href="mailto:contact@provincemediouna.ma" className="text-lg font-medium text-gray-900 hover:text-purple-600 transition-colors break-all" dir="ltr">contact@provincemediouna.ma</a>
+                    <a href="mailto:contact@provincemediouna.ma" className="text-lg font-medium text-gray-900 hover:text-gov-blue-dark transition-colors break-all" dir="ltr">contact@provincemediouna.ma</a>
                   </div>
                 </div>
 
                  <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-gov-gold/5 text-gov-gold rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
                     <Clock className="w-6 h-6" />
                   </div>
                   <div>

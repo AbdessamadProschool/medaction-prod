@@ -102,7 +102,7 @@ export default function MaintenancePage() {
           </button>
           <a
             href="mailto:contact@provincemediouna.ma"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-xl text-white font-medium transition-all"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-gov-blue to-blue-600 hover:from-gov-blue hover:to-blue-700 rounded-xl text-white font-medium transition-all"
           >
             <Mail className="w-5 h-5" />
             {t('contact_us')}

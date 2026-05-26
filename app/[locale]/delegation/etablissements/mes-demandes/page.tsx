@@ -73,7 +73,7 @@ export default function MesDemandesPage() {
         
         <Link 
           href="/delegation/etablissements" 
-          className="flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors font-bold text-sm mb-4"
+          className="flex items-center gap-2 text-gray-500 hover:text-gov-green-dark transition-colors font-bold text-sm mb-4"
         >
           <ChevronLeft size={16} />
           {te('back_list')}
@@ -97,7 +97,7 @@ export default function MesDemandesPage() {
           
           <div className="flex items-center gap-3">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gov-green transition-colors" size={18} />
               <input 
                 type="text" 
                 placeholder="Rechercher..." 
@@ -156,8 +156,8 @@ export default function MesDemandesPage() {
                     
                     <div className="flex items-center gap-3 mb-4">
                       <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                        d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-amber-100 text-amber-700' : 
-                        d.statut === 'APPROUVEE' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                        d.statut === 'EN_ATTENTE_VALIDATION' ? 'bg-gov-gold/10 text-gov-gold' : 
+                        d.statut === 'APPROUVEE' ? 'bg-gov-green/10 text-gov-green-dark' : 'bg-red-100 text-red-700'
                       }`}>
                         {t(`status.${d.statut}`)}
                       </div>

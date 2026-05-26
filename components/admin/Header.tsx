@@ -10,7 +10,7 @@ export default function AdminHeader() {
   const [isDark, setIsDark] = useState(false);
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between sticky top-0 z-30">
       {/* Search */}
       <div className="flex-1 max-w-xl">
         <div className="relative">
@@ -18,7 +18,7 @@ export default function AdminHeader() {
           <input
             type="text"
             placeholder="Rechercher..."
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-700 border-0 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-gray-600 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-background border border-input rounded-lg text-sm focus:ring-2 focus:ring-[hsl(var(--gov-blue))] transition-colors"
           />
         </div>
       </div>
@@ -28,7 +28,8 @@ export default function AdminHeader() {
         {/* Theme Toggle */}
         <button
           onClick={() => setIsDark(!isDark)}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Changer le theme"
         >
           {isDark ? (
             <Sun className="w-5 h-5 text-yellow-500" />
@@ -41,9 +42,9 @@ export default function AdminHeader() {
         <NotificationsDropdown />
 
         {/* User */}
-        <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3 pl-4 border-l border-border">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
+            <p className="text-sm font-medium text-foreground">
               {session?.user?.prenom} {session?.user?.nom}
             </p>
             <p className="text-xs text-gray-500">
@@ -52,7 +53,7 @@ export default function AdminHeader() {
                session?.user?.role}
             </p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+          <div className="w-10 h-10 rounded-full bg-[hsl(var(--gov-gold))] flex items-center justify-center text-[hsl(var(--gov-blue-dark))] font-bold">
             {session?.user?.prenom?.[0]?.toUpperCase() || 'U'}
           </div>
         </div>

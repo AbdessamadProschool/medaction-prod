@@ -257,7 +257,7 @@ export default function GovFooter() {
       </div>
 
       {/* Mention développeur */}
-      <div className="bg-black/20 py-2">
+      <div className="bg-[hsl(var(--gov-blue-dark)/0.28)] py-2">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-white/40 text-xs">
             {t('footer.developpeur')} v1.0.0

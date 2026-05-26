@@ -169,7 +169,7 @@ export default function MesArticlesPage() {
           </p>
           <Link 
             href="/delegation/articles/nouveau" 
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:shadow-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-500/30 font-bold text-lg"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gov-blue to-gov-blue-dark text-white rounded-2xl hover:shadow-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-500/30 font-bold text-lg"
           >
             <Plus size={22} />
             {t('create_first')}
@@ -185,7 +185,7 @@ export default function MesArticlesPage() {
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gov-blue to-gov-blue-dark flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <BookOpen className="w-6 h-6 text-blue-600" />
                   </div>
                   <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
@@ -202,7 +202,7 @@ export default function MesArticlesPage() {
                 </h3>
 
                 {article.categorie && (
-                  <span className="inline-block px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg mb-4 font-bold">
+                  <span className="inline-block px-3 py-1 text-xs bg-gov-blue/5 text-gov-blue-dark rounded-lg mb-4 font-bold">
                     {article.categorie}
                   </span>
                 )}

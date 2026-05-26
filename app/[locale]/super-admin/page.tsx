@@ -157,7 +157,7 @@ function StatCard({
         </div>
         {trend && (
           <span className={`flex items-center gap-1 text-xs font-medium ${
-            trend === 'up' ? 'text-emerald-600' : 'text-red-600'
+            trend === 'up' ? 'text-[hsl(var(--gov-green))]' : 'text-[hsl(var(--gov-red))]'
           }`}>
             {trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
             {trendValue}
@@ -218,7 +218,7 @@ function QuickAction({
 // System Health Indicator
 function HealthIndicator({ status, label }: { status: 'online' | 'warning' | 'offline'; label: string }) {
   const colors = {
-    online: 'bg-emerald-500',
+    online: 'bg-[hsl(var(--gov-green))]',
     warning: 'bg-amber-500',
     offline: 'bg-red-500',
   };
@@ -358,7 +358,7 @@ export default function SuperAdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-purple-500 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-[hsl(var(--gov-blue))] animate-spin mx-auto mb-4" />
           <p className="text-gray-500">{t('super_admin.loading')}</p>
         </div>
       </div>
@@ -372,7 +372,7 @@ export default function SuperAdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Top Bar */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900 text-white">
+      <div className="bg-gradient-to-r from-[hsl(var(--gov-blue-dark))] via-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] text-white">
         {/* Tricolor band */}
         <div className="h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
         
@@ -404,7 +404,7 @@ export default function SuperAdminDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">{t('super_admin.title')}</h1>
-                <p className="text-purple-200 text-sm">{t('super_admin.subtitle')}</p>
+                <p className="text-white/75 text-sm">{t('super_admin.subtitle')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -424,7 +424,7 @@ export default function SuperAdminDashboard() {
               </button>
               <Link
                 href="/super-admin/admins"
-                className="flex items-center gap-2 px-4 py-2 bg-white text-purple-900 rounded-lg font-medium hover:bg-purple-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--gov-gold))] text-[hsl(var(--gov-blue-dark))] rounded-lg font-medium hover:bg-[hsl(var(--gov-gold-light))] transition-colors"
               >
                 <UserCog size={18} />
                 {t('super_admin.manage_admins')}
@@ -448,10 +448,10 @@ export default function SuperAdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Server className="w-5 h-5 text-purple-500" />
+                <Server className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
                 {t('super_admin.system_status.title')}
               </h2>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
+              <span className="px-3 py-1 bg-[hsl(var(--gov-green)/0.12)] text-[hsl(var(--gov-green))] rounded-full text-sm font-medium">
                 {t('super_admin.system_status.operational')}
               </span>
             </div>
@@ -506,14 +506,14 @@ export default function SuperAdminDashboard() {
                 title={t('super_admin.quick_actions.admins')}
                 icon={ShieldCheck}
                 href="/super-admin/admins"
-                color="from-purple-500 to-indigo-600"
+                color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
                 badge={stats?.users.admins}
               />
               <QuickAction
                 title={t('super_admin.quick_actions.users')}
                 icon={Users}
                 href="/admin/utilisateurs"
-                color="from-blue-500 to-cyan-600"
+                color="from-[hsl(var(--gov-blue-light))] to-[hsl(var(--gov-blue))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.reclamations')}
@@ -526,25 +526,25 @@ export default function SuperAdminDashboard() {
                 title={t('super_admin.quick_actions.validation')}
                 icon={CheckCircle}
                 href="/admin/validation"
-                color="from-emerald-500 to-teal-600"
+                color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.events')}
                 icon={Calendar}
                 href="/admin/evenements"
-                color="from-violet-500 to-purple-600"
+                color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.establishments')}
                 icon={Building2}
                 href="/admin/etablissements"
-                color="from-teal-500 to-emerald-600"
+                color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.activities')}
                 icon={ClipboardList}
                 href="/admin/programmes-activites"
-                color="from-cyan-500 to-blue-600"
+                color="from-[hsl(var(--gov-blue-light))] to-[hsl(var(--gov-blue))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.logs')}
@@ -581,7 +581,7 @@ export default function SuperAdminDashboard() {
               icon={Users}
               trend="up"
               trendValue={`+${stats?.users.newThisMonth || 0} ${t('super_admin.stats.this_month')}`}
-              color="from-blue-500 to-indigo-600"
+              color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
               subStats={[
                 { label: t('super_admin.stats.admins'), value: stats?.users.admins || 0 },
                 { label: t('super_admin.stats.citizens'), value: stats?.users.citoyens || 0 },
@@ -591,7 +591,7 @@ export default function SuperAdminDashboard() {
               title={t('super_admin.stats.establishments')}
               value={stats?.content.etablissements || 0}
               icon={Building2}
-              color="from-emerald-500 to-teal-600"
+              color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
               subStats={[
                 { label: t('super_admin.stats.validated'), value: stats?.content.etablissementsValides || 0 },
                 { label: t('super_admin.stats.events'), value: stats?.content.evenements || 0 },
@@ -611,7 +611,7 @@ export default function SuperAdminDashboard() {
               title={t('super_admin.stats.content')}
               value={(stats?.content.actualites || 0) + (stats?.content.articles || 0)}
               icon={Newspaper}
-              color="from-purple-500 to-violet-600"
+              color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
               subStats={[
                 { label: t('super_admin.stats.news'), value: stats?.content.actualites || 0 },
                 { label: t('super_admin.stats.articles'), value: stats?.content.articles || 0 },
@@ -631,7 +631,7 @@ export default function SuperAdminDashboard() {
                   <Activity className="w-5 h-5 text-blue-500" />
                   {t('super_admin.recent_activity.title')}
                 </h2>
-                <Link href="/super-admin/audit" className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1">
+                <Link href="/super-admin/audit" className="text-sm text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] flex items-center gap-1">
                   {t('super_admin.recent_activity.view_all')} <ChevronRight size={14} />
                 </Link>
               </div>
@@ -639,7 +639,7 @@ export default function SuperAdminDashboard() {
                 {recentLogs.length > 0 ? (
                   recentLogs.map((log, i) => (
                     <div key={log.id || i} className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                      <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] flex-shrink-0">
                         {log.action?.includes('CREATE') && <Zap size={14} />}
                         {log.action?.includes('UPDATE') && <RefreshCw size={14} />}
                         {log.action?.includes('DELETE') && <XCircle size={14} />}
@@ -674,20 +674,20 @@ export default function SuperAdminDashboard() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-purple-500" />
+                  <Shield className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
                   {t('super_admin.rbac.title')}
                 </h2>
-                <Link href="/super-admin/admins" className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1">
+                <Link href="/super-admin/admins" className="text-sm text-[hsl(var(--gov-blue))] hover:text-[hsl(var(--gov-blue-dark))] flex items-center gap-1">
                   {t('super_admin.rbac.manage')} <ChevronRight size={14} />
                 </Link>
               </div>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                <div className="flex items-center justify-between p-3 bg-[hsl(var(--gov-blue)/0.08)] rounded-xl">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className="w-5 h-5 text-purple-600" />
+                    <ShieldCheck className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
                     <span className="font-medium text-gray-900 dark:text-white">{t('super_admin.rbac.super_admins')}</span>
                   </div>
-                  <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">
+                  <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.12)] text-[hsl(var(--gov-blue))] rounded-full text-sm font-bold">
                     {stats?.users.superAdmins || 1}
                   </span>
                 </div>
@@ -700,12 +700,12 @@ export default function SuperAdminDashboard() {
                     {stats?.users.admins || 0}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
+                <div className="flex items-center justify-between p-3 bg-[hsl(var(--gov-green)/0.08)] rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Globe className="w-5 h-5 text-indigo-600" />
+                    <Globe className="w-5 h-5 text-[hsl(var(--gov-green))]" />
                     <span className="font-medium text-gray-900 dark:text-white">{t('super_admin.rbac.delegations')}</span>
                   </div>
-                  <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold">
+                  <span className="px-3 py-1 bg-[hsl(var(--gov-green)/0.12)] text-[hsl(var(--gov-green))] rounded-full text-sm font-bold">
                     {stats?.users.delegations || 0}
                   </span>
                 </div>
@@ -743,10 +743,10 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue))] flex items-center justify-center text-white mb-4">
                     <UserCog className="w-6 h-6" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                     {t('super_admin.features.admin_management')}
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">{t('super_admin.features.admin_management_desc')}</p>
@@ -758,7 +758,7 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold))] flex items-center justify-center text-[hsl(var(--gov-blue-dark))] mb-4">
                     <Key className="w-6 h-6" />
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-amber-600 transition-colors">
@@ -788,10 +788,10 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green))] flex items-center justify-center text-white mb-4">
                     <Database className="w-6 h-6" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-green))] transition-colors">
                     {t('super_admin.features.backups')}
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">{t('super_admin.features.backups_desc')}</p>
@@ -803,7 +803,7 @@ export default function SuperAdminDashboard() {
           {/* Footer Info */}
           <motion.div
             variants={itemVariants}
-            className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-6 text-white"
+            className="bg-gradient-to-r from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] rounded-2xl p-6 text-white"
           >
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex items-center gap-4">

@@ -54,11 +54,19 @@ export const GET = withErrorHandler(async (req: NextRequest, { params }: RoutePa
         select: {
           id: true,
           titre: true,
-          dateDebut: true,
+          description: true,
           typeCategorique: true,
+          secteur: true,
           statut: true,
-          bilanDescription: true,
-          bilanNbParticipants: true
+          dateDebut: true,
+          dateFin: true,
+          heureDebut: true,
+          lieu: true,
+          capaciteMax: true,
+          nombreInscrits: true,
+          nombreVues: true,
+          commune: { select: { nom: true, nomArabe: true } },
+          medias: { select: { urlPublique: true } }
         }
       },
       actualites: {
@@ -68,8 +76,12 @@ export const GET = withErrorHandler(async (req: NextRequest, { params }: RoutePa
           id: true,
           titre: true,
           description: true,
+          categorie: true,
+          nombreVues: true,
+          datePublication: true,
           createdAt: true,
-          statut: true
+          statut: true,
+          medias: { select: { urlPublique: true } }
         }
       },
       activitesOrganisees: {
@@ -80,7 +92,13 @@ export const GET = withErrorHandler(async (req: NextRequest, { params }: RoutePa
           titre: true,
           description: true,
           date: true,
-          statut: true
+          heureDebut: true,
+          heureFin: true,
+          typeActivite: true,
+          statut: true,
+          lieu: true,
+          participantsAttendus: true,
+          presenceEffective: true
         }
       },
       _count: {

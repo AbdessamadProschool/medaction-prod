@@ -6,12 +6,13 @@ import { Link } from '@/i18n/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import EventCard from '@/components/evenements/EventCard';
+import NewsCard from '@/components/actualites/NewsCard';
 import SubscribeButton from '@/components/etablissements/SubscribeButton';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { 
   GraduationCap, Hospital, Trophy, HeartHandshake, Drama, Building2, 
-  ClipboardList, Calendar, Star, Newspaper, Megaphone, FileText, 
+  ClipboardList, Calendar, Clock, Star, Newspaper, Megaphone, FileText, 
   MapPin, Phone, Mail, Globe, Activity, ChevronLeft, Share2, Info, X,
   Stethoscope, Bed, Users2, UserCheck, Syringe, BookOpen, Music, Palette, School, Baby,
   Briefcase, Layout, Box, Zap, Wifi, Droplets, CheckCircle2, User, Ruler, Signal
@@ -65,8 +66,14 @@ interface Etablissement {
     evaluations: number;
     reclamations: number;
     evenements: number;
-  actualites: number;
+    evenementsOrganises?: number;
+    actualites?: number;
+    activitesOrganisees?: number;
+    abonnements?: number;
   };
+  evenementsOrganises?: Evenement[];
+  actualites?: Actualite[];
+  activitesOrganisees?: any[];
   donneesSpecifiques?: Record<string, any>;
   // Root Infrastructure Fields
   surfaceTotale?: number;
@@ -85,12 +92,19 @@ interface Etablissement {
 interface Actualite {
   id: number;
   titre: string;
-  description?: string;
-  image?: string;
-  datePublication: string;
-  medias?: { urlPublique: string }[];
-  etablissement: { nom: string; secteur: string };
-  categorie?: string;
+  description: string | null;
+  categorie: string | null;
+  nombreVues: number;
+  datePublication: string | null;
+  createdAt: string;
+  etablissement?: {
+    id: number;
+    nom: string;
+    nomArabe?: string;
+    secteur: string;
+    commune?: { nom: string; nomArabe?: string };
+  } | null;
+  medias: { urlPublique: string }[];
 }
 
 interface Evenement {
@@ -145,6 +159,91 @@ function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md
   );
 }
 
+function ActivityCard({ activity, index, locale }: { activity: any; index: number; locale: string }) {
+  const t = useTranslations('etablissement_page');
+  const dateObj = new Date(activity.date);
+  const formattedDate = dateObj.toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Color & Icon mapping based on status
+  const statusColors: Record<string, { bg: string; text: string; border: string }> = {
+    BROUILLON: { bg: 'bg-gray-50 text-gray-500', text: 'text-gray-500', border: 'border-gray-200' },
+    EN_ATTENTE_VALIDATION: { bg: 'bg-amber-50 text-amber-700', text: 'text-amber-700', border: 'border-amber-200/50' },
+    PLANIFIEE: { bg: 'bg-blue-50 text-blue-700', text: 'text-blue-700', border: 'border-blue-200/50' },
+    EN_COURS: { bg: 'bg-emerald-50 text-emerald-700', text: 'text-emerald-700', border: 'border-emerald-200/50' },
+    TERMINEE: { bg: 'bg-gray-100 text-gray-700', text: 'text-gray-700', border: 'border-gray-200' },
+    RAPPORT_COMPLETE: { bg: 'bg-emerald-50 text-emerald-700', text: 'text-emerald-700', border: 'border-emerald-200/50' },
+    ANNULEE: { bg: 'bg-red-50 text-red-700', text: 'text-red-700', border: 'border-red-200/50' },
+    REPORTEE: { bg: 'bg-amber-50 text-amber-700', text: 'text-amber-700', border: 'border-amber-200/50' },
+  };
+
+  const status = activity.statut || 'PLANIFIEE';
+  const colors = statusColors[status] || statusColors.PLANIFIEE;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05 }}
+      whileHover={{ y: -5 }}
+      className="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex flex-col h-full"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <span className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100 text-xs font-semibold text-gray-500">
+          <Calendar className="w-3.5 h-3.5 text-gov-gold" />
+          {formattedDate}
+        </span>
+        <span className={`inline-flex px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${colors.bg} ${colors.text} ${colors.border}`}>
+          {status}
+        </span>
+      </div>
+
+      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight line-clamp-2">
+        {activity.titre}
+      </h3>
+
+      <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-1">
+        {activity.description || "Aucune description supplémentaire fournie pour cette activité."}
+      </p>
+
+      <div className="pt-4 border-t border-gray-50 mt-auto space-y-3">
+        <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-gray-400" />
+            {activity.heureDebut || '00:00'} - {activity.heureFin || '00:00'}
+          </span>
+          {activity.lieu && (
+            <span className="flex items-center gap-1.5 truncate max-w-[150px]">
+              <MapPin className="w-3.5 h-3.5 text-gray-400" />
+              {activity.lieu}
+            </span>
+          )}
+        </div>
+
+        {(activity.participantsAttendus > 0 || activity.presenceEffective > 0) && (
+          <div className="flex items-center gap-4 bg-gray-50 p-2.5 rounded-xl border border-gray-100/50">
+            {activity.participantsAttendus > 0 && (
+              <div className="flex-1 text-center">
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{locale === 'ar' ? 'المتوقع' : 'Attendus'}</span>
+                <span className="text-sm font-extrabold text-gray-700">{activity.participantsAttendus}</span>
+              </div>
+            )}
+            {activity.presenceEffective > 0 && (
+              <div className="flex-1 text-center border-l border-gray-200">
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{locale === 'ar' ? 'الحاضرون' : 'Présents'}</span>
+                <span className="text-sm font-extrabold text-gov-green-dark">{activity.presenceEffective}</span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function EtablissementDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -156,6 +255,7 @@ export default function EtablissementDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('infos');
   const t = useTranslations('etablissement_page');
+  const locale = useLocale();
   const tSectors = useTranslations('sectors');
   const secteurConfig = getSecteurConfig(tSectors);
   const tabs = getTabs(t);
@@ -232,6 +332,10 @@ export default function EtablissementDetailPage() {
   const allImages = etablissement.photoPrincipale 
     ? [{ id: 0, urlPublique: etablissement.photoPrincipale, type: 'IMAGE' }, ...images]
     : images;
+
+  const displayEvents = evenements.length > 0 ? evenements : (etablissement.evenementsOrganises || []);
+  const displayActualites = actualites.length > 0 ? actualites : (etablissement.actualites || []);
+  const displayActivites = activites.length > 0 ? activites : (etablissement.activitesOrganisees || []);
 
   // Tracking keys that are explicitly used in the UI to avoid duplication in the "Specific Details" grid
   const usedKeys = new Set<string>();
@@ -426,7 +530,14 @@ export default function EtablissementDetailPage() {
           <div className="flex items-center gap-1 overflow-x-auto py-1 hide-scrollbar">
             {tabs.map(tab => {
               const isActive = activeTab === tab.id;
-              const hasCount = tab.id === 'events' && etablissement._count.evenements > 0;
+              
+              let count = 0;
+              if (tab.id === 'events') count = etablissement._count?.evenementsOrganises || 0;
+              if (tab.id === 'actualites') count = etablissement._count?.actualites || 0;
+              if (tab.id === 'activites') count = etablissement._count?.activitesOrganisees || 0;
+              if (tab.id === 'avis') count = etablissement._count?.evaluations || 0;
+              
+              const hasCount = count > 0;
               
               return (
                 <button
@@ -443,10 +554,10 @@ export default function EtablissementDetailPage() {
                   {tab.label}
                   
                   {hasCount && (
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                      isActive ? 'bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)]' : 'bg-gray-100 text-gray-600'
+                    <span className={`px-2 py-0.5 rounded text-xs font-extrabold ${
+                      isActive ? 'bg-white/20 text-white shadow-sm' : 'bg-gray-200 text-gray-700'
                     }`}>
-                      {etablissement._count.evenements}
+                      {count}
                     </span>
                   )}
                 </button>
@@ -1099,7 +1210,7 @@ export default function EtablissementDetailPage() {
                      <h3 className="font-bold mb-6 text-lg tracking-wide opacity-90">{t('sections.metrics')}</h3>
                      <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white/5 rounded-2xl p-4 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-colors">
-                           <p className="text-3xl font-extrabold mb-1 tracking-tight">{etablissement._count.evenements}</p>
+                           <p className="text-3xl font-extrabold mb-1 tracking-tight">{etablissement._count?.evenementsOrganises || 0}</p>
                            <p className="text-sm font-medium opacity-70">{t('labels.events_organized')}</p>
                         </div>
                         <div className="bg-white/5 rounded-2xl p-4 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-colors">
@@ -1121,7 +1232,7 @@ export default function EtablissementDetailPage() {
             </motion.div>
           )}
 
-          {/* OTHER TABS: Minimal implementation for clarity, assume similar improvements */}
+          {/* OTHER TABS: Fully implemented with display fallbacks and premium styling */}
           {activeTab === 'events' && (
              <motion.div 
                key="events"
@@ -1130,12 +1241,50 @@ export default function EtablissementDetailPage() {
                exit={{ opacity: 0 }}
                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
              >
-                 {evenements.length > 0 ? evenements.map((evt, i) => (
+                 {displayEvents.length > 0 ? displayEvents.map((evt, i) => (
                     <EventCard key={evt.id} event={evt} index={i} />
                  )) : (
                     <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
                        <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                        <p className="text-gray-500">{t('placeholders.no_events')}</p>
+                    </div>
+                 )}
+             </motion.div>
+          )}
+
+          {activeTab === 'actualites' && (
+             <motion.div 
+               key="actualites"
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+             >
+                 {displayActualites.length > 0 ? displayActualites.map((actu, i) => (
+                    <NewsCard key={actu.id} news={actu} index={i} />
+                 )) : (
+                    <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
+                       <Newspaper className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                       <p className="text-gray-500">{t('placeholders.no_news')}</p>
+                    </div>
+                 )}
+             </motion.div>
+          )}
+
+          {activeTab === 'activites' && (
+             <motion.div 
+               key="activites"
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+             >
+                 {displayActivites.length > 0 ? displayActivites.map((act, i) => (
+                    <ActivityCard key={act.id} activity={act} index={i} locale={locale} />
+                 )) : (
+                    <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
+                       <Activity className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                       <p className="text-gray-500">{t('placeholders.no_activities')}</p>
                     </div>
                  )}
              </motion.div>
@@ -1193,7 +1342,7 @@ export default function EtablissementDetailPage() {
                          </div>
                          {evaluation.commentaire && (
                             <p className="text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg text-sm">
-                              "{evaluation.commentaire}"
+                               "{evaluation.commentaire}"
                             </p>
                          )}
                       </div>
@@ -1202,8 +1351,8 @@ export default function EtablissementDetailPage() {
              </motion.div>
           )}
 
-          {/* Placeholders for other tabs */}
-           {['actualites', 'activites', 'articles', 'campagnes'].includes(activeTab) && !['infos', 'events', 'avis'].includes(activeTab) && (
+          {/* Placeholders for remaining tabs */}
+           {['articles', 'campagnes'].includes(activeTab) && (
                <div className="py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
                  <p className="text-gray-500">{t('placeholders.content_unavailable')}</p>
                </div>

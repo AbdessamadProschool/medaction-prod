@@ -2111,6 +2111,8 @@
     },
     "placeholders": {
       "no_events": "Aucun événement à venir pour le moment.",
+      "no_news": "Aucune actualité disponible pour le moment.",
+      "no_activities": "Aucune activité disponible pour le moment.",
       "content_unavailable": "Contenu en cours de chargement ou indisponible pour cette section."
     },
     "feedback_copied": "Lien copié dans le presse-papiers !"

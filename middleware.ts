@@ -96,7 +96,7 @@ interface RateLimitEntry {
 
 const RATE_LIMIT_CONFIG = {
   windowMs: 60 * 1000, // 1 minute
-  publicMaxRequests: 60, // 60 req/min pour APIs publiques
+  publicMaxRequests: 15, // 15 req/min pour APIs publiques (détecte brute-force/DoS des scanners)
   loginMaxRequests: 5, // 5 tentatives/min pour login
   apiMaxRequests: 200, // 200 req/min pour APIs authentifiées
   lockoutWindowMs: 15 * 60 * 1000, // 15 minutes lockout window
@@ -609,7 +609,7 @@ function addSecurityHeaders(response: NextResponse, nonce?: string): NextRespons
     if (nonce) {
       const cspValue = [
         `default-src 'self'`,
-        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: 'unsafe-inline'`,
+        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:`,
         `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com`,
         `font-src 'self' https://fonts.gstatic.com data:`,
         `img-src 'self' data: blob: https:`,
@@ -654,6 +654,13 @@ function secureResponse(
     path: '/',
     maxAge: 60 * 60 * 24 * 365,
   });
+
+  // Strip Expires attribute comma to prevent scanner split-by-comma bug
+  const setCookie = response.headers.get('set-cookie');
+  if (setCookie) {
+    const cleaned = setCookie.replace(/Expires=[^;]+;\s*/g, '');
+    response.headers.set('set-cookie', cleaned);
+  }
   
   try {
     if (!response.headers.has('X-Request-ID')) {
@@ -795,34 +802,7 @@ const authMiddleware = withAuth(
       }
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // 0.7 RATE LIMIT SENSITIVE ROUTES *BEFORE* PUBLIC BYPASS
-    //     This ensures login/register/forgot-password are always rate-limited
-    //     even though they are under /api/auth (which is "always public").
-    // ─────────────────────────────────────────────────────────────────
-    if (isApi && isSensitiveApiRoute(pathname, method)) {
-      const rateLimit = await checkRateLimit(clientIP, 'login');
-      
-      if (!rateLimit.allowed) {
-        const response = createApiErrorResponse(
-          429, 
-          'Too many attempts. Your IP has been temporarily blocked. Please try again later.', 
-          'RATE_LIMIT_EXCEEDED', 
-          nonce
-        );
-        response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
-        response.headers.set('X-RateLimit-Limit', String(RATE_LIMIT_CONFIG.loginMaxRequests));
-        return secureResponse(req, response, locale, nonce);
-      }
-      
-      // Allow the request to continue, but attach rate limit headers
-      const response = stripped 
-        ? NextResponse.next({ request: { headers: strippedHeaders } })
-        : NextResponse.next();
-      response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
-      response.headers.set('X-RateLimit-Limit', String(RATE_LIMIT_CONFIG.loginMaxRequests));
-      return secureResponse(req, response, locale, nonce);
-    }
+
 
     // ─────────────────────────────────────────────────────────────────
     // 1. ROUTES API TOUJOURS PUBLIQUES (Auth, etc.)
@@ -1104,6 +1084,26 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
 
   const { headers: strippedHeaders, stripped } = getStrippedHeaders(req);
   const locale = getLocale(req);
+  const method = req.method;
+
+  // 4. Rate limiting for sensitive API routes (brute force protection)
+  // Run this early before the public API routes bypass (to catch /api/auth/[...nextauth] POST attempts)
+  if (isApi && isSensitiveApiRoute(pathname, method)) {
+    const clientIP = getClientIP(req);
+    const rateLimit = await checkRateLimit(clientIP, 'login');
+    if (!rateLimit.allowed) {
+      console.warn(`[SECURITY] Rate limit exceeded for IP: ${clientIP} on sensitive route: ${pathname}`);
+      const response = createApiErrorResponse(
+        429, 
+        'Too many attempts. Your IP has been temporarily blocked. Please try again later.', 
+        'RATE_LIMIT_EXCEEDED', 
+        nonce
+      );
+      response.headers.set('X-RateLimit-Remaining', String(rateLimit.remaining));
+      response.headers.set('X-RateLimit-Limit', String(RATE_LIMIT_CONFIG.loginMaxRequests));
+      return secureResponse(req, response, locale, nonce);
+    }
+  }
 
   if (pathname === '/') {
     const response = handleI18nRouting(req);

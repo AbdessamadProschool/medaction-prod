@@ -96,7 +96,7 @@ interface RateLimitEntry {
 
 const RATE_LIMIT_CONFIG = {
   windowMs: 60 * 1000, // 1 minute
-  publicMaxRequests: 150, // 150 req/min pour APIs publiques (permet le chargement normal de la page avec ses multiples ressources)
+  publicMaxRequests: 300, // 300 req/min pour APIs publiques (la page d'accueil fait 6+ appels simultanés : etablissements, communes, maintenance, announcement, evenements, actualites)
   loginMaxRequests: 5, // 5 tentatives/min pour login
   apiMaxRequests: 200, // 200 req/min pour APIs authentifiées
   lockoutWindowMs: 15 * 60 * 1000, // 15 minutes lockout window

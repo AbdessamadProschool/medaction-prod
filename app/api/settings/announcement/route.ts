@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { performanceCache, CACHE_TTL, cacheKey } from '@/lib/cache/performance-cache';
 
 // Configuration par défaut professionnelle
 const DEFAULT_CONFIG = {
@@ -13,22 +14,37 @@ const DEFAULT_CONFIG = {
 
 const SETTING_KEY = 'ANNOUNCEMENT_MODAL';
 
+// Revalidation toutes les 5 minutes — l'annonce change rarement
+export const revalidate = 300;
+
 export async function GET() {
   try {
-    const setting = await prisma.systemSetting.findUnique({
-      where: { key: SETTING_KEY }
+    const data = await performanceCache.getOrFetch(
+      cacheKey.announcement(),
+      async () => {
+        const setting = await prisma.systemSetting.findUnique({
+          where: { key: SETTING_KEY }
+        });
+        return setting ? (setting.value || DEFAULT_CONFIG) : DEFAULT_CONFIG;
+      },
+      CACHE_TTL.ANNOUNCEMENT
+    );
+
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
+      }
     });
-
-    if (!setting) {
-        return NextResponse.json(DEFAULT_CONFIG);
-    }
-
-    return NextResponse.json(setting.value || DEFAULT_CONFIG);
   } catch (error) {
     console.error('Error fetching announcement settings:', error);
-    return NextResponse.json(DEFAULT_CONFIG);
+    return NextResponse.json(DEFAULT_CONFIG, {
+      headers: {
+        'Cache-Control': 'public, max-age=60, s-maxage=60',
+      }
+    });
   }
 }
+
 
 export async function POST(req: Request) {
   try {
@@ -61,6 +77,9 @@ export async function POST(req: Request) {
         updatedById: userId || null
       }
     });
+
+    // Invalider le cache in-memory pour que le prochain GET recharge les données fraîches
+    performanceCache.invalidate('announcement:config');
 
     return NextResponse.json(setting.value);
   } catch (error) {

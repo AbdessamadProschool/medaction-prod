@@ -475,6 +475,8 @@ model Etablissement {
   @@index([nature])
   @@index([statutFonctionnel])
   @@index([latitude, longitude]) // Index spatial
+  @@index([isPublie, isValide, secteur]) // Index composite — requête la plus fréquente (liste publique par secteur)
+  @@index([isPublie, isValide, communeId]) // Index composite — liste publique par commune
 }
 
 // ============================================
@@ -912,8 +914,10 @@ model Article {
   
   @@index([statut])
   @@index([isPublie])
+  @@index([isMisEnAvant]) // Index ajouté — utilisé pour les articles en vedette
   @@index([datePublication])
   @@index([createdBy])
+  @@index([isPublie, isMisEnAvant]) // Index composite — articles publiés en vedette
 }
 
 model Video {
@@ -938,7 +942,9 @@ model Video {
   updatedAt               DateTime  @updatedAt
   
   @@index([isPublie])
+  @@index([isMisEnAvant]) // Index ajouté — vidéos en vedette
   @@index([categorie])
+  @@index([isPublie, isMisEnAvant]) // Index composite — vidéos publiées en vedette
 }
 
 // ============================================
@@ -977,6 +983,8 @@ model Talent {
   
   @@index([domaine])
   @@index([isPublie])
+  @@index([isMisEnAvant]) // Index ajouté — talents en vedette
+  @@index([isPublie, isMisEnAvant]) // Index composite — talents publiés en vedette
 }
 
 
@@ -1050,6 +1058,9 @@ model Campagne {
   @@index([slug])
   @@index([isActive])
   @@index([isFeatured])
+  @@index([dateDebut]) // Index ajouté — requêtes temporelles sur campagnes
+  @@index([dateFin])  // Index ajouté — campagnes expirées
+  @@index([isActive, dateDebut]) // Index composite — campagnes actives par date
   @@index([createdBy])
 }
 

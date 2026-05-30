@@ -50,6 +50,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: 'standalone',
+  outputFileTracingRoot: process.cwd(),
   compress: true,
   images: {
     dangerouslyAllowSVG: false,

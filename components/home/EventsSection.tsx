@@ -58,7 +58,7 @@ export default function EventsSection() {
   
   // Data Fetching avec le hook standard ECC
   const { data, isLoading: loading } = useData('/api/evenements?limit=10');
-  const evenements = data || [];
+  const evenements = data?.data || [];
 
   // Date formatting functions that use locale
   const formatDate = (dateStr: string): string => {

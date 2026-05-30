@@ -100,7 +100,7 @@ export default function NewsSection() {
   const locale = useLocale();
   
   const { data, isLoading: loading } = useData('/api/actualites?limit=6&isPublie=true');
-  const actualites = data || [];
+  const actualites = data?.data || [];
 
   if (loading) {
     return (

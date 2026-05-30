@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -29,6 +29,8 @@ import {
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Article {
   id: number;
@@ -58,11 +60,7 @@ const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.Elem
 export default function AdminArticlesPage() {
   const t = useTranslations('admin.articles_page');
   const locale = useLocale();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filters
   const [search, setSearch] = useState('');
@@ -74,73 +72,44 @@ export default function AdminArticlesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    publies: 0,
-    enAttente: 0,
-    brouillons: 0,
-    totalVues: 0,
-  });
+  const actionMutation = useMutation();
 
-  const fetchArticles = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (search) params.set('search', search);
-      if (statutFilter) params.set('statut', statutFilter);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '12');
+  if (search) queryParams.set('search', search);
+  if (statutFilter) queryParams.set('statut', statutFilter);
 
-      const res = await fetch(`/api/articles?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setArticles(Array.isArray(data.data) ? data.data : []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Calculate stats
-        const all = Array.isArray(data.data) ? data.data : [];
-        setStats({
-          total: data.pagination?.total || 0,
-          publies: all.filter((a: Article) => a.statut === 'PUBLIE').length,
-          enAttente: all.filter((a: Article) => a.statut === 'EN_ATTENTE').length,
-          brouillons: all.filter((a: Article) => a.statut === 'BROUILLON').length,
-          totalVues: all.reduce((acc: number, a: Article) => acc + (a.nombreVues || 0), 0),
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement articles:', error);
-      toast.error('Erreur lors du chargement');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search, statutFilter]);
+  const { data: articlesData, isLoading: loading, mutate: fetchArticles } = useData(`/api/articles?${queryParams.toString()}`);
 
-  useEffect(() => {
-    const debounce = setTimeout(fetchArticles, 300);
-    return () => clearTimeout(debounce);
-  }, [fetchArticles]);
+  const articles = Array.isArray(articlesData?.data) ? articlesData.data : [];
+  const totalPages = articlesData?.pagination?.totalPages || 1;
+  const total = articlesData?.pagination?.total || 0;
+
+  const stats = useMemo(() => {
+    const all = Array.isArray(articlesData?.data) ? articlesData.data : [];
+    return {
+      total: articlesData?.pagination?.total || 0,
+      publies: all.filter((a: Article) => a.statut === 'PUBLIE').length,
+      enAttente: all.filter((a: Article) => a.statut === 'EN_ATTENTE').length,
+      brouillons: all.filter((a: Article) => a.statut === 'BROUILLON').length,
+      totalVues: all.reduce((acc: number, a: Article) => acc + (a.nombreVues || 0), 0),
+    };
+  }, [articlesData]);
 
   const handleChangeStatut = async (id: number, newStatut: string) => {
     setActionLoading(`${id}-${newStatut}`);
     try {
-      const res = await fetch(`/api/articles/${id}`, {
+      await actionMutation.mutate(`/api/articles/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statut: newStatut }),
+        data: { statut: newStatut },
       });
 
-      if (res.ok) {
-        toast.success(t('messages.status_changed'));
-        fetchArticles();
-        setShowDetailModal(false);
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.success(t('messages.status_changed'));
+      await fetchArticles();
+      setShowDetailModal(false);
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur');
     } finally {
       setActionLoading(null);
     }
@@ -157,20 +126,15 @@ export default function AdminArticlesPage() {
   const handleToggleMisEnAvant = async (id: number, current: boolean) => {
     setActionLoading(`highlight-${id}`);
     try {
-      const res = await fetch(`/api/articles/${id}`, {
+      await actionMutation.mutate(`/api/articles/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isMisEnAvant: !current }),
+        data: { isMisEnAvant: !current },
       });
 
-      if (res.ok) {
-        toast.success(current ? t('messages.unhighlighted') : t('messages.highlighted'));
-        fetchArticles();
-      } else {
-        toast.error('Erreur');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.success(current ? t('messages.unhighlighted') : t('messages.highlighted'));
+      await fetchArticles();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur');
     } finally {
       setActionLoading(null);
     }
@@ -181,16 +145,12 @@ export default function AdminArticlesPage() {
     
     setActionLoading(`delete-${id}`);
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success(t('messages.deleted'));
-        fetchArticles();
-        setShowDetailModal(false);
-      } else {
-        toast.error('Erreur lors de la suppression');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      await actionMutation.mutate(`/api/articles/${id}`, { method: 'DELETE' });
+      toast.success(t('messages.deleted'));
+      await fetchArticles();
+      setShowDetailModal(false);
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur de connexion');
     } finally {
       setActionLoading(null);
     }
@@ -222,8 +182,11 @@ export default function AdminArticlesPage() {
         
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchArticles}
-            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground"
+            onClick={async () => {
+              await fetchArticles();
+            }}
+            disabled={loading}
+            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>

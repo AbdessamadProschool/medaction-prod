@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import { SafeHTML } from '@/components/ui/SafeHTML';
 import { 
   Calendar, 
@@ -64,10 +65,41 @@ export default function CoordinateurDashboard() {
   const t = useTranslations('coordinator.dashboard');
   const tStatus = useTranslations('coordinator.status');
   const { data: session } = useSession();
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [activitesProchaines, setActivitesProchaines] = useState<Activite[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  
+  const today = new Date().toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const searchParams = new URLSearchParams({
+    dateDebut: today,
+    dateFin: nextWeek,
+    limit: '10'
+  });
+
+  const { data: responseData, isLoading: loading, mutate: refreshData, isValidating: refreshing } = useData(`/api/programmes-activites?${searchParams.toString()}`);
+  
+  const activitesProchaines = responseData?.data || [];
+  
+  const stats = useMemo<Stats | null>(() => {
+    if (!responseData?.data) return null;
+    const activites = responseData.data;
+    const uniqueEtablissements = new Set(activites.map((a: any) => a.etablissementId));
+    
+    return {
+      etablissements: uniqueEtablissements.size,
+      activitesAujourdhui: activites.filter((a: any) => 
+        new Date(a.date).toDateString() === new Date().toDateString()
+      ).length,
+      activitesSemaine: activites.length,
+      rapportsEnAttente: activites.filter((a: any) => 
+        a.statut === 'TERMINEE'
+      ).length,
+      activitesEnCours: activites.filter((a: any) => 
+        a.statut === 'EN_COURS'
+      ).length,
+      activitesTerminees: activites.filter((a: any) => 
+        a.statut === 'RAPPORT_COMPLETE'
+      ).length,
+    };
+  }, [responseData]);
 
   // Status Configuration
   const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; labelKey: string }> = {
@@ -109,54 +141,8 @@ export default function CoordinateurDashboard() {
     },
   };
 
-  const fetchData = useCallback(async () => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-      
-      const res = await fetch(
-        `/api/programmes-activites?dateDebut=${today}&dateFin=${nextWeek}&limit=10`
-      );
-      
-      if (res.ok) {
-        const data = await res.json();
-        setActivitesProchaines(data.data || []);
-        
-        const activites = data.data || [];
-        const uniqueEtablissements = new Set(activites.map((a: any) => a.etablissementId));
-        
-        setStats({
-          etablissements: uniqueEtablissements.size,
-          activitesAujourdhui: activites.filter((a: any) => 
-            new Date(a.date).toDateString() === new Date().toDateString()
-          ).length,
-          activitesSemaine: activites.length,
-          rapportsEnAttente: activites.filter((a: any) => 
-            a.statut === 'TERMINEE'
-          ).length,
-          activitesEnCours: activites.filter((a: any) => 
-            a.statut === 'EN_COURS'
-          ).length,
-          activitesTerminees: activites.filter((a: any) => 
-            a.statut === 'RAPPORT_COMPLETE'
-          ).length,
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement dashboard:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchData();
+    await refreshData();
   };
 
   const formatDate = (dateStr: string) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { 
@@ -32,6 +32,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface MediaItem {
   id: number;
@@ -119,57 +121,24 @@ export default function BilansPage() {
   const t = useTranslations();
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState<'evenements' | 'activites' | 'campagnes'>('evenements');
-  const [loading, setLoading] = useState(true);
-  const [evenements, setEvenements] = useState<BilanEvenement[]>([]);
-  const [activites, setActivites] = useState<BilanActivite[]>([]);
-  const [campagnes, setCampagnes] = useState<BilanCampagne[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSecteur, setSelectedSecteur] = useState('');
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [editingBilan, setEditingBilan] = useState<{id: number, titre: string, description: string, participants: number} | null>(null);
-  const [saving, setSaving] = useState(false);
+  const { data: evtData, isLoading: loadingEvenements, mutate: fetchEvenements } = useData('/api/admin/bilans/evenements');
+  const { data: actData, isLoading: loadingActivites, mutate: fetchActivites } = useData('/api/admin/bilans/activites');
+  const { data: campData, isLoading: loadingCampagnes, mutate: fetchCampagnes } = useData('/api/admin/bilans/campagnes');
 
-  useEffect(() => {
-    fetchBilans();
-  }, []);
+  const actionMutation = useMutation();
+
+  const loading = loadingEvenements || loadingActivites || loadingCampagnes;
+
+  const evenements: BilanEvenement[] = Array.isArray(evtData?.data?.data) ? evtData.data.data : (Array.isArray(evtData?.data) ? evtData.data : (Array.isArray(evtData) ? evtData : []));
+  const activites: BilanActivite[] = Array.isArray(actData?.data?.data) ? actData.data.data : (Array.isArray(actData?.data) ? actData.data : (Array.isArray(actData) ? actData : []));
+  const campagnes: BilanCampagne[] = Array.isArray(campData?.data?.data) ? campData.data.data : (Array.isArray(campData?.data) ? campData.data : (Array.isArray(campData) ? campData : []));
 
   const fetchBilans = async () => {
-    setLoading(true);
-    try {
-      const [evtRes, actRes, campRes] = await Promise.all([
-        fetch('/api/admin/bilans/evenements').catch(() => null),
-        fetch('/api/admin/bilans/activites').catch(() => null),
-        fetch('/api/admin/bilans/campagnes').catch(() => null),
-      ]);
-
-      if (evtRes?.ok) {
-        try {
-          const evtData = await evtRes.json();
-          const evts = evtData.data?.data || evtData.data;
-          setEvenements(Array.isArray(evts) ? evts : []);
-        } catch { setEvenements([]); }
-      }
-
-      if (actRes?.ok) {
-        try {
-          const actData = await actRes.json();
-          const acts = actData.data?.data || actData.data;
-          setActivites(Array.isArray(acts) ? acts : []);
-        } catch { setActivites([]); }
-      }
-
-      if (campRes?.ok) {
-        try {
-          const campData = await campRes.json();
-          const camps = campData.data?.data || campData.data;
-          setCampagnes(Array.isArray(camps) ? camps : []);
-        } catch { setCampagnes([]); }
-      }
-    } catch (error) {
-      console.error('Erreur chargement bilans:', error);
-    } finally {
-      setLoading(false);
-    }
+    await Promise.all([
+      fetchEvenements(),
+      fetchActivites(),
+      fetchCampagnes(),
+    ]);
   };
 
   const handleUpdateBilan = async (e: React.FormEvent) => {
@@ -178,24 +147,19 @@ export default function BilansPage() {
     
     setSaving(true);
     try {
-      const res = await fetch(`/api/evenements/${editingBilan.id}`, {
+      await actionMutation.mutate(`/api/evenements/${editingBilan.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           bilanDescription: editingBilan.description,
           bilanNbParticipants: editingBilan.participants
-        })
+        }
       });
       
-      if (res.ok) {
-        toast.success(t('admin_bilans.messages.update_success') || 'Bilan mis à jour avec succès');
-        setEditingBilan(null);
-        fetchBilans();
-      } else {
-        toast.error('Erreur lors de la mise à jour');
-      }
-    } catch (error) {
-      toast.error('Erreur réseau');
+      toast.success(t('admin_bilans.messages.update_success') || 'Bilan mis à jour avec succès');
+      setEditingBilan(null);
+      await fetchEvenements();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur réseau');
     } finally {
       setSaving(false);
     }
@@ -205,25 +169,20 @@ export default function BilansPage() {
     if (!confirm(t('admin_bilans.labels.confirm_reset'))) return;
     
     try {
-      const res = await fetch(`/api/evenements/${id}`, {
+      await actionMutation.mutate(`/api/evenements/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           statut: 'PUBLIEE',
           bilanDescription: null,
           bilanNbParticipants: null,
           bilanDatePublication: null
-        })
+        }
       });
       
-      if (res.ok) {
-        toast.success(t('admin_bilans.messages.reset_success') || 'Bilan réinitialisé');
-        fetchBilans();
-      } else {
-        toast.error('Erreur lors de la réinitialisation');
-      }
-    } catch (error) {
-      toast.error('Erreur réseau');
+      toast.success(t('admin_bilans.messages.reset_success') || 'Bilan réinitialisé');
+      await fetchEvenements();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur réseau');
     }
   };
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import { motion } from 'framer-motion';
 import {
   BarChart3,
@@ -80,29 +81,11 @@ export default function StatistiquesPage() {
   const t = useTranslations('delegation.statistics');
   const tSectors = useTranslations('delegation.sectors');
   const { data: session } = useSession();
-  const [stats, setStats] = useState<DetailedStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: responseData, isLoading: loading } = useData('/api/delegation/stats/detailed');
+  const stats = responseData?.data || null;
 
   const userSecteur = session?.user?.secteurResponsable || 'ADMINISTRATION';
   const secteurConfig = SECTEUR_CONFIG[userSecteur] || SECTEUR_CONFIG['ADMINISTRATION'];
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch('/api/delegation/stats/detailed');
-        if (res.ok) {
-          const json = await res.json();
-          setStats(json.data);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
 
   if (loading) {
     return (

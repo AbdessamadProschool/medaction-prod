@@ -5,10 +5,11 @@ import { useParams, useSearchParams, usePathname } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import EventCard from '@/components/evenements/EventCard';
 import NewsCard from '@/components/actualites/NewsCard';
 import SubscribeButton from '@/components/etablissements/SubscribeButton';
-import { useTranslations, useLocale } from 'next-intl';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { 
   GraduationCap, Hospital, Trophy, HeartHandshake, Drama, Building2, 
@@ -248,11 +249,6 @@ export default function EtablissementDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [etablissement, setEtablissement] = useState<Etablissement | null>(null);
-  const [evenements, setEvenements] = useState<Evenement[]>([]);
-  const [activites, setActivites] = useState<any[]>([]);
-  const [actualites, setActualites] = useState<Actualite[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('infos');
   const t = useTranslations('etablissement_page');
   const locale = useLocale();
@@ -267,42 +263,24 @@ export default function EtablissementDetailPage() {
         setActiveTab(tabParam);
     }
   }, [searchParams]);
+  
   const [activeImage, setActiveImage] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      fetch(`/api/etablissements/${params.id}`)
-        .then(res => res.json())
-        .then(json => {
-          setEtablissement(json.data);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }
-  }, [params.id]);
+  // Fetching data via ECC Standard hook (SWR)
+  const { data: etablissement, isLoading: loading } = useData<Etablissement>(params.id ? `/api/etablissements/${params.id}` : null);
 
-  // Fetch content based on active tab
-  useEffect(() => {
-    if (!etablissement) return;
+  const shouldFetchEvents = activeTab === 'events' && etablissement;
+  const { data: evenementsData } = useData<Evenement[]>(shouldFetchEvents ? `/api/evenements?etablissementId=${etablissement.id}` : null);
+  const evenements = evenementsData || [];
 
-    if (activeTab === 'events') {
-      fetch(`/api/evenements?etablissementId=${etablissement.id}`)
-        .then(res => res.json())
-        .then(json => setEvenements(json.data || []))
-        .catch(console.error);
-    } else if (activeTab === 'activites') {
-      fetch(`/api/programmes-activites?etablissementId=${etablissement.id}`)
-        .then(res => res.json())
-        .then(json => setActivites(json.data || []))
-        .catch(console.error);
-    } else if (activeTab === 'actualites') {
-      fetch(`/api/actualites?etablissementId=${etablissement.id}`)
-        .then(res => res.json())
-        .then(json => setActualites(json.data || []))
-        .catch(console.error);
-    }
-  }, [activeTab, etablissement]);
+  const shouldFetchActivites = activeTab === 'activites' && etablissement;
+  const { data: activitesData } = useData<any[]>(shouldFetchActivites ? `/api/programmes-activites?etablissementId=${etablissement.id}` : null);
+  const activites = activitesData || [];
+
+  const shouldFetchActualites = activeTab === 'actualites' && etablissement;
+  const { data: actualitesData } = useData<Actualite[]>(shouldFetchActualites ? `/api/actualites?etablissementId=${etablissement.id}` : null);
+  const actualites = actualitesData || [];
 
   if (loading) {
     return (

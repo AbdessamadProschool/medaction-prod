@@ -22,6 +22,8 @@ import {
   Layout
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Talent {
   id: number;
@@ -37,52 +39,23 @@ interface Talent {
 }
 
 export default function AdminTalentsPage() {
-  const [talents, setTalents] = useState<Talent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTalent, setEditingTalent] = useState<Talent | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchTalents = async () => {
-    setLoading(true);
-    try {
-      // On récupère tout sans filtre de publication pour l'admin
-      // Note: L'API doit gérer le paramètre isPublie=undefined pour tout renvoyer si admin
-      // On va passer un paramètre spécial ou juste ne pas passer isPublie
-      const res = await fetch('/api/talents?limit=100&isPublie=false'); // isPublie=false avec admin session renvoie tout selon notre logique API
-      // Attends, ma logique API était: si isPublie='false', renvoie isPublie=false.
-      // Il faut que je corrige l'API pour permettre de tout récupérer.
-      // Ou alors je fais 2 requêtes ? Non.
-      // Je vais modifier l'API pour que si isPublie n'est pas fourni et qu'on est admin, on renvoie tout.
-      // Actuellement: if (isPublie !== null) ... else if (!isAdmin) where.isPublie = true;
-      // Donc si je ne passe pas isPublie et que je suis admin, where.isPublie n'est pas défini, donc ça renvoie tout. C'est bon.
-      
-      const res2 = await fetch('/api/talents?limit=100'); 
-      const json = await res2.json();
-      setTalents(json.data || []);
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTalents();
-  }, []);
+  const { data: talentsData, isLoading: loading, mutate: fetchTalents } = useData('/api/talents?limit=100');
+  const talents: Talent[] = talentsData?.data || [];
+  
+  const actionMutation = useMutation();
 
   const handleDelete = async (id: number) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce talent ?')) return;
 
     try {
-      const res = await fetch(`/api/talents/${id}`, {
+      await actionMutation.mutate(`/api/talents/${id}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
-        setTalents(talents.filter(t => t.id !== id));
-      } else {
-        alert('Erreur lors de la suppression');
-      }
+      await fetchTalents();
     } catch (error) {
       console.error('Erreur:', error);
     }

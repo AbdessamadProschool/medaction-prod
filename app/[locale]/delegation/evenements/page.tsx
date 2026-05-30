@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
 import {
@@ -48,13 +50,9 @@ export default function MesEvenementsPage() {
   const { data: session } = useSession();
   const locale = useLocale();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
-  const [evenements, setEvenements] = useState<Evenement[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -86,49 +84,30 @@ export default function MesEvenementsPage() {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchEvenements = async () => {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', viewMode === 'list' ? '15' : '12');
-      if (search) params.set('search', search);
-      if (statusFilter) params.set('statut', statusFilter);
+  const searchParams = new URLSearchParams({
+    page: page.toString(),
+    limit: viewMode === 'list' ? '15' : '12',
+    ...(search ? { search } : {}),
+    ...(statusFilter ? { statut: statusFilter } : {})
+  });
 
-      try {
-        const res = await fetch(`/api/delegation/evenements?${params.toString()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setEvenements(json.data || []);
-          setTotalPages(json.pagination?.totalPages || 1);
-          setTotal(json.pagination?.total || 0);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-        toast.error('Erreur de chargement');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchEvenements, 300);
-    return () => clearTimeout(timer);
-  }, [page, search, statusFilter, viewMode]);
+  const { data: responseData, isLoading: loading, mutate: refreshEvenements } = useData(`/api/delegation/evenements?${searchParams.toString()}`);
+  const evenements = responseData?.data || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
+  
+  const actionMutation = useMutation();
 
   const deleteEvenement = async (id: number) => {
     if (!confirm(t('item.delete_confirm'))) return;
 
     try {
-      const res = await fetch(`/api/delegation/evenements/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setEvenements(prev => prev.filter(e => e.id !== id));
-        toast.success(t('success_message'));
-      } else {
-        toast.error('Erreur lors de la suppression');
-      }
-    } catch (error) {
+      await actionMutation.mutate(`/api/delegation/evenements/${id}`, { method: 'DELETE' });
+      await refreshEvenements();
+      toast.success(t('success_message'));
+    } catch (error: any) {
       console.error('Erreur suppression:', error);
-      toast.error('Erreur système');
+      toast.error(error.message || 'Erreur système');
     }
   };
 

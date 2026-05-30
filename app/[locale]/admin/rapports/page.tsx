@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useData } from '@/hooks/use-data';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
@@ -36,38 +37,21 @@ const COLORS = [
 
 export default function RapportsPage() {
   const t = useTranslations('admin.reports_page');
-  const [loading, setLoading] = useState(true);
-  const [reclamationsData, setReclamationsData] = useState<any>(null);
-  const [evenementsData, setEvenementsData] = useState<any>(null);
-  const [satisfactionData, setSatisfactionData] = useState<any>(null);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
   });
+  const params = new URLSearchParams(dateRange as any).toString();
+
+  const { data: reclamationsData, isLoading: loadingRec, mutate: fetchRec } = useData(`/api/rapports/reclamations?${params}`);
+  const { data: evenementsData, isLoading: loadingEvt, mutate: fetchEvt } = useData(`/api/rapports/evenements?${params}`);
+  const { data: satisfactionData, isLoading: loadingSat, mutate: fetchSat } = useData(`/api/rapports/satisfaction?${params}`);
+
+  const loading = loadingRec || loadingEvt || loadingSat;
 
   const fetchData = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams(dateRange);
-      const [recRes, evtRes, satRes] = await Promise.all([
-        fetch(`/api/rapports/reclamations?${params}`),
-        fetch(`/api/rapports/evenements?${params}`),
-        fetch(`/api/rapports/satisfaction?${params}`)
-      ]);
-
-      setReclamationsData(await recRes.json());
-      setEvenementsData(await evtRes.json());
-      setSatisfactionData(await satRes.json());
-    } catch (error) {
-      console.error('Erreur chargement rapports:', error);
-    } finally {
-      setLoading(false);
-    }
+    await Promise.all([fetchRec(), fetchEvt(), fetchSat()]);
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [dateRange]);
 
   const handleExport = async (format: 'excel' | 'pdf', type: 'reclamations' | 'evenements' | 'global') => {
     try {
@@ -149,7 +133,7 @@ export default function RapportsPage() {
           </div>
           
           <button
-            onClick={fetchData}
+            onClick={async () => { await fetchData(); }}
             className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group"
           >
             <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />

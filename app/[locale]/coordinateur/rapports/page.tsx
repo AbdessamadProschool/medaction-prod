@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import {
   FileText,
   Search,
@@ -33,33 +34,15 @@ interface Rapport {
 export default function CoordinateurRapportsPage() {
   const t = useTranslations('coordinator.reports');
   const { data: session } = useSession();
-  const [rapports, setRapports] = useState<Rapport[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterStatut, setFilterStatut] = useState<'all' | 'pending' | 'completed'>('all');
+  const today = new Date().toISOString().split('T')[0];
+  const { data: responseData, isLoading: loading, mutate: refreshData } = useData(`/api/programmes-activites?dateFin=${today}&statut=TERMINEE,RAPPORT_COMPLETE&limit=50`);
+  const rapports = responseData?.data || [];
 
-  const fetchRapports = useCallback(async () => {
-    setLoading(true);
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const res = await fetch(
-        `/api/programmes-activites?dateFin=${today}&statut=TERMINEE,RAPPORT_COMPLETE&limit=50`
-      );
-      
-      if (res.ok) {
-        const data = await res.json();
-        setRapports(data.data || []);
-      }
-    } catch (error) {
-      console.error('Erreur chargement rapports:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchRapports();
-  }, [fetchRapports]);
+  const fetchRapports = async () => {
+    await refreshData();
+  };
 
   const filteredRapports = rapports.filter(rapport => {
     const matchSearch = rapport.titre.toLowerCase().includes(search.toLowerCase()) ||

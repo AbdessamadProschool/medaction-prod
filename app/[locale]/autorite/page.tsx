@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
 import {
   FileText,
   Clock,
@@ -87,41 +87,13 @@ export default function AutoriteDashboard() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
 
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [recentReclamations, setRecentReclamations] = useState<Reclamation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsRes, reclamationsRes] = await Promise.all([
-          fetch('/api/autorite/stats'),
-          fetch('/api/autorite/reclamations?limit=5&statut=en_attente'),
-        ]);
-
-        if (statsRes.ok) {
-          const statsData = await statsRes.json();
-          setStats(statsData.data);
-        } else {
-          const errorData = await statsRes.json();
-          setError(errorData.message || errorData.error);
-        }
-
-        if (reclamationsRes.ok) {
-          const reclamationsData = await reclamationsRes.json();
-          setRecentReclamations(reclamationsData.data || []);
-        }
-      } catch (err) {
-        console.error('Erreur chargement données:', err);
-        setError('Erreur de connexion au serveur');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data: statsData, isLoading: statsLoading, error: statsError } = useData('/api/autorite/stats');
+  const { data: reclamationsData, isLoading: reclamationsLoading } = useData('/api/autorite/reclamations?limit=5&statut=en_attente');
+  
+  const stats: Stats | null = statsData?.data || null;
+  const recentReclamations: Reclamation[] = reclamationsData?.data || [];
+  const loading = statsLoading || reclamationsLoading;
+  const error = statsError ? (statsError.message || 'Erreur de connexion au serveur') : null;
 
   if (loading) {
     return (

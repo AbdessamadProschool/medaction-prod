@@ -22,6 +22,7 @@ import {
   Clock,
   AlertTriangle
 } from 'lucide-react';
+import { useMutation } from '@/hooks/use-mutation';
 
 // Import dynamique de la carte
 const ContactMap = dynamicImport(() => import('@/components/contact/ContactMap'), {
@@ -33,7 +34,6 @@ export default function ContactPage() {
   const t = useTranslations('contact_page');
   const locale = useLocale();
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   // Schéma de validation Zod avec traductions
   const contactSchema = z.object({
@@ -60,52 +60,38 @@ export default function ContactPage() {
     }
   });
 
-  const onSubmit = async (data: ContactFormData) => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      
-      const resData = await res.json();
+  const { post, isMutating: loading } = useMutation('/api/contact');
 
-      if (res.status === 429) {
-        if (resData.error === 'LIMIT_EXCEEDED' && resData.resetDate) {
-           const date = new Date(resData.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-           toast.error(t('rate_limit_error', { date }));
-        } else {
-           // Fallback
-           toast.error(resData.error || t('rate_limit_error', { date: 'prochainement' }));
-        }
-        setLoading(false);
-        return; // Arrêt immédiat
-      }
-      
-      if (!res.ok) {
-        // En cas d'erreur serveur (500), on permet le fallback simulation
-        // uniquement si ce n'est pas une erreur de validation ou rate limit
-        if (res.status === 400) {
-           toast.error(t('validation_error'));
-           setLoading(false);
-           return;
-        }
-        throw new Error('Erreur API');
-      }
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      await post(data);
       
       setSuccess(true);
       reset();
       toast.success(t('success_message'));
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      
+      if (err.status === 429) {
+        if (err.info?.error === 'LIMIT_EXCEEDED' && err.info?.resetDate) {
+           const date = new Date(err.info.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+           toast.error(t('rate_limit_error', { date }));
+        } else {
+           // Fallback
+           toast.error(err.info?.error || t('rate_limit_error', { date: 'prochainement' }));
+        }
+        return; // Arrêt immédiat
+      }
+      
+      if (err.status === 400) {
+         toast.error(t('validation_error'));
+         return;
+      }
+      
       // Fallback simulation pour ne pas bloquer l'utilisateur en cas d'erreur DB/réseau
-      // SAUF si c'était une 429 (déjà géré par return)
       await new Promise(resolve => setTimeout(resolve, 1000));
       setSuccess(true);
       reset();
-    } finally {
-      setLoading(false);
     }
   };
 

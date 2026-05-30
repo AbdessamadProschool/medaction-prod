@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PermissionGuard } from '@/hooks/use-permission';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import ReclamationCard from '@/components/reclamations/ReclamationCard';
 import ReclamationModal from '@/components/reclamations/ReclamationModal';
 import { ClipboardList, Clock, CheckCircle2, Inbox } from 'lucide-react';
@@ -31,27 +33,14 @@ const tabs = [
 
 export default function MesReclamationsPage() {
   const t = useTranslations('my_reclamations_page');
-  const [reclamations, setReclamations] = useState<Reclamation[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Charger les réclamations
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (activeTab !== 'all') {
-      params.set('statut', activeTab);
-    }
-
-    fetch(`/api/reclamations?${params.toString()}`)
-      .then(res => res.json())
-      .then(json => {
-        setReclamations(json.data || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [activeTab]);
+  // ECC: useData
+  const queryParams = activeTab !== 'all' ? `?statut=${activeTab}` : '';
+  const { data: responseData, isLoading: loading, mutate: refreshList } = useData(`/api/reclamations${queryParams}`);
+  const reclamations: Reclamation[] = responseData?.data || [];
 
   // Filtrer localement selon le tab (exclure les rejetées de l'affichage)
   const filteredReclamations = reclamations.filter(rec => {
@@ -250,8 +239,7 @@ export default function MesReclamationsPage() {
                         const res = await fetch(`/api/reclamations/${rec.id}`, { method: 'DELETE' });
                         if (res.ok) {
                           toast.success(t('delete_success'));
-                          // Rafraichir la liste
-                          setReclamations(prev => prev.filter(r => r.id !== rec.id));
+                          refreshList();
                         } else {
                           const data = await res.json();
                           toast.error(data.error || 'Erreur lors de la suppression');

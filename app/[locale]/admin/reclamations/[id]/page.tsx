@@ -25,6 +25,8 @@ import {
 import DownloadPhotosButton from '@/components/reclamations/DownloadPhotosButton';
 import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GovButton, GovTextarea } from '@/components/ui';
 import { cn } from '@/lib/utils';
@@ -97,54 +99,28 @@ export default function ReclamationDetailPage() {
   const router = useRouter();
   const reclamationId = params.id as string;
 
-  const [reclamation, setReclamation] = useState<Reclamation | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { data: reclamationData, isLoading: loading, error: dataError, mutate: fetchReclamation } = useData(reclamationId ? `/api/reclamations/${reclamationId}` : null);
+  const reclamation = reclamationData?.data || reclamationData;
+  const error = dataError ? t('load_error') : (!reclamation && !loading) ? t('not_found') : '';
+  
+  const actionMutation = useMutation();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   // Formulaires
   const [motifRejet, setMotifRejet] = useState('');
   const [showRejectForm, setShowRejectForm] = useState(false);
 
-  useEffect(() => {
-    fetchReclamation();
-  }, [reclamationId]);
-
-  const fetchReclamation = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/reclamations/${reclamationId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReclamation(data.data);
-      } else if (res.status === 404) {
-        setError(t('not_found'));
-      } else {
-        setError(t('load_error'));
-      }
-    } catch (err) {
-      setError(t('connection_error'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleAccept = async () => {
     setActionLoading('accept');
     const acceptPromise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
+        await actionMutation.mutate(`/api/reclamations/${reclamationId}/decision`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ decision: 'ACCEPTEE' }),
+          data: { decision: 'ACCEPTEE' },
         });
-        if (res.ok) {
-          fetchReclamation();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors de l\'acceptation'));
-        }
+        
+        fetchReclamation();
+        resolve(true);
       } catch (err: any) {
         reject(new Error(err.message || 'Erreur lors de l\'acceptation'));
       } finally {
@@ -167,20 +143,15 @@ export default function ReclamationDetailPage() {
     setActionLoading('reject');
     const rejectPromise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/reclamations/${reclamationId}/decision`, {
+        await actionMutation.mutate(`/api/reclamations/${reclamationId}/decision`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ decision: 'REJETEE', motifRejet }),
+          data: { decision: 'REJETEE', motifRejet },
         });
-        if (res.ok) {
-          setShowRejectForm(false);
-          setMotifRejet('');
-          fetchReclamation();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors du rejet'));
-        }
+        
+        setShowRejectForm(false);
+        setMotifRejet('');
+        fetchReclamation();
+        resolve(true);
       } catch (err: any) {
         reject(new Error(err.message || 'Erreur lors du rejet'));
       } finally {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
+import { useData } from '@/hooks/use-data';
 import { useTranslations, useLocale } from 'next-intl';
 import {
   Calendar,
@@ -53,12 +54,14 @@ export default function DelegationDashboard() {
   const { data: session } = useSession();
   const locale = useLocale();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [recentItems, setRecentItems] = useState<RecentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: statsRes, isLoading: loadingStats } = useData('/api/delegation/stats');
+  const { data: recentRes, isLoading: loadingRecent } = useData('/api/delegation/recent');
 
-  // Configuration des secteurs (Move inside to use translations if needed, or keep strictly for Icons/Colors)
-  // We can use tSectors for labels dynamically
+  const stats = statsRes?.data || null;
+  const recentItems = recentRes?.data || [];
+  const loading = loadingStats || loadingRecent;
+
+  // Configuration des secteurs
   const SECTEUR_CONFIG: Record<string, { labelKey: string; icon: LucideIcon; color: string; bgColor: string; borderColor: string }> = {
     SANTE: { labelKey: 'health', icon: Heart, color: 'hsl(348,83%,47%)', bgColor: 'hsl(348,83%,96%)', borderColor: 'hsl(348,83%,90%)' },
     EDUCATION: { labelKey: 'education', icon: GraduationCap, color: 'hsl(213,80%,28%)', bgColor: 'hsl(213,80%,96%)', borderColor: 'hsl(213,80%,90%)' },
@@ -73,33 +76,6 @@ export default function DelegationDashboard() {
   const userSecteur = session?.user?.secteurResponsable || 'ADMINISTRATION';
   const secteurConfig = SECTEUR_CONFIG[userSecteur] || SECTEUR_CONFIG.ADMINISTRATION;
   const sectorLabel = tSectors(secteurConfig.labelKey as any);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsRes, recentRes] = await Promise.all([
-          fetch('/api/delegation/stats'),
-          fetch('/api/delegation/recent'),
-        ]);
-
-        if (statsRes.ok) {
-          const statsData = await statsRes.json();
-          setStats(statsData.data);
-        }
-
-        if (recentRes.ok) {
-          const recentData = await recentRes.json();
-          setRecentItems(recentData.data || []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement données:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  },[]);
 
   if (loading) {
     return (

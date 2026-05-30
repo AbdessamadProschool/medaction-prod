@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { Target, Loader2 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 
 interface Campagne {
   id: number;
@@ -49,28 +50,8 @@ function getCampaignStatusText(dateDebut?: string, dateFin?: string, locale?: st
 export default function CampaignsSection() {
   const t = useTranslations();
   const locale = useLocale();
-  const [campagnes, setCampagnes] = useState<Campagne[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCampagnes = async () => {
-      try {
-        // statut=ACTIVE est le statut correct pour les campagnes en cours
-        const response = await fetch('/api/campagnes?limit=4');
-        if (response.ok) {
-          const json = await response.json();
-          // L'API retourne { data: [...], pagination: {...} }
-          setCampagnes(Array.isArray(json.data) ? json.data : []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement campagnes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCampagnes();
-  }, []);
+  const { data, isLoading: loading } = useData('/api/campagnes?limit=4');
+  const campagnes = data || [];
 
   if (loading) {
     return (
@@ -118,7 +99,7 @@ export default function CampaignsSection() {
 
         {/* Campaigns Grid */}
         <div className="grid md:grid-cols-2 gap-8">
-          {campagnes.map((campagne, index) => {
+          {campagnes.map((campagne: Campagne, index: number) => {
             const progress = campagne.objectifParticipations ? ((campagne.nombreParticipations || 0) / campagne.objectifParticipations) * 100 : 0;
             const colors = colorVariants[index % colorVariants.length];
             

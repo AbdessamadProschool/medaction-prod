@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Evenement {
   id: number;
@@ -77,8 +79,11 @@ export default function ModifierEvenementPage() {
   const router = useRouter();
   const id = params?.id as string;
   
-  const [evenement, setEvenement] = useState<Evenement | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: evenementData, isLoading: loading, mutate: refreshEvenement } = useData(id ? `/api/evenements/${id}` : null);
+  const evenement = evenementData?.data || evenementData;
+  const actionMutation = useMutation();
+  const uploadMutation = useMutation();
+
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showClotureForm, setShowClotureForm] = useState(false);
@@ -109,51 +114,32 @@ export default function ModifierEvenementPage() {
   });
 
   useEffect(() => {
-    if (id) {
-      fetchEvenement();
-    }
-  }, [id]);
-
-  const fetchEvenement = async () => {
-    try {
-      const res = await fetch(`/api/evenements/${id}`);
-      if (!res.ok) throw new Error('Événement non trouvé');
-      
-      const data = await res.json();
-      const evt = data.data || data;
-      setEvenement(evt);
-      
+    if (evenement) {
       setFormData({
-        titre: evt.titre || '',
-        description: evt.description || '',
-        typeCategorique: evt.typeCategorique || '',
-        dateDebut: evt.dateDebut?.split('T')[0] || '',
-        dateFin: evt.dateFin?.split('T')[0] || '',
-        heureDebut: evt.heureDebut || '',
-        heureFin: evt.heureFin || '',
-        lieu: evt.lieu || '',
-        adresse: evt.adresse || '',
-        statut: evt.statut || '',
-        capaciteMax: evt.capaciteMax?.toString() || '',
-        inscriptionsOuvertes: evt.inscriptionsOuvertes || false,
-        isOrganiseParProvince: evt.isOrganiseParProvince || false,
-        sousCouvertProvince: evt.sousCouvertProvince || false,
-        rapportCloture: evt.rapportCloture || '',
-        bilanParticipation: evt.bilanParticipation?.toString() || '',
+        titre: evenement.titre || '',
+        description: evenement.description || '',
+        typeCategorique: evenement.typeCategorique || '',
+        dateDebut: evenement.dateDebut?.split('T')[0] || '',
+        dateFin: evenement.dateFin?.split('T')[0] || '',
+        heureDebut: evenement.heureDebut || '',
+        heureFin: evenement.heureFin || '',
+        lieu: evenement.lieu || '',
+        adresse: evenement.adresse || '',
+        statut: evenement.statut || '',
+        capaciteMax: evenement.capaciteMax?.toString() || '',
+        inscriptionsOuvertes: evenement.inscriptionsOuvertes || false,
+        isOrganiseParProvince: evenement.isOrganiseParProvince || false,
+        sousCouvertProvince: evenement.sousCouvertProvince || false,
+        rapportCloture: evenement.rapportCloture || '',
+        bilanParticipation: evenement.bilanParticipation?.toString() || '',
       });
       
       // Image actuelle
-      if (evt.medias && evt.medias.length > 0) {
-        setCurrentImageUrl(evt.medias[0].urlPublique);
+      if (evenement.medias && evenement.medias.length > 0) {
+        setCurrentImageUrl(evenement.medias[0].urlPublique);
       }
-    } catch (error) {
-      console.error('Erreur chargement événement:', error);
-      toast.error(t('admin_evenement_modifier.messages.loading_error'));
-      router.push('/admin/evenements');
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [evenement]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -188,65 +174,30 @@ export default function ModifierEvenementPage() {
         formDataUpload.append('type', 'evenements');
 
         try {
-          const uploadRes = await fetch('/api/upload', {
+          const uploadData = await uploadMutation.mutate('/api/upload', {
             method: 'POST',
-            body: formDataUpload,
+            data: formDataUpload,
           });
 
-          if (!uploadRes.ok) {
-            const errData = await uploadRes.json();
-            console.error("Erreur upload:", errData);
+          imageUrl = uploadData.url;
+          
+          // Vérifier que l'URL est valide
+          if (!imageUrl || !imageUrl.startsWith('/')) {
+            console.error("URL d'image invalide:", imageUrl, "Réponse complète:", uploadData);
             imageUploadFailed = true;
-            toast.error(`Erreur upload: ${errData.error || 'Erreur inconnue'}`);
-            // Demander confirmation pour continuer
-            const continueWithoutNewImage = confirm(
-              `⚠️ L'upload de la nouvelle image a échoué.\n\nVoulez-vous sauvegarder l'événement avec l'image actuelle ?`
+            toast.error("L'URL de l'image uploadée est invalide");
+            const continueWithCurrentImage = confirm(
+              `⚠️ L'image a été uploadée mais l'URL est invalide.\n\nVoulez-vous sauvegarder avec l'image actuelle ?`
             );
-            if (!continueWithoutNewImage) {
+            if (!continueWithCurrentImage) {
               setSaving(false);
               return;
             }
-            // Garder l'image actuelle
             imageUrl = currentImageUrl;
           } else {
-            const uploadData = await uploadRes.json();
-            
-            // Vérifier que l'upload a réellement réussi
-            if (!uploadData.success) {
-              console.error("Upload échoué:", uploadData);
-              imageUploadFailed = true;
-              const errorDetail = uploadData.errors?.[0]?.error || uploadData.message || 'Erreur inconnue';
-              toast.error(`Erreur upload: ${errorDetail}`);
-              const continueWithCurrentImage = confirm(
-                `⚠️ L'upload a échoué: ${errorDetail}\n\nVoulez-vous sauvegarder avec l'image actuelle ?`
-              );
-              if (!continueWithCurrentImage) {
-                setSaving(false);
-                return;
-              }
-              imageUrl = currentImageUrl;
-            } else {
-              imageUrl = uploadData.url;
-              
-              // Vérifier que l'URL est valide
-              if (!imageUrl || !imageUrl.startsWith('/')) {
-                console.error("URL d'image invalide:", imageUrl, "Réponse complète:", uploadData);
-                imageUploadFailed = true;
-                toast.error("L'URL de l'image uploadée est invalide");
-                const continueWithCurrentImage = confirm(
-                  `⚠️ L'image a été uploadée mais l'URL est invalide.\n\nVoulez-vous sauvegarder avec l'image actuelle ?`
-                );
-                if (!continueWithCurrentImage) {
-                  setSaving(false);
-                  return;
-                }
-                imageUrl = currentImageUrl;
-              } else {
-                toast.success(t('admin_evenement_modifier.messages.upload_success'));
-              }
-            }
+            toast.success(t('admin_evenement_modifier.messages.upload_success'));
           }
-        } catch (uploadError) {
+        } catch (uploadError: any) {
           console.error("Erreur réseau upload:", uploadError);
           imageUploadFailed = true;
           toast.error("Erreur réseau lors de l'upload");
@@ -262,29 +213,17 @@ export default function ModifierEvenementPage() {
       }
 
       // === MISE À JOUR DE L'ÉVÉNEMENT ===
-      const res = await fetch(`/api/evenements/${id}`, {
+      await actionMutation.mutate(`/api/evenements/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           ...formData,
           capaciteMax: formData.capaciteMax ? parseInt(formData.capaciteMax) : null,
           bilanParticipation: formData.bilanParticipation ? parseInt(formData.bilanParticipation) : null,
           isOrganiseParProvince: formData.isOrganiseParProvince,
           sousCouvertProvince: formData.sousCouvertProvince,
           imagePrincipale: imageUrl,
-        }),
-      });
-      
-      const result = await res.json();
-      
-      if (!res.ok) {
-        if (result.error?.details && Array.isArray(result.error.details)) {
-          result.error.details.forEach((d: any) => toast.error(d.message));
-        } else {
-          toast.error(result.error?.message || 'Erreur lors de la sauvegarde');
         }
-        return;
-      }
+      });
       
       // Message de succès adapté
       if (imageUploadFailed) {
@@ -305,23 +244,17 @@ export default function ModifierEvenementPage() {
 
   const handleStatutChange = async (newStatut: string) => {
     try {
-      const res = await fetch(`/api/evenements/${id}/statut`, {
+      await actionMutation.mutate(`/api/evenements/${id}/statut`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statut: newStatut }),
+        data: { statut: newStatut },
       });
       
-      if (res.ok) {
-        toast.success(t('admin_evenement_modifier.messages.status_changed', { 
-          status: STATUTS.find(s => s.value === newStatut)?.label 
-        }));
-        fetchEvenement();
-      } else {
-        const result = await res.json();
-        toast.error(result.error?.message || t('admin_evenement_modifier.messages.error'));
-      }
-    } catch (error) {
-      toast.error('Erreur lors du changement de statut');
+      toast.success(t('admin_evenement_modifier.messages.status_changed', { 
+        status: STATUTS.find(s => s.value === newStatut)?.label 
+      }));
+      refreshEvenement();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur lors du changement de statut');
     }
   };
 
@@ -333,25 +266,19 @@ export default function ModifierEvenementPage() {
     
     setSaving(true);
     try {
-      const res = await fetch(`/api/evenements/${id}/cloturer`, {
+      await actionMutation.mutate(`/api/evenements/${id}/cloturer`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           rapportCloture: formData.rapportCloture,
           bilanParticipation: formData.bilanParticipation ? parseInt(formData.bilanParticipation) : null,
-        }),
+        }
       });
       
-      if (res.ok) {
-        toast.success(t('admin_evenement_modifier.messages.cloture_success'));
-        setShowClotureForm(false);
-        fetchEvenement();
-      } else {
-        const result = await res.json();
-        toast.error(result.error?.message || t('admin_evenement_modifier.messages.cloture_error'));
-      }
-    } catch (error) {
-      toast.error(t('admin_evenement_modifier.messages.cloture_error'));
+      toast.success(t('admin_evenement_modifier.messages.cloture_success'));
+      setShowClotureForm(false);
+      refreshEvenement();
+    } catch (error: any) {
+      toast.error(error.message || t('admin_evenement_modifier.messages.cloture_error'));
     } finally {
       setSaving(false);
     }
@@ -362,18 +289,12 @@ export default function ModifierEvenementPage() {
     
     setDeleting(true);
     try {
-      const res = await fetch(`/api/evenements/${id}`, { method: 'DELETE' });
-      
-      if (!res.ok) {
-        const result = await res.json();
-        toast.error(result.error?.message || t('admin_evenement_modifier.messages.delete_error'));
-        return;
-      }
+      await actionMutation.mutate(`/api/evenements/${id}`, { method: 'DELETE' });
       
       toast.success(t('admin_evenement_modifier.messages.delete_success'));
       router.push('/admin/evenements');
-    } catch (error) {
-      toast.error(t('admin_evenement_modifier.messages.delete_error'));
+    } catch (error: any) {
+      toast.error(error.message || t('admin_evenement_modifier.messages.delete_error'));
     } finally {
       setDeleting(false);
     }

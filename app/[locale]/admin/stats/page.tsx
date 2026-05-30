@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useData } from '@/hooks/use-data';
 import { motion } from 'framer-motion';
 import {
   BarChart3,
@@ -45,64 +46,45 @@ interface StatsData {
 
 export default function AdminStatsPage() {
   const t = useTranslations();
-  const [stats, setStats] = useState<StatsData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [periode, setPeriode] = useState<'7j' | '30j' | '90j' | '1an'>('30j');
+  const { data: statsData, isLoading: loading } = useData(`/api/admin/stats?periode=${periode}`);
 
-  useEffect(() => {
-    fetchStats();
-  }, [periode]);
-
-  const fetchStats = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/admin/stats?periode=${periode}`);
-      if (res.ok) {
-        const data = await res.json();
-        // Mapping de la réponse API (format { stats, charts, details }) vers le format attendu par le composant
-        const formattedData: StatsData = {
-          reclamations: {
-            total: data?.data?.stats?.reclamations?.total ?? 0,
-            ceMois: data?.data?.stats?.reclamations?.ceMois ?? 0,
-            moisDernier: data?.data?.stats?.reclamations?.moisDernier ?? 0,
-            parStatut: data?.data?.charts?.reclamationsParStatut?.map((s: any) => ({
-              statut: s.statut === 'En attente' ? 'EN_ATTENTE' : 
-                      s.statut === 'À affecter' ? 'ACCEPTEE' : // Mapping approximatif pour le rendu
-                      s.statut === 'En cours' ? 'ACCEPTEE' :
-                      s.statut === 'Résolues' ? 'ACCEPTEE' :
-                      s.statut === 'Rejetées' ? 'REJETEE' : s.statut,
-              count: s.count
-            })) ?? [],
-            parCategorie: [], // Non fourni par cet API spécifique actuellement
-            parCommune: [],
-          },
-          etablissements: {
-            total: data?.data?.stats?.etablissements?.total ?? 0,
-            parSecteur: [], // Non fourni par cet API spécifique actuellement
-            noteMoyenne: data?.data?.stats?.etablissements?.noteMoyenne ?? 0
-          },
-          evenements: {
-            total: data?.data?.stats?.evenements?.total ?? 0,
-            ceMois: data?.data?.stats?.evenements?.ceMois ?? 0,
-            parSecteur: data?.data?.charts?.evenementsParSecteur ?? []
-          },
-          utilisateurs: {
-            total: data?.data?.stats?.utilisateurs?.total ?? 0,
-            nouveauxCeMois: data?.data?.stats?.utilisateurs?.nouveaux ?? 0,
-            parRole: Object.entries(data?.data?.stats?.utilisateurs?.byRole || {}).map(([role, count]) => ({
-              role,
-              count: count as number
-            }))
-          }
-        };
-        setStats(formattedData);
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
+  const data = statsData;
+  const stats: StatsData | null = data ? {
+    reclamations: {
+      total: data?.data?.stats?.reclamations?.total ?? 0,
+      ceMois: data?.data?.stats?.reclamations?.ceMois ?? 0,
+      moisDernier: data?.data?.stats?.reclamations?.moisDernier ?? 0,
+      parStatut: data?.data?.charts?.reclamationsParStatut?.map((s: any) => ({
+        statut: s.statut === 'En attente' ? 'EN_ATTENTE' : 
+                s.statut === 'À affecter' ? 'ACCEPTEE' : // Mapping approximatif pour le rendu
+                s.statut === 'En cours' ? 'ACCEPTEE' :
+                s.statut === 'Résolues' ? 'ACCEPTEE' :
+                s.statut === 'Rejetées' ? 'REJETEE' : s.statut,
+        count: s.count
+      })) ?? [],
+      parCategorie: [], // Non fourni par cet API spécifique actuellement
+      parCommune: [],
+    },
+    etablissements: {
+      total: data?.data?.stats?.etablissements?.total ?? 0,
+      parSecteur: [], // Non fourni par cet API spécifique actuellement
+      noteMoyenne: data?.data?.stats?.etablissements?.noteMoyenne ?? 0
+    },
+    evenements: {
+      total: data?.data?.stats?.evenements?.total ?? 0,
+      ceMois: data?.data?.stats?.evenements?.ceMois ?? 0,
+      parSecteur: data?.data?.charts?.evenementsParSecteur ?? []
+    },
+    utilisateurs: {
+      total: data?.data?.stats?.utilisateurs?.total ?? 0,
+      nouveauxCeMois: data?.data?.stats?.utilisateurs?.nouveaux ?? 0,
+      parRole: Object.entries(data?.data?.stats?.utilisateurs?.byRole || {}).map(([role, count]) => ({
+        role,
+        count: count as number
+      }))
     }
-  };
+  } : null;
 
   if (loading) {
     return (

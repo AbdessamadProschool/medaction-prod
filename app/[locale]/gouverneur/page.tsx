@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname, useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -55,6 +55,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import dynamic from 'next/dynamic';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import { generateGovernorReport, getGovernorInsights, getRecentReportsList } from '@/app/actions/generateReport';
 
 // Dynamically import map
@@ -152,10 +153,21 @@ export default function GouverneurDashboard() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [alerts, setAlerts] = useState<AlertAction[]>([]);
   
-  // Alert color mapping
+  // ECC: useData for stats and alerts
+  const { data: statsResponse, isLoading: loadingStats, mutate: refreshStats, isValidating: refreshingStats } = useData(`/api/dashboard/gouverneur?locale=${locale}`);
+  const { data: alertsResponse, mutate: refreshAlerts } = useData('/api/gouverneur/alerts');
+  
+  const stats: Stats | null = (statsResponse?.success && statsResponse?.data) ? statsResponse.data : null;
+  const loading = loadingStats;
+  const refreshing = refreshingStats;
+
+  // Derive alerts from useData response
+  const alerts: AlertAction[] = alertsResponse?.data || [];
+
+  const fetchData = async () => {
+    await Promise.all([refreshStats(), refreshAlerts()]);
+  };
   const getAlertStyle = (priorite: string) => {
     switch (priorite) {
       case 'HAUTE': return { bg: 'bg-white', text: 'text-red-600', label: t('overview.alerts.urgent') };
@@ -180,8 +192,7 @@ export default function GouverneurDashboard() {
      setIsMobileNavOpen(false);
   };
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing_ui, setRefreshingUi] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedEtab, setSelectedEtab] = useState<any>(null);
 
@@ -530,44 +541,8 @@ export default function GouverneurDashboard() {
      setSelectedEtab(richEtab);
   };
 
-  const fetchData = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const [statsRes, alertsRes] = await Promise.all([
-        fetch(`/api/dashboard/gouverneur?locale=${locale}`),
-        fetch('/api/gouverneur/alerts') // New endpoint for alerts
-      ]);
-
-      if (statsRes.ok) {
-        const data = await statsRes.json();
-        if (data.success && data.data) {
-          setStats(data.data);
-        } else {
-          console.error('Invalid stats data format:', data);
-          toast.error(t('errors.invalid_data') || 'Données invalides reçues du serveur');
-        }
-      } else {
-        const errorData = await statsRes.json().catch(() => ({}));
-        console.error('Stats fetch failed:', statsRes.status, errorData);
-        toast.error(`${t('errors.fetch_failed')} (${statsRes.status})`);
-      }
-
-      if (alertsRes.ok) {
-        setAlerts((await alertsRes.json()).data || []);
-      }
-      
-    } catch (err) {
-      console.error('Dashboard Fetch Error:', err);
-      toast.error(t('errors.server_error') || 'Erreur de communication avec le serveur');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (status === 'authenticated') fetchData();
-  }, [status, fetchData]);
+  // Data auto-fetches via useData. Alerts are sourced from alertsResponse.
+  // Stats errors are handled via SWR's error state.
 
   if (loading || status === 'loading') {
     return (

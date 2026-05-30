@@ -26,6 +26,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useMutation } from '@/hooks/use-mutation';
 
 const articleSchema = z.object({
   titre: z.string().min(5, 'Le titre doit faire au moins 5 caractères').max(150),
@@ -43,6 +44,8 @@ export default function NouvelArticlePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const actionMutation = useMutation();
+  const uploadMutation = useMutation();
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -80,42 +83,31 @@ export default function NouvelArticlePage() {
           formData.append('file', selectedImage);
           formData.append('type', 'articles');
 
-          const uploadRes = await fetch('/api/upload', {
+          const uploadData = await uploadMutation.mutate('/api/upload', {
             method: 'POST',
-            body: formData,
+            data: formData,
           });
 
-          if (!uploadRes.ok) {
-            reject(new Error("Erreur upload image"));
-            return;
-          }
-          const uploadData = await uploadRes.json();
           imageUrl = uploadData.url;
         }
 
         const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-        const res = await fetch('/api/admin/articles', {
+        await actionMutation.mutate('/api/admin/articles', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...data,
             tags: tagsArray,
             imagePrincipale: imageUrl
-          }),
+          }
         });
 
-        if (res.ok) {
-          resolve(true);
-          router.push('/admin/articles');
-          router.refresh();
-        } else {
-          const err = await res.json();
-          reject(new Error(err.error || 'Erreur lors de la création'));
-        }
-      } catch (error) {
+        resolve(true);
+        router.push('/admin/articles');
+        router.refresh();
+      } catch (error: any) {
         console.error(error);
-        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur')));
+        reject(new Error('Erreur: ' + (error.message || 'Erreur serveur')));
       } finally {
         setLoading(false);
       }

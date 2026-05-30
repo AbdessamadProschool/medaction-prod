@@ -32,6 +32,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 
 // Simple JSON renderer
 const JSONValue = ({ value }: { value: any }) => {
@@ -141,11 +142,6 @@ export default function AdminLogsPage() {
   const t = useTranslations('audit_page');
   
   const [activeTab, setActiveTab] = useState<TabType>('activity');
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
-  const [systemLogs, setSystemLogs] = useState<SystemLog[]>([]);
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [exporting, setExporting] = useState(false);
   
   // Auto-refresh settings
@@ -154,9 +150,6 @@ export default function AdminLogsPage() {
   
   // Pagination
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [stats, setStats] = useState<any>(null);
   
   // Filtres
   const [showFilters, setShowFilters] = useState(false);
@@ -195,6 +188,61 @@ export default function AdminLogsPage() {
   // Selected Log for Modal
   const [selectedLog, setSelectedLog] = useState<ActivityLog | SystemLog | AuditLog | null>(null);
 
+  // Endpoint dynamique
+  const getEndpoint = () => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '30');
+    
+    if (activeTab === 'activity') {
+      if (filters.search) params.set('search', filters.search);
+      if (filters.action) params.set('action', filters.action);
+      if (filters.entity) params.set('entity', filters.entity);
+      if (filters.userId) params.set('userId', filters.userId);
+      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+      if (filters.dateTo) params.set('dateTo', filters.dateTo);
+      return `/api/logs/activity?${params}`;
+    } else if (activeTab === 'system') {
+      if (filters.level) params.set('level', filters.level);
+      if (filters.source) params.set('source', filters.source);
+      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+      if (filters.dateTo) params.set('dateTo', filters.dateTo);
+      return `/api/logs/system?${params}`;
+    } else if (activeTab === 'audit') {
+      if (filters.search) params.set('search', filters.search);
+      if (filters.action) params.set('action', filters.action);
+      if (filters.resourceType) params.set('resourceType', filters.resourceType);
+      if (filters.success) params.set('success', filters.success);
+      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+      if (filters.dateTo) params.set('dateTo', filters.dateTo);
+      return `/api/audit?${params}`;
+    }
+    return null;
+  };
+
+  const endpoint = getEndpoint();
+
+  const shouldFetch = session?.user && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role) ? endpoint : null;
+  
+  const { data: logsData, isLoading: loading, isValidating: refreshing, mutate: loadLogs } = useData(shouldFetch, {
+    refreshInterval: autoRefresh ? refreshInterval * 1000 : 0
+  });
+
+  useEffect(() => {
+    if (logsData) {
+      setLastUpdate(new Date());
+    }
+  }, [logsData]);
+
+  // Derived states
+  const activityLogs: ActivityLog[] = activeTab === 'activity' ? (logsData?.data || []) : [];
+  const systemLogs: SystemLog[] = activeTab === 'system' ? (logsData?.data || []) : [];
+  const auditLogs: AuditLog[] = activeTab === 'audit' ? (logsData?.data || []) : [];
+  
+  const totalPages = logsData?.pagination?.totalPages || 1;
+  const total = logsData?.pagination?.total || 0;
+  const stats = logsData?.stats || null;
+
   // Vérifier authentification
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -203,86 +251,6 @@ export default function AdminLogsPage() {
       router.push('/');
     }
   }, [status, session, router]);
-
-  // Charger les logs
-  const loadLogs = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '30');
-      
-      if (activeTab === 'activity') {
-        if (filters.search) params.set('search', filters.search);
-        if (filters.action) params.set('action', filters.action);
-        if (filters.entity) params.set('entity', filters.entity);
-        if (filters.userId) params.set('userId', filters.userId);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
-        
-        const res = await fetch(`/api/logs/activity?${params}`);
-        if (res.ok) {
-          const data = await res.json();
-          setActivityLogs(Array.isArray(data.data) ? data.data : []);
-          setTotalPages(data.pagination?.totalPages || 1);
-          setTotal(data.pagination?.total || 0);
-          setStats(data.stats);
-        }
-      } else if (activeTab === 'system') {
-        if (filters.level) params.set('level', filters.level);
-        if (filters.source) params.set('source', filters.source);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
-        
-        const res = await fetch(`/api/logs/system?${params}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSystemLogs(Array.isArray(data.data) ? data.data : []);
-          setTotalPages(data.pagination?.totalPages || 1);
-          setTotal(data.pagination?.total || 0);
-          setStats(data.stats);
-        }
-      } else if (activeTab === 'audit') {
-        if (filters.search) params.set('search', filters.search);
-        if (filters.action) params.set('action', filters.action);
-        if (filters.resourceType) params.set('resourceType', filters.resourceType);
-        if (filters.success) params.set('success', filters.success);
-        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
-        if (filters.dateTo) params.set('dateTo', filters.dateTo);
-        
-        const res = await fetch(`/api/audit?${params}`);
-        if (res.ok) {
-          const data = await res.json();
-          setAuditLogs(Array.isArray(data.data) ? data.data : []);
-          setTotalPages(data.pagination?.totalPages || 1);
-          setTotal(data.pagination?.total || 0);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur chargement logs:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-      setLastUpdate(new Date());
-    }
-  }, [page, activeTab, filters]);
-
-  useEffect(() => {
-    if (session?.user && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      loadLogs();
-    }
-  }, [loadLogs, session]);
-
-  // Auto-refresh effect
-  useEffect(() => {
-    if (!autoRefresh) return;
-    
-    const interval = setInterval(() => {
-      loadLogs();
-    }, refreshInterval * 1000);
-    
-    return () => clearInterval(interval);
-  }, [autoRefresh, refreshInterval, loadLogs]);
 
   // Exporter les logs
   const handleExport = async (format: 'csv' | 'json') => {

@@ -1,9 +1,10 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -22,21 +23,10 @@ export default function AutoriteStatistiquesPage() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
   
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [periode, setPeriode] = useState('mois');
-
-  useEffect(() => {
-    fetch(`/api/autorite/stats?periode=${periode}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.data) {
-          setStats(data.data);
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [periode]);
+  
+  const { data: responseData, isLoading: loading } = useData(`/api/autorite/stats?periode=${periode}`);
+  const stats = responseData?.data || null;
 
   if (loading) {
     return (

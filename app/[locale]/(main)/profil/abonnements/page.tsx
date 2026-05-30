@@ -2,12 +2,14 @@
 
 import { PermissionGuard } from '@/hooks/use-permission';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Bell,
   BellOff,
@@ -60,58 +62,30 @@ export default function AbonnementsPage() {
   const t = useTranslations('my_subscriptions_page');
   const tCommon = useTranslations('common');
   const { data: session, status } = useSession();
-  const [abonnements, setAbonnements] = useState<Abonnement[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
-  // Charger les abonnements
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchAbonnements();
-    } else if (status === 'unauthenticated') {
-      setLoading(false);
-    }
-  }, [status, page]);
+  const queryStr = useMemo(() => {
+    return `page=${page}&limit=12`;
+  }, [page]);
 
-  const fetchAbonnements = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/users/me/abonnements?page=${page}&limit=12`);
-      if (res.ok) {
-        const data = await res.json();
-        setAbonnements(data.data?.data || []);
-        setTotalPages(data.data?.pagination?.totalPages || 1);
-        setTotal(data.data?.pagination?.total || 0);
-      }
-    } catch (error) {
-      console.error('Erreur chargement abonnements:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: responseData, isLoading: loading, mutate: refreshData } = useData(status === 'authenticated' ? `/api/users/me/abonnements?${queryStr}` : null);
+  const abonnements: Abonnement[] = responseData?.data?.data || [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
+
+  const toggleMutation = useMutation();
+  const unsubscribeMutation = useMutation();
 
   const toggleNotifications = async (abonnement: Abonnement) => {
     setActionLoading(abonnement.id);
     try {
-      const res = await fetch(`/api/abonnements/${abonnement.id}`, {
+      await toggleMutation.mutate(`/api/abonnements/${abonnement.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notificationsActives: !abonnement.notificationsActives }),
+        body: { notificationsActives: !abonnement.notificationsActives },
       });
-
-      if (res.ok) {
-        setAbonnements(prev => 
-          prev.map(a => 
-            a.id === abonnement.id 
-              ? { ...a, notificationsActives: !a.notificationsActives }
-              : a
-          )
-        );
-      }
+      refreshData();
     } catch (error) {
       console.error('Erreur toggle notifications:', error);
     } finally {
@@ -126,14 +100,10 @@ export default function AbonnementsPage() {
 
     setActionLoading(abonnement.id);
     try {
-      const res = await fetch(`/api/abonnements/${abonnement.id}`, {
+      await unsubscribeMutation.mutate(`/api/abonnements/${abonnement.id}`, {
         method: 'DELETE',
       });
-
-      if (res.ok) {
-        setAbonnements(prev => prev.filter(a => a.id !== abonnement.id));
-        setTotal(prev => prev - 1);
-      }
+      refreshData();
     } catch (error) {
       console.error('Erreur désabonnement:', error);
     } finally {

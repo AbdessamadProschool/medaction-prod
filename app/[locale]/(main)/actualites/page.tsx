@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import { 
   Search, Newspaper, LayoutGrid, List, Filter 
 } from 'lucide-react';
@@ -47,9 +48,6 @@ function ActualitesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // State
-  const [actualites, setActualites] = useState<Actualite[]>([]);
-  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
@@ -59,36 +57,19 @@ function ActualitesContent() {
   const page = parseInt(searchParams.get('page') || '1');
 
   // Stats
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-
-  // Fetch Data
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '9');
-      if (search) params.set('search', search);
-      if (categorie) params.set('categorie', categorie);
-
-      const res = await fetch(`/api/actualites?${params.toString()}`);
-      if (res.ok) {
-        const json = await res.json();
-        setActualites(json.data || []);
-        setTotalPages(json.pagination?.totalPages || 1);
-        setTotal(json.pagination?.total || 0);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const queryStr = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '9');
+    if (search) params.set('search', search);
+    if (categorie) params.set('categorie', categorie);
+    return params.toString();
   }, [page, search, categorie]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const { data: responseData, isLoading: loading } = useData(`/api/actualites?${queryStr}`);
+  const actualites: Actualite[] = responseData?.data || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
 
   // Update URL helper
   const updateFilter = (key: string, value: string) => {

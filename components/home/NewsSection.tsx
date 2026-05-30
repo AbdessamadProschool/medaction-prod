@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { Newspaper, Loader2 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 
 interface Actualite {
   id: number;
@@ -98,27 +98,9 @@ const categoryColorsMap: Record<string, string> = {
 export default function NewsSection() {
   const t = useTranslations();
   const locale = useLocale();
-  const [actualites, setActualites] = useState<Actualite[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchActualites = async () => {
-      try {
-        const response = await fetch('/api/actualites?limit=6&isPublie=true');
-        if (response.ok) {
-          const json = await response.json();
-          // L'API retourne { data: [...], pagination: {...} }
-          setActualites(Array.isArray(json.data) ? json.data : []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement actualités:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActualites();
-  }, []);
+  
+  const { data, isLoading: loading } = useData('/api/actualites?limit=6&isPublie=true');
+  const actualites = data || [];
 
   if (loading) {
     return (
@@ -264,7 +246,7 @@ export default function NewsSection() {
 
           {/* Other Articles */}
           <div className="space-y-6">
-            {otherNews.map((news, index) => (
+            {otherNews.map((news: Actualite, index: number) => (
               <motion.div
                 key={news.id}
                 initial={{ opacity: 0, x: 30 }}
@@ -315,7 +297,7 @@ export default function NewsSection() {
         {/* More News Grid */}
         {moreNews.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {moreNews.map((news, index) => (
+            {moreNews.map((news: Actualite, index: number) => (
               <motion.div
                 key={news.id}
                 initial={{ opacity: 0, y: 20 }}

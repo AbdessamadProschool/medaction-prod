@@ -120,7 +120,7 @@ export default function GlobalAnnouncement() {
                       <div 
                         className="animate-marquee whitespace-nowrap inline-block font-black text-sm md:text-base align-middle py-2"
                         style={{ 
-                            animationDuration: `${Math.max(30, Math.round((config.speed || 100) * (config.message || '').length / 200))}s`,
+                            animationDuration: `${config.speed || 100}s`,
                             animationDirection: isRTL ? 'reverse' : 'normal',
                             display: 'inline-block'
                         }}

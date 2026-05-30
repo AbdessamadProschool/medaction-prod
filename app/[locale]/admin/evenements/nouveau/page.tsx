@@ -32,6 +32,8 @@ import { Link } from '@/i18n/navigation';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 
 export default function NouveauEventPage() {
@@ -62,11 +64,12 @@ export default function NouveauEventPage() {
   });
   type EventForm = z.infer<typeof eventSchema>;
   const [loading, setLoading] = useState(false);
-  const [etablissements, setEtablissements] = useState<{id: number, nom: string, nomArabe?: string, secteur?: string}[]>([]);
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const uploadMutation = useMutation();
+  const actionMutation = useMutation();
 
   const { register, handleSubmit, formState: { errors }, watch } = useForm<EventForm>({
     resolver: zodResolver(eventSchema),
@@ -78,29 +81,13 @@ export default function NouveauEventPage() {
   const watchedType = watch('typeCategorique');
   const watchedInscriptions = watch('inscriptionsOuvertes');
 
-  useEffect(() => {
-    const fetchEtablissements = async () => {
-      try {
-        let url = '/api/etablissements?limit=100';
-        
-        if (session?.user?.secteurResponsable) {
-          url += `&secteur=${session.user.secteurResponsable}`;
-        }
-
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.data) {
-          setEtablissements(data.data);
-        }
-      } catch (error) {
-        console.error("Erreur chargement établissements", error);
-      }
-    };
-
-    if (session?.user) {
-      fetchEtablissements();
-    }
-  }, [session]);
+  let etablissementsUrl = '/api/etablissements?limit=100';
+  if (session?.user?.secteurResponsable) {
+    etablissementsUrl += `&secteur=${session.user.secteurResponsable}`;
+  }
+  const { data: etablissementsData } = useData(session?.user ? etablissementsUrl : null);
+  const etablissements = etablissementsData?.data || [];
+  
   const locale = useLocale();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,46 +113,33 @@ export default function NouveauEventPage() {
           formData.append('file', selectedImage);
           formData.append('type', 'evenements');
 
-          const uploadRes = await fetch('/api/upload', {
+          const uploadData = await uploadMutation.mutate('/api/upload', {
             method: 'POST',
-            body: formData,
+            data: formData,
           });
 
-          if (!uploadRes.ok) {
-            const errData = await uploadRes.json();
-            reject(new Error(errData.error || t('errors.upload_error')));
-            return;
-          }
-
-          const uploadData = await uploadRes.json();
           imageUrl = uploadData.url;
         }
 
         // Parse tags
         const tagsArray = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-        const res = await fetch('/api/evenements', {
+        await actionMutation.mutate('/api/evenements', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
               ...data,
               etablissementId: parseInt(data.etablissementId),
               capaciteMax: data.capaciteMax ? parseInt(data.capaciteMax) : null,
               tags: tagsArray,
               imagePrincipale: imageUrl
-          }),
+          }
         });
 
-        if (res.ok) {
-          resolve(true);
-          router.push('/admin/evenements');
-          router.refresh();
-        } else {
-          const errorData = await res.json();
-          reject(new Error(errorData.error || t('errors.create_error')));
-        }
-      } catch (error) {
-        reject(error instanceof Error ? error : new Error(t('errors.create_error')));
+        resolve(true);
+        router.push('/admin/evenements');
+        router.refresh();
+      } catch (error: any) {
+        reject(error instanceof Error ? error : new Error(error.message || t('errors.create_error')));
       } finally {
         setLoading(false);
       }

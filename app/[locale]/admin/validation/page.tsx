@@ -19,6 +19,8 @@ import {
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface PendingItem {
   id: number;
@@ -157,15 +159,14 @@ export default function ValidationPage() {
   const t = useTranslations('admin.validation_page');
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState('evenements');
-  const [items, setItems] = useState<PendingItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: validationData, isLoading: loading, mutate: fetchPendingItems } = useData(`/api/admin/validation?type=${activeTab}`);
+  
+  const actionMutation = useMutation();
   const [selectedItem, setSelectedItem] = useState<PendingItem | null>(null);
-  const [counts, setCounts] = useState<Record<string, number>>({
-    evenements: 0,
-    actualites: 0,
-    articles: 0,
-    campagnes: 0,
-  });
+
+  const responseData = validationData?.success ? validationData?.data : validationData;
+  const items = responseData?.items || (Array.isArray(responseData) ? responseData : []);
+  const counts = responseData?.counts || validationData?.counts || { evenements: 0, actualites: 0, articles: 0, campagnes: 0 };
 
   const TABS = [
     { id: 'evenements', label: t('tabs.events'), icon: Calendar, color: 'emerald' },
@@ -174,60 +175,26 @@ export default function ValidationPage() {
     { id: 'campagnes', label: t('tabs.campaigns'), icon: Megaphone, color: 'orange' },
   ];
 
-  // Charger les contenus en attente
-  const fetchPendingItems = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/validation?type=${activeTab}`);
-      
-      if (res.ok) {
-        const json = await res.json();
-        const responseData = json.success ? json.data : json;
-        
-        setItems(responseData.items || (Array.isArray(responseData) ? responseData : []));
-        setCounts(responseData.counts || json.counts || { evenements: 0, actualites: 0, articles: 0, campagnes: 0 });
-      } else {
-        console.error('Erreur API validation');
-        setItems([]);
-      }
-    } catch (error) {
-      console.error('Erreur chargement:', error);
-      setItems([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchPendingItems();
-  }, [activeTab]);
+  }, [activeTab, fetchPendingItems]);
 
   const handleApprove = async (item: PendingItem) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch('/api/admin/validation', {
+        await actionMutation.mutate('/api/admin/validation', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             id: item.id,
             type: item.type,
             action: 'approve',
-          }),
+          },
         });
 
-        if (res.ok) {
-          setItems(prev => prev.filter(i => i.id !== item.id));
-          setCounts(prev => ({
-            ...prev,
-            [activeTab]: Math.max(0, prev[activeTab] - 1),
-          }));
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await fetchPendingItems();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -244,30 +211,20 @@ export default function ValidationPage() {
     
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch('/api/admin/validation', {
+        await actionMutation.mutate('/api/admin/validation', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             id: item.id,
             type: item.type,
             action: 'reject',
             motifRejet: reason,
-          }),
+          },
         });
 
-        if (res.ok) {
-          setItems(prev => prev.filter(i => i.id !== item.id));
-          setCounts(prev => ({
-            ...prev,
-            [activeTab]: Math.max(0, prev[activeTab] - 1),
-          }));
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await fetchPendingItems();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 

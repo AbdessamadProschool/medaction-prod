@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { Save, Eye, Layout, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 interface Config {
   isActive: boolean;
   title: string;
@@ -31,40 +32,29 @@ export default function AnnouncementSettingsPage() {
     endTime: '',
     speed: 100
   });
-  const [loading, setLoading] = useState(true);
+  const { data: responseData, isLoading: loading, mutate: fetchConfig } = useData('/api/settings/announcement');
+  const actionMutation = useMutation();
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch('/api/settings/announcement')
-      .then(res => res.json())
-      .then(data => {
-        setConfig(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        toast.error(t('admin_announcement.toasts.load_error'));
-        setLoading(false);
-      });
-  }, []);
+    if (responseData) {
+      setConfig(responseData);
+    }
+  }, [responseData]);
 
   const handleSave = async () => {
     setSaving(true);
     const savePromise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch('/api/settings/announcement', {
+        await actionMutation.mutate('/api/settings/announcement', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(config),
+          data: config,
         });
         
-        if (res.ok) {
-          resolve(true);
-        } else {
-          const error = await res.json();
-          reject(new Error(error.error || t('admin_announcement.toasts.save_error')));
-        }
-      } catch (e: any) {
-        reject(new Error(t('admin_announcement.toasts.server_error')));
+        await fetchConfig();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('admin_announcement.toasts.save_error')));
       } finally {
         setSaving(false);
       }

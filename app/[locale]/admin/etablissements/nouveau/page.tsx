@@ -25,6 +25,7 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GovInput, GovSelect, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useMutation } from '@/hooks/use-mutation';
 
 export default function NouveauEtablissementPage() {
   const t = useTranslations('admin.establishments');
@@ -32,6 +33,7 @@ export default function NouveauEtablissementPage() {
   
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const actionMutation = useMutation();
   const [formData, setFormData] = useState({
     // Identification
     nom: '',
@@ -106,10 +108,9 @@ export default function NouveauEtablissementPage() {
 
     const submitPromise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch('/api/etablissements', {
+        await actionMutation.mutate('/api/etablissements', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...formData,
             communeId: parseNum(formData.communeId),
             annexeId: parseNum(formData.annexeId),
@@ -133,19 +134,13 @@ export default function NouveauEtablissementPage() {
             tauxReussite: parseNum(formData.tauxReussite, true),
             // Financement
             budgetAnnuel: parseNum(formData.budgetAnnuel, true),
-          }),
+          }
         });
 
-        const data = await res.json();
-        
-        if (res.ok && data.success) {
-          resolve(true);
-          router.push('/admin/etablissements');
-        } else {
-          reject(new Error(data.error || t('actions.error_creation')));
-        }
-      } catch (err) {
-        reject(new Error(t('actions.server_error')));
+        resolve(true);
+        router.push('/admin/etablissements');
+      } catch (err: any) {
+        reject(new Error(err.message || t('actions.server_error')));
       } finally {
         setLoading(false);
       }

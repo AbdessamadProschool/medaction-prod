@@ -16,6 +16,8 @@ import {
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 export default function SuggestionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -23,10 +25,17 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
   const { data: session } = useSession();
   const t = useTranslations();
   
-  const [suggestion, setSuggestion] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: responseData, isLoading: loading, mutate: fetchSuggestion } = useData(`/api/suggestions/${id}`);
+  const suggestion = responseData?.data || responseData;
+  const actionMutation = useMutation();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [reponseAdmin, setReponseAdmin] = useState('');
+  const [reponseAdmin, setReponseAdmin] = useState(suggestion?.reponseAdmin || '');
+
+  useEffect(() => {
+    if (suggestion?.reponseAdmin) {
+      setReponseAdmin(suggestion.reponseAdmin);
+    }
+  }, [suggestion?.reponseAdmin]);
 
   // Configuration with translations
   const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
@@ -49,54 +58,26 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
     autre: { label: t('suggestions.categories.autre'), emoji: '💡' },
   };
 
-  // Fetch Logic
-  const fetchSuggestion = async () => {
-    try {
-      const res = await fetch(`/api/suggestions/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestion(data.data);
-        setReponseAdmin(data.data.reponseAdmin || '');
-      } else {
-        toast.error(t('suggestions.messages.not_found'));
-        router.push('/admin/suggestions');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(t('suggestions.messages.load_error'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSuggestion();
-  }, [id]);
+  // Fetch Logic is replaced by useData
 
   const handleChangeStatut = async (newStatut: string) => {
     if (!suggestion) return;
     setActionLoading(newStatut);
     
     try {
-      const res = await fetch(`/api/suggestions/${suggestion.id}/statut`, {
+      await actionMutation.mutate(`/api/suggestions/${suggestion.id}/statut`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           statut: newStatut,
           reponseAdmin: reponseAdmin || undefined,
-        }),
+        },
       });
 
-      if (res.ok) {
-        toast.success(t('suggestions.messages.status_updated'));
-        fetchSuggestion();
-      } else {
-        const err = await res.json();
-        toast.error(err.error || t('toasts.error'));
-      }
-    } catch (error) {
+      toast.success(t('suggestions.messages.status_updated'));
+      await fetchSuggestion();
+    } catch (error: any) {
       console.error(error);
-      toast.error(t('toasts.error'));
+      toast.error(error.message || t('toasts.error'));
     } finally {
       setActionLoading(null);
     }
@@ -108,17 +89,11 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
 
     setActionLoading('DELETE');
     try {
-      const res = await fetch(`/api/suggestions/${suggestion.id}`, { method: 'DELETE' });
-      
-      if (res.ok) {
-        toast.success(t('suggestions.messages.deleted'));
-        router.push('/admin/suggestions');
-      } else {
-        const err = await res.json();
-        toast.error(err.error || t('toasts.error'));
-      }
-    } catch (error) {
-       toast.error(t('toasts.error'));
+      await actionMutation.mutate(`/api/suggestions/${suggestion.id}`, { method: 'DELETE' });
+      toast.success(t('suggestions.messages.deleted'));
+      router.push('/admin/suggestions');
+    } catch (error: any) {
+       toast.error(error.message || t('toasts.error'));
     } finally {
       setActionLoading(null);
     }

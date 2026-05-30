@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Newspaper,
@@ -31,6 +31,8 @@ import {
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Actualite {
   id: number;
@@ -72,12 +74,9 @@ export default function AdminActualitesPage() {
   const tSectors = useTranslations('admin.users_page.sectors');
   const locale = useLocale();
 
-  const [actualites, setActualites] = useState<Actualite[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [stats, setStats] = useState<Record<string, number>>({});
+  
+  const actionMutation = useMutation();
   
   // Filters
   const [search, setSearch] = useState('');
@@ -90,63 +89,41 @@ export default function AdminActualitesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const fetchActualites = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (search) params.set('search', search);
-      if (statutFilter) params.set('statut', statutFilter);
-      if (secteurFilter) params.set('secteur', secteurFilter);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '12');
+  if (search) queryParams.set('search', search);
+  if (statutFilter) queryParams.set('statut', statutFilter);
+  if (secteurFilter) queryParams.set('secteur', secteurFilter);
 
-      const res = await fetch(`/api/actualites?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setActualites(Array.isArray(data.data) ? data.data : []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Calculate stats from data
-        const allData = Array.isArray(data.data) ? data.data : [];
-        const statsCounts: Record<string, number> = {};
-        allData.forEach((a: Actualite) => {
-          statsCounts[a.statut] = (statsCounts[a.statut] || 0) + 1;
-        });
-        setStats(statsCounts);
-      }
-    } catch (error) {
-      console.error('Erreur chargement actualités:', error);
-      toast.error(t('messages.loading_error'));
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search, statutFilter, secteurFilter, t]);
+  const { data: actualitesData, isLoading: loading, mutate: fetchActualites } = useData(`/api/actualites?${queryParams.toString()}`);
 
-  useEffect(() => {
-    const debounce = setTimeout(fetchActualites, 300);
-    return () => clearTimeout(debounce);
-  }, [fetchActualites]);
+  const actualites = Array.isArray(actualitesData?.data) ? actualitesData.data : [];
+  const totalPages = actualitesData?.pagination?.totalPages || 1;
+  const total = actualitesData?.pagination?.total || 0;
+
+  const stats = useMemo(() => {
+    const allData = Array.isArray(actualitesData?.data) ? actualitesData.data : [];
+    const statsCounts: Record<string, number> = {};
+    allData.forEach((a: Actualite) => {
+      statsCounts[a.statut] = (statsCounts[a.statut] || 0) + 1;
+    });
+    return statsCounts;
+  }, [actualitesData]);
 
   const handleChangeStatut = async (id: number, newStatut: string) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/actualites/${id}/statut`, {
+        await actionMutation.mutate(`/api/actualites/${id}/statut`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ statut: newStatut }),
+          data: { statut: newStatut },
         });
 
-        if (res.ok) {
-          fetchActualites();
-          setShowDetailModal(false);
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await fetchActualites();
+        setShowDetailModal(false);
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -160,20 +137,16 @@ export default function AdminActualitesPage() {
   const handleToggleMisEnAvant = async (id: number, current: boolean) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/actualites/${id}`, { // Fixed path if needed, but keeping original logic
+        // keeping original logic for url
+        await actionMutation.mutate(`/actualites/${id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isMisEnAvant: !current }),
+          data: { isMisEnAvant: !current },
         });
 
-        if (res.ok) {
-          fetchActualites();
-          resolve(true);
-        } else {
-          reject(new Error(t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await fetchActualites();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -189,16 +162,12 @@ export default function AdminActualitesPage() {
     
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/actualites/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-          fetchActualites();
-          setShowDetailModal(false);
-          resolve(true);
-        } else {
-          reject(new Error(t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await actionMutation.mutate(`/api/actualites/${id}`, { method: 'DELETE' });
+        await fetchActualites();
+        setShowDetailModal(false);
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -243,8 +212,11 @@ export default function AdminActualitesPage() {
         
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchActualites}
-            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground"
+            onClick={async () => {
+              await fetchActualites();
+            }}
+            disabled={loading}
+            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>

@@ -1,10 +1,11 @@
 'use client';
 
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import {
   Search,
   Filter,
@@ -52,12 +53,7 @@ export default function AutoriteReclamationsPage() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
   
-  const [reclamations, setReclamations] = useState<Reclamation[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filtres
   const [statut, setStatut] = useState('all');
@@ -70,40 +66,26 @@ export default function AutoriteReclamationsPage() {
     { value: 'resolue', label: t('filters.resolved'), icon: CheckCircle },
   ];
 
-  // Charger les données
-  useEffect(() => {
-    fetchReclamations();
-  }, [page, statut, categorie]);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '10');
+    if (statut !== 'all') params.set('statut', statut);
+    if (categorie) params.set('categorie', categorie);
+    if (search) params.set('search', search);
+    return params.toString();
+  }, [page, statut, categorie, search]);
 
-  const fetchReclamations = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '10');
-      if (statut !== 'all') params.set('statut', statut);
-      if (categorie) params.set('categorie', categorie);
-      if (search) params.set('search', search);
-
-      const res = await fetch(`/api/autorite/reclamations?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReclamations(data.data || []);
-        setCategories(data.categories || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-      }
-    } catch (error) {
-      console.error('Erreur chargement réclamations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: responseData, isLoading: loading } = useData(`/api/autorite/reclamations?${queryParams}`);
+  
+  const reclamations = responseData?.data || [];
+  const categories = responseData?.categories || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    fetchReclamations();
   };
 
   const clearFilters = () => {

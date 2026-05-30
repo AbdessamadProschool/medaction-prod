@@ -27,6 +27,8 @@ import {
   Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 export default function AdminProfilePage() {
   const { data: session, status, update } = useSession();
@@ -35,10 +37,11 @@ export default function AdminProfilePage() {
   const t = useTranslations('profile_page');
   const tCommon = useTranslations('common');
   
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<any>(null);
-  const [twoFactorStatus, setTwoFactorStatus] = useState<{ enabled: boolean; pending: boolean }>({ enabled: false, pending: false });
+  const { data: twoFactorData, isLoading: loading2FA } = useData('/api/auth/2fa/enable');
+  const actionMutation = useMutation();
+  const twoFactorStatus = twoFactorData ? { enabled: twoFactorData.enabled, pending: twoFactorData.pending } : { enabled: false, pending: false };
   
   // Édition
   const [editing, setEditing] = useState(false);
@@ -77,41 +80,21 @@ export default function AdminProfilePage() {
 
   // Charger le profil
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        // Charger le statut 2FA
-        const res2FA = await fetch('/api/auth/2fa/enable');
-        if (res2FA.ok) {
-          const data = await res2FA.json();
-          setTwoFactorStatus({ enabled: data.enabled, pending: data.pending });
-        }
-        
-        // Le profil vient de la session
-        if (session?.user) {
-          setProfile({
-            id: session.user.id,
-            email: session.user.email,
-            nom: session.user.nom || '',
-            prenom: session.user.prenom || '',
-            telephone: '',
-            role: session.user.role,
-            photo: session.user.photo,
-          });
-          setEditForm({
-            nom: session.user.nom || '',
-            prenom: session.user.prenom || '',
-            telephone: '',
-          });
-        }
-      } catch (error) {
-        console.error('Erreur chargement profil:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (session?.user) {
-      loadProfile();
+      setProfile({
+        id: session.user.id,
+        email: session.user.email,
+        nom: session.user.nom || '',
+        prenom: session.user.prenom || '',
+        telephone: '',
+        role: session.user.role,
+        photo: session.user.photo,
+      });
+      setEditForm({
+        nom: session.user.nom || '',
+        prenom: session.user.prenom || '',
+        telephone: '',
+      });
     }
   }, [session]);
 
@@ -121,26 +104,19 @@ export default function AdminProfilePage() {
     setError(null);
     
     try {
-      const res = await fetch('/api/auth/profile', {
+      await actionMutation.mutate('/api/auth/profile', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+        data: editForm,
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess(t('messages.success'));
-        setProfile({ ...profile, ...editForm });
-        setEditing(false);
-        // Mettre à jour la session
-        await update();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || t('messages.error_update'));
-      }
-    } catch (error) {
-      setError(tCommon('erreur'));
+      setSuccess(t('messages.success'));
+      setProfile({ ...profile, ...editForm });
+      setEditing(false);
+      // Mettre à jour la session
+      await update();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || t('messages.error_update') || tCommon('erreur'));
     } finally {
       setSaving(false);
     }
@@ -162,33 +138,26 @@ export default function AdminProfilePage() {
     setError(null);
     
     try {
-      const res = await fetch('/api/auth/change-password', {
+      await actionMutation.mutate('/api/auth/change-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword,
-        }),
+        },
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess(t('messages.password_success'));
-        setShowPasswordForm(false);
-        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || t('messages.error_password_change'));
-      }
-    } catch (error) {
-      setError(tCommon('erreur'));
+      setSuccess(t('messages.password_success'));
+      setShowPasswordForm(false);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || t('messages.error_password_change') || tCommon('erreur'));
     } finally {
       setChangingPassword(false);
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />

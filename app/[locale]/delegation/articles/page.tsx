@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import { useTranslations } from 'next-intl';
 import {
   FileText,
@@ -34,54 +36,34 @@ interface Article {
 
 export default function MesArticlesPage() {
   const t = useTranslations('delegation.dashboard.articles');
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (search) params.set('search', search);
-      if (statusFilter) params.set('statut', statusFilter);
+  const searchParams = new URLSearchParams({
+    page: page.toString(),
+    limit: '12',
+    ...(search ? { search } : {}),
+    ...(statusFilter ? { statut: statusFilter } : {})
+  });
 
-      try {
-        const res = await fetch(`/api/delegation/articles?${params.toString()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setArticles(json.data || []);
-          setTotalPages(json.pagination?.totalPages || 1);
-          setTotal(json.pagination?.total || 0);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchArticles, 300);
-    return () => clearTimeout(timer);
-  }, [page, search, statusFilter]);
+  const { data: responseData, isLoading: loading, mutate: refreshArticles } = useData(`/api/delegation/articles?${searchParams.toString()}`);
+  const articles = responseData?.data || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
+  
+  const actionMutation = useMutation();
 
   const deleteArticle = async (id: number) => {
     if (!confirm(t('delete_confirm'))) return;
 
     try {
-      const res = await fetch(`/api/delegation/articles/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setArticles(prev => prev.filter(a => a.id !== id));
-        toast.success(t('delete_success'));
-      }
-    } catch (error) {
+      await actionMutation.mutate(`/api/delegation/articles/${id}`, { method: 'DELETE' });
+      await refreshArticles();
+      toast.success(t('delete_success'));
+    } catch (error: any) {
       console.error('Erreur suppression:', error);
-      toast.error(t('delete_error'));
+      toast.error(error.message || t('delete_error'));
     }
   };
 

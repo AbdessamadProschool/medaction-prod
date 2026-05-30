@@ -40,6 +40,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { GovButton } from '@/components/ui/GovButton';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { useData } from '@/hooks/use-data';
 
 interface DashboardStats {
   utilisateurs: { total: number; nouveaux: number; variation: number };
@@ -225,38 +226,19 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [chartData, setChartData] = useState<ChartData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const t = useTranslations('admin.dashboard');
   const tCommon = useTranslations('common');
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchDashboardData = async () => {
-    try {
-      const res = await fetch('/api/admin/stats');
-      if (res.ok) {
-        const data = await res.json();
-        setStats(data.data.stats);
-        setChartData(data.data.charts);
-      }
-    } catch (error) {
-      console.error('Erreur chargement dashboard:', error);
-      toast.error('Erreur lors du chargement des données');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  const { data, isLoading: loading, mutate } = useData('/api/admin/stats');
+  const stats = data?.data?.stats || null;
+  const chartData = data?.data?.charts || null;
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
-    fetchDashboardData();
     toast.info(t('toasts.refreshing'));
+    await mutate();
+    setRefreshing(false);
   };
 
   const handleExport = async () => {

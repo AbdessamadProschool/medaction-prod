@@ -48,6 +48,8 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { GovInput, GovSelect } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Reclamation {
   id: number;
@@ -101,16 +103,10 @@ export default function AdminReclamationsPage() {
   const tActions = useTranslations('actions');
   const locale = useLocale();
   
-  const [reclamations, setReclamations] = useState<Reclamation[]>([]);
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
   // Pagination
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filtres
   const [showFilters, setShowFilters] = useState(false);
@@ -134,13 +130,8 @@ export default function AdminReclamationsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   
   // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    enAttente: 0,
-    aDispatcher: 0,
-    enCours: 0,
-    rejetees: 0,
-  });
+  
+  const actionMutation = useMutation();
 
   // Vérifier authentification
   useEffect(() => {
@@ -150,78 +141,46 @@ export default function AdminReclamationsPage() {
   }, [status, router]);
 
   // Charger communes et agents
-  useEffect(() => {
-    const loadMeta = async () => {
-      try {
-        // Charger les communes
-        const communesRes = await fetch('/api/map/communes');
-        if (communesRes.ok) {
-          const data = await communesRes.json();
-          setCommunes(data.communes || []);
-        }
-        
-        // Charger les agents (Uniquement AUTORITE_LOCALE peut être affecté)
-        // On charge tous les utilisateurs actifs puis on filtre côté client
-        const agentsRes = await fetch('/api/users?isActive=true&limit=100');
-        if (agentsRes.ok) {
-          const data = await agentsRes.json();
-          // Filtrer pour garder uniquement les rôles pouvant traiter des réclamations
-          const eligibleRoles = ['AUTORITE_LOCALE'];
-          const filteredAgents = (data.data || []).filter(
-            (u: any) => eligibleRoles.includes(u.role)
-          );
-          setAgents(filteredAgents);
-        }
-      } catch (error) {
-        console.error('Erreur chargement meta:', error);
-      }
-    };
-    loadMeta();
-  }, []);
+  const { data: communesData } = useData('/api/map/communes');
+  const communes = communesData?.communes || [];
+
+  const { data: agentsData } = useData('/api/users?isActive=true&limit=100');
+  const agents = useMemo(() => {
+    const eligibleRoles = ['AUTORITE_LOCALE'];
+    return (agentsData?.data || []).filter(
+      (u: any) => eligibleRoles.includes(u.role)
+    );
+  }, [agentsData]);
 
   // Charger les réclamations
-  const loadReclamations = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '15');
-      
-      if (filters.search) params.set('search', filters.search);
-      if (filters.statut) params.set('statut', filters.statut);
-      if (filters.affectation) params.set('affectation', filters.affectation);
-      if (filters.communeId) params.set('communeId', filters.communeId);
-      if (filters.categorie) params.set('categorie', filters.categorie);
-      
-      const res = await fetch(`/api/reclamations?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReclamations(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Utiliser les stats globales de l'API
-        if (data.stats) {
-          setStats({
-            total: data.pagination?.total || 0,
-            enAttente: data.stats.enAttente || 0,
-            aDispatcher: data.stats.aDispatcher || 0,
-            enCours: data.stats.enCours || 0,
-            rejetees: (data.pagination?.total || 0) - (data.stats.enAttente || 0) - (data.stats.acceptees || 0),
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Erreur chargement:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [page, filters]);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '15');
+  
+  if (filters.search) queryParams.set('search', filters.search);
+  if (filters.statut) queryParams.set('statut', filters.statut);
+  if (filters.affectation) queryParams.set('affectation', filters.affectation);
+  if (filters.communeId) queryParams.set('communeId', filters.communeId);
+  if (filters.categorie) queryParams.set('categorie', filters.categorie);
+  
+  const { data: reclamationsData, isLoading: loadingReclamations, mutate: loadReclamations } = useData(`/api/reclamations?${queryParams.toString()}`);
 
-  useEffect(() => {
-    loadReclamations();
-  }, [loadReclamations]);
+  const reclamations = reclamationsData?.data || [];
+  const totalPages = reclamationsData?.pagination?.totalPages || 1;
+  const total = reclamationsData?.pagination?.total || 0;
+
+  const stats = useMemo(() => {
+    if (reclamationsData?.stats) {
+      return {
+        total: reclamationsData?.pagination?.total || 0,
+        enAttente: reclamationsData.stats.enAttente || 0,
+        aDispatcher: reclamationsData.stats.aDispatcher || 0,
+        enCours: reclamationsData.stats.enCours || 0,
+        rejetees: (reclamationsData?.pagination?.total || 0) - (reclamationsData.stats.enAttente || 0) - (reclamationsData.stats.acceptees || 0),
+      };
+    }
+    return { total: 0, enAttente: 0, aDispatcher: 0, enCours: 0, rejetees: 0 };
+  }, [reclamationsData]);
 
   // Affecter une réclamation
   const handleAffectation = async (agentId: number | null) => {
@@ -230,23 +189,17 @@ export default function AdminReclamationsPage() {
     setActionLoading(true);
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/reclamations/${selectedReclamation.id}/affecter`, {
+        await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}/affecter`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ affecteAId: agentId }),
+          data: { affecteAId: agentId },
         });
         
-        if (res.ok) {
-          setShowAffectationModal(false);
-          setSelectedReclamation(null);
-          loadReclamations();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors de l\'affectation'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        setShowAffectationModal(false);
+        setSelectedReclamation(null);
+        await loadReclamations();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors de l\'affectation'));
       } finally {
         setActionLoading(false);
       }
@@ -266,27 +219,21 @@ export default function AdminReclamationsPage() {
     setActionLoading(true);
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/reclamations/${selectedReclamation.id}/statut`, {
+        await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}/statut`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
+          data: { 
             statut,
             motifRejet: statut === 'REJETEE' ? rejetMotif : undefined,
-          }),
+          },
         });
         
-        if (res.ok) {
-          setShowStatutModal(false);
-          setSelectedReclamation(null);
-          setRejetMotif('');
-          loadReclamations();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors de la modification du statut'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        setShowStatutModal(false);
+        setSelectedReclamation(null);
+        setRejetMotif('');
+        await loadReclamations();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors de la modification du statut'));
       } finally {
         setActionLoading(false);
       }
@@ -306,21 +253,16 @@ export default function AdminReclamationsPage() {
     setActionLoading(true);
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/reclamations/${selectedReclamation.id}`, {
+        await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}`, {
           method: 'DELETE',
         });
         
-        if (res.ok) {
-          setShowDeleteModal(false);
-          setSelectedReclamation(null);
-          loadReclamations();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors de la suppression'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        setShowDeleteModal(false);
+        setSelectedReclamation(null);
+        await loadReclamations();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors de la suppression'));
       } finally {
         setActionLoading(false);
       }
@@ -404,11 +346,15 @@ export default function AdminReclamationsPage() {
             
             <div className="flex flex-wrap items-center gap-3">
               <GovButton
-                onClick={loadReclamations}
-                disabled={refreshing}
+                onClick={async () => {
+                  setRefreshing(true);
+                  await loadReclamations();
+                  setRefreshing(false);
+                }}
+                disabled={refreshing || loadingReclamations}
                 variant="outline"
                 size="icon"
-                loading={refreshing}
+                loading={refreshing || loadingReclamations}
                 title={tCommon('refresh')}
               />
               

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Megaphone,
@@ -32,6 +32,8 @@ import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Campagne {
   id: number;
@@ -71,11 +73,7 @@ const SECTEURS = [
 
 export default function AdminCampagnesPage() {
   const t = useTranslations('admin_campagnes');
-  const [campagnes, setCampagnes] = useState<Campagne[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filters
   const [search, setSearch] = useState('');
@@ -88,74 +86,45 @@ export default function AdminCampagnesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    actives: 0,
-    enAttente: 0,
-    terminees: 0,
-    totalParticipants: 0,
-  });
+  const actionMutation = useMutation();
 
-  const fetchCampagnes = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (search) params.set('search', search);
-      if (statutFilter) params.set('statut', statutFilter);
-      if (secteurFilter) params.set('secteur', secteurFilter);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '12');
+  if (search) queryParams.set('search', search);
+  if (statutFilter) queryParams.set('statut', statutFilter);
+  if (secteurFilter) queryParams.set('secteur', secteurFilter);
 
-      const res = await fetch(`/api/campagnes?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setCampagnes(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Calculate stats
-        const allCampagnes = data.data || [];
-        setStats({
-          total: data.pagination?.total || 0,
-          actives: allCampagnes.filter((c: Campagne) => c.statut === 'ACTIVE').length,
-          enAttente: allCampagnes.filter((c: Campagne) => c.statut === 'EN_ATTENTE').length,
-          terminees: allCampagnes.filter((c: Campagne) => c.statut === 'TERMINEE').length,
-          totalParticipants: allCampagnes.reduce((acc: number, c: Campagne) => acc + (c.nombreParticipants || 0), 0),
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement campagnes:', error);
-      toast.error('Erreur lors du chargement');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search, statutFilter, secteurFilter]);
+  const { data: campagnesData, isLoading: loading, mutate: fetchCampagnes } = useData(`/api/campagnes?${queryParams.toString()}`);
 
-  useEffect(() => {
-    const debounce = setTimeout(fetchCampagnes, 300);
-    return () => clearTimeout(debounce);
-  }, [fetchCampagnes]);
+  const campagnes = campagnesData?.data || [];
+  const totalPages = campagnesData?.pagination?.totalPages || 1;
+  const total = campagnesData?.pagination?.total || 0;
+
+  const stats = useMemo(() => {
+    const allCampagnes = campagnesData?.data || [];
+    return {
+      total: campagnesData?.pagination?.total || 0,
+      actives: allCampagnes.filter((c: Campagne) => c.statut === 'ACTIVE').length,
+      enAttente: allCampagnes.filter((c: Campagne) => c.statut === 'EN_ATTENTE').length,
+      terminees: allCampagnes.filter((c: Campagne) => c.statut === 'TERMINEE').length,
+      totalParticipants: allCampagnes.reduce((acc: number, c: Campagne) => acc + (c.nombreParticipants || 0), 0),
+    };
+  }, [campagnesData]);
 
   const handleChangeStatut = async (id: number, newStatut: string) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/campagnes/${id}`, {
+        await actionMutation.mutate(`/api/campagnes/${id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ statut: newStatut }),
+          data: { statut: newStatut },
         });
 
-        if (res.ok) {
-          fetchCampagnes();
-          setShowDetailModal(false);
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        await fetchCampagnes();
+        setShowDetailModal(false);
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur'));
       }
     });
 
@@ -171,16 +140,12 @@ export default function AdminCampagnesPage() {
     
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/campagnes/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-          fetchCampagnes();
-          setShowDetailModal(false);
-          resolve(true);
-        } else {
-          reject(new Error('Erreur lors de la suppression'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        await actionMutation.mutate(`/api/campagnes/${id}`, { method: 'DELETE' });
+        await fetchCampagnes();
+        setShowDetailModal(false);
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors de la suppression'));
       }
     });
 
@@ -222,8 +187,11 @@ export default function AdminCampagnesPage() {
         
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchCampagnes}
-            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm"
+            onClick={async () => {
+              await fetchCampagnes();
+            }}
+            disabled={loading}
+            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm disabled:opacity-50"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>

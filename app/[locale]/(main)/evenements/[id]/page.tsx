@@ -17,6 +17,7 @@ import {
 import { PermissionGuard } from '@/hooks/use-permission';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 
 // Map dynamique (SSR disabled)
 const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
@@ -101,8 +102,6 @@ export default function EvenementDetailPage() {
   const { data: session } = useSession();
   const params = useParams();
   const pathname = usePathname();
-  const [event, setEvent] = useState<Evenement | null>(null);
-  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -112,18 +111,13 @@ export default function EvenementDetailPage() {
   
   // useTranslations('sectors') is now passed to getSecteurConfig
 
+  const { data: eventResponse, isLoading: loading } = useData(params.id ? `/api/evenements/${params.id}` : null);
   
-  useEffect(() => {
-    if (params.id) {
-      // Charger les données (sans incrémenter la vue ici)
-      fetch(`/api/evenements/${params.id}`)
-        .then(res => res.json())
-        .then(json => {
-          setEvent(json.data);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
+  // L'API peut renvoyer { data: event } ou juste event
+  const event = eventResponse?.data || eventResponse || null;
 
+  useEffect(() => {
+    if (params.id && event) {
       // Incrémenter la vue UNE SEULE FOIS par session
       const viewedKey = `viewed_event_${params.id}`;
       const hasViewed = sessionStorage.getItem(viewedKey);
@@ -136,7 +130,7 @@ export default function EvenementDetailPage() {
           .catch(console.error);
       }
     }
-  }, [params.id]);
+  }, [params.id, event]);
 
   const handleShare = async () => {
     const url = window.location.href;

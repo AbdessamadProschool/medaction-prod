@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useData } from '@/hooks/use-data';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -224,107 +225,52 @@ function ReclamationCard({ reclamation, index }: { reclamation: any; index: numb
 }
 
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  
   // Filtres
   const [periode, setPeriode] = useState('30');
   const [communeId, setCommuneId] = useState<string>('');
-  const [annexeId, setAnnexeId] = useState<string>('');
   
-  // Data
-  const [communes, setCommunes] = useState<Commune[]>([]);
-  const [annexes, setAnnexes] = useState<Annexe[]>([]);
-  const [kpiData, setKpiData] = useState<KPIData | null>(null);
-  const [reclamationsData, setReclamationsData] = useState<ReclamationsData | null>(null);
-  const [evenementsData, setEvenementsData] = useState<EvenementsData | null>(null);
-  const [parSecteur, setParSecteur] = useState<any[]>([]);
-  const [evolution, setEvolution] = useState<any[]>([]);
-  const [satisfactionDistribution, setSatisfactionDistribution] = useState<any[]>([]);
-  const [recentEvents, setRecentEvents] = useState<any[]>([]);
-  const [urgentReclamations, setUrgentReclamations] = useState<any[]>([]);
+  const params = new URLSearchParams();
+  if (communeId) params.set('communeId', communeId);
+  if (periode) params.set('periode', periode);
+  const queryString = params.toString();
 
-  // Charger communes et annexes
-  useEffect(() => {
-    const loadFilters = async () => {
-      try {
-        const [communesRes, annexesRes] = await Promise.all([
-          fetch('/api/map/communes'),
-          fetch('/api/map/annexes'),
-        ]);
-        
-        if (communesRes.ok) {
-          const data = await communesRes.json();
-          setCommunes(data.communes || []);
-        }
-        if (annexesRes.ok) {
-          const data = await annexesRes.json();
-          setAnnexes(data.annexes || []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement filtres:', error);
-      }
-    };
-    loadFilters();
-  }, []);
+  // Load Filters
+  const { data: communesData } = useData('/api/map/communes');
+  const communes = communesData?.communes || [];
 
-  // Charger les données
-  const loadData = async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      if (communeId) params.set('communeId', communeId);
-      if (periode) params.set('periode', periode);
+  // Load Dashboard Data
+  const { data: globalData, isLoading: loadingGlobal, isValidating: valGlobal, mutate: mutateGlobal } = useData(`/api/stats/global?${queryString}`);
+  const { data: reclamationsDataRes, isLoading: loadingRec, isValidating: valRec, mutate: mutateRec } = useData(`/api/stats/reclamations?${queryString}`);
+  const { data: evenementsDataRes, isLoading: loadingEv, isValidating: valEv, mutate: mutateEv } = useData(`/api/stats/evenements?${queryString}`);
+  const { data: satisfactionData, isLoading: loadingSat, isValidating: valSat, mutate: mutateSat } = useData(`/api/stats/satisfaction?${queryString}`);
 
-      const [globalRes, reclamationsRes, evenementsRes, satisfactionRes] = await Promise.all([
-        fetch(`/api/stats/global?${params}`),
-        fetch(`/api/stats/reclamations?${params}`),
-        fetch(`/api/stats/evenements?${params}`),
-        fetch(`/api/stats/satisfaction?${params}`),
-      ]);
+  const kpiData = globalData?.global || null;
+  const reclamationsData = globalData?.reclamations || reclamationsDataRes?.reclamations || null;
+  const parSecteur = globalData?.parSecteur || [];
 
-      if (globalRes.ok) {
-        const data = await globalRes.json();
-        setKpiData(data.global);
-        setReclamationsData(data.reclamations);
-        setEvenementsData(data.evenements);
-        setParSecteur(data.parSecteur || []);
-      }
+  const evolution = reclamationsDataRes?.evolution || [];
+  // Simuler réclamations urgentes
+  const urgentReclamations = reclamationsDataRes?.parCategorie?.slice(0, 3).map((c: any, i: number) => ({
+    id: i + 1,
+    titre: `Réclamation ${c.categorie}`,
+    categorie: c.categorie,
+    statut: null,
+    communeNom: 'Médiouna',
+    createdAt: new Date().toISOString(),
+  })) || [];
 
-      if (reclamationsRes.ok) {
-        const data = await reclamationsRes.json();
-        setEvolution(data.evolution || []);
-        // Simuler réclamations urgentes
-        setUrgentReclamations(data.parCategorie?.slice(0, 3).map((c: any, i: number) => ({
-          id: i + 1,
-          titre: `Réclamation ${c.categorie}`,
-          categorie: c.categorie,
-          statut: null,
-          communeNom: 'Médiouna',
-          createdAt: new Date().toISOString(),
-        })) || []);
-      }
+  const recentEvents = evenementsDataRes?.evenementsAVenir || [];
+  const satisfactionDistribution = satisfactionData?.distribution || [];
 
-      if (evenementsRes.ok) {
-        const data = await evenementsRes.json();
-        setRecentEvents(data.evenementsAVenir || []);
-      }
+  const loading = loadingGlobal && !kpiData;
+  const refreshing = valGlobal || valRec || valEv || valSat;
 
-      if (satisfactionRes.ok) {
-        const data = await satisfactionRes.json();
-        setSatisfactionDistribution(data.distribution || []);
-      }
-    } catch (error) {
-      console.error('Erreur chargement données:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  const loadData = () => {
+    mutateGlobal();
+    mutateRec();
+    mutateEv();
+    mutateSat();
   };
-
-  useEffect(() => {
-    loadData();
-  }, [communeId, periode]);
 
   if (loading) {
     return (

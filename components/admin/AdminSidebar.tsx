@@ -51,7 +51,7 @@ interface NavItem {
 const NAV_ITEMS_CONFIG: NavItem[] = [
   { href: '/admin', labelKey: 'dashboard', icon: LayoutDashboard },
   { href: '/admin/reclamations', labelKey: 'reclamations', icon: MessageSquareWarning, badgeKey: 'reclamations', permission: 'reclamations.read' },
-  { href: '/admin/messages', labelKey: 'messages', icon: Mail, badgeKey: 'messages', permission: 'reclamations.read' },
+  { href: '/admin/messages', labelKey: 'messages', icon: Mail, badgeKey: 'messages' },
   { href: '/admin/suggestions', labelKey: 'suggestions', icon: Lightbulb, badgeKey: 'suggestions', permission: 'suggestions.read.own' },
   { href: '/admin/utilisateurs', labelKey: 'users', icon: Users, badgeKey: 'utilisateurs', permission: 'users.read' },
   { href: '/admin/etablissements', labelKey: 'etablissements', icon: Building2, permission: 'etablissements.read' },

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { Star, Building2, Calendar, Edit3, Lock, ExternalLink } from 'lucide-react';
+import { useData } from '@/hooks/use-data';
 
 interface Evaluation {
   id: number;
@@ -22,34 +23,15 @@ interface Evaluation {
 export default function MesEvaluationsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  const { data, isLoading } = useData(status === 'authenticated' ? '/api/users/me/evaluations' : null);
+  const evaluations = data?.evaluations || [];
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login?redirect=/mes-evaluations');
     }
   }, [status, router]);
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchEvaluations();
-    }
-  }, [status]);
-
-  const fetchEvaluations = async () => {
-    try {
-      const res = await fetch('/api/users/me/evaluations');
-      if (res.ok) {
-        const data = await res.json();
-        setEvaluations(data.evaluations || []);
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Vérifie si l'évaluation peut être modifiée (< 7 jours)
   const canEdit = (createdAt: string): boolean => {
@@ -85,7 +67,7 @@ export default function MesEvaluationsPage() {
     );
   };
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />

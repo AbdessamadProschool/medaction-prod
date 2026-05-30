@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { Pagination } from '@/components/ui';
+import { useData } from '@/hooks/use-data';
 import {
   Megaphone, Search, Users, Target, ChevronLeft, ChevronRight,
   Loader2, X, Calendar, CheckCircle, ArrowRight, Sparkles, Heart, Filter
@@ -51,18 +52,30 @@ function CampagnesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // State
-  const [campagnes, setCampagnes] = useState<Campagne[]>([]);
-  const [featuredCampagnes, setFeaturedCampagnes] = useState<Campagne[]>([]);
-  const [types, setTypes] = useState<TypeCampagne[]>([]);
-  const [loading, setLoading] = useState(true);
-  
   // Filters
   const search = searchParams.get('search') || '';
   const selectedType = searchParams.get('type') || '';
   const page = parseInt(searchParams.get('page') || '1');
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
+
+  // ECC: useData
+  const featuredEnabled = page === 1 && !search && !selectedType;
+  const { data: featuredData } = useData(featuredEnabled ? '/api/campagnes?featured=true&limit=5' : null);
+  const featuredCampagnes: Campagne[] = featuredData?.data || [];
+
+  const queryStr = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '9');
+    if (search) params.set('search', search);
+    if (selectedType) params.set('type', selectedType);
+    return params.toString();
+  }, [page, search, selectedType]);
+
+  const { data: responseData, isLoading: loading } = useData(`/api/campagnes?${queryStr}`);
+  const campagnes: Campagne[] = responseData?.data || [];
+  const types: TypeCampagne[] = responseData?.types || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
 
   // UI State
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
@@ -91,43 +104,6 @@ function CampagnesContent() {
     };
   }, [selectedCampagne]);
 
-  // Fetch Data
-  useEffect(() => {
-    const fetchCampagnes = async () => {
-      setLoading(true);
-      try {
-        // Fetch featured only on first page and no filters
-        if (page === 1 && !search && !selectedType) {
-           const featuredRes = await fetch('/api/campagnes?featured=true&limit=5');
-           if (featuredRes.ok) {
-             const featuredJson = await featuredRes.json();
-             setFeaturedCampagnes(featuredJson.data || []);
-           }
-        }
-
-        const params = new URLSearchParams();
-        params.set('page', page.toString());
-        params.set('limit', '9');
-        if (search) params.set('search', search);
-        if (selectedType) params.set('type', selectedType);
-
-        const res = await fetch(`/api/campagnes?${params.toString()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setCampagnes(json.data || []);
-          setTypes(json.types || []);
-          setTotalPages(json.pagination?.totalPages || 1);
-          setTotal(json.pagination?.total || 0);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCampagnes();
-  }, [page, search, selectedType]);
 
   // URL Helpers
   const updateFilter = (key: string, value: string) => {

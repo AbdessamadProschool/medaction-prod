@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useMutation } from '@/hooks/use-mutation';
 
 const actualiteSchema = z.object({
   titre: z.string().min(5).max(150),
@@ -42,6 +43,8 @@ export default function AdminNouvelleActualitePage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const actionMutation = useMutation();
+  const uploadMutation = useMutation();
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -95,16 +98,10 @@ export default function AdminNouvelleActualitePage() {
           formData.append('type', 'actualites');
 
           try {
-              const uploadRes = await fetch('/api/upload', {
-              method: 'POST',
-              body: formData,
+              const uploadData = await uploadMutation.mutate('/api/upload', {
+                method: 'POST',
+                data: formData,
               });
-
-              if (!uploadRes.ok) {
-                  reject(new Error(`Upload Failed: ${uploadRes.status}`));
-                  return;
-              }
-              const uploadData = await uploadRes.json();
               imageUrl = uploadData.url;
           } catch (e) {
                console.error("Upload error:", e);
@@ -113,31 +110,20 @@ export default function AdminNouvelleActualitePage() {
           }
         }
 
-        const res = await fetch('/api/actualites', {
+        await actionMutation.mutate('/api/actualites', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...data,
             imageUrl: imageUrl,
-          }),
+          }
         });
 
-        if (res.ok) {
-          resolve(true);
-          router.push('/admin/actualites');
-          router.refresh();
-        } else {
-          const text = await res.text();
-          try {
-              const err = JSON.parse(text);
-              reject(new Error(err.error || 'Erreur'));
-          } catch {
-               reject(new Error(`Erreur serveur (${res.status})`));
-          }
-        }
-      } catch (error) {
+        resolve(true);
+        router.push('/admin/actualites');
+        router.refresh();
+      } catch (error: any) {
         console.error(error);
-        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : 'Erreur serveur')));
+        reject(new Error('Erreur: ' + (error.message || 'Erreur serveur')));
       } finally {
         setLoading(false);
       }

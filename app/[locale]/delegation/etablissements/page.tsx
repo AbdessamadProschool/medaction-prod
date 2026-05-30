@@ -18,33 +18,21 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useData } from '@/hooks/use-data';
 import { toast } from 'sonner';
 
 export default function DelegationEtablissementsPage() {
   const t = useTranslations('establishments_workflow');
   const te = useTranslations('admin.establishments');
-  const [etablissements, setEtablissements] = useState<any[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchEtablissements = async () => {
-      try {
-        const res = await fetch(`/api/etablissements?search=${search}&limit=50`);
-        const data = await res.json();
-        if (res.ok) {
-          setEtablissements(data.data);
-        }
-      } catch (err) {
-        toast.error("Erreur lors du chargement des établissements");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const searchParams = new URLSearchParams({
+    limit: '50',
+    ...(search ? { search } : {})
+  });
 
-    const timer = setTimeout(fetchEtablissements, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
+  const { data: responseData, isLoading: loading } = useData(`/api/etablissements?${searchParams.toString()}`);
+  const etablissements = responseData?.data || [];
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in">

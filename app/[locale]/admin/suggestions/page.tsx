@@ -29,6 +29,8 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { cn } from '@/lib/utils';
 import EmptyState from '@/components/ui/EmptyState';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Suggestion {
   id: number;
@@ -79,8 +81,6 @@ export default function AdminSuggestionsPage() {
   const t = useTranslations('admin.suggestions_page');
   const tCat = useTranslations('suggestions.categories');
   const locale = useLocale();
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   
@@ -89,43 +89,24 @@ export default function AdminSuggestionsPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   
-  // Pagination & Stats
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [stats, setStats] = useState<Record<string, number>>({});
-
   // Action states
+  const actionMutation = useMutation();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
   const [reponseAdmin, setReponseAdmin] = useState('');
 
-  const fetchSuggestions = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '15');
-      if (statutFilter) params.set('statut', statutFilter);
-      if (search) params.set('search', search);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '15');
+  if (statutFilter) queryParams.set('statut', statutFilter);
+  if (search) queryParams.set('search', search);
 
-      const res = await fetch(`/api/suggestions?${params.toString()}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestions(data.data);
-        setTotalPages(data.pagination.totalPages);
-        setTotal(data.pagination.total);
-        setStats(data.stats.parStatut || {});
-      }
-    } catch (error) {
-      console.error('Erreur chargement suggestions:', error);
-      toast.error('Erreur lors du chargement des suggestions');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: suggestionsData, isLoading: loading, mutate: fetchSuggestions } = useData(`/api/suggestions?${queryParams.toString()}`);
 
-  useEffect(() => {
-    fetchSuggestions();
-  }, [page, statutFilter]);
+  const suggestions = suggestionsData?.data || [];
+  const totalPages = suggestionsData?.pagination?.totalPages || 1;
+  const total = suggestionsData?.pagination?.total || 0;
+  const stats = suggestionsData?.stats?.parStatut || {};
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -133,32 +114,26 @@ export default function AdminSuggestionsPage() {
       fetchSuggestions();
     }, 500);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, fetchSuggestions]);
 
   const handleChangeStatut = async (suggestionId: number, newStatut: string) => {
     setActionLoading(`${suggestionId}-${newStatut}`);
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/suggestions/${suggestionId}/statut`, {
+        await actionMutation.mutate(`/api/suggestions/${suggestionId}/statut`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             statut: newStatut,
             reponseAdmin: reponseAdmin || undefined,
-          }),
+          },
         });
 
-        if (res.ok) {
-          fetchSuggestions();
-          setShowDetailModal(false);
-          setReponseAdmin('');
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur lors du changement de statut'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        await fetchSuggestions();
+        setShowDetailModal(false);
+        setReponseAdmin('');
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors du changement de statut'));
       } finally {
         setActionLoading(null);
       }

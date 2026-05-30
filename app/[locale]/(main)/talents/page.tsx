@@ -2,11 +2,13 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import TalentCard from '@/components/talents/TalentCard';
 import TalentModal from '@/components/talents/TalentModal';
+import { useData } from '@/hooks/use-data';
+import { Pagination } from '@/components/ui';
 
 interface Talent {
   id: number;
@@ -35,93 +37,47 @@ const domaines = [
 function TalentsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   
-  const [talents, setTalents] = useState<Talent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null);
   
   // Filters
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [domaine, setDomaine] = useState(searchParams.get('domaine') || 'Tous');
-  
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const page = parseInt(searchParams.get('page') || '1');
 
   // Sync URL with filters
   useEffect(() => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
     if (search) params.set('search', search);
+    else params.delete('search');
+    
     if (domaine && domaine !== 'Tous') params.set('domaine', domaine);
+    else params.delete('domaine');
     
     // Replace URL without reloading
-    const newUrl = `/talents?${params.toString()}`;
+    const newUrl = `${pathname}?${params.toString()}`;
     window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
-  }, [search, domaine]);
+  }, [search, domaine, pathname, searchParams]);
 
-  // Fetch talents
-  const fetchTalents = async (reset = false) => {
-    if (reset) {
-      setLoading(true);
-      setPage(1);
-    }
+  const queryStr = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    params.set('isPublie', 'true');
+    if (search) params.set('search', search);
+    if (domaine && domaine !== 'Tous') params.set('domaine', domaine);
+    return params.toString();
+  }, [page, search, domaine]);
 
-    try {
-      const params = new URLSearchParams();
-      params.set('page', reset ? '1' : page.toString());
-      params.set('limit', '12');
-      params.set('isPublie', 'true');
-      if (search) params.set('search', search);
-      if (domaine && domaine !== 'Tous') params.set('domaine', domaine);
+  const { data: responseData, isLoading: loading } = useData(`/api/talents?${queryStr}`);
+  const talents: Talent[] = responseData?.data || [];
+  const totalPages = responseData?.pagination?.pages || 1;
 
-      const res = await fetch(`/api/talents?${params.toString()}`);
-      const json = await res.json();
-      
-      if (reset) {
-        setTalents(json.data || []);
-      } else {
-        setTalents(prev => [...prev, ...(json.data || [])]);
-      }
-      
-      setHasMore(json.pagination.page < json.pagination.pages);
-      if (!reset) setPage(p => p + 1);
-      
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initial fetch and filter change
-  useEffect(() => {
-    fetchTalents(true);
-  }, [search, domaine]);
-
-  // Load more
-  const handleLoadMore = () => {
-    if (!loading && hasMore) {
-      setPage(p => p + 1);
-      // fetchTalents will be called by effect if we depend on page, 
-      // but here we have a manual load more logic which is slightly different from filter change
-      // Let's adjust logic: 
-      // Actually, better to just call fetch directly for load more
-      const params = new URLSearchParams();
-      params.set('page', (page + 1).toString());
-      params.set('limit', '12');
-      params.set('isPublie', 'true');
-      if (search) params.set('search', search);
-      if (domaine && domaine !== 'Tous') params.set('domaine', domaine);
-
-      setLoading(true);
-      fetch(`/api/talents?${params.toString()}`)
-        .then(res => res.json())
-        .then(json => {
-            setTalents(prev => [...prev, ...(json.data || [])]);
-            setHasMore(json.pagination.page < json.pagination.pages);
-            setLoading(false);
-        });
-    }
+  const setPageParam = (p: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', p.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -211,15 +167,14 @@ function TalentsContent() {
           </div>
         )}
 
-        {/* Load More */}
-        {!loading && hasMore && talents.length > 0 && (
-          <div className="text-center mt-12">
-            <button
-              onClick={handleLoadMore}
-              className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-sm"
-            >
-              Voir plus de talents
-            </button>
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="mt-12">
+            <Pagination 
+              currentPage={page} 
+              totalPages={totalPages} 
+              onPageChange={setPageParam} 
+            />
           </div>
         )}
       </div>

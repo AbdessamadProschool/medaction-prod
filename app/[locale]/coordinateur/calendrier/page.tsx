@@ -45,6 +45,8 @@ import {
 import { arMA } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import BulkImportModal from '@/components/coordinateur/BulkImportModal';
 
 interface Activite {
@@ -107,12 +109,8 @@ export default function CalendrierPage() {
   const pathname = usePathname();
   
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [activites, setActivites] = useState<Activite[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [showCreatePanel, setShowCreatePanel] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [etablissements, setEtablissements] = useState<{ id: number; nom: string; secteur: string }[]>([]);
   const [showImportModal, setShowImportModal] = useState(false);
   const [selectedActivite, setSelectedActivite] = useState<Activite | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -131,32 +129,21 @@ export default function CalendrierPage() {
   const dateDebutStr = useMemo(() => format(weekStart, 'yyyy-MM-dd'), [weekStart]);
   const dateFinStr = useMemo(() => format(weekEnd, 'yyyy-MM-dd'), [weekEnd]);
 
-  const fetchActivites = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/programmes-activites?dateDebut=${dateDebutStr}&dateFin=${dateFinStr}`);
-      if (res.ok) {
-        const data = await res.json();
-        setActivites(data.data || []);
-        
-        const etabs = data.data?.reduce((acc: any[], a: Activite) => {
-          if (!acc.find(e => e.id === a.etablissement.id)) {
-            acc.push(a.etablissement);
-          }
-          return acc;
-        }, []) || [];
-        setEtablissements(etabs);
+  const { data: responseData, isLoading: loading, mutate: refreshData } = useData(`/api/programmes-activites?dateDebut=${dateDebutStr}&dateFin=${dateFinStr}`);
+  const activites: Activite[] = responseData?.data || [];
+  
+  const etablissements = useMemo(() => {
+    return activites.reduce((acc: any[], a: Activite) => {
+      if (!acc.find(e => e.id === a.etablissement.id)) {
+        acc.push(a.etablissement);
       }
-    } catch (error) {
-      console.error('Erreur chargement activités:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [dateDebutStr, dateFinStr]);
+      return acc;
+    }, []);
+  }, [activites]);
 
-  useEffect(() => {
-    fetchActivites();
-  }, [fetchActivites]);
+  const fetchActivites = async () => {
+    await refreshData();
+  };
 
   // Deep Link Logic
   useEffect(() => {
@@ -246,26 +233,16 @@ export default function CalendrierPage() {
     setShowCreatePanel(true);
   };
 
+  const { post: submitAll, isMutating: submitting } = useMutation('/api/programmes-activites/soumettre-tout');
+
   const submitAllForValidation = async () => {
     if (brouillonsCount === 0) return;
     
-    setSubmitting(true);
     try {
-      const res = await fetch('/api/programmes-activites/soumettre-tout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      
-      const data = await res.json();
-      
-      if (res.ok) {
-        fetchActivites();
-        // Toast logic would be better here
-      }
+      await submitAll();
+      fetchActivites();
     } catch (error) {
       console.error(error);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -563,26 +540,17 @@ function ActivityDetailModal({
 }) {
     const t = useTranslations('coordinator.calendar.detail_modal');
     const tStatus = useTranslations('coordinator.status');
-    const [isDeleting, setIsDeleting] = useState(false);
+    const { del: deleteActivite, isMutating: isDeleting } = useMutation(`/api/programmes-activites/${activite.id}`);
 
     const handleDelete = async () => {
         if (!confirm(t('confirm_delete'))) return;
-        setIsDeleting(true);
         try {
-            const res = await fetch(`/api/programmes-activites/${activite.id}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) {
-                onUpdate(); // Refreshes list and closes modal via parent logic if needed, but we should close here too
-                onClose();
-            } else {
-                alert(t('error_delete'));
-            }
+            await deleteActivite();
+            onUpdate();
+            onClose();
         } catch (e) {
             console.error(e);
             alert(t('error_delete'));
-        } finally {
-            setIsDeleting(false);
         }
     };
 
@@ -729,7 +697,12 @@ function CreateActivityPanel({
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false); // Success state
-  const [etablissements, setEtablissements] = useState<{ id: number; nom: string; secteur: string }[]>([]);
+  
+  const { data: etablissementsData } = useData('/api/etablissements?limit=100');
+  const etablissements = etablissementsData?.data || etablissementsData?.etablissements || [];
+  
+  const { post: createActivite } = useMutation('/api/programmes-activites');
+  const { patch: updateActivite } = useMutation(initialData ? `/api/programmes-activites/${initialData.id}` : '/api/programmes-activites');
   
   const today = format(new Date(), 'yyyy-MM-dd');
   
@@ -769,20 +742,6 @@ function CreateActivityPanel({
       }
   }, [initialData]);
 
-  // ... fetchEtabs logic ...
-  useEffect(() => {
-      // ... (keep existing fetch logic)
-       const fetchEtabs = async () => {
-         try {
-             const res = await fetch('/api/etablissements?limit=100');
-             if(res.ok) {
-                 const data = await res.json();
-                 setEtablissements(data.data || []);
-             }
-         } catch(e) {}
-       }
-       fetchEtabs();
-  }, []);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -798,13 +757,6 @@ function CreateActivityPanel({
     setError(null);
     setLoading(true);
     try {
-        const url = initialData 
-            ? `/api/programmes-activites/${initialData.id}` 
-            : '/api/programmes-activites';
-        
-        const method = initialData ? 'PATCH' : 'POST';
-
-        // Clean payload: remove empty strings and nulls
         const payload = {
             ...formData,
             recurrenceEndDate: formData.recurrenceEndDate || undefined,
@@ -820,34 +772,28 @@ function CreateActivityPanel({
                 : undefined,
         };
 
-        const res = await fetch(url, {
-            method: method,
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        });
-        
-        const data = await res.json();
-        
-        if (res.ok) {
-            setSuccess(true);
-            setTimeout(() => {
-                onSuccess();
-            }, 2000); // Wait 2s before closing
+        if (initialData) {
+            await updateActivite(payload);
         } else {
-            console.error('API Error:', data);
-            if (data.details && Array.isArray(data.details)) {
-                // Construct a readable error message from Zod issues
-                const detailedError = data.details.map((d: any) => 
-                    `${d.path ? d.path.join('.') + ': ' : ''}${d.message}`
-                ).join(' | ');
-                setError(detailedError);
-            } else {
-                setError(data.message || data.error || "حدث خطأ أثناء حفظ النشاط");
-            }
+            await createActivite(payload);
         }
-    } catch (err) {
+        
+        setSuccess(true);
+        setTimeout(() => {
+            onSuccess();
+        }, 2000); // Wait 2s before closing
+    } catch (err: any) {
         console.error(err);
-        setError("حدث خطأ في الاتصال");
+        const data = err.info || {};
+        if (data.details && Array.isArray(data.details)) {
+            // Construct a readable error message from Zod issues
+            const detailedError = data.details.map((d: any) => 
+                `${d.path ? d.path.join('.') + ': ' : ''}${d.message}`
+            ).join(' | ');
+            setError(detailedError);
+        } else {
+            setError(data.message || data.error || "حدث خطأ أثناء حفظ النشاط");
+        }
     } finally {
         setLoading(false);
     }

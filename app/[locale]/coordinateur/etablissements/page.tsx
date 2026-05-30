@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import {
   Building2,
   Search,
@@ -53,36 +54,13 @@ const SECTEURS_COLORS: Record<string, string> = {
 export default function CoordinateurEtablissementsPage() {
   const t = useTranslations('coordinator.establishments');
   const { data: session } = useSession();
-  const [etablissements, setEtablissements] = useState<Etablissement[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const { data: responseData, isLoading: loading, mutate: refreshData } = useData('/api/etablissements');
+  const etablissements = responseData?.data || responseData?.etablissements || [];
 
-  const fetchEtablissements = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      
-      // Note: Le filtrage par "etablissementsGeres" est maintenant géré automatiquement 
-      // par l'API (/api/etablissements) qui vérifie les données fraîches en BD
-      // pour le coordinateur connecté. Cela évite les problèmes de session obsolète.
-      
-      const res = await fetch(`/api/etablissements?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setEtablissements(data.data || data.etablissements || []);
-      }
-    } catch (error) {
-      console.error('Erreur chargement établissements:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (session) {
-      fetchEtablissements();
-    }
-  }, [fetchEtablissements, session]);
+  const fetchEtablissements = async () => {
+    await refreshData();
+  };
 
   const filteredEtablissements = etablissements.filter(e =>
     e.nom.toLowerCase().includes(search.toLowerCase()) ||

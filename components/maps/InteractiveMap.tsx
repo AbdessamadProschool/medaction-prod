@@ -12,6 +12,7 @@ import annexesGeoData from './data/annexes-geo.json';
 import { getEtabScore, checkUrgency } from '@/lib/scoring';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { useMapFilters } from '@/hooks/useMapFilters';
 
 // Types updated with performance metrics
 interface Etablissement {
@@ -478,244 +479,53 @@ function MapControls({
 }
 
 export default function InteractiveMap({ onEtablissementSelect, initialCenter = DEFAULT_CENTER, initialZoom = DEFAULT_ZOOM, height = 'h-full min-h-[70vh]', mode = 'GOVERNOR' }: MapProps) {
-  const [etablissements, setEtablissements] = useState<Etablissement[]>([]);
-  const [communes, setCommunes] = useState<Commune[]>([]);
-  const [communesGeoJSON, setCommunesGeoJSON] = useState<any>(null);
-  const [annexesGeoJSON, setAnnexesGeoJSON] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedCommune, setSelectedCommune] = useState<number | null>(null);
-  const [selectedAnnexe, setSelectedAnnexe] = useState<number | null>(null); // NEW
-  const [availableAnnexes, setAvailableAnnexes] = useState<any[]>([]); // NEW
-  const [secteurFilters, setSecteurFilters] = useState<Record<string, boolean>>({});
-  const [secteurStats, setSecteurStats] = useState<Record<string, number>>({});
-  const [showPolygons, setShowPolygons] = useState(true);
-  const [selectedEtablissement, setSelectedEtablissement] = useState<Etablissement | null>(null);
-  
-  // New States
-  const [viewMode, setViewMode] = useState<'STANDARD' | 'PERFORMANCE'>('STANDARD');
-  const [hasActivitiesOnly, setHasActivitiesOnly] = useState(false);
-  const [minRating, setMinRating] = useState(0);
-  const [minAbonnements, setMinAbonnements] = useState(0);
-  const [showUrgencies, setShowUrgencies] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedNatures, setSelectedNatures] = useState<Record<string, boolean>>({});
-  
   const t = useTranslations('map_page');
-  
-  // Event Filters
-  const [periodFilter, setPeriodFilter] = useState('ALL'); // ALL, 7D, 15D, 30D
-  const [statusFilter, setStatusFilter] = useState('ALL'); // ALL, EN_COURS, A_VENIR, TERMINEE
+  const [selectedEtablissement, setSelectedEtablissement] = useState<Etablissement | null>(null);
 
-  // Fetch Annexes Effect (NEW)
-  useEffect(() => {
-    if (selectedCommune) {
-        fetch(`/api/annexes?communeId=${selectedCommune}`)
-            .then(res => res.json())
-            .then(json => setAvailableAnnexes(json.data || []));
-    } else {
-        setAvailableAnnexes([]);
-        setSelectedAnnexe(null);
-    }
-  }, [selectedCommune]);
+  const {
+    loading,
+    communes,
+    communesGeoJSON,
+    annexesGeoJSON,
+    availableAnnexes,
+    etablissements,
+    filteredEtablissements,
+    availableNatures,
+    secteurStats,
+    maxPerformanceScore,
+    filters
+  } = useMapFilters(mode);
 
-  // Derive unique natures (types) from CURRENTLY filtered establishments (by sector)
-  const availableNatures = useMemo(() => {
-     const natures = new Set<string>();
-     etablissements.forEach(e => {
-        // Only collect natures/types from establishments that match the current SECTOR filter
-        if (secteurFilters[e.secteur] !== false) {
-           // Prioritize typeEtablissement if available and not empty, otherwise fallback to nature
-           const type = (e.typeEtablissement && e.typeEtablissement.trim() !== "") 
-                        ? e.typeEtablissement 
-                        : e.nature;
-           
-           if (type) natures.add(type);
-        }
-     });
-     return Array.from(natures).sort();
-  }, [etablissements, secteurFilters]);
+  // Pour garder la compatibilité avec MapControls
+  const {
+    selectedCommune, setSelectedCommune,
+    selectedAnnexe, setSelectedAnnexe,
+    secteurFilters, setSecteurFilters,
+    showPolygons, setShowPolygons,
+    viewMode, setViewMode,
+    hasActivitiesOnly, setHasActivitiesOnly,
+    minRating, setMinRating,
+    minAbonnements, setMinAbonnements,
+    showUrgencies, setShowUrgencies,
+    searchQuery, setSearchQuery,
+    selectedNatures, setSelectedNatures,
+    periodFilter, setPeriodFilter,
+    statusFilter, setStatusFilter
+  } = filters;
 
+  const onSecteurToggle = (secteur: string) => {
+      setSecteurFilters(prev => ({
+          ...prev,
+          [secteur]: prev[secteur] === false ? true : false
+      }));
+  };
 
-  const maxPerformanceScore = useMemo(() => {
-    if (etablissements.length === 0) return 100;
-    const max = Math.max(...etablissements.map(e => getEtabScore(e)));
-    return max > 50 ? max : 50; 
-  }, [etablissements]);
-
-  // Filtering
-  const filteredEtablissements = useMemo(() => {
-    return etablissements.filter(etab => {
-      // Basic Filters
-      if (selectedCommune) {
-         // robust filtering: check direct communeId OR annexe's communeId (if linked via annexe)
-         const directMatch = etab.communeId && Number(etab.communeId) === Number(selectedCommune);
-         const annexeMatch = etab.annexeCommuneId && Number(etab.annexeCommuneId) === Number(selectedCommune);
-         
-         if (!directMatch && !annexeMatch) {
-             // Last resort: name matching if IDs missing (legacy support)
-             if (!etab.communeId && !etab.annexeCommuneId && etab.communeNom) {
-                 const commune = communes.find(c => c.id === selectedCommune);
-                 if (commune && etab.communeNom.trim().toLowerCase() !== commune.nom.trim().toLowerCase()) return false;
-             } else {
-                 return false;
-             }
-         }
-      }
-
-      // Annexe Filter
-      if (selectedAnnexe) {
-          // Check direct annexeId
-          if (!etab.annexeId || Number(etab.annexeId) !== Number(selectedAnnexe)) {
-              return false;
-          }
-      }
-
-      if (secteurFilters[etab.secteur] === false) return false;
-      if (hasActivitiesOnly && (!etab.activitesCount || etab.activitesCount === 0)) return false;
-      if ((etab.noteMoyenne || 0) < minRating) return false;
-      if ((etab.abonnementsCount || 0) < minAbonnements) return false;
-      
-      // Search Filter
-      if (searchQuery) {
-         const q = searchQuery.toLowerCase();
-         if (!etab.nom.toLowerCase().includes(q) && !etab.secteur.toLowerCase().includes(q)) return false;
-      }
-
-      // Nature/Type Filter
-      const type = (etab.typeEtablissement && etab.typeEtablissement.trim() !== "") 
-                   ? etab.typeEtablissement 
-                   : etab.nature;
-
-      if (type && selectedNatures[type] === false) return false;
-
-      // -- EVENT FILTERS --
-      const now = new Date();
-      let hasMatchingEvent = false;
-      let checkEvents = periodFilter !== 'ALL' || statusFilter !== 'ALL';
-      
-      if (checkEvents) {
-         // Combine events and activities
-         const allEvents = [...(etab.eventsList || []), ...(etab.activitiesList || [])];
-         
-         if (allEvents.length === 0) return false; // Must have events if filtering by events
-
-         hasMatchingEvent = allEvents.some(evt => {
-            const startStr = evt.dateDebut || evt.date;
-            if (!startStr) return false;
-            const start = new Date(startStr);
-            
-            // Status Check
-            if (statusFilter !== 'ALL') {
-                // Ongoing: EN_COURS (Activity) or EN_ACTION (Event)
-                if (statusFilter === 'EN_COURS' && (evt.statut !== 'EN_COURS' && evt.statut !== 'EN_ACTION')) return false;
-                
-                // Upcoming: PUBLIEE (Event), PLANIFIEE (Activity), or VALIDEE (News/Other legacy)
-                if (statusFilter === 'A_VENIR' && (evt.statut !== 'PUBLIEE' && evt.statut !== 'PLANIFIEE' && evt.statut !== 'VALIDEE')) return false;
-                
-                // Completed: TERMINEE (Activity) or CLOTUREE (Event) or RAPPORT_COMPLETE
-                if (statusFilter === 'TERMINEE' && (evt.statut !== 'TERMINEE' && evt.statut !== 'CLOTUREE' && evt.statut !== 'RAPPORT_COMPLETE')) return false;
-            }
-            
-            // Period Check
-            if (periodFilter !== 'ALL') {
-                const diffTime = start.getTime() - now.getTime(); // Signed difference
-                // If filtering for "Upcoming" (7D/15D/30D), we want positive diff or very slightly negative (today)
-                
-                // Usually "Prochains 7 jours" means Start Date is between Now and Now + 7 days.
-                // Or if it started in past but ends in future (Ongoing). 
-                // For simplicity: Start Date >= Now AND Start Date <= Now + X
-                // OR Event is occurring now (Start <= Now <= End).
-                
-                // Simplified "Upcoming" check:
-                const daysUntilStart = diffTime / (1000 * 60 * 60 * 24);
-                
-                if (daysUntilStart < -1) return false; // Already started > 1 day ago? Maybe we want "Current" too. 
-                // Let's stick to "Start Date is coming up OR is today"
-                
-                if (periodFilter === '7D' && daysUntilStart > 7) return false;
-                if (periodFilter === '15D' && daysUntilStart > 15) return false;
-                if (periodFilter === '30D' && daysUntilStart > 30) return false;
-                if (periodFilter === '60D' && daysUntilStart > 60) return false;
-                if (periodFilter === '180D' && daysUntilStart > 180) return false;
-                if (periodFilter === '365D' && daysUntilStart > 365) return false;
-            }
-            return true;
-         });
-
-         if (!hasMatchingEvent) return false;
-      }
-
-
-      // View Mode Filters
-      const isUrgent = checkUrgency(etab);
-      
-      // If "Urgency" toggle is ON, ONLY show urgent items
-      if (showUrgencies && !isUrgent) return false;
-
-      return true;
-    });
-  }, [etablissements, selectedCommune, selectedAnnexe, secteurFilters, communes, hasActivitiesOnly, showUrgencies, minRating, minAbonnements, searchQuery, selectedNatures, periodFilter, statusFilter]);
-
-  // Update Sector Stats when etablissements change
-  useEffect(() => {
-      const stats: Record<string, number> = {};
-      // Calculate based on all establishments to show total potential counts in filter
-      etablissements.forEach(e => {
-          stats[e.secteur] = (stats[e.secteur] || 0) + 1;
-      });
-      setSecteurStats(stats);
-  }, [etablissements]);
-
-  // Fetch Data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [etabRes, communeRes] = await Promise.all([
-          fetch('/api/map/etablissements'),
-          fetch('/api/map/communes')
-        ]);
-
-        if (etabRes.ok) {
-           const data = await etabRes.json();
-           const extractedEtabs = (data.geojson?.features || []).map((f: any) => {
-               // Normalize Sector Name on Client Side to fix data inconsistencies
-               let s = (f.properties.secteur || 'AUTRE').toUpperCase().trim();
-               if (s.includes('CULTURE') || s.includes('JEUNES') || s.includes('BIBLIO')) s = 'CULTUREL';
-               else if (s.includes('SPORT')) s = 'SPORT';
-               else if (s.includes('SANTE') || s.includes('MEDECIN') || s.includes('HOPITAL')) s = 'SANTE';
-               else if (s.includes('SOCIAL') || s.includes('FEMININ') || s.includes('FOYER')) s = 'SOCIAL';
-               else if (s.includes('EDUC') || s.includes('ECOLE') || s.includes('LYCEE')) s = 'EDUCATION';
-               else if (!['AUTRE', 'CULTUREL', 'SPORT', 'SANTE', 'SOCIAL', 'EDUCATION'].includes(s)) s = 'AUTRE';
-
-               return {
-                   ...f.properties,
-                   secteur: s,
-                   latitude: f.geometry.coordinates[1],
-                   longitude: f.geometry.coordinates[0]
-               };
-           });
-           setEtablissements(extractedEtabs);
-        }
-        
-        // utilizing imported data for annexes
-        setAnnexesGeoJSON(annexesGeoData);
-        
-        if (communeRes.ok) {
-           const data = await communeRes.json();
-           setCommunes(data.communes || []);
-           setCommunesGeoJSON(data.geojson || null);
-        } else {
-             setCommunes([]);
-        }
-
-      } catch (err) {
-        console.error("Map Data Error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const onNatureToggle = (nature: string) => {
+      setSelectedNatures(prev => ({
+          ...prev,
+          [nature]: prev[nature] === false ? true : false
+      }));
+  };
 
   const router = useRouter();
 
@@ -775,7 +585,7 @@ export default function InteractiveMap({ onEtablissementSelect, initialCenter = 
          {/* Annexes GeoJSON Layer - Always visible if available, or toggled? Usually visible in background */}
          {annexesGeoJSON && (
             <GeoJSON 
-              data={annexesGeoJSON} 
+              data={annexesGeoJSON as any} 
               style={{ color: '#64748b', weight: 2, fillOpacity: 0, dashArray: '5,5', opacity: 0.5 }} 
               onEachFeature={(feature, layer) => {
                  if (feature.properties && feature.properties.nom) {
@@ -828,7 +638,7 @@ export default function InteractiveMap({ onEtablissementSelect, initialCenter = 
             />
          )}
 
-        {filteredEtablissements.map((etab) => {
+        {filteredEtablissements.map((etab: Etablissement) => {
             const score = getEtabScore(etab);
             const isUrgent = checkUrgency(etab);
             

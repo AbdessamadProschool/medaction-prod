@@ -30,6 +30,8 @@ import { GovButton } from '@/components/ui/GovButton';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { cn } from '@/lib/utils';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface User {
   id: number;
@@ -85,9 +87,8 @@ const ROLE_COLORS: Record<string, string> = {
 export default function UsersPage() {
   const t = useTranslations('admin.users_page');
   const locale = useLocale();
-  const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 10, total: 0, totalPages: 0 });
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const limit = 10;
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<'' | 'true' | 'false'>('');
@@ -96,85 +97,58 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({
-        page: pagination.page.toString(),
-        limit: pagination.limit.toString(),
-        ...(search && { search }),
-        ...(roleFilter && { role: roleFilter }),
-        ...(statusFilter && { isActive: statusFilter }),
-      });
+  const actionMutation = useMutation();
 
-      const res = await fetch(`/api/users?${params}`);
-      if (res.ok) {
-        const json = await res.json();
-        let usersArray: User[] = [];
-        let paginationData = json.pagination || (json.success ? json.data?.pagination : null);
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+    ...(roleFilter && { role: roleFilter }),
+    ...(statusFilter && { isActive: statusFilter }),
+  });
 
-        if (json.success) {
-          if (Array.isArray(json.data)) {
-            usersArray = json.data;
-            paginationData = json.pagination;
-          } else if (json.data?.users) {
-            usersArray = json.data.users;
-            paginationData = json.data.pagination;
-          } else if (json.data?.data && Array.isArray(json.data.data)) {
-            usersArray = json.data.data;
-          }
-        } else {
-          usersArray = json.users || json.data || (Array.isArray(json) ? json : []);
-        }
+  const { data: responseData, isLoading: loading, mutate: fetchUsers } = useData(`/api/users?${queryParams.toString()}`);
 
-        setUsers(usersArray);
-        if (paginationData) {
-          setPagination(prev => ({
-            ...prev,
-            total: paginationData.total ?? prev.total,
-            totalPages: paginationData.totalPages ?? paginationData.pages ?? prev.totalPages,
-          }));
-        }
+  let users: User[] = [];
+  let paginationData: any = null;
+
+  if (responseData) {
+    if (responseData.success !== undefined) {
+      if (Array.isArray(responseData.data)) {
+        users = responseData.data;
+        paginationData = responseData.pagination;
+      } else if (responseData.data?.users) {
+        users = responseData.data.users;
+        paginationData = responseData.data.pagination;
+      } else if (responseData.data?.data && Array.isArray(responseData.data.data)) {
+        users = responseData.data.data;
       }
-    } catch (error) {
-      console.error('Erreur chargement utilisateurs:', error);
-      toast.error(t('messages.error'));
-    } finally {
-      setLoading(false);
+    } else {
+      users = responseData.users || responseData.data || (Array.isArray(responseData) ? responseData : []);
+      paginationData = responseData.pagination;
     }
-  }, [pagination.page, pagination.limit, search, roleFilter, statusFilter, t]);
+  }
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      fetchUsers();
-    }, 300);
-    return () => clearTimeout(debounce);
-  }, [fetchUsers]);
+  const totalPages = paginationData?.totalPages ?? paginationData?.pages ?? 1;
+  const total = paginationData?.total ?? 0;
 
   const handleToggleStatus = async (user: User) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/users/${user.id}/status`, {
+        await actionMutation.mutate(`/api/users/${user.id}/status`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isActive: !user.isActive }),
+          data: { isActive: !user.isActive },
         });
-
-        if (res.ok) {
-          fetchUsers();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await fetchUsers();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
     toast.promise(promise, {
       loading: t('messages.updating_status'),
-      success: (data) => {
+      success: () => {
         const statusText = !user.isActive ? t('statuses.activated') : t('statuses.deactivated');
         return t('messages.status_changed', { status: statusText });
       },
@@ -190,16 +164,11 @@ export default function UsersPage() {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/users/${user.id}`, { method: 'DELETE' });
-        if (res.ok) {
-          fetchUsers();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await actionMutation.mutate(`/api/users/${user.id}`, { method: 'DELETE' });
+        await fetchUsers();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -224,20 +193,12 @@ export default function UsersPage() {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/admin/users/${user.id}/reset-password`, {
+        const data = await actionMutation.mutate(`/api/admin/users/${user.id}/reset-password`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
         });
-
-        if (res.ok) {
-          const data = await res.json();
-          resolve(data.generatedPassword);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        resolve(data.generatedPassword);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -271,7 +232,7 @@ export default function UsersPage() {
                   {t('page_title')}
                 </h1>
                 <p className="text-muted-foreground text-sm font-medium">
-                  {t('total_users', { count: pagination.total })}
+                  {t('total_users', { count: total })}
                 </p>
               </div>
             </div>
@@ -517,34 +478,33 @@ export default function UsersPage() {
             </tbody>
           </GovTable>
 
-            {/* Pagination Container */}
-            {pagination.totalPages > 1 && (
+            {totalPages > 1 && (
               <div className="px-8 py-8 bg-muted/20 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6">
                 <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest text-center sm:text-left">
                   {t('pagination', { 
-                    start: (pagination.page - 1) * pagination.limit + 1, 
-                    end: Math.min(pagination.page * pagination.limit, pagination.total), 
-                    total: pagination.total 
+                    start: (page - 1) * limit + 1, 
+                    end: Math.min(page * limit, total), 
+                    total: total 
                   })}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))}
-                    disabled={pagination.page === 1}
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
                     className="p-3 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
                   >
                     <ChevronLeft size={18} />
                   </button>
                   <div className="flex items-center gap-1.5 px-1.5">
-                    {[...Array(pagination.totalPages)].map((_, i) => {
+                    {[...Array(totalPages)].map((_, i) => {
                       const pageNum = i + 1;
-                      if (pagination.totalPages > 7 && Math.abs(pagination.page - pageNum) > 2 && pageNum !== 1 && pageNum !== pagination.totalPages) return null;
+                      if (totalPages > 7 && Math.abs(page - pageNum) > 2 && pageNum !== 1 && pageNum !== totalPages) return null;
                       return (
                         <button
                           key={pageNum}
-                          onClick={() => setPagination(p => ({ ...p, page: pageNum }))}
+                          onClick={() => setPage(pageNum)}
                           className={`min-w-[40px] h-10 rounded-xl text-xs font-black transition-all border shadow-sm ${
-                            pagination.page === pageNum
+                            page === pageNum
                               ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]'
                               : 'bg-card text-foreground border-border hover:bg-muted'
                           }`}
@@ -555,8 +515,8 @@ export default function UsersPage() {
                     })}
                   </div>
                   <button
-                    onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))}
-                    disabled={pagination.page === pagination.totalPages}
+                    onClick={() => setPage(page + 1)}
+                    disabled={page === totalPages}
                     className="p-3 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
                   >
                     <ChevronRight size={18} />

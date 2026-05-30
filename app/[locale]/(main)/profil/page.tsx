@@ -10,6 +10,8 @@ import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 // Schémas de validation
 // Types definitions
@@ -57,11 +59,17 @@ export default function ProfilPage() {
   const t = useTranslations('profile_page');
   const { data: session, update: updateSession } = useSession();
   const [activeTab, setActiveTab] = useState('infos');
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Data fetching
+  const { data: profile, isLoading, mutate: mutateProfile } = useData(session ? '/api/users/me' : null);
+
+  // Mutations
+  const { patch: updateProfileApi } = useMutation('/api/users/me');
+  const { post: updatePasswordApi } = useMutation('/api/users/me/password');
+  const { post: uploadPhotoApi, del: deletePhotoApi } = useMutation('/api/users/me/photo');
 
   const profileSchema = useMemo(() => z.object({
     prenom: z.string().min(2, t('errors.min_2')),
@@ -97,31 +105,16 @@ export default function ProfilPage() {
     resolver: zodResolver(passwordSchema),
   });
 
-  // Charger le profil
+  // Charger le profil (réinitialiser le form)
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch('/api/users/me');
-        const data = await res.json();
-        if (data.success) {
-          setProfile(data.data);
-          profileForm.reset({
-            prenom: data.data.prenom,
-            nom: data.data.nom,
-            telephone: data.data.telephone || '',
-          });
-        }
-      } catch (error) {
-        console.error('Erreur chargement profil:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (session) {
-      fetchProfile();
+    if (profile && !isLoading) {
+      profileForm.reset({
+        prenom: profile.prenom,
+        nom: profile.nom,
+        telephone: profile.telephone || '',
+      });
     }
-  }, [session, profileForm]);
+  }, [profile, isLoading, profileForm]);
 
   // Message auto-hide
   useEffect(() => {
@@ -135,22 +128,12 @@ export default function ProfilPage() {
   const handleProfileSubmit = async (data: ProfileInput) => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/users/me', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      
-      if (result.success) {
-        setProfile((prev) => prev ? { ...prev, ...result.data } : null);
-        setMessage({ type: 'success', text: t('messages.success') });
-        await updateSession();
-      } else {
-        setMessage({ type: 'error', text: result.message });
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('messages.error_update') });
+      const result = await updateProfileApi(data);
+      mutateProfile({ ...profile, ...result }, false);
+      setMessage({ type: 'success', text: t('messages.success') });
+      await updateSession();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
     } finally {
       setIsSaving(false);
     }
@@ -160,21 +143,11 @@ export default function ProfilPage() {
   const handlePasswordSubmit = async (data: PasswordInput) => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/users/me/password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      
-      if (result.success) {
-        passwordForm.reset();
-        setMessage({ type: 'success', text: t('messages.password_success') });
-      } else {
-        setMessage({ type: 'error', text: result.message });
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('messages.error_update') });
+      await updatePasswordApi(data);
+      passwordForm.reset();
+      setMessage({ type: 'success', text: t('messages.password_success') });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
     } finally {
       setIsSaving(false);
     }
@@ -189,37 +162,24 @@ export default function ProfilPage() {
     formData.append('photo', file);
 
     try {
-      const res = await fetch('/api/users/me/photo', {
-        method: 'POST',
-        body: formData,
-      });
-      const result = await res.json();
-      
-      if (result.success) {
-        setProfile((prev) => prev ? { ...prev, photo: result.data.photo } : null);
-        setMessage({ type: 'success', text: t('photo.update_success') });
-        await updateSession();
-      } else {
-        setMessage({ type: 'error', text: result.message });
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('errors.upload_fail') });
+      const result = await uploadPhotoApi(formData);
+      mutateProfile({ ...profile, photo: result.photo }, false);
+      setMessage({ type: 'success', text: t('photo.update_success') });
+      await updateSession();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || t('errors.upload_fail') });
     }
   };
 
   // Supprimer photo
   const handlePhotoDelete = async () => {
     try {
-      const res = await fetch('/api/users/me/photo', { method: 'DELETE' });
-      const result = await res.json();
-      
-      if (result.success) {
-        setProfile((prev) => prev ? { ...prev, photo: null } : null);
-        setMessage({ type: 'success', text: t('photo.delete_success') });
-        await updateSession();
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('errors.delete_fail') });
+      await deletePhotoApi();
+      mutateProfile({ ...profile, photo: null }, false);
+      setMessage({ type: 'success', text: t('photo.delete_success') });
+      await updateSession();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || t('errors.delete_fail') });
     }
   };
 
@@ -227,21 +187,11 @@ export default function ProfilPage() {
   const handlePreferencesSubmit = async (newPrefs: any) => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/users/me', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ preferences: newPrefs }),
-      });
-      const result = await res.json();
-      
-      if (result.success) {
-        setProfile((prev) => prev ? { ...prev, preferences: result.data.preferences } : null);
-        setMessage({ type: 'success', text: t('messages.success') });
-      } else {
-        setMessage({ type: 'error', text: result.message });
-      }
-    } catch {
-      setMessage({ type: 'error', text: t('messages.error_update') });
+      const result = await updateProfileApi({ preferences: newPrefs });
+      mutateProfile({ ...profile, preferences: result.preferences }, false);
+      setMessage({ type: 'success', text: t('messages.success') });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
     } finally {
       setIsSaving(false);
     }
@@ -254,10 +204,7 @@ export default function ProfilPage() {
       [id]: checked
     };
     // Mettre à jour l'état local pour un feedback immédiat
-    setProfile(prev => prev ? { ...prev, preferences: newPrefs } : null);
-    // Optionnel: On pourrait appeler handlePreferencesSubmit ici pour sauvegarde automatique
-    // ou laisser le bouton "Sauvegarder" faire le travail.
-    // L'utilisateur a demandé que le bouton fonctionne, donc on sauvegarde via le bouton.
+    mutateProfile({ ...profile, preferences: newPrefs }, false);
   };
 
 
@@ -376,7 +323,7 @@ export default function ProfilPage() {
                       fill
                       className="object-cover"
                       onError={() => {
-                        if (profile) setProfile({ ...profile, photo: null });
+                        if (profile) mutateProfile({ ...profile, photo: null }, false);
                       }}
                     />
                   ) : (

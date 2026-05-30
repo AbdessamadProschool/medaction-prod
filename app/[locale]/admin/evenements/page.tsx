@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -38,6 +38,8 @@ import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovInput, GovSelect } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Evenement {
   id: number;
@@ -96,15 +98,10 @@ function AdminEvenementsContent() {
   const tSectors = useTranslations('admin.users_page.sectors');
   const locale = useLocale();
   
-  const [evenements, setEvenements] = useState<Evenement[]>([]);
-  const [communes, setCommunes] = useState<{ id: number; nom: string; nomArabe?: string }[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
   // Pagination
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filtres
   const searchParams = useSearchParams();
@@ -118,14 +115,9 @@ function AdminEvenementsContent() {
     dateFin: searchParams.get('dateFin') || '',
   });
   
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    enAttente: 0,
-    publiees: 0,
-    enCours: 0,
-    cloturees: 0,
-  });
+
+
+  const actionMutation = useMutation();
 
   // Modal création et détails
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -140,62 +132,35 @@ function AdminEvenementsContent() {
   }, [status, router]);
 
   // Charger communes
-  useEffect(() => {
-    const loadCommunes = async () => {
-      try {
-        const res = await fetch('/api/map/communes');
-        if (res.ok) {
-          const data = await res.json();
-          setCommunes(data.communes || []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement communes:', error);
-      }
-    };
-    loadCommunes();
-  }, []);
+  const { data: communesData } = useData('/api/map/communes');
+  const communes = communesData?.communes || [];
 
   // Charger les événements
-  const loadEvenements = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '15');
-      
-      if (filters.search) params.set('search', filters.search);
-      if (filters.statut) params.set('statut', filters.statut);
-      if (filters.secteur) params.set('secteur', filters.secteur);
-      if (filters.communeId) params.set('communeId', filters.communeId);
-      
-      const res = await fetch(`/api/evenements?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setEvenements(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Calculer stats depuis les données reçues
-        const allEvts = data.data || [];
-        setStats({
-          total: data.pagination?.total || 0,
-          enAttente: allEvts.filter((e: Evenement) => e.statut === 'EN_ATTENTE_VALIDATION').length,
-          publiees: allEvts.filter((e: Evenement) => e.statut === 'PUBLIEE').length,
-          enCours: allEvts.filter((e: Evenement) => e.statut === 'EN_ACTION').length,
-          cloturees: allEvts.filter((e: Evenement) => e.statut === 'CLOTUREE').length,
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [page, filters]);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '15');
+  
+  if (filters.search) queryParams.set('search', filters.search);
+  if (filters.statut) queryParams.set('statut', filters.statut);
+  if (filters.secteur) queryParams.set('secteur', filters.secteur);
+  if (filters.communeId) queryParams.set('communeId', filters.communeId);
+  
+  const { data: evenementsData, isLoading: loading, mutate: loadEvenements } = useData(`/api/evenements?${queryParams.toString()}`);
 
-  useEffect(() => {
-    loadEvenements();
-  }, [loadEvenements]);
+  const evenements = evenementsData?.data || [];
+  const totalPages = evenementsData?.pagination?.totalPages || 1;
+  const total = evenementsData?.pagination?.total || 0;
+
+  const stats = useMemo(() => {
+    const allEvts = evenementsData?.data || [];
+    return {
+      total: evenementsData?.pagination?.total || 0,
+      enAttente: allEvts.filter((e: Evenement) => e.statut === 'EN_ATTENTE_VALIDATION').length,
+      publiees: allEvts.filter((e: Evenement) => e.statut === 'PUBLIEE').length,
+      enCours: allEvts.filter((e: Evenement) => e.statut === 'EN_ACTION').length,
+      cloturees: allEvts.filter((e: Evenement) => e.statut === 'CLOTUREE').length,
+    };
+  }, [evenementsData]);
 
   // Reset filtres
   const resetFilters = () => {
@@ -225,24 +190,18 @@ function AdminEvenementsContent() {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/evenements/${id}/valider`, {
+        await actionMutation.mutate(`/api/evenements/${id}/valider`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             decision: action === 'valider' ? 'PUBLIEE' : 'REJETEE',
             motifRejet: motifRejet,
-          }),
+          },
         });
         
-        if (res.ok) {
-          loadEvenements();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || t('messages.error')));
-        }
-      } catch (error) {
-        reject(new Error(t('messages.error')));
+        await loadEvenements();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
       }
     });
 
@@ -258,15 +217,11 @@ function AdminEvenementsContent() {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/evenements/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-          loadEvenements();
-          resolve(true);
-        } else {
-          reject(new Error('Erreur lors de la suppression'));
-        }
-      } catch (e) {
-        reject(new Error('Erreur de connexion'));
+        await actionMutation.mutate(`/api/evenements/${id}`, { method: 'DELETE' });
+        await loadEvenements();
+        resolve(true);
+      } catch (e: any) {
+        reject(new Error(e.message || 'Erreur lors de la suppression'));
       }
     });
 
@@ -318,11 +273,15 @@ function AdminEvenementsContent() {
         
         <div className="flex flex-wrap items-center gap-3">
           <GovButton
-            onClick={loadEvenements}
-            disabled={refreshing}
+            onClick={async () => {
+              setRefreshing(true);
+              await loadEvenements();
+              setRefreshing(false);
+            }}
+            disabled={refreshing || loading}
             variant="outline"
             size="icon"
-            loading={refreshing}
+            loading={refreshing || loading}
             title={t('refresh')}
           />
           <GovButton

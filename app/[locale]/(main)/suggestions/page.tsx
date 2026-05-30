@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import {
   Lightbulb,
   Plus,
@@ -73,47 +74,30 @@ export default function SuggestionsPage() {
   const t = useTranslations('suggestions_page');
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(searchParams.get('new') === 'true');
-  
   const [statutFilter, setStatutFilter] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [stats, setStats] = useState<Record<string, number>>({});
+
+  // ECC: useData
+  const queryStr = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    if (statutFilter) params.set('statut', statutFilter);
+    if (search) params.set('search', search);
+    return params.toString();
+  }, [page, statutFilter, search]);
+
+  const { data: responseData, isLoading: loading, mutate: refreshSuggestions } = useData(`/api/suggestions?${queryStr}`);
+  const suggestions: Suggestion[] = responseData?.data || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
+  const stats: Record<string, number> = responseData?.stats?.parStatut || {};
 
   const fetchSuggestions = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (statutFilter) params.set('statut', statutFilter);
-      if (search) params.set('search', search);
-
-      const res = await fetch(`/api/suggestions?${params.toString()}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestions(data.data);
-        setTotalPages(data.pagination.totalPages);
-        setTotal(data.pagination.total);
-        setStats(data.stats.parStatut || {});
-      }
-    } catch (error) {
-      console.error('Erreur chargement suggestions:', error);
-    } finally {
-      setLoading(false);
-    }
+    await refreshSuggestions();
   };
-
-  useEffect(() => { fetchSuggestions(); }, [page, statutFilter]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => { setPage(1); fetchSuggestions(); }, 500);
-    return () => clearTimeout(timer);
-  }, [search]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {

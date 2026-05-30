@@ -25,6 +25,8 @@ import {
 import { toast } from 'sonner';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Actualite {
   id: number;
@@ -58,8 +60,8 @@ export default function ModifierActualitePage() {
   const tNewsPage = useTranslations('admin.news_page');
   const t = useTranslations('admin.news');
   
-  const [actualite, setActualite] = useState<Actualite | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: actualite, isLoading: loading, mutate: mutateActualite } = useData<Actualite>(id ? `/api/actualites/${id}` : null);
+  const actionMutation = useMutation();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   
@@ -74,37 +76,18 @@ export default function ModifierActualitePage() {
   });
 
   useEffect(() => {
-    if (id) {
-      fetchActualite();
-    }
-  }, [id]);
-
-  const fetchActualite = async () => {
-    try {
-      const res = await fetch(`/api/actualites/${id}`);
-      if (!res.ok) throw new Error('Actualité non trouvée');
-      
-      const data = await res.json();
-      const item = data.data || data;
-      setActualite(item);
-      
+    if (actualite) {
       setFormData({
-        titre: item.titre || '',
-        description: item.description || '',
-        contenu: item.contenu || '',
-        categorie: item.categorie || '',
-        tags: (item.tags || []).join(', '),
-        isPublie: item.isPublie || false,
-        isValide: item.isValide || false,
+        titre: actualite.titre || '',
+        description: actualite.description || '',
+        contenu: actualite.contenu || '',
+        categorie: actualite.categorie || '',
+        tags: (actualite.tags || []).join(', '),
+        isPublie: actualite.isPublie || false,
+        isValide: actualite.isValide || false,
       });
-    } catch (error) {
-      console.error('Erreur chargement actualité:', error);
-      toast.error(t('actions.update_error'));
-      router.push('/admin/actualites');
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [actualite]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,33 +100,21 @@ export default function ModifierActualitePage() {
           .map(t => t.trim())
           .filter(Boolean);
         
-        const res = await fetch(`/api/actualites/${id}`, {
+        await actionMutation.mutate(`/api/actualites/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...formData,
             tags: tagsArray,
             statut: formData.isPublie ? 'PUBLIEE' : (formData.isValide ? 'VALIDEE' : 'EN_ATTENTE_VALIDATION'),
             datePublication: formData.isPublie ? new Date().toISOString() : null,
-          }),
-        });
-        
-        const result = await res.json();
-        
-        if (!res.ok) {
-          if (result.error?.details) {
-            reject(new Error(result.error.details.map((d: any) => d.message).join(', ')));
-          } else {
-            reject(new Error(result.error?.message || t('actions.update_error')));
           }
-          return;
-        }
+        });
         
         resolve(true);
         router.push('/admin/actualites');
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur sauvegarde:', error);
-        reject(new Error(t('actions.update_error')));
+        reject(new Error(error.message || t('actions.update_error')));
       } finally {
         setSaving(false);
       }
@@ -161,18 +132,11 @@ export default function ModifierActualitePage() {
     
     setDeleting(true);
     try {
-      const res = await fetch(`/api/actualites/${id}`, { method: 'DELETE' });
-      
-      if (!res.ok) {
-        const result = await res.json();
-        toast.error(result.error?.message || t('actions.delete_error'));
-        return;
-      }
-      
+      await actionMutation.mutate(`/api/actualites/${id}`, { method: 'DELETE' });
       toast.success(t('actions.delete_success'));
       router.push('/admin/actualites');
-    } catch (error) {
-      toast.error(t('actions.delete_error'));
+    } catch (error: any) {
+      toast.error(error.message || t('actions.delete_error'));
     } finally {
       setDeleting(false);
     }
@@ -180,18 +144,15 @@ export default function ModifierActualitePage() {
 
   const handleValidate = async (validate: boolean) => {
     try {
-      const res = await fetch(`/api/actualites/${id}/valider`, {
+      await actionMutation.mutate(`/api/actualites/${id}/valider`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isValide: validate }),
+        data: { isValide: validate },
       });
       
-      if (res.ok) {
-        toast.success(validate ? t('actions.validate_success') : t('actions.reject_success'));
-        fetchActualite();
-      }
-    } catch (error) {
-      toast.error(t('actions.update_error'));
+      toast.success(validate ? t('actions.validate_success') : t('actions.reject_success'));
+      mutateActualite();
+    } catch (error: any) {
+      toast.error(error.message || t('actions.update_error'));
     }
   };
 

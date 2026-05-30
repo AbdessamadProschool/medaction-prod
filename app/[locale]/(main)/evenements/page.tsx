@@ -12,6 +12,7 @@ import {
   Search, Filter, Calendar, MapPin, List, LayoutGrid, X, 
   PlayCircle, CheckCircle2, Trophy, GraduationCap, Hospital, HeartHandshake, Drama, Building2
 } from 'lucide-react';
+import { useData } from '@/hooks/use-data';
 
 // Interfaces
 interface Evenement {
@@ -57,53 +58,34 @@ function EvenementsContent() {
   const searchParams = useSearchParams();
 
   // State
-  const [events, setEvents] = useState<Evenement[]>([]);
-  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
 
-  // URL Params
   const page = parseInt(searchParams.get('page') || '1');
   const search = searchParams.get('search') || '';
   const secteur = searchParams.get('secteur') || '';
   const statusParam = searchParams.get('status') || 'all';
 
-  // Stats
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
+  // Construct query params for useData
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '9');
+  
+  if (search) queryParams.set('search', search);
+  if (secteur) queryParams.set('secteur', secteur);
+  
+  // Status handling logic
+  if (statusParam === 'upcoming') queryParams.set('upcoming', 'true');
+  else if (statusParam !== 'all') queryParams.set('statut', statusParam);
 
-  // Fetch Logic
-  const fetchEvents = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '9');
-      
-      if (search) params.set('search', search);
-      if (secteur) params.set('secteur', secteur);
-      
-      // Status handling logic
-      if (statusParam === 'upcoming') params.set('upcoming', 'true');
-      else if (statusParam !== 'all') params.set('statut', statusParam);
-
-      const res = await fetch(`/api/evenements?${params.toString()}`);
-      const json = await res.json();
-      
-      setEvents(json.data || []);
-      setTotalPages(json.pagination?.totalPages || 1);
-      setTotal(json.pagination?.total || 0);
-
-    } catch (error) {
-      console.error('Erreur chargement événements:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search, secteur, statusParam]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+  // Data fetching using useData
+  const { data: eventsResponse, isLoading: loading } = useData(`/api/evenements?${queryParams.toString()}`);
+  
+  // Handle response structure
+  const events = Array.isArray(eventsResponse) ? eventsResponse : eventsResponse?.data || [];
+  const pagination = eventsResponse?.pagination || eventsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
+  const totalPages = pagination.totalPages || 1;
+  const total = pagination.total || 0;
 
   // Handlers
   const updateFilter = (key: string, value: string) => {

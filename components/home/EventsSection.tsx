@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { Calendar, Loader2 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 
 interface Evenement {
   id: number;
@@ -54,8 +55,10 @@ export default function EventsSection() {
   const locale = useLocale();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [evenements, setEvenements] = useState<Evenement[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  // Data Fetching avec le hook standard ECC
+  const { data, isLoading: loading } = useData('/api/evenements?limit=10');
+  const evenements = data || [];
 
   // Date formatting functions that use locale
   const formatDate = (dateStr: string): string => {
@@ -103,26 +106,7 @@ export default function EventsSection() {
     }
   };
 
-  // Récupérer les événements depuis l'API
-  useEffect(() => {
-    const fetchEvenements = async () => {
-      try {
-        // Récupérer tous les événements publiés (triés par date)
-        const response = await fetch('/api/evenements?limit=10');
-        if (response.ok) {
-          const json = await response.json();
-          // L'API retourne { data: [...], pagination: {...} }
-          setEvenements(Array.isArray(json.data) ? json.data : []);
-        }
-      } catch (error) {
-        console.error('Erreur chargement événements:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvenements();
-  }, []);
+  // Data est géré par useData (SWR)
 
   // Auto-scroll infini
   useEffect(() => {

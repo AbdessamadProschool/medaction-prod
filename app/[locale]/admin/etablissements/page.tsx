@@ -36,6 +36,8 @@ import { GovButton } from '@/components/ui/GovButton';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Etablissement {
   id: number;
@@ -80,11 +82,7 @@ export default function AdminEtablissementsPage() {
   const tSectors = useTranslations('admin.users_page.sectors');
   const locale = useLocale();
 
-  const [etablissements, setEtablissements] = useState<Etablissement[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
   // Filters
   const [search, setSearch] = useState('');
@@ -97,54 +95,31 @@ export default function AdminEtablissementsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    valides: 0,
-    publies: 0,
-    enAttente: 0,
-    averageRating: 0,
-  });
+  // Mutations
+  const actionMutation = useMutation();
+  const bulkMutation = useMutation('/api/etablissements/bulk');
 
-  const fetchEtablissements = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      params.set('includeNonPublie', 'true');
-      if (search) params.set('search', search);
-      if (secteurFilter) params.set('secteur', secteurFilter);
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '12');
+  queryParams.set('includeNonPublie', 'true');
+  if (search) queryParams.set('search', search);
+  if (secteurFilter) queryParams.set('secteur', secteurFilter);
 
-      const res = await fetch(`/api/etablissements?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setEtablissements(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-        
-        // Calculate stats
-        const all = data.data || [];
-        setStats({
-          total: data.pagination?.total || 0,
-          valides: all.filter((e: Etablissement) => e.isValide).length,
-          publies: all.filter((e: Etablissement) => e.isPublie).length,
-          enAttente: all.filter((e: Etablissement) => !e.isValide).length,
-          averageRating: all.reduce((acc: number, e: Etablissement) => acc + e.noteMoyenne, 0) / (all.length || 1),
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement établissements:', error);
-      toast.error(t('messages.error'));
-    } finally {
-      setLoading(false);
-    }
-  }, [page, search, secteurFilter, t]);
+  const { data: etablissementsData, isLoading: loading, mutate: fetchEtablissements } = useData(`/api/etablissements?${queryParams.toString()}`);
+  
+  const etablissements = etablissementsData?.data || [];
+  const pagination = etablissementsData?.pagination || etablissementsData?.meta?.pagination || { totalPages: 1, total: 0 };
+  const totalPages = pagination.totalPages || 1;
+  const total = pagination.total || 0;
 
-  useEffect(() => {
-    const debounce = setTimeout(fetchEtablissements, 300);
-    return () => clearTimeout(debounce);
-  }, [fetchEtablissements]);
+  const stats = {
+    total: total,
+    valides: etablissements.filter((e: Etablissement) => e.isValide).length,
+    publies: etablissements.filter((e: Etablissement) => e.isPublie).length,
+    enAttente: etablissements.filter((e: Etablissement) => !e.isValide).length,
+    averageRating: etablissements.length > 0 ? etablissements.reduce((acc: number, e: Etablissement) => acc + e.noteMoyenne, 0) / etablissements.length : 0,
+  };
 
   const handleValidate = async (id: number, action: 'valider' | 'publier' | 'misEnAvant') => {
     setActionLoading(`${action}-${id}`);
@@ -152,31 +127,25 @@ export default function AdminEtablissementsPage() {
       const body: { isValide?: boolean; isPublie?: boolean; isMisEnAvant?: boolean } = {};
       
       if (action === 'valider') {
-        const etab = etablissements.find(e => e.id === id);
+        const etab = etablissements.find((e: Etablissement) => e.id === id);
         body.isValide = !etab?.isValide;
       } else if (action === 'publier') {
-        const etab = etablissements.find(e => e.id === id);
+        const etab = etablissements.find((e: Etablissement) => e.id === id);
         body.isPublie = !etab?.isPublie;
       } else if (action === 'misEnAvant') {
-        const etab = etablissements.find(e => e.id === id);
+        const etab = etablissements.find((e: Etablissement) => e.id === id);
         body.isMisEnAvant = !etab?.isMisEnAvant;
       }
 
-      const res = await fetch(`/api/etablissements/${id}/valider`, {
+      await actionMutation.mutate(`/api/etablissements/${id}/valider`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        data: body,
       });
 
-      if (res.ok) {
-        toast.success(t('messages.updated'));
-        fetchEtablissements();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || t('messages.error'));
-      }
-    } catch (error) {
-      toast.error(t('messages.error'));
+      toast.success(t('messages.updated'));
+      await fetchEtablissements();
+    } catch (error: any) {
+      toast.error(error.message || t('messages.error'));
     } finally {
       setActionLoading(null);
     }
@@ -187,17 +156,12 @@ export default function AdminEtablissementsPage() {
     
     setActionLoading(`delete-${id}`);
     try {
-      const res = await fetch(`/api/etablissements/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success(t('messages.deleted'));
-        fetchEtablissements();
-        setShowDetailModal(false);
-      } else {
-        const data = await res.json();
-        toast.error(data.error || t('messages.error'));
-      }
-    } catch (error) {
-      toast.error(t('messages.error'));
+      await actionMutation.mutate(`/api/etablissements/${id}`, { method: 'DELETE' });
+      toast.success(t('messages.deleted'));
+      await fetchEtablissements();
+      setShowDetailModal(false);
+    } catch (error: any) {
+      toast.error(error.message || t('messages.error'));
     } finally {
       setActionLoading(null);
     }
@@ -218,22 +182,13 @@ export default function AdminEtablissementsPage() {
     
     const toastId = toast.loading(t('messages.publishing'));
     try {
-        const res = await fetch('/api/etablissements/bulk', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ action: 'publish_all' })
+        await bulkMutation.mutate(undefined, {
+            data: { action: 'publish_all' }
         });
-        
-        if (res.ok) {
-            const data = await res.json();
-            toast.success(data.message || t('messages.bulk_publish_success'), { id: toastId });
-            fetchEtablissements();
-        } else {
-            const err = await res.json();
-            toast.error(err.error || t('messages.bulk_publish_error'), { id: toastId });
-        }
-    } catch(e) { 
-        toast.error(t('messages.server_error'), { id: toastId });
+        toast.success(t('messages.bulk_publish_success'), { id: toastId });
+        await fetchEtablissements();
+    } catch(e: any) { 
+        toast.error(e.message || t('messages.bulk_publish_error'), { id: toastId });
     }
   };
 
@@ -242,22 +197,13 @@ export default function AdminEtablissementsPage() {
      
      const toastId = toast.loading(t('messages.deleting'));
      try {
-        const res = await fetch('/api/etablissements/bulk', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ action: 'delete_all' })
+        await bulkMutation.mutate(undefined, {
+            data: { action: 'delete_all' }
         });
-        
-        if (res.ok) {
-            const data = await res.json();
-            toast.success(data.message || t('messages.bulk_delete_success'), { id: toastId });
-            fetchEtablissements();
-        } else {
-             const err = await res.json();
-            toast.error(err.error || t('messages.bulk_delete_error'), { id: toastId });
-        }
-     } catch(e) {
-         toast.error(t('messages.server_error'), { id: toastId });
+        toast.success(t('messages.bulk_delete_success'), { id: toastId });
+        await fetchEtablissements();
+     } catch(e: any) {
+         toast.error(e.message || t('messages.bulk_delete_error'), { id: toastId });
      }
   };
 

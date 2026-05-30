@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import ArticleCard from '@/components/articles/ArticleCard';
 import { Pagination } from '@/components/ui';
+import { useData } from '@/hooks/use-data';
 
 interface Article {
   id: number;
@@ -43,49 +44,26 @@ function ArticlesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // State
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [categories, setCategories] = useState<Categorie[]>([]);
-  const [loading, setLoading] = useState(true);
-  
   // URL Params
   const search = searchParams.get('search') || '';
   const selectedCategorie = searchParams.get('categorie') || '';
   const page = parseInt(searchParams.get('page') || '1');
   
-  // Stats
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-
-  // Fetch logic
-  useEffect(() => {
-    const fetchArticles = async () => {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12');
-      if (search) params.set('search', search);
-      if (selectedCategorie) params.set('categorie', selectedCategorie);
-
-      try {
-        const res = await fetch(`/api/articles?${params.toString()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setArticles(json.data || []);
-          setCategories(json.categories || []);
-          setTotalPages(json.pagination?.totalPages || 1);
-          setTotal(json.pagination?.total || 0);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchArticles, 300); // 300ms debounce
-    return () => clearTimeout(timer);
+  // ECC: useData
+  const queryStr = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    if (search) params.set('search', search);
+    if (selectedCategorie) params.set('categorie', selectedCategorie);
+    return params.toString();
   }, [page, search, selectedCategorie]);
+
+  const { data: responseData, isLoading: loading } = useData(`/api/articles?${queryStr}`);
+  const articles: Article[] = responseData?.data || [];
+  const categories: Categorie[] = responseData?.categories || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
 
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());

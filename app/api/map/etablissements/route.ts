@@ -8,16 +8,20 @@ export async function GET(request: NextRequest) {
     const secteur = searchParams.get('secteur');
     const communeId = searchParams.get('communeId');
     const annexeId = searchParams.get('annexeId');
+    const mode = searchParams.get('mode') || 'PUBLIC';
     
     const search = searchParams.get('search');
     const hasEvents = searchParams.get('hasEvents') === 'true';
     const hasNews = searchParams.get('hasNews') === 'true';
     const bounds = searchParams.get('bounds'); // "minLat,minLng,maxLat,maxLng"
 
-    const where: any = {
-      // Note: En développement, on affiche tous les établissements
-      // En production, activer : isPublie: true,
-    };
+    const where: any = {};
+
+    // Only return published and validated establishments for public users
+    if (mode === 'PUBLIC') {
+      where.isPublie = true;
+      where.isValide = true;
+    }
 
     if (secteur) where.secteur = secteur;
     if (communeId) where.communeId = parseInt(communeId);

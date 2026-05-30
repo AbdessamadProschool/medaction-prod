@@ -25,6 +25,8 @@ import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Article {
   id: number;
@@ -48,8 +50,8 @@ export default function ModifierArticlePage() {
   const locale = useLocale();
   const id = params?.id as string;
   
-  const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: article, isLoading: loading } = useData<Article>(id ? `/api/articles/${id}` : null);
+  const actionMutation = useMutation();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   
@@ -64,37 +66,18 @@ export default function ModifierArticlePage() {
   });
 
   useEffect(() => {
-    if (id) {
-      fetchArticle();
-    }
-  }, [id]);
-
-  const fetchArticle = async () => {
-    try {
-      const res = await fetch(`/api/articles/${id}`);
-      if (!res.ok) throw new Error('Article non trouvé');
-      
-      const data = await res.json();
-      const item = data.data || data;
-      setArticle(item);
-      
+    if (article) {
       setFormData({
-        titre: item.titre || '',
-        description: item.description || '',
-        contenu: item.contenu || '',
-        categorie: item.categorie || '',
-        tags: (item.tags || []).join(', '),
-        isPublie: item.isPublie || false,
-        isMisEnAvant: item.isMisEnAvant || false,
+        titre: article.titre || '',
+        description: article.description || '',
+        contenu: article.contenu || '',
+        categorie: article.categorie || '',
+        tags: (article.tags || []).join(', '),
+        isPublie: article.isPublie || false,
+        isMisEnAvant: article.isMisEnAvant || false,
       });
-    } catch (error) {
-      console.error('Erreur chargement article:', error);
-      toast.error(t('messages.load_error') || 'Erreur lors du chargement');
-      router.push('/admin/articles');
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [article]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,29 +90,21 @@ export default function ModifierArticlePage() {
           .map(t => t.trim())
           .filter(Boolean);
         
-        const res = await fetch(`/api/articles/${id}`, {
+        await actionMutation.mutate(`/api/articles/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...formData,
             tags: tagsArray,
             datePublication: formData.isPublie ? new Date().toISOString() : null,
-          }),
+          }
         });
-        
-        const result = await res.json();
-        
-        if (!res.ok) {
-          reject(new Error(result.error?.message || t('messages.save_error') || 'Erreur lors de la sauvegarde'));
-          return;
-        }
         
         resolve(true);
         router.push('/admin/articles');
         router.refresh();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur sauvegarde:', error);
-        reject(new Error(t('messages.save_error') || 'Erreur lors de la sauvegarde'));
+        reject(new Error(error.message || t('messages.save_error') || 'Erreur lors de la sauvegarde'));
       } finally {
         setSaving(false);
       }
@@ -147,19 +122,12 @@ export default function ModifierArticlePage() {
     
     setDeleting(true);
     try {
-      const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
-      
-      if (!res.ok) {
-        const result = await res.json();
-        toast.error(result.error?.message || t('messages.delete_error') || 'Erreur lors de la suppression');
-        return;
-      }
-      
+      await actionMutation.mutate(`/api/articles/${id}`, { method: 'DELETE' });
       toast.success(t('messages.deleted') || 'Article supprimé');
       router.push('/admin/articles');
       router.refresh();
-    } catch (error) {
-      toast.error(t('messages.delete_error') || 'Erreur lors de la suppression');
+    } catch (error: any) {
+      toast.error(error.message || t('messages.delete_error') || 'Erreur lors de la suppression');
     } finally {
       setDeleting(false);
     }

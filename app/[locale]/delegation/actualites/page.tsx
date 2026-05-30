@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import { useTranslations } from 'next-intl';
 import {
   Newspaper,
@@ -38,58 +40,35 @@ interface Actualite {
 
 export default function MesActualitesPage() {
   const t = useTranslations('delegation.dashboard.my_news');
-  const [actualites, setActualites] = useState<Actualite[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    const fetchActualites = async () => {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '8'); // Lower limit for grid layout
-      if (search) params.set('search', search);
-      if (statusFilter) params.set('statut', statusFilter);
+  const searchParams = new URLSearchParams({
+    page: page.toString(),
+    limit: '8',
+    ...(search ? { search } : {}),
+    ...(statusFilter ? { statut: statusFilter } : {})
+  });
 
-      try {
-        const res = await fetch(`/api/delegation/actualites?${params.toString()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setActualites(json.data || []);
-          setTotalPages(json.pagination?.totalPages || 1);
-          setTotal(json.pagination?.total || 0);
-        }
-      } catch (error) {
-        console.error('Erreur:', error);
-        toast.error('Erreur lors du chargement des actualités');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchActualites, 300);
-    return () => clearTimeout(timer);
-  }, [page, search, statusFilter]);
+  const { data: responseData, isLoading: loading, mutate: refreshActualites } = useData(`/api/delegation/actualites?${searchParams.toString()}`);
+  const actualites = responseData?.data || [];
+  const totalPages = responseData?.pagination?.totalPages || 1;
+  const total = responseData?.pagination?.total || 0;
+  
+  const actionMutation = useMutation();
 
   const deleteActualite = async (id: number) => {
     // Note: t('item.delete_confirm') should be available if json is correct
     if (!confirm(t('item.delete_confirm'))) return;
 
     try {
-      const res = await fetch(`/api/delegation/actualites/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setActualites(prev => prev.filter(a => a.id !== id));
-        toast.success('Actualité supprimée avec succès');
-      } else {
-        toast.error('Erreur lors de la suppression');
-      }
-    } catch (error) {
-           console.error('Erreur suppression:', error);
-           toast.error('Erreur système');
+      await actionMutation.mutate(`/api/delegation/actualites/${id}`, { method: 'DELETE' });
+      await refreshActualites();
+      toast.success('Actualité supprimée avec succès');
+    } catch (error: any) {
+      console.error('Erreur suppression:', error);
+      toast.error(error.message || 'Erreur système');
     }
   };
 

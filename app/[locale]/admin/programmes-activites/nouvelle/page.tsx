@@ -27,15 +27,16 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 export default function AdminNouveauProgrammePage() {
   const t = useTranslations('admin_activity_create');
   const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [etablissements, setEtablissements] = useState<any[]>([]);
-  const [loadingEtabs, setLoadingEtabs] = useState(true);
+  const { data: etablissementsData, isLoading: loadingEtabs } = useData('/api/etablissements?limit=100');
+  const etablissements = etablissementsData?.data || [];
+  const actionMutation = useMutation();
 
   // Schema definition inside component to use translations
   const formSchema = useMemo(() => z.object({
@@ -55,18 +56,7 @@ export default function AdminNouveauProgrammePage() {
 
   type FormValues = z.infer<typeof formSchema>;
 
-  // Fetch establishments
-  useEffect(() => {
-    fetch('/api/etablissements?limit=100')
-      .then(res => res.json())
-      .then(data => {
-        if (data.data) {
-          setEtablissements(data.data);
-        }
-      })
-      .catch(err => console.error("Erreur chargement établissements", err))
-      .finally(() => setLoadingEtabs(false));
-  }, []);
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -92,18 +82,10 @@ export default function AdminNouveauProgrammePage() {
           sousCouvertProvince: data.sousCouvertProvince,
         };
 
-        const res = await fetch("/api/programmes-activites", {
+        await actionMutation.mutate("/api/programmes-activites", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          data: payload,
         });
-
-        const responseData = await res.json();
-
-        if (!res.ok) {
-          reject(new Error(responseData.message || responseData.error || t('messages.error')));
-          return;
-        }
 
         resolve(true);
         router.push("/admin/programmes-activites");

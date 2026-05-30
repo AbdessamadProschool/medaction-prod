@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PermissionGuard } from '@/hooks/use-permission';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Settings,
   Bell,
@@ -68,7 +70,10 @@ const DEFAULT_SETTINGS: SettingsData = {
   
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState<SettingsData>(DEFAULT_SETTINGS);
-  const [loading, setLoading] = useState(true);
+  
+  const { data: settingsData, isLoading: loading } = useData('/api/admin/settings');
+  const actionMutation = useMutation();
+
   const [saving, setSaving] = useState(false);
 
   const tabs = [
@@ -87,24 +92,10 @@ const DEFAULT_SETTINGS: SettingsData = {
 
   // Charger les paramètres
   useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const res = await fetch('/api/admin/settings');
-        if (res.ok) {
-          const data = await res.json();
-          setSettings(data.data || DEFAULT_SETTINGS);
-        }
-      } catch (err) {
-        console.error('Erreur chargement paramètres:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (session?.user) {
-      loadSettings();
+    if (settingsData?.data) {
+      setSettings(settingsData.data);
     }
-  }, [session]);
+  }, [settingsData]);
 
   // Mettre à jour un paramètre local
   const updateSetting = (section: keyof SettingsData, key: string, value: any) => {
@@ -124,19 +115,13 @@ const DEFAULT_SETTINGS: SettingsData = {
     const savePromise = new Promise(async (resolve, reject) => {
       try {
         for (const section of Object.keys(settings) as (keyof SettingsData)[]) {
-          const res = await fetch('/api/admin/settings', {
+          await actionMutation.mutate('/api/admin/settings', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            data: {
               section,
               data: settings[section],
-            }),
+            },
           });
-
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Erreur lors de la sauvegarde');
-          }
         }
         resolve(true);
       } catch (err: any) {

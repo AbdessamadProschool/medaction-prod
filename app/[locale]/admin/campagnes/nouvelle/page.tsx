@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { useMutation } from '@/hooks/use-mutation';
 
 const TYPES_LIST = ['SOLIDARITE', 'ECOLOGIE', 'CITOYENNETE', 'SANTE', 'EDUCATION', 'SPORT', 'CULTURE', 'AUTRE'] as const;
 const STATUTS_LIST = ['BROUILLON', 'ACTIVE', 'TERMINEE'] as const;
@@ -34,6 +35,8 @@ export default function AdminNouvelleCampagnePage() {
   const router = useRouter();
   const t = useTranslations('admin_campaigns.new');
   const [loading, setLoading] = useState(false);
+  const actionMutation = useMutation();
+  const uploadMutation = useMutation();
   
   // Image state
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -90,42 +93,30 @@ export default function AdminNouvelleCampagnePage() {
           formData.append('file', selectedImage);
           formData.append('type', 'campagnes');
 
-          const uploadRes = await fetch('/api/upload', {
+          const uploadData = await uploadMutation.mutate('/api/upload', {
             method: 'POST',
-            body: formData,
+            data: formData,
           });
-
-          if (!uploadRes.ok) {
-            reject(new Error("Erreur upload image"));
-            return;
-          }
-          const uploadData = await uploadRes.json();
           imageUrl = uploadData.url;
         }
 
-        const res = await fetch('/api/campagnes', {
+        await actionMutation.mutate('/api/campagnes', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          data: {
             ...data,
             objectifParticipations: data.objectifParticipations ? parseInt(data.objectifParticipations) : null,
             isOrganiseParProvince: data.isOrganiseParProvince,
             sousCouvertProvince: data.sousCouvertProvince,
             imagePrincipale: imageUrl
-          }),
+          }
         });
 
-        if (res.ok) {
-          resolve(true);
-          router.push('/admin/campagnes');
-          router.refresh();
-        } else {
-          const err = await res.json();
-          reject(new Error(err.error || t('validation.error')));
-        }
-      } catch (error) {
+        resolve(true);
+        router.push('/admin/campagnes');
+        router.refresh();
+      } catch (error: any) {
         console.error(error);
-        reject(new Error('Erreur: ' + (error instanceof Error ? error.message : t('validation.error'))));
+        reject(new Error('Erreur: ' + (error.message || t('validation.error'))));
       } finally {
         setLoading(false);
       }

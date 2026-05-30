@@ -1,7 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin,
@@ -32,6 +32,8 @@ import { format, parseISO } from 'date-fns';
 import { fr, arMA } from 'date-fns/locale';
 import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface ProgrammeActivite {
   id: number;
@@ -82,8 +84,10 @@ const SECTEUR_COLORS: Record<string, string> = {
 export default function AdminProgrammesActivitesPage() {
   const t = useTranslations('admin.programs_page');
   const locale = useLocale();
-  const [activites, setActivites] = useState<ProgrammeActivite[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: activitesData, isLoading: loading, mutate: fetchActivites } = useData('/api/programmes-activites?limit=100');
+  
+  const actionMutation = useMutation();
+  const activites = Array.isArray(activitesData?.data) ? activitesData.data : (Array.isArray(activitesData) ? activitesData : []);
   const [search, setSearch] = useState('');
   const [filterStatut, setFilterStatut] = useState<string>('');
   const [filterValidation, setFilterValidation] = useState<string>('');
@@ -92,42 +96,16 @@ export default function AdminProgrammesActivitesPage() {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
   // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    enAttente: 0,
-    validees: 0,
-    terminees: 0,
-    rapportsComplets: 0,
-  });
-
-  const fetchActivites = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/programmes-activites?limit=100');
-      if (res.ok) {
-        const data = await res.json();
-        const acts = data.data || [];
-        setActivites(acts);
-        
-        // Calculer les stats - EN_ATTENTE_VALIDATION = activités à valider
-        setStats({
-          total: acts.length,
-          enAttente: acts.filter((a: ProgrammeActivite) => a.statut === 'EN_ATTENTE_VALIDATION').length,
-          validees: acts.filter((a: ProgrammeActivite) => a.statut === 'PLANIFIEE' || a.isValideParAdmin).length,
-          terminees: acts.filter((a: ProgrammeActivite) => a.statut === 'TERMINEE' || a.statut === 'RAPPORT_COMPLETE').length,
-          rapportsComplets: acts.filter((a: ProgrammeActivite) => a.rapportComplete).length,
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement activités:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchActivites();
-  }, [fetchActivites]);
+  const stats = useMemo(() => {
+    const acts = activites;
+    return {
+      total: acts.length,
+      enAttente: acts.filter((a: ProgrammeActivite) => a.statut === 'EN_ATTENTE_VALIDATION').length,
+      validees: acts.filter((a: ProgrammeActivite) => a.statut === 'PLANIFIEE' || a.isValideParAdmin).length,
+      terminees: acts.filter((a: ProgrammeActivite) => a.statut === 'TERMINEE' || a.statut === 'RAPPORT_COMPLETE').length,
+      rapportsComplets: acts.filter((a: ProgrammeActivite) => a.rapportComplete).length,
+    };
+  }, [activites]);
 
   // Filtrer les activités
   const filteredActivites = activites.filter(a => {
@@ -147,21 +125,15 @@ export default function AdminProgrammesActivitesPage() {
   const handleValidate = async (id: number, validate: boolean) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/programmes-activites/${id}/valider`, {
+        await actionMutation.mutate(`/api/programmes-activites/${id}/valider`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: validate ? 'validate' : 'reject' }),
+          data: { action: validate ? 'validate' : 'reject' },
         });
         
-        if (res.ok) {
-          fetchActivites();
-          resolve(true);
-        } else {
-          const data = await res.json();
-          reject(new Error(data.error || 'Erreur inconnue'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        await fetchActivites();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur de connexion'));
       }
     });
 
@@ -175,20 +147,15 @@ export default function AdminProgrammesActivitesPage() {
   const handleToggleVisibility = async (id: number, visible: boolean) => {
     const promise = new Promise(async (resolve, reject) => {
       try {
-        const res = await fetch(`/api/programmes-activites/${id}`, {
+        await actionMutation.mutate(`/api/programmes-activites/${id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isVisiblePublic: visible }),
+          data: { isVisiblePublic: visible },
         });
         
-        if (res.ok) {
-          fetchActivites();
-          resolve(true);
-        } else {
-          reject(new Error('Erreur lors du changement de visibilité'));
-        }
-      } catch (error) {
-        reject(new Error('Erreur de connexion'));
+        await fetchActivites();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur de connexion'));
       }
     });
 
@@ -224,7 +191,7 @@ export default function AdminProgrammesActivitesPage() {
         
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={fetchActivites}
+            onClick={async () => { await fetchActivites(); }}
             disabled={loading}
             className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group disabled:opacity-50"
           >
@@ -438,15 +405,11 @@ export default function AdminProgrammesActivitesPage() {
                               if (confirm('Voulez-vous vraiment supprimer ce programme ?')) {
                                 const promise = new Promise(async (resolve, reject) => {
                                   try {
-                                    const res = await fetch(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
-                                    if (res.ok) {
-                                      fetchActivites();
-                                      resolve(true);
-                                    } else {
-                                      reject(new Error('Erreur lors de la suppression'));
-                                    }
-                                  } catch (e) {
-                                    reject(new Error('Erreur de connexion'));
+                                    await actionMutation.mutate(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
+                                    await fetchActivites();
+                                    resolve(true);
+                                  } catch (e: any) {
+                                    reject(new Error(e.message || 'Erreur de connexion'));
                                   }
                                 });
 

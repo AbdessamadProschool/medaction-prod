@@ -20,6 +20,7 @@ import {
   Flame,
 } from 'lucide-react';
 import { PermissionGuard } from '@/hooks/use-permission';
+import { useData } from '@/hooks/use-data';
 
 interface Reclamation {
   id: number;
@@ -60,60 +61,27 @@ const COMMUNE_FILTER = [
 ];
 
 export default function ReclamationsUrgentesPage() {
-  const [loading, setLoading] = useState(true);
-  const [reclamations, setReclamations] = useState<Reclamation[]>([]);
-  
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   const [sortBy, setSortBy] = useState('createdAt');
   const [communeFilter, setCommuneFilter] = useState('');
-  const [communes, setCommunes] = useState<{id: number; nom: string}[]>([]);
   const limit = 15;
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', limit.toString());
-      params.set('urgentes', 'true'); // Filter for urgent/pending reclamations
-      params.set('sortBy', sortBy);
-      if (communeFilter) params.set('communeId', communeFilter);
+  const { data: communesData } = useData('/api/communes');
+  const communes = Array.isArray(communesData) ? communesData : communesData?.data || [];
 
-      const res = await fetch(`/api/reclamations?${params.toString()}`);
-      if (res.ok) {
-        const data = await res.json();
-        setReclamations(data.data || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotal(data.pagination?.total || 0);
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', limit.toString());
+  queryParams.set('urgentes', 'true'); // Filter for urgent/pending reclamations
+  queryParams.set('sortBy', sortBy);
+  if (communeFilter) queryParams.set('communeId', communeFilter);
 
-  const fetchCommunes = async () => {
-    try {
-      const res = await fetch('/api/communes');
-      if (res.ok) {
-        const data = await res.json();
-        setCommunes(data.data || data || []);
-      }
-    } catch (error) {
-      console.error('Erreur communes:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCommunes();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [page, sortBy, communeFilter]);
+  const { data: recData, isLoading: loading } = useData(`/api/reclamations?${queryParams.toString()}`);
+  
+  const reclamations = recData?.data || [];
+  const pagination = recData?.pagination || recData?.meta?.pagination || { totalPages: 1, total: 0 };
+  const totalPages = pagination.totalPages || 1;
+  const total = pagination.total || 0;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {

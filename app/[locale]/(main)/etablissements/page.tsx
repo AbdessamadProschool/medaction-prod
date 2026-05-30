@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import EtablissementCard from '@/components/etablissements/EtablissementCard';
 import { Building2, GraduationCap, Hospital, Trophy, HeartHandshake, Drama, Search, Filter, X, LayoutGrid, List } from 'lucide-react';
 import { getLocalizedCommuneName } from '@/lib/utils/territory-mapper';
+import { useData } from '@/hooks/use-data';
 
 interface Etablissement {
   id: number;
@@ -57,23 +58,17 @@ function EtablissementsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [etablissements, setEtablissements] = useState<Etablissement[]>([]);
-  const [communes, setCommunes] = useState<Commune[]>([]);
-  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   
   // Filters - initialize from URL params
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [secteur, setSecteur] = useState(searchParams.get('secteur') || '');
   const [communeId, setCommuneId] = useState(searchParams.get('communeId') || '');
-  const [annexeId, setAnnexeId] = useState(searchParams.get('annexeId') || ''); // NEW
-  const [annexes, setAnnexes] = useState<{id: number; nom: string; nomArabe?: string}[]>([]); // NEW
+  const [annexeId, setAnnexeId] = useState(searchParams.get('annexeId') || '');
   const [noteMin, setNoteMin] = useState(parseInt(searchParams.get('noteMin') || '0') || 0);
   
   // Pagination
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
 
   // Mobile sidebar
   const [showFilters, setShowFilters] = useState(false);
@@ -95,58 +90,36 @@ function EtablissementsContent() {
     if (urlPage !== page) setPage(urlPage);
   }, [searchParams]);
 
-  // Fetch communes
-  useEffect(() => {
-    fetch('/api/communes')
-      .then(res => res.json())
-      .then(json => setCommunes(json.data || []));
-  }, []);
-
-  // Fetch Annexes when Commune changes
-  useEffect(() => {
-      if (communeId) {
-          fetch(`/api/annexes?communeId=${communeId}`)
-              .then(res => res.json())
-              .then(json => setAnnexes(json.data || []));
-      } else {
-          setAnnexes([]);
-          setAnnexeId(''); // Reset annexe if commune cleared
-      }
-  }, [communeId]);
-
-  // Fetch etablissements
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '12'); // Fixed limit for clearer pagination logic
-      if (search) params.set('search', search);
-      if (secteur) params.set('secteur', secteur);
-      if (communeId) params.set('communeId', communeId);
-      if (annexeId) params.set('annexeId', annexeId); // NEW
-      if (noteMin > 0) params.set('noteMin', noteMin.toString());
-
-      try {
-        const res = await fetch(`/api/etablissements?${params.toString()}`);
-        const json = await res.json();
-        setEtablissements(json.data || []);
-        setTotalPages(json.pagination?.totalPages || 1);
-        setTotal(json.pagination?.total || 0);
-      } catch (error) {
-        console.error('Erreur:', error);
-      }
-      setLoading(false);
-    };
-
-    const timer = setTimeout(fetchData, 300);
-    return () => clearTimeout(timer);
-  }, [page, search, secteur, communeId, annexeId, noteMin]); // Updated dependency
-
   // Reset page on filter change
   useEffect(() => {
     setPage(1);
-  }, [search, secteur, communeId, annexeId, noteMin]); // Updated dependency
+  }, [search, secteur, communeId, annexeId, noteMin]);
+
+  // Data fetching using useData
+  const { data: communesData } = useData('/api/communes');
+  const communes = Array.isArray(communesData) ? communesData : communesData?.data || [];
+
+  const { data: annexesData } = useData(communeId ? `/api/annexes?communeId=${communeId}` : null);
+  const annexes = Array.isArray(annexesData) ? annexesData : annexesData?.data || [];
+
+  // Construct query params for etablissements
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '12');
+  if (search) queryParams.set('search', search);
+  if (secteur) queryParams.set('secteur', secteur);
+  if (communeId) queryParams.set('communeId', communeId);
+  if (annexeId) queryParams.set('annexeId', annexeId);
+  if (noteMin > 0) queryParams.set('noteMin', noteMin.toString());
+
+  const { data: etabsResponse, isLoading: loading } = useData(`/api/etablissements?${queryParams.toString()}`);
+  
+  // L'API renvoie souvent un objet { success: true, data: [...], pagination: {...} } 
+  // que le hook useData déballe parfois. Pour gérer toutes les structures :
+  const etablissements = Array.isArray(etabsResponse) ? etabsResponse : etabsResponse?.data || [];
+  const pagination = etabsResponse?.pagination || etabsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
+  const totalPages = pagination.totalPages || 1;
+  const total = pagination.total || 0;
 
   // Update URL on filter change (Debounced to avoid history spam on type)
   useEffect(() => {

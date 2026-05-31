@@ -552,7 +552,7 @@
   },
   "admin": {
     "sidebar": {
-      "portal_name": "PORTAIL MEDIOUNA",
+      "portal_name": "Portail Mediouna",
       "administration": "Administration",
       "dashboard": "Tableau de bord",
       "reclamations": "Réclamations",
@@ -568,25 +568,25 @@
       "campaigns": "Campagnes",
       "reports": "Rapports",
       "statistics": "Statistiques",
-      "home_page": "Accueil",
+      "home_page": "Page d'accueil",
       "settings": "Paramètres",
-      "super_admin": "Super Admin",
+      "super_admin": "Super Administrateur",
       "popup_announcements": "Annonces Pop-up",
       "roles_permissions": "Rôles & Permissions",
-      "messages": "Messages",
+      "messages": "Boîte aux lettres",
       "notifications": "Notifications",
       "audit_logs": "Logs d'audit",
-      "system_config": "Config Système",
+      "system_config": "Configuration Système",
       "backup": "Sauvegarde",
-      "backups": "Sauvegardes",
       "legal": "Mentions Légales",
       "help": "Aide & Support",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "backups": "Sauvegardes"
     },
     "dashboard": {
       "header": {
-        "title": "Tableau de bord",
-        "subtitle": "Aperçu de l'activité de la plateforme",
+        "title": "Tableau de Bord",
+        "subtitle": "Vue d'ensemble de l'activité de la plateforme",
         "export": "Exporter",
         "reports": "Rapports"
       },
@@ -602,66 +602,883 @@
         "this_month": "Ce mois"
       },
       "quick_actions": {
-        "title": "Actions rapides",
+        "title": "Actions Rapides",
         "claims": "Réclamations",
-        "claims_desc": "Traiter les réclamations entrantes",
+        "claims_desc": "Traiter les plaintes entrantes",
         "validation": "Validation",
         "validation_desc": "Valider les établissements",
         "campaigns": "Campagnes",
-        "campaigns_desc": "Gérer les campagnes de volontariat",
+        "campaigns_desc": "Gérer les campagnes bénévoles",
         "users": "Utilisateurs",
-        "users_desc": "Gérer les comptes utilisateurs",
+        "users_desc": "Gérer les utilisateurs",
         "access": "Accéder"
+      },
+      "charts": {
+        "events_by_sector": "Événements par secteur",
+        "events_distribution": "Répartition des événements",
+        "reclamations_by_status": "Réclamations par statut",
+        "current_breakdown": "Répartition actuelle",
+        "view_all": "Voir tout",
+        "no_data": "Aucune donnée",
+        "total": "Total"
+      },
+      "alerts": {
+        "events_action_required": "Action requise sur les événements",
+        "events_pending_closure": "{count} événements en attente de clôture",
+        "manage_now": "Gérer maintenant"
+      },
+      "other_sections": {
+        "title": "Autres sections",
+        "news": "Actualités",
+        "news_desc": "Gérer les nouvelles et articles",
+        "campaigns": "Campagnes",
+        "campaigns_desc": "Dernières campagnes",
+        "suggestions": "Suggestions",
+        "suggestions_desc": "Propositions des citoyens",
+        "talents": "Talents",
+        "talents_desc": "Gestion des talents"
+      },
+      "footer": {
+        "system_activity": "Activité Système",
+        "system_operational": "Le système fonctionne normalement",
+        "new_users": "Nouveaux utilisateurs",
+        "to_process": "À traiter",
+        "active_events": "Événements actifs"
+      },
+      "loading": "Chargement...",
+      "toasts": {
+        "refreshing": "Rafraîchissement des données..."
+      },
+      "no_data": "Aucune donnée disponible",
+      "total": "Total"
+    },
+    "header": {
+      "search_placeholder": "Rechercher...",
+      "site_public": "Site Public",
+      "notifications": "Notifications",
+      "mark_all_read": "Tout marquer comme lu",
+      "no_notifications": "Aucune notification",
+      "view_history": "Voir l'historique",
+      "my_profile": "Mon Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion",
+      "administrator": "Administrateur",
+      "just_now": "À l'instant",
+      "minutes_ago": "Il y a {count} min",
+      "hours_ago": "Il y a {count} h",
+      "days_ago": "Il y a {count} j"
+    },
+    "validation_page": {
+      "title": "Validation de contenu",
+      "subtitle": "Gérer {count} contenus en attente d'approbation",
+      "filter": "Filtrer",
+      "tabs": {
+        "events": "Événements",
+        "news": "Actualités",
+        "articles": "Articles",
+        "campaigns": "Campagnes"
+      },
+      "card": {
+        "no_description": "Aucune description"
+      },
+      "actions": {
+        "view": "Voir",
+        "approve": "Approuver",
+        "reject": "Rejeter"
+      },
+      "messages": {
+        "approved": "Approuvé avec succès",
+        "rejected": "Rejeté",
+        "error": "Une erreur est survenue",
+        "reject_reason": "Motif du rejet :",
+        "guide_title": "Guide de validation",
+        "guide_text": "Vérifiez le contenu avant publication pour vous assurer qu'il respecte les normes.",
+        "guide_link": "Voir le guide"
+      },
+      "empty": {
+        "title": "Aucun contenu en attente de validation",
+        "description": "Tout le contenu a été traité."
+      },
+      "modal": {
+        "details_title": "Détails du contenu",
+        "start_date": "Date de début :",
+        "end_date": "Date de fin :",
+        "location": "Lieu",
+        "created_by": "Créé par :",
+        "objective": "Objectif :",
+        "participants": "participants",
+        "cancel": "Annuler"
       }
     },
-    "reclamations_page": {
-      "page_title": "Gestion des Réclamations",
-      "total_reclamations": "Total des réclamations",
-      "search_placeholder": "Rechercher...",
-      "status_filter": "Statut",
-      "category_filter": "Catégorie",
+    "events_page": {
+      "title": "Gestion des événements",
+      "subtitle": "Gérez les événements ({count})",
       "filters": "Filtres",
-      "not_assigned": "Non affecté",
-      "anonymous": "Anonyme",
-      "pagination": "Page {page} sur {total}",
+      "create": "Nouvel événement",
       "stats": {
         "total": "Total",
         "pending": "En attente",
-        "to_dispatch": "À distribuer",
-        "in_progress": "En traitement",
-        "rejected": "Rejetées"
+        "published": "Publiés",
+        "in_progress": "En cours",
+        "closed": "Clôturés"
       },
-      "status_labels": {
+      "filter_labels": {
+        "search": "Rechercher...",
+        "all_statuses": "Tous statuts",
+        "all_sectors": "Tous secteurs",
+        "all_muncipalities": "Toutes communes",
+        "reset": "Réinitialiser"
+      },
+      "status": {
         "pending": "En attente",
-        "accepted": "Acceptée",
-        "rejected": "Rejetée",
-        "assigned": "Affectée",
-        "to_dispatch": "À distribuer"
+        "published": "Publié",
+        "in_progress": "En cours",
+        "closed": "Clôturé",
+        "rejected": "Rejeté"
       },
-      "columns": {
-        "reclamation": "Réclamation",
-        "citizen": "Citoyen",
-        "commune": "Commune",
-        "status": "Statut",
-        "category": "Catégorie",
-        "assigned_to": "Affecté à",
+      "table": {
+        "event": "Événement",
+        "sector": "Secteur",
+        "location": "Lieu",
         "date": "Date",
+        "status": "Statut",
+        "registrations": "Inscriptions",
         "actions": "Actions"
+      },
+      "actions": {
+        "view": "Voir",
+        "edit": "Modifier",
+        "validate": "Valider",
+        "reject": "Rejeter",
+        "close": "Clôturer"
+      },
+      "empty": "Aucun événement trouvé",
+      "messages": {
+        "reject_reason": "Motif du rejet :",
+        "reject_error": "Veuillez fournir un motif de rejet (min 10 caractères)",
+        "validated": "Validé avec succès",
+        "rejected": "Rejeté avec succès",
+        "error": "Une erreur est survenue"
+      },
+      "communeId": "Commune",
+      "dateDebut": "Date de début",
+      "dateFin": "Date de fin",
+      "page": "Page",
+      "limit": "Limite",
+      "refresh": "Actualiser",
+      "create_modal": {
+        "title": "Nouvel événement",
+        "step_indicator": "Étape {current} sur {total}",
+        "steps": {
+          "info": "Informations",
+          "location": "Localisation",
+          "participation": "Participation",
+          "media": "Médias"
+        },
+        "form": {
+          "title_label": "Titre",
+          "title_placeholder": "Ex: Session de formation...",
+          "desc_label": "Description",
+          "desc_placeholder": "Détails de l'événement...",
+          "sector_label": "Secteur",
+          "category_label": "Catégorie",
+          "select_placeholder": "Sélectionner...",
+          "commune_label": "Commune",
+          "establishment_label": "Établissement (optionnel)",
+          "location_label": "Lieu précis",
+          "location_placeholder": "Ex: Salle polyvalente, Stade municipal...",
+          "map_label": "Localisation sur la carte",
+          "start_date": "Date de début",
+          "end_date": "Date de fin",
+          "start_time": "Heure de début",
+          "end_time": "Heure de fin",
+          "max_capacity": "Capacité maximale",
+          "capacity_placeholder": "Ex: 100",
+          "is_free": "Événement gratuit",
+          "price": "Prix (DH)",
+          "registration_link": "Lien d'inscription (externe)",
+          "photos_label": "Photos de l'événement",
+          "upload_text": "Cliquez ou glissez vos photos ici",
+          "upload_hint": "PNG, JPG jusqu'à 10MB",
+          "summary_title": "Résumé de l'événement",
+          "summary": {
+            "title": "Titre",
+            "sector": "Secteur",
+            "date": "Date",
+            "location": "Lieu",
+            "price": "Prix",
+            "photos": "Photos"
+          },
+          "image_selected": "Image sélectionnée",
+          "image_delete": "Supprimer",
+          "type_label": "Type d'événement",
+          "tags": "Tags",
+          "tags_hint": "(séparés par virgule)",
+          "tags_placeholder": "Ex: jeunesse, sport, culture, famille",
+          "optional": "(optionnel)",
+          "address": "Adresse complète",
+          "address_placeholder": "Ex: Avenue Mohammed V, Médiouna",
+          "neighborhood": "Quartier / Douar",
+          "neighborhood_placeholder": "Ex: Hay Mohammadi",
+          "organizer_name": "Nom de l'organisateur",
+          "organizer_name_placeholder": "Ex: Association Jeunesse Médiouna",
+          "organizer_phone": "Téléphone de contact",
+          "organizer_phone_placeholder": "Ex: 0522 123 456",
+          "organizer_email": "Email de contact",
+          "organizer_email_placeholder": "Ex: contact@event.ma",
+          "open_registrations": "Ouvrir les inscriptions",
+          "open_registrations_hint": "Permet aux citoyens de s'inscrire en ligne"
+        },
+        "buttons": {
+          "save_draft": "Enregistrer le brouillon",
+          "cancel": "Annuler",
+          "prev": "Précédent",
+          "next": "Suivant",
+          "create": "Créer l'événement",
+          "saving": "Création en cours..."
+        },
+        "errors": {
+          "title_required": "Le titre est requis",
+          "desc_required": "La description est requise",
+          "category_required": "La catégorie est requise",
+          "commune_required": "La commune est requise",
+          "location_required": "Le lieu est requis",
+          "date_required": "La date est requise",
+          "price_required": "Le prix est requis"
+        },
+        "categories": {
+          "conf": "Conférence",
+          "formation": "Formation",
+          "atelier": "Atelier",
+          "festival": "Festival",
+          "competition": "Compétition",
+          "spectacle": "Spectacle",
+          "exposition": "Exposition",
+          "open_day": "Journée portes ouvertes",
+          "campaign": "Campagne",
+          "rencontre": "Rencontre",
+          "ceremony": "Cérémonie",
+          "autre": "Autre"
+        },
+        "title_new": "Nouvel événement",
+        "subtitle_new": "Créer un nouvel événement",
+        "back_list": "Retour aux événements",
+        "sections": {
+          "visual": "Visuel de l'événement",
+          "visual_hint": "Une image attractive augmente la participation",
+          "info": "Informations Générales",
+          "date_location": "Date, Heure et Lieu",
+          "organizer": "Organisateur & Contact",
+          "organizer_hint": "Informations de contact pour les citoyens",
+          "participation": "Participation & Inscription"
+        }
+      },
+      "form": {
+        "sector": "Secteur de l'événement"
+      },
+      "loading": "Chargement des événements..."
+    },
+    "news_page": {
+      "page_title": "Actualités",
+      "total_news": "{count} actualités",
+      "filters": "Filtres",
+      "new_news": "Nouvelle actualité",
+      "search_placeholder": "Rechercher...",
+      "all_sectors": "Tous les secteurs",
+      "reset": "Réinitialiser",
+      "no_news": "Aucune actualité",
+      "no_results": "Aucun résultat",
+      "create_title": "Nouvel Article",
+      "create_subtitle": "Rédigez un article pour le Portail Province Médiouna.",
+      "edit_title": "Modifier l'Article",
+      "view_details": "Voir détails",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "views": "{count} vues",
+      "pagination": "Page {page} sur {totalPages} ({total})",
+      "statuses": {
+        "BROUILLON": "Brouillon",
+        "EN_ATTENTE_VALIDATION": "En attente",
+        "VALIDEE": "Validée",
+        "PUBLIEE": "Publiée",
+        "DEPUBLIEE": "Dépubliée",
+        "ARCHIVEE": "Archivée"
+      },
+      "modal": {
+        "title": "Détails de l'actualité",
+        "resume": "Résumé",
+        "no_resume": "Aucun résumé",
+        "sector": "Secteur",
+        "views": "Vues",
+        "created_on": "Créé le {date}",
+        "change_status": "Changer le statut",
+        "view_online": "Voir en ligne",
+        "add_highlight": "Mettre à la une",
+        "remove_highlight": "Retirer de la une",
+        "delete": "Supprimer l'actualité",
+        "commune": "Commune",
+        "establishment": "Établissement",
+        "author": "Auteur"
+      },
+      "messages": {
+        "loading_error": "Erreur de chargement",
+        "status_changed": "Statut changé en {status}",
+        "error": "Une erreur est survenue",
+        "highlight_removed": "Retiré de la une",
+        "highlight_added": "Ajouté à la une",
+        "delete_confirm": "Êtes-vous sûr de vouloir supprimer ?",
+        "deleted": "Supprimé avec succès"
       }
     },
+    "articles_page": {
+      "loading": "Chargement des articles...",
+      "title": "Articles",
+      "subtitle": "Gérez les articles et contenus de la plateforme",
+      "create": "Nouvel Article",
+      "create_title": "Nouvel Article",
+      "create_subtitle": "Rédigez un article pour la plateforme MedAction.",
+      "back_list": "Retour aux articles",
+      "search": "Rechercher un article...",
+      "filters": "Filtres",
+      "labels": {
+        "search_placeholder": "Rechercher...",
+        "all_statuses": "Tous les statuts",
+        "reset": "Réinitialiser",
+        "featured": "Mis en avant",
+        "no_resume": "Aucun résumé",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet article ?",
+        "deleted": "Supprimé avec succès",
+        "highlighted": "Mis en avant avec succès",
+        "unhighlighted": "Mise en avant annulée",
+        "status_changed": "Statut modifié avec succès"
+      },
+      "stats": {
+        "total": "Total",
+        "published": "Publiés",
+        "pending": "En attente",
+        "views": "Vues",
+        "views_desc": "Total des vues"
+      },
+      "filters_labels": {
+        "all": "Tous les articles",
+        "featured": "Mis en avant uniquement"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "pending": "En attente",
+        "published": "Publiée",
+        "rejected": "Rejetée",
+        "archived": "Archivée"
+      },
+      "empty": {
+        "title": "Aucun article trouvé",
+        "create_first": "Créer le premier article"
+      },
+      "sections": {
+        "image": "Image de couverture",
+        "content": "Rédaction de l'article",
+        "category": "Catégorisation",
+        "publication": "Publication"
+      },
+      "form": {
+        "title": "Titre de l'article",
+        "summary": "Chapeau / Résumé",
+        "content": "Contenu complet",
+        "image": "Image de couverture",
+        "select_image": "Cliquez pour ajouter une image",
+        "image_help": "PNG, JPG jusqu'à 5MB • Recommandé: 1200x630px",
+        "category": "Catégorie",
+        "select_category": "Sélectionner une catégorie",
+        "tags": "Tags",
+        "tags_placeholder": "développement, innovation",
+        "publish_now": "Publier immédiatement"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer l'article",
+        "saving": "Enregistrement...",
+        "success": "Article créé avec succès"
+      },
+      "table": {
+        "title": "Titre",
+        "author": "Auteur",
+        "status": "Statut",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "page": "Page",
+      "limit": "Limite",
+      "modal": {
+        "title": "Détails de l'article",
+        "resume": "Résumé",
+        "views": "Vues",
+        "likes": "Likes",
+        "author": "Auteur",
+        "change_status": "Changer le statut",
+        "toggle_featured": "Mettre en avant",
+        "toggle_featured_off": "Retirer de la une",
+        "delete": "Supprimer l'article",
+        "contributor": "Contributeur"
+      },
+      "messages": {
+        "status_changed": "Statut mis à jour",
+        "highlighted": "Mis en avant avec succès",
+        "unhighlighted": "Retiré de la une",
+        "deleted": "Supprimé avec succès",
+        "confirm_delete": "Supprimer cet article ?",
+        "load_error": "Erreur lors du chargement de l'article",
+        "save_error": "Erreur lors de la sauvegarde de l'article",
+        "delete_error": "Erreur lors de la suppression de l'article"
+      },
+      "filter_status": "Statut",
+      "filter_sector": "Secteur"
+    },
+    "news": {
+      "create_title": "Nouvelle Actualité",
+      "create_subtitle": "Créer une nouvelle actualité pour les citoyens.",
+      "back_list": "Retour à la liste",
+      "sections": {
+        "image": "Image de couverture",
+        "content": "Rédaction",
+        "sector": "Secteur",
+        "category": "Catégorie",
+        "status": "Statut de publication"
+      },
+      "form": {
+        "title": "Titre de l'actualité",
+        "description": "Description courte",
+        "content": "Contenu détaillé",
+        "image": "Image de couverture",
+        "image_help": "PNG, JPG jusqu'à 5MB",
+        "date": "Date de publication",
+        "sector": "Secteur",
+        "category": "Catégorie",
+        "status": "Statut",
+        "select_sector": "Sélectionner un secteur...",
+        "select_category": "Sélectionner une catégorie...",
+        "select_status": "Sélectionner un statut...",
+        "select_image": "Sélectionner une image",
+        "summary": "Résumé",
+        "summary_placeholder": "Un court résumé pour les cartes...",
+        "general_category": "Catégorie Générale",
+        "tags": "Tags (séparés par virgule)",
+        "tags_placeholder": "tag1, tag2, tag3",
+        "is_valide": "Validée",
+        "is_publie": "Publiée"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "create": "Créer l'actualité",
+        "creating": "Création...",
+        "create_success": "Actualité créée avec succès",
+        "save": "Enregistrer",
+        "delete": "Supprimer",
+        "validate": "Valider",
+        "reject": "Rejeter",
+        "update_success": "Actualité mise à jour avec succès",
+        "update_error": "Erreur lors de la sauvegarde",
+        "delete_success": "Actualité supprimée",
+        "delete_error": "Erreur lors de la suppression",
+        "validate_success": "Actualité validée",
+        "reject_success": "Actualité rejetée"
+      },
+      "sectors": {
+        "EDUCATION": "Éducation",
+        "SANTE": "Santé",
+        "SPORT": "Sport",
+        "SOCIAL": "Social",
+        "CULTUREL": "Culturel",
+        "AUTRE": "Autre"
+      },
+      "categories": {
+        "EVENEMENT": "Événement",
+        "ANNONCE": "Annonce",
+        "PROJET": "Projet",
+        "URGENCE": "Urgence",
+        "TRAVAUX": "Travaux",
+        "PARTENARIAT": "Partenariat",
+        "SUCCESS_STORY": "Success Story"
+      },
+      "status": {
+        "BROUILLON": "Brouillon",
+        "BROUILLON_DESC": "Visible uniquement par vous",
+        "EN_ATTENTE_VALIDATION": "En attente",
+        "EN_ATTENTE_VALIDATION_DESC": "Soumis pour validation",
+        "PUBLIEE": "Publier directement",
+        "PUBLIEE_DESC": "Visible immédiatement"
+      },
+      "edit_title": "Modifier l'actualité",
+      "edit_subtitle": "Mise à jour des informations de l'actualité",
+      "info_card": {
+        "created_at": "Créé le:",
+        "by": "Par:"
+      }
+    },
+    "establishments": {
+      "create_title": "Nouvel Établissement",
+      "create_subtitle": "Remplissez les informations pour créer un nouvel établissement",
+      "back_list": "Retour à la liste",
+      "sections": {
+        "general": "Identification & Secteur",
+        "localization": "Géolocalisation & Commune",
+        "location": "Géolocalisation & Commune",
+        "contact": "Contact & Web",
+        "infra": "Infrastructure & Équipements",
+        "staff": "Ressources Humaines & Capacité",
+        "education": "Données Pédagogiques",
+        "sector": "Données Pédagogiques",
+        "financial": "Financement & Projets",
+        "description": "Description détaillée",
+        "final": "Finalisation & Justification",
+        "admin_details": "Détails Administratifs",
+        "accessibility": "Accessibilité",
+        "contact_manager": "Contact & Responsable",
+        "observations": "Observations & Besoins"
+      },
+      "form": {
+        "name": "Nom de l'établissement",
+        "nom": "Nom de l'établissement",
+        "nameArabe": "Nom (Arabe)",
+        "nomArabe": "Nom (Arabe)",
+        "code": "Code Identifiant",
+        "sector": "Secteur",
+        "secteur": "Secteur",
+        "nature": "Nature (Public/Privé)",
+        "manager": "Nom du Responsable",
+        "responsableNom": "Nom du Responsable",
+        "infra_status": "État de l'Infrastructure",
+        "capacity": "Capacité d'accueil",
+        "commune": "Commune de rattachement",
+        "communeId": "Commune de rattachement",
+        "address": "Adresse complète",
+        "latitude": "Latitude (GPS)",
+        "longitude": "Longitude (GPS)",
+        "email": "Email",
+        "phone": "Téléphone",
+        "telephone": "Téléphone",
+        "website": "Site Web",
+        "siteWeb": "Site Web",
+        "description_placeholder": "Décrivez l'établissement, sa mission, ses services...",
+        "publish_now": "Publier immédiatement sur le portail citoyen",
+        "select_commune": "Sélectionner une commune",
+        "altitude": "Altitude (m)",
+        "quartier": "Quartier / Douar",
+        "quartierDouar": "Quartier / Douar",
+        "adresse_complete": "Adresse complète",
+        "adresseComplete": "Adresse complète",
+        "tutelle": "Ministère / Tutelle",
+        "statutJuridique": "Statut Juridique",
+        "gestionnaire": "Gestionnaire",
+        "anneeCreation": "Année de création",
+        "anneeOuverture": "Année d'ouverture",
+        "statutFonctionnel": "Statut Opérationnel",
+        "surfaceTotale": "Surface Totale (m²)",
+        "disponibiliteEau": "Accès à l'eau potable",
+        "disponibiliteElectricite": "Accès à l'électricité",
+        "connexionInternet": "Connexion Internet",
+        "nombreSalles": "Nombre total de salles",
+        "effectifTotal": "Effectif Total",
+        "nombrePersonnel": "Nombre de personnel",
+        "cadre": "Type de cadre",
+        "capaciteAccueil": "Capacité d'accueil",
+        "annexe": "Annexe administrative",
+        "annexeId": "Annexe administrative",
+        "typeEtab": "Type d'établissement",
+        "typeEtablissement": "Type d'établissement",
+        "cycle": "Cycle d'enseignement",
+        "nbClasses": "Nombre de classes",
+        "nbEnseignants": "Nombre d'enseignants",
+        "nbCadres": "Nombre de cadres admin",
+        "elevesPrescolaire": "Élèves (Préscolaire)",
+        "elevesTotal": "Nombre total d'élèves",
+        "nouveauxInscrits": "Nouveaux inscrits",
+        "tauxReussite": "Taux de réussite (%)",
+        "sourcesFinancement": "Sources de financement",
+        "budgetAnnuel": "Budget annuel (DH)",
+        "partenaires": "Partenaires / Donateurs",
+        "etatInfrastructure": "État de l'Infrastructure",
+        "transportPublic": "Transport Public",
+        "distanceChefLieu": "Distance au Chef-lieu (km)",
+        "voieAcces": "Voie d'accès",
+        "remarques": "Remarques",
+        "besoinsUrgents": "Besoins Urgents",
+        "projetsFuturs": "Projets Futurs",
+        "elevesFilles": "Total Filles",
+        "elevesPrescolaireFilles": "Filles Préscolaire",
+        "nouveauxInscritsFilles": "Filles Nvx Inscrits",
+        "fillesDerniereAnnee": "Filles Dern. Année",
+        "statut_fonctionnel": "Statut fonctionnel",
+        "voie_acces": "Voie d accès",
+        "transport_public": "Transport public",
+        "distance_chef_lieu": "Distance au chef-lieu"
+      },
+      "common": {
+        "select": "Sélectionner"
+      },
+      "placeholders": {
+        "nom": "Ex: École Al Manar",
+        "nomArabe": "اسم المؤسسة بالعربية",
+        "code": "CODE123",
+        "typeEtab": "Ex: École Primaire",
+        "tutelle": "Ex: Ministère de l'Éducation",
+        "annee": "YYYY",
+        "statut": "Ex: Établissement Public",
+        "quartier": "Quartier / Douar",
+        "adresse": "Adresse précise...",
+        "voie": "Ex: Route Goudronnée",
+        "transport": "Bus, Grands Taxis...",
+        "km": "Km",
+        "surface": "m²",
+        "cadre": "Ex: Médical / Enseignant",
+        "percent": "%",
+        "dh": "DH"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "save": "Enregistrer l'établissement",
+        "success": "Établissement créé avec succès",
+        "error_creation": "Erreur lors de la création",
+        "server_error": "Erreur serveur",
+        "select": "Sélectionner...",
+        "next": "Suivant",
+        "previous": "Précédent"
+      },
+      "requests": {
+        "subtitle": "Centre d'arbitrage et de validation des données techniques",
+        "refresh": "Actualiser la liste",
+        "no_requests": "Aucune demande en attente",
+        "select_to_view": "Sélectionnez une demande pour voir les détails",
+        "can_validate_reject": "Vous pouvez valider ou rejeter les modifications proposées"
+      },
+      "options": {
+        "sectors": {
+          "EDUCATION": "Éducation",
+          "SANTE": "Santé",
+          "SPORT": "Sport",
+          "SOCIAL": "Social",
+          "CULTUREL": "Culturel",
+          "AUTRE": "Autre"
+        },
+        "natures": {
+          "PUBLIC": "Public",
+          "PRIVE": "Privé"
+        },
+        "cycles": {
+          "PRIMAIRE": "Primaire",
+          "COLLEGE": "Collège",
+          "LYCEE": "Lycée",
+          "PRE-SCOLAIRE": "Préscolaire"
+        },
+        "communes": {
+          "1": "Médiouna",
+          "2": "Tit Mellil",
+          "3": "Lahraouyine",
+          "4": "Sidi Hajjaj Oued Hassar",
+          "5": "Mejatia Oulad Taleb",
+          "6": "Al Majat"
+        },
+        "infra_status": {
+          "EXCELLENT": "Excellent",
+          "BON": "Bon",
+          "MOYEN": "Moyen",
+          "DEGRADE": "Dégradé",
+          "A_RENOVER": "À rénover"
+        },
+        "functional_status": {
+          "FONCTIONNEL": "Fonctionnel",
+          "PARTIEL": "Partiel",
+          "RENOVATION": "Rénovation",
+          "FERME": "Fermé"
+        }
+      },
+      "view_details": "Voir les détails",
+      "search_placeholder": "Rechercher une établissement par nom ou code...",
+      "no_establishments": "Aucun établissement trouvé",
+      "error_loading": "Erreur lors du chargement des établissements"
+    },
+    "events": {
+      "new_title": "Nouvel Événement",
+      "new_subtitle": "Créez un événement complet pour informer et mobiliser les citoyens.",
+      "form": {
+        "visual": "Visuel de l'événement",
+        "visual_hint": "Une image attractive augmente la participation",
+        "general_info": "Informations Générales",
+        "title": "Titre de l'événement",
+        "description": "Description détaillée",
+        "establishment": "Établissement organisateur",
+        "type": "Type d'événement",
+        "date_place": "Date, Heure et Lieu",
+        "organizer_contact": "Organisateur & Contact",
+        "participation": "Participation & Inscription",
+        "create_btn": "Créer l'événement",
+        "creating": "Création en cours...",
+        "cancel": "Annuler",
+        "success_create": "Événement créé avec succès",
+        "image_select": "Image sélectionnée",
+        "delete_image": "Supprimer",
+        "click_add_image": "Cliquez pour ajouter une image",
+        "image_format": "PNG, JPG jusqu'à 5MB",
+        "select_establishment": "Sélectionner un établissement...",
+        "select_type": "Sélectionner un type...",
+        "tags": "Tags",
+        "tags_hint": "(séparés par virgule)",
+        "date_start": "Date de début",
+        "date_end": "Date de fin",
+        "time_start": "Heure de début",
+        "time_end": "Heure de fin",
+        "location": "Lieu / Salle",
+        "address": "Adresse complète",
+        "district": "Quartier / Douar",
+        "organizer_name": "Nom de l'organisateur",
+        "contact_phone": "Téléphone de contact",
+        "contact_email": "Email de contact",
+        "max_capacity": "Capacité maximale (personnes)",
+        "open_registration": "Ouvrir les inscriptions",
+        "open_registration_hint": "Permet aux citoyens de s'inscrire en ligne",
+        "external_link": "Lien d'inscription externe",
+        "sector": "Secteur de l'événement",
+        "category": "Catégorie d'événement",
+        "organization": "Organisation & Établissement",
+        "organized_by_province": "Organisé par la Province",
+        "organized_by_province_hint": "L'événement sera rattaché à la Province de Médiouna",
+        "under_province_patronage": "Sous le couvert de la Province",
+        "under_province_patronage_hint": "Affichage \"Sous le couvert de Monsieur le Gouverneur\"",
+        "location_type": "Type de lieu d'événement",
+        "manual_entry": "Saisie Manuelle",
+        "existing_establishment": "Établissement Existant",
+        "venue_sector": "Secteur du lieu (optionnel)",
+        "all_sectors": "Tous les secteurs",
+        "establishment_venue": "Établissement (Emplacement)",
+        "venue_name": "Lieu exact ou Nom de la salle",
+        "map_position": "Position sur la carte",
+        "map_hint": "Glissez le marqueur pour définir l'emplacement exact",
+        "is_free": "Participation gratuite",
+        "price": "Prix d'entrée (DH)",
+        "event_photos": "Photos de l'événement",
+        "add_photo": "Ajouter"
+      },
+      "errors": {
+        "image_size": "L'image ne doit pas dépasser 5MB",
+        "upload_error": "Erreur lors de l'upload de l'image",
+        "create_error": "Erreur lors de la création"
+      },
+      "steps": {
+        "info": "Informations",
+        "location": "Lieu & Organisation",
+        "participation": "Participation",
+        "media": "Médias"
+      },
+      "placeholders": {
+        "title": "Ex: Nettoyage de la plage",
+        "category": "Ex: Concours de dessin",
+        "description": "Détails de l'événement...",
+        "venue": "Ex: Grande Salle du Conseil",
+        "capacity": "Ex: 500",
+        "price": "Ex: 50"
+      },
+      "summary": {
+        "title": "Résumé de l'événement",
+        "field_title": "Titre",
+        "field_sector": "Secteur",
+        "field_location": "Lieu",
+        "field_date": "Date",
+        "field_org": "Organisation",
+        "province_org": "Province de Médiouna",
+        "establishment_org": "Établissement"
+      },
+      "buttons": {
+        "draft": "Brouillon",
+        "prev": "Retour",
+        "next": "Suivant",
+        "create": "Créer l'événement",
+        "save_draft_success": "Brouillon enregistré"
+      },
+      "validation": {
+        "success": "Événement créé avec succès",
+        "error": "Erreur lors de la création de l'événement"
+      }
+    },
+    "backups": {
+      "title": "Sauvegardes Système",
+      "subtitle": "Historique de vos points de restauration de base de données.",
+      "empty": "Aucune sauvegarde",
+      "create": "Nouvelle sauvegarde",
+      "restore": "Restaurer",
+      "empty_title": "Aucune sauvegarde",
+      "empty_desc": "Vous n'avez pas encore créé de points de restauration système.",
+      "create_first": "Créer ma première sauvegarde",
+      "success_create": "Sauvegarde créée avec succès",
+      "success_restore": "Système restauré avec succès",
+      "messages": {
+        "confirm_restore": "Êtes-vous sûr de vouloir restaurer à partir de cette sauvegarde ? Cette action écrasera les données actuelles.",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible.",
+        "created": "Sauvegarde créée avec succès"
+      }
+    },
+    "reclamation_detail_page": {
+      "title": "Réclamation #{id}",
+      "citizen_title": "Citoyen",
+      "location_title": "Localisation",
+      "commune": "Commune",
+      "district": "Quartier / Douar",
+      "address": "Adresse / Repère",
+      "description_title": "Description",
+      "photos_title": "Photos ({count})",
+      "actions_title": "Actions",
+      "accept": "Accepter",
+      "reject": "Rejeter",
+      "dates_title": "Dates",
+      "created_at": "Créée le",
+      "updated_at": "Mise à jour",
+      "history_title": "Historique",
+      "not_found": "Réclamation non trouvée",
+      "load_error": "Erreur lors du chargement",
+      "connection_error": "Erreur de connexion",
+      "back_to_list": "Retour à la liste",
+      "reject_reason_placeholder": "Décrivez le motif du rejet...",
+      "confirm_reject": "Confirmer le rejet",
+      "cancel": "Annuler",
+      "solution_title": "Solution apportée",
+      "reject_reason_title": "Motif de rejet",
+      "establishment_title": "Établissement",
+      "status": {
+        "pending": "En attente",
+        "ACCEPTEE": "Acceptée",
+        "REJETEE": "Rejetée"
+      },
+      "assignment": {
+        "NON_AFFECTEE": "Non affectée",
+        "AFFECTEE": "Affectée"
+      },
+      "messages": {
+        "reject_reason_required": "Veuillez indiquer un motif de rejet"
+      }
+    },
+    "history_actions": {
+      "CREATION": "Création",
+      "VALIDATION": "Validation",
+      "REJET": "Rejet",
+      "AFFECTATION": "Affectation",
+      "RESOLUTION": "Résolution",
+      "UPDATE": "Mise à jour",
+      "ACCEPTATION": "Acceptation"
+    },
     "suggestions_page": {
-      "page_title": "Gestion des Suggestions",
-      "page_subtitle": "Modération des suggestions citoyennes",
+      "page_title": "Suggestions",
+      "page_subtitle": "Gérer les suggestions des citoyens",
       "statuses": {
-        "SOUMISE": "Soumise",
-        "EN_EXAMEN": "En examen",
-        "APPROUVEE": "Approuvée",
         "REJETEE": "Rejetée",
-        "IMPLEMENTEE": "Réalisée"
+        "APPROUVEE": "Approuvée",
+        "EN_EXAMEN": "En examen",
+        "SOUMISE": "Soumise",
+        "IMPLEMENTEE": "Implémentée"
       },
       "search_placeholder": "Rechercher...",
       "no_suggestions": "Aucune suggestion",
       "waiting_suggestions": "Suggestions en attente",
+      "page": "Page",
+      "limit": "Limite",
+      "page_info": "Page {current} sur {total}",
       "table": {
         "suggestion": "Suggestion",
         "category": "Catégorie",
@@ -670,6 +1487,19 @@
         "date": "Date",
         "actions": "Actions"
       },
+      "detail_modal": {
+        "title": "Détails de la suggestion",
+        "current_status": "Statut actuel",
+        "suggestion_title": "Titre de la suggestion",
+        "category": "Catégorie",
+        "description": "Description",
+        "submitted_by": "Soumise par",
+        "admin_response": "Réponse de l'administration",
+        "response_placeholder": "Saisir une réponse officielle...",
+        "change_status": "Changer le statut"
+      },
+      "reset_filters": "Réinitialiser",
+      "no_results": "Aucun résultat pour votre recherche.",
       "empty": {
         "title": "Aucune suggestion",
         "description": "Il n'y a pas encore de suggestions citoyennes soumises.",
@@ -677,19 +1507,19 @@
       }
     },
     "establishments_page": {
-      "page_title": "Gestion des Établissements",
+      "page_title": "Gestion des Etablissements",
       "total_establishments": "{count} établissements",
       "filters": "Filtres",
       "new_establishment": "Nouvel établissement",
-      "bulk_publish": "Publier la sélection",
-      "bulk_delete": "Supprimer la sélection",
-      "search_placeholder": "Rechercher un établissement...",
+      "bulk_publish": "Tout Publier",
+      "bulk_delete": "Tout Supprimer",
+      "search_placeholder": "Rechercher...",
       "reset": "Réinitialiser",
       "all_sectors": "Tous les secteurs",
       "empty": {
         "title": "Aucun établissement",
-        "no_results": "Aucun établissement ne correspond à votre recherche",
-        "description": "Commencez par ajouter votre premier établissement."
+        "no_results": "Aucun résultat trouvé",
+        "description": "Aucun établissement n'a été ajouté"
       },
       "stats": {
         "total": "Total",
@@ -705,160 +1535,193 @@
         "unpublish": "Dépublier",
         "reviews": "{count} avis",
         "details": "Détails",
-        "details_title": "Fiche Établissement",
+        "details_title": "Détails de l'établissement",
         "validate": "Valider",
         "highlight": "Mettre en avant",
-        "remove_highlight": "Retirer la mise en avant",
-        "delete": "Supprimer",
-        "name": "Nom",
-        "sector": "Secteur",
-        "location": "Localisation",
-        "status": "Statut",
-        "rating": "Note",
-        "actions": "Actions"
-      }
-    },
-    "users_page": {
-      "roles": {
-        "CITOYEN": "Citoyen",
-        "DELEGATION": "Délégation",
-        "AUTORITE_LOCALE": "Autorité Locale",
-        "COORDINATEUR_ACTIVITES": "Coordinateur d'Activités",
-        "ADMIN": "Administrateur",
-        "SUPER_ADMIN": "Super Administrateur",
-        "GOUVERNEUR": "Gouverneur"
-      },
-      "page_title": "Gestion des Utilisateurs",
-      "total_users": "Utilisateurs totaux",
-      "export": "Exporter",
-      "add": "Ajouter",
-      "search_placeholder": "Rechercher...",
-      "filter_roles_all": "Tous les rôles",
-      "filter_status_all": "Tous les statuts",
-      "reset_filters": "Réinitialiser",
-      "no_users": "Aucun utilisateur trouvé",
-      "pagination": "Page {start}-{end} sur {total}",
-      "role_descriptions": {
-        "CITOYEN": "Accès citoyen standard",
-        "DELEGATION": "Représentant provincial",
-        "AUTORITE_LOCALE": "Administration territoriale",
-        "COORDINATEUR_ACTIVITES": "Supervision de terrain",
-        "ADMIN": "Administration technique",
-        "SUPER_ADMIN": "Accès complet",
-        "GOUVERNEUR": "Supervision globale"
-      },
-      "sectors": {
-        "EDUCATION": "Éducation",
-        "SANTE": "Santé",
-        "SPORT": "Sport",
-        "SOCIAL": "Social",
-        "CULTUREL": "Culture",
-        "AUTRE": "Autre"
-      },
-      "table": {
-        "user": "Utilisateur",
-        "role": "Rôle",
-        "status": "Statut",
-        "sector_establishment": "Secteur / Établissement",
-        "activity": "Activité",
-        "actions": "Actions",
-        "actions_count": "{count} actions",
-        "estab_count": "{count} établissements"
-      },
-      "statuses": {
-        "active": "Actif",
-        "inactive": "Inactif",
-        "activated": "Activé",
-        "deactivated": "Désactivé"
-      },
-      "actions": {
-        "edit_role": "Modifier le rôle",
-        "reset_password": "Réinitialiser le mot de passe",
-        "deactivate": "Désactiver",
-        "activate": "Activer",
+        "remove_highlight": "Retirer de l'avant",
         "delete": "Supprimer"
       },
       "messages": {
         "error": "Une erreur est survenue",
-        "status_changed": "Statut {status}",
-        "delete_confirm": "Supprimer {name} ?",
-        "user_deleted": "Utilisateur supprimé",
-        "reset_password_confirm": "Réinitialiser pour {name} ?",
-        "reset_password_alert": "Nouveau mot de passe : {password}",
-        "reset_password_success": "Mot de passe réinitialisé"
+        "updated": "Mis à jour avec succès",
+        "deleted": "Supprimé avec succès",
+        "delete_confirm": "Voulez-vous vraiment supprimer cet établissement ?",
+        "bulk_publish_confirm": "Voulez-vous vraiment publier TOUS les établissements ?",
+        "publishing": "Publication en cours...",
+        "bulk_publish_success": "Tous les établissements ont été publiés",
+        "bulk_publish_error": "Erreur lors de la publication groupée",
+        "bulk_delete_confirm": "ATTENTION: Cette action va supprimer TOUS les établissements.\n\nÊtes-vous sûr ?",
+        "deleting": "Suppression en cours...",
+        "bulk_delete_success": "Tous les établissements ont été supprimés",
+        "bulk_delete_error": "Erreur lors de la suppression groupée",
+        "server_error": "Erreur serveur"
       },
-      "create_modal": {
-        "title": "Nouvel Utilisateur",
-        "subtitle": "Créer un compte",
-        "fields": {
-          "first_name": "Prénom",
-          "last_name": "Nom",
-          "email": "Email",
-          "phone": "Téléphone",
-          "password": "Mot de passe",
-          "confirm_password": "Confirmer",
-          "role": "Rôle",
-          "sector": "Secteur",
-          "commune": "Commune",
-          "establishments": "Établissements ({count})",
-          "active_account": "Compte actif"
-        },
-        "placeholders": {
-          "first_name": "Prénom",
-          "last_name": "Nom",
-          "email": "email@exemple.com",
-          "phone": "06XXXXXXXX",
-          "password": "Mot de passe"
-        },
-        "helpers": {
-          "commune_helper": "Commune rattachée",
-          "establishments_helper": "Établissements gérés (sélection multiple)"
-        },
-        "select_option": {
-          "sector": "Choisir un secteur",
-          "commune": "Choisir une commune"
-        },
-        "cancel_btn": "Annuler",
-        "submit_btn": "Créer",
-        "errors": {
-          "password_mismatch": "Les mots de passe ne correspondent pas",
-          "password_length": "6 caractères minimum",
-          "sector_required": "Le secteur est obligatoire",
-          "commune_required": "La commune est obligatoire",
-          "establishment_required": "L'établissement est obligatoire",
-          "create_error": "Erreur lors de la création",
-          "server_error": "Erreur serveur"
-        },
-        "success": "Compte de {name} créé avec succès"
+      "pagination": {
+        "info": "Page {page} sur {total}"
       },
-      "edit_role_modal": {
-        "title": "Modifier le rôle",
-        "current_role": "Rôle actuel",
-        "new_role": "Nouveau rôle",
-        "errors": {
-          "edit_error": "Erreur lors de la modification",
-          "sector_required": "Le secteur est obligatoire",
-          "commune_required": "La commune est obligatoire",
-          "establishment_required": "L'établissement est obligatoire",
-          "server_error": "Erreur serveur"
-        },
-        "loading": "Chargement..."
+      "page": "Page",
+      "limit": "Limite",
+      "includeNonPublie": "Inclure non publiés",
+      "loading": "Chargement des établissements..."
+    },
+    "programs_page": {
+      "title": "Programmes et Activités",
+      "subtitle": "Gérer les programmes et activités",
+      "create": "Ajouter un programme",
+      "refresh": "Actualiser",
+      "stats": {
+        "finished": "Terminés",
+        "validated": "Validés",
+        "pending": "En attente",
+        "reports_ok": "Rapports complets",
+        "total": "Total"
+      },
+      "filters": {
+        "all_validations": "Toutes validations",
+        "all_statuses": "Tous statuts",
+        "search": "Rechercher...",
+        "pending_validation": "En attente de validation",
+        "validated": "Validé"
+      },
+      "empty": {
+        "title": "Aucun programme",
+        "subtitle": "Aucun programme trouvé"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "to_validate": "À valider",
+        "planned": "Planifiée",
+        "in_progress": "En cours",
+        "finished": "Terminée",
+        "report_ok": "Rapport complet",
+        "cancelled": "Annulée",
+        "postponed": "Reportée"
+      },
+      "table": {
+        "activity": "Activité",
+        "establishment": "Établissement",
+        "date": "Date",
+        "status": "Statut",
+        "validation": "Validation",
+        "actions": "Actions",
+        "valide": "Validé",
+        "waiting": "En attente",
+        "view_details": "Voir détails",
+        "validate": "Valider",
+        "unvalidate": "Retirer validation"
+      },
+      "types": {
+        "EDUCATION": "Éducation",
+        "CULTUREL": "Culturel",
+        "SPORT": "Sport",
+        "SANTE": "Santé",
+        "SOCIAL": "Social",
+        "ENVIRONMENT": "Environnement",
+        "AUTRE": "Autre"
+      },
+      "modal": {
+        "establishment": "Établissement",
+        "sector": "Secteur",
+        "date": "Date",
+        "hours": "Horaires",
+        "location": "Lieu",
+        "participants": "Participants attendus",
+        "validated_by_admin": "Validé par l'admin",
+        "waiting_validation": "En attente de validation",
+        "visible_public": "Visible par le public",
+        "close": "Fermer",
+        "validate": "Valider",
+        "hide": "Masquer",
+        "show": "Afficher"
       }
     },
-    "backups": {
-      "title": "Sauvegardes Système",
-      "subtitle": "Historique des points de restauration de la base de données.",
-      "create": "Nouvelle sauvegarde",
-      "restore": "Restaurer",
-      "empty_title": "Aucune sauvegarde",
-      "empty_desc": "Vous n'avez pas encore créé de points de restauration du système.",
-      "create_first": "Créer la première sauvegarde",
-      "success_create": "Sauvegarde créée avec succès",
-      "success_restore": "Système restauré avec succès",
-      "messages": {
-        "confirm_restore": "Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cela écrasera les données actuelles.",
-        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
+    "reports_page": {
+      "loading": "Chargement des données...",
+      "title": "Rapports & Statistiques",
+      "date_range_to": "à",
+      "excel": "Exporter Excel",
+      "no_data": "Aucune donnée disponible pour cette période",
+      "subtitle": "Rapports et statistiques détaillés",
+      "export_buttons": {
+        "excel_reclamations": "Exporter Réclamations (Excel)",
+        "excel_events": "Exporter Événements (Excel)"
+      },
+      "kpi_cards": {
+        "total_reclamations": "Total Réclamations",
+        "total_events": "Total Événements",
+        "average_rating": "Note Moyenne",
+        "event_participation": "Participation Événements"
+      },
+      "charts": {
+        "reclamations_by_status": "Réclamations par statut",
+        "reclamations_evolution": "Évolution des réclamations",
+        "reclamations_by_commune": "Réclamations par commune",
+        "top_5_establishments": "Top 5 des établissements"
+      },
+      "reviews_count": "Nombre d'avis"
+    },
+    "reclamations_page": {
+      "table": {
+        "ref": "Référence",
+        "citoyen": "Citoyen",
+        "sujet": "Sujet",
+        "statut": "Statut",
+        "affectation": "Affectation"
+      },
+      "actions": {
+        "update_status": "Mettre à jour le statut"
       }
+    },
+    "common_modal": {
+      "management": "Gestion de l'établissement",
+      "average_rating": "Note Moyenne",
+      "total_reviews": "Total Évaluations",
+      "citizen_reviews": "Avis Citoyens",
+      "contact_info": "Informations de Contact",
+      "admin_actions": "Actions Administratives",
+      "close_view": "Fermer la vue",
+      "author": "Auteur",
+      "contributor": "Contributeur",
+      "sector": "Secteur",
+      "views": "Vues",
+      "likes": "J'aime",
+      "establishment": "Établissement",
+      "commune": "Commune",
+      "created_on": "Créé le {date}",
+      "change_status": "Changer le statut",
+      "view_online": "Voir en ligne",
+      "remove_highlight": "Retirer la mise en avant",
+      "add_highlight": "Mettre en avant",
+      "delete": "Supprimer",
+      "no_resume": "Aucun résumé fourni",
+      "organizer": "Organisateur",
+      "dates": "Dates",
+      "budget": "Budget",
+      "participants": "Participants",
+      "status_changed": "Statut mis à jour avec succès",
+      "highlight_added": "Mise en avant ajoutée",
+      "highlight_removed": "Mise en avant retirée",
+      "deleted": "Suppression effectuée",
+      "error": "Une erreur est survenue",
+      "updating": "Mise à jour en cours...",
+      "deleting": "Suppression en cours...",
+      "period": "Période",
+      "location": "Localisation",
+      "description_event": "Description de l'événement",
+      "current_status": "Statut Actuel",
+      "featured_event": "Événement Mis en avant",
+      "close": "Fermer",
+      "edit_full": "Modifier complet",
+      "registrations": "Inscriptions",
+      "validating": "Validation en cours...",
+      "rejecting": "Rejet en cours...",
+      "date_planned": "Date prévue",
+      "additional_info": "Informations Complémentaires",
+      "expected_participants": "Participants Attendus",
+      "management_program": "Gestion du programme institutionnel",
+      "email_not_provided": "Email non fourni",
+      "no_suggestion": "Aucune suggestion",
+      "photos": "Photos"
     }
   },
   "campaigns": {
@@ -2382,1129 +3245,6 @@
     "admin_response_title": "Réponse de l'administration",
     "admin_response_placeholder": "...Ajouter une réponse officielle",
     "super_admin_delete_warning": "Action irréversible réservée aux Super Admins"
-  },
-  "admin": {
-    "sidebar": {
-      "portal_name": "Portail Mediouna",
-      "administration": "Administration",
-      "dashboard": "Tableau de bord",
-      "reclamations": "Réclamations",
-      "suggestions": "Suggestions",
-      "users": "Utilisateurs",
-      "etablissements": "Établissements",
-      "etablissements_requests": "Demandes Établissements",
-      "activities": "Activités",
-      "validation": "Validation",
-      "events": "Événements",
-      "news": "Actualités",
-      "articles": "Articles",
-      "campaigns": "Campagnes",
-      "reports": "Rapports",
-      "statistics": "Statistiques",
-      "home_page": "Page d'accueil",
-      "settings": "Paramètres",
-      "super_admin": "Super Administrateur",
-      "popup_announcements": "Annonces Pop-up",
-      "roles_permissions": "Rôles & Permissions",
-      "messages": "Boîte aux lettres",
-      "notifications": "Notifications",
-      "audit_logs": "Logs d'audit",
-      "system_config": "Configuration Système",
-      "backup": "Sauvegarde",
-      "legal": "Mentions Légales",
-      "help": "Aide & Support",
-      "logout": "Déconnexion",
-      "backups": "Sauvegardes"
-    },
-    "dashboard": {
-      "header": {
-        "title": "Tableau de Bord",
-        "subtitle": "Vue d'ensemble de l'activité de la plateforme",
-        "export": "Exporter",
-        "reports": "Rapports"
-      },
-      "metrics": {
-        "users": "Utilisateurs",
-        "establishments": "Établissements",
-        "events": "Événements",
-        "reclamations": "Réclamations",
-        "new_this_month": "Nouveaux ce mois",
-        "validated": "Validés",
-        "in_progress": "En cours",
-        "pending": "En attente",
-        "this_month": "Ce mois"
-      },
-      "quick_actions": {
-        "title": "Actions Rapides",
-        "claims": "Réclamations",
-        "claims_desc": "Traiter les plaintes entrantes",
-        "validation": "Validation",
-        "validation_desc": "Valider les établissements",
-        "campaigns": "Campagnes",
-        "campaigns_desc": "Gérer les campagnes bénévoles",
-        "users": "Utilisateurs",
-        "users_desc": "Gérer les utilisateurs",
-        "access": "Accéder"
-      },
-      "charts": {
-        "events_by_sector": "Événements par secteur",
-        "events_distribution": "Répartition des événements",
-        "reclamations_by_status": "Réclamations par statut",
-        "current_breakdown": "Répartition actuelle",
-        "view_all": "Voir tout",
-        "no_data": "Aucune donnée",
-        "total": "Total"
-      },
-      "alerts": {
-        "events_action_required": "Action requise sur les événements",
-        "events_pending_closure": "{count} événements en attente de clôture",
-        "manage_now": "Gérer maintenant"
-      },
-      "other_sections": {
-        "title": "Autres sections",
-        "news": "Actualités",
-        "news_desc": "Gérer les nouvelles et articles",
-        "campaigns": "Campagnes",
-        "campaigns_desc": "Dernières campagnes",
-        "suggestions": "Suggestions",
-        "suggestions_desc": "Propositions des citoyens",
-        "talents": "Talents",
-        "talents_desc": "Gestion des talents"
-      },
-      "footer": {
-        "system_activity": "Activité Système",
-        "system_operational": "Le système fonctionne normalement",
-        "new_users": "Nouveaux utilisateurs",
-        "to_process": "À traiter",
-        "active_events": "Événements actifs"
-      },
-      "loading": "Chargement...",
-      "toasts": {
-        "refreshing": "Rafraîchissement des données..."
-      },
-      "no_data": "Aucune donnée disponible",
-      "total": "Total"
-    },
-    "header": {
-      "search_placeholder": "Rechercher...",
-      "site_public": "Site Public",
-      "notifications": "Notifications",
-      "mark_all_read": "Tout marquer comme lu",
-      "no_notifications": "Aucune notification",
-      "view_history": "Voir l'historique",
-      "my_profile": "Mon Profil",
-      "settings": "Paramètres",
-      "logout": "Déconnexion",
-      "administrator": "Administrateur",
-      "just_now": "À l'instant",
-      "minutes_ago": "Il y a {count} min",
-      "hours_ago": "Il y a {count} h",
-      "days_ago": "Il y a {count} j"
-    },
-    "validation_page": {
-      "title": "Validation de contenu",
-      "subtitle": "Gérer {count} contenus en attente d'approbation",
-      "filter": "Filtrer",
-      "tabs": {
-        "events": "Événements",
-        "news": "Actualités",
-        "articles": "Articles",
-        "campaigns": "Campagnes"
-      },
-      "card": {
-        "no_description": "Aucune description"
-      },
-      "actions": {
-        "view": "Voir",
-        "approve": "Approuver",
-        "reject": "Rejeter"
-      },
-      "messages": {
-        "approved": "Approuvé avec succès",
-        "rejected": "Rejeté",
-        "error": "Une erreur est survenue",
-        "reject_reason": "Motif du rejet :",
-        "guide_title": "Guide de validation",
-        "guide_text": "Vérifiez le contenu avant publication pour vous assurer qu'il respecte les normes.",
-        "guide_link": "Voir le guide"
-      },
-      "empty": {
-        "title": "Aucun contenu en attente de validation",
-        "description": "Tout le contenu a été traité."
-      },
-      "modal": {
-        "details_title": "Détails du contenu",
-        "start_date": "Date de début :",
-        "end_date": "Date de fin :",
-        "location": "Lieu",
-        "created_by": "Créé par :",
-        "objective": "Objectif :",
-        "participants": "participants",
-        "cancel": "Annuler"
-      }
-    },
-    "events_page": {
-      "title": "Gestion des événements",
-      "subtitle": "Gérez les événements ({count})",
-      "filters": "Filtres",
-      "create": "Nouvel événement",
-      "stats": {
-        "total": "Total",
-        "pending": "En attente",
-        "published": "Publiés",
-        "in_progress": "En cours",
-        "closed": "Clôturés"
-      },
-      "filter_labels": {
-        "search": "Rechercher...",
-        "all_statuses": "Tous statuts",
-        "all_sectors": "Tous secteurs",
-        "all_muncipalities": "Toutes communes",
-        "reset": "Réinitialiser"
-      },
-      "status": {
-        "pending": "En attente",
-        "published": "Publié",
-        "in_progress": "En cours",
-        "closed": "Clôturé",
-        "rejected": "Rejeté"
-      },
-      "table": {
-        "event": "Événement",
-        "sector": "Secteur",
-        "location": "Lieu",
-        "date": "Date",
-        "status": "Statut",
-        "registrations": "Inscriptions",
-        "actions": "Actions"
-      },
-      "actions": {
-        "view": "Voir",
-        "edit": "Modifier",
-        "validate": "Valider",
-        "reject": "Rejeter",
-        "close": "Clôturer"
-      },
-      "empty": "Aucun événement trouvé",
-      "messages": {
-        "reject_reason": "Motif du rejet :",
-        "reject_error": "Veuillez fournir un motif de rejet (min 10 caractères)",
-        "validated": "Validé avec succès",
-        "rejected": "Rejeté avec succès",
-        "error": "Une erreur est survenue"
-      },
-      "communeId": "Commune",
-      "dateDebut": "Date de début",
-      "dateFin": "Date de fin",
-      "page": "Page",
-      "limit": "Limite",
-      "refresh": "Actualiser",
-      "create_modal": {
-        "title": "Nouvel événement",
-        "step_indicator": "Étape {current} sur {total}",
-        "steps": {
-          "info": "Informations",
-          "location": "Localisation",
-          "participation": "Participation",
-          "media": "Médias"
-        },
-        "form": {
-          "title_label": "Titre",
-          "title_placeholder": "Ex: Session de formation...",
-          "desc_label": "Description",
-          "desc_placeholder": "Détails de l'événement...",
-          "sector_label": "Secteur",
-          "category_label": "Catégorie",
-          "select_placeholder": "Sélectionner...",
-          "commune_label": "Commune",
-          "establishment_label": "Établissement (optionnel)",
-          "location_label": "Lieu précis",
-          "location_placeholder": "Ex: Salle polyvalente, Stade municipal...",
-          "map_label": "Localisation sur la carte",
-          "start_date": "Date de début",
-          "end_date": "Date de fin",
-          "start_time": "Heure de début",
-          "end_time": "Heure de fin",
-          "max_capacity": "Capacité maximale",
-          "capacity_placeholder": "Ex: 100",
-          "is_free": "Événement gratuit",
-          "price": "Prix (DH)",
-          "registration_link": "Lien d'inscription (externe)",
-          "photos_label": "Photos de l'événement",
-          "upload_text": "Cliquez ou glissez vos photos ici",
-          "upload_hint": "PNG, JPG jusqu'à 10MB",
-          "summary_title": "Résumé de l'événement",
-          "summary": {
-            "title": "Titre",
-            "sector": "Secteur",
-            "date": "Date",
-            "location": "Lieu",
-            "price": "Prix",
-            "photos": "Photos"
-          },
-          "image_selected": "Image sélectionnée",
-          "image_delete": "Supprimer",
-          "type_label": "Type d'événement",
-          "tags": "Tags",
-          "tags_hint": "(séparés par virgule)",
-          "tags_placeholder": "Ex: jeunesse, sport, culture, famille",
-          "optional": "(optionnel)",
-          "address": "Adresse complète",
-          "address_placeholder": "Ex: Avenue Mohammed V, Médiouna",
-          "neighborhood": "Quartier / Douar",
-          "neighborhood_placeholder": "Ex: Hay Mohammadi",
-          "organizer_name": "Nom de l'organisateur",
-          "organizer_name_placeholder": "Ex: Association Jeunesse Médiouna",
-          "organizer_phone": "Téléphone de contact",
-          "organizer_phone_placeholder": "Ex: 0522 123 456",
-          "organizer_email": "Email de contact",
-          "organizer_email_placeholder": "Ex: contact@event.ma",
-          "open_registrations": "Ouvrir les inscriptions",
-          "open_registrations_hint": "Permet aux citoyens de s'inscrire en ligne"
-        },
-        "buttons": {
-          "save_draft": "Enregistrer le brouillon",
-          "cancel": "Annuler",
-          "prev": "Précédent",
-          "next": "Suivant",
-          "create": "Créer l'événement",
-          "saving": "Création en cours..."
-        },
-        "errors": {
-          "title_required": "Le titre est requis",
-          "desc_required": "La description est requise",
-          "category_required": "La catégorie est requise",
-          "commune_required": "La commune est requise",
-          "location_required": "Le lieu est requis",
-          "date_required": "La date est requise",
-          "price_required": "Le prix est requis"
-        },
-        "categories": {
-          "conf": "Conférence",
-          "formation": "Formation",
-          "atelier": "Atelier",
-          "festival": "Festival",
-          "competition": "Compétition",
-          "spectacle": "Spectacle",
-          "exposition": "Exposition",
-          "open_day": "Journée portes ouvertes",
-          "campaign": "Campagne",
-          "rencontre": "Rencontre",
-          "ceremony": "Cérémonie",
-          "autre": "Autre"
-        },
-        "title_new": "Nouvel événement",
-        "subtitle_new": "Créer un nouvel événement",
-        "back_list": "Retour aux événements",
-        "sections": {
-          "visual": "Visuel de l'événement",
-          "visual_hint": "Une image attractive augmente la participation",
-          "info": "Informations Générales",
-          "date_location": "Date, Heure et Lieu",
-          "organizer": "Organisateur & Contact",
-          "organizer_hint": "Informations de contact pour les citoyens",
-          "participation": "Participation & Inscription"
-        }
-      },
-      "form": {
-        "sector": "Secteur de l'événement"
-      },
-      "loading": "Chargement des événements..."
-    },
-    "news_page": {
-      "page_title": "Actualités",
-      "total_news": "{count} actualités",
-      "filters": "Filtres",
-      "new_news": "Nouvelle actualité",
-      "search_placeholder": "Rechercher...",
-      "all_sectors": "Tous les secteurs",
-      "reset": "Réinitialiser",
-      "no_news": "Aucune actualité",
-      "no_results": "Aucun résultat",
-      "create_title": "Nouvel Article",
-      "create_subtitle": "Rédigez un article pour le Portail Province Médiouna.",
-      "edit_title": "Modifier l'Article",
-      "view_details": "Voir détails",
-      "edit": "Modifier",
-      "delete": "Supprimer",
-      "views": "{count} vues",
-      "pagination": "Page {page} sur {totalPages} ({total})",
-      "statuses": {
-        "BROUILLON": "Brouillon",
-        "EN_ATTENTE_VALIDATION": "En attente",
-        "VALIDEE": "Validée",
-        "PUBLIEE": "Publiée",
-        "DEPUBLIEE": "Dépubliée",
-        "ARCHIVEE": "Archivée"
-      },
-      "modal": {
-        "title": "Détails de l'actualité",
-        "resume": "Résumé",
-        "no_resume": "Aucun résumé",
-        "sector": "Secteur",
-        "views": "Vues",
-        "created_on": "Créé le {date}",
-        "change_status": "Changer le statut",
-        "view_online": "Voir en ligne",
-        "add_highlight": "Mettre à la une",
-        "remove_highlight": "Retirer de la une",
-        "delete": "Supprimer l'actualité",
-        "commune": "Commune",
-        "establishment": "Établissement",
-        "author": "Auteur"
-      },
-      "messages": {
-        "loading_error": "Erreur de chargement",
-        "status_changed": "Statut changé en {status}",
-        "error": "Une erreur est survenue",
-        "highlight_removed": "Retiré de la une",
-        "highlight_added": "Ajouté à la une",
-        "delete_confirm": "Êtes-vous sûr de vouloir supprimer ?",
-        "deleted": "Supprimé avec succès"
-      }
-    },
-    "articles_page": {
-      "loading": "Chargement des articles...",
-      "title": "Articles",
-      "subtitle": "Gérez les articles et contenus de la plateforme",
-      "create": "Nouvel Article",
-      "create_title": "Nouvel Article",
-      "create_subtitle": "Rédigez un article pour la plateforme MedAction.",
-      "back_list": "Retour aux articles",
-      "search": "Rechercher un article...",
-      "filters": "Filtres",
-      "labels": {
-        "search_placeholder": "Rechercher...",
-        "all_statuses": "Tous les statuts",
-        "reset": "Réinitialiser",
-        "featured": "Mis en avant",
-        "no_resume": "Aucun résumé",
-        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet article ?",
-        "deleted": "Supprimé avec succès",
-        "highlighted": "Mis en avant avec succès",
-        "unhighlighted": "Mise en avant annulée",
-        "status_changed": "Statut modifié avec succès"
-      },
-      "stats": {
-        "total": "Total",
-        "published": "Publiés",
-        "pending": "En attente",
-        "views": "Vues",
-        "views_desc": "Total des vues"
-      },
-      "filters_labels": {
-        "all": "Tous les articles",
-        "featured": "Mis en avant uniquement"
-      },
-      "status": {
-        "draft": "Brouillon",
-        "pending": "En attente",
-        "published": "Publiée",
-        "rejected": "Rejetée",
-        "archived": "Archivée"
-      },
-      "empty": {
-        "title": "Aucun article trouvé",
-        "create_first": "Créer le premier article"
-      },
-      "sections": {
-        "image": "Image de couverture",
-        "content": "Rédaction de l'article",
-        "category": "Catégorisation",
-        "publication": "Publication"
-      },
-      "form": {
-        "title": "Titre de l'article",
-        "summary": "Chapeau / Résumé",
-        "content": "Contenu complet",
-        "image": "Image de couverture",
-        "select_image": "Cliquez pour ajouter une image",
-        "image_help": "PNG, JPG jusqu'à 5MB • Recommandé: 1200x630px",
-        "category": "Catégorie",
-        "select_category": "Sélectionner une catégorie",
-        "tags": "Tags",
-        "tags_placeholder": "développement, innovation",
-        "publish_now": "Publier immédiatement"
-      },
-      "actions": {
-        "cancel": "Annuler",
-        "save": "Enregistrer l'article",
-        "saving": "Enregistrement...",
-        "success": "Article créé avec succès"
-      },
-      "table": {
-        "title": "Titre",
-        "author": "Auteur",
-        "status": "Statut",
-        "date": "Date",
-        "actions": "Actions"
-      },
-      "page": "Page",
-      "limit": "Limite",
-      "modal": {
-        "title": "Détails de l'article",
-        "resume": "Résumé",
-        "views": "Vues",
-        "likes": "Likes",
-        "author": "Auteur",
-        "change_status": "Changer le statut",
-        "toggle_featured": "Mettre en avant",
-        "toggle_featured_off": "Retirer de la une",
-        "delete": "Supprimer l'article",
-        "contributor": "Contributeur"
-      },
-      "messages": {
-        "status_changed": "Statut mis à jour",
-        "highlighted": "Mis en avant avec succès",
-        "unhighlighted": "Retiré de la une",
-        "deleted": "Supprimé avec succès",
-        "confirm_delete": "Supprimer cet article ?",
-        "load_error": "Erreur lors du chargement de l'article",
-        "save_error": "Erreur lors de la sauvegarde de l'article",
-        "delete_error": "Erreur lors de la suppression de l'article"
-      },
-      "filter_status": "Statut",
-      "filter_sector": "Secteur"
-    },
-    "news": {
-      "create_title": "Nouvelle Actualité",
-      "create_subtitle": "Créer une nouvelle actualité pour les citoyens.",
-      "back_list": "Retour à la liste",
-      "sections": {
-        "image": "Image de couverture",
-        "content": "Rédaction",
-        "sector": "Secteur",
-        "category": "Catégorie",
-        "status": "Statut de publication"
-      },
-      "form": {
-        "title": "Titre de l'actualité",
-        "description": "Description courte",
-        "content": "Contenu détaillé",
-        "image": "Image de couverture",
-        "image_help": "PNG, JPG jusqu'à 5MB",
-        "date": "Date de publication",
-        "sector": "Secteur",
-        "category": "Catégorie",
-        "status": "Statut",
-        "select_sector": "Sélectionner un secteur...",
-        "select_category": "Sélectionner une catégorie...",
-        "select_status": "Sélectionner un statut...",
-        "select_image": "Sélectionner une image",
-        "summary": "Résumé",
-        "summary_placeholder": "Un court résumé pour les cartes...",
-        "general_category": "Catégorie Générale",
-        "tags": "Tags (séparés par virgule)",
-        "tags_placeholder": "tag1, tag2, tag3",
-        "is_valide": "Validée",
-        "is_publie": "Publiée"
-      },
-      "actions": {
-        "cancel": "Annuler",
-        "create": "Créer l'actualité",
-        "creating": "Création...",
-        "create_success": "Actualité créée avec succès",
-        "save": "Enregistrer",
-        "delete": "Supprimer",
-        "validate": "Valider",
-        "reject": "Rejeter",
-        "update_success": "Actualité mise à jour avec succès",
-        "update_error": "Erreur lors de la sauvegarde",
-        "delete_success": "Actualité supprimée",
-        "delete_error": "Erreur lors de la suppression",
-        "validate_success": "Actualité validée",
-        "reject_success": "Actualité rejetée"
-      },
-      "sectors": {
-        "EDUCATION": "Éducation",
-        "SANTE": "Santé",
-        "SPORT": "Sport",
-        "SOCIAL": "Social",
-        "CULTUREL": "Culturel",
-        "AUTRE": "Autre"
-      },
-      "categories": {
-        "EVENEMENT": "Événement",
-        "ANNONCE": "Annonce",
-        "PROJET": "Projet",
-        "URGENCE": "Urgence",
-        "TRAVAUX": "Travaux",
-        "PARTENARIAT": "Partenariat",
-        "SUCCESS_STORY": "Success Story"
-      },
-      "status": {
-        "BROUILLON": "Brouillon",
-        "BROUILLON_DESC": "Visible uniquement par vous",
-        "EN_ATTENTE_VALIDATION": "En attente",
-        "EN_ATTENTE_VALIDATION_DESC": "Soumis pour validation",
-        "PUBLIEE": "Publier directement",
-        "PUBLIEE_DESC": "Visible immédiatement"
-      },
-      "edit_title": "Modifier l'actualité",
-      "edit_subtitle": "Mise à jour des informations de l'actualité",
-      "info_card": {
-        "created_at": "Créé le:",
-        "by": "Par:"
-      }
-    },
-    "establishments": {
-      "create_title": "Nouvel Établissement",
-      "create_subtitle": "Remplissez les informations pour créer un nouvel établissement",
-      "back_list": "Retour à la liste",
-      "sections": {
-        "general": "Identification & Secteur",
-        "localization": "Géolocalisation & Commune",
-        "location": "Géolocalisation & Commune",
-        "contact": "Contact & Web",
-        "infra": "Infrastructure & Équipements",
-        "staff": "Ressources Humaines & Capacité",
-        "education": "Données Pédagogiques",
-        "sector": "Données Pédagogiques",
-        "financial": "Financement & Projets",
-        "description": "Description détaillée",
-        "final": "Finalisation & Justification",
-        "admin_details": "Détails Administratifs",
-        "accessibility": "Accessibilité",
-        "contact_manager": "Contact & Responsable",
-        "observations": "Observations & Besoins"
-      },
-      "form": {
-        "name": "Nom de l'établissement",
-        "nom": "Nom de l'établissement",
-        "nameArabe": "Nom (Arabe)",
-        "nomArabe": "Nom (Arabe)",
-        "code": "Code Identifiant",
-        "sector": "Secteur",
-        "secteur": "Secteur",
-        "nature": "Nature (Public/Privé)",
-        "manager": "Nom du Responsable",
-        "responsableNom": "Nom du Responsable",
-        "infra_status": "État de l'Infrastructure",
-        "capacity": "Capacité d'accueil",
-        "commune": "Commune de rattachement",
-        "communeId": "Commune de rattachement",
-        "address": "Adresse complète",
-        "latitude": "Latitude (GPS)",
-        "longitude": "Longitude (GPS)",
-        "email": "Email",
-        "phone": "Téléphone",
-        "telephone": "Téléphone",
-        "website": "Site Web",
-        "siteWeb": "Site Web",
-        "description_placeholder": "Décrivez l'établissement, sa mission, ses services...",
-        "publish_now": "Publier immédiatement sur le portail citoyen",
-        "select_commune": "Sélectionner une commune",
-        "altitude": "Altitude (m)",
-        "quartier": "Quartier / Douar",
-        "quartierDouar": "Quartier / Douar",
-        "adresse_complete": "Adresse complète",
-        "adresseComplete": "Adresse complète",
-        "tutelle": "Ministère / Tutelle",
-        "statutJuridique": "Statut Juridique",
-        "gestionnaire": "Gestionnaire",
-        "anneeCreation": "Année de création",
-        "anneeOuverture": "Année d'ouverture",
-        "statutFonctionnel": "Statut Opérationnel",
-        "surfaceTotale": "Surface Totale (m²)",
-        "disponibiliteEau": "Accès à l'eau potable",
-        "disponibiliteElectricite": "Accès à l'électricité",
-        "connexionInternet": "Connexion Internet",
-        "nombreSalles": "Nombre total de salles",
-        "effectifTotal": "Effectif Total",
-        "nombrePersonnel": "Nombre de personnel",
-        "cadre": "Type de cadre",
-        "capaciteAccueil": "Capacité d'accueil",
-        "annexe": "Annexe administrative",
-        "annexeId": "Annexe administrative",
-        "typeEtab": "Type d'établissement",
-        "typeEtablissement": "Type d'établissement",
-        "cycle": "Cycle d'enseignement",
-        "nbClasses": "Nombre de classes",
-        "nbEnseignants": "Nombre d'enseignants",
-        "nbCadres": "Nombre de cadres admin",
-        "elevesPrescolaire": "Élèves (Préscolaire)",
-        "elevesTotal": "Nombre total d'élèves",
-        "nouveauxInscrits": "Nouveaux inscrits",
-        "tauxReussite": "Taux de réussite (%)",
-        "sourcesFinancement": "Sources de financement",
-        "budgetAnnuel": "Budget annuel (DH)",
-        "partenaires": "Partenaires / Donateurs",
-        "etatInfrastructure": "État de l'Infrastructure",
-        "transportPublic": "Transport Public",
-        "distanceChefLieu": "Distance au Chef-lieu (km)",
-        "voieAcces": "Voie d'accès",
-        "remarques": "Remarques",
-        "besoinsUrgents": "Besoins Urgents",
-        "projetsFuturs": "Projets Futurs",
-        "elevesFilles": "Total Filles",
-        "elevesPrescolaireFilles": "Filles Préscolaire",
-        "nouveauxInscritsFilles": "Filles Nvx Inscrits",
-        "fillesDerniereAnnee": "Filles Dern. Année",
-        "statut_fonctionnel": "Statut fonctionnel",
-        "voie_acces": "Voie d accès",
-        "transport_public": "Transport public",
-        "distance_chef_lieu": "Distance au chef-lieu"
-      },
-      "common": {
-        "select": "Sélectionner"
-      },
-      "placeholders": {
-        "nom": "Ex: École Al Manar",
-        "nomArabe": "اسم المؤسسة بالعربية",
-        "code": "CODE123",
-        "typeEtab": "Ex: École Primaire",
-        "tutelle": "Ex: Ministère de l'Éducation",
-        "annee": "YYYY",
-        "statut": "Ex: Établissement Public",
-        "quartier": "Quartier / Douar",
-        "adresse": "Adresse précise...",
-        "voie": "Ex: Route Goudronnée",
-        "transport": "Bus, Grands Taxis...",
-        "km": "Km",
-        "surface": "m²",
-        "cadre": "Ex: Médical / Enseignant",
-        "percent": "%",
-        "dh": "DH"
-      },
-      "actions": {
-        "cancel": "Annuler",
-        "save": "Enregistrer l'établissement",
-        "success": "Établissement créé avec succès",
-        "error_creation": "Erreur lors de la création",
-        "server_error": "Erreur serveur",
-        "select": "Sélectionner...",
-        "next": "Suivant",
-        "previous": "Précédent"
-      },
-      "requests": {
-        "subtitle": "Centre d'arbitrage et de validation des données techniques",
-        "refresh": "Actualiser la liste",
-        "no_requests": "Aucune demande en attente",
-        "select_to_view": "Sélectionnez une demande pour voir les détails",
-        "can_validate_reject": "Vous pouvez valider ou rejeter les modifications proposées"
-      },
-      "options": {
-        "sectors": {
-          "EDUCATION": "Éducation",
-          "SANTE": "Santé",
-          "SPORT": "Sport",
-          "SOCIAL": "Social",
-          "CULTUREL": "Culturel",
-          "AUTRE": "Autre"
-        },
-        "natures": {
-          "PUBLIC": "Public",
-          "PRIVE": "Privé"
-        },
-        "cycles": {
-          "PRIMAIRE": "Primaire",
-          "COLLEGE": "Collège",
-          "LYCEE": "Lycée",
-          "PRE-SCOLAIRE": "Préscolaire"
-        },
-        "communes": {
-          "1": "Médiouna",
-          "2": "Tit Mellil",
-          "3": "Lahraouyine",
-          "4": "Sidi Hajjaj Oued Hassar",
-          "5": "Mejatia Oulad Taleb",
-          "6": "Al Majat"
-        },
-        "infra_status": {
-          "EXCELLENT": "Excellent",
-          "BON": "Bon",
-          "MOYEN": "Moyen",
-          "DEGRADE": "Dégradé",
-          "A_RENOVER": "À rénover"
-        },
-        "functional_status": {
-          "FONCTIONNEL": "Fonctionnel",
-          "PARTIEL": "Partiel",
-          "RENOVATION": "Rénovation",
-          "FERME": "Fermé"
-        }
-      },
-      "view_details": "Voir les détails",
-      "search_placeholder": "Rechercher une établissement par nom ou code...",
-      "no_establishments": "Aucun établissement trouvé",
-      "error_loading": "Erreur lors du chargement des établissements"
-    },
-    "events": {
-      "new_title": "Nouvel Événement",
-      "new_subtitle": "Créez un événement complet pour informer et mobiliser les citoyens.",
-      "form": {
-        "visual": "Visuel de l'événement",
-        "visual_hint": "Une image attractive augmente la participation",
-        "general_info": "Informations Générales",
-        "title": "Titre de l'événement",
-        "description": "Description détaillée",
-        "establishment": "Établissement organisateur",
-        "type": "Type d'événement",
-        "date_place": "Date, Heure et Lieu",
-        "organizer_contact": "Organisateur & Contact",
-        "participation": "Participation & Inscription",
-        "create_btn": "Créer l'événement",
-        "creating": "Création en cours...",
-        "cancel": "Annuler",
-        "success_create": "Événement créé avec succès",
-        "image_select": "Image sélectionnée",
-        "delete_image": "Supprimer",
-        "click_add_image": "Cliquez pour ajouter une image",
-        "image_format": "PNG, JPG jusqu'à 5MB",
-        "select_establishment": "Sélectionner un établissement...",
-        "select_type": "Sélectionner un type...",
-        "tags": "Tags",
-        "tags_hint": "(séparés par virgule)",
-        "date_start": "Date de début",
-        "date_end": "Date de fin",
-        "time_start": "Heure de début",
-        "time_end": "Heure de fin",
-        "location": "Lieu / Salle",
-        "address": "Adresse complète",
-        "district": "Quartier / Douar",
-        "organizer_name": "Nom de l'organisateur",
-        "contact_phone": "Téléphone de contact",
-        "contact_email": "Email de contact",
-        "max_capacity": "Capacité maximale (personnes)",
-        "open_registration": "Ouvrir les inscriptions",
-        "open_registration_hint": "Permet aux citoyens de s'inscrire en ligne",
-        "external_link": "Lien d'inscription externe",
-        "sector": "Secteur de l'événement",
-        "category": "Catégorie d'événement",
-        "organization": "Organisation & Établissement",
-        "organized_by_province": "Organisé par la Province",
-        "organized_by_province_hint": "L'événement sera rattaché à la Province de Médiouna",
-        "under_province_patronage": "Sous le couvert de la Province",
-        "under_province_patronage_hint": "Affichage \"Sous le couvert de Monsieur le Gouverneur\"",
-        "location_type": "Type de lieu d'événement",
-        "manual_entry": "Saisie Manuelle",
-        "existing_establishment": "Établissement Existant",
-        "venue_sector": "Secteur du lieu (optionnel)",
-        "all_sectors": "Tous les secteurs",
-        "establishment_venue": "Établissement (Emplacement)",
-        "venue_name": "Lieu exact ou Nom de la salle",
-        "map_position": "Position sur la carte",
-        "map_hint": "Glissez le marqueur pour définir l'emplacement exact",
-        "is_free": "Participation gratuite",
-        "price": "Prix d'entrée (DH)",
-        "event_photos": "Photos de l'événement",
-        "add_photo": "Ajouter"
-      },
-      "errors": {
-        "image_size": "L'image ne doit pas dépasser 5MB",
-        "upload_error": "Erreur lors de l'upload de l'image",
-        "create_error": "Erreur lors de la création"
-      },
-      "steps": {
-        "info": "Informations",
-        "location": "Lieu & Organisation",
-        "participation": "Participation",
-        "media": "Médias"
-      },
-      "placeholders": {
-        "title": "Ex: Nettoyage de la plage",
-        "category": "Ex: Concours de dessin",
-        "description": "Détails de l'événement...",
-        "venue": "Ex: Grande Salle du Conseil",
-        "capacity": "Ex: 500",
-        "price": "Ex: 50"
-      },
-      "summary": {
-        "title": "Résumé de l'événement",
-        "field_title": "Titre",
-        "field_sector": "Secteur",
-        "field_location": "Lieu",
-        "field_date": "Date",
-        "field_org": "Organisation",
-        "province_org": "Province de Médiouna",
-        "establishment_org": "Établissement"
-      },
-      "buttons": {
-        "draft": "Brouillon",
-        "prev": "Retour",
-        "next": "Suivant",
-        "create": "Créer l'événement",
-        "save_draft_success": "Brouillon enregistré"
-      },
-      "validation": {
-        "success": "Événement créé avec succès",
-        "error": "Erreur lors de la création de l'événement"
-      }
-    },
-    "backups": {
-      "title": "Sauvegardes Système",
-      "subtitle": "Historique de vos points de restauration de base de données.",
-      "empty": "Aucune sauvegarde",
-      "create": "Nouvelle sauvegarde",
-      "restore": "Restaurer",
-      "empty_title": "Aucune sauvegarde",
-      "empty_desc": "Vous n'avez pas encore créé de points de restauration système.",
-      "create_first": "Créer ma première sauvegarde",
-      "success_create": "Sauvegarde créée avec succès",
-      "success_restore": "Système restauré avec succès",
-      "messages": {
-        "confirm_restore": "Êtes-vous sûr de vouloir restaurer à partir de cette sauvegarde ? Cette action écrasera les données actuelles.",
-        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible.",
-        "created": "Sauvegarde créée avec succès"
-      }
-    },
-    "reclamation_detail_page": {
-      "title": "Réclamation #{id}",
-      "citizen_title": "Citoyen",
-      "location_title": "Localisation",
-      "commune": "Commune",
-      "district": "Quartier / Douar",
-      "address": "Adresse / Repère",
-      "description_title": "Description",
-      "photos_title": "Photos ({count})",
-      "actions_title": "Actions",
-      "accept": "Accepter",
-      "reject": "Rejeter",
-      "dates_title": "Dates",
-      "created_at": "Créée le",
-      "updated_at": "Mise à jour",
-      "history_title": "Historique",
-      "not_found": "Réclamation non trouvée",
-      "load_error": "Erreur lors du chargement",
-      "connection_error": "Erreur de connexion",
-      "back_to_list": "Retour à la liste",
-      "reject_reason_placeholder": "Décrivez le motif du rejet...",
-      "confirm_reject": "Confirmer le rejet",
-      "cancel": "Annuler",
-      "solution_title": "Solution apportée",
-      "reject_reason_title": "Motif de rejet",
-      "establishment_title": "Établissement",
-      "status": {
-        "pending": "En attente",
-        "ACCEPTEE": "Acceptée",
-        "REJETEE": "Rejetée"
-      },
-      "assignment": {
-        "NON_AFFECTEE": "Non affectée",
-        "AFFECTEE": "Affectée"
-      },
-      "messages": {
-        "reject_reason_required": "Veuillez indiquer un motif de rejet"
-      }
-    },
-    "history_actions": {
-      "CREATION": "Création",
-      "VALIDATION": "Validation",
-      "REJET": "Rejet",
-      "AFFECTATION": "Affectation",
-      "RESOLUTION": "Résolution",
-      "UPDATE": "Mise à jour",
-      "ACCEPTATION": "Acceptation"
-    },
-    "suggestions_page": {
-      "page_title": "Suggestions",
-      "page_subtitle": "Gérer les suggestions des citoyens",
-      "statuses": {
-        "REJETEE": "Rejetée",
-        "APPROUVEE": "Approuvée",
-        "EN_EXAMEN": "En examen",
-        "SOUMISE": "Soumise",
-        "IMPLEMENTEE": "Implémentée"
-      },
-      "search_placeholder": "Rechercher...",
-      "no_suggestions": "Aucune suggestion",
-      "waiting_suggestions": "Suggestions en attente",
-      "page": "Page",
-      "limit": "Limite",
-      "page_info": "Page {current} sur {total}",
-      "table": {
-        "suggestion": "Suggestion",
-        "category": "Catégorie",
-        "citizen": "Citoyen",
-        "status": "Statut",
-        "date": "Date",
-        "actions": "Actions"
-      },
-      "detail_modal": {
-        "title": "Détails de la suggestion",
-        "current_status": "Statut actuel",
-        "suggestion_title": "Titre de la suggestion",
-        "category": "Catégorie",
-        "description": "Description",
-        "submitted_by": "Soumise par",
-        "admin_response": "Réponse de l'administration",
-        "response_placeholder": "Saisir une réponse officielle...",
-        "change_status": "Changer le statut"
-      },
-      "reset_filters": "Réinitialiser",
-      "no_results": "Aucun résultat pour votre recherche.",
-      "empty": {
-        "title": "Aucune suggestion",
-        "description": "Il n'y a pas encore de suggestions citoyennes soumises.",
-        "no_results": "Aucun résultat ne correspond à votre recherche"
-      }
-    },
-    "establishments_page": {
-      "page_title": "Gestion des Etablissements",
-      "total_establishments": "{count} établissements",
-      "filters": "Filtres",
-      "new_establishment": "Nouvel établissement",
-      "bulk_publish": "Tout Publier",
-      "bulk_delete": "Tout Supprimer",
-      "search_placeholder": "Rechercher...",
-      "reset": "Réinitialiser",
-      "all_sectors": "Tous les secteurs",
-      "empty": {
-        "title": "Aucun établissement",
-        "no_results": "Aucun résultat trouvé",
-        "description": "Aucun établissement n'a été ajouté"
-      },
-      "stats": {
-        "total": "Total",
-        "validated": "Validés",
-        "published": "Publiés",
-        "average_rating": "Note moyenne"
-      },
-      "card": {
-        "validated": "Validé",
-        "pending": "En attente",
-        "published": "Publié",
-        "publish": "Publier",
-        "unpublish": "Dépublier",
-        "reviews": "{count} avis",
-        "details": "Détails",
-        "details_title": "Détails de l'établissement",
-        "validate": "Valider",
-        "highlight": "Mettre en avant",
-        "remove_highlight": "Retirer de l'avant",
-        "delete": "Supprimer"
-      },
-      "messages": {
-        "error": "Une erreur est survenue",
-        "updated": "Mis à jour avec succès",
-        "deleted": "Supprimé avec succès",
-        "delete_confirm": "Voulez-vous vraiment supprimer cet établissement ?",
-        "bulk_publish_confirm": "Voulez-vous vraiment publier TOUS les établissements ?",
-        "publishing": "Publication en cours...",
-        "bulk_publish_success": "Tous les établissements ont été publiés",
-        "bulk_publish_error": "Erreur lors de la publication groupée",
-        "bulk_delete_confirm": "ATTENTION: Cette action va supprimer TOUS les établissements.\n\nÊtes-vous sûr ?",
-        "deleting": "Suppression en cours...",
-        "bulk_delete_success": "Tous les établissements ont été supprimés",
-        "bulk_delete_error": "Erreur lors de la suppression groupée",
-        "server_error": "Erreur serveur"
-      },
-      "pagination": {
-        "info": "Page {page} sur {total}"
-      },
-      "page": "Page",
-      "limit": "Limite",
-      "includeNonPublie": "Inclure non publiés",
-      "loading": "Chargement des établissements..."
-    },
-    "programs_page": {
-      "title": "Programmes et Activités",
-      "subtitle": "Gérer les programmes et activités",
-      "create": "Ajouter un programme",
-      "refresh": "Actualiser",
-      "stats": {
-        "finished": "Terminés",
-        "validated": "Validés",
-        "pending": "En attente",
-        "reports_ok": "Rapports complets",
-        "total": "Total"
-      },
-      "filters": {
-        "all_validations": "Toutes validations",
-        "all_statuses": "Tous statuts",
-        "search": "Rechercher...",
-        "pending_validation": "En attente de validation",
-        "validated": "Validé"
-      },
-      "empty": {
-        "title": "Aucun programme",
-        "subtitle": "Aucun programme trouvé"
-      },
-      "status": {
-        "draft": "Brouillon",
-        "to_validate": "À valider",
-        "planned": "Planifiée",
-        "in_progress": "En cours",
-        "finished": "Terminée",
-        "report_ok": "Rapport complet",
-        "cancelled": "Annulée",
-        "postponed": "Reportée"
-      },
-      "table": {
-        "activity": "Activité",
-        "establishment": "Établissement",
-        "date": "Date",
-        "status": "Statut",
-        "validation": "Validation",
-        "actions": "Actions",
-        "valide": "Validé",
-        "waiting": "En attente",
-        "view_details": "Voir détails",
-        "validate": "Valider",
-        "unvalidate": "Retirer validation"
-      },
-      "types": {
-        "EDUCATION": "Éducation",
-        "CULTUREL": "Culturel",
-        "SPORT": "Sport",
-        "SANTE": "Santé",
-        "SOCIAL": "Social",
-        "ENVIRONMENT": "Environnement",
-        "AUTRE": "Autre"
-      },
-      "modal": {
-        "establishment": "Établissement",
-        "sector": "Secteur",
-        "date": "Date",
-        "hours": "Horaires",
-        "location": "Lieu",
-        "participants": "Participants attendus",
-        "validated_by_admin": "Validé par l'admin",
-        "waiting_validation": "En attente de validation",
-        "visible_public": "Visible par le public",
-        "close": "Fermer",
-        "validate": "Valider",
-        "hide": "Masquer",
-        "show": "Afficher"
-      }
-    },
-    "reports_page": {
-      "loading": "Chargement des données...",
-      "title": "Rapports & Statistiques",
-      "date_range_to": "à",
-      "excel": "Exporter Excel",
-      "no_data": "Aucune donnée disponible pour cette période",
-      "subtitle": "Rapports et statistiques détaillés",
-      "export_buttons": {
-        "excel_reclamations": "Exporter Réclamations (Excel)",
-        "excel_events": "Exporter Événements (Excel)"
-      },
-      "kpi_cards": {
-        "total_reclamations": "Total Réclamations",
-        "total_events": "Total Événements",
-        "average_rating": "Note Moyenne",
-        "event_participation": "Participation Événements"
-      },
-      "charts": {
-        "reclamations_by_status": "Réclamations par statut",
-        "reclamations_evolution": "Évolution des réclamations",
-        "reclamations_by_commune": "Réclamations par commune",
-        "top_5_establishments": "Top 5 des établissements"
-      },
-      "reviews_count": "Nombre d'avis"
-    },
-    "reclamations_page": {
-      "table": {
-        "ref": "Référence",
-        "citoyen": "Citoyen",
-        "sujet": "Sujet",
-        "statut": "Statut",
-        "affectation": "Affectation"
-      },
-      "actions": {
-        "update_status": "Mettre à jour le statut"
-      }
-    }
   },
   "admin_campagnes": {
     "title": "Campagnes de sensibilisation",

@@ -80,6 +80,7 @@ const SECTEURS = [
 export default function AdminEtablissementsPage() {
   const t = useTranslations('admin.establishments_page');
   const tSectors = useTranslations('admin.users_page.sectors');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
 
   const [page, setPage] = useState(1);
@@ -611,7 +612,7 @@ export default function AdminEtablissementsPage() {
                     {t('card.details_title')}
                   </h2>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                    Gestion de l'établissement
+                    {tModal('management')}
                   </p>
                 </div>
                 <button
@@ -655,7 +656,7 @@ export default function AdminEtablissementsPage() {
                 {/* Rating Card */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-6 bg-[hsl(var(--gov-yellow))/0.03] rounded-3xl border border-[hsl(var(--gov-yellow))/0.1] text-center">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-[hsl(var(--gov-yellow))] mb-2 opacity-60">Note Moyenne</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-[hsl(var(--gov-yellow))] mb-2 opacity-60">{tModal('average_rating')}</p>
                     <p className="text-4xl font-black text-foreground leading-none mb-3">
                       {selectedEtablissement.noteMoyenne.toFixed(1)}
                     </p>
@@ -670,11 +671,11 @@ export default function AdminEtablissementsPage() {
                     </div>
                   </div>
                   <div className="p-6 bg-muted/30 rounded-3xl border border-border/50 text-center">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">Total Evaluations</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">{tModal('total_reviews')}</p>
                     <p className="text-4xl font-black text-foreground leading-none mb-3">
                       {selectedEtablissement.nombreEvaluations}
                     </p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-40">Avis Citoyens</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-40">{tModal('citizen_reviews')}</p>
                   </div>
                 </div>
  
@@ -682,7 +683,7 @@ export default function AdminEtablissementsPage() {
                 <div className="space-y-4">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
-                    Informations de Contact
+                    {tModal('contact_info')}
                   </h4>
                   <div className="grid grid-cols-1 gap-3">
                     {selectedEtablissement.adresse && (
@@ -716,7 +717,7 @@ export default function AdminEtablissementsPage() {
                 <div className="space-y-4 pt-10 border-t border-border">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-green))] rounded-full" />
-                    Actions Administratives
+                    {tModal('admin_actions')}
                   </h4>
                   <div className="grid grid-cols-1 gap-4">
                     <GovButton
@@ -751,7 +752,7 @@ export default function AdminEtablissementsPage() {
                       leftIcon={!(actionLoading === `misEnAvant-${selectedEtablissement.id}`) && <Star size={18} />}
                       className={`w-full justify-between h-16 ${selectedEtablissement.isMisEnAvant ? "text-[hsl(var(--gov-yellow))] bg-[hsl(var(--gov-yellow))/0.05] border-[hsl(var(--gov-yellow))/0.2]" : ""}`}
                     >
-                      <span>{selectedEtablissement.isMisEnAvant ? t('card.featured') || "Mis en avant" : t('card.feature') || "Mettre en avant"}</span>
+                      <span>{selectedEtablissement.isMisEnAvant ? tModal('remove_highlight') : tModal('add_highlight')}</span>
                       <ChevronRight size={16} />
                     </GovButton>
  
@@ -775,7 +776,7 @@ export default function AdminEtablissementsPage() {
                     onClick={() => setShowDetailModal(false)}
                     className="w-full px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
                   >
-                    Fermer la vue
+                    {tModal('close_view')}
                   </button>
                 </div>
               </div>

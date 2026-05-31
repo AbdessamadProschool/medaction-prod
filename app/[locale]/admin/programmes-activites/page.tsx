@@ -83,6 +83,7 @@ const SECTEUR_COLORS: Record<string, string> = {
 
 export default function AdminProgrammesActivitesPage() {
   const t = useTranslations('admin.programs_page');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
   const { data: activitesData, isLoading: loading, mutate: fetchActivites } = useData('/api/programmes-activites?limit=100');
   
@@ -482,7 +483,7 @@ export default function AdminProgrammesActivitesPage() {
                     {t('modal.title') || 'Détails de l\'activité'}
                   </h2>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                    Gestion du programme institutionnel
+                    {tModal('management_program')}
                   </p>
                 </div>
                 <button
@@ -521,13 +522,13 @@ export default function AdminProgrammesActivitesPage() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">Établissement</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">{tModal('establishment')}</p>
                     <p className="text-sm font-black text-foreground leading-tight">
                       {selectedActivite.etablissement.nom}
                     </p>
                   </div>
                   <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">Date prévue</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">{tModal('date_planned')}</p>
                     <p className="text-sm font-black text-foreground leading-tight">
                       {format(parseISO(selectedActivite.date), 'EEEE dd MMMM yyyy', { locale: locale === 'ar' ? arMA : fr })}
                     </p>
@@ -541,7 +542,7 @@ export default function AdminProgrammesActivitesPage() {
                 <div className="space-y-4">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
-                    Informations Complémentaires
+                    {tModal('additional_info')}
                   </h4>
                   <div className="grid grid-cols-1 gap-3">
                     {selectedActivite.lieu && (
@@ -550,7 +551,7 @@ export default function AdminProgrammesActivitesPage() {
                           <MapPin size={18} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Lieu de l'activité</span>
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{tModal('location')}</span>
                           <span className="text-sm font-bold text-foreground">{selectedActivite.lieu}</span>
                         </div>
                       </div>
@@ -561,7 +562,7 @@ export default function AdminProgrammesActivitesPage() {
                           <Users size={18} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Participants Attendus</span>
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{tModal('expected_participants')}</span>
                           <span className="text-sm font-bold text-foreground">{selectedActivite.participantsAttendus} personnes</span>
                         </div>
                       </div>
@@ -571,7 +572,7 @@ export default function AdminProgrammesActivitesPage() {
                         <RefreshCw size={18} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Statut Actuel</span>
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">{tModal('current_status')}</span>
                         <span 
                           className="text-sm font-black uppercase tracking-widest"
                           style={{ color: STATUT_CONFIG[selectedActivite.statut]?.color || 'inherit' }}
@@ -587,7 +588,7 @@ export default function AdminProgrammesActivitesPage() {
                 <div className="space-y-4 pt-10 border-t border-border">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-green))] rounded-full" />
-                    Actions Administratives
+                    {tModal('admin_actions')}
                   </h4>
                   <div className="grid grid-cols-1 gap-4">
                     {!selectedActivite.isValideParAdmin ? (
@@ -625,7 +626,7 @@ export default function AdminProgrammesActivitesPage() {
                       onClick={() => setShowDetailModal(false)}
                       className="w-full px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
                     >
-                      {t('modal.close')}
+                      {tModal('close_view')}
                     </button>
                   </div>
                 </div>

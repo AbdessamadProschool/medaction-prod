@@ -80,6 +80,7 @@ const suggestionColorMap: Record<string, any> = {
 export default function AdminSuggestionsPage() {
   const t = useTranslations('admin.suggestions_page');
   const tCat = useTranslations('suggestions.categories');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -140,7 +141,7 @@ export default function AdminSuggestionsPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Mise à jour en cours...',
+      loading: tModal('updating'),
       success: `Statut mis à jour: ${t(`statuses.${newStatut}`)}`,
       error: (err) => err.message,
     });
@@ -317,7 +318,7 @@ export default function AdminSuggestionsPage() {
               <td colSpan={6}>
                 <EmptyState
                   icon={<Lightbulb className="w-10 h-10" />}
-                  title={t('empty.title') || "Aucune suggestion"}
+                  title={t('empty.title') || tModal('no_suggestion')}
                   description={search ? t('empty.no_results') : t('empty.description')}
                 />
               </td>
@@ -487,7 +488,7 @@ export default function AdminSuggestionsPage() {
                       <div className="flex items-center gap-3 mt-1">
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
                           <Mail size={12} className="text-[hsl(var(--gov-blue))]" />
-                          {selectedSuggestion.user.email || 'Email non fourni'}
+                          {selectedSuggestion.user.email || tModal('email_not_provided')}
                         </span>
                       </div>
                     </div>

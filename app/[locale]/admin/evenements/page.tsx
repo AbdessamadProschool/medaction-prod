@@ -96,6 +96,7 @@ function AdminEvenementsContent() {
   const router = useRouter();
   const t = useTranslations('admin.events_page');
   const tSectors = useTranslations('admin.users_page.sectors');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
   
   const [refreshing, setRefreshing] = useState(false);
@@ -206,7 +207,7 @@ function AdminEvenementsContent() {
     });
 
     toast.promise(promise, {
-      loading: action === 'valider' ? 'Validation en cours...' : 'Rejet en cours...',
+      loading: action === 'valider' ? tModal('validating') : tModal('rejecting'),
       success: action === 'valider' ? t('messages.validated') : t('messages.rejected'),
       error: (err) => err.message,
     });
@@ -226,8 +227,8 @@ function AdminEvenementsContent() {
     });
 
     toast.promise(promise, {
-      loading: 'Suppression en cours...',
-      success: 'Événement supprimé avec succès',
+      loading: tModal('deleting'),
+      success: tModal('deleted'),
       error: (err) => err.message,
     });
   };
@@ -551,7 +552,7 @@ function AdminEvenementsContent() {
                       onClick={() => handleDelete(evenement.id)}
                       variant="outline"
                       size="icon"
-                      title="Supprimer"
+                      title={tModal('delete')}
                       className="hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05]"
                     >
                       <Trash2 size={16} />
@@ -676,7 +677,7 @@ function AdminEvenementsContent() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Secteur</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('sector')}</p>
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center text-[hsl(var(--gov-blue))]">
                         <Building2 size={16} />
@@ -685,7 +686,7 @@ function AdminEvenementsContent() {
                     </div>
                   </div>
                   <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Inscriptions</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('registrations')}</p>
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center text-[hsl(var(--gov-green))]">
                         <Users size={16} />
@@ -705,7 +706,7 @@ function AdminEvenementsContent() {
                       <Calendar className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Période</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('period')}</p>
                       <p className="font-bold text-foreground">
                         {new Date(selectedEvenement.dateDebut).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         {selectedEvenement.dateFin && (
@@ -722,7 +723,7 @@ function AdminEvenementsContent() {
                       <MapPin className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Localisation</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('location')}</p>
                       <p className="font-bold text-foreground">
                         {selectedEvenement.lieu || (locale === 'ar' ? (selectedEvenement.commune?.nomArabe || selectedEvenement.commune?.nom) : selectedEvenement.commune?.nom)}
                       </p>
@@ -734,7 +735,7 @@ function AdminEvenementsContent() {
                 <div className="space-y-4">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
-                    Description de l'événement
+                    {tModal('description_event')}
                   </h4>
                   <div className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium">
                     {selectedEvenement.description}
@@ -744,7 +745,7 @@ function AdminEvenementsContent() {
                 {/* Status Section */}
                 <div className="p-6 bg-[hsl(var(--gov-blue))/0.03] rounded-3xl border border-[hsl(var(--gov-blue))/0.1] space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Statut Actuel</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tModal('current_status')}</span>
                     <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color} border-current/10`}>
                       {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
                     </span>
@@ -752,7 +753,7 @@ function AdminEvenementsContent() {
                   {selectedEvenement.isMisEnAvant && (
                     <div className="flex items-center gap-2 text-gov-gold bg-gov-gold/10/5 px-4 py-2 rounded-xl border border-gov-gold/30/10">
                       <Star className="w-4 h-4 fill-current" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Événement Mis en avant</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{tModal('featured_event')}</span>
                     </div>
                   )}
                 </div>
@@ -763,7 +764,7 @@ function AdminEvenementsContent() {
                     onClick={() => setShowDetailModal(false)}
                     className="px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
                   >
-                    Fermer
+                    {tModal('close')}
                   </button>
                   <Link
                     href={`/admin/evenements/${selectedEvenement.id}/modifier`}
@@ -771,7 +772,7 @@ function AdminEvenementsContent() {
                   >
                     <>
                       <Edit2 size={16} />
-                      Modifier complet
+                      {tModal('edit_full')}
                     </>
                   </Link>
                 </div>

@@ -73,6 +73,7 @@ const SECTEURS = [
 
 export default function AdminCampagnesPage() {
   const t = useTranslations('admin_campagnes');
+  const tModal = useTranslations('admin.common_modal');
   const [page, setPage] = useState(1);
   
   // Filters
@@ -129,14 +130,14 @@ export default function AdminCampagnesPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Mise à jour du statut...',
-      success: `Statut modifié: ${STATUT_CONFIG[newStatut]?.label || newStatut}`,
+      loading: tModal('updating'),
+      success: tModal('status_changed'),
       error: (err) => err.message,
     });
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer cette campagne ?')) return;
+    if (!confirm(tModal('delete') + ' ?')) return;
     
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -150,8 +151,8 @@ export default function AdminCampagnesPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Suppression en cours...',
-      success: 'Campagne supprimée',
+      loading: tModal('deleting'),
+      success: tModal('deleted'),
       error: (err) => err.message,
     });
   };

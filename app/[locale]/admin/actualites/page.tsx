@@ -76,6 +76,7 @@ const SECTEURS_KEYS = [
 export default function AdminActualitesPage() {
   const t = useTranslations('admin.news_page');
   const tSectors = useTranslations('admin.users_page.sectors');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
 
   const [page, setPage] = useState(1);
@@ -132,8 +133,8 @@ export default function AdminActualitesPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Mise à jour du statut...',
-      success: t('messages.status_changed', { status: t(`statuses.${newStatut}`) }),
+      loading: tModal('updating'),
+      success: tModal('status_changed'),
       error: (err) => err.message,
     });
   };
@@ -155,8 +156,8 @@ export default function AdminActualitesPage() {
     });
 
     toast.promise(promise, {
-      loading: current ? 'Retrait de la mise en avant...' : 'Mise en avant...',
-      success: current ? t('messages.highlight_removed') : t('messages.highlight_added'),
+      loading: tModal('updating'),
+      success: current ? tModal('highlight_removed') : tModal('highlight_added'),
       error: (err) => err.message,
     });
   };
@@ -176,8 +177,8 @@ export default function AdminActualitesPage() {
     });
 
     toast.promise(promise, {
-      loading: 'Suppression en cours...',
-      success: t('messages.deleted'),
+      loading: tModal('deleting'),
+      success: tModal('deleted'),
       error: (err) => err.message,
     });
   };
@@ -417,7 +418,7 @@ export default function AdminActualitesPage() {
                       href={`/actualites/${actualite.id}`}
                       target="_blank"
                       className="p-3 bg-card rounded-2xl text-foreground hover:text-[hsl(var(--gov-blue))] border border-border hover:border-[hsl(var(--gov-blue))/0.5] transition-all shadow-sm hover:shadow-lg"
-                      title={t('modal.view_online')}
+                      title={tModal('view_online')}
                     >
                       <Globe size={18} />
                     </Link>
@@ -590,7 +591,7 @@ export default function AdminActualitesPage() {
                     {t('modal.resume')}
                   </label>
                   <div className="p-5 bg-muted/30 rounded-2xl border border-border/50 text-foreground font-medium leading-relaxed">
-                    {selectedActualite.resume || t('modal.no_resume')}
+                    {selectedActualite.resume || tModal('no_resume')}
                   </div>
                 </div>
 
@@ -628,12 +629,12 @@ export default function AdminActualitesPage() {
                       <User className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('modal.author') || 'Auteur'}</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('author')}</p>
                       <p className="font-extrabold text-foreground text-lg">
                         {selectedActualite.createdByUser.prenom} {selectedActualite.createdByUser.nom}
                       </p>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                        {t('modal.created_on', { date: formatDate(selectedActualite.createdAt) })}
+                        {tModal('created_on', { date: formatDate(selectedActualite.createdAt) })}
                       </p>
                     </div>
                   </div>
@@ -643,7 +644,7 @@ export default function AdminActualitesPage() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">
-                      {t('modal.change_status')}
+                      {tModal('change_status')}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       {Object.entries(STATUT_STYLES).map(([key, style]) => {
@@ -683,7 +684,7 @@ export default function AdminActualitesPage() {
                       className="flex items-center justify-center gap-2 px-4 py-4 bg-[hsl(var(--gov-blue))/0.05] text-[hsl(var(--gov-blue))] rounded-2xl font-bold text-sm hover:bg-[hsl(var(--gov-blue))] hover:text-white transition-all border border-[hsl(var(--gov-blue))/0.2] shadow-sm"
                     >
                       <Globe className="w-4 h-4" />
-                      {t('modal.view_online')}
+                      {tModal('view_online')}
                     </Link>
 
                     {/* Toggle Featured */}
@@ -701,7 +702,7 @@ export default function AdminActualitesPage() {
                       ) : (
                         <Star className={`w-4 h-4 ${selectedActualite.isMisEnAvant ? 'fill-current' : ''}`} />
                       )}
-                      {selectedActualite.isMisEnAvant ? t('modal.remove_highlight') : t('modal.add_highlight')}
+                      {selectedActualite.isMisEnAvant ? tModal('remove_highlight') : tModal('add_highlight')}
                     </button>
 
                     {/* Delete */}
@@ -715,7 +716,7 @@ export default function AdminActualitesPage() {
                       ) : (
                         <Trash2 className="w-4 h-4" />
                       )}
-                      {t('modal.delete')}
+                      {tModal('delete')}
                     </button>
                   </div>
                 </div>

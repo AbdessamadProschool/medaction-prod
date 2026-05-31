@@ -119,13 +119,14 @@ const SECTEUR_LABELS: Record<string, string> = {
 
 // Photo Gallery Component
 const PhotoGallery = ({ photos, title }: { photos: string[]; title: string }) => {
+  const tModal = useTranslations('admin.common_modal');
   if (!photos || photos.length === 0) return null;
   
   return (
     <div className="mt-6">
       <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
-        Photos ({photos.length})
+        {tModal('photos')} ({photos.length})
       </h5>
       <div className="flex flex-wrap gap-3">
         {photos.map((photo, idx) => (

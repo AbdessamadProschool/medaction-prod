@@ -59,6 +59,7 @@ const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.Elem
 
 export default function AdminArticlesPage() {
   const t = useTranslations('admin.articles_page');
+  const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
   const [page, setPage] = useState(1);
   
@@ -141,7 +142,7 @@ export default function AdminArticlesPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm(t('messages.confirm_delete'))) return;
+    if (!confirm(tModal('delete') + ' ?')) return;
     
     setActionLoading(`delete-${id}`);
     try {
@@ -534,7 +535,7 @@ export default function AdminArticlesPage() {
                     {t('modal.resume')}
                   </label>
                   <div className="p-5 bg-muted/30 rounded-2xl border border-border/50 text-foreground font-medium leading-relaxed">
-                    {selectedArticle.resume || t('labels.no_resume')}
+                    {selectedArticle.resume || tModal('no_resume')}
                   </div>
                 </div>
 
@@ -542,11 +543,11 @@ export default function AdminArticlesPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-5 bg-muted/50 rounded-2xl border border-border/50 text-center group hover:bg-[hsl(var(--gov-blue))/0.05] transition-colors">
                       <p className="text-3xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors">{selectedArticle.nombreVues}</p>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('modal.views')}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{tModal('views')}</p>
                     </div>
                     <div className="p-5 bg-muted/50 rounded-2xl border border-border/50 text-center group hover:bg-[hsl(var(--gov-red))/0.05] transition-colors">
                       <p className="text-3xl font-extrabold text-foreground group-hover:text-[hsl(var(--gov-red))] transition-colors">{selectedArticle.nombreLikes}</p>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('modal.likes')}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{tModal('likes')}</p>
                     </div>
                   </div>
 
@@ -557,12 +558,12 @@ export default function AdminArticlesPage() {
                       <User className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('modal.author')}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('author')}</p>
                       <p className="font-extrabold text-foreground text-lg">
                         {selectedArticle.auteur.prenom} {selectedArticle.auteur.nom}
                       </p>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1 opacity-60">
-                        {t('modal.contributor') || 'Contributeur'}
+                        {tModal('contributor')}
                       </p>
                     </div>
                   </div>
@@ -572,7 +573,7 @@ export default function AdminArticlesPage() {
                 <div className="space-y-6">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">
-                      {t('modal.change_status')}
+                      {tModal('change_status')}
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       {Object.entries(STATUT_CONFIG).map(([key, config]) => {
@@ -619,7 +620,7 @@ export default function AdminArticlesPage() {
                       ) : (
                         <Star className={`w-4 h-4 ${selectedArticle.isMisEnAvant ? 'fill-current' : ''}`} />
                       )}
-                      {selectedArticle.isMisEnAvant ? t('modal.toggle_featured_off') : t('modal.toggle_featured')}
+                      {selectedArticle.isMisEnAvant ? tModal('remove_highlight') : tModal('add_highlight')}
                     </button>
 
                     {/* Delete */}
@@ -633,7 +634,7 @@ export default function AdminArticlesPage() {
                       ) : (
                         <Trash2 className="w-4 h-4" />
                       )}
-                      {t('modal.delete')}
+                      {tModal('delete')}
                     </button>
                   </div>
                 </div>

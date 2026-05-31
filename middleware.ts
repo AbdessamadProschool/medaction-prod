@@ -1146,6 +1146,6 @@ export const config = {
     // SECURITY & STATIC FIX: 
     // 1. Exclure les assets statiques évidents du middleware
     // 2. Le reste est géré dynamiquement dans la fonction middleware (ASSETS FIX)
-    '/((?!_next/static|_next/image|uploads|images|favicon\\.ico|.*\\.svg|.*\\.png|robots\\.txt|sitemap\\.xml).*)',
+    '/((?!_next/static|_next/image|uploads|images|favicon\\.ico|.*\\.svg|.*\\.png|robots\\.txt|sitemap\\.xml|manifest\\.json|sw\\.js).*)',
   ],
 };

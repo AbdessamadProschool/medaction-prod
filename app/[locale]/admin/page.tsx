@@ -563,7 +563,7 @@ export default function AdminDashboard() {
           </div>
           {chartData?.evenementsParSecteur && (
             <MiniBarChart 
-              data={chartData.evenementsParSecteur.map((item, i) => ({
+              data={chartData.evenementsParSecteur.map((item: any, i: any) => ({
                 label: item.secteur,
                 value: item.count,
                 color: [
@@ -595,7 +595,7 @@ export default function AdminDashboard() {
           </div>
           {chartData?.reclamationsParStatut && (
             <DonutChart
-              data={chartData.reclamationsParStatut.map((item, i) => ({
+              data={chartData.reclamationsParStatut.map((item: any, i: any) => ({
                 label: item.statut.replace('_', ' '),
                 value: item.count,
                 color: [

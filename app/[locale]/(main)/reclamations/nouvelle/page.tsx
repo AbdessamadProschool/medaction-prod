@@ -290,10 +290,9 @@ export default function NouvelleReclamationPage() {
           await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
           throw new Error(`Erreur lors de l'envoi des photos: ${uploadErrorData.message || uploadErrorData?.info?.error || 'Fichiers non valides ou rejetés par la sécurité'}`);
         }
-        }
-        
-        setUploadProgress(90);
       }
+        
+      setUploadProgress(90);
 
       setUploadProgress(100);
       await new Promise(resolve => setTimeout(resolve, 500));

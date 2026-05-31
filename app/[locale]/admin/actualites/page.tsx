@@ -27,12 +27,16 @@ import {
   X,
   ImageIcon,
   TrendingUp,
+  Shield,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { GovInput } from '@/components/ui/GovInput';
+import { GovSelect } from '@/components/ui/GovSelect';
+import { GovButton } from '@/components/ui/GovButton';
 
 interface Actualite {
   id: number;
@@ -195,51 +199,72 @@ export default function AdminActualitesPage() {
   };
 
   return (
-    <div className="space-y-8 bg-background min-h-screen p-4 sm:p-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
-              <Newspaper className="w-6 h-6" />
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
+
+      <div className="max-w-[1600px] mx-auto relative z-10 pb-20">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
+              <Newspaper className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
             </div>
-            {t('page_title')}
-          </h1>
-          <p className="text-muted-foreground mt-2 font-medium">
-            {t('total_news', { count: total })}
-          </p>
-        </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                  {t('page_title')}
+                </h1>
+                <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)]">
+                  Admin
+                </span>
+              </div>
+              <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">
+                <p>{t('total_news', { count: total })}</p>
+                <div className="w-1 h-1 bg-border rounded-full" />
+                <p className="flex items-center gap-1.5">
+                  <Shield size={14} className="text-[hsl(var(--gov-blue))]" />
+                  Gouvernance
+                </p>
+              </div>
+            </div>
+          </div>
         
-        <div className="flex items-center gap-3">
-          <button
-            onClick={async () => {
-              await fetchActualites();
-            }}
-            disabled={loading}
-            className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted transition-colors shadow-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
-          >
-            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-          </button>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border font-bold transition-all shadow-sm ${
-              showFilters
-                ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]'
-                : 'bg-card border-border text-foreground hover:bg-muted'
-            }`}
-          >
-            <Filter size={18} />
-            {t('filters')}
-          </button>
-          <Link
-            href="/admin/actualites/nouvelle"
-            className="gov-btn-primary"
-          >
-            <Plus size={18} />
-            {t('new_news')}
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <GovButton
+              onClick={async () => {
+                await fetchActualites();
+              }}
+              disabled={loading}
+              variant="outline"
+              size="icon"
+              loading={loading}
+            >
+              <RefreshCw size={18} />
+            </GovButton>
+
+            <GovButton
+              onClick={() => setShowFilters(!showFilters)}
+              variant={showFilters ? 'primary' : 'outline'}
+              leftIcon={<Filter size={18} className={showFilters ? 'scale-110' : ''} />}
+              className={showFilters ? 'shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]' : ''}
+            >
+              {t('filters')}
+              {Object.values({ search, statutFilter, secteurFilter }).filter(v => v !== '').length > 0 && (
+                <span className="ml-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
+                  {Object.values({ search, statutFilter, secteurFilter }).filter(v => v !== '').length}
+                </span>
+              )}
+            </GovButton>
+
+            <Link href="/admin/actualites/nouvelle">
+              <GovButton leftIcon={<Plus size={18} />} variant="primary">
+                {t('new_news')}
+              </GovButton>
+            </Link>
+          </div>
         </div>
-      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -289,37 +314,36 @@ export default function AdminActualitesPage() {
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Recherche */}
-              <div className="relative lg:col-span-2 group">
-                <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors ${locale === 'ar' ? 'right-4' : 'left-4'}`} />
-                <input
+              <div className="lg:col-span-2">
+                <GovInput
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('search_placeholder')}
-                  className={`gov-input py-3 ${locale === 'ar' ? 'pr-12 pl-4 text-right' : 'pl-12 pr-4 text-left'}`}
+                  leftIcon={<Search className="w-5 h-5" />}
+                  className={locale === 'ar' ? 'text-right' : 'text-left'}
                 />
               </div>
 
               {/* Secteur */}
-              <select
+              <GovSelect
                 value={secteurFilter}
                 onChange={(e) => setSecteurFilter(e.target.value)}
-                className="gov-input py-3"
-              >
-                <option value="">{t('all_sectors')}</option>
-                {SECTEURS_KEYS.map((s) => (
-                  <option key={s} value={s}>{getSecteurLabel(s)}</option>
-                ))}
-              </select>
+                options={[
+                  { label: t('all_sectors'), value: '' },
+                  ...SECTEURS_KEYS.map((s) => ({ label: getSecteurLabel(s), value: s }))
+                ]}
+              />
 
               {/* Reset */}
-              <button
+              <GovButton
+                variant="outline"
                 onClick={() => { setSearch(''); setStatutFilter(''); setSecteurFilter(''); }}
-                className="flex items-center justify-center gap-2 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all font-bold text-sm border border-transparent hover:border-border"
+                className="w-full h-[46px]"
               >
-                <X size={16} />
+                <X size={16} className="mr-2" />
                 {t('reset')}
-              </button>
+              </GovButton>
             </div>
           </motion.div>
         )}
@@ -347,7 +371,7 @@ export default function AdminActualitesPage() {
             </p>
           </div>
         ) : (
-          actualites.map((actualite) => {
+          actualites.map((actualite: any) => {
             const style = STATUT_STYLES[actualite.statut] || STATUT_STYLES.BROUILLON;
             const Icon = style.icon;
             
@@ -700,6 +724,7 @@ export default function AdminActualitesPage() {
           </>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

@@ -327,7 +327,7 @@ function EvenementsContent() {
                <>
                   <div className={view === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'}>
                      <AnimatePresence mode="popLayout">
-                        {events.map((event, index) => (
+                        {events.map((event: any, index: any) => (
                            <EventCard key={event.id} event={event} index={index} view={view} />
                         ))}
                      </AnimatePresence>

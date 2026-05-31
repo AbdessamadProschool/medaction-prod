@@ -143,13 +143,13 @@ export default function ReclamationsUrgentesPage() {
             </div>
             <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
               <p className="text-3xl font-bold text-red-200">
-                {reclamations.filter(r => getUrgencyLevel(r.createdAt).level === 'critical').length}
+                {reclamations.filter((r: any) => getUrgencyLevel(r.createdAt).level === 'critical').length}
               </p>
               <p className="text-white/80 text-sm">Critiques (+7j)</p>
             </div>
             <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
               <p className="text-3xl font-bold text-yellow-200">
-                {reclamations.filter(r => getUrgencyLevel(r.createdAt).level === 'high').length}
+                {reclamations.filter((r: any) => getUrgencyLevel(r.createdAt).level === 'high').length}
               </p>
               <p className="text-white/80 text-sm">Priorité élevée</p>
             </div>
@@ -172,7 +172,7 @@ export default function ReclamationsUrgentesPage() {
                 className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-red-500"
               >
                 <option value="">Toutes les communes</option>
-                {communes.map((c) => (
+                {communes.map((c: any) => (
                   <option key={c.id} value={c.id.toString()}>{c.nom}</option>
                 ))}
               </select>
@@ -208,7 +208,7 @@ export default function ReclamationsUrgentesPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {reclamations.map((reclamation, index) => {
+            {reclamations.map((reclamation: any, index: any) => {
               const urgency = getUrgencyLevel(reclamation.createdAt);
               
               return (

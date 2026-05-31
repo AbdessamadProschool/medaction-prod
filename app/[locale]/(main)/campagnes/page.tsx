@@ -71,7 +71,7 @@ function CampagnesContent() {
     return params.toString();
   }, [page, search, selectedType]);
 
-  const { data: responseData, isLoading: loading } = useData(`/api/campagnes?${queryStr}`);
+  const { data: responseData, isLoading: loading, mutate: refreshCampagnes } = useData(`/api/campagnes?${queryStr}`);
   const campagnes: Campagne[] = responseData?.data || [];
   const types: TypeCampagne[] = responseData?.types || [];
   const totalPages = responseData?.pagination?.totalPages || 1;
@@ -147,11 +147,7 @@ function CampagnesContent() {
 
       if (res.ok) {
         setParticipationSuccess(true);
-        setCampagnes(prev => prev.map(c => 
-          c.id === selectedCampagne.id 
-            ? { ...c, nombreParticipations: c.nombreParticipations + 1 }
-            : c
-        ));
+        refreshCampagnes();
         toast.success(t('success_title'));
       } else {
         const error = await res.json();

@@ -96,7 +96,7 @@ export default function DelegationEtablissementsPage() {
             <p className="text-gray-500 font-medium">Aucun établissement trouvé</p>
           </div>
         ) : (
-          etablissements.map(e => (
+          etablissements.map((e: any) => (
             <div key={e.id} className="group bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex justify-between items-start mb-4">
                 <Badge variant="outline" className="bg-blue-50 text-[hsl(213,80%,28%)] border-blue-100 dark:bg-blue-900/20 dark:text-blue-300 font-bold px-3 py-1 rounded-lg">

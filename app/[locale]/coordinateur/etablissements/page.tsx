@@ -62,7 +62,7 @@ export default function CoordinateurEtablissementsPage() {
     await refreshData();
   };
 
-  const filteredEtablissements = etablissements.filter(e =>
+  const filteredEtablissements = etablissements.filter((e: any) =>
     e.nom.toLowerCase().includes(search.toLowerCase()) ||
     e.code.toLowerCase().includes(search.toLowerCase()) ||
     e.secteur.toLowerCase().includes(search.toLowerCase())
@@ -130,7 +130,7 @@ export default function CoordinateurEtablissementsPage() {
             </p>
           </div>
         ) : (
-          filteredEtablissements.map((etablissement) => (
+          filteredEtablissements.map((etablissement: any) => (
             <motion.div
               key={etablissement.id}
               initial={{ opacity: 0, y: 20 }}

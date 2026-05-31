@@ -328,7 +328,7 @@ export default function AdminCampagnesPage() {
             />
           </div>
         ) : (
-          campagnes.map((campagne) => {
+          campagnes.map((campagne: any) => {
             const statutConfig = STATUT_CONFIG[campagne.statut] || STATUT_CONFIG.BROUILLON;
             const StatutIcon = statutConfig.icon;
             const progress = getProgressPercentage(campagne);
@@ -346,14 +346,16 @@ export default function AdminCampagnesPage() {
                   <div className="flex items-start justify-between mb-5">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${statutConfig.bg} ${statutConfig.text} border-current/20`}>
                       <StatutIcon className="w-3 h-3" />
-                      {t(`status.${{
-                        BROUILLON: 'draft',
-                        EN_ATTENTE: 'pending',
-                        ACTIVE: 'active',
-                        EN_PAUSE: 'paused',
-                        TERMINEE: 'finished',
-                        ANNULEE: 'cancelled'
-                      }[campagne.statut] || 'draft'}`)}
+                      {t(`status.${(
+                        {
+                          BROUILLON: 'draft',
+                          EN_ATTENTE: 'pending',
+                          ACTIVE: 'active',
+                          EN_PAUSE: 'paused',
+                          TERMINEE: 'finished',
+                          ANNULEE: 'cancelled'
+                        } as Record<string, string>
+                      )[campagne.statut] || 'draft'}`)}
                     </span>
                     <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
                       <button

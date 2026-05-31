@@ -239,7 +239,7 @@ export default function ValidationPage() {
     setSelectedItem(item);
   };
 
-  const totalPending = Object.values(counts).reduce((a, b) => a + b, 0);
+  const totalPending = Object.values(counts).reduce((a: any, b: any) => a + b, 0) as number;
 
   return (
     <div className="space-y-6">
@@ -313,7 +313,7 @@ export default function ValidationPage() {
             </p>
           </div>
         ) : (
-          items.map((item) => (
+          items.map((item: any) => (
             <PendingCard
               key={item.id}
               item={item}

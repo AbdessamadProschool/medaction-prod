@@ -76,6 +76,12 @@ export default function SuperAdminPermissionsPage() {
   const { data: permissionsData, isLoading: loading, isValidating: refreshing, mutate: fetchPermissions } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/permissions' : null);
   const actionMutation = useMutation();
 
+  const [search, setSearch] = useState('');
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [form, setForm] = useState({ code: '', nom: '', description: '', groupe: '', groupeLabel: '' });
+
   const permissions = useMemo(() => {
     return permissionsData?.permissions || [];
   }, [permissionsData]);
@@ -168,7 +174,7 @@ export default function SuperAdminPermissionsPage() {
   // Filter permissions by search
   const filteredGroups = groupedPermissions.map(group => ({
     ...group,
-    permissions: group.permissions.filter(p =>
+    permissions: group.permissions.filter((p: any) =>
       p.nom.toLowerCase().includes(search.toLowerCase()) ||
       p.code.toLowerCase().includes(search.toLowerCase()) ||
       p.description?.toLowerCase().includes(search.toLowerCase())
@@ -252,11 +258,11 @@ export default function SuperAdminPermissionsPage() {
             <p className="text-sm text-gray-500">{t('total')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-            <p className="text-2xl font-bold text-gov-green">{permissions.filter(p => p.isActive).length}</p>
+            <p className="text-2xl font-bold text-gov-green">{permissions.filter((p: any) => p.isActive).length}</p>
             <p className="text-sm text-gray-500">{t('active')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-            <p className="text-2xl font-bold text-red-600">{permissions.filter(p => !p.isActive).length}</p>
+            <p className="text-2xl font-bold text-red-600">{permissions.filter((p: any) => !p.isActive).length}</p>
             <p className="text-sm text-gray-500">{t('inactive')}</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">

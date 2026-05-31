@@ -15,6 +15,11 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -27,12 +32,15 @@ interface Message {
   isRead: boolean;
 }
 
-export default function MessagesList({ initialMessages, dbError }: { initialMessages: any[], dbError: boolean }) {
+export default function MessagesList() {
   const t = useTranslations('admin_portal.messages');
   const locale = useLocale();
   const dateLocale = locale === 'ar' ? arMA : fr;
 
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const { data: messagesData, isLoading, mutate: refreshMessages, error } = useData('/api/contact');
+  const actionMutation = useMutation();
+  const messages: Message[] = messagesData?.data || [];
+
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -46,18 +54,15 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
     setSelectedMessage(msg);
     
     if (!msg.isRead) {
-      // Optimistic update
-      setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isRead: true } : m));
-      
       try {
-        await fetch('/api/contact/mark-read', {
+        await actionMutation.mutate('/api/contact/mark-read', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: msg.id })
+          data: { id: msg.id }
         });
-        // Side effect: Sidebar will update automatically on next poll
+        refreshMessages();
       } catch (e) {
         console.error("Failed to mark as read", e);
+        toast.error("Erreur lors de la mise à jour");
       }
     }
   };
@@ -99,27 +104,29 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
         </div>
       </div>
 
-      {dbError ? (
+      {error ? (
         <div className="bg-[hsl(var(--gov-red)/0.08)] p-6 rounded-lg border border-[hsl(var(--gov-red)/0.25)] flex gap-4 items-center">
           <AlertCircle className="w-8 h-8 text-red-600" />
           <div>
             <h3 className="font-bold text-red-900">{t('db_error_title')}</h3>
-            <p className="text-red-700">{t('db_error_desc')}</p>
+            <p className="text-red-700">{error.message || t('db_error_desc')}</p>
           </div>
         </div>
+      ) : isLoading ? (
+        <div className="flex justify-center p-12">
+          <Loader2 className="w-8 h-8 animate-spin text-[hsl(var(--gov-blue))]" />
+        </div>
       ) : (
-        <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
-                <tr>
-                  <th className={`p-5 font-semibold text-gray-500 uppercase text-xs tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('author')}</th>
-                  <th className={`p-5 font-semibold text-gray-500 uppercase text-xs tracking-wider ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('subject_message')}</th>
-                  <th className={`p-5 font-semibold text-gray-500 uppercase text-xs tracking-wider w-48 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('date')}</th>
-                  <th className="p-5 font-semibold text-gray-500 uppercase text-xs tracking-wider w-32 text-center">{t('actions')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+        <GovTable>
+          <thead>
+            <tr>
+              <GovTh>{t('author')}</GovTh>
+              <GovTh>{t('subject_message')}</GovTh>
+              <GovTh className="w-48">{t('date')}</GovTh>
+              <GovTh className="w-32 text-center">{t('actions')}</GovTh>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {filteredMessages.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="p-16 text-center">
@@ -135,15 +142,15 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                     </td>
                   </tr>
                 ) : filteredMessages.map((msg: any) => (
-                  <tr 
+                  <GovTr 
                     key={msg.id} 
                     className={`
-                      hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-colors cursor-pointer group
-                      ${!msg.isRead ? 'bg-[hsl(var(--gov-blue)/0.06)] ring-inset ring-1 ring-[hsl(var(--gov-blue)/0.18)]' : ''}
+                      cursor-pointer group
+                      ${!msg.isRead ? 'bg-[hsl(var(--gov-blue)/0.06)]' : ''}
                     `}
                     onClick={() => handleViewMessage(msg)}
                   >
-                    <td className="p-5 align-top">
+                    <GovTd>
                       <div className="flex items-start gap-3">
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg relative transition-transform group-hover:scale-105 ${
                           msg.userId ? 'bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]' : 'bg-gradient-to-br from-gray-400 to-gray-500'
@@ -166,8 +173,8 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                           )}
                         </div>
                       </div>
-                    </td>
-                    <td className="p-5 align-top">
+                    </GovTd>
+                    <GovTd>
                       <div className="mb-1">
                         <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded border border-gray-200">
                           {msg.sujet}
@@ -176,8 +183,8 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                       <p className={`text-sm line-clamp-2 leading-relaxed ${!msg.isRead ? 'text-gray-900 font-medium' : 'text-gray-600 dark:text-gray-300'}`}>
                         {msg.message}
                       </p>
-                    </td>
-                    <td className="p-5 align-top text-sm">
+                    </GovTd>
+                    <GovTd className="text-sm">
                        <div className="flex items-center gap-2 text-gray-900 font-medium">
                          <Clock className="w-4 h-4 text-gray-400" />
                          {format(new Date(msg.createdAt), 'dd MMM yyyy', { locale: dateLocale })}
@@ -185,8 +192,8 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                        <div className={`text-gray-500 text-xs mt-1 ${locale === 'ar' ? 'pr-6' : 'pl-6'}`}>
                          {format(new Date(msg.createdAt), 'HH:mm', { locale: dateLocale })}
                        </div>
-                    </td>
-                    <td className="p-5 align-top text-center" onClick={(e) => e.stopPropagation()}>
+                    </GovTd>
+                    <GovTd className="text-center" onClick={(e) => e.stopPropagation()}>
                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
                           <button 
                             onClick={() => handleViewMessage(msg)}
@@ -203,13 +210,11 @@ export default function MessagesList({ initialMessages, dbError }: { initialMess
                             <Reply className={`w-5 h-5 ${locale === 'ar' ? 'rotate-180' : ''}`} />
                           </a>
                        </div>
-                    </td>
-                  </tr>
+                    </GovTd>
+                  </GovTr>
                 ))}
               </tbody>
-            </table>
-          </div>
-        </div>
+            </GovTable>
       )}
 
       {/* Message Modal */}

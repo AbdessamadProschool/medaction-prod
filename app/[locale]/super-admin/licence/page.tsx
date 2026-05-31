@@ -189,7 +189,7 @@ export default function LicensePage() {
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {license.domains && license.domains.length > 0 ? (
-                                  license.domains.map((domain, index) => (
+                                  license.domains.map((domain: string, index: number) => (
                                     <span 
                                       key={index}
                                       className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"

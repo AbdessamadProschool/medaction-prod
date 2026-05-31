@@ -162,7 +162,7 @@ export default function AdminSuggestionsPage() {
     });
   };
 
-  const totalSuggestions = Object.values(stats).reduce((a, b) => a + b, 0);
+  const totalSuggestions = Object.values(stats).reduce((a: any, b: any) => a + b, 0);
 
   return (
     <div className="space-y-6">
@@ -237,7 +237,7 @@ export default function AdminSuggestionsPage() {
         </thead>
         <tbody className="divide-y divide-border">
           {suggestions.length > 0 ? (
-            suggestions.map((suggestion) => {
+            suggestions.map((suggestion: any) => {
               const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
               const StatutIcon = statutInfo.icon;
               const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;

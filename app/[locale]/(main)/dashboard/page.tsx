@@ -323,7 +323,7 @@ export default function DashboardPage() {
               className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-gov-green/20"
             >
               <option value="">Toutes les communes</option>
-              {communes.map(c => (
+              {communes.map((c: any) => (
                 <option key={c.id} value={c.id}>{c.nom}</option>
               ))}
             </select>
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                   dataKey="count"
                   nameKey="secteur"
                 >
-                  {parSecteur.map((entry, index) => (
+                  {parSecteur.map((entry: any, index: any) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={SECTEUR_COLORS[entry.secteur] || SECTEUR_COLORS.AUTRE}
@@ -569,7 +569,7 @@ export default function DashboardPage() {
             
             {recentEvents.length > 0 ? (
               <div className="space-y-3">
-                {recentEvents.slice(0, 3).map((event, index) => (
+                {recentEvents.slice(0, 3).map((event: any, index: any) => (
                   <EvenementCard key={event.id} event={event} index={index} />
                 ))}
               </div>
@@ -603,7 +603,7 @@ export default function DashboardPage() {
             
             {urgentReclamations.length > 0 ? (
               <div className="space-y-3">
-                {urgentReclamations.slice(0, 3).map((reclamation, index) => (
+                {urgentReclamations.slice(0, 3).map((reclamation: any, index: any) => (
                   <ReclamationCard key={reclamation.id} reclamation={reclamation} index={index} />
                 ))}
               </div>

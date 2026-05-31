@@ -73,7 +73,6 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
   const [titre, setTitre] = useState('');
   const [description, setDescription] = useState('');
   const [categorie, setCategorie] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [mounted, setMounted] = useState(false);

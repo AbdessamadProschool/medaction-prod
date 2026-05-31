@@ -482,7 +482,7 @@ export default function AdminReclamationsPage() {
                       onChange={(e) => setFilters({ ...filters, communeId: e.target.value })}
                       options={[
                         { label: t('filters_labels.all_communes'), value: '' },
-                        ...communes.map(c => ({ 
+                        ...communes.map((c: any) => ({ 
                           label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom, 
                           value: c.id 
                         }))
@@ -552,7 +552,7 @@ export default function AdminReclamationsPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {reclamations.length > 0 ? (
-                reclamations.map((r, i) => {
+                reclamations.map((r: any, i: any) => {
                   const statusKey = r.statut ?? "EN_ATTENTE";
 
                   return (
@@ -890,7 +890,7 @@ export default function AdminReclamationsPage() {
                   }}
                   options={[
                     { label: t('modals.assignment.select_label'), value: "" },
-                    ...agents.map(a => ({ label: `${a.nom} (${a.role})`, value: a.id }))
+                    ...agents.map((a: any) => ({ label: `${a.nom} (${a.role})`, value: a.id }))
                   ]}
                   leftIcon={<User size={18} />}
                 />

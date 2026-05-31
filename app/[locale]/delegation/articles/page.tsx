@@ -160,7 +160,7 @@ export default function MesArticlesPage() {
       ) : (
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((article, index) => (
+            {articles.map((article: any, index: any) => (
               <div
                 key={article.id}
                 className="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"

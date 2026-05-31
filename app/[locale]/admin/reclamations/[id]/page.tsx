@@ -280,16 +280,16 @@ export default function ReclamationDetailPage() {
               <div className="p-10 border-b border-border/50 bg-muted/5 flex items-center justify-between">
                 <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
                   <div className="w-2 h-5 bg-[hsl(var(--gov-green))] rounded-full" />
-                  {t('photos_title', { count: reclamation.medias.filter(m => m.type === 'IMAGE').length })}
+                  {t('photos_title', { count: reclamation.medias.filter((m: any) => m.type === 'IMAGE').length })}
                 </h2>
                 <DownloadPhotosButton
                   reclamationId={reclamation.id}
-                  photoCount={reclamation.medias.filter(m => m.type === 'IMAGE').length}
+                  photoCount={reclamation.medias.filter((m: any) => m.type === 'IMAGE').length}
                   variant="button"
                 />
               </div>
               <div className="p-10 grid grid-cols-2 md:grid-cols-3 gap-6">
-                {reclamation.medias.map((media) => (
+                {reclamation.medias.map((media: any) => (
                   <div key={media.id} className="aspect-square rounded-[1.5rem] overflow-hidden bg-muted border border-border/50 shadow-md">
                     <img
                       src={media.urlPublique}
@@ -554,7 +554,7 @@ export default function ReclamationDetailPage() {
                 {t('history_title')}
               </h2>
               <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-border">
-                {reclamation.historique.map((h, i) => (
+                {reclamation.historique.map((h: any, i: any) => (
                   <div key={h.id} className="relative flex gap-4 text-sm pl-8">
                     <div className="absolute left-0 top-1.5 w-6 h-6 bg-background rounded-full border-[3px] border-gov-blue/30 shadow-sm" />
                     <div>

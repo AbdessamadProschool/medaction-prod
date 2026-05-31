@@ -83,7 +83,7 @@ export default function AbonnementsPage() {
     try {
       await toggleMutation.mutate(`/api/abonnements/${abonnement.id}`, {
         method: 'PATCH',
-        body: { notificationsActives: !abonnement.notificationsActives },
+        data: { notificationsActives: !abonnement.notificationsActives },
       });
       refreshData();
     } catch (error) {

@@ -118,9 +118,6 @@ export default function CalendrierPage() {
   
   const activityIdParam = searchParams.get('activite');
 
-  const brouillonsCount = activites.filter(a => a.statut === 'BROUILLON').length;
-  const enAttenteCount = activites.filter(a => a.statut === 'EN_ATTENTE_VALIDATION').length;
-
   // Week starts on Sunday (0) now
   const weekStart = useMemo(() => startOfWeek(currentWeek, { weekStartsOn: 0 }), [currentWeek]);
   const weekEnd = useMemo(() => endOfWeek(currentWeek, { weekStartsOn: 0 }), [currentWeek]);
@@ -131,6 +128,10 @@ export default function CalendrierPage() {
 
   const { data: responseData, isLoading: loading, mutate: refreshData } = useData(`/api/programmes-activites?dateDebut=${dateDebutStr}&dateFin=${dateFinStr}`);
   const activites: Activite[] = responseData?.data || [];
+  
+  const brouillonsCount = activites.filter((a: any) => a.statut === 'BROUILLON').length;
+  const enAttenteCount = activites.filter((a: any) => a.statut === 'EN_ATTENTE_VALIDATION').length;
+
   
   const etablissements = useMemo(() => {
     return activites.reduce((acc: any[], a: Activite) => {
@@ -982,7 +983,7 @@ function CreateActivityPanel({
                             onChange={e => setFormData({...formData, etablissementId: parseInt(e.target.value)})}
                         >
                             <option value={0}>{t('select_establishment')}</option>
-                            {etablissements.map(e => (
+                            {etablissements.map((e: any) => (
                                 <option key={e.id} value={e.id}>{e.nom}</option>
                             ))}
                         </select>

@@ -67,7 +67,7 @@ async function mutationFetcher<TData, TArgs = any>(
  * @param config Configuration SWRMutation optionnelle
  */
 export function useMutation<TData = any, TArgs = any>(
-  url: string,
+  url?: string | null,
   config?: SWRMutationConfiguration<TData, Error, string, { method: MutationMethod; data?: TArgs; headers?: Record<string, string> }>
 ) {
   const { trigger, data, error, isMutating, reset } = useSWRMutation<
@@ -75,7 +75,7 @@ export function useMutation<TData = any, TArgs = any>(
     Error,
     string,
     { method: MutationMethod; data?: TArgs; headers?: Record<string, string> }
-  >(url, mutationFetcher, config);
+  >(url || 'dynamic-mutation', mutationFetcher, config);
 
   /**
    * Helper pour envoyer une requête POST
@@ -105,11 +105,19 @@ export function useMutation<TData = any, TArgs = any>(
     return trigger({ method: 'DELETE', data, headers });
   };
 
+  /**
+   * Helper dynamique pour envoyer une requête vers une URL spécifique
+   */
+  const mutate = (overrideUrl: string, options: { method: MutationMethod; data?: TArgs; headers?: Record<string, string> }) => {
+    return mutationFetcher<TData, TArgs>(overrideUrl, { arg: options });
+  };
+
   return {
     post,
     put,
     patch,
     del,
+    mutate,
     trigger,
     data,
     error,

@@ -700,14 +700,14 @@ export default function ModifierEvenementPage() {
               {/* Medias du Bilan */}
               <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 {/* Documents / Rapport PDF-Word */}
-                {evenement.medias?.some(m => m.nomFichier === 'Compte Rendu Bilan' || m.type === 'EVENT_REPORT') && (
+                {evenement.medias?.some((m: any) => m.nomFichier === 'Compte Rendu Bilan' || m.type === 'EVENT_REPORT') && (
                   <div>
                     <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                       <FileText className="w-4 h-4" />
                       {t('admin_evenement_modifier.report_files')}
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {evenement.medias?.filter(m => m.nomFichier === 'Compte Rendu Bilan' || m.type === 'EVENT_REPORT').map((doc, idx) => (
+                      {evenement.medias?.filter((m: any) => m.nomFichier === 'Compte Rendu Bilan' || m.type === 'EVENT_REPORT').map((doc: any, idx: any) => (
                         <a 
                           key={idx}
                           href={doc.urlPublique}
@@ -733,14 +733,14 @@ export default function ModifierEvenementPage() {
                 )}
 
                 {/* Galerie Photos du Bilan */}
-                {evenement.medias?.some(m => m.nomFichier === 'Image Bilan') && (
+                {evenement.medias?.some((m: any) => m.nomFichier === 'Image Bilan') && (
                   <div>
                     <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                       <ImageIcon className="w-4 h-4" />
                       {t('admin_evenement_modifier.bilan_gallery')}
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {evenement.medias?.filter(m => m.nomFichier === 'Image Bilan').map((img, idx) => (
+                      {evenement.medias?.filter((m: any) => m.nomFichier === 'Image Bilan').map((img: any, idx: any) => (
                         <a 
                           key={idx}
                           href={img.urlPublique}

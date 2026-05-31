@@ -117,6 +117,110 @@ const SECTEUR_LABELS: Record<string, string> = {
   'AUTRE': 'Autre',
 };
 
+// Photo Gallery Component
+const PhotoGallery = ({ photos, title }: { photos: string[]; title: string }) => {
+  if (!photos || photos.length === 0) return null;
+  
+  return (
+    <div className="mt-6">
+      <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+        <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
+        Photos ({photos.length})
+      </h5>
+      <div className="flex flex-wrap gap-3">
+        {photos.map((photo, idx) => (
+          <a 
+            key={idx} 
+            href={photo} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
+          >
+            <img 
+              src={photo} 
+              alt={`${title} - Photo ${idx + 1}`}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Media Gallery for events/campaigns
+const MediaGallery = ({ medias }: { medias?: MediaItem[] }) => {
+  const t = useTranslations();
+  if (!medias || medias.length === 0) return null;
+  
+  const images = medias.filter(m => m.type === 'IMAGE');
+  const documents = medias.filter(m => m.type === 'DOCUMENT' || m.type === 'EVENT_REPORT');
+  
+  return (
+    <div className="mt-6 space-y-6">
+      {/* Documents Section */}
+      {documents.length > 0 && (
+        <div>
+          <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+            <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
+            {t('admin_bilans.labels.documents')} ({documents.length})
+          </h5>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {documents.map((doc) => (
+              <a 
+                key={doc.id} 
+                href={doc.urlPublique} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:border-[hsl(var(--gov-blue))/0.5] transition-all group shadow-sm hover:shadow-md hover:-translate-y-1"
+              >
+                <div className="p-2.5 bg-[hsl(var(--gov-blue))/0.05] rounded-xl text-[hsl(var(--gov-blue))] border border-[hsl(var(--gov-blue))/0.1]">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-extrabold text-foreground truncate group-hover:text-[hsl(var(--gov-blue))] transition-colors">
+                    {doc.nomFichier === 'Compte Rendu Bilan' ? t('admin_bilans.labels.report') : doc.nomFichier}
+                  </p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('admin_bilans.labels.download_report')}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Photos Section */}
+      {images.length > 0 && (
+        <div>
+          <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+            <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
+            {t('admin_bilans.labels.photos')} ({images.length})
+          </h5>
+          <div className="flex flex-wrap gap-3">
+            {images.map((media) => (
+              <a 
+                key={media.id} 
+                href={media.urlPublique} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
+              >
+                <img 
+                  src={media.urlPublique} 
+                  alt={media.nomFichier}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function BilansPage() {
   const t = useTranslations();
   const locale = useLocale();
@@ -238,108 +342,7 @@ export default function BilansPage() {
     totalParticipations: campagnes.reduce((sum, c) => sum + (c.nombreParticipations || 0), 0),
   };
 
-  // Photo Gallery Component
-  const PhotoGallery = ({ photos, title }: { photos: string[]; title: string }) => {
-    if (!photos || photos.length === 0) return null;
-    
-    return (
-      <div className="mt-6">
-        <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-          <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
-          Photos ({photos.length})
-        </h5>
-        <div className="flex flex-wrap gap-3">
-          {photos.map((photo, idx) => (
-            <a 
-              key={idx} 
-              href={photo} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
-            >
-              <img 
-                src={photo} 
-                alt={`${title} - Photo ${idx + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
-            </a>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
-  // Media Gallery for events/campaigns
-  const MediaGallery = ({ medias }: { medias?: MediaItem[] }) => {
-    if (!medias || medias.length === 0) return null;
-    
-    const images = medias.filter(m => m.type === 'IMAGE');
-    const documents = medias.filter(m => m.type === 'DOCUMENT' || m.type === 'EVENT_REPORT');
-    
-    return (
-      <div className="mt-6 space-y-6">
-        {/* Documents Section */}
-        {documents.length > 0 && (
-          <div>
-            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-              <FileText className="w-3.5 h-3.5 text-[hsl(var(--gov-blue))]" />
-              {t('admin_bilans.labels.documents')} ({documents.length})
-            </h5>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {documents.map((doc) => (
-                <a 
-                  key={doc.id} 
-                  href={doc.urlPublique} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:border-[hsl(var(--gov-blue))/0.5] transition-all group shadow-sm hover:shadow-md hover:-translate-y-1"
-                >
-                  <div className="p-2.5 bg-[hsl(var(--gov-blue))/0.05] rounded-xl text-[hsl(var(--gov-blue))] border border-[hsl(var(--gov-blue))/0.1]">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-extrabold text-foreground truncate group-hover:text-[hsl(var(--gov-blue))] transition-colors">
-                      {doc.nomFichier === 'Compte Rendu Bilan' ? t('admin_bilans.labels.report') : doc.nomFichier}
-                    </p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('admin_bilans.labels.download_report')}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Photos Section */}
-        {images.length > 0 && (
-          <div>
-            <h5 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-              <ImageIcon className="w-3.5 h-3.5 text-[hsl(var(--gov-green))]" />
-              {t('admin_bilans.labels.photos')} ({images.length})
-            </h5>
-            <div className="flex flex-wrap gap-3">
-              {images.map((media) => (
-                <a 
-                  key={media.id} 
-                  href={media.urlPublique} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="relative w-24 h-24 rounded-2xl overflow-hidden border border-border hover:border-[hsl(var(--gov-green))] transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-1"
-                >
-                  <img 
-                    src={media.urlPublique} 
-                    alt={media.nomFichier}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors" />
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   if (loading) {
     return (

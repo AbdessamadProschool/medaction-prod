@@ -159,7 +159,7 @@ export default function AdminNouveauProgrammePage() {
                     disabled={loadingEtabs}
                   >
                     <option value="">{t('fields.select_etablissement')}</option>
-                    {etablissements.map(etab => (
+                    {etablissements.map((etab: any) => (
                       <option key={etab.id} value={etab.id}>{etab.nom}</option>
                     ))}
                   </select>

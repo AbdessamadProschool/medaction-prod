@@ -158,7 +158,7 @@ export default function CoordinateurDashboard() {
     return time?.slice(0, 5) || '00:00';
   };
 
-  const groupedActivites = activitesProchaines.reduce((groups, activite) => {
+  const groupedActivites = activitesProchaines.reduce((groups: any, activite: any) => {
     const date = activite.date;
     if (!groups[date]) {
       groups[date] = [];
@@ -465,7 +465,7 @@ export default function CoordinateurDashboard() {
                         {formatDate(date)}
                       </span>
                     </div>
-                    {activites.map((activite) => {
+                    {(activites as any[]).map((activite: any) => {
                       const config = STATUT_CONFIG[activite.statut] || STATUT_CONFIG.PLANIFIEE;
                       const StatusIcon = config.icon;
                       

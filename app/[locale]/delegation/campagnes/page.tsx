@@ -180,7 +180,7 @@ export default function MesCampagnesPage() {
       ) : (
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {campagnes.map((campagne, index) => {
+            {campagnes.map((campagne: any, index: any) => {
               const progress = campagne.objectifParticipations 
                 ? Math.min(100, (campagne.nombreParticipations / campagne.objectifParticipations) * 100)
                 : 0;

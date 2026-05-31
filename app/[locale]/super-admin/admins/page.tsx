@@ -72,7 +72,7 @@ export default function SuperAdminAdminsPage() {
   if (search) queryParams.set('search', search);
 
   const { data: permissionsData, mutate: refreshPermissions } = useData('/api/permissions');
-  const allPermissions = permissionsData?.grouped || {};
+  const allPermissions: Record<string, Permission[]> = permissionsData?.grouped || {};
 
   const { data: adminsData, isLoading: loading, mutate: refreshAdmins, isValidating: refreshing } = useData(session?.user?.role === 'SUPER_ADMIN' ? `/api/admins?${queryParams.toString()}` : null);
 

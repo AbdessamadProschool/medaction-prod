@@ -76,7 +76,7 @@ export default function AutoriteReclamationsPage() {
     return params.toString();
   }, [page, statut, categorie, search]);
 
-  const { data: responseData, isLoading: loading } = useData(`/api/autorite/reclamations?${queryParams}`);
+  const { data: responseData, isLoading: loading, mutate: refreshReclamations } = useData(`/api/autorite/reclamations?${queryParams}`);
   
   const reclamations = responseData?.data || [];
   const categories = responseData?.categories || [];
@@ -148,7 +148,7 @@ export default function AutoriteReclamationsPage() {
               {search && (
                 <button
                   type="button"
-                  onClick={() => { setSearch(''); fetchReclamations(); }}
+                  onClick={() => { setSearch(''); refreshReclamations(); }}
                   className={`absolute ${isRtl ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors bg-gray-100 hover:bg-red-50 rounded-full p-0.5`}
                 >
                   <X size={14} />
@@ -169,7 +169,7 @@ export default function AutoriteReclamationsPage() {
                 }`}
                 >
                 <option value="">{t('filters.all_categories')}</option>
-                {categories.map((cat) => (
+                {categories.map((cat: any) => (
                     <option key={cat.value} value={cat.value}>
                     {cat.label} ({cat.count})
                     </option>
@@ -247,7 +247,7 @@ export default function AutoriteReclamationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   <AnimatePresence>
-                    {reclamations.map((reclamation, index) => (
+                    {reclamations.map((reclamation: any, index: any) => (
                       <motion.tr
                         key={reclamation.id}
                         initial={{ opacity: 0, y: 10 }}

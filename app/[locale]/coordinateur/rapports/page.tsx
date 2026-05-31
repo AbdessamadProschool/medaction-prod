@@ -44,7 +44,7 @@ export default function CoordinateurRapportsPage() {
     await refreshData();
   };
 
-  const filteredRapports = rapports.filter(rapport => {
+  const filteredRapports = rapports.filter((rapport: any) => {
     const matchSearch = rapport.titre.toLowerCase().includes(search.toLowerCase()) ||
                        rapport.etablissement?.nom.toLowerCase().includes(search.toLowerCase());
     
@@ -57,8 +57,8 @@ export default function CoordinateurRapportsPage() {
     return matchSearch;
   });
 
-  const pendingCount = rapports.filter(r => r.statut === 'TERMINEE').length;
-  const completedCount = rapports.filter(r => r.statut === 'RAPPORT_COMPLETE').length;
+  const pendingCount = rapports.filter((r: any) => r.statut === 'TERMINEE').length;
+  const completedCount = rapports.filter((r: any) => r.statut === 'RAPPORT_COMPLETE').length;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ar-MA', {
@@ -169,7 +169,7 @@ export default function CoordinateurRapportsPage() {
             </p>
           </div>
         ) : (
-          filteredRapports.map((rapport, index) => {
+          filteredRapports.map((rapport: any, index: any) => {
             const isPending = rapport.statut === 'TERMINEE';
             // Config inline for now
             const config = isPending 

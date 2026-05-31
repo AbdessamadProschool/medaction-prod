@@ -108,7 +108,7 @@ export default function AdminProgrammesActivitesPage() {
   }, [activites]);
 
   // Filtrer les activités
-  const filteredActivites = activites.filter(a => {
+  const filteredActivites = activites.filter((a: any) => {
     const matchSearch = !search || 
       a.titre.toLowerCase().includes(search.toLowerCase()) ||
       a.etablissement.nom.toLowerCase().includes(search.toLowerCase()) ||
@@ -327,7 +327,7 @@ export default function AdminProgrammesActivitesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredActivites.map((activite) => {
+                {filteredActivites.map((activite: any) => {
                   const statutConfig = STATUT_CONFIG[activite.statut] || STATUT_CONFIG.PLANIFIEE;
                   const StatusIcon = statutConfig.icon;
                   const statusLabel = t('status.' + statutConfig.label);

@@ -125,7 +125,7 @@ export default function MesEvaluationsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {evaluations.map((evaluation, index) => (
+            {evaluations.map((evaluation: any, index: any) => (
               <motion.div
                 key={evaluation.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -214,7 +214,7 @@ export default function MesEvaluationsPage() {
                 <p className="text-sm text-gray-500">Note moyenne donnée</p>
                 <div className="flex items-center gap-2">
                   <p className="text-2xl font-bold text-gov-gold">
-                    {(evaluations.reduce((acc, e) => acc + e.note, 0) / evaluations.length).toFixed(1)}
+                    {(evaluations.reduce((acc: any, e: any) => acc + e.note, 0) / evaluations.length).toFixed(1)}
                   </p>
                   <Star className="w-6 h-6 fill-gov-gold text-gov-gold" />
                 </div>

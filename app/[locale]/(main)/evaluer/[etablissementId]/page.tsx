@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { PermissionGuard } from '@/hooks/use-permission';
 
 interface Etablissement {
   id: number;

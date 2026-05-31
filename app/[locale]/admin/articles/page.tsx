@@ -339,7 +339,7 @@ export default function AdminArticlesPage() {
             </p>
           </div>
         ) : (
-          articles.map((article) => {
+          articles.map((article: any) => {
             const statutConfig = STATUT_CONFIG[article.statut] || STATUT_CONFIG.BROUILLON;
             const StatutIcon = statutConfig.icon;
             
@@ -393,7 +393,7 @@ export default function AdminArticlesPage() {
                   {/* Tags */}
                   {article.tags && article.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {article.tags.slice(0, 3).map((tag, i) => (
+                      {article.tags.slice(0, 3).map((tag: any, i: any) => (
                         <span key={i} className="px-3 py-1 bg-muted/50 text-muted-foreground text-[10px] font-bold uppercase tracking-widest rounded-lg border border-border/50">
                           #{tag}
                         </span>

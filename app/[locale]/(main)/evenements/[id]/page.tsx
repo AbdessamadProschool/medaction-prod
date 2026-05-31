@@ -194,7 +194,7 @@ export default function EvenementDetailPage() {
   const secteurConfig = getSecteurConfig(tSectors);
   const config = secteurConfig[event.secteur as keyof typeof secteurConfig] || secteurConfig.AUTRE;
   const eventStatus = getEventStatus(event, t);
-  const images = event.medias?.filter(m => m.type === 'IMAGE') || [];
+  const images = event.medias?.filter((m: any) => m.type === 'IMAGE') || [];
   const isEnded = eventStatus.status === 'ended';
   const isLive = eventStatus.status === 'live';
 
@@ -381,7 +381,7 @@ export default function EvenementDetailPage() {
                 {/* Tags */}
                 {event.tags && event.tags.length > 0 && (
                    <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-100">
-                      {event.tags.map(tag => (
+                      {event.tags.map((tag: any) => (
                          <span key={tag} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors cursor-default">
                             <Tag className="w-3.5 h-3.5" />
                             #{tag}
@@ -415,7 +415,7 @@ export default function EvenementDetailPage() {
                    </div>
                    
                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {images.slice(0, 4).map((img, idx) => (
+                      {images.slice(0, 4).map((img: any, idx: any) => (
                          <div 
                            key={img.id}
                            onClick={() => { setActiveImage(idx); setShowGallery(true); }}

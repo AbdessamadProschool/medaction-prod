@@ -182,8 +182,8 @@ export default function AdminEtablissementsPage() {
     
     const toastId = toast.loading(t('messages.publishing'));
     try {
-        await bulkMutation.mutate(undefined, {
-            data: { action: 'publish_all' }
+        await bulkMutation.mutate('/api/admin/etablissements/bulk', {
+            method: 'POST', data: { action: 'publish_all' }
         });
         toast.success(t('messages.bulk_publish_success'), { id: toastId });
         await fetchEtablissements();
@@ -197,8 +197,8 @@ export default function AdminEtablissementsPage() {
      
      const toastId = toast.loading(t('messages.deleting'));
      try {
-        await bulkMutation.mutate(undefined, {
-            data: { action: 'delete_all' }
+        await bulkMutation.mutate('/api/admin/etablissements/bulk', {
+            method: 'POST', data: { action: 'delete_all' }
         });
         toast.success(t('messages.bulk_delete_success'), { id: toastId });
         await fetchEtablissements();
@@ -221,24 +221,39 @@ export default function AdminEtablissementsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <Building2 className="text-[hsl(var(--gov-blue))] w-6 h-6" />
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
+
+      <div className="max-w-[1600px] mx-auto relative z-10 pb-20">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
+              <Building2 className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
-              {t('page_title')}
-            </h1>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                  {t('page_title')}
+                </h1>
+                <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)]">
+                  Admin
+                </span>
+              </div>
+              <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">
+                <p>{t('total_establishments', { count: total })}</p>
+                <div className="w-1 h-1 bg-border rounded-full" />
+                <p className="flex items-center gap-1.5">
+                  <Shield size={14} className="text-[hsl(var(--gov-blue))]" />
+                  Gouvernance
+                </p>
+              </div>
+            </div>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-15">
-            {t('total_establishments', { count: total })}
-          </p>
-        </div>
         
-        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
           <GovButton
             onClick={fetchEtablissements}
             variant="outline"
@@ -276,20 +291,21 @@ export default function AdminEtablissementsPage() {
             className={showFilters ? "shadow-lg shadow-[hsl(var(--gov-blue))/0.2]" : ""}
           >
             {t('filters')}
+            {Object.values({ search, secteurFilter, validFilter }).filter(v => v !== '').length > 0 && (
+              <span className="ml-2 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
+                {Object.values({ search, secteurFilter, validFilter }).filter(v => v !== '').length}
+              </span>
+            )}
           </GovButton>
 
-          <GovButton
-            asChild
-            variant="primary"
-            leftIcon={<Plus size={18} />}
-            className="shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
-          >
-            <Link href="/admin/etablissements/nouveau">
+          <Link href="/admin/etablissements/nouveau">
+            <GovButton leftIcon={<Plus size={18} />} variant="primary">
               {t('new_establishment')}
-            </Link>
-          </GovButton>
+            </GovButton>
+          </Link>
         </div>
-      </div>      {/* Stats Cards */}
+      </div>
+      {/* Stats Cards */}
       <KpiGrid cols={4}>
         <KpiCard
           index={0}
@@ -428,7 +444,7 @@ export default function AdminEtablissementsPage() {
               </td>
             </tr>
           ) : (
-            etablissements.map((etablissement) => (
+            etablissements.map((etablissement: any) => (
               <GovTr
                 key={etablissement.id}
                 onClick={() => { setSelectedEtablissement(etablissement); setShowDetailModal(true); }}
@@ -517,7 +533,7 @@ export default function AdminEtablissementsPage() {
                       size="icon"
                       className="text-muted-foreground hover:text-[hsl(var(--gov-blue))]"
                     >
-                      <Link href={`/admin/etablissements/${etablissement.id}/edit`}>
+                      <Link href={`/admin/etablissements/${etablissement.id}/modifier`}>
                         <Edit size={18} />
                       </Link>
                     </GovButton>
@@ -767,6 +783,7 @@ export default function AdminEtablissementsPage() {
           </>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

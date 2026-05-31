@@ -13,6 +13,31 @@ const contactSchema = z.object({
   message: z.string().min(10, "Le message doit contenir au moins 10 caractères").max(1000, "Message trop long").transform(sanitizeString)
 });
 
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const limit = parseInt(searchParams.get('limit') || '50');
+
+    const messages = await prisma.contactMessage.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+
+    return NextResponse.json({ success: true, data: messages });
+  } catch (error) {
+    console.error('Erreur GET messages:', error);
+    return NextResponse.json(
+      { error: 'Erreur interne du serveur' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);

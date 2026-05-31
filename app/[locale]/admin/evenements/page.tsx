@@ -401,7 +401,7 @@ function AdminEvenementsContent() {
                   leftIcon={<MapPin size={18} />}
                   options={[
                     { label: t('filter_labels.all_muncipalities'), value: "" },
-                    ...communes.map(c => ({
+                    ...communes.map((c: any) => ({
                       label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom,
                       value: c.id.toString()
                     }))
@@ -438,7 +438,7 @@ function AdminEvenementsContent() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-          {evenements.map((evenement) => {
+          {evenements.map((evenement: any) => {
             const statutKey = statusKeyMap[evenement.statut] || 'pending';
             const statutBadgeMap: Record<string, any> = {
               pending: 'gold',

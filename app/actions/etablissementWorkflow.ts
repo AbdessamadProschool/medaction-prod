@@ -7,7 +7,8 @@ import { prisma } from '@/lib/db';
 import { checkPermission } from '@/lib/permissions';
 import { UnauthorizedError, ForbiddenError, AppError } from '@/lib/exceptions';
 import { logger, auditLog } from '@/lib/logger';
-import { Role } from '@prisma/client';
+import { z } from 'zod';
+import { sanitizeString, sanitizeJson } from '@/lib/security/sanitize';
 
 const SystemLogger = {
   info: (context: string, message: string, meta: any) => logger.info(message, { context, ...meta }),
@@ -15,11 +16,19 @@ const SystemLogger = {
   audit: (context: string, message: string, meta: any) => auditLog(message, context, meta?.demandeId || meta?.etablissementId || 0, meta?.adminId || meta?.userId || 0, meta)
 };
 
+const soumettreDemandeSchema = z.object({
+  type: z.enum(['CREATION', 'MODIFICATION']),
+  etablissementId: z.number().int().positive().optional(),
+  donneesModifiees: z.record(z.string(), z.any()),
+  champsComplementaires: z.record(z.string(), z.any()).optional(),
+  justification: z.string().max(1000).optional().transform(val => val ? sanitizeString(val) : val),
+});
+
 /**
  * Soumet une demande de modification ou de création d'un établissement.
  * Accessible par DELEGATION et COORDINATEUR_ACTIVITES.
  */
-export async function soumettreDemandeEtablissement(params: {
+export async function soumettreDemandeEtablissement(rawParams: {
   type: 'CREATION' | 'MODIFICATION';
   etablissementId?: number;
   donneesModifiees: any;
@@ -28,6 +37,13 @@ export async function soumettreDemandeEtablissement(params: {
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
+
+  const validatedData = soumettreDemandeSchema.parse(rawParams);
+  const params = {
+    ...validatedData,
+    donneesModifiees: sanitizeJson(validatedData.donneesModifiees),
+    champsComplementaires: sanitizeJson(validatedData.champsComplementaires || {})
+  };
 
   const userId = parseInt(session.user.id);
   const permission = params.type === 'CREATION' 
@@ -68,7 +84,7 @@ export async function soumettreDemandeEtablissement(params: {
     const code = params.donneesModifiees.code;
     if (code) {
       const existingEtablissement = await prisma.etablissement.findUnique({
-        where: { code }
+        where: { code: String(code) }
       });
       if (existingEtablissement) {
         return { success: false, error: "Ce code d'établissement existe déjà dans la base de données." };
@@ -81,8 +97,8 @@ export async function soumettreDemandeEtablissement(params: {
       data: {
         type: params.type,
         etablissementId: params.etablissementId,
-        donneesModifiees: params.donneesModifiees,
-        champsComplementaires: params.champsComplementaires || {},
+        donneesModifiees: params.donneesModifiees as any,
+        champsComplementaires: (params.champsComplementaires as any) || {},
         justification: params.justification,
         soumisParId: userId,
         statut: 'EN_ATTENTE_VALIDATION',
@@ -94,9 +110,6 @@ export async function soumettreDemandeEtablissement(params: {
       userId,
       etablissementId: params.etablissementId
     });
-
-    // Optionnel: Notification pour les admins
-    // await createNotificationForAdmin(...) 
 
     revalidatePath('/admin/etablissements/demandes');
     return { success: true, demandeId: demande.id };
@@ -114,17 +127,30 @@ export async function soumettreDemandeEtablissement(params: {
   }
 }
 
+const traiterDemandeSchema = z.object({
+  demandeId: z.number().int().positive(),
+  action: z.enum(['APPROUVER', 'REJETER']),
+  motifRejet: z.string().max(1000).optional().transform(val => val ? sanitizeString(val) : val),
+  donneesCorrigees: z.record(z.string(), z.any()).optional(),
+});
+
 /**
  * Approuve ou rejette une demande (ADMIN uniquement).
  */
-export async function traiterDemandeEtablissement(params: {
+export async function traiterDemandeEtablissement(rawParams: {
   demandeId: number;
   action: 'APPROUVER' | 'REJETER';
   motifRejet?: string;
-  donneesCorrigees?: any; // NOUVEAU: Permet aux admins de corriger les erreurs (comme un code dupliqué) avant d'approuver
+  donneesCorrigees?: any;
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
+
+  const validatedData = traiterDemandeSchema.parse(rawParams);
+  const params = {
+    ...validatedData,
+    donneesCorrigees: validatedData.donneesCorrigees ? sanitizeJson(validatedData.donneesCorrigees) : undefined
+  };
 
   const userId = parseInt(session.user.id);
   const isAdmin = await checkPermission(userId, 'etablissements.validate');
@@ -221,15 +247,22 @@ export async function traiterDemandeEtablissement(params: {
   }
 }
 
+const getDemandesEtablissementSchema = z.object({
+  userId: z.number().int().positive().optional(),
+  statut: z.string().optional().transform(val => val ? sanitizeString(val) : val),
+});
+
 /**
  * Récupère les demandes pour les admins ou les propres demandes de l'utilisateur.
  */
-export async function getDemandesEtablissement(filters: {
+export async function getDemandesEtablissement(rawFilters: {
   userId?: number;
   statut?: string;
 } = {}) {
   const session = await getServerSession(authOptions);
   if (!session?.user) throw new UnauthorizedError();
+
+  const filters = getDemandesEtablissementSchema.parse(rawFilters);
 
   const isAdmin = await checkPermission(parseInt(session.user.id), 'etablissements.validate');
   const userId = parseInt(session.user.id);

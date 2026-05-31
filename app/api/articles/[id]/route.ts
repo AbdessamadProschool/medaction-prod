@@ -3,7 +3,21 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
-import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { z } from 'zod';
+import { sanitizeString } from '@/lib/security/validation';
+
+const updateArticleSchema = z.object({
+  titre: z.string().min(5).max(200).optional().transform(v => v ? sanitizeString(v) : v),
+  description: z.string().max(500).optional().nullable().transform(v => v ? sanitizeString(v) : v),
+  contenu: z.string().min(50).optional().transform(v => v ? v.trim() : v),
+  categorie: z.string().optional().nullable().transform(v => v ? sanitizeString(v) : v),
+  tags: z.array(z.string()).optional(),
+  isPublie: z.boolean().optional(),
+  isMisEnAvant: z.boolean().optional(),
+  statut: z.string().optional(),
+  datePublication: z.string().optional().nullable(),
+});
 
 // GET - Détail d'un article
 export const GET = withErrorHandler(async (
@@ -105,19 +119,28 @@ export const PUT = withErrorHandler(async (
   const { id } = await params;
   const articleId = parseInt(id);
   const body = await request.json();
+  
+  const validation = updateArticleSchema.safeParse(body);
+  if (!validation.success) {
+    throw new ValidationError('Données invalides', { 
+      fieldErrors: validation.error.flatten().fieldErrors 
+    });
+  }
+  
+  const data = validation.data;
 
   const article = await prisma.article.update({
     where: { id: articleId },
     data: {
-      titre: body.titre,
-      description: body.description,
-      contenu: body.contenu,
-      categorie: body.categorie,
-      tags: body.tags,
-      statut: body.isPublie ? 'PUBLIE' : 'BROUILLON',
-      isPublie: body.isPublie,
-      isMisEnAvant: body.isMisEnAvant,
-      datePublication: body.isPublie ? new Date() : (body.datePublication ? new Date(body.datePublication) : undefined),
+      ...(data.titre !== undefined && { titre: data.titre }),
+      ...(data.description !== undefined && { description: data.description }),
+      ...(data.contenu !== undefined && { contenu: data.contenu }),
+      ...(data.categorie !== undefined && { categorie: data.categorie }),
+      ...(data.tags !== undefined && { tags: data.tags }),
+      ...(data.isPublie !== undefined && { statut: (data.isPublie ? 'PUBLIE' : 'BROUILLON') as any }),
+      ...(data.isPublie !== undefined && { isPublie: data.isPublie }),
+      ...(data.isMisEnAvant !== undefined && { isMisEnAvant: data.isMisEnAvant }),
+      ...(data.isPublie !== undefined ? { datePublication: data.isPublie ? new Date() : (data.datePublication ? new Date(data.datePublication) : undefined) } : {}),
     },
   });
 
@@ -158,12 +181,26 @@ export const PATCH = withErrorHandler(async (
   const articleId = parseInt(id);
   const body = await request.json();
 
+  const patchSchema = z.object({
+    statut: z.string().optional().transform(v => v ? sanitizeString(v) : v),
+    isMisEnAvant: z.boolean().optional(),
+  });
+
+  const validation = patchSchema.safeParse(body);
+  if (!validation.success) {
+    throw new ValidationError('Données invalides', { 
+      fieldErrors: validation.error.flatten().fieldErrors 
+    });
+  }
+  
+  const data = validation.data;
+
   const article = await prisma.article.update({
     where: { id: articleId },
     data: {
-      statut: body.statut,
-      isPublie: body.statut === 'PUBLIE',
-      isMisEnAvant: body.isMisEnAvant,
+      ...(data.statut !== undefined && { statut: data.statut as any }),
+      ...(data.statut !== undefined && { isPublie: data.statut === 'PUBLIE' }),
+      ...(data.isMisEnAvant !== undefined && { isMisEnAvant: data.isMisEnAvant }),
     },
   });
 

@@ -7,17 +7,18 @@ import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, ConflictError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
 import { auditLog } from '@/lib/logger';
+import { sanitizeName, sanitizePhone, sanitizeString } from '@/lib/security/sanitize';
 
 // Schéma de validation pour la création d'utilisateur
 const createUserSchema = z.object({
-  email: z.string().email('Email invalide'),
+  email: z.string().email('Email invalide').transform(val => val.toLowerCase().trim()),
   password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
-  nom: z.string().min(2, 'Le nom est requis'),
-  prenom: z.string().min(2, 'Le prénom est requis'),
+  nom: z.string().min(2, 'Le nom est requis').transform(sanitizeName),
+  prenom: z.string().min(2, 'Le prénom est requis').transform(sanitizeName),
   role: z.enum(['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR']),
-  telephone: z.string().optional(),
+  telephone: z.string().optional().transform(val => val ? sanitizePhone(val) : val),
   secteurResponsable: z.any().optional(),
-  etablissementId: z.number().optional(),
+  etablissementId: z.number().int().positive().optional(),
 });
 
 // GET /api/admin/users - Lister les utilisateurs
@@ -25,8 +26,8 @@ export const GET = withPermission('users.read', withErrorHandler(async (request:
   const searchParams = request.nextUrl.searchParams;
   const page = safeParseInt(searchParams.get('page') || '1', 0);
   const limit = Math.min(safeParseInt(searchParams.get('limit') || '10', 0), 100);
-  const search = searchParams.get('search') || '';
-  const role = searchParams.get('role');
+  const search = sanitizeString(searchParams.get('search') || '');
+  const role = sanitizeString(searchParams.get('role') || '');
 
   const skip = (page - 1) * limit;
 
@@ -110,7 +111,7 @@ export const POST = withPermission('users.create', withErrorHandler(async (reque
   };
 
   if (role === 'DELEGATION' && secteurResponsable) {
-    userData.secteurResponsable = secteurResponsable;
+    userData.secteurResponsable = secteurResponsable; // TODO: sanitize enum or lookup if possible
   }
 
   if (role === 'AUTORITE_LOCALE' && etablissementId) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2,
@@ -452,12 +453,13 @@ export default function AdminEtablissementsPage() {
               >
                 <GovTd>
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-sm overflow-hidden shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-sm overflow-hidden shrink-0 relative">
                       {etablissement.photoPrincipale ? (
-                        <img 
+                        <Image 
                           src={etablissement.photoPrincipale} 
                           alt={etablissement.nom}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       ) : (
                         <Building2 size={18} />
@@ -627,12 +629,13 @@ export default function AdminEtablissementsPage() {
               <div className="p-8 space-y-10">
                 {/* Header Profile */}
                 <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-inner overflow-hidden">
+                  <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-inner overflow-hidden relative">
                     {selectedEtablissement.photoPrincipale ? (
-                      <img 
+                      <Image 
                         src={selectedEtablissement.photoPrincipale} 
                         alt={selectedEtablissement.nom}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                     ) : (
                       <Building2 className="w-10 h-10" />

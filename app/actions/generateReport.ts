@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { SystemLogger } from "@/lib/system-logger";
+import { z } from 'zod';
+import { sanitizeString } from '@/lib/security/sanitize';
 
 // Fonction utilitaire pour vérifier l'accès Gouverneur/Admin
 async function checkGovernorAccess() {
@@ -27,11 +29,20 @@ export async function getCommunes() {
     }
 }
 
+const generateGovernorReportSchema = z.object({
+    period: z.string().transform(val => sanitizeString(val)),
+    filters: z.object({
+        communeId: z.number().int().positive().optional(),
+        secteur: z.string().optional().transform(val => val ? sanitizeString(val) : val)
+    }).optional()
+});
+
 export async function generateGovernorReport(
-    period: string,
-    filters?: { communeId?: number; secteur?: string }
+    rawPeriod: string,
+    rawFilters?: { communeId?: number; secteur?: string }
 ) {
     try {
+        const { period, filters } = generateGovernorReportSchema.parse({ period: rawPeriod, filters: rawFilters });
         const access = await checkGovernorAccess();
         if (!access.allowed) return { success: false, error: access.error };
 
@@ -251,8 +262,11 @@ export async function generateGovernorReport(
     }
 }
 
-export async function getGovernorInsights(locale: string = 'fr') {
+const localeSchema = z.string().transform(val => sanitizeString(val)).optional();
+
+export async function getGovernorInsights(rawLocale: string = 'fr') {
     try {
+        const locale = localeSchema.parse(rawLocale);
         const access = await checkGovernorAccess();
         if (!access.allowed) return { success: false, error: access.error };
 
@@ -325,8 +339,9 @@ export async function getGovernorInsights(locale: string = 'fr') {
     }
 }
 
-export async function getRecentReportsList(locale: string = 'fr') {
+export async function getRecentReportsList(rawLocale: string = 'fr') {
     try {
+        const locale = localeSchema.parse(rawLocale);
         const access = await checkGovernorAccess();
         if (!access.allowed) return { success: false, error: access.error };
         const isAr = locale === 'ar';

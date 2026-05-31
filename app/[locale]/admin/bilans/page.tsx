@@ -29,7 +29,7 @@ import {
   Save,
   Trash2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
@@ -222,6 +222,19 @@ const MediaGallery = ({ medias }: { medias?: MediaItem[] }) => {
   );
 };
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
+
 export default function BilansPage() {
   const t = useTranslations();
   const locale = useLocale();
@@ -376,8 +389,13 @@ export default function BilansPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.1] group-hover:scale-110 transition-transform shadow-sm">
               <Calendar className="w-7 h-7 text-[hsl(var(--gov-blue))]" />
@@ -389,7 +407,7 @@ export default function BilansPage() {
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+        <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-2xl bg-gov-blue flex items-center justify-center border border-gov-blue/30/10 group-hover:scale-110 transition-transform shadow-sm">
               <ClipboardList className="w-7 h-7 text-gov-blue-dark" />
@@ -401,7 +419,7 @@ export default function BilansPage() {
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group">
+        <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-2xl bg-gov-gold/10/10 flex items-center justify-center border border-gov-gold/30/10 group-hover:scale-110 transition-transform shadow-sm">
               <Megaphone className="w-7 h-7 text-gov-gold" />
@@ -413,7 +431,7 @@ export default function BilansPage() {
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -5 }} className="gov-stat-card group border-[hsl(var(--gov-green))/0.3] shadow-[hsl(var(--gov-green))/0.05]">
+        <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group border-[hsl(var(--gov-green))/0.3] shadow-[hsl(var(--gov-green))/0.05]">
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center border border-[hsl(var(--gov-green))/0.1] group-hover:scale-110 transition-transform shadow-sm">
               <Users className="w-7 h-7 text-[hsl(var(--gov-green))]" />
@@ -426,45 +444,88 @@ export default function BilansPage() {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-4 p-1.5 bg-muted rounded-2xl w-fit border border-border shadow-sm">
+      <div 
+        role="tablist" 
+        aria-label={t('admin_bilans.tabs.aria_label') || "Onglets des bilans"}
+        className="flex gap-4 p-1.5 bg-muted rounded-2xl w-fit border border-border shadow-sm"
+      >
         <button
+          role="tab"
+          aria-selected={activeTab === 'evenements'}
+          aria-controls="panel-evenements"
+          id="tab-evenements"
           onClick={() => setActiveTab('evenements')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+          className={`relative flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'evenements'
-              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              ? 'text-[hsl(var(--gov-blue))]'
               : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <Calendar className="w-4 h-4" />
-          {t('admin_bilans.tabs.events')}
-          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'evenements' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{evenements.length}</span>
+          {activeTab === 'evenements' && (
+            <motion.div
+              layoutId="activeTab"
+              className="absolute inset-0 bg-card rounded-xl shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border"
+              style={{ zIndex: 0 }}
+            />
+          )}
+          <span className="relative z-10 flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            {t('admin_bilans.tabs.events')}
+            <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'evenements' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{evenements.length}</span>
+          </span>
         </button>
         <button
+          role="tab"
+          aria-selected={activeTab === 'activites'}
+          aria-controls="panel-activites"
+          id="tab-activites"
           onClick={() => setActiveTab('activites')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+          className={`relative flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'activites'
-              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              ? 'text-[hsl(var(--gov-blue))]'
               : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <ClipboardList className="w-4 h-4" />
-          {t('admin_bilans.tabs.activities')}
-          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'activites' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{activites.length}</span>
+          {activeTab === 'activites' && (
+            <motion.div
+              layoutId="activeTab"
+              className="absolute inset-0 bg-card rounded-xl shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border"
+              style={{ zIndex: 0 }}
+            />
+          )}
+          <span className="relative z-10 flex items-center gap-2">
+            <ClipboardList className="w-4 h-4" />
+            {t('admin_bilans.tabs.activities')}
+            <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'activites' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{activites.length}</span>
+          </span>
         </button>
         <button
+          role="tab"
+          aria-selected={activeTab === 'campagnes'}
+          aria-controls="panel-campagnes"
+          id="tab-campagnes"
           onClick={() => setActiveTab('campagnes')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+          className={`relative flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
             activeTab === 'campagnes'
-              ? 'bg-card text-[hsl(var(--gov-blue))] shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border'
+              ? 'text-[hsl(var(--gov-blue))]'
               : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
           }`}
         >
-          <Megaphone className="w-4 h-4" />
-          {t('admin_bilans.tabs.campaigns')}
-          <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'campagnes' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{campagnes.length}</span>
+          {activeTab === 'campagnes' && (
+            <motion.div
+              layoutId="activeTab"
+              className="absolute inset-0 bg-card rounded-xl shadow-lg shadow-[hsl(var(--gov-blue))/0.1] border border-border"
+              style={{ zIndex: 0 }}
+            />
+          )}
+          <span className="relative z-10 flex items-center gap-2">
+            <Megaphone className="w-4 h-4" />
+            {t('admin_bilans.tabs.campaigns')}
+            <span className={`px-2 py-0.5 rounded-lg text-[10px] border ${activeTab === 'campagnes' ? 'bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.1]' : 'bg-muted border-border'}`}>{campagnes.length}</span>
+          </span>
         </button>
       </div>
 
@@ -474,6 +535,7 @@ export default function BilansPage() {
           <Search className={`absolute ${locale === 'ar' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors`} />
           <input
             type="text"
+            aria-label={t('admin_bilans.search_placeholder') || "Rechercher"}
             placeholder={t('admin_bilans.search_placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -483,6 +545,7 @@ export default function BilansPage() {
         
         {(activeTab === 'evenements' || activeTab === 'activites') && (
           <select
+            aria-label={t('admin_bilans.all_sectors') || "Sélectionner un secteur"}
             value={selectedSecteur}
             onChange={(e) => setSelectedSecteur(e.target.value)}
             className="gov-input py-3.5 min-w-[200px]"
@@ -500,15 +563,23 @@ export default function BilansPage() {
 
       {/* Content - Événements */}
       {activeTab === 'evenements' && (
-        <div className="space-y-6">
+        <motion.div 
+          role="tabpanel"
+          id="panel-evenements"
+          aria-labelledby="tab-evenements"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="space-y-6"
+        >
           {filteredEvenements.length === 0 ? (
-            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+            <motion.div variants={itemVariants} className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <Calendar className="w-10 h-10 text-muted-foreground/30" />
               </div>
               <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.events')}</h3>
               <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_events')}</p>
-            </div>
+            </motion.div>
           ) : (
             filteredEvenements.map((evt) => {
               const isExpanded = expandedItems.has(`evt-${evt.id}`);
@@ -516,8 +587,8 @@ export default function BilansPage() {
                 <motion.div 
                   key={evt.id} 
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                   className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
@@ -645,20 +716,28 @@ export default function BilansPage() {
               );
             })
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Content - Activités */}
       {activeTab === 'activites' && (
-        <div className="space-y-6">
+        <motion.div 
+          role="tabpanel"
+          id="panel-activites"
+          aria-labelledby="tab-activites"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="space-y-6"
+        >
           {filteredActivites.length === 0 ? (
-            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+            <motion.div variants={itemVariants} className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <ClipboardList className="w-10 h-10 text-muted-foreground/30" />
               </div>
               <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.activities')}</h3>
               <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_activities')}</p>
-            </div>
+            </motion.div>
           ) : (
             filteredActivites.map((act) => {
               const isExpanded = expandedItems.has(`act-${act.id}`);
@@ -666,8 +745,8 @@ export default function BilansPage() {
                 <motion.div 
                   key={act.id} 
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                   className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
                   <div className="space-y-6">
@@ -796,20 +875,28 @@ export default function BilansPage() {
               );
             })
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Content - Campagnes */}
       {activeTab === 'campagnes' && (
-        <div className="space-y-6">
+        <motion.div 
+          role="tabpanel"
+          id="panel-campagnes"
+          aria-labelledby="tab-campagnes"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="space-y-6"
+        >
           {filteredCampagnes.length === 0 ? (
-            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
+            <motion.div variants={itemVariants} className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
                 <Megaphone className="w-10 h-10 text-muted-foreground/30" />
               </div>
               <h3 className="text-xl font-extrabold text-foreground">{t('admin_bilans.empty.campaigns')}</h3>
               <p className="text-muted-foreground mt-2 font-medium">{t('admin_bilans.empty.desc_campaigns')}</p>
-            </div>
+            </motion.div>
           ) : (
             filteredCampagnes.map((camp) => {
               const isExpanded = expandedItems.has(`camp-${camp.id}`);
@@ -817,8 +904,8 @@ export default function BilansPage() {
                 <motion.div 
                   key={camp.id} 
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                   className="bg-card rounded-3xl border border-border p-8 hover:shadow-xl hover:shadow-[hsl(var(--gov-blue)/0.05)] transition-all group overflow-hidden"
                 >
                   <div className="space-y-6">
@@ -872,7 +959,7 @@ export default function BilansPage() {
               );
             })
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Modal d'édition Bilan (Events) */}
@@ -885,15 +972,19 @@ export default function BilansPage() {
               exit={{ opacity: 0 }}
               onClick={() => setEditingBilan(null)}
               className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
+              aria-hidden="true"
             />
             <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25 } }}
+              exit={{ opacity: 0, scale: 0.95, y: 20, transition: { duration: 0.2 } }}
               className="fixed inset-4 md:inset-10 lg:inset-x-[15%] lg:inset-y-10 bg-card shadow-2xl z-[101] overflow-y-auto rounded-3xl border border-border"
             >
               <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
-                <h2 className="text-xl font-extrabold text-foreground">
+                <h2 id="modal-title" className="text-xl font-extrabold text-foreground">
                   {t('admin_bilans.labels.edit_bilan_title') || 'Modifier le bilan'}
                 </h2>
                 <button

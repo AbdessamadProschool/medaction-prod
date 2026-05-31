@@ -7,15 +7,16 @@ import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, NotFoundError, BadRequestError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
 import { auditLog } from '@/lib/logger';
+import { sanitizeName, sanitizePhone } from '@/lib/security/sanitize';
 
 const updateUserSchema = z.object({
-  nom: z.string().min(2).optional(),
-  prenom: z.string().min(2).optional(),
-  email: z.string().email().optional(),
+  nom: z.string().min(2).optional().transform(val => val ? sanitizeName(val) : val),
+  prenom: z.string().min(2).optional().transform(val => val ? sanitizeName(val) : val),
+  email: z.string().email().optional().transform(val => val ? val.toLowerCase().trim() : val),
   role: z.enum(['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR']).optional(),
   password: z.string().min(8).optional(),
   isActive: z.boolean().optional(),
-  telephone: z.string().optional().nullable(),
+  telephone: z.string().optional().nullable().transform(val => val ? sanitizePhone(val) : val),
   secteurResponsable: z.any().optional(),
 });
 

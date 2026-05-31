@@ -201,8 +201,8 @@ function AdminEvenementsContent() {
         
         await loadEvenements();
         resolve(true);
-      } catch (error: any) {
-        reject(new Error(error.message || t('messages.error')));
+      } catch (error: unknown) {
+        reject(new Error(error instanceof Error ? error.message : t('messages.error')));
       }
     });
 
@@ -221,8 +221,8 @@ function AdminEvenementsContent() {
         await actionMutation.mutate(`/api/evenements/${id}`, { method: 'DELETE' });
         await loadEvenements();
         resolve(true);
-      } catch (e: any) {
-        reject(new Error(e.message || 'Erreur lors de la suppression'));
+      } catch (e: unknown) {
+        reject(new Error(e instanceof Error ? e.message : 'Erreur lors de la suppression'));
       }
     });
 
@@ -402,7 +402,7 @@ function AdminEvenementsContent() {
                   leftIcon={<MapPin size={18} />}
                   options={[
                     { label: t('filter_labels.all_muncipalities'), value: "" },
-                    ...communes.map((c: any) => ({
+                    ...communes.map((c: { id: number; nom: string; nomArabe?: string }) => ({
                       label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom,
                       value: c.id.toString()
                     }))
@@ -439,9 +439,9 @@ function AdminEvenementsContent() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-          {evenements.map((evenement: any) => {
+          {evenements.map((evenement: Evenement) => {
             const statutKey = statusKeyMap[evenement.statut] || 'pending';
-            const statutBadgeMap: Record<string, any> = {
+            const statutBadgeMap: Record<string, string> = {
               pending: 'gold',
               published: 'green',
               in_progress: 'blue',

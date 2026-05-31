@@ -3,10 +3,22 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useData } from '@/hooks/use-data';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
-} from 'recharts';
+import dynamic from 'next/dynamic';
+
+const ReclamationsStatusPieChart = dynamic(() => import('@/components/admin/RapportsCharts').then(mod => mod.ReclamationsStatusPieChart), {
+  ssr: false,
+  loading: () => <div className="w-full h-full animate-pulse bg-muted rounded-xl"></div>
+});
+
+const ReclamationsEvolutionAreaChart = dynamic(() => import('@/components/admin/RapportsCharts').then(mod => mod.ReclamationsEvolutionAreaChart), {
+  ssr: false,
+  loading: () => <div className="w-full h-full animate-pulse bg-muted rounded-xl"></div>
+});
+
+const ReclamationsCommuneBarChart = dynamic(() => import('@/components/admin/RapportsCharts').then(mod => mod.ReclamationsCommuneBarChart), {
+  ssr: false,
+  loading: () => <div className="w-full h-full animate-pulse bg-muted rounded-xl"></div>
+});
 import { 
   FileSpreadsheet, 
   Star, 
@@ -248,36 +260,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-              <PieChart>
-                <Pie
-                  data={reclamationsData?.byStatus || []}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={8}
-                  dataKey="count"
-                  nameKey="statut"
-                  stroke="none"
-                >
-                  {reclamationsData?.byStatus?.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))', 
-                    borderRadius: '16px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
-                  }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
-              </PieChart>
-            </ResponsiveContainer>
+              <ReclamationsStatusPieChart data={reclamationsData?.byStatus || []} />
           </div>
         </motion.div>
  
@@ -293,45 +276,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-              <AreaChart data={reclamationsData?.evolution || []}>
-                <defs>
-                  <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--gov-blue))" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="hsl(var(--gov-blue))" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                <XAxis 
-                  dataKey="date" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))', 
-                    borderRadius: '16px',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
-                  }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="hsl(var(--gov-blue))" 
-                  strokeWidth={3} 
-                  fillOpacity={1} 
-                  fill="url(#colorCount)" 
-                  activeDot={{ r: 6, strokeWidth: 0, fill: 'hsl(var(--gov-blue))' }} 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+              <ReclamationsEvolutionAreaChart data={reclamationsData?.evolution || []} />
           </div>
         </motion.div>
       </div>
@@ -350,35 +295,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-              <BarChart data={reclamationsData?.byCommune || []} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="hsl(var(--border))" />
-                <XAxis 
-                  type="number" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
-                />
-                <YAxis 
-                  dataKey="commune" 
-                  type="category" 
-                  width={100} 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
-                />
-                <Tooltip 
-                  cursor={{ fill: 'hsl(var(--muted)/0.3)' }}
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))', 
-                    borderRadius: '16px',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
-                  }}
-                />
-                <Bar dataKey="count" fill="hsl(var(--gov-blue))" radius={[0, 10, 10, 0]} barSize={24} />
-              </BarChart>
-            </ResponsiveContainer>
+              <ReclamationsCommuneBarChart data={reclamationsData?.byCommune || []} />
           </div>
         </motion.div>
  

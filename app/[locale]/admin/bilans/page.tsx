@@ -121,6 +121,11 @@ export default function BilansPage() {
   const t = useTranslations();
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState<'evenements' | 'activites' | 'campagnes'>('evenements');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSecteur, setSelectedSecteur] = useState('');
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [editingBilan, setEditingBilan] = useState<{ id: number, titre: string, description: string, participants: number } | null>(null);
+  const [saving, setSaving] = useState(false);
   const { data: evtData, isLoading: loadingEvenements, mutate: fetchEvenements } = useData('/api/admin/bilans/evenements');
   const { data: actData, isLoading: loadingActivites, mutate: fetchActivites } = useData('/api/admin/bilans/activites');
   const { data: campData, isLoading: loadingCampagnes, mutate: fetchCampagnes } = useData('/api/admin/bilans/campagnes');

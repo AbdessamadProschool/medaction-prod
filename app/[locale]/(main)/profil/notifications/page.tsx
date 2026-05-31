@@ -21,6 +21,8 @@ import {
   Shield,
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface NotificationPreferences {
   email: {
@@ -76,10 +78,14 @@ export default function NotificationsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+
+  // ECC: Data Fetching
+  const { data: prefData, isLoading: loading } = useData(session?.user ? '/api/users/me/preferences' : null);
+  
+  // ECC: Mutation
+  const prefMutation = useMutation('/api/users/me/preferences');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -88,24 +94,10 @@ export default function NotificationsPage() {
   }, [status, router]);
 
   useEffect(() => {
-    const fetchPreferences = async () => {
-      try {
-        const res = await fetch('/api/users/me/preferences');
-        if (res.ok) {
-          const json = await res.json();
-          setPreferences(json.data || DEFAULT_PREFERENCES);
-        }
-      } catch (err) {
-        console.error('Erreur:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (session?.user) {
-      fetchPreferences();
+    if (prefData) {
+      setPreferences(prefData || DEFAULT_PREFERENCES);
     }
-  }, [session]);
+  }, [prefData]);
 
   const handleToggle = (
     channel: 'email' | 'push' | 'sms',
@@ -126,29 +118,18 @@ export default function NotificationsPage() {
   };
 
   const handleSave = async () => {
-    setSaving(true);
     setError('');
 
     try {
-      const res = await fetch('/api/users/me/preferences', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notifications: preferences.notifications }),
-      });
-
-      if (res.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Erreur lors de la sauvegarde');
-      }
-    } catch (err) {
-      setError('Erreur de connexion');
-    } finally {
-      setSaving(false);
+      await prefMutation.patch({ notifications: preferences.notifications });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err: any) {
+      setError(err.message || 'Erreur de sauvegarde');
     }
   };
+  
+  const saving = prefMutation.isMutating;
 
   if (status === 'loading' || loading) {
     return (

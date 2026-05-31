@@ -419,7 +419,12 @@ function isValidLocaleOrPath(pathname: string): boolean {
     '/robots.txt',
     '/sitemap.xml',
     '/llms.txt',
-    '/grid.svg'
+    '/llms-full.txt',
+    '/grid.svg',
+    '/manifest.json',
+    '/sw.js',
+    '/icon.png',
+    '/apple-icon.png'
   ];
   
   if (allowedExact.includes(lowercase)) {

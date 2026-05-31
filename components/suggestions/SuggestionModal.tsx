@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface SuggestionModalProps {
   isOpen: boolean;
@@ -97,6 +98,9 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // ECC Mutation
+  const suggestionMutation = useMutation('/api/suggestions');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -105,41 +109,35 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
     if (!description.trim()) { setError(t('error_desc_required')); return; }
     if (description.length < 20) { setError(t('error_desc_min')); return; }
 
-    setSubmitting(true);
     try {
-      const res = await fetch('/api/suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titre, description, categorie }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 401) {
-          toast.error(tGlobal('errors.unauthorized'));
-          window.location.href = `/${locale}/login?callbackUrl=/${locale}/suggestions?new=true`;
-          return;
-        }
-        if (res.status === 429 && data.error === 'LIMIT_EXCEEDED' && data.resetDate) {
-          const date = new Date(data.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-          throw new Error(tGlobal('suggestion_rate_limit', { date }));
-        }
-        throw new Error(data.error || t('error_title_required'));
-      }
+      const data = { titre, description, categorie };
+      await suggestionMutation.post(data);
 
       setSuccess(true);
       toast.success(t('success_title'));
       onSuccess?.();
       setTimeout(() => { onClose(); }, 2000);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('error_title_required');
+    } catch (err: any) {
+      if (err.status === 401) {
+        toast.error(tGlobal('errors.unauthorized'));
+        window.location.href = `/${locale}/login?callbackUrl=/${locale}/suggestions?new=true`;
+        return;
+      }
+      if (err.status === 429 && err?.info?.error === 'LIMIT_EXCEEDED' && err?.info?.resetDate) {
+        const date = new Date(err.info.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const errorMessage = tGlobal('suggestion_rate_limit', { date });
+        setError(errorMessage);
+        toast.error(errorMessage);
+        return;
+      }
+
+      const errorMessage = err.message || t('error_title_required');
       setError(errorMessage);
       toast.error(errorMessage);
-    } finally {
-      setSubmitting(false);
     }
   };
+
+  const submitting = suggestionMutation.isMutating;
 
   const modalContent = (
     <AnimatePresence>

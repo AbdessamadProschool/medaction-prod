@@ -31,6 +31,7 @@ import {
 import { toast } from 'sonner';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { useTranslations, useLocale } from 'next-intl';
+import { useMutation } from '@/hooks/use-mutation';
 
 const responsibilityToneClasses: Record<string, { box: string; icon: string }> = {
   blue: {
@@ -231,6 +232,9 @@ export default function NouvelleReclamationPage() {
   };
 
   // Soumission MANUELLE uniquement quand l'utilisateur clique
+  const createMutation = useMutation('/api/reclamations');
+  const uploadMutation = useMutation('/api/upload/reclamation');
+
   const handleManualSubmit = async () => {
     if (currentStep !== 3) return;
 
@@ -247,26 +251,21 @@ export default function NouvelleReclamationPage() {
       const data = getValues();
       
       setUploadProgress(20);
-      const response = await fetch('/api/reclamations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        
-        if (response.status === 429 && errorData.error === 'LIMIT_EXCEEDED' && errorData.resetDate) {
-           const date = new Date(errorData.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+      
+      let reclamationId: number;
+      
+      try {
+        const result = await createMutation.post(data);
+        reclamationId = result.id;
+      } catch (errorData: any) {
+        if (errorData?.status === 429 && errorData?.info?.error === 'LIMIT_EXCEEDED' && errorData?.info?.resetDate) {
+           const date = new Date(errorData.info.resetDate).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
            throw new Error(t('reclamation_rate_limit', { date }));
         }
-
-        throw new Error(errorData.error || t('reclamation.errors.creation_failed'));
+        throw new Error(errorData.message || errorData?.info?.error || t('reclamation.errors.creation_failed'));
       }
 
       setUploadProgress(40);
-      const result = await response.json();
-      const reclamationId = result.data.id;
 
       // Upload des photos
       if (photos.length > 0) {
@@ -275,29 +274,22 @@ export default function NouvelleReclamationPage() {
         photos.forEach((photo) => formData.append('files', photo));
         formData.append('reclamationId', reclamationId.toString());
 
-        const uploadResponse = await fetch('/api/upload/reclamation', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          const uploadErrorData = await uploadResponse.json().catch(() => ({}));
+        try {
+          const uploadResult = await uploadMutation.post(formData);
+          
+          if (uploadResult.errors && uploadResult.errors.length > 0) {
+            const errorMessages = uploadResult.errors.map((e: any) => `${e.filename}: ${e.error}`).join(', ');
+            throw new Error(`Certaines photos ont été rejetées: ${errorMessages}`);
+          }
+          
+          if (uploadResult.success === false) {
+             throw new Error("L'envoi des photos a échoué. Veuillez vérifier le format et la taille des fichiers.");
+          }
+        } catch (uploadErrorData: any) {
           // Annuler la réclamation car les photos sont obligatoires/importantes et ont échoué
           await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
-          throw new Error(`Erreur lors de l'envoi des photos: ${uploadErrorData.error || uploadErrorData.message || 'Fichiers non valides ou rejetés par la sécurité'}`);
+          throw new Error(`Erreur lors de l'envoi des photos: ${uploadErrorData.message || uploadErrorData?.info?.error || 'Fichiers non valides ou rejetés par la sécurité'}`);
         }
-
-        const uploadResult = await uploadResponse.json().catch(() => ({}));
-        if (uploadResult.errors && uploadResult.errors.length > 0) {
-          const errorMessages = uploadResult.errors.map((e: any) => `${e.filename}: ${e.error}`).join(', ');
-          // Annuler la réclamation si certaines photos sont rejetées
-          await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
-          throw new Error(`Certaines photos ont été rejetées: ${errorMessages}`);
-        }
-        
-        if (uploadResult.success === false) {
-           await fetch(`/api/reclamations/${reclamationId}`, { method: 'DELETE' }).catch(() => {});
-           throw new Error("L'envoi des photos a échoué. Veuillez vérifier le format et la taille des fichiers.");
         }
         
         setUploadProgress(90);

@@ -15,7 +15,8 @@ import {
   AlertTriangle,
   Building2,
 } from 'lucide-react';
-import { PermissionGuard } from '@/hooks/use-permission';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Etablissement {
   id: number;
@@ -51,54 +52,44 @@ export default function EvaluationPage() {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  // Charger les données
+  // ECC: Data fetching
+  const { data: etabDataResponse, isLoading: loadingEtab, error: errorEtab } = useData(status === 'authenticated' ? `/api/etablissements/${etablissementId}` : null);
+  const { data: evalDataResponse, isLoading: loadingEval } = useData(status === 'authenticated' ? `/api/evaluations/user/${etablissementId}` : null);
+  
+  // ECC: Mutation
+  const evalMutation = useMutation('/api/evaluations'); // POST url by default
+  const updateEvalMutation = useMutation(existingEval ? `/api/evaluations/${existingEval.id}` : null);
+
+  const loading = loadingEtab || loadingEval || status === 'loading';
+  const submitting = evalMutation.isMutating || updateEvalMutation.isMutating;
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push(`/login?callbackUrl=/evaluer/${etablissementId}`);
-      return;
     }
+  }, [status, etablissementId, router]);
 
-    if (status === 'authenticated') {
-      fetchData();
+  useEffect(() => {
+    if (etabDataResponse) {
+      setEtablissement(etabDataResponse);
     }
-  }, [status, etablissementId]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      // Charger l'établissement
-      const etabRes = await fetch(`/api/etablissements/${etablissementId}`);
-      if (etabRes.ok) {
-        const etabData = await etabRes.json();
-        setEtablissement(etabData.data || etabData);
-      } else {
-        setError(t('error_not_found'));
-        return;
-      }
-
-      // Vérifier si l'utilisateur a déjà évalué
-      const evalRes = await fetch(`/api/evaluations/user/${etablissementId}`);
-      if (evalRes.ok) {
-        const evalData = await evalRes.json();
-        if (evalData.hasEvaluated && evalData.evaluation) {
-          setExistingEval(evalData.evaluation);
-          setNote(evalData.evaluation.noteGlobale);
-          setCommentaire(evalData.evaluation.commentaire || '');
-          setIsModifiable(evalData.isModifiable);
-          setJoursRestants(evalData.joursRestants);
-        }
-      }
-    } catch (err) {
-      setError(t('error_loading'));
-    } finally {
-      setLoading(false);
+    if (errorEtab) {
+      setError(t('error_not_found'));
     }
-  };
+  }, [etabDataResponse, errorEtab, t]);
+
+  useEffect(() => {
+    if (evalDataResponse && evalDataResponse.hasEvaluated && evalDataResponse.evaluation) {
+      setExistingEval(evalDataResponse.evaluation);
+      setNote(evalDataResponse.evaluation.noteGlobale);
+      setCommentaire(evalDataResponse.evaluation.commentaire || '');
+      setIsModifiable(evalDataResponse.isModifiable);
+      setJoursRestants(evalDataResponse.joursRestants);
+    }
+  }, [evalDataResponse]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -132,39 +123,27 @@ export default function EvaluationPage() {
       return;
     }
 
-    setSubmitting(true);
     setError('');
 
     try {
-      const url = existingEval 
-        ? `/api/evaluations/${existingEval.id}`
-        : '/api/evaluations';
-      
-      const method = existingEval ? 'PATCH' : 'POST';
+      const payload = {
+        etablissementId,
+        noteGlobale: note,
+        commentaire: commentaire.trim() || undefined,
+      };
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          etablissementId,
-          noteGlobale: note,
-          commentaire: commentaire.trim() || undefined,
-        }),
-      });
-
-      if (res.ok) {
-        setSuccess(true);
-        setTimeout(() => {
-          router.push(`/etablissements/${etablissementId}`);
-        }, 2000);
+      if (existingEval) {
+        await updateEvalMutation.patch(payload);
       } else {
-        const data = await res.json();
-        setError(data.error || t('error_submit'));
+        await evalMutation.post(payload);
       }
-    } catch (err) {
-      setError(t('error_connection'));
-    } finally {
-      setSubmitting(false);
+
+      setSuccess(true);
+      setTimeout(() => {
+        router.push(`/etablissements/${etablissementId}`);
+      }, 2000);
+    } catch (err: any) {
+      setError(err.message || t('error_submit'));
     }
   };
 

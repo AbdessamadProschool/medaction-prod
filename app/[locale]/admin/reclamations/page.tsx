@@ -299,7 +299,7 @@ export default function AdminReclamationsPage() {
     'Autre',
   ], []);
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading' || loadingReclamations) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">

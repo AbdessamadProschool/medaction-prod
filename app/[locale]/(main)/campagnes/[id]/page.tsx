@@ -9,6 +9,8 @@ import { ArrowLeft, Target, Calendar, Users, MapPin, Share2, Loader2, Eye, User,
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useLocale, useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 
 interface Campagne {
   id: number;
@@ -40,42 +42,30 @@ export default function CampagneDetailPage() {
   const tTypes = useTranslations('campaigns.types');
   const tErrors = useTranslations('campaigns.errors');
   const [campagne, setCampagne] = useState<Campagne | null>(null);
-  const [loading, setLoading] = useState(true);
   const [participating, setParticipating] = useState(false);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const fetchCampagne = async () => {
-      try {
-        const response = await fetch(`/api/campagnes/${params.id}`);
-        if (response.ok) {
-          const data = await response.json();
-          // Mapping des données API vers le format local
-          const mappedData = {
-            ...data.data,
-            imageUrl: data.data.imagePrincipale || data.data.imageCouverture,
-            objectif: data.data.objectifParticipations,
-            progression: data.data.nombreParticipations || 0,
-            statut: data.data.isActive ? 'EN_COURS' : data.data.statut,
-            isOrganiseParProvince: data.data.isOrganiseParProvince,
-            sousCouvertProvince: data.data.sousCouvertProvince,
-          };
-          setCampagne(mappedData);
-        } else {
-          setError(true);
-        }
-      } catch (err) {
-        console.error('Erreur:', err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // ECC Hook
+  const { data: rawData, isLoading: loading, error: fetchError, mutate: refreshCampagne } = useData(`/api/campagnes/${params.id}`);
+  const participateMutation = useMutation(`/api/campagnes/${params.id}`);
 
-    if (params.id) {
-      fetchCampagne();
+  useEffect(() => {
+    if (fetchError) {
+      setError(true);
     }
-  }, [params.id]);
+    if (rawData) {
+      const mappedData = {
+        ...rawData,
+        imageUrl: rawData.imagePrincipale || rawData.imageCouverture,
+        objectif: rawData.objectifParticipations,
+        progression: rawData.nombreParticipations || 0,
+        statut: rawData.isActive ? 'EN_COURS' : rawData.statut,
+        isOrganiseParProvince: rawData.isOrganiseParProvince,
+        sousCouvertProvince: rawData.sousCouvertProvince,
+      };
+      setCampagne(mappedData);
+    }
+  }, [rawData, fetchError]);
 
   const handleParticipate = async () => {
     if (!session) {
@@ -86,34 +76,11 @@ export default function CampagneDetailPage() {
 
     setParticipating(true);
     try {
-      const res = await fetch(`/api/campagnes/${params.id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}), // Corps vide pour participation simple
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(t('participation_success'));
-        // Rafraîchir les données
-        const updatedRes = await fetch(`/api/campagnes/${params.id}`);
-        if (updatedRes.ok) {
-           const updatedData = await updatedRes.json();
-           const mappedData = {
-            ...updatedData.data,
-            imageUrl: updatedData.data.imagePrincipale || updatedData.data.imageCouverture,
-            objectif: updatedData.data.objectifParticipations,
-            progression: updatedData.data.nombreParticipations || 0,
-            statut: updatedData.data.isActive ? 'EN_COURS' : updatedData.data.statut
-          };
-          setCampagne(mappedData);
-        }
-      } else {
-        toast.error(data.error || tErrors('participation_error'));
-      }
-    } catch (error) {
-      toast.error(tErrors('connection_error'));
+      await participateMutation.post({});
+      toast.success(t('participation_success'));
+      await refreshCampagne();
+    } catch (err: any) {
+      toast.error(err.message || tErrors('participation_error'));
     } finally {
       setParticipating(false);
     }

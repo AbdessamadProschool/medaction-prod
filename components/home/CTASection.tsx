@@ -17,7 +17,7 @@ export default function CTASection() {
   const isAr = locale === 'ar';
 
   return (
-    <section className="py-20 relative overflow-hidden bg-gradient-to-br from-[hsl(213,80%,25%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,22%)]">
+    <section className="py-20 relative overflow-hidden bg-gradient-to-br from-[hsl(213,80%,25%)] via-gov-blue to-[hsl(213,80%,22%)]">
       {/* Simple Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -26,7 +26,7 @@ export default function CTASection() {
       </div>
 
       {/* Gold accent line at top */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-[hsl(45,93%,47%)]" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gov-gold" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" dir={isAr ? 'rtl' : 'ltr'}>
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -47,15 +47,15 @@ export default function CTASection() {
             {/* Simple Feature List */}
             <div className="space-y-4 mb-10">
               <div className={`flex items-center gap-3 text-white/90 ${isAr ? 'text-lg' : ''}`}>
-                <CheckCircle2 className="w-5 h-5 text-[hsl(45,93%,47%)]" />
+                <CheckCircle2 className="w-5 h-5 text-gov-gold" />
                 <span>{t('cta.feature1')}</span>
               </div>
               <div className={`flex items-center gap-3 text-white/90 ${isAr ? 'text-lg' : ''}`}>
-                <CheckCircle2 className="w-5 h-5 text-[hsl(45,93%,47%)]" />
+                <CheckCircle2 className="w-5 h-5 text-gov-gold" />
                 <span>{t('cta.feature2')}</span>
               </div>
               <div className={`flex items-center gap-3 text-white/90 ${isAr ? 'text-lg' : ''}`}>
-                <CheckCircle2 className="w-5 h-5 text-[hsl(45,93%,47%)]" />
+                <CheckCircle2 className="w-5 h-5 text-gov-gold" />
                 <span>{t('cta.feature3')}</span>
               </div>
             </div>
@@ -64,7 +64,7 @@ export default function CTASection() {
              <div className="flex flex-col sm:flex-row gap-4">
                <Link
                  href="/register"
-                 className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-4 bg-[hsl(45,93%,47%)] text-gray-900 font-bold rounded-xl shadow-lg shadow-[hsl(45,93%,47%)]/30 hover:shadow-[hsl(45,93%,47%)]/50 hover:-translate-y-1 transition-all duration-300 ${isAr ? 'text-lg' : ''}`}
+                 className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 px-8 py-4 bg-gov-gold text-gray-900 font-bold rounded-xl shadow-lg shadow-gov-gold/30 hover:shadow-gov-gold/50 hover:-translate-y-1 transition-all duration-300 ${isAr ? 'text-lg' : ''}`}
                >
                  <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                  <span className="relative">{t('cta.btn_create_account')}</span>
@@ -105,7 +105,7 @@ export default function CTASection() {
                   <p className="text-xs text-gray-500 mt-1">{t('cta.stats_citizens')}</p>
                 </div>
                 <div className="text-center p-4 bg-gray-50 rounded-xl hover:bg-[hsl(145,63%,95%)] transition-colors">
-                  <p className="text-2xl font-bold text-[hsl(145,63%,32%)]">95%</p>
+                  <p className="text-2xl font-bold text-gov-green">95%</p>
                   <p className="text-xs text-gray-500 mt-1">{t('cta.stats_resolution')}</p>
                 </div>
                 <div className="col-span-2 sm:col-span-1 text-center p-4 bg-gray-50 rounded-xl hover:bg-[hsl(45,93%,95%)] transition-colors">
@@ -120,7 +120,7 @@ export default function CTASection() {
                   {t('cta.quote')}
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(45,93%,47%)] flex items-center justify-center text-gray-900 font-bold text-sm">
+                  <div className="w-10 h-10 rounded-full bg-gov-gold flex items-center justify-center text-gray-900 font-bold text-sm">
                     MK
                   </div>
                   <div>

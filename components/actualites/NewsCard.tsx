@@ -79,7 +79,7 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ y: -5 }}
-      className={`group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex ${isGrid ? 'flex-col h-full' : 'flex-row h-48'}`}
+      className={`group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-gov-blue/5 transition-all duration-300 flex ${isGrid ? 'flex-col h-full' : 'flex-row h-48'}`}
     >
       <Link href={`/actualites/${news.id}`} className="flex-1 flex w-full relative">
         {/* Image Section */}
@@ -104,8 +104,8 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
           <div className="absolute top-4 left-4 z-10">
             <span className={`inline-flex px-3 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md shadow-sm border border-white/20 ${
               news.categorie 
-                ? 'bg-white/90 text-[hsl(213,80%,28%)]' 
-                : 'bg-[hsl(213,80%,28%)]/80 text-white'
+                ? 'bg-white/90 text-gov-blue' 
+                : 'bg-gov-blue/80 text-white'
             }`}>
               {t('categories.' + getCategoryKey(news.categorie))}
             </span>
@@ -117,7 +117,7 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
           {/* Meta Top */}
           <div className="flex items-center gap-x-3 gap-y-2 text-xs font-medium text-gray-500 mb-4 flex-wrap">
             <span className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100/50">
-              <Calendar className="w-3.5 h-3.5 text-[hsl(45,93%,47%)]" />
+              <Calendar className="w-3.5 h-3.5 text-gov-gold" />
               {dateText}
             </span>
             {news.etablissement?.secteur && (
@@ -129,7 +129,7 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
           </div>
 
           {/* Title */}
-          <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl'}`}>
+          <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl'}`}>
             {news.titre}
           </h3>
 
@@ -153,7 +153,7 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
                )}
              </div>
              
-             <span className="flex items-center gap-1 text-sm font-bold text-[hsl(45,93%,47%)] group-hover:translate-x-1 transition-transform">
+             <span className="flex items-center gap-1 text-sm font-bold text-gov-gold group-hover:translate-x-1 transition-transform">
                 {t('read')}
                 <ArrowRight className="w-4 h-4" />
              </span>

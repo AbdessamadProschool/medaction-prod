@@ -23,7 +23,7 @@ export default function ReclamationsPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -31,11 +31,11 @@ export default function ReclamationsPage() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-[hsl(213,80%,20%)] py-20 sm:py-24">
+      <div className="relative overflow-hidden bg-gov-blue-dark py-20 sm:py-24">
         {/* Background Effects */}
         <div className="absolute inset-0">
-           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-[hsl(213,80%,30%)] blur-3xl opacity-50" />
-           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-[hsl(45,93%,47%)] blur-3xl opacity-20" />
+           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-gov-blue-dark blur-3xl opacity-50" />
+           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-gov-gold blur-3xl opacity-20" />
            <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-5" />
         </div>
         
@@ -46,7 +46,7 @@ export default function ReclamationsPage() {
             transition={{ duration: 0.5 }}
           >
             <div className="inline-flex items-center justify-center p-3 bg-white/10 backdrop-blur-md rounded-2xl mb-8 border border-white/20 shadow-2xl">
-              <MessageSquare size={32} className="text-[hsl(45,93%,47%)]" />
+              <MessageSquare size={32} className="text-gov-gold" />
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
               Espace Réclamations Citoyen
@@ -74,20 +74,20 @@ export default function ReclamationsPage() {
               >
                 <Link href={`/login?callbackUrl=${encodeURIComponent('/reclamations/nouvelle')}`} className="block h-full">
                   <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[hsl(45,93%,47%)]/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-[hsl(45,93%,47%)]/20 transition-all" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gov-gold/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-gov-gold/20 transition-all" />
                     
-                    <div className="w-16 h-16 bg-[hsl(45,93%,47%)]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Plus size={32} className="text-[hsl(45,93%,47%)]" />
+                    <div className="w-16 h-16 bg-gov-gold/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Plus size={32} className="text-gov-gold" />
                     </div>
                     
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[hsl(213,80%,28%)] transition-colors">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-blue transition-colors">
                       Nouvelle réclamation
                     </h2>
                     <p className="text-gray-600 mb-8 leading-relaxed">
                       Signalez un dysfonctionnement, une anomalie ou un problème concernant un service public.
                     </p>
                     
-                    <div className="mt-auto inline-flex items-center gap-2 text-[hsl(213,80%,28%)] font-bold bg-blue-50 px-4 py-2 rounded-xl group-hover:bg-[hsl(213,80%,28%)] group-hover:text-white transition-all">
+                    <div className="mt-auto inline-flex items-center gap-2 text-gov-blue font-bold bg-blue-50 px-4 py-2 rounded-xl group-hover:bg-gov-blue group-hover:text-white transition-all">
                       <span>🔒 Se connecter</span>
                       <ArrowRight size={18} />
                     </div>
@@ -106,18 +106,18 @@ export default function ReclamationsPage() {
                 <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-blue-200 transition-all" />
                   
-                  <div className="w-16 h-16 bg-[hsl(213,80%,28%)]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Plus size={32} className="text-[hsl(213,80%,28%)]" />
+                  <div className="w-16 h-16 bg-gov-blue/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Plus size={32} className="text-gov-blue" />
                   </div>
                   
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[hsl(213,80%,28%)] transition-colors">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-blue transition-colors">
                     Nouvelle réclamation
                   </h2>
                   <p className="text-gray-600 mb-8 leading-relaxed">
                     Initiez une nouvelle procédure pour signaler un incident ou une insatisfaction.
                   </p>
                   
-                  <div className="mt-auto inline-flex items-center gap-2 text-white font-bold bg-[hsl(213,80%,28%)] px-5 py-3 rounded-xl shadow-lg shadow-blue-200 group-hover:bg-[hsl(213,80%,20%)] transition-all">
+                  <div className="mt-auto inline-flex items-center gap-2 text-white font-bold bg-gov-blue px-5 py-3 rounded-xl shadow-lg shadow-blue-200 group-hover:bg-gov-blue-dark transition-all">
                     <span>Commencer</span>
                     <ArrowRight size={18} />
                   </div>
@@ -171,7 +171,7 @@ export default function ReclamationsPage() {
 
           <div className="relative grid md:grid-cols-3 gap-8">
             {/* Connecting Line (Desktop) */}
-            <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-[hsl(213,80%,80%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] opacity-30" />
+            <div className="hidden md:block absolute top-8 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-[hsl(213,80%,80%)] via-gov-gold to-gov-green opacity-30" />
 
             {[
               {

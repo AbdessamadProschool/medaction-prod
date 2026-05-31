@@ -93,12 +93,12 @@ function ArticlesContent() {
         }}
       />
       {/* ==================== HERO HEADER ==================== */}
-      <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark overflow-hidden">
         {/* Pattern & Overlay */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
         
         {/* Bande Tricolore Top */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] shadow-md z-10" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green shadow-md z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-20 relative z-10 text-center">
             <motion.div 
@@ -107,12 +107,12 @@ function ArticlesContent() {
                className="max-w-3xl mx-auto"
             >
                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium mb-6">
-                  <BookOpen className="w-4 h-4 text-[hsl(45,93%,47%)]" />
+                  <BookOpen className="w-4 h-4 text-gov-gold" />
                   {t('badge')}
                </div>
                
                <h1 className="text-4xl md:text-5xl font-semibold text-white mb-6 tracking-tight leading-tight">
-                  {t('title_prefix')}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[hsl(45,93%,47%)] to-amber-200">{t('title_suffix')}</span>
+                  {t('title_prefix')}<span className="text-transparent bg-clip-text bg-gradient-to-r from-gov-gold to-amber-200">{t('title_suffix')}</span>
                </h1>
                
                <p className="text-lg text-blue-100/80 leading-relaxed max-w-2xl mx-auto">
@@ -149,12 +149,12 @@ function ArticlesContent() {
                   {tCommon('filters.search_label')}
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-gov-blue transition-colors" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => updateFilter('search', e.target.value)}
-                    className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                    className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-gov-blue/10 focus:border-gov-blue focus:bg-white transition-all shadow-inner"
                     placeholder={t('search_placeholder')}
                   />
                 </div>
@@ -170,7 +170,7 @@ function ArticlesContent() {
                     onClick={() => updateFilter('categorie', '')}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                       !selectedCategorie 
-                        ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20' 
+                        ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20' 
                         : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                     }`}
                   >
@@ -183,7 +183,7 @@ function ArticlesContent() {
                       onClick={() => updateFilter('categorie', cat.nom)}
                       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                         selectedCategorie === cat.nom
-                          ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20'
+                          ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20'
                           : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                       }`}
                     >
@@ -191,7 +191,7 @@ function ArticlesContent() {
                       <span className={`ml-2 px-2 py-0.5 rounded-lg text-[10px] font-bold transition-colors ${
                         selectedCategorie === cat.nom 
                           ? 'bg-white/20 text-white' 
-                          : 'bg-gray-100 text-gray-400 group-hover:bg-[hsl(213,80%,28%)]/10 group-hover:text-[hsl(213,80%,28%)]'
+                          : 'bg-gray-100 text-gray-400 group-hover:bg-gov-blue/10 group-hover:text-gov-blue'
                       }`}>
                         {cat.count}
                       </span>
@@ -211,7 +211,7 @@ function ArticlesContent() {
                </div>
                
                <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
-                  <div className="flex items-center gap-2 px-3 py-1.5 text-[hsl(213,80%,28%)] font-bold text-xs uppercase tracking-wider">
+                  <div className="flex items-center gap-2 px-3 py-1.5 text-gov-blue font-bold text-xs uppercase tracking-wider">
                      <FileText className="w-4 h-4" />
                      {t('badge')}
                   </div>
@@ -238,7 +238,7 @@ function ArticlesContent() {
                  <p className="text-gray-500 max-w-sm mx-auto mb-6">{t('no_articles_desc')}</p>
                  <button 
                       onClick={() => { updateFilter('search', ''); updateFilter('categorie', ''); }}
-                      className="px-5 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2"
+                      className="px-5 py-2.5 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2"
                  >
                     <X className="w-4 h-4" />
                     {t('reset_filters')}
@@ -268,7 +268,7 @@ function ArticlesContent() {
 
 export default function ArticlesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin"></div></div>}>
       <ArticlesContent />
     </Suspense>
   );

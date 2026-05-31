@@ -109,7 +109,7 @@ export default function ContactPage() {
         }}
       />
       {/* Header */}
-      <div className="bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] py-20 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">

@@ -5,6 +5,7 @@ import { KeyRound, Shield, Calendar, Globe, AlertTriangle, Check, RefreshCw, Ser
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import { useData } from '@/hooks/use-data';
 
 interface LicenseInfo {
   valid: boolean;
@@ -16,33 +17,9 @@ interface LicenseInfo {
 }
 
 export default function LicensePage() {
-  const [license, setLicense] = useState<LicenseInfo | null>(null);
-  const [loading, setLoading] = useState(true);
   const t = useTranslations();
-
-  const fetchLicenseInfo = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/license');
-      if (res.ok) {
-        const data = await res.json();
-        setLicense(data);
-      } else {
-        // Fallback demo data si l'API n'est pas encore prête
-        // setLicense({ valid: false, error: "API non disponible" });
-        toast.error(t('licence_page.toasts.fetch_error') || "Erreur de chargement");
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error(t('licence_page.toasts.connection_error') || "Erreur de connexion");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLicenseInfo();
-  }, []);
+  const { data: license, isLoading: loading, mutate: refreshLicense } = useData('/api/admin/license');
+  const fetchLicenseInfo = () => refreshLicense();
 
   const getStatusColor = () => {
     if (!license) return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700';

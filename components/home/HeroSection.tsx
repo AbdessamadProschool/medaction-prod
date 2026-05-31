@@ -82,9 +82,12 @@ export default function HeroSection() {
           transition={{ duration: 1 }}
           className="absolute inset-0"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
+          <Image
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].title}
+            fill
+            priority={currentSlide === 0}
+            className="object-cover object-center"
           />
           <div className={`absolute inset-0 bg-gradient-to-r ${slides[currentSlide].gradient}`} />
           <div className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.2)]" />

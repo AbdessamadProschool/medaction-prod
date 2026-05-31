@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield,
@@ -242,8 +243,6 @@ export default function AuditClient() {
   };
 
   const [logs, setLogs] = useState<ActivityLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   
   // Filtres
   const [search, setSearch] = useState('');
@@ -268,40 +267,29 @@ export default function AuditClient() {
     }
   }, [status, session, router, logAccessDenied]);
 
-  const loadLogs = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '20');
-      if (search) params.set('search', search);
-      if (filterAction) params.set('action', filterAction);
-      if (filterEntity) params.set('entity', filterEntity);
+  const params = new URLSearchParams();
+  params.set('page', page.toString());
+  params.set('limit', '20');
+  if (search) params.set('search', search);
+  if (filterAction) params.set('action', filterAction);
+  if (filterEntity) params.set('entity', filterEntity);
 
-      const res = await fetch(`/api/admin/logs?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        // Le format de successResponse est { success: true, data: { data: logs, pagination: {...} } }
-        const logsData = data.data?.data || [];
-        const pagination = data.data?.pagination || {};
-        
-        setLogs(Array.isArray(logsData) ? logsData : []);
-        setTotalPages(pagination.totalPages || 1);
-        setTotal(pagination.total || 0);
-      }
-    } catch (error) {
-      console.error('Erreur chargement logs:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [page, search, filterAction, filterEntity]);
+  const { data: logsResponse, isLoading: loading, isValidating: refreshing, mutate: loadLogs } = useData(
+    session?.user?.role === 'SUPER_ADMIN' ? `/api/admin/logs?${params.toString()}` : null
+  );
 
   useEffect(() => {
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      loadLogs();
+    if (logsResponse) {
+      // Le format de successResponse est { success: true, data: { data: logs, pagination: {...} } }
+      // ou data direct, il faut voir.
+      const logsData = logsResponse.data?.data || [];
+      const pagination = logsResponse.data?.pagination || {};
+      
+      setLogs(Array.isArray(logsData) ? logsData : []);
+      setTotalPages(pagination.totalPages || 1);
+      setTotal(pagination.total || 0);
     }
-  }, [loadLogs, session]);
+  }, [logsResponse]);
 
   const getActionStyle = (action: string) => {
     if (action === 'LOGIN_SUCCESS') return { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-300', icon: CheckCircle };

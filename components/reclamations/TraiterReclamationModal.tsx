@@ -215,7 +215,7 @@ export default function TraiterReclamationModal({
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] text-white">
+          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-gov-blue-dark to-gov-blue-dark text-white">
             <div>
               <h2 className="text-lg font-semibold">Traiter la réclamation</h2>
               <p className="text-sm text-white/70 truncate max-w-xs">{reclamation.titre}</p>
@@ -280,16 +280,16 @@ export default function TraiterReclamationModal({
                 {/* Bouton retour */}
                 <button
                   onClick={() => setAction(null)}
-                  className="text-sm text-[hsl(213,80%,28%)] hover:underline mb-4"
+                  className="text-sm text-gov-blue hover:underline mb-4"
                 >
                   ← Retour aux actions
                 </button>
 
                 {/* Accepter - pas de formulaire spécifique */}
                 {action === 'accepter' && (
-                  <div className="bg-[hsl(145,63%,32%)]/10 border border-[hsl(145,63%,32%)]/20 rounded-xl p-4">
+                  <div className="bg-gov-green/10 border border-gov-green/20 rounded-xl p-4">
                     <div className="flex items-center gap-3">
-                      <CheckCircle className="w-6 h-6 text-[hsl(145,63%,32%)]" />
+                      <CheckCircle className="w-6 h-6 text-gov-green" />
                       <div>
                         <p className="font-medium text-gray-900">Accepter cette réclamation</p>
                         <p className="text-sm text-gray-600">
@@ -303,9 +303,9 @@ export default function TraiterReclamationModal({
                 {/* Rejeter - motif obligatoire */}
                 {action === 'rejeter' && (
                   <div className="space-y-4">
-                    <div className="bg-[hsl(348,83%,47%)]/10 border border-[hsl(348,83%,47%)]/20 rounded-xl p-4">
+                    <div className="bg-gov-red/10 border border-gov-red/20 rounded-xl p-4">
                       <div className="flex items-start gap-3">
-                        <XCircle className="w-6 h-6 text-[hsl(348,83%,47%)] flex-shrink-0" />
+                        <XCircle className="w-6 h-6 text-gov-red flex-shrink-0" />
                         <div>
                           <p className="font-medium text-gray-900">Rejeter cette réclamation</p>
                           <p className="text-sm text-gray-600">
@@ -331,9 +331,9 @@ export default function TraiterReclamationModal({
                 {/* Affecter - sélection autorité */}
                 {action === 'affecter' && (
                   <div className="space-y-4">
-                    <div className="bg-[hsl(213,80%,28%)]/10 border border-[hsl(213,80%,28%)]/20 rounded-xl p-4">
+                    <div className="bg-gov-blue/10 border border-gov-blue/20 rounded-xl p-4">
                       <div className="flex items-start gap-3">
-                        <UserCheck className="w-6 h-6 text-[hsl(213,80%,28%)] flex-shrink-0" />
+                        <UserCheck className="w-6 h-6 text-gov-blue flex-shrink-0" />
                         <div>
                           <p className="font-medium text-gray-900">Affecter à une autorité locale</p>
                           <p className="text-sm text-gray-600">
@@ -370,9 +370,9 @@ export default function TraiterReclamationModal({
                 {/* Résoudre - solution obligatoire */}
                 {action === 'resoudre' && (
                   <div className="space-y-4">
-                    <div className="bg-[hsl(145,63%,32%)]/10 border border-[hsl(145,63%,32%)]/20 rounded-xl p-4">
+                    <div className="bg-gov-green/10 border border-gov-green/20 rounded-xl p-4">
                       <div className="flex items-start gap-3">
-                        <Send className="w-6 h-6 text-[hsl(145,63%,32%)] flex-shrink-0" />
+                        <Send className="w-6 h-6 text-gov-green flex-shrink-0" />
                         <div>
                           <p className="font-medium text-gray-900">Résoudre cette réclamation</p>
                           <p className="text-sm text-gray-600">
@@ -409,7 +409,7 @@ export default function TraiterReclamationModal({
 
                 {/* Error */}
                 {error && (
-                  <div className="bg-[hsl(348,83%,47%)]/10 border border-[hsl(348,83%,47%)]/20 rounded-lg p-3 flex items-center gap-2 text-[hsl(348,83%,47%)]">
+                  <div className="bg-gov-red/10 border border-gov-red/20 rounded-lg p-3 flex items-center gap-2 text-gov-red">
                     <AlertTriangle size={16} />
                     <span className="text-sm">{error}</span>
                   </div>

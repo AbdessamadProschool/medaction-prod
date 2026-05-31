@@ -193,13 +193,13 @@ function EtablissementsContent() {
         />
         {/* ==================== HERO HEADER ==================== */}
 
-        <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] overflow-hidden">
+        <div className="relative bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark overflow-hidden">
           {/* Background Patterns */}
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
 
           
           {/* Bande Tricolore Top */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] shadow-md z-10" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green shadow-md z-10" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 lg:py-10 relative z-10">
             <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
@@ -208,7 +208,7 @@ function EtablissementsContent() {
                 animate={{ opacity: 1, x: 0 }}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium mb-4"
               >
-                <Building2 className="w-4 h-4 text-[hsl(45,93%,47%)]" />
+                <Building2 className="w-4 h-4 text-gov-gold" />
                 {t('directory.badge')}
               </motion.div>
               
@@ -244,11 +244,11 @@ function EtablissementsContent() {
                   className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-gray-200 shadow-sm text-gray-900 font-semibold"
                 >
                   <span className="flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-[hsl(213,80%,28%)]" />
+                    <Filter className="w-5 h-5 text-gov-blue" />
                     {t('filters.search_label')}
                   </span>
                   {hasActiveFilters && (
-                    <span className="bg-[hsl(45,93%,47%)] text-[hsl(213,80%,28%)] text-xs font-bold px-2 py-0.5 rounded-full">
+                    <span className="bg-gov-gold text-gov-blue text-xs font-bold px-2 py-0.5 rounded-full">
                       {t('filters.active')}
                     </span>
                   )}
@@ -297,7 +297,7 @@ function EtablissementsContent() {
                         e.preventDefault();
                       }
                     }}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] transition-all text-sm cursor-text pointer-events-auto"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue transition-all text-sm cursor-text pointer-events-auto"
                     placeholder={t('filters.search_etablissement')}
                     style={{ pointerEvents: 'auto' }}
                   />
@@ -313,7 +313,7 @@ function EtablissementsContent() {
                         onClick={() => { setSecteur(s.id); updateUrlParams('secteur', s.id); }}
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
                           secteur === s.id
-                            ? 'bg-[hsl(213,80%,28%)] text-white shadow-md shadow-[hsl(213,80%,28%)]/20 font-medium'
+                            ? 'bg-gov-blue text-white shadow-md shadow-gov-blue/20 font-medium'
                             : 'text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -338,7 +338,7 @@ function EtablissementsContent() {
                         setAnnexeId(''); // Reset annexe when commune changes
                         updateUrlParams('communeId', val); 
                     }}
-                    className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <option value="">{t('filters.all_communes')}</option>
                     {communes.map(c => (
@@ -356,7 +356,7 @@ function EtablissementsContent() {
                   <select
                     value={annexeId}
                     onChange={(e) => { setAnnexeId(e.target.value); updateUrlParams('annexeId', e.target.value); }}
-                    className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[hsl(213,80%,28%)]/20 focus:border-[hsl(213,80%,28%)] sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <option value="">{t('filters.all_annexes') || 'Toutes les annexes'}</option>
                     {annexes.map(a => (
@@ -433,7 +433,7 @@ function EtablissementsContent() {
                     onClick={() => setView('grid')}
                     className={`p-2 rounded-md transition-all ${
                       view === 'grid' 
-                        ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' 
+                        ? 'bg-white text-gov-blue shadow-sm' 
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                     title="Vue Grille"
@@ -444,7 +444,7 @@ function EtablissementsContent() {
                     onClick={() => setView('list')}
                     className={`p-2 rounded-md transition-all ${
                       view === 'list' 
-                        ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' 
+                        ? 'bg-white text-gov-blue shadow-sm' 
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                     title="Vue Liste"
@@ -480,7 +480,7 @@ function EtablissementsContent() {
                    </p>
                    <button 
                      onClick={resetFilters}
-                     className="px-5 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2"
+                     className="px-5 py-2.5 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2"
                    >
                      <X className="w-4 h-4" />
                      {t('directory.reset_filters')}
@@ -535,7 +535,7 @@ function EtablissementsContent() {
                                  }}
                                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all ${
                                    page === p
-                                     ? 'bg-[hsl(213,80%,28%)] text-white shadow-md'
+                                     ? 'bg-gov-blue text-white shadow-md'
                                      : 'text-gray-600 hover:bg-gray-100'
                                  }`}
                                >
@@ -575,7 +575,7 @@ function EtablissementsContent() {
 
 export default function EtablissementsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin"></div></div>}>
       <EtablissementsContent />
     </Suspense>
   );

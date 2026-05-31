@@ -58,7 +58,7 @@ export default function MesEvaluationsPage() {
             key={star}
             className={`w-5 h-5 ${
               star <= note
-                ? 'fill-[hsl(45,93%,47%)] text-[hsl(45,93%,47%)]'
+                ? 'fill-gov-gold text-gov-gold'
                 : 'text-gray-300'
             }`}
           />
@@ -70,7 +70,7 @@ export default function MesEvaluationsPage() {
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -117,7 +117,7 @@ export default function MesEvaluationsPage() {
             </p>
             <Link
               href="/etablissements"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors"
             >
               <Building2 className="w-5 h-5" />
               Voir les établissements
@@ -137,10 +137,10 @@ export default function MesEvaluationsPage() {
                   <div className="flex-1">
                     {/* Établissement */}
                     <div className="flex items-center gap-2 mb-2">
-                      <Building2 className="w-5 h-5 text-[hsl(213,80%,28%)]" />
+                      <Building2 className="w-5 h-5 text-gov-blue" />
                       <Link
                         href={`/etablissements/${evaluation.etablissement?.id || ''}`}
-                        className="font-semibold text-gray-900 hover:text-[hsl(213,80%,28%)] transition-colors"
+                        className="font-semibold text-gray-900 hover:text-gov-blue transition-colors"
                       >
                         {evaluation.etablissement?.nom || 'N/A'}
                       </Link>
@@ -180,7 +180,7 @@ export default function MesEvaluationsPage() {
                       <>
                         <Link
                           href={`/evaluer/${evaluation.etablissement?.id || ''}`}
-                          className="flex items-center gap-2 px-4 py-2 bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)] rounded-lg text-sm font-medium hover:bg-[hsl(213,80%,28%)] hover:text-white transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 bg-gov-blue/10 text-gov-blue rounded-lg text-sm font-medium hover:bg-gov-blue hover:text-white transition-colors"
                         >
                           <Edit3 className="w-4 h-4" />
                           Modifier
@@ -204,7 +204,7 @@ export default function MesEvaluationsPage() {
 
         {/* Stats */}
         {evaluations.length > 0 && (
-          <div className="mt-8 gov-card p-6 bg-gradient-to-r from-[hsl(213,80%,28%)]/5 to-transparent">
+          <div className="mt-8 gov-card p-6 bg-gradient-to-r from-gov-blue/5 to-transparent">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total évaluations</p>
@@ -213,10 +213,10 @@ export default function MesEvaluationsPage() {
               <div>
                 <p className="text-sm text-gray-500">Note moyenne donnée</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-bold text-[hsl(45,93%,47%)]">
+                  <p className="text-2xl font-bold text-gov-gold">
                     {(evaluations.reduce((acc, e) => acc + e.note, 0) / evaluations.length).toFixed(1)}
                   </p>
-                  <Star className="w-6 h-6 fill-[hsl(45,93%,47%)] text-[hsl(45,93%,47%)]" />
+                  <Star className="w-6 h-6 fill-gov-gold text-gov-gold" />
                 </div>
               </div>
             </div>

@@ -228,7 +228,7 @@ export default function AdminSidebar() {
   const SidebarContent = () => (
     <>
       {/* Logo - Gouvernemental */}
-      <div className={`flex items-center gap-3 px-4 py-6 border-b border-[hsl(45,93%,47%)]/30 ${collapsed ? 'justify-center' : ''}`}>
+      <div className={`flex items-center gap-3 px-4 py-6 border-b border-gov-gold/30 ${collapsed ? 'justify-center' : ''}`}>
         <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg overflow-hidden p-1">
           <img
             src="/images/logo-portal-mediouna.png"
@@ -290,7 +290,7 @@ export default function AdminSidebar() {
       {session?.user && (
         <div className={`px-3 py-4 border-t border-white/10 ${collapsed ? 'items-center' : ''}`}>
           <div className={`flex items-center gap-3 p-3 rounded-xl bg-white/10 ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-10 h-10 bg-[hsl(45,93%,47%)] rounded-full flex items-center justify-center text-gray-900 font-bold flex-shrink-0">
+            <div className="w-10 h-10 bg-gov-gold rounded-full flex items-center justify-center text-gray-900 font-bold flex-shrink-0">
               {session.user.prenom?.[0] || session.user.nom?.[0] || session.user.email?.[0] || 'A'}
             </div>
             {!collapsed && (
@@ -316,7 +316,7 @@ export default function AdminSidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 z-50 p-2 bg-[hsl(213,80%,28%)] text-white rounded-lg shadow-lg start-4"
+        className="lg:hidden fixed top-4 z-50 p-2 bg-gov-blue text-white rounded-lg shadow-lg start-4"
       >
         <Menu size={24} />
       </button>
@@ -359,13 +359,13 @@ export default function AdminSidebar() {
         className={`hidden lg:flex flex-col fixed inset-y-0 z-30 bg-gradient-to-b from-[hsl(var(--gov-blue-dark))] to-[hsl(220,25%,15%)] border-e border-[hsl(var(--gov-gold))]/20 start-0`}
       >
         {/* Top gold accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
         <SidebarContent />
         
         {/* Collapse toggle (desktop) */}
         <button
             onClick={() => setCollapsed(!collapsed)}
-            className={`hidden lg:flex absolute top-20 w-8 h-8 bg-white border border-gray-200 rounded-full items-center justify-center text-[hsl(213,80%,28%)] hover:bg-[hsl(45,93%,47%)] hover:text-gray-900 shadow-lg transition-all z-50 ${
+            className={`hidden lg:flex absolute top-20 w-8 h-8 bg-white border border-gray-200 rounded-full items-center justify-center text-gov-blue hover:bg-gov-gold hover:text-gray-900 shadow-lg transition-all z-50 ${
                 'ltr:-right-4 rtl:-left-4'
             }`}
         >

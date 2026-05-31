@@ -44,7 +44,7 @@ export default function OnboardingTour() {
         {
           element: 'header',
           popover: {
-            title: 'Bienvenue sur Portail MedAction',
+            title: 'Bienvenue sur Portail Médiouna',
             description: 'Découvrez comment participer activement à l\'amélioration de notre province. Laissez-nous vous guider !',
             side: "bottom", align: 'start'
           }

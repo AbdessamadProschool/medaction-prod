@@ -92,7 +92,7 @@ export default function CampaignCard({ campagne, onClick, index = 0 }: CampaignC
 
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-bold text-xl text-gray-900 mb-2 line-clamp-2 group-hover:text-[hsl(145,63%,32%)] transition-colors leading-tight">
+        <h3 className="font-bold text-xl text-gray-900 mb-2 line-clamp-2 group-hover:text-gov-green transition-colors leading-tight">
           {campagne.titre}
         </h3>
 
@@ -130,7 +130,7 @@ export default function CampaignCard({ campagne, onClick, index = 0 }: CampaignC
         )}
 
         {/* CTA */}
-        <button className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-bold text-[hsl(145,63%,32%)] bg-[hsl(145,63%,32%)]/5 rounded-xl group-hover:bg-[hsl(145,63%,32%)] group-hover:text-white transition-all">
+        <button className="w-full py-2.5 flex items-center justify-center gap-2 text-sm font-bold text-gov-green bg-gov-green/5 rounded-xl group-hover:bg-gov-green group-hover:text-white transition-all">
           <Heart className="w-4 h-4" />
           {t('participate')}
         </button>

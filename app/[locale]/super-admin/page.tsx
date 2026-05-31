@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Shield,
   ShieldCheck,
@@ -235,10 +237,69 @@ export default function SuperAdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const t = useTranslations();
-  const [stats, setStats] = useState<SystemStats | null>(null);
-  const [recentLogs, setRecentLogs] = useState<RecentLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+
+  const { data: statsData, isLoading: loadingStats, mutate: refreshStats, isValidating: refreshingStats } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/admin/stats' : null);
+  const { data: logsData, isLoading: loadingLogs, mutate: refreshLogs, isValidating: refreshingLogs } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/admin/logs?limit=10' : null);
+
+  const loading = loadingStats || loadingLogs;
+  const refreshing = refreshingStats || refreshingLogs;
+
+  const stats = useMemo<SystemStats | null>(() => {
+    if (!statsData || !statsData.stats) return null;
+    const data = statsData;
+    return {
+      users: {
+        total: data.stats?.utilisateurs?.total || 0,
+        admins: data.stats?.utilisateurs?.admins || 0,
+        superAdmins: data.stats?.utilisateurs?.superAdmins || 1,
+        delegations: data.stats?.utilisateurs?.delegations || 0,
+        autoritesLocales: data.stats?.utilisateurs?.autoritesLocales || 0,
+        citoyens: data.stats?.utilisateurs?.citoyens || 0,
+        activeToday: data.stats?.utilisateurs?.activeToday || 0,
+        newThisMonth: data.stats?.utilisateurs?.nouveaux || 0,
+      },
+      content: {
+        etablissements: data.stats?.etablissements?.total || 0,
+        etablissementsValides: data.stats?.etablissements?.valides || 0,
+        evenements: data.stats?.evenements?.total || 0,
+        evenementsActifs: data.stats?.evenements?.enCours || 0,
+        actualites: data.stats?.actualites || 0,
+        articles: data.stats?.articles || 0,
+        campagnes: data.stats?.campagnes || 0,
+        suggestions: data.stats?.suggestions || 0,
+      },
+      reclamations: {
+        total: data.stats?.reclamations?.total || 0,
+        enAttente: data.stats?.reclamations?.enAttente || 0,
+        enCours: data.stats?.reclamations?.enCours || 0,
+        resolues: data.stats?.reclamations?.resolues || 0,
+        rejetees: data.stats?.reclamations?.rejetees || 0,
+        urgentes: data.stats?.reclamations?.urgentes || 0,
+      },
+      system: {
+        uptime: '99.9%',
+        lastBackup: new Date().toLocaleString('fr-FR'),
+        databaseSize: '2.4 GB',
+        apiRequests24h: data.stats?.api?.requests24h || 0,
+        errors24h: data.stats?.api?.errors24h || 0,
+        avgResponseTime: data.stats?.api?.avgResponseTime || 120,
+      },
+    };
+  }, [statsData]);
+
+  const recentLogs = useMemo<RecentLog[]>(() => {
+    if (!logsData) return [];
+    const logs = Array.isArray(logsData.data) ? logsData.data : (Array.isArray(logsData) ? logsData : []);
+    return logs.map((l: any) => ({
+      ...l,
+      timestamp: l.createdAt || l.timestamp
+    })).slice(0, 10);
+  }, [logsData]);
+
+  const fetchData = async () => {
+    refreshStats();
+    refreshLogs();
+  };
 
   // Redirect if not SUPER_ADMIN
   useEffect(() => {
@@ -250,81 +311,7 @@ export default function SuperAdminDashboard() {
     }
   }, [status, session, router]);
 
-  // Fetch dashboard data
-  const fetchData = async () => {
-    setRefreshing(true);
-    try {
-      // Fetch multiple endpoints in parallel
-      const [statsRes, logsRes] = await Promise.all([
-        fetch('/api/admin/stats'),
-        fetch('/api/admin/logs?limit=10'), // Use unified admin logs API
-      ]);
-
-      if (statsRes.ok) {
-        const data = await statsRes.json();
-        // Transform API response to our SystemStats format
-        setStats({
-          users: {
-            total: data.stats?.utilisateurs?.total || 0,
-            admins: data.stats?.utilisateurs?.admins || 0,
-            superAdmins: data.stats?.utilisateurs?.superAdmins || 1,
-            delegations: data.stats?.utilisateurs?.delegations || 0,
-            autoritesLocales: data.stats?.utilisateurs?.autoritesLocales || 0,
-            citoyens: data.stats?.utilisateurs?.citoyens || 0,
-            activeToday: data.stats?.utilisateurs?.activeToday || 0,
-            newThisMonth: data.stats?.utilisateurs?.nouveaux || 0,
-          },
-          content: {
-            etablissements: data.stats?.etablissements?.total || 0,
-            etablissementsValides: data.stats?.etablissements?.valides || 0,
-            evenements: data.stats?.evenements?.total || 0,
-            evenementsActifs: data.stats?.evenements?.enCours || 0,
-            actualites: data.stats?.actualites || 0,
-            articles: data.stats?.articles || 0,
-            campagnes: data.stats?.campagnes || 0,
-            suggestions: data.stats?.suggestions || 0,
-          },
-          reclamations: {
-            total: data.stats?.reclamations?.total || 0,
-            enAttente: data.stats?.reclamations?.enAttente || 0,
-            enCours: data.stats?.reclamations?.enCours || 0,
-            resolues: data.stats?.reclamations?.resolues || 0,
-            rejetees: data.stats?.reclamations?.rejetees || 0,
-            urgentes: data.stats?.reclamations?.urgentes || 0,
-          },
-          system: {
-            uptime: '99.9%',
-            lastBackup: new Date().toLocaleString('fr-FR'),
-            databaseSize: '2.4 GB',
-            apiRequests24h: data.stats?.api?.requests24h || 0,
-            errors24h: data.stats?.api?.errors24h || 0,
-            avgResponseTime: data.stats?.api?.avgResponseTime || 120,
-          },
-        });
-      }
-
-      if (logsRes.ok) {
-        const logsData = await logsRes.json();
-        const logs = Array.isArray(logsData.data) ? logsData.data : [];
-        setRecentLogs(logs.map((l: any) => ({
-          ...l,
-          timestamp: l.createdAt || l.timestamp
-        })).slice(0, 10));
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error(t('super_admin.toasts.data_error'));
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      fetchData();
-    }
-  }, [session]);
+  // Removed manual fetch logic, handled by useData
 
   const handleExportAll = async () => {
     toast.loading(t('super_admin.toasts.export_loading'));

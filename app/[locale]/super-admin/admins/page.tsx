@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Search,
   Plus,
@@ -61,16 +63,45 @@ export default function SuperAdminAdminsPage() {
   const router = useRouter();
   const t = useTranslations();
   
-  const [admins, setAdmins] = useState<Admin[]>([]);
-  const [allPermissions, setAllPermissions] = useState<Record<string, Permission[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
-  
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', page.toString());
+  queryParams.set('limit', '15');
+  if (search) queryParams.set('search', search);
+
+  const { data: permissionsData, mutate: refreshPermissions } = useData('/api/permissions');
+  const allPermissions = permissionsData?.grouped || {};
+
+  const { data: adminsData, isLoading: loading, mutate: refreshAdmins, isValidating: refreshing } = useData(session?.user?.role === 'SUPER_ADMIN' ? `/api/admins?${queryParams.toString()}` : null);
+
+  const actionMutation = useMutation();
+
+  const admins = useMemo<Admin[]>(() => {
+    if (!adminsData) return [];
+    let adminsArray: Admin[] = [];
+    if (adminsData.success) {
+      if (Array.isArray(adminsData.data)) adminsArray = adminsData.data;
+      else if (adminsData.data?.admins || adminsData.data?.data) adminsArray = adminsData.data.admins || adminsData.data.data;
+    } else {
+      adminsArray = adminsData.data || adminsData.admins || (Array.isArray(adminsData) ? adminsData : []);
+    }
+    return adminsArray;
+  }, [adminsData]);
+
+  const { totalPages, total } = useMemo(() => {
+    let paginationData = adminsData?.pagination || (adminsData?.success ? adminsData.data?.pagination : null);
+    if (!paginationData && adminsData?.data?.pagination) paginationData = adminsData.data.pagination;
+    return {
+      totalPages: paginationData?.totalPages || paginationData?.pages || 1,
+      total: paginationData?.total || 0
+    };
+  }, [adminsData]);
+
+  const loadAdmins = () => refreshAdmins();
+  const loadPermissions = () => refreshPermissions();
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null);
@@ -99,87 +130,22 @@ export default function SuperAdminAdminsPage() {
     }
   }, [status, session, router]);
 
-  const loadPermissions = async () => {
-    try {
-      const res = await fetch('/api/permissions');
-      if (res.ok) {
-        const data = await res.json();
-        setAllPermissions(data.grouped || {});
-      }
-    } catch (error) {
-      console.error('Erreur chargement permissions:', error);
-    }
-  };
-
   const handleSyncPermissions = async () => {
     setSyncing(true);
     try {
-      const res = await fetch('/api/admin/system/sync-permissions', {
+      const data = await actionMutation.mutate('/api/admin/system/sync-permissions', {
         method: 'POST',
       });
-      if (res.ok) {
-        const data = await res.json();
-        const counts = data.data || {};
-        setSuccess(`Synchronisation réussie : ${counts.updated || 0} mises à jour, ${counts.created || 0} créations.`);
-        loadPermissions(); // Recharger la liste des permissions
-        setTimeout(() => setSuccess(null), 5000);
-      } else {
-        setError('Erreur lors de la synchronisation des permissions.');
-      }
-    } catch (error) {
-      setError('Erreur réseau lors de la synchronisation.');
+      const counts = data.data || {};
+      setSuccess(`Synchronisation réussie : ${counts.updated || 0} mises à jour, ${counts.created || 0} créations.`);
+      loadPermissions();
+      setTimeout(() => setSuccess(null), 5000);
+    } catch (error: any) {
+      setError(error.message || 'Erreur réseau lors de la synchronisation.');
     } finally {
       setSyncing(false);
     }
   };
-
-  const loadAdmins = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('page', page.toString());
-      params.set('limit', '15');
-      if (search) params.set('search', search);
-      
-      const res = await fetch(`/api/admins?${params}`);
-      if (res.ok) {
-        const json = await res.json();
-        
-        let adminsArray: Admin[] = [];
-        let paginationData = json.pagination || (json.success ? json.data?.pagination : null);
-
-        if (json.success) {
-          if (Array.isArray(json.data)) {
-            adminsArray = json.data;
-            paginationData = json.pagination;
-          } else if (json.data?.admins || json.data?.data) {
-            adminsArray = json.data.admins || json.data.data;
-            paginationData = json.data.pagination || json.pagination;
-          }
-        } else {
-          adminsArray = json.data || json.admins || (Array.isArray(json) ? json : []);
-        }
-
-        setAdmins(adminsArray);
-        if (paginationData) {
-          setTotalPages(paginationData.totalPages || paginationData.pages || 1);
-          setTotal(paginationData.total || 0);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur chargement:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [page, search]);
-
-  useEffect(() => {
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      loadAdmins();
-      loadPermissions();
-    }
-  }, [loadAdmins, session]);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -209,30 +175,23 @@ export default function SuperAdminAdminsPage() {
     setError(null);
     setSaving(true);
     try {
-      const res = await fetch(`/api/admins/${editForm.id}`, {
+      await actionMutation.mutate(`/api/admins/${editForm.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           email: editForm.email,
           telephone: editForm.telephone || null,
           nom: editForm.nom,
           prenom: editForm.prenom,
           isActive: editForm.isActive,
-        }),
+        },
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setSuccess('Administrateur mis à jour avec succès');
-        setShowEditModal(false);
-        loadAdmins();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || 'Erreur lors de la mise à jour');
-      }
-    } catch (error) {
-      setError('Erreur de connexion au serveur');
+      setSuccess('Administrateur mis à jour avec succès');
+      setShowEditModal(false);
+      loadAdmins();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || 'Erreur de connexion au serveur');
     } finally {
       setSaving(false);
     }
@@ -244,23 +203,17 @@ export default function SuperAdminAdminsPage() {
     setError(null);
     setSaving(true);
     try {
-      const res = await fetch(`/api/admins/${adminToDelete.id}`, {
+      await actionMutation.mutate(`/api/admins/${adminToDelete.id}`, {
         method: 'DELETE',
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setSuccess('Administrateur supprimé avec succès');
-        setShowDeleteModal(false);
-        setAdminToDelete(null);
-        loadAdmins();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || 'Erreur lors de la suppression');
-      }
-    } catch (error) {
-      setError('Erreur de connexion au serveur');
+      setSuccess('Administrateur supprimé avec succès');
+      setShowDeleteModal(false);
+      setAdminToDelete(null);
+      loadAdmins();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || 'Erreur de connexion au serveur');
     } finally {
       setSaving(false);
     }
@@ -291,25 +244,18 @@ export default function SuperAdminAdminsPage() {
 
     setCreating(true);
     try {
-      const res = await fetch('/api/admins', {
+      await actionMutation.mutate('/api/admins', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createForm),
+        data: createForm,
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess('Administrateur créé avec succès!');
-        setShowCreateModal(false);
-        setCreateForm({ email: '', telephone: '', nom: '', prenom: '', motDePasse: '', permissions: [] });
-        loadAdmins();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || 'Erreur lors de la création');
-      }
-    } catch (error) {
-      setError('Erreur de connexion au serveur');
+      setSuccess('Administrateur créé avec succès!');
+      setShowCreateModal(false);
+      setCreateForm({ email: '', telephone: '', nom: '', prenom: '', motDePasse: '', permissions: [] });
+      loadAdmins();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || 'Erreur de connexion au serveur');
     } finally {
       setCreating(false);
     }
@@ -327,25 +273,18 @@ export default function SuperAdminAdminsPage() {
     setError(null);
     setSaving(true);
     try {
-      const res = await fetch(`/api/admins/${selectedAdmin.id}/permissions`, {
+      await actionMutation.mutate(`/api/admins/${selectedAdmin.id}/permissions`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ permissions: selectedPermissions }),
+        data: { permissions: selectedPermissions },
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess('Permissions mises à jour!');
-        setShowPermissionsModal(false);
-        setSelectedAdmin(null);
-        loadAdmins();
-        setTimeout(() => setSuccess(null), 3000);
-      } else {
-        setError(data.error || 'Erreur');
-      }
-    } catch (error) {
-      setError('Erreur de connexion');
+      setSuccess('Permissions mises à jour!');
+      setShowPermissionsModal(false);
+      setSelectedAdmin(null);
+      loadAdmins();
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      setError(error.message || 'Erreur de connexion');
     } finally {
       setSaving(false);
     }

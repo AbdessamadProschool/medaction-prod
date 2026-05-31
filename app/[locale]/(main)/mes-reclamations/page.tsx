@@ -115,7 +115,7 @@ export default function MesReclamationsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="gov-card p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[hsl(213,80%,28%)]">
+                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gov-blue">
                   <ClipboardList className="w-5 h-5" />
                 </div>
                 <div>
@@ -124,9 +124,9 @@ export default function MesReclamationsPage() {
                 </div>
               </div>
             </div>
-            <div className="gov-card p-4 border-[hsl(45,93%,47%)]/30">
+            <div className="gov-card p-4 border-gov-gold/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[hsl(45,93%,47%)]/20 flex items-center justify-center text-[hsl(45,93%,40%)]">
+                <div className="w-10 h-10 rounded-lg bg-gov-gold/20 flex items-center justify-center text-[hsl(45,93%,40%)]">
                   <Clock className="w-5 h-5" />
                 </div>
                 <div>
@@ -135,13 +135,13 @@ export default function MesReclamationsPage() {
                 </div>
               </div>
             </div>
-            <div className="gov-card p-4 border-[hsl(145,63%,32%)]/30">
+            <div className="gov-card p-4 border-gov-green/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[hsl(145,63%,32%)]/20 flex items-center justify-center text-[hsl(145,63%,32%)]">
+                <div className="w-10 h-10 rounded-lg bg-gov-green/20 flex items-center justify-center text-gov-green">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-[hsl(145,63%,32%)]">{stats.acceptees}</p>
+                  <p className="text-2xl font-bold text-gov-green">{stats.acceptees}</p>
                   <p className="text-xs text-gray-500">{t('stats.accepted')}</p>
                 </div>
               </div>
@@ -156,15 +156,15 @@ export default function MesReclamationsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg shadow-[hsl(213,80%,28%)]/20'
-                    : 'bg-white text-gray-600 hover:bg-[hsl(213,80%,28%)]/10 border border-gray-200'
+                    ? 'bg-gov-blue text-white shadow-lg shadow-gov-blue/20'
+                    : 'bg-white text-gray-600 hover:bg-gov-blue/10 border border-gray-200'
                 }`}
               >
                 <span>{tab.icon}</span>
                 <span>{t(`tabs.${tab.label}`)}</span>
                 {tab.id === 'en_attente' && stats.enAttente > 0 && (
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    activeTab === tab.id ? 'bg-white/20' : 'bg-[hsl(45,93%,47%)]/20 text-[hsl(45,93%,40%)]'
+                    activeTab === tab.id ? 'bg-white/20' : 'bg-gov-gold/20 text-[hsl(45,93%,40%)]'
                   }`}>
                     {stats.enAttente}
                   </span>

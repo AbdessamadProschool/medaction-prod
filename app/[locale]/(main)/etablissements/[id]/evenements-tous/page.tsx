@@ -131,7 +131,7 @@ export default function TousEvenementsPage() {
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900">Établissement non trouvé</h2>
-          <Link href="/etablissements" className="text-[hsl(213,80%,28%)] hover:underline mt-4 inline-block">
+          <Link href="/etablissements" className="text-gov-blue hover:underline mt-4 inline-block">
             Retour aux établissements
           </Link>
         </div>
@@ -142,7 +142,7 @@ export default function TousEvenementsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] text-white">
+      <div className="bg-gradient-to-r from-gov-blue to-[hsl(213,80%,40%)] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Link
             href={`/etablissements/${etablissementId}`}
@@ -180,7 +180,7 @@ export default function TousEvenementsPage() {
                 setStatutFilter(e.target.value);
                 setPage(1);
               }}
-              className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[hsl(213,80%,28%)]"
+              className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-gov-blue"
             >
               {FILTER_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -191,7 +191,7 @@ export default function TousEvenementsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+            <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
           </div>
         ) : evenements.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl">
@@ -216,7 +216,7 @@ export default function TousEvenementsPage() {
                   className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group"
                 >
                   {/* Image */}
-                  <div className="aspect-video bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,45%)] relative overflow-hidden">
+                  <div className="aspect-video bg-gradient-to-br from-gov-blue to-[hsl(213,80%,45%)] relative overflow-hidden">
                     {event.imageAffiche ? (
                       <img
                         src={event.imageAffiche}
@@ -235,7 +235,7 @@ export default function TousEvenementsPage() {
                     </div>
                     {upcoming && (
                       <div className="absolute top-3 left-3">
-                        <span className="px-2.5 py-1 bg-[hsl(45,93%,47%)] text-gray-900 rounded-full text-xs font-bold">
+                        <span className="px-2.5 py-1 bg-gov-gold text-gray-900 rounded-full text-xs font-bold">
                           À venir
                         </span>
                       </div>
@@ -250,16 +250,16 @@ export default function TousEvenementsPage() {
 
                     <div className="space-y-2 text-sm text-gray-500 mb-4">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-[hsl(213,80%,28%)]" />
+                        <Calendar className="w-4 h-4 text-gov-blue" />
                         <span>{formatDate(event.dateDebut)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-[hsl(213,80%,28%)]" />
+                        <Clock className="w-4 h-4 text-gov-blue" />
                         <span>{formatTime(event.dateDebut)}</span>
                       </div>
                       {event.lieu && (
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[hsl(213,80%,28%)]" />
+                          <MapPin className="w-4 h-4 text-gov-blue" />
                           <span className="truncate">{event.lieu}</span>
                         </div>
                       )}
@@ -267,7 +267,7 @@ export default function TousEvenementsPage() {
 
                     <Link
                       href={`/evenements/${event.id}`}
-                      className="block w-full text-center py-2.5 bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)] rounded-xl font-medium hover:bg-[hsl(213,80%,28%)] hover:text-white transition-colors"
+                      className="block w-full text-center py-2.5 bg-gov-blue/10 text-gov-blue rounded-xl font-medium hover:bg-gov-blue hover:text-white transition-colors"
                     >
                       Voir les détails
                     </Link>
@@ -307,7 +307,7 @@ export default function TousEvenementsPage() {
                   onClick={() => setPage(pageNum)}
                   className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                     page === pageNum
-                      ? 'bg-[hsl(213,80%,28%)] text-white'
+                      ? 'bg-gov-blue text-white'
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
                 >

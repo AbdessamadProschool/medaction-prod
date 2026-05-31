@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Database, 
@@ -36,12 +38,20 @@ export default function SuperAdminBackupsPage() {
   const router = useRouter();
 
   const [backups, setBackups] = useState<BackupFile[]>([]);
-  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(false);
+
+  const { data: backupsData, isLoading: loading, mutate: refreshBackups } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/backups' : null);
+  const actionMutation = useMutation();
+
+  useEffect(() => {
+    if (backupsData) {
+      setBackups(backupsData);
+    }
+  }, [backupsData]);
 
   // Vérifier authentification
   useEffect(() => {
@@ -52,46 +62,19 @@ export default function SuperAdminBackupsPage() {
     }
   }, [status, session, router]);
 
-  const loadBackups = async () => {
-    try {
-      const res = await fetch('/api/backups');
-      if (res.ok) {
-        const data = await res.json();
-        setBackups(data);
-      }
-    } catch (error) {
-      console.error('Erreur chargement backups:', error);
-      setError(t('messages.error_network'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      loadBackups();
-    }
-  }, [session?.user?.role]);
-
   const handleCreateBackup = async () => {
     setCreating(true);
     setError(null);
     setSuccess(null);
     try {
-      const res = await fetch('/api/backups', {
+      await actionMutation.mutate('/api/backups', {
         method: 'POST',
       });
       
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess(t('messages.created'));
-        loadBackups();
-      } else {
-        setError(data.error || t('messages.error_create'));
-      }
-    } catch (error) {
-      setError(t('messages.error_network'));
+      setSuccess(t('messages.created'));
+      refreshBackups();
+    } catch (error: any) {
+      setError(error.message || t('messages.error_create'));
     } finally {
       setCreating(false);
     }
@@ -146,19 +129,15 @@ export default function SuperAdminBackupsPage() {
 
     setDeleting(filename);
     try {
-      const res = await fetch(`/api/backups/${filename}`, {
+      await actionMutation.mutate(`/api/backups/${filename}`, {
         method: 'DELETE',
       });
 
-      if (res.ok) {
-        setSuccess(t('messages.deleted'));
-        // Mise à jour optimiste
-        setBackups(prev => prev.filter(b => b.name !== filename));
-      } else {
-        setError(t('messages.error_delete'));
-      }
-    } catch (error) {
-      setError(t('messages.error_network'));
+      setSuccess(t('messages.deleted'));
+      // Mise à jour optimiste
+      setBackups(prev => prev.filter(b => b.name !== filename));
+    } catch (error: any) {
+      setError(error.message || t('messages.error_delete'));
     } finally {
       setDeleting(null);
     }

@@ -61,8 +61,8 @@ export default function Header() {
             </div>
             <div className="hidden sm:block font-outfit">
               <span className="text-xl font-bold tracking-wide">
-                <span className="text-[hsl(213,80%,28%)]">PORTAIL </span>
-                <span className="text-[hsl(45,93%,47%)]">MEDIOUNA</span>
+                <span className="text-gov-blue">PORTAIL </span>
+                <span className="text-gov-gold">MEDIOUNA</span>
               </span>
               <span className="block text-xs text-gray-500 -mt-0.5 font-sans">Province de Médiouna</span>
             </div>
@@ -74,7 +74,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/5 rounded-lg transition-colors duration-200"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gov-blue hover:bg-gov-blue/5 rounded-lg transition-colors duration-200"
               >
                 {link.label}
               </Link>
@@ -84,7 +84,7 @@ export default function Header() {
             {dashboardLink && (
               <Link
                 href={dashboardLink}
-                className="ml-2 flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,20%)] rounded-lg shadow-sm transition-all transform hover:scale-105"
+                className="ml-2 flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-gov-blue hover:bg-gov-blue-dark rounded-lg shadow-sm transition-all transform hover:scale-105"
               >
                 <LayoutDashboard size={16} />
                 Mon Espace Pro
@@ -126,7 +126,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/5 rounded-lg transition-colors"
+                className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-gov-blue hover:bg-gov-blue/5 rounded-lg transition-colors"
               >
                 {link.label}
               </Link>
@@ -136,7 +136,7 @@ export default function Header() {
                <Link
                 href={dashboardLink}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="px-4 py-3 text-sm font-bold text-[hsl(213,80%,28%)] bg-[hsl(213,80%,28%)]/5 rounded-lg mt-2 border border-[hsl(213,80%,28%)]/20"
+                className="px-4 py-3 text-sm font-bold text-gov-blue bg-gov-blue/5 rounded-lg mt-2 border border-gov-blue/20"
               >
                 Accéder à mon Espace Pro
               </Link>

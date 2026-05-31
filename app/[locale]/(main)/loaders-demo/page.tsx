@@ -40,7 +40,7 @@ export default function LoadersShowcasePage() {
             </p>
             <button
               onClick={handleShowFullscreen}
-              className="px-6 py-3 bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] text-white rounded-xl font-medium hover:shadow-lg transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-gov-blue to-[hsl(213,80%,35%)] text-white rounded-xl font-medium hover:shadow-lg transition-all"
             >
               Voir le Loader Plein Écran
             </button>
@@ -116,15 +116,15 @@ export default function LoadersShowcasePage() {
           <h2 className="text-lg font-bold text-gray-900 mb-4">Palette de Couleurs</h2>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-xl bg-[hsl(213,80%,28%)] shadow-lg" />
+              <div className="w-16 h-16 rounded-xl bg-gov-blue shadow-lg" />
               <span className="text-xs text-gray-600">Bleu Primaire</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-xl bg-[hsl(45,93%,47%)] shadow-lg" />
+              <div className="w-16 h-16 rounded-xl bg-gov-gold shadow-lg" />
               <span className="text-xs text-gray-600">Or/Doré</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(45,93%,47%)] shadow-lg" />
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-gov-blue to-gov-gold shadow-lg" />
               <span className="text-xs text-gray-600">Gradient</span>
             </div>
           </div>

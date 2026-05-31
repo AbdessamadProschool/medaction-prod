@@ -93,7 +93,7 @@ function highlightText(text: string, query: string): React.ReactNode {
       parts.push(text.substring(lastIndex, index));
     }
     parts.push(
-      <mark key={index} className="bg-[hsl(45,93%,47%)]/40 text-gray-900 rounded px-0.5 font-medium">
+      <mark key={index} className="bg-gov-gold/40 text-gray-900 rounded px-0.5 font-medium">
         {text.substring(index, index + safeQuery.length)}
       </mark>
     );
@@ -263,9 +263,9 @@ function SearchPageContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header de recherche - Gouvernemental */}
-      <div className="bg-gradient-to-r from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] text-white py-12 relative">
+      <div className="bg-gradient-to-r from-gov-blue-dark to-gov-blue-dark text-white py-12 relative">
         {/* Bande tricolore */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
         
         <div className="max-w-6xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-2 text-white">{t('title')}</h1>
@@ -289,7 +289,7 @@ function SearchPageContent() {
                   onFocus={() => setShowSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   placeholder={t('placeholder')}
-                  className="w-full pl-12 pr-12 py-4 text-lg text-gray-900 border-2 border-[hsl(45,93%,47%)]/30 rounded-xl focus:border-[hsl(45,93%,47%)] focus:ring-4 focus:ring-[hsl(45,93%,47%)]/20 transition-all bg-white"
+                  className="w-full pl-12 pr-12 py-4 text-lg text-gray-900 border-2 border-gov-gold/30 rounded-xl focus:border-gov-gold focus:ring-4 focus:ring-gov-gold/20 transition-all bg-white"
                 />
                 {query && (
                   <button
@@ -341,7 +341,7 @@ function SearchPageContent() {
                             key={`${suggestion.type}-${suggestion.id}`}
                             type="button"
                             onClick={() => selectSuggestion(suggestion)}
-                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[hsl(213,80%,28%)]/5 text-left border-b border-gray-50 last:border-0 transition-colors"
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gov-blue/5 text-left border-b border-gray-50 last:border-0 transition-colors"
                           >
                             <span className="flex items-center justify-center w-8 h-8 bg-gray-50 rounded-lg shrink-0">
                                {getIconForType(suggestion.type)}
@@ -372,7 +372,7 @@ function SearchPageContent() {
                   onClick={() => setShowFilters(!showFilters)}
                   className={`px-4 py-3 rounded-xl border-2 flex items-center gap-2 font-medium transition-colors justify-center ${
                     showFilters 
-                      ? 'bg-white border-[hsl(45,93%,47%)] text-[hsl(213,80%,28%)]' 
+                      ? 'bg-white border-gov-gold text-gov-blue' 
                       : 'bg-white/10 border-white/30 text-white hover:bg-white/20'
                   }`}
                 >
@@ -404,8 +404,8 @@ function SearchPageContent() {
                 onClick={() => handleTypeChange(type)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium whitespace-nowrap transition-all ${
                   activeType === type
-                    ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg shadow-[hsl(213,80%,28%)]/20'
-                    : 'text-gray-600 hover:bg-[hsl(213,80%,28%)]/10'
+                    ? 'bg-gov-blue text-white shadow-lg shadow-gov-blue/20'
+                    : 'text-gray-600 hover:bg-gov-blue/10'
                 }`}
               >
                 {config.icon}
@@ -425,7 +425,7 @@ function SearchPageContent() {
 
       {/* Filtres avancés */}
       {showFilters && (
-        <div className="bg-[hsl(213,80%,28%)]/5 border-b border-gray-200 px-4 py-4">
+        <div className="bg-gov-blue/5 border-b border-gray-200 px-4 py-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {activeType === 'etablissements' && (
@@ -482,7 +482,7 @@ function SearchPageContent() {
             <div className="flex justify-end mt-4">
               <button
                 onClick={() => setFilters({ secteur: '', dateFrom: '', dateTo: '', commune: '' })}
-                className="text-sm text-[hsl(213,80%,28%)] hover:underline"
+                className="text-sm text-gov-blue hover:underline"
               >
                                 {t('filters_section.reset')}
               </button>
@@ -497,19 +497,19 @@ function SearchPageContent() {
         {query && stats && (
           <div className="flex items-center justify-between mb-6">
             <p className="text-gray-600">
-              <span className="font-semibold text-[hsl(213,80%,28%)]">{stats.total}</span> {t('results.count', { count: stats.total, query })}
+              <span className="font-semibold text-gov-blue">{stats.total}</span> {t('results.count', { count: stats.total, query })}
             </p>
             
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-[hsl(213,80%,28%)] text-white' : 'text-gray-400 hover:bg-gray-100'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-gov-blue text-white' : 'text-gray-400 hover:bg-gray-100'}`}
               >
                 <List size={18} />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-[hsl(213,80%,28%)] text-white' : 'text-gray-400 hover:bg-gray-100'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-gov-blue text-white' : 'text-gray-400 hover:bg-gray-100'}`}
               >
                 <Grid3X3 size={18} />
               </button>
@@ -520,7 +520,7 @@ function SearchPageContent() {
         {/* Loading */}
         {loading && (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
@@ -539,7 +539,7 @@ function SearchPageContent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: groupIndex * 0.1 }}
-                  className="gov-card p-6 border-l-2 border-[hsl(213,80%,28%)]"
+                  className="gov-card p-6 border-l-2 border-gov-blue"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -552,7 +552,7 @@ function SearchPageContent() {
                     {typeResults.length > 3 && (
                       <button
                         onClick={() => handleTypeChange(type)}
-                        className="text-sm text-[hsl(213,80%,28%)] hover:underline font-medium"
+                        className="text-sm text-gov-blue hover:underline font-medium"
                       >
                         {t('results.see_all')}
                       </button>
@@ -613,7 +613,7 @@ function SearchPageContent() {
                       setQuery(term);
                       updateURL(term, activeType);
                     }}
-                    className="px-4 py-2 bg-[hsl(213,80%,28%)]/10 hover:bg-[hsl(213,80%,28%)]/20 rounded-lg text-sm text-[hsl(213,80%,28%)] font-medium transition-colors"
+                    className="px-4 py-2 bg-gov-blue/10 hover:bg-gov-blue/20 rounded-lg text-sm text-gov-blue font-medium transition-colors"
                   >
                     {term}
                   </button>
@@ -647,7 +647,7 @@ function SearchPageContent() {
                       setQuery(term);
                       updateURL(term, activeType);
                     }}
-                    className="px-4 py-2 bg-white border border-gray-200 hover:border-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,28%)]/5 rounded-lg text-sm text-gray-700 transition-colors"
+                    className="px-4 py-2 bg-white border border-gray-200 hover:border-gov-blue hover:bg-gov-blue/5 rounded-lg text-sm text-gray-700 transition-colors"
                   >
                     {term}
                   </button>
@@ -719,7 +719,7 @@ function ResultCard({
     return (
       <Link
         href={result.url}
-        className="block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-[hsl(45,93%,47%)]/50 transition-all group"
+        className="block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gov-gold/50 transition-all group"
       >
         {result.image ? (
           <div className="aspect-video bg-gray-100 relative overflow-hidden">
@@ -733,14 +733,14 @@ function ResultCard({
             </span>
           </div>
         ) : (
-          <div className="aspect-video bg-gradient-to-br from-[hsl(213,80%,28%)]/10 to-[hsl(213,80%,28%)]/5 flex items-center justify-center">
-            <div className="text-[hsl(213,80%,28%)] scale-150">
+          <div className="aspect-video bg-gradient-to-br from-gov-blue/10 to-gov-blue/5 flex items-center justify-center">
+            <div className="text-gov-blue scale-150">
               {config?.icon}
             </div>
           </div>
         )}
         <div className="p-4">
-          <h3 className="font-semibold text-gray-900 group-hover:text-[hsl(213,80%,28%)] transition-colors">
+          <h3 className="font-semibold text-gray-900 group-hover:text-gov-blue transition-colors">
             {highlightText(result.title, query)}
           </h3>
           {result.subtitle && (
@@ -762,7 +762,7 @@ function ResultCard({
   return (
     <Link
       href={result.url}
-      className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md hover:border-[hsl(45,93%,47%)]/50 transition-all group"
+      className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md hover:border-gov-gold/50 transition-all group"
     >
       {result.image ? (
         <img
@@ -771,18 +771,18 @@ function ResultCard({
           className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
         />
       ) : (
-        <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-[hsl(213,80%,28%)]/10 to-[hsl(213,80%,28%)]/5 flex items-center justify-center flex-shrink-0">
-          <div className="text-[hsl(213,80%,28%)] scale-150">
+        <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-gov-blue/10 to-gov-blue/5 flex items-center justify-center flex-shrink-0">
+          <div className="text-gov-blue scale-150">
             {config?.icon}
           </div>
         </div>
       )}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-gray-900 group-hover:text-[hsl(213,80%,28%)] transition-colors">
+          <h3 className="font-semibold text-gray-900 group-hover:text-gov-blue transition-colors">
             {highlightText(result.title, query)}
           </h3>
-          <span className="flex-shrink-0 text-xs text-[hsl(213,80%,28%)] bg-[hsl(213,80%,28%)]/10 px-2 py-1 rounded-full font-medium">
+          <span className="flex-shrink-0 text-xs text-gov-blue bg-gov-blue/10 px-2 py-1 rounded-full font-medium">
             {config?.label}
           </span>
         </div>
@@ -806,7 +806,7 @@ export default function SearchPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <SearchPageContent />

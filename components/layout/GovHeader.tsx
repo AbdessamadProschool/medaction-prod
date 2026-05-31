@@ -229,7 +229,7 @@ export default function GovHeader() {
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       />
                     )}
-                    <Icon size={16} className={isActive ? 'text-[hsl(45,93%,47%)]' : ''} />
+                    <Icon size={16} className={isActive ? 'text-gov-gold' : ''} />
                     {item.label}
                   </Link>
                 );
@@ -266,9 +266,9 @@ export default function GovHeader() {
                           <Link
                             key={item.href}
                             href={item.href}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-[hsl(213,80%,28%)] transition-colors group"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-gov-blue transition-colors group"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-[hsl(213,80%,28%)]/5 flex items-center justify-center text-[hsl(213,80%,28%)] group-hover:bg-[hsl(213,80%,28%)] group-hover:text-white transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-gov-blue/5 flex items-center justify-center text-gov-blue group-hover:bg-gov-blue group-hover:text-white transition-colors">
                               <item.icon size={16} />
                             </div>
                             <span className="font-medium">{item.label}</span>
@@ -319,9 +319,9 @@ export default function GovHeader() {
                             <Link
                               key={item.href}
                               href={item.href}
-                              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-[hsl(213,80%,28%)] transition-colors group"
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-gov-blue transition-colors group"
                             >
-                               <div className="w-8 h-8 rounded-lg bg-[hsl(45,93%,47%)]/10 flex items-center justify-center text-[hsl(213,80%,28%)] group-hover:bg-[hsl(45,93%,47%)] group-hover:text-[hsl(213,80%,28%)] transition-colors">
+                               <div className="w-8 h-8 rounded-lg bg-gov-gold/10 flex items-center justify-center text-gov-blue group-hover:bg-gov-gold group-hover:text-gov-blue transition-colors">
                                   {item.id === 'reclamation' || item.id === 'mes_reclamations' ? <Shield size={16} /> : item.id === 'propose' ? <Lightbulb size={16} /> : <MessageSquare size={16} />}
                                </div>
                               <span className="font-medium">{item.label}</span>
@@ -475,7 +475,7 @@ export default function GovHeader() {
                   >
                     {/* Photo utilisateur ou initiales */}
                     {session.user?.photo ? (
-                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[hsl(45,93%,47%)]">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gov-gold">
                         <OptimizedImage 
                           src={session.user.photo} 
                           alt="Photo profil"
@@ -485,7 +485,7 @@ export default function GovHeader() {
                         />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-[hsl(45,93%,47%)] flex items-center justify-center text-[hsl(213,80%,28%)] font-bold text-sm shadow-sm">
+                      <div className="w-8 h-8 rounded-full bg-gov-gold flex items-center justify-center text-gov-blue font-bold text-sm shadow-sm">
                         {session.user?.prenom?.[0]?.toUpperCase() || 'U'}
                       </div>
                     )}
@@ -505,10 +505,10 @@ export default function GovHeader() {
                         className="absolute top-full right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
                       >
                         {/* En-tête avec photo */}
-                        <div className="px-5 py-5 border-b border-gray-100 bg-gradient-to-r from-[hsl(213,80%,28%)]/5 to-transparent">
+                        <div className="px-5 py-5 border-b border-gray-100 bg-gradient-to-r from-gov-blue/5 to-transparent">
                           <div className="flex items-center gap-4">
                             {session.user?.photo ? (
-                              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[hsl(213,80%,28%)]">
+                              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gov-blue">
                                 <OptimizedImage 
                                   src={session.user.photo} 
                                   alt="Photo profil"
@@ -518,14 +518,14 @@ export default function GovHeader() {
                                 />
                               </div>
                             ) : (
-                              <div className="w-12 h-12 rounded-full bg-[hsl(45,93%,47%)] flex items-center justify-center text-[hsl(213,80%,28%)] font-bold text-xl shadow-sm">
+                              <div className="w-12 h-12 rounded-full bg-gov-gold flex items-center justify-center text-gov-blue font-bold text-xl shadow-sm">
                                 {session.user?.prenom?.[0]?.toUpperCase() || 'U'}
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
                               <p className="font-bold text-gray-900 truncate text-base">{session.user?.prenom} {session.user?.nom}</p>
                               <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
-                              <span className="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)] rounded-full">
+                              <span className="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-gov-blue/10 text-gov-blue rounded-full">
                                 {session.user?.role}
                               </span>
                             </div>
@@ -535,7 +535,7 @@ export default function GovHeader() {
                         {/* Menu items */}
                         <div className="p-2 space-y-1">
                           {isPro && (
-                             <Link href={dashboardLink} className="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-[hsl(213,80%,28%)] bg-[hsl(213,80%,28%)]/5 rounded-lg hover:bg-[hsl(213,80%,28%)]/10 transition-colors">
+                             <Link href={dashboardLink} className="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-gov-blue bg-gov-blue/5 rounded-lg hover:bg-gov-blue/10 transition-colors">
                                 <LayoutDashboard size={18} />
                                 {session?.user?.role === 'DELEGATION' ? t('nav.user_menu.delegation_space') : t('nav.user_menu.pro_space')}
                              </Link>
@@ -585,7 +585,7 @@ export default function GovHeader() {
                           <div className="border-t border-gray-100 p-2">
                             <Link
                               href="/admin"
-                              className="flex items-center gap-3 px-3 py-2.5 text-sm text-[hsl(213,80%,28%)] font-medium hover:bg-[hsl(213,80%,28%)]/5 rounded-lg transition-colors"
+                              className="flex items-center gap-3 px-3 py-2.5 text-sm text-gov-blue font-medium hover:bg-gov-blue/5 rounded-lg transition-colors"
                             >
                               <Shield size={18} />
                               {t('nav.user_menu.admin')}
@@ -644,7 +644,7 @@ export default function GovHeader() {
                  <Link
                   href={dashboardLink}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 bg-[hsl(45,93%,47%)] text-[hsl(213,80%,28%)] rounded-xl font-bold shadow-md mb-4"
+                  className="flex items-center gap-3 px-4 py-3 bg-gov-gold text-gov-blue rounded-xl font-bold shadow-md mb-4"
                 >
                   <LayoutDashboard size={20} />
                   {session?.user?.role === 'DELEGATION' ? t('nav.user_menu.delegation_space') : t('nav.user_menu.pro_space')}
@@ -671,7 +671,7 @@ export default function GovHeader() {
                         : 'text-white/80 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <Icon size={18} className={isActive ? 'text-[hsl(45,93%,47%)]' : ''} />
+                    <Icon size={18} className={isActive ? 'text-gov-gold' : ''} />
                     {item.label}
                   </Link>
                 );
@@ -737,7 +737,7 @@ export default function GovHeader() {
               {/* Header inside modal */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-2 w-2 rounded-full bg-[hsl(45,93%,47%)] animate-pulse" />
+                  <span className="flex h-2 w-2 rounded-full bg-gov-gold animate-pulse" />
                   <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
                     {t('search_page.title')}
                   </h3>

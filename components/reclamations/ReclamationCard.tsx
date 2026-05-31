@@ -34,8 +34,8 @@ const statusConfig = {
   },
   acceptee: {
     label: 'Acceptée',
-    color: 'bg-[hsl(145,63%,32%)]/10 text-[hsl(145,63%,32%)] border-[hsl(145,63%,32%)]/30',
-    dot: 'bg-[hsl(145,63%,32%)]',
+    color: 'bg-gov-green/10 text-gov-green border-gov-green/30',
+    dot: 'bg-gov-green',
     icon: <CheckCircle2 className="w-4 h-4" />
   },
   affectee: {
@@ -89,12 +89,12 @@ export default function ReclamationCard({ reclamation, onClick, onDelete }: Recl
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}
       onClick={onClick}
-      className="bg-white rounded-2xl border border-gray-100 p-5 cursor-pointer transition-all hover:border-[hsl(45,93%,47%)]/50"
+      className="bg-white rounded-2xl border border-gray-100 p-5 cursor-pointer transition-all hover:border-gov-gold/50"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-[hsl(213,80%,28%)]">
+          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gov-blue">
             {categoryIcons[reclamation.categorie] || <ClipboardList className="w-6 h-6" />}
           </div>
           <div>
@@ -145,7 +145,7 @@ export default function ReclamationCard({ reclamation, onClick, onDelete }: Recl
                <Trash2 className="w-4 h-4" />
              </button>
            )}
-           <span className="text-[hsl(213,80%,28%)] text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+           <span className="text-gov-blue text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
             Détails
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

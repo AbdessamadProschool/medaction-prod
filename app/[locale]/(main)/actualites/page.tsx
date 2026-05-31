@@ -100,13 +100,13 @@ function ActualitesContent() {
         }}
       />
       {/* ==================== HERO HEADER ==================== */}
-      <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark overflow-hidden">
         {/* Pattern & Overlay */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
 
         
         {/* Bande Tricolore Top */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] shadow-md z-10" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green shadow-md z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-20 relative z-10">
           <motion.div 
@@ -115,12 +115,12 @@ function ActualitesContent() {
             className="max-w-4xl mx-auto text-center flex flex-col items-center"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium mb-6">
-              <Newspaper className="w-4 h-4 text-[hsl(45,93%,47%)]" />
+              <Newspaper className="w-4 h-4 text-gov-gold" />
               {t('badge')}
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 tracking-tight leading-tight">
-              {t('title_prefix')}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[hsl(45,93%,47%)] to-amber-200">{t('title_suffix')}</span>
+              {t('title_prefix')}<span className="text-transparent bg-clip-text bg-gradient-to-r from-gov-gold to-amber-200">{t('title_suffix')}</span>
             </h1>
             
             <p className="text-lg text-blue-100/80 leading-relaxed max-w-2xl mx-auto">
@@ -140,7 +140,7 @@ function ActualitesContent() {
                 className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-gray-200 shadow-sm text-gray-900 font-semibold"
               >
                 <span className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-[hsl(213,80%,28%)]" />
+                  <Filter className="w-5 h-5 text-gov-blue" />
                   {tCommon('filters.title')}
                 </span>
             </button>
@@ -176,12 +176,12 @@ function ActualitesContent() {
                       {tCommon('filters.search_label')}
                     </label>
                     <div className="relative">
-                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-gov-blue transition-colors" />
                       <input
                         type="text"
                         value={search}
                         onChange={(e) => updateFilter('search', e.target.value)}
-                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-gov-blue/10 focus:border-gov-blue focus:bg-white transition-all shadow-inner"
                         placeholder={tCommon('filters.search_placeholder')}
                       />
                     </div>
@@ -195,7 +195,7 @@ function ActualitesContent() {
                         onClick={() => updateFilter('categorie', '')}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                           !categorie 
-                            ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20' 
+                            ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20' 
                             : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                         }`}
                       >
@@ -208,7 +208,7 @@ function ActualitesContent() {
                           onClick={() => updateFilter('categorie', cat)}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
                             categorie === cat
-                              ? 'bg-[hsl(213,80%,28%)] text-white font-bold shadow-lg shadow-blue-900/20'
+                              ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20'
                               : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                           }`}
                         >
@@ -234,13 +234,13 @@ function ActualitesContent() {
                <div className="flex bg-gray-100 p-1 rounded-lg">
                   <button
                     onClick={() => setView('grid')}
-                    className={`p-2 rounded-md transition-all ${view === 'grid' ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-md transition-all ${view === 'grid' ? 'bg-white text-gov-blue shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setView('list')}
-                    className={`p-2 rounded-md transition-all ${view === 'list' ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-md transition-all ${view === 'list' ? 'bg-white text-gov-blue shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                   >
                     <List className="w-4 h-4" />
                   </button>
@@ -259,7 +259,7 @@ function ActualitesContent() {
                    <Search className="w-8 h-8 text-gray-400" />
                  </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{t('no_news_found')}</h3>
-                  <button onClick={() => router.push('/actualites')} className="text-[hsl(213,80%,28%)] font-medium hover:underline">
+                  <button onClick={() => router.push('/actualites')} className="text-gov-blue font-medium hover:underline">
                     {t('reset_filters')}
                   </button>
                </div>
@@ -292,7 +292,7 @@ function ActualitesContent() {
 
 export default function ActualitesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin"></div></div>}>
       <ActualitesContent />
     </Suspense>
   );

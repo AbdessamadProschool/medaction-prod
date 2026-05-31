@@ -75,7 +75,7 @@ export default function AnnouncementModal() {
             className="relative w-full max-w-lg bg-card rounded-lg shadow-lg overflow-hidden border border-border"
           >
             {/* Ruban décoratif supérieur */}
-            <div className="h-1.5 w-full bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+            <div className="h-1.5 w-full bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
 
             {/* Pattern de fond subtil */}
             <div 
@@ -99,7 +99,7 @@ export default function AnnouncementModal() {
               
               {/* Logo avec ombre portée douce */}
               <div className="mb-6 relative">
-                 <div className="absolute inset-0 bg-[hsl(45,93%,47%)]/20 blur-xl rounded-full" />
+                 <div className="absolute inset-0 bg-gov-gold/20 blur-xl rounded-full" />
                  <div className="relative w-20 h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center p-3 ring-1 ring-gray-100">
                     <Image
                       src="/images/logo-portal-mediouna.png"
@@ -113,7 +113,7 @@ export default function AnnouncementModal() {
 
               {/* Titre */}
               <h2 
-                className={`text-2xl font-bold text-[hsl(213,80%,20%)] mb-4 leading-snug ${
+                className={`text-2xl font-bold text-gov-blue-dark mb-4 leading-snug ${
                     isArabic(config.title) ? 'font-cairo' : 'font-outfit'
                 }`}
                 dir="auto"
@@ -134,7 +134,7 @@ export default function AnnouncementModal() {
               {/* Actions */}
               <button
                 onClick={handleClose}
-                className="w-full sm:w-auto px-8 py-3 bg-[hsl(213,80%,28%)] text-white font-medium rounded-xl shadow-lg shadow-[hsl(213,80%,28%)]/20 hover:bg-[hsl(213,80%,20%)] hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all duration-200"
+                className="w-full sm:w-auto px-8 py-3 bg-gov-blue text-white font-medium rounded-xl shadow-lg shadow-gov-blue/20 hover:bg-gov-blue-dark hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all duration-200"
               >
                 <span className={isArabic(config.message) ? 'font-cairo' : ''}>
                   {t('close_btn')}

@@ -190,7 +190,7 @@ function ActivityCard({ activity, index, locale }: { activity: any; index: numbe
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ y: -5 }}
-      className="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex flex-col h-full"
+      className="group bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:shadow-gov-blue/5 transition-all duration-300 flex flex-col h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <span className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100 text-xs font-semibold text-gray-500">
@@ -202,7 +202,7 @@ function ActivityCard({ activity, index, locale }: { activity: any; index: numbe
         </span>
       </div>
 
-      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight line-clamp-2">
+      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-gov-blue transition-colors leading-tight line-clamp-2">
         {activity.titre}
       </h3>
 
@@ -285,7 +285,7 @@ export default function EtablissementDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -298,7 +298,7 @@ export default function EtablissementDetailPage() {
         </div>
          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('not_found.title')}</h1>
          <p className="text-gray-500 mb-8">{t('not_found.description')}</p>
-         <Link href="/etablissements" className="px-6 py-3 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors">
+         <Link href="/etablissements" className="px-6 py-3 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors">
            {t('not_found.back_button')}
          </Link>
       </div>
@@ -475,7 +475,7 @@ export default function EtablissementDetailPage() {
                       fallback={
                         <Link 
                           href={`/login?callbackUrl=${encodeURIComponent(pathname || '')}`}
-                          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02]"
+                          className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gov-gold text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02]"
                         >
                             <Star className="w-5 h-5 fill-current" />
                             {t('buttons.subscribe')}
@@ -485,7 +485,7 @@ export default function EtablissementDetailPage() {
                       <SubscribeButton 
                         etablissementId={etablissement.id} 
                         etablissementNom={etablissement.nom}
-                        className="w-full px-6 py-4 bg-[hsl(45,93%,47%)] text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02] flex justify-center"
+                        className="w-full px-6 py-4 bg-gov-gold text-gray-900 rounded-xl font-bold shadow-lg shadow-black/20 hover:bg-gov-gold/10 transition-all transform hover:scale-[1.02] flex justify-center"
                       />
                     </PermissionGuard>
 
@@ -524,11 +524,11 @@ export default function EtablissementDetailPage() {
                   className={`
                     relative flex items-center justify-center gap-2.5 px-6 py-3.5 text-lg font-bold transition-all whitespace-nowrap rounded-xl mx-1
                     ${isActive 
-                      ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg ring-2 ring-[hsl(213,80%,28%)]/20 ring-offset-2' 
-                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200 hover:text-[hsl(213,80%,28%)] border border-gray-200 shadow-sm'}
+                      ? 'bg-gov-blue text-white shadow-lg ring-2 ring-gov-blue/20 ring-offset-2' 
+                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200 hover:text-gov-blue border border-gray-200 shadow-sm'}
                   `}
                 >
-                  <tab.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[hsl(213,80%,28%)]/60'}`} />
+                  <tab.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gov-blue/60'}`} />
                   {tab.label}
                   
                   {hasCount && (
@@ -563,7 +563,7 @@ export default function EtablissementDetailPage() {
                 {(etablissement.nature || etablissement.anneeCreation || etablissement.tutelle || etablissement.responsableNom) && (
                 <section className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100">
                    <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                      <span className="w-1.5 h-6 bg-[hsl(45,93%,47%)] rounded-full"/>
+                      <span className="w-1.5 h-6 bg-gov-gold rounded-full"/>
                       {t('sections.about')}
                     </h2>
                    
@@ -1013,7 +1013,7 @@ export default function EtablissementDetailPage() {
                              return (
                              <div key={key} className="group relative bg-card rounded-lg p-6 border border-border hover:border-[hsl(var(--gov-blue)/0.3)] hover:shadow-md transition-shadow duration-200 flex flex-col items-center text-center h-full justify-center min-h-[180px]">
                                 {String(value).startsWith('http') && (
-                                   <a href={String(value)} target="_blank" rel="noopener noreferrer" className="absolute top-4 right-4 text-gray-400 hover:text-[hsl(213,80%,28%)] transition-colors">
+                                   <a href={String(value)} target="_blank" rel="noopener noreferrer" className="absolute top-4 right-4 text-gray-400 hover:text-gov-blue transition-colors">
                                      <Globe className="w-5 h-5" />
                                    </a>
                                 )}
@@ -1028,7 +1028,7 @@ export default function EtablissementDetailPage() {
                                 
                                 <div className="font-extrabold text-gray-900 leading-tight break-words w-full px-2">
                                   {String(value).startsWith('http') ? (
-                                    <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-[hsl(213,80%,28%)] hover:underline text-base font-bold">
+                                    <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-gov-blue hover:underline text-base font-bold">
                                       {t('labels.view_site')}
                                     </a>
                                   ) : (
@@ -1048,7 +1048,7 @@ export default function EtablissementDetailPage() {
                 {(etablissement.services.length > 0 || etablissement.programmes.length > 0) && (
                    <section className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100">
                       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <span className="w-1.5 h-6 bg-[hsl(213,80%,28%)] rounded-full"/>
+                        <span className="w-1.5 h-6 bg-gov-blue rounded-full"/>
                         {t('sections.service_offer')}
                       </h2>
                       
@@ -1096,7 +1096,7 @@ export default function EtablissementDetailPage() {
                            <button 
                              key={i}
                              onClick={() => { setActiveImage(i); setShowGallery(true); }}
-                             className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[hsl(213,80%,28%)]"
+                             className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gov-blue"
                            >
                              <OptimizedImage
                                src={img.urlPublique}
@@ -1129,7 +1129,7 @@ export default function EtablissementDetailPage() {
                           href={`https://maps.google.com/?q=${etablissement.latitude},${etablissement.longitude}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 w-full py-3 bg-[hsl(213,80%,28%)]/10 hover:bg-[hsl(213,80%,28%)]/20 text-[hsl(213,80%,28%)] rounded-xl text-sm font-bold transition-colors"
+                          className="flex items-center justify-center gap-2 w-full py-3 bg-gov-blue/10 hover:bg-gov-blue/20 text-gov-blue rounded-xl text-sm font-bold transition-colors"
                         >
                           <MapPin className="w-5 h-5" />
                           {t('buttons.view_on_maps')}
@@ -1296,7 +1296,7 @@ export default function EtablissementDetailPage() {
                          </Link>
                       }
                    >
-                      <Link href={`/evaluer/${etablissement.id}`} className="inline-flex items-center gap-2 px-8 py-3 bg-[hsl(45,93%,47%)] text-gray-900 rounded-full font-bold shadow-lg hover:bg-gov-gold/10 transition-all">
+                      <Link href={`/evaluer/${etablissement.id}`} className="inline-flex items-center gap-2 px-8 py-3 bg-gov-gold text-gray-900 rounded-full font-bold shadow-lg hover:bg-gov-gold/10 transition-all">
                          <Star className="w-5 h-5 fill-current" />
                          {t('buttons.give_rating')}
                       </Link>
@@ -1308,7 +1308,7 @@ export default function EtablissementDetailPage() {
                       <div key={evaluation.id} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                          <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">
-                               <div className="w-10 h-10 rounded-full bg-[hsl(213,80%,28%)]/10 text-[hsl(213,80%,28%)] flex items-center justify-center font-bold">
+                               <div className="w-10 h-10 rounded-full bg-gov-blue/10 text-gov-blue flex items-center justify-center font-bold">
                                   {evaluation.user.prenom[0]}{evaluation.user.nom[0]}
                                </div>
                                <div>

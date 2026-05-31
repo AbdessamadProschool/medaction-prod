@@ -89,8 +89,8 @@ function getEventStatus(event: Evenement, t: any) {
     return { 
       status: 'upcoming', 
       label: daysUntil === 1 ? t('status.tomorrow') : daysUntil <= 7 ? t('status.in_days', { days: daysUntil }) : t('status.upcoming'), 
-      color: 'bg-[hsl(45,93%,47%)]',
-      textColor: 'text-[hsl(45,93%,47%)]',
+      color: 'bg-gov-gold',
+      textColor: 'text-gov-gold',
       icon: Calendar,
       pulse: false,
     };
@@ -163,7 +163,7 @@ export default function EvenementDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -181,7 +181,7 @@ export default function EvenementDetailPage() {
             <p className="text-gray-500 mb-6">{t('not_found.description')}</p>
             <Link 
             href="/evenements" 
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[hsl(213,80%,28%)] text-white rounded-xl hover:bg-[hsl(213,80%,35%)] transition-all shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gov-blue text-white rounded-xl hover:bg-[hsl(213,80%,35%)] transition-all shadow-lg"
             >
             <ArrowLeft className="w-5 h-5" />
             {t('not_found.back_button')}
@@ -299,7 +299,7 @@ export default function EvenementDetailPage() {
                {/* Date */}
                <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl backdrop-blur-sm border border-white/5 hover:bg-white/10 transition-colors">
                   <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
-                     <Calendar className="w-6 h-6 text-[hsl(45,93%,47%)]" />
+                     <Calendar className="w-6 h-6 text-gov-gold" />
                   </div>
                   <div>
                      <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.date_time')}</p>
@@ -367,7 +367,7 @@ export default function EvenementDetailPage() {
              >
                 <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
                    <div className={`p-3 rounded-xl ${config.bgLight}`}>
-                      <Sparkles className="w-6 h-6 text-[hsl(213,80%,28%)]" />
+                      <Sparkles className="w-6 h-6 text-gov-blue" />
                    </div>
                    <h2 className="text-2xl font-bold text-gray-900">{t('labels.about')}</h2>
                 </div>
@@ -408,7 +408,7 @@ export default function EvenementDetailPage() {
                       </div>
                       <button 
                         onClick={() => { setActiveImage(0); setShowGallery(true); }}
-                        className="text-[hsl(213,80%,28%)] font-bold text-sm hover:underline"
+                        className="text-gov-blue font-bold text-sm hover:underline"
                       >
                          {t('buttons.view_all')} ({images.length})
                       </button>
@@ -476,7 +476,7 @@ export default function EvenementDetailPage() {
                    className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 sticky top-24 text-center"
                 >
                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center justify-center gap-2">
-                       <Ticket className="w-5 h-5 text-[hsl(45,93%,47%)]" />
+                       <Ticket className="w-5 h-5 text-gov-gold" />
                        {t('labels.participation')}
                    </h3>
 
@@ -488,7 +488,7 @@ export default function EvenementDetailPage() {
                          </div>
                          <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
                             <div 
-                               className="h-full bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] rounded-full transition-all duration-1000"
+                               className="h-full bg-gradient-to-r from-gov-blue to-[hsl(213,80%,40%)] rounded-full transition-all duration-1000"
                                style={{ width: `${Math.min((event.nombreInscrits / event.capaciteMax) * 100, 100)}%` }}
                             />
                          </div>
@@ -516,7 +516,7 @@ export default function EvenementDetailPage() {
                             href={event.lienInscription}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-bold hover:bg-[hsl(213,80%,35%)] shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
+                            className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gov-blue text-white rounded-xl font-bold hover:bg-[hsl(213,80%,35%)] shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-0.5"
                          >
                             {t('buttons.participate')}
                             <ExternalLink className="w-4 h-4" />
@@ -543,7 +543,7 @@ export default function EvenementDetailPage() {
                  </h3>
                 
                 <div className="flex flex-col items-center gap-4 mb-6">
-                   <div className="w-14 h-14 bg-[hsl(213,80%,28%)]/5 rounded-2xl flex items-center justify-center font-bold text-[hsl(213,80%,28%)] text-xl border border-[hsl(213,80%,28%)]/10 shadow-inner">
+                   <div className="w-14 h-14 bg-gov-blue/5 rounded-2xl flex items-center justify-center font-bold text-gov-blue text-xl border border-gov-blue/10 shadow-inner">
                       {(event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe?.[0] || event.etablissement.nom?.[0]) : event.etablissement.nom?.[0]) : 'M') || '?'}
                    </div>
                    <div>
@@ -566,13 +566,13 @@ export default function EvenementDetailPage() {
 
                 <div className="flex flex-col items-center justify-center space-y-3 pt-5 border-t border-gray-100">
                    {event.contactOrganisateur && (
-                      <a href={`tel:${event.contactOrganisateur}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
+                      <a href={`tel:${event.contactOrganisateur}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-gov-blue transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
                          <Phone className="w-4 h-4" />
                          {event.contactOrganisateur}
                       </a>
                    )}
                    {event.emailContact && (
-                      <a href={`mailto:${event.emailContact}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-[hsl(213,80%,28%)] transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
+                      <a href={`mailto:${event.emailContact}`} className="flex items-center justify-center gap-3 text-sm font-medium text-gray-700 hover:text-gov-blue transition-colors p-2 hover:bg-gray-50 rounded-xl w-full">
                          <Mail className="w-4 h-4" />
                          {t('buttons.contact_email')}
                       </a>

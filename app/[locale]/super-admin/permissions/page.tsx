@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Key,
   Shield,
@@ -71,98 +73,46 @@ export default function SuperAdminPermissionsPage() {
   const t = useTranslations('super_admin.permissions');
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [permissions, setPermissions] = useState<Permission[]>([]);
-  const [groupedPermissions, setGroupedPermissions] = useState<PermissionGroup[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [search, setSearch] = useState('');
-  
-  // Modal
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null);
-  const [actionLoading, setActionLoading] = useState<string | null>(null);
-  
-  // Form
-  const [form, setForm] = useState({
-    code: '',
-    nom: '',
-    description: '',
-    groupe: '',
-    groupeLabel: '',
-  });
+  const { data: permissionsData, isLoading: loading, isValidating: refreshing, mutate: fetchPermissions } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/permissions' : null);
+  const actionMutation = useMutation();
 
-  // Redirect if not SUPER_ADMIN
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.role !== 'SUPER_ADMIN') {
-      router.push('/admin');
-      toast.error('Accès réservé aux Super Administrateurs');
-    }
-  }, [status, session, router]);
+  const permissions = useMemo(() => {
+    return permissionsData?.permissions || [];
+  }, [permissionsData]);
 
-  // Fetch permissions
-  const fetchPermissions = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const res = await fetch('/api/permissions');
-      if (res.ok) {
-        const data = await res.json();
-        setPermissions(data.permissions || []);
-        
-        // Group permissions
-        const grouped: Record<string, Permission[]> = {};
-        (data.permissions || []).forEach((perm: Permission) => {
-          if (!grouped[perm.groupe]) {
-            grouped[perm.groupe] = [];
-          }
-          grouped[perm.groupe].push(perm);
-        });
-        
-        // Convert to array with icons
-        const groupedArray: PermissionGroup[] = Object.entries(grouped).map(([groupe, perms]) => ({
-          name: groupe,
-          label: perms[0]?.groupeLabel || groupe,
-          icon: GROUP_ICONS[groupe]?.icon || Lock,
-          color: GROUP_ICONS[groupe]?.color || 'from-gray-500 to-gray-700',
-          permissions: perms.sort((a, b) => a.ordre - b.ordre),
-        }));
-        
-        setGroupedPermissions(groupedArray);
+  const groupedPermissions = useMemo<PermissionGroup[]>(() => {
+    if (!permissions.length) return [];
+    
+    const grouped: Record<string, Permission[]> = {};
+    permissions.forEach((perm: Permission) => {
+      if (!grouped[perm.groupe]) {
+        grouped[perm.groupe] = [];
       }
-    } catch (error) {
-      console.error('Error fetching permissions:', error);
-      toast.error('Erreur lors du chargement');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      fetchPermissions();
-    }
-  }, [fetchPermissions, session]);
+      grouped[perm.groupe].push(perm);
+    });
+    
+    return Object.entries(grouped).map(([groupe, perms]) => ({
+      name: groupe,
+      label: perms[0]?.groupeLabel || groupe,
+      icon: GROUP_ICONS[groupe]?.icon || Lock,
+      color: GROUP_ICONS[groupe]?.color || 'from-gray-500 to-gray-700',
+      permissions: perms.sort((a, b) => a.ordre - b.ordre),
+    }));
+  }, [permissions]);
 
   // Toggle permission active state
   const handleToggleActive = async (perm: Permission) => {
     setActionLoading(`toggle-${perm.id}`);
     try {
-      const res = await fetch(`/api/permissions/${perm.id}`, {
+      await actionMutation.mutate(`/api/permissions/${perm.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !perm.isActive }),
+        data: { isActive: !perm.isActive },
       });
 
-      if (res.ok) {
-        toast.success(perm.isActive ? t('messages.deactivated') : t('messages.activated'));
-        fetchPermissions();
-      } else {
-        toast.error('Erreur lors de la mise à jour');
-      }
+      toast.success(perm.isActive ? t('messages.deactivated') : t('messages.activated'));
+      fetchPermissions();
     } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.error('Erreur lors de la mise à jour');
     } finally {
       setActionLoading(null);
     }
@@ -174,16 +124,11 @@ export default function SuperAdminPermissionsPage() {
     
     setActionLoading(`delete-${perm.id}`);
     try {
-      const res = await fetch(`/api/permissions/${perm.id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success(t('messages.deleted'));
-        fetchPermissions();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur lors de la suppression');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      await actionMutation.mutate(`/api/permissions/${perm.id}`, { method: 'DELETE' });
+      toast.success(t('messages.deleted'));
+      fetchPermissions();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur lors de la suppression');
     } finally {
       setActionLoading(null);
     }
@@ -203,24 +148,18 @@ export default function SuperAdminPermissionsPage() {
         : '/api/permissions';
       const method = selectedPermission ? 'PATCH' : 'POST';
       
-      const res = await fetch(url, {
+      await actionMutation.mutate(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        data: form,
       });
 
-      if (res.ok) {
-        toast.success(selectedPermission ? t('messages.updated') : t('messages.created'));
-        setShowCreateModal(false);
-        setSelectedPermission(null);
-        setForm({ code: '', nom: '', description: '', groupe: '', groupeLabel: '' });
-        fetchPermissions();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || 'Erreur');
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.success(selectedPermission ? t('messages.updated') : t('messages.created'));
+      setShowCreateModal(false);
+      setSelectedPermission(null);
+      setForm({ code: '', nom: '', description: '', groupe: '', groupeLabel: '' });
+      fetchPermissions();
+    } catch (error: any) {
+      toast.error(error.message || 'Erreur');
     } finally {
       setActionLoading(null);
     }

@@ -68,11 +68,11 @@ export default function PageLoader({
         <motion.div className="flex items-center gap-3">
           <div className="relative w-12 h-12">
             <motion.div
-              className="absolute inset-0 rounded-full border-2 border-t-[hsl(45,93%,47%)] border-r-[hsl(213,80%,28%)] border-b-transparent border-l-transparent"
+              className="absolute inset-0 rounded-full border-2 border-t-gov-gold border-r-gov-blue border-b-transparent border-l-transparent"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
-            <div className="absolute inset-2 bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] rounded-full flex items-center justify-center shadow-lg">
+            <div className="absolute inset-2 bg-gradient-to-br from-gov-blue to-[hsl(213,80%,40%)] rounded-full flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-sm">M</span>
             </div>
           </div>
@@ -92,7 +92,7 @@ export default function PageLoader({
       >
         <div className="relative w-20 h-20 mx-auto mb-6">
           <motion.div
-            className="absolute inset-0 bg-[hsl(213,80%,28%)]/10 rounded-full"
+            className="absolute inset-0 bg-gov-blue/10 rounded-full"
             animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
@@ -106,7 +106,7 @@ export default function PageLoader({
             animate={{ rotate: 360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
           />
-          <div className="absolute inset-3 bg-gradient-to-br from-[hsl(45,93%,47%)] to-[hsl(45,93%,55%)] rounded-full flex items-center justify-center shadow-lg">
+          <div className="absolute inset-3 bg-gradient-to-br from-gov-gold to-[hsl(45,93%,55%)] rounded-full flex items-center justify-center shadow-lg">
             <img 
               src="/images/logo-portal-mediouna.png" 
               alt="Logo"
@@ -119,7 +119,7 @@ export default function PageLoader({
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 rounded-full bg-[hsl(45,93%,47%)]"
+              className="w-2 h-2 rounded-full bg-gov-gold"
               animate={{
                 y: [-3, 3, -3],
                 opacity: [0.4, 1, 0.4],
@@ -139,14 +139,14 @@ export default function PageLoader({
 
   // Default & Fullscreen variant - same unified style
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] flex flex-col items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-gov-blue-dark via-gov-blue to-[hsl(213,80%,35%)] flex flex-col items-center justify-center overflow-hidden">
       
       {/* Subtle background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
         {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-[hsl(45,93%,47%)]"
+            className="absolute w-1 h-1 rounded-full bg-gov-gold"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -182,7 +182,7 @@ export default function PageLoader({
         >
           {/* Logo container - BIGGER SIZE - No glow */}
           <motion.div
-            className="relative w-36 h-36 rounded-full bg-gradient-to-br from-[hsl(45,93%,47%)] to-[hsl(45,93%,55%)] flex items-center justify-center shadow-xl"
+            className="relative w-36 h-36 rounded-full bg-gradient-to-br from-gov-gold to-[hsl(45,93%,55%)] flex items-center justify-center shadow-xl"
           >
             <img 
               src="/images/logo-portal-mediouna.png" 
@@ -204,7 +204,7 @@ export default function PageLoader({
         >
           <h1 className="text-3xl font-bold tracking-wider mb-2">
             <span className="text-white">PORTAIL </span>
-            <span className="text-[hsl(45,93%,47%)]">MEDIOUNA</span>
+            <span className="text-gov-gold">MEDIOUNA</span>
           </h1>
           <p className="text-white/50 text-sm">Province de Médiouna</p>
         </motion.div>
@@ -218,7 +218,7 @@ export default function PageLoader({
         >
           <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[hsl(45,93%,47%)] to-[hsl(213,80%,50%)]"
+              className="h-full bg-gradient-to-r from-gov-gold to-[hsl(213,80%,50%)]"
               initial={{ x: '-100%' }}
               animate={{ x: '100%' }}
               transition={{

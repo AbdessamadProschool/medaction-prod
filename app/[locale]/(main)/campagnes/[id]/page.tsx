@@ -325,7 +325,7 @@ export default function CampagneDetailPage() {
               )}
 
               <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-center">
-                <div className="flex items-center gap-3 text-[hsl(213,80%,28%)] font-black bg-blue-50 px-4 py-2.5 rounded-xl border border-blue-100/50 shadow-sm">
+                <div className="flex items-center gap-3 text-gov-blue font-black bg-blue-50 px-4 py-2.5 rounded-xl border border-blue-100/50 shadow-sm">
                   <Calendar className="w-5 h-5 text-blue-500" />
                   <span>{getPreciseStatus()}</span>
                 </div>
@@ -342,7 +342,7 @@ export default function CampagneDetailPage() {
               <button 
                 onClick={handleParticipate}
                 disabled={participating || campagne?.statut !== 'EN_COURS'}
-                className="w-full py-4 bg-gradient-to-r from-[hsl(213,80%,20%)] to-[hsl(213,80%,28%)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-4 bg-gradient-to-r from-gov-blue-dark to-gov-blue text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {participating ? (
                   <>

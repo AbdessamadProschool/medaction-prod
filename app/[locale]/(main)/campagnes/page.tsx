@@ -263,7 +263,7 @@ function CampagnesContent() {
                               >
                                  <button
                                     onClick={() => setSelectedCampagne(campagne)}
-                                    className="px-8 py-4 bg-[hsl(145,63%,32%)] text-white font-bold rounded-xl hover:bg-[hsl(145,63%,38%)] transition-all shadow-lg hover:shadow-[hsl(145,63%,32%)]/30 flex items-center justify-center gap-2"
+                                    className="px-8 py-4 bg-gov-green text-white font-bold rounded-xl hover:bg-gov-green-light transition-all shadow-lg hover:shadow-gov-green/30 flex items-center justify-center gap-2"
                                  >
                                     {t('participate')}
                                     <ArrowRight className="w-5 h-5" />
@@ -297,11 +297,11 @@ function CampagnesContent() {
          </div>
       ) : (
          // Simple Header for Search/Filter view
-         <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] py-16">
+         <div className="relative bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark py-16">
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/80 border border-white/10 backdrop-blur-sm text-sm font-medium mb-4">
-                  <Megaphone className="w-4 h-4 text-[hsl(45,93%,47%)]" />
+                  <Megaphone className="w-4 h-4 text-gov-gold" />
                   {t('initiatives_badge')}
                </span>
                <h1 className="text-3xl md:text-5xl font-black text-white mb-4">{t('hero_title')}</h1>
@@ -318,11 +318,11 @@ function CampagnesContent() {
           
           {/* ==================== SIDEBAR FILTERS ==================== */}
           <aside className="lg:w-80 flex-shrink-0">
-            <div className="bg-white rounded-3xl shadow-xl shadow-[hsl(213,80%,28%)]/5 border border-gray-100 p-6 sticky top-24">
+            <div className="bg-white rounded-3xl shadow-xl shadow-gov-blue/5 border border-gray-100 p-6 sticky top-24">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="font-bold text-gray-900 flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[hsl(213,80%,28%)]/10 flex items-center justify-center">
-                    <Filter className="w-4 h-4 text-[hsl(213,80%,28%)]" />
+                  <div className="w-8 h-8 rounded-lg bg-gov-blue/10 flex items-center justify-center">
+                    <Filter className="w-4 h-4 text-gov-blue" />
                   </div>
                   {t('filter_title')}
                 </h2>
@@ -342,19 +342,19 @@ function CampagnesContent() {
                    {tCommon('filters.search_label')}
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-gov-blue transition-colors" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => updateFilter('search', e.target.value)}
-                    className="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                    className="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-gov-blue/10 focus:border-gov-blue focus:bg-white transition-all shadow-inner"
                     placeholder={t('search_placeholder')}
                   />
                 </div>
               </div>
 
               {/* Quick Stats/Info or Categories if any */}
-              <div className="bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] rounded-2xl p-5 text-white shadow-lg shadow-blue-900/20">
+              <div className="bg-gradient-to-br from-gov-blue to-[hsl(213,80%,40%)] rounded-2xl p-5 text-white shadow-lg shadow-blue-900/20">
                  <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                        <Megaphone className="w-5 h-5 text-gov-gold" />
@@ -376,7 +376,7 @@ function CampagnesContent() {
              {/* Toolbar */}
              <div className="flex items-center justify-between gap-4 mb-8 bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3">
-                   <div className="w-1.5 h-6 bg-[hsl(45,93%,47%)] rounded-full" />
+                   <div className="w-1.5 h-6 bg-gov-gold rounded-full" />
                    <div className="text-sm font-bold text-gray-700">
                       {t('showing', { start: (page - 1) * 9 + 1, end: Math.min(page * 9, total), total })}
                    </div>
@@ -399,7 +399,7 @@ function CampagnesContent() {
                    <p className="text-gray-500 mb-6">{t('check_filters')}</p>
                    <button 
                       onClick={() => router.push('/campagnes')}
-                      className="text-[hsl(213,80%,28%)] font-bold hover:underline"
+                      className="text-gov-blue font-bold hover:underline"
                    >
                       {t('reset_filters')}
                    </button>
@@ -580,7 +580,7 @@ function CampagnesContent() {
                             <button
                                onClick={handleParticipate}
                                disabled={participating}
-                               className="w-full py-4 flex items-center justify-center gap-2 bg-[hsl(145,63%,32%)] text-white font-bold rounded-2xl hover:bg-[hsl(145,63%,38%)] transition-all shadow-lg hover:shadow-[hsl(145,63%,32%)]/30 disabled:opacity-70 disabled:cursor-not-allowed group"
+                               className="w-full py-4 flex items-center justify-center gap-2 bg-gov-green text-white font-bold rounded-2xl hover:bg-gov-green-light transition-all shadow-lg hover:shadow-gov-green/30 disabled:opacity-70 disabled:cursor-not-allowed group"
                             >
                                {participating ? (
                                <>
@@ -612,7 +612,7 @@ export default function CampagnesPage() {
    return (
       <Suspense fallback={
          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-            <div className="w-10 h-10 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-gov-blue border-t-transparent rounded-full animate-spin"></div>
          </div>
       }>
          <CampagnesContent />

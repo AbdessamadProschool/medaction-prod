@@ -83,7 +83,7 @@ export default function QuickFiltersSection() {
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(213,80%,35%)]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[hsl(45,93%,47%)]/8 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gov-gold/8 rounded-full blur-3xl" />
         <div className="absolute inset-0 gov-pattern opacity-20" />
       </div>
 
@@ -101,7 +101,7 @@ export default function QuickFiltersSection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-5 py-2 bg-white border border-[hsl(213,80%,35%)]/20 rounded-full shadow-sm mb-6"
           >
-            <div className="w-2 h-2 bg-[hsl(45,93%,47%)] rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-gov-gold rounded-full animate-pulse" />
             <span className="text-sm font-semibold text-[hsl(213,80%,35%)]">{t('search.quick')}</span>
           </motion.div>
           <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">

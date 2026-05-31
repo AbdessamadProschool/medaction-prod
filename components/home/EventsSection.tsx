@@ -20,14 +20,14 @@ interface Evenement {
 }
 
 const categoryColors: Record<string, string> = {
-  'Santé': 'bg-gov-red/10 text-gov-red border border-gov-red/20',
-  'Culture': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'Sport': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'Emploi': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'Économie': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'Environnement': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'Éducation': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'Développement': 'bg-gray-100 text-gray-700 border border-gray-200',
+  'Santé': 'gov-badge gov-badge-danger',
+  'Culture': 'gov-badge gov-badge-primary',
+  'Sport': 'gov-badge gov-badge-success',
+  'Emploi': 'gov-badge gov-badge-warning',
+  'Économie': 'gov-badge gov-badge-warning',
+  'Environnement': 'gov-badge gov-badge-success',
+  'Éducation': 'gov-badge gov-badge-primary',
+  'Développement': 'gov-badge bg-gray-100 text-gray-700 border-gray-200',
 };
 
 function getDaysUntil(dateStr: string): number {
@@ -254,7 +254,7 @@ export default function EventsSection() {
                     
                     {/* Badge catégorie */}
                     {event.typeCategorique && (
-                      <span className={`absolute top-4 ${locale === 'ar' ? 'right-4' : 'left-4'} px-3 py-1 rounded-full text-xs font-semibold ${categoryColor}`}>
+                      <span className={`absolute top-4 ${locale === 'ar' ? 'right-4' : 'left-4'} ${categoryColor}`}>
                         {translateCategory(event.typeCategorique)}
                       </span>
                     )}

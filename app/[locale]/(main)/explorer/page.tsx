@@ -5,7 +5,7 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 import SearchBar from '@/components/explorer/SearchBar';
 
 export const metadata = {
-  title: 'Explorer - MedAction',
+  title: 'Explorer - Portail Médiouna',
   description: 'Découvrez les événements, actualités et campagnes de la Province de Médiouna.',
 };
 

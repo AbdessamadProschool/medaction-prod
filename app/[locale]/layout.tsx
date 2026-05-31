@@ -10,6 +10,7 @@ import { SessionProvider } from "@/components/providers/SessionProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MaintenanceProvider } from "@/components/providers/MaintenanceProvider";
 import { LicenseProvider } from "@/components/providers/LicenseProvider";
+import { PwaProvider } from "@/components/providers/PwaProvider";
 // import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { Toaster } from "@/components/ui/sonner";
 import GlobalAnnouncement from "@/components/GlobalAnnouncement";
@@ -47,6 +48,7 @@ export const metadata: Metadata = {
     apple: "/images/logo-portal-mediouna.png?v=3",
     shortcut: "/images/logo-portal-mediouna.png?v=3",
   },
+  manifest: "/manifest.json",
   metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
   openGraph: {
     title: "Portail Mediouna",
@@ -101,8 +103,10 @@ export default async function RootLayout({
             <NextIntlClientProvider messages={messages} locale={locale}>
               <LicenseProvider>
                 <MaintenanceProvider>
-                  <GlobalAnnouncement />
-                  {children}
+                  <PwaProvider>
+                    <GlobalAnnouncement />
+                    {children}
+                  </PwaProvider>
                 </MaintenanceProvider>
               </LicenseProvider>
               <Toaster />

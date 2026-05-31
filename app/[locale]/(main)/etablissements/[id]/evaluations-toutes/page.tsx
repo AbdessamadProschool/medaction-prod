@@ -109,7 +109,7 @@ export default function ToutesEvaluationsPage() {
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900">Établissement non trouvé</h2>
-          <Link href="/etablissements" className="text-[hsl(213,80%,28%)] hover:underline mt-4 inline-block">
+          <Link href="/etablissements" className="text-gov-blue hover:underline mt-4 inline-block">
             Retour aux établissements
           </Link>
         </div>
@@ -120,7 +120,7 @@ export default function ToutesEvaluationsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] text-white">
+      <div className="bg-gradient-to-r from-gov-blue to-[hsl(213,80%,40%)] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Link
             href={`/etablissements/${etablissementId}`}
@@ -203,7 +203,7 @@ export default function ToutesEvaluationsPage() {
                     setSortBy(e.target.value);
                     setPage(1);
                   }}
-                  className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[hsl(213,80%,28%)]"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-gov-blue"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -214,7 +214,7 @@ export default function ToutesEvaluationsPage() {
 
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+                <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
               </div>
             ) : evaluations.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl">
@@ -234,7 +234,7 @@ export default function ToutesEvaluationsPage() {
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] flex items-center justify-center text-white font-bold">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gov-blue to-[hsl(213,80%,40%)] flex items-center justify-center text-white font-bold">
                           {evaluation.user.prenom.charAt(0)}{evaluation.user.nom.charAt(0)}
                         </div>
                         <div>
@@ -291,7 +291,7 @@ export default function ToutesEvaluationsPage() {
                       onClick={() => setPage(pageNum)}
                       className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                         page === pageNum
-                          ? 'bg-[hsl(213,80%,28%)] text-white'
+                          ? 'bg-gov-blue text-white'
                           : 'hover:bg-gray-100 text-gray-600'
                       }`}
                     >

@@ -45,7 +45,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
       className="group"
     >
       <Link href={`/articles/${article.id}`} className="block h-full">
-        <div className="h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 border border-gray-100 flex flex-col">
+        <div className="h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-gov-blue/5 transition-all duration-300 border border-gray-100 flex flex-col">
           {/* Image */}
           <div className="relative h-56 overflow-hidden bg-gray-100">
             {article.imageCouverture ? (
@@ -67,7 +67,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
             {/* Category */}
             {article.categorie && (
               <div className="absolute top-4 left-4">
-                <span className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-xs font-bold text-[hsl(213,80%,28%)] shadow-sm border border-white/20">
+                <span className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-xs font-bold text-gov-blue shadow-sm border border-white/20">
                   {t('categories.' + getCategoryKey(article.categorie))}
                 </span>
               </div>
@@ -92,7 +92,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
               </span>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight">
+            <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-gov-blue transition-colors leading-tight">
               {article.titre}
             </h3>
 
@@ -104,7 +104,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
             <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
               {article.auteur ? (
                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[hsl(213,80%,28%)]/10 flex items-center justify-center text-[hsl(213,80%,28%)] text-xs font-bold">
+                    <div className="w-6 h-6 rounded-full bg-gov-blue/10 flex items-center justify-center text-gov-blue text-xs font-bold">
                        {article.auteur.prenom[0]}
                     </div>
                     <span className="text-xs font-semibold text-gray-700">
@@ -115,7 +115,7 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
                 <div />
               )}
               
-              <span className="flex items-center gap-1 text-sm font-bold text-[hsl(45,93%,47%)] group-hover:translate-x-1 transition-transform">
+              <span className="flex items-center gap-1 text-sm font-bold text-gov-gold group-hover:translate-x-1 transition-transform">
                 {t('read')}
                 <ArrowRight className="w-4 h-4" />
               </span>

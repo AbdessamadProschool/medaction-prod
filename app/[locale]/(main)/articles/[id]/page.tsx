@@ -108,7 +108,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
         <div className="text-center">
           <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h1 className="text-xl font-semibold text-gray-900 mb-2">{error || tNews('detail.not_found')}</h1>
-          <Link href="/articles" className="text-[hsl(213,80%,28%)] hover:underline font-medium">
+          <Link href="/articles" className="text-gov-blue hover:underline font-medium">
             {tNews('detail.back_to_list')}
           </Link>
         </div>
@@ -140,7 +140,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             priority
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)]">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gov-blue to-[hsl(213,80%,35%)]">
             <BookOpen className="w-24 h-24 text-white/20" />
           </div>
         )}
@@ -171,7 +171,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             {/* Category Badge */}
             <div className="flex items-center justify-between mb-6">
                {article.categorie && (
-                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[hsl(213,80%,28%)]/5 text-[hsl(213,80%,28%)] rounded-lg text-sm font-bold tracking-wide uppercase">
+                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gov-blue/5 text-gov-blue rounded-lg text-sm font-bold tracking-wide uppercase">
                    <Tag size={13} strokeWidth={2.5} />
                    {t('categories.' + getCategoryKey(article.categorie))}
                  </span>
@@ -179,7 +179,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                
                <button
                  onClick={handleShare}
-                 className="flex items-center gap-2 text-gray-400 hover:text-[hsl(213,80%,28%)] transition-colors text-sm font-medium"
+                 className="flex items-center gap-2 text-gray-400 hover:text-gov-blue transition-colors text-sm font-medium"
                >
                  <Share2 size={16} />
                  {tNews('detail.share')}
@@ -195,7 +195,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-100">
                {article.auteur && (
                  <div className="flex items-center gap-3 pr-6 border-r border-gray-100">
-                    <div className="w-10 h-10 rounded-full bg-[hsl(213,80%,28%)] flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-10 h-10 rounded-full bg-gov-blue flex items-center justify-center text-white font-bold text-lg">
                        {article.auteur.prenom[0]}
                     </div>
                     <div>
@@ -208,7 +208,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                <div className="flex flex-col">
                   <span className="text-xs text-gray-400 uppercase tracking-wide font-semibold">{t('published_on') || 'Publié le'}</span>
                   <span className="flex items-center gap-1.5 font-medium text-gray-700">
-                    <Clock size={16} className="text-[hsl(45,93%,47%)]" />
+                    <Clock size={16} className="text-gov-gold" />
                     {new Date(article.datePublication || article.createdAt).toLocaleDateString(locale, {
                       day: 'numeric',
                       month: 'long',
@@ -220,7 +220,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                <div className="flex flex-col">
                   <span className="text-xs text-gray-400 uppercase tracking-wide font-semibold">{tNews('detail.views', { count: '' }).replace('{count}', '').trim() || 'Vues'}</span>
                   <span className="flex items-center gap-1.5 font-medium text-gray-700">
-                    <Eye size={16} className="text-[hsl(45,93%,47%)]" />
+                    <Eye size={16} className="text-gov-gold" />
                     {tNews('detail.views', { count: article.vues })}
                   </span>
                </div>
@@ -228,7 +228,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Resume / Abstract */}
             {article.resume && (
-               <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-2 border-[hsl(45,93%,47%)]">
+               <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-2 border-gov-gold">
                   <p className="text-lg text-gray-700 italic leading-relaxed font-medium">
                      {locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume}
                   </p>
@@ -237,7 +237,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Main Content */}
             <SafeHTML 
-              className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-[hsl(213,80%,28%)] prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
+              className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-gov-blue prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
               html={locale === 'ar' && article.contenuAr ? article.contenuAr : article.contenu}
             />
 
@@ -270,7 +270,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
           >
             <div className="flex items-center justify-between mb-6">
                <h2 className="text-2xl font-bold text-gray-900">{tNews('detail.related_articles')}</h2>
-               <Link href="/articles" className="text-sm font-bold text-[hsl(213,80%,28%)] hover:underline flex items-center gap-1">
+               <Link href="/articles" className="text-sm font-bold text-gov-blue hover:underline flex items-center gap-1">
                   {t('see_all') || 'Voir tout'} <ArrowRight size={16} />
                </Link>
             </div>
@@ -299,11 +299,11 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                   
                   <div className="flex-1 min-w-0 py-1">
                      {art.categorie && (
-                       <span className="text-[10px] font-bold text-[hsl(213,80%,28%)] uppercase tracking-wide bg-blue-50 px-2 py-0.5 rounded-md mb-2 inline-block">
+                       <span className="text-[10px] font-bold text-gov-blue uppercase tracking-wide bg-blue-50 px-2 py-0.5 rounded-md mb-2 inline-block">
                          {t('categories.' + getCategoryKey(art.categorie))}
                        </span>
                      )}
-                    <h3 className="font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-[hsl(213,80%,28%)] transition-colors mb-2">
+                    <h3 className="font-bold text-gray-900 line-clamp-2 leading-tight group-hover:text-gov-blue transition-colors mb-2">
                       {art.titre}
                     </h3>
                     {art.datePublication && (
@@ -314,7 +314,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
                   </div>
                   
                   <div className="self-center">
-                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-[hsl(213,80%,28%)] group-hover:text-white transition-all">
+                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-gov-blue group-hover:text-white transition-all">
                         <ChevronRight size={16} />
                      </div>
                   </div>

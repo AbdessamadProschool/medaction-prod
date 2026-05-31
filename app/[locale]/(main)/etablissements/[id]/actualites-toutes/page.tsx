@@ -108,7 +108,7 @@ export default function ToutesActualitesPage() {
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900">Établissement non trouvé</h2>
-          <Link href="/etablissements" className="text-[hsl(213,80%,28%)] hover:underline mt-4 inline-block">
+          <Link href="/etablissements" className="text-gov-blue hover:underline mt-4 inline-block">
             Retour aux établissements
           </Link>
         </div>
@@ -119,7 +119,7 @@ export default function ToutesActualitesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,40%)] text-white">
+      <div className="bg-gradient-to-r from-gov-blue to-[hsl(213,80%,40%)] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Link
             href={`/etablissements/${etablissementId}`}
@@ -157,7 +157,7 @@ export default function ToutesActualitesPage() {
                 setCategorieFilter(e.target.value);
                 setPage(1);
               }}
-              className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-[hsl(213,80%,28%)]"
+              className="px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-gov-blue"
             >
               <option value="">Toutes les catégories</option>
               {Object.entries(CATEGORIES).map(([key, { label }]) => (
@@ -169,7 +169,7 @@ export default function ToutesActualitesPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+            <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
           </div>
         ) : actualites.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl">
@@ -227,7 +227,7 @@ export default function ToutesActualitesPage() {
                       </span>
                     </div>
 
-                    <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors">
+                    <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-gov-blue transition-colors">
                       {actu.titre}
                     </h3>
 
@@ -237,7 +237,7 @@ export default function ToutesActualitesPage() {
 
                     <Link
                       href={`/actualites/${actu.id}`}
-                      className="inline-flex items-center gap-1 text-[hsl(213,80%,28%)] font-medium text-sm hover:gap-2 transition-all"
+                      className="inline-flex items-center gap-1 text-gov-blue font-medium text-sm hover:gap-2 transition-all"
                     >
                       Lire la suite
                       <ExternalLink className="w-4 h-4" />
@@ -278,7 +278,7 @@ export default function ToutesActualitesPage() {
                   onClick={() => setPage(pageNum)}
                   className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                     page === pageNum
-                      ? 'bg-[hsl(213,80%,28%)] text-white'
+                      ? 'bg-gov-blue text-white'
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
                 >

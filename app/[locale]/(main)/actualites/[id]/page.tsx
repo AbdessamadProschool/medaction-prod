@@ -139,7 +139,7 @@ export default function ActualiteDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-gov-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ export default function ActualiteDetailPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center pt-24">
          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('detail.not_found')}</h1>
-         <Link href="/actualites" className="text-[hsl(213,80%,28%)] underline hover:text-[hsl(45,93%,47%)]">
+         <Link href="/actualites" className="text-gov-blue underline hover:text-gov-gold">
            {t('detail.back_to_list')}
          </Link>
       </div>
@@ -200,7 +200,7 @@ export default function ActualiteDetailPage() {
                className="text-white"
             >
                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span className={`px-3 py-1 bg-[hsl(45,93%,47%)] text-[hsl(213,80%,20%)] text-xs font-bold rounded-full uppercase tracking-wider shadow-lg`}>
+                  <span className={`px-3 py-1 bg-gov-gold text-gov-blue-dark text-xs font-bold rounded-full uppercase tracking-wider shadow-lg`}>
                     {t('categories.' + getCategoryKey(actualite.categorie))}
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded-full">
@@ -279,8 +279,8 @@ export default function ActualiteDetailPage() {
               {/* Main HTML Content */}
               <SafeHTML 
                  className={`prose prose-lg prose-slate max-w-none 
-                 prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-[hsl(213,80%,28%)]
-                 prose-a:text-[hsl(45,93%,47%)] prose-a:no-underline hover:prose-a:underline
+                 prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-gov-blue
+                 prose-a:text-gov-gold prose-a:no-underline hover:prose-a:underline
                  prose-blockquote:border prose-blockquote:border-[hsl(var(--gov-gold)/0.35)] prose-blockquote:bg-gov-gold/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
                  html={locale === 'ar' && actualite.contenuAr ? actualite.contenuAr : actualite.contenu}
               />
@@ -306,7 +306,7 @@ export default function ActualiteDetailPage() {
                  </div>
                  <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5">{t('detail.official_source')}</p>
-                    <Link href={`/etablissements/${actualite.etablissement?.id || ''}`} className="font-bold text-gray-900 text-lg hover:text-[hsl(213,80%,28%)]">
+                    <Link href={`/etablissements/${actualite.etablissement?.id || ''}`} className="font-bold text-gray-900 text-lg hover:text-gov-blue">
                        {locale === 'ar' ? (actualite.etablissement?.nomArabe || actualite.etablissement?.nom) : actualite.etablissement?.nom || 'N/A'}
                     </Link>
                     <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -322,7 +322,7 @@ export default function ActualiteDetailPage() {
         {images.length > 1 && (
            <div className="mt-12">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                 <span className="w-2 h-8 bg-[hsl(213,80%,28%)] rounded-full" />
+                 <span className="w-2 h-8 bg-gov-blue rounded-full" />
                  {t('detail.gallery')}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

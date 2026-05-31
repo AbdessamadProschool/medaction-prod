@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { useMutation } from '@/hooks/use-mutation';
 import {
   Settings,
   ArrowLeft,
@@ -186,9 +188,11 @@ export default function SuperAdminSettingsPage() {
   const router = useRouter();
   const t = useTranslations();
   const [settings, setSettings] = useState<SystemSettings>(DEFAULT_SETTINGS);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+
+  const { data: settingsData, isLoading: loading } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/settings' : null);
+  const actionMutation = useMutation();
 
   // Redirect if not SUPER_ADMIN
   useEffect(() => {
@@ -202,24 +206,10 @@ export default function SuperAdminSettingsPage() {
 
   // Fetch settings
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await fetch('/api/settings');
-        if (res.ok) {
-          const data = await res.json();
-          setSettings({ ...DEFAULT_SETTINGS, ...data });
-        }
-      } catch (error) {
-        console.error('Error fetching settings:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (session?.user?.role === 'SUPER_ADMIN') {
-      fetchSettings();
+    if (settingsData && !hasChanges) {
+      setSettings({ ...DEFAULT_SETTINGS, ...settingsData });
     }
-  }, [session]);
+  }, [settingsData, hasChanges]);
 
   // Update a setting
   const updateSetting = <K extends keyof SystemSettings>(
@@ -241,20 +231,15 @@ export default function SuperAdminSettingsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/settings', {
+      await actionMutation.mutate('/api/settings', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
+        data: settings,
       });
 
-      if (res.ok) {
-        toast.success(t('system_settings.toasts.save_success'));
-        setHasChanges(false);
-      } else {
-        toast.error(t('system_settings.toasts.save_error'));
-      }
-    } catch (error) {
-      toast.error('Erreur de connexion');
+      toast.success(t('system_settings.toasts.save_success'));
+      setHasChanges(false);
+    } catch (error: any) {
+      toast.error(t('system_settings.toasts.save_error'));
     } finally {
       setSaving(false);
     }

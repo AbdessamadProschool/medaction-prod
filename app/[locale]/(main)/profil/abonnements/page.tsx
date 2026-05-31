@@ -157,7 +157,7 @@ export default function AbonnementsPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                <Link href="/profil" className="hover:text-[hsl(213,80%,28%)]">{tCommon('user')}</Link>
+                <Link href="/profil" className="hover:text-gov-blue">{tCommon('user')}</Link>
                 <span>/</span>
                 <span className="text-gray-900">{t('breadcrumb')}</span>
               </div>
@@ -193,7 +193,7 @@ export default function AbonnementsPage() {
           {/* Contenu */}
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+              <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
             </div>
           ) : filteredAbonnements.length === 0 ? (
             <div className="gov-card text-center py-16">
@@ -227,7 +227,7 @@ export default function AbonnementsPage() {
                       className="gov-card p-0 overflow-hidden group"
                     >
                       {/* Image ou placeholder */}
-                      <div className="relative h-32 bg-gradient-to-br from-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] overflow-hidden">
+                      <div className="relative h-32 bg-gradient-to-br from-gov-blue to-[hsl(213,80%,35%)] overflow-hidden">
                         {abonnement.etablissement.photoPrincipale ? (
                           <OptimizedImage
                             src={abonnement.etablissement.photoPrincipale}
@@ -251,7 +251,7 @@ export default function AbonnementsPage() {
                         {/* Notification badge */}
                         <span className={`absolute top-3 right-3 p-1.5 rounded-lg backdrop-blur ${
                           abonnement.notificationsActives 
-                            ? 'bg-[hsl(45,93%,47%)]/90 text-gray-900' 
+                            ? 'bg-gov-gold/90 text-gray-900' 
                             : 'bg-white/50 text-gray-500'
                         }`}>
                           {abonnement.notificationsActives ? <Bell size={14} /> : <BellOff size={14} />}
@@ -264,7 +264,7 @@ export default function AbonnementsPage() {
                           href={`/etablissements/${abonnement.etablissement.id}`}
                           className="block"
                         >
-                          <h3 className="font-semibold text-gray-900 group-hover:text-[hsl(213,80%,28%)] transition-colors line-clamp-1">
+                          <h3 className="font-semibold text-gray-900 group-hover:text-gov-blue transition-colors line-clamp-1">
                             {abonnement.etablissement.nom}
                           </h3>
                           <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
@@ -292,7 +292,7 @@ export default function AbonnementsPage() {
                             disabled={actionLoading === abonnement.id}
                             className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
                               abonnement.notificationsActives
-                                ? 'bg-[hsl(45,93%,47%)]/10 text-[hsl(45,93%,35%)] hover:bg-[hsl(45,93%,47%)]/20'
+                                ? 'bg-gov-gold/10 text-[hsl(45,93%,35%)] hover:bg-gov-gold/20'
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                           >

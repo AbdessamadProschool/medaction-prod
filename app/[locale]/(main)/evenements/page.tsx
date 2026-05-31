@@ -122,13 +122,13 @@ function EvenementsContent() {
         }}
       />
       {/* ==================== HERO HEADER ==================== */}
-      <div className="relative bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark overflow-hidden">
         {/* Background Patterns */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
 
         
         {/* Bande Tricolore Top */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)] shadow-md z-10" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green shadow-md z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
@@ -137,7 +137,7 @@ function EvenementsContent() {
               animate={{ opacity: 1, x: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium mb-4"
             >
-              <Calendar className="w-4 h-4 text-[hsl(45,93%,47%)]" />
+              <Calendar className="w-4 h-4 text-gov-gold" />
               {t('events_page.badge')}
             </motion.div>
             
@@ -172,11 +172,11 @@ function EvenementsContent() {
                className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-gray-200 shadow-sm text-gray-900 font-semibold"
              >
                  <span className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-[hsl(213,80%,28%)]" />
+                  <Filter className="w-5 h-5 text-gov-blue" />
                   {t('filters.search_label')}
                 </span>
                 {hasActiveFilters && (
-                  <span className="bg-[hsl(45,93%,47%)] text-[hsl(213,80%,28%)] text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-gov-gold text-gov-blue text-xs font-bold px-2 py-0.5 rounded-full">
                     {tCommon('filters.active')}
                   </span>
                 )}
@@ -213,13 +213,13 @@ function EvenementsContent() {
                       {tCommon('filters.search_label')}
                     </label>
                     <div className="relative">
-                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[hsl(213,80%,28%)] transition-colors" />
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-gov-blue transition-colors" />
                       <input
                         type="text"
                         value={search}
                         onChange={(e) => updateFilter('search', e.target.value)}
                         placeholder={tCommon('filters.search_placeholder')}
-                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-[hsl(213,80%,28%)]/10 focus:border-[hsl(213,80%,28%)] focus:bg-white transition-all shadow-inner"
+                        className="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-gov-blue/10 focus:border-gov-blue focus:bg-white transition-all shadow-inner"
                       />
                     </div>
                   </div>
@@ -238,11 +238,11 @@ function EvenementsContent() {
                             onClick={() => updateFilter('status', tab.id)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all group ${
                               statusParam === tab.id
-                                ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg shadow-blue-900/20 font-bold'
+                                ? 'bg-gov-blue text-white shadow-lg shadow-blue-900/20 font-bold'
                                 : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
                             }`}
                           >
-                            <tab.icon className={`w-4 h-4 transition-colors ${statusParam === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-[hsl(213,80%,28%)]'}`} />
+                            <tab.icon className={`w-4 h-4 transition-colors ${statusParam === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-gov-blue'}`} />
                             {tCommon(`filters.${labelKey}`)}
                             {statusParam === tab.id && <motion.div layoutId="statusDot" className="ml-auto w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                           </button>
@@ -287,13 +287,13 @@ function EvenementsContent() {
                <div className="flex bg-gray-100 p-1 rounded-lg">
                   <button
                     onClick={() => setView('grid')}
-                    className={`p-2 rounded-md transition-all ${view === 'grid' ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-md transition-all ${view === 'grid' ? 'bg-white text-gov-blue shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setView('list')}
-                    className={`p-2 rounded-md transition-all ${view === 'list' ? 'bg-white text-[hsl(213,80%,28%)] shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-md transition-all ${view === 'list' ? 'bg-white text-gov-blue shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                   >
                     <List className="w-4 h-4" />
                   </button>
@@ -318,7 +318,7 @@ function EvenementsContent() {
                  </div>
                  <h3 className="text-lg font-bold text-gray-900 mb-2">{t('events_page.empty_title')}</h3>
                  <p className="text-gray-500 max-w-sm mx-auto mb-6">{t('events_page.empty_desc')}</p>
-                 <button onClick={resetFilters} className="px-5 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2">
+                 <button onClick={resetFilters} className="px-5 py-2.5 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,35%)] transition-colors inline-flex items-center gap-2">
                    <X className="w-4 h-4" />
                    {t('filters.reset')}
                  </button>
@@ -353,7 +353,7 @@ function EvenementsContent() {
 
 export default function EvenementsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full animate-spin"></div></div>}>
       <EvenementsContent />
     </Suspense>
   );

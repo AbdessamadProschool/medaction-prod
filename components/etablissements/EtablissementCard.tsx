@@ -67,7 +67,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="relative group bg-white rounded-xl p-4 border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-lg hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300"
+        className="relative group bg-white rounded-xl p-4 border border-gray-100 hover:border-gov-blue/30 hover:shadow-lg hover:shadow-gov-blue/5 transition-all duration-300"
       >
         <div className="flex gap-4 md:gap-6">
           {/* Image Thumbnail */}
@@ -103,7 +103,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
                 </span>
               </div>
               
-              <h3 className="text-base md:text-lg font-bold text-gray-900 group-hover:text-[hsl(213,80%,28%)] transition-colors line-clamp-1 mb-1">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 group-hover:text-gov-blue transition-colors line-clamp-1 mb-1">
                 <Link href={`/etablissements/${etablissement.id}`} className="focus:outline-none focus:underline">
                   <span aria-hidden="true" className="absolute inset-0" />
                   {etablissement.nom}
@@ -122,7 +122,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
               </div>
 
               <div className="hidden md:flex items-center gap-2">
-                <span className="text-xs font-medium text-[hsl(213,80%,28%)] group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                <span className="text-xs font-medium text-gov-blue group-hover:translate-x-1 transition-transform flex items-center gap-1">
                   {t('common.view_details')}
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -141,7 +141,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="relative group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[hsl(213,80%,28%)]/30 hover:shadow-xl hover:shadow-[hsl(213,80%,28%)]/5 transition-all duration-300 flex flex-col h-full"
+      className="relative group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-gov-blue/30 hover:shadow-xl hover:shadow-gov-blue/5 transition-all duration-300 flex flex-col h-full"
     >
       {/* Image Area */}
       <div className="relative h-44 overflow-hidden bg-gray-100">
@@ -187,7 +187,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
             )}
           </div>
 
-          <h3 className="text-lg text-center font-bold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-[hsl(213,80%,28%)] transition-colors">
+          <h3 className="text-lg text-center font-bold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-gov-blue transition-colors">
             <Link href={`/etablissements/${etablissement.id}`} className="focus:outline-none focus:underline">
               <span aria-hidden="true" className="absolute inset-0" />
               {etablissement.nom}
@@ -207,7 +207,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
         <div className="pt-4 mt-2 border-t border-gray-50 flex items-center justify-between text-xs font-medium text-gray-500">
            <div className="flex gap-3">
              {etablissement._count && etablissement._count.evenements > 0 && (
-                <span className="flex items-center gap-1 text-[hsl(213,80%,28%)] bg-[hsl(213,80%,28%)]/5 px-2 py-1 rounded-md">
+                <span className="flex items-center gap-1 text-gov-blue bg-gov-blue/5 px-2 py-1 rounded-md">
                    📅 {etablissement._count.evenements}
                 </span>
              )}
@@ -218,7 +218,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
              )}
            </div>
            
-           <span className="flex items-center gap-1 text-[hsl(213,80%,28%)] opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
+           <span className="flex items-center gap-1 text-gov-blue opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
              {t('common.access')}
              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

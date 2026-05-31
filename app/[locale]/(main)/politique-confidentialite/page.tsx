@@ -23,7 +23,7 @@ export default function ConfidentialitePage() {
           </p>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('data_collection.title')}
             </h2>
             <p>
@@ -37,7 +37,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('data_usage.title')}
             </h2>
             <p>
@@ -52,7 +52,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('disclaimer.title')}
             </h2>
             <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
@@ -68,7 +68,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('province_rights.title')}
             </h2>
             <p>
@@ -83,7 +83,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('cookies.title')}
             </h2>
             <p>
@@ -92,7 +92,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('modification.title')}
             </h2>
             <p>
@@ -101,7 +101,7 @@ export default function ConfidentialitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('acceptance.title')}
             </h2>
             <p>

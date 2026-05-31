@@ -153,7 +153,7 @@ export default function NotificationsPage() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[hsl(213,80%,28%)] animate-spin" />
+        <Loader2 className="w-8 h-8 text-gov-blue animate-spin" />
       </div>
     );
   }
@@ -206,7 +206,7 @@ export default function NotificationsPage() {
             Retour au profil
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-            <Bell className="text-[hsl(213,80%,28%)]" />
+            <Bell className="text-gov-blue" />
             Préférences de notifications
           </h1>
           <p className="text-gray-500 mt-1">
@@ -269,7 +269,7 @@ export default function NotificationsPage() {
                       onChange={(e) => handleToggle('email', cat.id, e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[hsl(213,80%,28%)]"></div>
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gov-blue"></div>
                   </label>
                 </div>
               );
@@ -291,7 +291,7 @@ export default function NotificationsPage() {
                   onChange={(e) => handleToggle('email', 'newsletter', e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[hsl(213,80%,28%)]"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gov-blue"></div>
               </label>
             </div>
           </div>

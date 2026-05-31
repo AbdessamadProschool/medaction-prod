@@ -19,15 +19,15 @@ interface Actualite {
 }
 
 const categoryColors: Record<string, string> = {
-  'Santé': 'bg-gov-red/10 text-gov-red border border-gov-red/20',
-  'Infrastructure': 'bg-gray-100 text-gray-700 border border-gray-200',
-  'Éducation': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'Économie': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'Environnement': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'Social': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'Culture': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'Transport': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'Sport': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
+  'Santé': 'gov-badge gov-badge-danger',
+  'Infrastructure': 'gov-badge bg-gray-100 text-gray-700 border-gray-200',
+  'Éducation': 'gov-badge gov-badge-primary',
+  'Économie': 'gov-badge gov-badge-warning',
+  'Environnement': 'gov-badge gov-badge-success',
+  'Social': 'gov-badge gov-badge-success',
+  'Culture': 'gov-badge gov-badge-primary',
+  'Transport': 'gov-badge gov-badge-warning',
+  'Sport': 'gov-badge gov-badge-success',
 };
 
 function formatDate(dateStr?: string, locale: string = 'fr'): string {
@@ -81,18 +81,18 @@ const categoryKeys: Record<string, string> = {
 
 // Couleurs par défaut pour les clés en majuscules (codes API)
 const categoryColorsMap: Record<string, string> = {
-  'SANTE': 'bg-gov-red/10 text-gov-red border border-gov-red/20',
-  'TRAVAUX': 'bg-gray-100 text-gray-700 border border-gray-200',
-  'EDUCATION': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'ECONOMIE': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'ECOLOGIE': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'SOLIDARITE': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'CULTURE': 'bg-gov-blue/10 text-gov-blue border border-gov-blue/20',
-  'TRANSPORT': 'bg-gov-gold/10 text-gov-gold-dark border border-gov-gold/20',
-  'SPORT': 'bg-gov-green/10 text-gov-green border border-gov-green/20',
-  'PARTENARIAT': 'bg-blue-100 text-blue-700 border border-blue-200',
-  'SUCCESS_STORY': 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-  'ANNONCE': 'bg-gray-100 text-gray-800 border border-gray-200',
+  'SANTE': 'gov-badge gov-badge-danger',
+  'TRAVAUX': 'gov-badge bg-gray-100 text-gray-700 border-gray-200',
+  'EDUCATION': 'gov-badge gov-badge-primary',
+  'ECONOMIE': 'gov-badge gov-badge-warning',
+  'ECOLOGIE': 'gov-badge gov-badge-success',
+  'SOLIDARITE': 'gov-badge gov-badge-success',
+  'CULTURE': 'gov-badge gov-badge-primary',
+  'TRANSPORT': 'gov-badge gov-badge-warning',
+  'SPORT': 'gov-badge gov-badge-success',
+  'PARTENARIAT': 'gov-badge bg-blue-100 text-blue-700 border-blue-200',
+  'SUCCESS_STORY': 'gov-badge bg-yellow-100 text-yellow-800 border-yellow-200',
+  'ANNONCE': 'gov-badge bg-gray-100 text-gray-800 border-gray-200',
 };
 
 export default function NewsSection() {
@@ -220,7 +220,7 @@ export default function NewsSection() {
                   
                     {featuredNews.categorie && (
                     <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold shadow-lg ${getCategoryColor(featuredNews.categorie)}`}>
+                      <span className={`shadow-lg ${getCategoryColor(featuredNews.categorie)}`}>
                         {translateCategory(featuredNews.categorie)}
                       </span>
                     </div>
@@ -273,7 +273,7 @@ export default function NewsSection() {
                       </div>
                       <div className="flex-1 p-4 md:p-5">
                         {news.categorie && (
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-2 ${getCategoryColor(news.categorie)}`}>
+                          <span className={`mb-2 ${getCategoryColor(news.categorie)}`}>
                             {translateCategory(news.categorie)}
                           </span>
                         )}
@@ -308,7 +308,7 @@ export default function NewsSection() {
                 <Link href={`/actualites/${news.id}`} className="block group">
                   <div className="bg-white rounded-xl shadow-md shadow-gray-200/50 border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                     {news.categorie && (
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-3 ${getCategoryColor(news.categorie)}`}>
+                      <span className={`mb-3 ${getCategoryColor(news.categorie)}`}>
                         {translateCategory(news.categorie)}
                       </span>
                     )}

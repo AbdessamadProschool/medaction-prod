@@ -18,7 +18,7 @@ function SuccessContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(213,80%,28%)]/5 to-[hsl(45,93%,47%)]/5 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gov-blue/5 to-gov-gold/5 flex items-center justify-center p-4">
       {/* Confetti Animation */}
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -57,13 +57,13 @@ function SuccessContent() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-          className="w-24 h-24 mx-auto mb-6 bg-[hsl(145,63%,32%)]/10 rounded-full flex items-center justify-center"
+          className="w-24 h-24 mx-auto mb-6 bg-gov-green/10 rounded-full flex items-center justify-center"
         >
           <motion.svg
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="w-12 h-12 text-[hsl(145,63%,32%)]"
+            className="w-12 h-12 text-gov-green"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -128,7 +128,7 @@ export default function SuccesPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-[hsl(213,80%,28%)] border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-gov-blue border-t-transparent rounded-full" />
       </div>
     }>
       <SuccessContent />

@@ -189,9 +189,9 @@ export default function AdminHeader() {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 p-1.5 hover:bg-[hsl(213,80%,28%)]/10 rounded-lg transition-colors"
+              className="flex items-center gap-2 p-1.5 hover:bg-gov-blue/10 rounded-lg transition-colors"
             >
-              <div className="w-8 h-8 bg-[hsl(45,93%,47%)] rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">
+              <div className="w-8 h-8 bg-gov-gold rounded-full flex items-center justify-center text-gray-900 text-sm font-bold">
                 {session?.user?.prenom?.[0] || session?.user?.nom?.[0] || 'A'}
               </div>
               <ChevronDown size={16} className="text-gray-500" />

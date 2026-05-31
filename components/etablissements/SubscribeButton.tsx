@@ -144,7 +144,7 @@ export default function SubscribeButton({
     return (
       <button
         onClick={handleSubscribe}
-        className={`inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,25%)] transition-colors ${className}`}
+        className={`inline-flex items-center gap-2 px-4 py-2.5 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,25%)] transition-colors ${className}`}
       >
         <UserPlus className="w-4 h-4" />
         {variant !== 'compact' && <span>{t('subscribe')}</span>}
@@ -160,7 +160,7 @@ export default function SubscribeButton({
           <button
             onClick={handleUnsubscribe}
             disabled={loading}
-            className="p-2 bg-[hsl(145,63%,32%)]/10 text-[hsl(145,63%,32%)] rounded-lg hover:bg-[hsl(145,63%,32%)]/20 transition-colors disabled:opacity-50"
+            className="p-2 bg-gov-green/10 text-gov-green rounded-lg hover:bg-gov-green/20 transition-colors disabled:opacity-50"
             title="Se désabonner"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
@@ -170,7 +170,7 @@ export default function SubscribeButton({
             disabled={loading}
             className={`p-2 rounded-lg transition-colors disabled:opacity-50 ${
               abonnement.notificationsActives 
-                ? 'bg-[hsl(45,93%,47%)]/20 text-[hsl(45,93%,35%)]' 
+                ? 'bg-gov-gold/20 text-[hsl(45,93%,35%)]' 
                 : 'bg-gray-100 text-gray-400'
             }`}
             title={abonnement.notificationsActives ? 'Désactiver les notifications' : 'Activer les notifications'}
@@ -186,7 +186,7 @@ export default function SubscribeButton({
         <button
           onClick={handleUnsubscribe}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(145,63%,32%)]/10 text-[hsl(145,63%,32%)] border border-[hsl(145,63%,32%)]/30 rounded-xl font-medium hover:bg-[hsl(145,63%,32%)]/20 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gov-green/10 text-gov-green border border-gov-green/30 rounded-xl font-medium hover:bg-gov-green/20 transition-colors disabled:opacity-50"
         >
           {loading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -200,7 +200,7 @@ export default function SubscribeButton({
           disabled={loading}
           className={`p-2.5 rounded-xl border transition-colors disabled:opacity-50 ${
             abonnement.notificationsActives 
-              ? 'bg-[hsl(45,93%,47%)]/10 border-[hsl(45,93%,47%)]/30 text-[hsl(45,93%,35%)]' 
+              ? 'bg-gov-gold/10 border-gov-gold/30 text-[hsl(45,93%,35%)]' 
               : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100'
           }`}
           title={abonnement.notificationsActives ? 'Désactiver les notifications' : 'Activer les notifications'}
@@ -216,7 +216,7 @@ export default function SubscribeButton({
     <button
       onClick={handleSubscribe}
       disabled={loading}
-      className={`inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(213,80%,28%)] text-white rounded-xl font-medium hover:bg-[hsl(213,80%,25%)] transition-colors disabled:opacity-50 ${className}`}
+      className={`inline-flex items-center gap-2 px-4 py-2.5 bg-gov-blue text-white rounded-xl font-medium hover:bg-[hsl(213,80%,25%)] transition-colors disabled:opacity-50 ${className}`}
     >
       {loading ? (
         <Loader2 className="w-4 h-4 animate-spin" />

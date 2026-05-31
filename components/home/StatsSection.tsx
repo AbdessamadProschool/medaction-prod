@@ -104,7 +104,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <section ref={ref} className="py-24 bg-gradient-to-br from-gov-blue-dark via-[hsl(213,80%,20%)] to-gov-blue-dark relative overflow-hidden" dir="ltr">
+    <section ref={ref} className="py-24 bg-gradient-to-br from-gov-blue-dark via-gov-blue-dark to-gov-blue-dark relative overflow-hidden" dir="ltr">
       {/* Bande tricolore en haut */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
       

@@ -23,7 +23,7 @@ export default function ConditionsUtilisationPage() {
           </p>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('object.title')}
             </h2>
             <p>
@@ -35,7 +35,7 @@ export default function ConditionsUtilisationPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('usage.title')}
             </h2>
             <p className="mb-4">
@@ -50,7 +50,7 @@ export default function ConditionsUtilisationPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('content.title')}
             </h2>
             <p>
@@ -62,7 +62,7 @@ export default function ConditionsUtilisationPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('links.title')}
             </h2>
             <p>
@@ -71,7 +71,7 @@ export default function ConditionsUtilisationPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('ip.title')}
             </h2>
             <p>
@@ -80,7 +80,7 @@ export default function ConditionsUtilisationPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('modification.title')}
             </h2>
             <p>

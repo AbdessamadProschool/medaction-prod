@@ -23,7 +23,7 @@ export default function AccessibilitePage() {
           </p>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('compliance.title')}
             </h2>
             <p>
@@ -32,7 +32,7 @@ export default function AccessibilitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('features.title')}
             </h2>
             <ul className="list-disc pl-6 space-y-3 mt-4">
@@ -55,7 +55,7 @@ export default function AccessibilitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('improvements.title')}
             </h2>
             <p>
@@ -69,7 +69,7 @@ export default function AccessibilitePage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-[hsl(45,93%,47%)] mb-4">
+            <h2 className="text-2xl font-semibold text-gov-gold mb-4">
               {t('contact.title')}
             </h2>
             <p className="mb-4">
@@ -77,7 +77,7 @@ export default function AccessibilitePage() {
             </p>
             <div className="bg-slate-900/50 rounded-lg p-4 border border-white/10">
               <ul className="space-y-2">
-                <li>{t('contact.email')} : <a href="mailto:accessibilite@province-mediouna.ma" className="text-[hsl(45,93%,47%)] hover:underline">accessibilite@province-mediouna.ma</a></li>
+                <li>{t('contact.email')} : <a href="mailto:accessibilite@province-mediouna.ma" className="text-gov-gold hover:underline">accessibilite@province-mediouna.ma</a></li>
                 <li>{t('contact.phone')} : +212 5XX-XXXXXX</li>
               </ul>
             </div>

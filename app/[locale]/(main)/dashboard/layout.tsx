@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | MedAction',
+  title: 'Dashboard | Portail Médiouna',
   description: 'Tableau de bord de la province de Médiouna',
 };
 

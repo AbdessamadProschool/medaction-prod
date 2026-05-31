@@ -56,7 +56,7 @@ function getStatusBadge(statut: string, dateDebut: string, dateFin?: string) {
   if (statut === 'EN_ACTION' || (now >= start && (!end || now <= end))) {
     return { labelKey: 'in_progress', className: 'bg-red-500 text-white animate-pulse shadow-red-200', icon: PlayCircle };
   }
-  return { labelKey: 'upcoming', className: 'bg-[hsl(45,93%,47%)] text-[hsl(213,80%,15%)] font-bold', icon: Calendar };
+  return { labelKey: 'upcoming', className: 'bg-gov-gold text-[hsl(213,80%,15%)] font-bold', icon: Calendar };
 }
 
 export default function EventCard({ event, index, view = 'grid' }: EventCardProps) {
@@ -93,7 +93,7 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
           />
         ) : (
           <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200 group-hover:scale-105 transition-transform duration-500`}>
-             <secteurConfig.icon className="w-16 h-16 text-gray-300 group-hover:text-[hsl(213,80%,28%)]/20 transition-colors" />
+             <secteurConfig.icon className="w-16 h-16 text-gray-300 group-hover:text-gov-blue/20 transition-colors" />
           </div>
         )}
         
@@ -126,7 +126,7 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
 
       {/* Content Body */}
       <div className={`p-6 flex flex-col flex-1 ${!isGrid && 'justify-center'}`}>
-        <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-[hsl(213,80%,28%)] transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl line-clamp-1'}`}>
+        <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl line-clamp-1'}`}>
           {event.titre}
         </h3>
         
@@ -157,7 +157,7 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
 
            <Link 
              href={`/evenements/${event.id}`}
-             className="block w-full py-2.5 text-center text-sm font-bold text-[hsl(213,80%,28%)] bg-[hsl(213,80%,28%)]/5 rounded-xl hover:bg-[hsl(213,80%,28%)] hover:text-white transition-all active:scale-[0.98]"
+             className="block w-full py-2.5 text-center text-sm font-bold text-gov-blue bg-gov-blue/5 rounded-xl hover:bg-gov-blue hover:text-white transition-all active:scale-[0.98]"
            >
              {t('common.view_details')}
            </Link>

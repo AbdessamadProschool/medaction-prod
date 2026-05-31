@@ -297,8 +297,8 @@ export default function ProfilPage() {
               exit={{ opacity: 0, y: -10 }}
               className={`mb-6 p-4 rounded-xl ${
                 message.type === 'success' 
-                  ? 'bg-[hsl(145,63%,32%)]/10 border border-[hsl(145,63%,32%)]/30 text-[hsl(145,63%,32%)]' 
-                  : 'bg-[hsl(348,83%,47%)]/10 border border-[hsl(348,83%,47%)]/30 text-[hsl(348,83%,47%)]'
+                  ? 'bg-gov-green/10 border border-gov-green/30 text-gov-green' 
+                  : 'bg-gov-red/10 border border-gov-red/30 text-gov-red'
               }`}
             >
               {message.text}
@@ -308,9 +308,9 @@ export default function ProfilPage() {
 
         <div className="gov-card overflow-hidden">
           {/* Profile Header - Gouvernemental */}
-          <div className="bg-gradient-to-r from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] px-6 py-8 md:px-10 md:py-12 relative">
+          <div className="bg-gradient-to-r from-gov-blue-dark to-gov-blue-dark px-6 py-8 md:px-10 md:py-12 relative">
             {/* Bande tricolore */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
             <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-center md:text-left">
               {/* Avatar */}
               <div className="relative group">
@@ -356,7 +356,7 @@ export default function ProfilPage() {
               <div className="text-white">
                 <h2 className="text-2xl font-bold">{profile?.prenom} {profile?.nom}</h2>
                 <p className="text-white/80">{profile?.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-[hsl(45,93%,47%)] text-gray-900 rounded-full text-sm font-medium">
+                <span className="inline-block mt-2 px-3 py-1 bg-gov-gold text-gray-900 rounded-full text-sm font-medium">
                   {getRoleLabel(profile?.role || '')}
                 </span>
               </div>
@@ -394,7 +394,7 @@ export default function ProfilPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-[hsl(213,80%,28%)] text-[hsl(213,80%,28%)]'
+                      ? 'border-gov-blue text-gov-blue'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -557,7 +557,7 @@ export default function ProfilPage() {
                           id={item.id}
                           checked={profile?.preferences?.[item.id as keyof typeof profile.preferences] !== false}
                           onChange={(e) => handleNotificationToggle(item.id, e.target.checked)}
-                          className="mt-1 w-5 h-5 rounded border-gray-300 text-[hsl(213,80%,28%)] focus:ring-[hsl(213,80%,28%)]"
+                          className="mt-1 w-5 h-5 rounded border-gray-300 text-gov-blue focus:ring-gov-blue"
                         />
                         <label htmlFor={item.id} className="flex-1 cursor-pointer">
                           <p className="font-medium text-gray-900">{item.label}</p>

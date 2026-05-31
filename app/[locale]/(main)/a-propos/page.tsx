@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[hsl(213,80%,20%)] to-[hsl(213,80%,30%)] py-20 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -67,7 +67,7 @@ export default function AboutPage() {
               }
             ].map((valeur, i) => (
               <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
-                <div className="flex justify-center mb-4"><valeur.Icon className="w-10 h-10 text-[hsl(213,80%,28%)]" /></div>
+                <div className="flex justify-center mb-4"><valeur.Icon className="w-10 h-10 text-gov-blue" /></div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{valeur.title}</h3>
                 <p className="text-gray-600">{valeur.desc}</p>
               </div>
@@ -76,7 +76,7 @@ export default function AboutPage() {
         </div>
 
         {/* Chiffres Clés (Statique pour l'instant) */}
-        <div className="bg-[hsl(213,80%,28%)] rounded-3xl p-12 text-white text-center mb-20">
+        <div className="bg-gov-blue rounded-3xl p-12 text-white text-center mb-20">
           <h2 className="text-3xl font-bold mb-12">{t('stats_title')}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -86,7 +86,7 @@ export default function AboutPage() {
               { number: '24/7', label: t('stats.service') }
             ].map((stat, i) => (
               <div key={i}>
-                <div className="text-4xl md:text-5xl font-bold text-[hsl(45,93%,47%)] mb-2">
+                <div className="text-4xl md:text-5xl font-bold text-gov-gold mb-2">
                   {stat.number}
                 </div>
                 <div className="text-white/80 font-medium">{stat.label}</div>

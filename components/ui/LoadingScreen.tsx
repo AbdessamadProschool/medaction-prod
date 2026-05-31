@@ -86,7 +86,7 @@ export default function LoadingScreen({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)] flex flex-col items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-gov-blue-dark via-gov-blue to-[hsl(213,80%,35%)] flex flex-col items-center justify-center overflow-hidden">
       
       {/* Subtle background particles - Fixed positions to avoid hydration mismatch */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
@@ -109,7 +109,7 @@ export default function LoadingScreen({
         ].map((p, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-[hsl(45,93%,47%)]"
+            className="absolute w-1 h-1 rounded-full bg-gov-gold"
             style={{
               left: `${p.left}%`,
               top: `${p.top}%`,
@@ -145,7 +145,7 @@ export default function LoadingScreen({
         >
           {/* Logo container - BIGGER SIZE - No glow */}
           <motion.div
-            className="relative w-36 h-36 rounded-full bg-gradient-to-br from-[hsl(45,93%,47%)] to-[hsl(45,93%,55%)] flex items-center justify-center shadow-xl"
+            className="relative w-36 h-36 rounded-full bg-gradient-to-br from-gov-gold to-[hsl(45,93%,55%)] flex items-center justify-center shadow-xl"
           >
             <img 
               src="/images/logo-portal-mediouna.png" 
@@ -167,7 +167,7 @@ export default function LoadingScreen({
         >
           <h1 className="text-3xl font-bold tracking-wider mb-2">
             <span className="text-white">{(t('portal_name') || 'Portail Mediouna').split(' ')[0]} </span>
-            <span className="text-[hsl(45,93%,47%)]">{(t('portal_name') || 'Portail Mediouna').split(' ').slice(1).join(' ')}</span>
+            <span className="text-gov-gold">{(t('portal_name') || 'Portail Mediouna').split(' ').slice(1).join(' ')}</span>
           </h1>
           <p className="text-white/50 text-sm">{t('province_name')}</p>
         </motion.div>
@@ -181,7 +181,7 @@ export default function LoadingScreen({
         >
           <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[hsl(45,93%,47%)] to-[hsl(213,80%,50%)]"
+              className="h-full bg-gradient-to-r from-gov-gold to-[hsl(213,80%,50%)]"
               initial={{ x: '-100%' }}
               animate={{ x: '100%' }}
               transition={{
@@ -234,7 +234,7 @@ export function InlineLoader({ message }: { message?: string }) {
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-[hsl(45,93%,47%)]"
+            className="w-2 h-2 rounded-full bg-gov-gold"
             animate={{
               y: [-4, 4, -4],
               opacity: [0.5, 1, 0.5],

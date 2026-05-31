@@ -48,7 +48,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
           onClick={() => onPageChange(i)}
           className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${
             currentPage === i
-              ? 'bg-[hsl(213,80%,28%)] text-white shadow-lg shadow-blue-900/20 active:scale-95'
+              ? 'bg-gov-blue text-white shadow-lg shadow-blue-900/20 active:scale-95'
               : 'text-gray-600 hover:bg-gray-100 active:scale-95'
           }`}
         >

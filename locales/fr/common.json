@@ -2721,8 +2721,9 @@
       "reset": "Réinitialiser",
       "no_news": "Aucune actualité",
       "no_results": "Aucun résultat",
-      "create_first": "Créez votre première actualité",
-      "highlight": "À la une",
+      "create_title": "Nouvel Article",
+      "create_subtitle": "Rédigez un article pour le Portail Province Médiouna.",
+      "edit_title": "Modifier l'Article",
       "view_details": "Voir détails",
       "edit": "Modifier",
       "delete": "Supprimer",
@@ -3865,7 +3866,7 @@
       "DELETE_USER": "Suppr. Utilisateur",
       "CREATE_ESTABLISHMENT": "Création Établissement",
       "UPDATE_ETABLISSEMENT": "Modif. Établissement",
-      "DELETE_ETABLISSEMENT": "Suppr. Établissement",
+      "DELETE_ESTABLISSEMENT": "Suppr. Établissement",
       "AFFECT_RECLAMATION": "Affectation Réclamation",
       "UPDATE_SETTINGS": "Mise à jour Paramètres"
     },
@@ -5339,7 +5340,7 @@
           "title": "Créer une campagne",
           "validation": {
             "title_min": "Le titre doit faire au moins 5 caractères",
-            "description_min": "La description doit faire au moins 20 caractères",
+            "description_min": "Le contenu doit faire au moins 20 caractères",
             "type_required": "Veuillez sélectionner un type",
             "start_date_required": "La date de début est requise"
           },

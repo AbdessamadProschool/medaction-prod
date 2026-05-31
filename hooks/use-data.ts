@@ -20,13 +20,9 @@ export const fetcher = async (url: string) => {
   
   const data = await res.json();
   
-  // Si l'API renvoie des métadonnées comme pagination ou stats, on retourne l'objet complet
-  if (data.pagination !== undefined || data.stats !== undefined || data.meta !== undefined) {
-    return data;
-  }
-  
-  // Sinon (par défaut) on renvoie data.data s'il existe pour simplifier
-  return data.data !== undefined ? data.data : data;
+  // Retourner l'objet complet pour que les composants puissent accéder à .data, .stats, .pagination, etc.
+  // La plupart des composants utilisent data?.data ou data?.data?.stats
+  return data;
 };
 
 /**

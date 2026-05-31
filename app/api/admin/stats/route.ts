@@ -70,6 +70,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     nouveauxCeMois,
     actifAujourdhui,
     parRole,
+    campagnesTotal,
+    campagnesEnAttente,
   ] = await Promise.all([
     prisma.reclamation.count(),
     prisma.reclamation.count({ where: { createdAt: { gte: debutMois } } }),
@@ -92,6 +94,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.user.count({ where: { createdAt: { gte: debutMois } } }),
     prisma.user.count({ where: { derniereConnexion: { gte: aujourdhui } } }),
     prisma.user.groupBy({ by: ['role'], _count: { id: true } }),
+    prisma.campagne.count(),
+    prisma.campagne.count({ where: { statut: 'EN_ATTENTE' } }),
   ]);
 
   // Mapper les rôles
@@ -148,10 +152,18 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         byRole: roleMap,
         variation: variationUtilisateurs,
       },
+      evenements: {
+        total: evenementsTotal,
+        enCours: evenementsEnCours,
+        aCloturer: evenementsACloturer,
+        ceMois: evenementsCeMois,
+        variation: evenementsTotal > 0 ? Math.round((evenementsCeMois / evenementsTotal) * 100) : 0,
+      },
       actualites: actualitesTotal,
       articles: articlesTotal,
       suggestions: suggestionsTotal,
       suggestionsEnAttente: suggestionsSoumises,
+      campagnesEnAttente: campagnesEnAttente,
     },
     charts: {
       evenementsParSecteur: evenementsParSecteur.map(s => ({ secteur: s.secteur, count: s._count.id })),

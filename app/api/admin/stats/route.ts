@@ -166,6 +166,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       campagnesEnAttente: campagnesEnAttente,
     },
     charts: {
+      etablissementsParSecteur: parSecteur.map(s => ({ secteur: s.secteur || 'AUTRE', count: s._count.id })),
       evenementsParSecteur: evenementsParSecteur.map(s => ({ secteur: s.secteur, count: s._count.id })),
       reclamationsParStatut: [
         { statut: 'En attente', count: nouvelles, color: '#f59e0b' },

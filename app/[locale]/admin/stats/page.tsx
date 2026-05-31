@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { MiniBarChart, DonutChart } from '@/components/ui/Charts';
 
 interface StatsData {
   reclamations: {
@@ -68,7 +69,7 @@ export default function AdminStatsPage() {
     },
     etablissements: {
       total: data?.data?.stats?.etablissements?.total ?? 0,
-      parSecteur: [], // Non fourni par cet API spécifique actuellement
+      parSecteur: data?.data?.charts?.etablissementsParSecteur ?? [],
       noteMoyenne: data?.data?.stats?.etablissements?.noteMoyenne ?? 0
     },
     evenements: {
@@ -255,70 +256,59 @@ export default function AdminStatsPage() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="gov-card p-6"
+          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {t('admin_stats.charts.reclamations_by_status')}
-          </h3>
-          <div className="space-y-3">
-            {defaultStats.reclamations.parStatut.length > 0 ? (
-              defaultStats.reclamations.parStatut.map((item) => (
-                <div key={item.statut} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      item.statut === 'ACCEPTEE' ? 'bg-[hsl(145,63%,32%)]' :
-                      item.statut === 'REJETEE' ? 'bg-[hsl(348,83%,47%)]' :
-                      'bg-[hsl(45,93%,47%)]'
-                    }`} />
-                    <span className="text-sm text-gray-600">
-                      {item.statut ? (
-                        item.statut === 'ACCEPTEE' ? t('status.accepted') :
-                        item.statut === 'REJETEE' ? t('status.rejected') :
-                        item.statut === 'EN_ATTENTE' ? t('status.pending') :
-                        item.statut
-                      ) : t('admin_stats.charts.pending')}
-                    </span>
-                  </div>
-                  <span className="font-medium">{item.count}</span>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">{t('admin_stats.charts.no_data')}</p>
-            )}
+          <div className="mb-6">
+            <h3 className="text-xl font-extrabold text-foreground">
+              {t('admin_stats.charts.reclamations_by_status')}
+            </h3>
           </div>
+          <DonutChart
+            data={defaultStats.reclamations.parStatut.map((item, i) => ({
+              label: item.statut ? (
+                item.statut === 'ACCEPTEE' ? t('status.accepted') :
+                item.statut === 'REJETEE' ? t('status.rejected') :
+                item.statut === 'EN_ATTENTE' ? t('status.pending') :
+                item.statut
+              ) : t('admin_stats.charts.pending'),
+              value: item.count,
+              color: [
+                'hsl(var(--gov-blue))', 
+                'hsl(var(--gov-green))', 
+                'hsl(var(--gov-yellow))', 
+                'hsl(var(--gov-red))',
+                'hsl(var(--gov-muted))',
+                '#8B5CF6'
+              ][i % 6]
+            }))}
+          />
         </motion.div>
 
         {/* Établissements par secteur */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="gov-card p-6"
+          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {t('admin_stats.charts.establishments_by_sector')}
-          </h3>
-          <div className="space-y-3">
-            {defaultStats.etablissements.parSecteur.length > 0 ? (
-              defaultStats.etablissements.parSecteur.map((item) => (
-                <div key={item.secteur}>
-                  <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="text-gray-600">{t('sectors.' + item.secteur.toLowerCase())}</span>
-                    <span className="font-medium">{item.count}</span>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-[hsl(213,80%,28%)] to-[hsl(213,80%,45%)] rounded-full"
-                      style={{ 
-                        width: `${(item.count / defaultStats.etablissements.total) * 100}%` 
-                      }}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">{t('admin_stats.charts.no_data')}</p>
-            )}
+          <div className="mb-6">
+            <h3 className="text-xl font-extrabold text-foreground">
+              {t('admin_stats.charts.establishments_by_sector')}
+            </h3>
           </div>
+          <MiniBarChart 
+            data={defaultStats.etablissements.parSecteur.map((item, i) => ({
+              label: t('sectors.' + item.secteur.toLowerCase()),
+              value: item.count,
+              color: [
+                'hsl(var(--gov-blue))', 
+                'hsl(var(--gov-green))', 
+                'hsl(var(--gov-yellow))', 
+                'hsl(var(--gov-red))',
+                'hsl(var(--gov-muted))',
+                '#8B5CF6'
+              ][i % 6]
+            }))}
+          />
         </motion.div>
       </div>
 

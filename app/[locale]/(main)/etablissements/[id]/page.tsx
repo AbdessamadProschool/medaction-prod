@@ -454,7 +454,7 @@ export default function EtablissementDetailPage() {
                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm md:text-base text-white/90 font-medium">
                    <div className="flex items-center gap-2">
                      <MapPin className="w-5 h-5 text-gov-gold" />
-                     {etablissement.commune.nom}
+                     {etablissement.commune?.nom}
                      {etablissement.adresseComplete ? ` • ${etablissement.adresseComplete.split(',')[0]}` : ''}
                    </div>
                    <div className="flex items-center gap-2">
@@ -1309,10 +1309,10 @@ export default function EtablissementDetailPage() {
                          <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-full bg-gov-blue/10 text-gov-blue flex items-center justify-center font-bold">
-                                  {evaluation.user.prenom[0]}{evaluation.user.nom[0]}
+                                  {evaluation.user?.prenom?.[0]}{evaluation.user?.nom?.[0]}
                                </div>
                                <div>
-                                  <p className="font-bold text-gray-900">{evaluation.user.prenom} {evaluation.user.nom}</p>
+                                  <p className="font-bold text-gray-900">{evaluation.user?.prenom} {evaluation.user?.nom}</p>
                                   <p className="text-xs text-gray-500">{new Date(evaluation.createdAt).toLocaleDateString('fr-FR', { dateStyle: 'long' })}</p>
                                </div>
                             </div>

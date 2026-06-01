@@ -459,9 +459,9 @@ export default function EtablissementDetailPage() {
                    </div>
                    <div className="flex items-center gap-2">
                      <div className="flex gap-0.5">
-                       {[1,2,3,4,5].map(s => <Star key={s} className={`w-4 h-4 ${s <= Math.round(etablissement.noteMoyenne) ? 'text-gov-gold fill-amber-400' : 'text-white/30'}`} />)}
+                       {[1,2,3,4,5].map(s => <Star key={s} className={`w-4 h-4 ${s <= Math.round(etablissement.noteMoyenne || 0) ? 'text-gov-gold fill-amber-400' : 'text-white/30'}`} />)}
                      </div>
-                      <span className="text-white font-bold text-lg">{etablissement.noteMoyenne.toFixed(1)}</span>
+                      <span className="text-white font-bold text-lg">{(etablissement.noteMoyenne || 0).toFixed(1)}</span>
                       <span className="text-white/70">({etablissement.nombreEvaluations} {t('tabs.avis').toLowerCase()})</span>
                     </div>
                   </div>
@@ -1045,14 +1045,14 @@ export default function EtablissementDetailPage() {
                 </section>
 
                 {/* Services & Programmes */}
-                {(etablissement.services.length > 0 || etablissement.programmes.length > 0) && (
+                {((etablissement.services || []).length > 0 || (etablissement.programmes || []).length > 0) && (
                    <section className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-100">
                       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                         <span className="w-1.5 h-6 bg-gov-blue rounded-full"/>
                         {t('sections.service_offer')}
                       </h2>
                       
-                       {etablissement.services.length > 0 && (
+                       {(etablissement.services || []).length > 0 && (
                          <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.available_services')}</h3>
                             <div className="flex flex-wrap gap-2">
@@ -1065,7 +1065,7 @@ export default function EtablissementDetailPage() {
                         </div>
                       )}
                       
-                       {etablissement.programmes.length > 0 && (
+                       {(etablissement.programmes || []).length > 0 && (
                          <div>
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.educ_programs')}</h3>
                             <div className="flex flex-wrap gap-2">
@@ -1197,7 +1197,7 @@ export default function EtablissementDetailPage() {
                         </div>
                         <div className="col-span-2 bg-white/5 rounded-2xl p-4 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-colors flex items-center justify-between">
                            <div>
-                              <p className="text-3xl font-extrabold mb-1 tracking-tight">{etablissement.noteMoyenne.toFixed(1)}<span className="text-lg opacity-60 font-normal ml-1">/5</span></p>
+                              <p className="text-3xl font-extrabold mb-1 tracking-tight">{(etablissement.noteMoyenne || 0).toFixed(1)}<span className="text-lg opacity-60 font-normal ml-1">/5</span></p>
                               <p className="text-sm font-medium opacity-70">{t('labels.citizen_satisfaction')}</p>
                            </div>
                           <div>
@@ -1280,7 +1280,7 @@ export default function EtablissementDetailPage() {
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('sections.reviews')}</h2>
                     
                     <div className="flex justify-center items-end gap-2 mb-4">
-                      <span className="text-6xl font-bold text-gray-900">{etablissement.noteMoyenne.toFixed(1)}</span>
+                      <span className="text-6xl font-bold text-gray-900">{(etablissement.noteMoyenne || 0).toFixed(1)}</span>
                       <span className="text-xl text-gray-400 mb-2">/ 5</span>
                    </div>
                    

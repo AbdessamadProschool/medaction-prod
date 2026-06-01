@@ -55,6 +55,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     const userId = parseInt(session.user.id);
+    
+    if (!request.headers.get('content-type')?.includes('application/json')) {
+      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 415 });
+    }
+
     const body = await request.json();
 
     // Champs modifiables

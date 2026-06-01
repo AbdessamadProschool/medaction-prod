@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import {
   Shield,
@@ -26,6 +25,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { toast } from 'sonner';
 
 interface TwoFactorData {
   secret: string;
@@ -139,6 +139,7 @@ export default function SecurityPage() {
         setTwoFactorEnabled(true);
         setTwoFactorPending(false);
         setSetupStep(3);
+        toast.success(t('setup_modal.success_title'));
       } else {
         setSetupError(data.error || 'Code invalide');
       }
@@ -172,6 +173,7 @@ export default function SecurityPage() {
         setTwoFactorEnabled(false);
         setShowDisable(false);
         setDisableCode('');
+        toast.success(t('status_disabled'));
       } else {
         setSetupError(data.error || 'Code invalide');
       }
@@ -192,6 +194,7 @@ export default function SecurityPage() {
       setCopiedCodes(true);
       setTimeout(() => setCopiedCodes(false), 2000);
     }
+    toast.success(t('setup_modal.copied'));
   };
 
   // Télécharger les codes de secours

@@ -9,6 +9,7 @@ import { GovSelect, GovButton } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
+import { z } from 'zod';
 
 interface User {
   id: number;
@@ -101,52 +102,58 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
     e.preventDefault();
     setError('');
 
-    if (selectedRole === 'DELEGATION' && !secteurResponsable) {
-      setError(t('errors.sector_required'));
-      return;
-    }
+    const validationSchema = z.object({
+      role: z.string().min(1),
+      secteurResponsable: z.string().optional(),
+      communeResponsableId: z.string().optional(),
+      etablissementsGeres: z.array(z.number())
+    }).superRefine((data, ctx) => {
+      if (data.role === 'DELEGATION' && !data.secteurResponsable) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('errors.sector_required') || 'Requis', path: ['secteurResponsable'] });
+      }
+      if (data.role === 'AUTORITE_LOCALE' && !data.communeResponsableId) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('errors.commune_required') || 'Requis', path: ['communeResponsableId'] });
+      }
+      if (data.role === 'COORDINATEUR_ACTIVITES' && data.etablissementsGeres.length === 0) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('errors.establishment_required') || 'Requis', path: ['etablissementsGeres'] });
+      }
+    });
 
-    if (selectedRole === 'AUTORITE_LOCALE' && !communeResponsableId) {
-      setError(t('errors.commune_required'));
-      return;
-    }
+    const parsed = validationSchema.safeParse({
+      role: selectedRole,
+      secteurResponsable,
+      communeResponsableId,
+      etablissementsGeres
+    });
 
-    if (selectedRole === 'COORDINATEUR_ACTIVITES' && etablissementsGeres.length === 0) {
-      setError(t('errors.establishment_required'));
+    if (!parsed.success) {
+      setError(parsed.error.issues[0].message);
       return;
     }
 
     setLoading(true);
 
-    const submitPromise = new Promise(async (resolve, reject) => {
-      try {
-        const res = await fetch(`/api/users/${user.id}/role`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            role: selectedRole,
-            secteurResponsable: selectedRole === 'DELEGATION' ? secteurResponsable : null,
-            communeResponsableId: selectedRole === 'AUTORITE_LOCALE' ? parseInt(communeResponsableId) : null,
-            etablissementsGeres: selectedRole === 'COORDINATEUR_ACTIVITES' ? etablissementsGeres : [],
-          }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          onSuccess();
-          resolve(data);
-        } else {
-          const errorMessage = typeof data.error === 'string' 
-            ? data.error 
-            : data.error?.message || t('errors.edit_error');
-          reject(new Error(errorMessage));
-        }
-      } catch (err) {
-        reject(new Error(t('errors.server_error')));
-      } finally {
-        setLoading(false);
+    const submitPromise = fetch(`/api/users/${user.id}/role`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: selectedRole,
+        secteurResponsable: selectedRole === 'DELEGATION' ? secteurResponsable : null,
+        communeResponsableId: selectedRole === 'AUTORITE_LOCALE' ? parseInt(communeResponsableId) : null,
+        etablissementsGeres: selectedRole === 'COORDINATEUR_ACTIVITES' ? etablissementsGeres : [],
+      }),
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        const errorMessage = typeof data.error === 'string' 
+          ? data.error 
+          : data.error?.message || t('errors.edit_error');
+        throw new Error(errorMessage);
       }
+      onSuccess();
+      return data;
+    }).finally(() => {
+      setLoading(false);
     });
 
     toast.promise(submitPromise, {
@@ -193,7 +200,8 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
+          <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           {error && (
             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
               {error}
@@ -347,8 +355,9 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
             </div>
           )}
 
+          </div>
           {/* Actions */}
-          <div className="flex items-center justify-end gap-4 mt-8 pt-8 border-t border-border shrink-0">
+          <div className="flex items-center justify-end gap-4 px-6 py-4 border-t border-border shrink-0 bg-card/95">
             <GovButton
               type="button"
               onClick={onClose}

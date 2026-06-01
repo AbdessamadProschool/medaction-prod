@@ -47,6 +47,11 @@ function getCampaignStatusText(dateDebut?: string, dateFin?: string, locale?: st
   }
 }
 
+function sanitizeText(html?: string): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+}
+
 export default function CampaignsSection() {
   const t = useTranslations();
   const locale = useLocale();
@@ -131,10 +136,10 @@ export default function CampaignsSection() {
                             <Target className="w-16 h-16 text-gov-gold/50" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/50 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r rtl:md:bg-gradient-to-l from-black/50 to-transparent" />
                         
                         {/* Days remaining badge */}
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg">
+                        <div className="absolute top-4 end-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg">
                           <span className={`text-sm font-bold ${getCampaignStatusText(campagne.dateDebut, campagne.dateFin, locale).includes('جارية') || getCampaignStatusText(campagne.dateDebut, campagne.dateFin, locale).includes('cours') ? 'text-emerald-600' : 'text-gray-900'}`}>
                             {getCampaignStatusText(campagne.dateDebut, campagne.dateFin, locale)}
                           </span>
@@ -147,7 +152,7 @@ export default function CampaignsSection() {
                           {campagne.titre}
                         </h3>
                         <p className={`text-gray-600 mb-4 line-clamp-2 ${locale === 'ar' ? 'text-lg' : ''}`}>
-                          {campagne.description}
+                          {sanitizeText(campagne.description)}
                         </p>
 
                         {/* Progress */}

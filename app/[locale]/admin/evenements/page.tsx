@@ -124,6 +124,9 @@ function AdminEvenementsContent() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedEvenement, setSelectedEvenement] = useState<Evenement | null>(null);
+  const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
+  const [showRejectModal, setShowRejectModal] = useState<number | null>(null);
+  const [motifRejet, setMotifRejet] = useState('');
 
   // Vérifier authentification
   useEffect(() => {
@@ -137,14 +140,16 @@ function AdminEvenementsContent() {
   const communes = communesData?.communes || [];
 
   // Charger les événements
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '15');
-  
-  if (filters.search) queryParams.set('search', filters.search);
-  if (filters.statut) queryParams.set('statut', filters.statut);
-  if (filters.secteur) queryParams.set('secteur', filters.secteur);
-  if (filters.communeId) queryParams.set('communeId', filters.communeId);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '15');
+    if (filters.search) params.set('search', filters.search);
+    if (filters.statut) params.set('statut', filters.statut);
+    if (filters.secteur) params.set('secteur', filters.secteur);
+    if (filters.communeId) params.set('communeId', filters.communeId);
+    return params;
+  }, [page, filters]);
   
   const { data: evenementsData, isLoading: loading, mutate: loadEvenements } = useData(`/api/evenements?${queryParams.toString()}`);
 
@@ -177,16 +182,10 @@ function AdminEvenementsContent() {
   };
 
   // Valider / Rejeter événement
-  const handleValidation = async (id: number, action: 'valider' | 'rejeter') => {
-    // Si rejet, demander le motif
-    let motifRejet: string | undefined;
-    if (action === 'rejeter') {
-      const response = prompt(t('messages.reject_reason'));
-      if (!response || response.length < 10) {
-        toast.error(t('messages.reject_error'));
-        return;
-      }
-      motifRejet = response;
+  const handleValidation = async (id: number, action: 'valider' | 'rejeter', motif?: string) => {
+    if (action === 'rejeter' && !motif) {
+      setShowRejectModal(id);
+      return;
     }
 
     const promise = new Promise(async (resolve, reject) => {
@@ -195,11 +194,13 @@ function AdminEvenementsContent() {
           method: 'PATCH',
           data: {
             decision: action === 'valider' ? 'PUBLIEE' : 'REJETEE',
-            motifRejet: motifRejet,
+            motifRejet: motif,
           },
         });
         
         await loadEvenements();
+        setShowRejectModal(null);
+        setMotifRejet('');
         resolve(true);
       } catch (error: unknown) {
         reject(new Error(error instanceof Error ? error.message : t('messages.error')));
@@ -214,7 +215,11 @@ function AdminEvenementsContent() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm(t('messages.delete_confirm'))) return;
+    if (showDeleteId !== id) {
+      setShowDeleteId(id);
+      return;
+    }
+    setShowDeleteId(null);
 
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -751,7 +756,7 @@ function AdminEvenementsContent() {
                     </span>
                   </div>
                   {selectedEvenement.isMisEnAvant && (
-                    <div className="flex items-center gap-2 text-gov-gold bg-gov-gold/10/5 px-4 py-2 rounded-xl border border-gov-gold/30/10">
+                    <div className="flex items-center gap-2 text-amber-700 bg-amber-50/80 px-4 py-2 rounded-xl border border-amber-200/50">
                       <Star className="w-4 h-4 fill-current" />
                       <span className="text-[10px] font-black uppercase tracking-widest">{tModal('featured_event')}</span>
                     </div>
@@ -788,8 +793,8 @@ function AdminEvenementsContent() {
 export default function AdminEvenementsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 text-gov-green animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 text-[hsl(var(--gov-green))] animate-spin" />
       </div>
     }>
       <AdminEvenementsContent />

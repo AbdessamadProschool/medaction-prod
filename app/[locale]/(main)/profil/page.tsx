@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -53,14 +53,13 @@ const tabs = [
   { id: 'notifications', label: 'notifications', icon: BellIcon },
 ];
 
-import { useMemo } from 'react';
+import { toast } from 'sonner';
 
 export default function ProfilPage() {
   const t = useTranslations('profile_page');
   const { data: session, update: updateSession } = useSession();
   const [activeTab, setActiveTab] = useState('infos');
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Data fetching
@@ -116,24 +115,16 @@ export default function ProfilPage() {
     }
   }, [profile, isLoading, profileForm]);
 
-  // Message auto-hide
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setMessage(null), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
-
   // Mettre à jour le profil
   const handleProfileSubmit = async (data: ProfileInput) => {
     setIsSaving(true);
     try {
       const result = await updateProfileApi(data);
       mutateProfile({ ...profile, ...result }, false);
-      setMessage({ type: 'success', text: t('messages.success') });
+      toast.success(t('messages.success'));
       await updateSession();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
+      toast.error(error.message || t('messages.error_update'));
     } finally {
       setIsSaving(false);
     }
@@ -145,9 +136,9 @@ export default function ProfilPage() {
     try {
       await updatePasswordApi(data);
       passwordForm.reset();
-      setMessage({ type: 'success', text: t('messages.password_success') });
+      toast.success(t('messages.password_success'));
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
+      toast.error(error.message || t('messages.error_update'));
     } finally {
       setIsSaving(false);
     }
@@ -164,10 +155,10 @@ export default function ProfilPage() {
     try {
       const result = await uploadPhotoApi(formData);
       mutateProfile({ ...profile, photo: result.photo }, false);
-      setMessage({ type: 'success', text: t('photo.update_success') });
+      toast.success(t('photo.update_success'));
       await updateSession();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || t('errors.upload_fail') });
+      toast.error(error.message || t('errors.upload_fail'));
     }
   };
 
@@ -176,10 +167,10 @@ export default function ProfilPage() {
     try {
       await deletePhotoApi();
       mutateProfile({ ...profile, photo: null }, false);
-      setMessage({ type: 'success', text: t('photo.delete_success') });
+      toast.success(t('photo.delete_success'));
       await updateSession();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || t('errors.delete_fail') });
+      toast.error(error.message || t('errors.delete_fail'));
     }
   };
 
@@ -189,9 +180,9 @@ export default function ProfilPage() {
     try {
       const result = await updateProfileApi({ preferences: newPrefs });
       mutateProfile({ ...profile, preferences: result.preferences }, false);
-      setMessage({ type: 'success', text: t('messages.success') });
+      toast.success(t('messages.success'));
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || t('messages.error_update') });
+      toast.error(error.message || t('messages.error_update'));
     } finally {
       setIsSaving(false);
     }
@@ -289,30 +280,12 @@ export default function ProfilPage() {
           <p className="text-gray-500 mt-1">{t('subtitle')}</p>
         </div>
 
-        {/* Message */}
-        <AnimatePresence>
-          {message && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={`mb-6 p-4 rounded-xl ${
-                message.type === 'success' 
-                  ? 'bg-gov-green text-white shadow-lg' 
-                  : 'bg-gov-red text-white shadow-lg'
-              }`}
-            >
-              {message.text}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <div className="gov-card overflow-hidden">
           {/* Profile Header - Gouvernemental */}
           <div className="bg-gradient-to-r from-gov-blue-dark to-gov-blue-dark px-6 py-8 md:px-10 md:py-12 relative">
             {/* Bande tricolore */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-center md:text-left">
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
+            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-center md:text-start">
               {/* Avatar */}
               <div className="relative group">
                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center overflow-hidden border-4 border-white/20 shadow-xl transition-transform group-hover:scale-105">
@@ -340,7 +313,7 @@ export default function ProfilPage() {
                     e.stopPropagation();
                     fileInputRef.current?.click();
                   }}
-                  className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-10 cursor-pointer"
+                  className="absolute bottom-0 end-0 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-10 cursor-pointer"
                 >
                   <CameraIcon className="w-4 h-4 text-gray-600" />
                 </button>
@@ -365,7 +338,7 @@ export default function ProfilPage() {
               {profile?.photo && (
                 <button
                   onClick={handlePhotoDelete}
-                  className="ml-auto text-white/80 hover:text-white text-sm underline"
+                  className="ms-auto text-white/80 hover:text-white text-sm underline"
                 >
                   {t('photo.delete_btn')}
                 </button>

@@ -16,6 +16,8 @@ import {
   Check
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useData } from '@/hooks/use-data';
+import { usePermission } from '@/hooks/use-permission';
 
 interface Notification {
   id: number;
@@ -29,6 +31,7 @@ interface Notification {
 
 export default function AdminHeader() {
   const { data: session } = useSession();
+  const { can } = usePermission();
   const t = useTranslations('admin.header');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -37,26 +40,17 @@ export default function AdminHeader() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchNotifications = async () => {
-    try {
-      const res = await fetch('/api/notifications?limit=10&unreadOnly=true');
-      if (res.ok) {
-        const data = await res.json();
-        setNotifications(data.notifications || []);
-        setUnreadCount(data.count || 0);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const { data: notificationsData } = useData(
+    session?.user ? '/api/notifications?limit=10&unreadOnly=true' : null, 
+    { refreshInterval: 30000 }
+  );
 
   useEffect(() => {
-    if (session?.user) {
-      fetchNotifications();
-      const interval = setInterval(fetchNotifications, 30000);
-      return () => clearInterval(interval);
+    if (notificationsData) {
+      setNotifications(notificationsData.notifications || []);
+      setUnreadCount(notificationsData.count || 0);
     }
-  }, [session]);
+  }, [notificationsData]);
 
   const markAllRead = async () => {
     try {
@@ -93,17 +87,17 @@ export default function AdminHeader() {
         {/* Search */}
         <div className="flex-1 max-w-lg">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
             <input
               type="text"
               placeholder={t('search_placeholder')}
-              className="gov-input pl-10"
+              className="gov-input ps-10"
             />
           </div>
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-3 ml-4">
+        <div className="flex items-center gap-3 ms-4">
           {/* Link to public site */}
           <Link
             href="/"
@@ -135,7 +129,7 @@ export default function AdminHeader() {
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 min-w-[18px] h-[18px] px-1 bg-[hsl(var(--gov-red))] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse shadow-sm">
+                <span className="absolute top-0 end-0 min-w-[18px] h-[18px] px-1 bg-[hsl(var(--gov-red))] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse shadow-sm">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}
@@ -143,7 +137,7 @@ export default function AdminHeader() {
 
             {showNotifications && (
               <div 
-                className="absolute right-0 mt-2 w-80 bg-card rounded-xl shadow-2xl border border-border py-0 gov-card overflow-hidden z-[9999]"
+                className="absolute end-0 mt-2 w-80 bg-card rounded-xl shadow-2xl border border-border py-0 gov-card overflow-hidden z-[9999]"
               >
                 <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-[hsl(var(--gov-blue))/0.05] to-transparent flex justify-between items-center">
                   <h3 className="font-bold text-foreground">{t('notifications')} ({unreadCount})</h3>
@@ -198,9 +192,9 @@ export default function AdminHeader() {
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-card rounded-xl shadow-2xl border border-border py-0 overflow-hidden z-[9999]">
+              <div className="absolute end-0 mt-2 w-64 bg-card rounded-xl shadow-2xl border border-border py-0 overflow-hidden z-[9999]">
                 {/* Gold top accent */}
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[hsl(var(--gov-blue))] via-[hsl(var(--gov-gold))] to-[hsl(var(--gov-green))]" />
+                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[hsl(var(--gov-blue))] via-[hsl(var(--gov-gold))] to-[hsl(var(--gov-green))]" />
                 <div className="px-4 py-4 border-b border-border bg-muted/30 mt-1.5">
                   <p className="font-bold text-foreground text-base">
                     {session?.user?.prenom && session?.user?.nom ? `${session.user.prenom} ${session.user.nom}` : t('administrator')}
@@ -224,15 +218,17 @@ export default function AdminHeader() {
                       {t('my_profile')}
                     </>
                   </Link>
-                  <Link
-                    href="/admin/settings"
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
-                  >
-                    <>
-                      <Settings size={18} className="text-muted-foreground" />
-                      {t('settings')}
-                    </>
-                  </Link>
+                  {can('system.settings.read') && (
+                    <Link
+                      href="/admin/settings"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-[hsl(var(--gov-blue)/0.05)] hover:text-[hsl(var(--gov-blue))] transition-colors font-medium"
+                    >
+                      <>
+                        <Settings size={18} className="text-muted-foreground" />
+                        {t('settings')}
+                      </>
+                    </Link>
+                  )}
                 </div>
                 <div className="p-1 border-t border-border bg-muted/10">
                   <button

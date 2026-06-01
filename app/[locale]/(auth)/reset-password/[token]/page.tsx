@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -49,31 +50,52 @@ export default function ResetPasswordPage() {
   }, [token]);
 
   const onSubmit = async (data: ResetPasswordInput) => {
+    const attempts = parseInt(sessionStorage.getItem('reset_pwd_attempts') || '0');
+    if (attempts >= 5) {
+      setError('Trop de tentatives. Veuillez réessayer plus tard.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
+      const { getCsrfToken } = await import('next-auth/react');
+      const csrfToken = await getCsrfToken();
+
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {})
+        },
         body: JSON.stringify({
           token,
           password: data.password,
         }),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.message || 'Une erreur est survenue');
+        sessionStorage.setItem('reset_pwd_attempts', (attempts + 1).toString());
+        throw new Error(
+          result.code === 'INVALID_TOKEN' 
+            ? 'Le lien de réinitialisation est invalide ou expiré' 
+            : 'Une erreur est survenue lors de la réinitialisation'
+        );
       }
 
+      sessionStorage.removeItem('reset_pwd_attempts');
       setSuccess(true);
+      toast.success('Mot de passe réinitialisé avec succès');
       setTimeout(() => {
         router.push('/login?reset=true');
       }, 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      const errorMsg = err instanceof Error ? err.message : 'Une erreur est survenue';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +133,7 @@ export default function ResetPasswordPage() {
           </p>
           <Link
             href="/forgot-password"
-            className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+            className="gov-btn gov-btn-primary w-full max-w-xs mx-auto"
           >
             Demander un nouveau lien
           </Link>
@@ -196,8 +218,8 @@ export default function ResetPasswordPage() {
                 id="password"
                 type="password"
                 {...register('password')}
-                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green transition-all ${
-                  errors.password ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                className={`block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-4 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[hsl(213,80%,45%)] focus:ring-4 focus:ring-[hsl(213,80%,45%)]/10 transition-all duration-300 hover:border-slate-400 ${
+                  errors.password ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/10' : ''
                 }`}
                 placeholder="••••••••"
               />
@@ -222,8 +244,8 @@ export default function ResetPasswordPage() {
                 id="confirmPassword"
                 type="password"
                 {...register('confirmPassword')}
-                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gov-green/20 focus:border-gov-green transition-all ${
-                  errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                className={`block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-4 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[hsl(213,80%,45%)] focus:ring-4 focus:ring-[hsl(213,80%,45%)]/10 transition-all duration-300 hover:border-slate-400 ${
+                  errors.confirmPassword ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/10' : ''
                 }`}
                 placeholder="••••••••"
               />
@@ -235,7 +257,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl shadow-lg shadow-gov-green/25 hover:shadow-gov-green/40 transition-all disabled:opacity-70"
+              className="gov-btn gov-btn-primary w-full py-3.5 disabled:opacity-70"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">

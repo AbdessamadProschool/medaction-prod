@@ -153,15 +153,19 @@ export default function AdminReclamationsPage() {
   }, [agentsData]);
 
   // Charger les réclamations
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '15');
-  
-  if (filters.search) queryParams.set('search', filters.search);
-  if (filters.statut) queryParams.set('statut', filters.statut);
-  if (filters.affectation) queryParams.set('affectation', filters.affectation);
-  if (filters.communeId) queryParams.set('communeId', filters.communeId);
-  if (filters.categorie) queryParams.set('categorie', filters.categorie);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '15');
+    
+    if (filters.search) params.set('search', filters.search);
+    if (filters.statut) params.set('statut', filters.statut);
+    if (filters.affectation) params.set('affectation', filters.affectation);
+    if (filters.communeId) params.set('communeId', filters.communeId);
+    if (filters.categorie) params.set('categorie', filters.categorie);
+    
+    return params;
+  }, [page, filters]);
   
   const { data: reclamationsData, isLoading: loadingReclamations, mutate: loadReclamations } = useData(`/api/reclamations?${queryParams.toString()}`);
 
@@ -187,6 +191,21 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
+    
+    // Optimistic UI Update
+    const optimisticAgent = agents.find((a: any) => a.id === agentId) || null;
+    loadReclamations(
+      {
+        ...reclamationsData,
+        data: reclamationsData?.data?.map((r: any) => 
+          r.id === selectedReclamation.id 
+            ? { ...r, affecteeAAutorite: optimisticAgent, statut: 'AFFECTEE' } 
+            : r
+        )
+      },
+      { revalidate: false }
+    );
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}/affecter`, {
@@ -199,6 +218,7 @@ export default function AdminReclamationsPage() {
         await loadReclamations();
         resolve(true);
       } catch (error: any) {
+        await loadReclamations(); // Rollback on error
         reject(new Error(error.message || 'Erreur lors de l\'affectation'));
       } finally {
         setActionLoading(false);
@@ -217,6 +237,18 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
+    
+    // Optimistic UI Update
+    loadReclamations(
+      {
+        ...reclamationsData,
+        data: reclamationsData?.data?.map((r: any) => 
+          r.id === selectedReclamation.id ? { ...r, statut } : r
+        )
+      },
+      { revalidate: false }
+    );
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}/statut`, {
@@ -233,6 +265,7 @@ export default function AdminReclamationsPage() {
         await loadReclamations();
         resolve(true);
       } catch (error: any) {
+        await loadReclamations(); // Rollback on error
         reject(new Error(error.message || 'Erreur lors de la modification du statut'));
       } finally {
         setActionLoading(false);
@@ -251,6 +284,20 @@ export default function AdminReclamationsPage() {
     if (!selectedReclamation) return;
     
     setActionLoading(true);
+    
+    // Optimistic UI Update
+    loadReclamations(
+      {
+        ...reclamationsData,
+        data: reclamationsData?.data?.filter((r: any) => r.id !== selectedReclamation.id),
+        pagination: {
+          ...reclamationsData?.pagination,
+          total: Math.max(0, (reclamationsData?.pagination?.total || 1) - 1)
+        }
+      },
+      { revalidate: false }
+    );
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         await actionMutation.mutate(`/api/reclamations/${selectedReclamation.id}`, {
@@ -262,6 +309,7 @@ export default function AdminReclamationsPage() {
         await loadReclamations();
         resolve(true);
       } catch (error: any) {
+        await loadReclamations(); // Rollback on error
         reject(new Error(error.message || 'Erreur lors de la suppression'));
       } finally {
         setActionLoading(false);
@@ -368,7 +416,7 @@ export default function AdminReclamationsPage() {
               >
                 {tActions('filter')}
                 {Object.values(filters).filter(v => v !== '').length > 0 && (
-                  <span className="ml-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
+                  <span className="ms-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
                     {Object.values(filters).filter(v => v !== '').length}
                   </span>
                 )}
@@ -525,7 +573,7 @@ export default function AdminReclamationsPage() {
                     <div className="lg:col-span-2 flex items-end">
                       <button
                         onClick={resetFilters}
-                        className="flex items-center gap-2 px-6 py-3 text-gov-red hover:bg-gov-red/10/10 rounded-xl transition-all font-bold text-sm border border-transparent hover:border-rose-500/20 active:scale-95"
+                        className="flex items-center gap-2 px-6 py-3 text-gov-red hover:bg-[hsl(var(--gov-red)/0.08)] rounded-xl transition-all font-bold text-sm border border-transparent hover:border-rose-500/20 active:scale-95"
                       >
                         <Trash2 size={16} />
                         {tCommon('reset_filters')}
@@ -538,7 +586,9 @@ export default function AdminReclamationsPage() {
           </AnimatePresence>
 
           {/* Table Section */}
-          <GovTable>
+          <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden mb-6">
+            <div className="overflow-x-auto custom-scrollbar">
+              <GovTable>
             <thead>
               <tr>
                 <GovTh>{t('table.ref')}</GovTh>
@@ -547,7 +597,7 @@ export default function AdminReclamationsPage() {
                 <GovTh>{t('table.statut')}</GovTh>
                 <GovTh>{t('table.affectation')}</GovTh>
                 <GovTh>{t('table.date')}</GovTh>
-                <GovTh className="text-right">{tCommon('actions')}</GovTh>
+                <GovTh className="text-end">{tCommon('actions')}</GovTh>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -616,7 +666,7 @@ export default function AdminReclamationsPage() {
                           <p className="opacity-60">{new Date(r.createdAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
                       </GovTd>
-                      <GovTd className="text-right">
+                      <GovTd className="text-end">
                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
                           <GovButton 
                             onClick={(e) => {
@@ -674,6 +724,7 @@ export default function AdminReclamationsPage() {
               )}
             </tbody>
           </GovTable>
+          </div>
 
             {/* Institutional Pagination */}
             <div className="px-6 py-5 bg-muted/20 border-t border-border flex items-center justify-between">
@@ -720,7 +771,7 @@ export default function AdminReclamationsPage() {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 ltr:right-0 rtl:left-0 bottom-0 w-full max-w-2xl bg-background shadow-2xl z-[101] flex flex-col border-l border-border"
+                className="fixed top-0 end-0 bottom-0 w-full max-w-2xl bg-background shadow-2xl z-[101] flex flex-col border-s border-border"
               >
                 {/* Drawer Header */}
                 <div className="p-6 border-b border-border bg-card/30 flex items-center justify-between">
@@ -1015,6 +1066,7 @@ export default function AdminReclamationsPage() {
             </motion.div>
           </div>
         )}
+      </div>
     </PermissionGuard>
   );
 }

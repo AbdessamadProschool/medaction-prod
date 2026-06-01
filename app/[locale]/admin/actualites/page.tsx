@@ -92,14 +92,18 @@ export default function AdminActualitesPage() {
   // Modal
   const [selectedActualite, setSelectedActualite] = useState<Actualite | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '12');
-  if (search) queryParams.set('search', search);
-  if (statutFilter) queryParams.set('statut', statutFilter);
-  if (secteurFilter) queryParams.set('secteur', secteurFilter);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    if (search) params.set('search', search);
+    if (statutFilter) params.set('statut', statutFilter);
+    if (secteurFilter) params.set('secteur', secteurFilter);
+    return params;
+  }, [page, search, statutFilter, secteurFilter]);
 
   const { data: actualitesData, isLoading: loading, mutate: fetchActualites } = useData(`/api/actualites?${queryParams.toString()}`);
 
@@ -117,6 +121,7 @@ export default function AdminActualitesPage() {
   }, [actualitesData]);
 
   const handleChangeStatut = async (id: number, newStatut: string) => {
+    setActionLoading(`${id}-${newStatut}`);
     const promise = new Promise(async (resolve, reject) => {
       try {
         await actionMutation.mutate(`/api/actualites/${id}/statut`, {
@@ -129,6 +134,8 @@ export default function AdminActualitesPage() {
         resolve(true);
       } catch (error: any) {
         reject(new Error(error.message || t('messages.error')));
+      } finally {
+        setActionLoading(null);
       }
     });
 
@@ -140,10 +147,11 @@ export default function AdminActualitesPage() {
   };
 
   const handleToggleMisEnAvant = async (id: number, current: boolean) => {
+    setActionLoading(`highlight-${id}`);
     const promise = new Promise(async (resolve, reject) => {
       try {
-        // keeping original logic for url
-        await actionMutation.mutate(`/actualites/${id}`, {
+        // Fix: URL correcte avec /api préfixe
+        await actionMutation.mutate(`/api/actualites/${id}/mise-en-avant`, {
           method: 'PATCH',
           data: { isMisEnAvant: !current },
         });
@@ -152,6 +160,8 @@ export default function AdminActualitesPage() {
         resolve(true);
       } catch (error: any) {
         reject(new Error(error.message || t('messages.error')));
+      } finally {
+        setActionLoading(null);
       }
     });
 
@@ -163,7 +173,12 @@ export default function AdminActualitesPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm(t('messages.delete_confirm'))) return;
+    if (showDeleteId !== id) {
+      setShowDeleteId(id);
+      return;
+    }
+    setShowDeleteId(null);
+    setActionLoading(`delete-${id}`);
     
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -173,6 +188,8 @@ export default function AdminActualitesPage() {
         resolve(true);
       } catch (error: any) {
         reject(new Error(error.message || t('messages.error')));
+      } finally {
+        setActionLoading(null);
       }
     });
 
@@ -364,10 +381,10 @@ export default function AdminActualitesPage() {
         ) : actualites.length === 0 ? (
           <div className="col-span-full text-center py-16">
             <Newspaper className="w-16 h-16 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               {t('no_news')}
             </h3>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               {search || statutFilter || secteurFilter ? t('no_results') : t('create_first')}
             </p>
           </div>

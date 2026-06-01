@@ -244,6 +244,7 @@ export default function BilansPage() {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [editingBilan, setEditingBilan] = useState<{ id: number, titre: string, description: string, participants: number } | null>(null);
   const [saving, setSaving] = useState(false);
+  const [resetConfirmId, setResetConfirmId] = useState<number | null>(null);
   const { data: evtData, isLoading: loadingEvenements, mutate: fetchEvenements } = useData('/api/admin/bilans/evenements');
   const { data: actData, isLoading: loadingActivites, mutate: fetchActivites } = useData('/api/admin/bilans/activites');
   const { data: campData, isLoading: loadingCampagnes, mutate: fetchCampagnes } = useData('/api/admin/bilans/campagnes');
@@ -289,24 +290,30 @@ export default function BilansPage() {
   };
 
   const handleResetBilan = async (id: number) => {
-    if (!confirm(t('admin_bilans.labels.confirm_reset'))) return;
-    
-    try {
-      await actionMutation.mutate(`/api/evenements/${id}`, {
-        method: 'PUT',
-        data: {
-          statut: 'PUBLIEE',
-          bilanDescription: null,
-          bilanNbParticipants: null,
-          bilanDatePublication: null
-        }
-      });
-      
-      toast.success(t('admin_bilans.messages.reset_success') || 'Bilan réinitialisé');
-      await fetchEvenements();
-    } catch (error: any) {
-      toast.error(error.message || 'Erreur réseau');
-    }
+    setResetConfirmId(null);
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/evenements/${id}`, {
+          method: 'PUT',
+          data: {
+            statut: 'PUBLIEE',
+            bilanDescription: null,
+            bilanNbParticipants: null,
+            bilanDatePublication: null
+          }
+        });
+        await fetchEvenements();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur réseau'));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Réinitialisation du bilan en cours...',
+      success: t('admin_bilans.messages.reset_success') || 'Bilan réinitialisé',
+      error: (err) => err.message,
+    });
   };
 
   const toggleExpand = (key: string) => {
@@ -704,7 +711,7 @@ export default function BilansPage() {
                         {t('admin_bilans.labels.edit_bilan')}
                       </button>
                       <button
-                        onClick={() => handleResetBilan(evt.id)}
+                        onClick={() => setResetConfirmId(evt.id)}
                         className="flex items-center justify-center gap-2 px-5 py-3.5 bg-[hsl(var(--gov-red))/0.05] text-[hsl(var(--gov-red))] rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[hsl(var(--gov-red))] hover:text-white transition-all border border-[hsl(var(--gov-red))/0.1] shadow-sm"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -1059,6 +1066,54 @@ export default function BilansPage() {
               </form>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Confirmation de Réinitialisation */}
+      <AnimatePresence>
+        {resetConfirmId !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setResetConfirmId(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-border rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-2xl mb-4">
+                  <Trash2 size={32} />
+                </div>
+                <h3 className="text-xl font-extrabold text-foreground mb-2">
+                  {t('admin_bilans.labels.confirm_reset_title', { defaultValue: 'Réinitialiser le bilan' })}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {t('admin_bilans.labels.confirm_reset', { defaultValue: 'Voulez-vous vraiment réinitialiser ce bilan ? Cette action effacera toutes les informations saisies.' })}
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setResetConfirmId(null)}
+                    className="flex-1 px-5 py-3 border border-border text-muted-foreground rounded-2xl hover:bg-muted text-sm font-bold transition-colors"
+                  >
+                    {t('admin_bilans.labels.cancel', { defaultValue: 'Annuler' })}
+                  </button>
+                  <button
+                    onClick={() => handleResetBilan(resetConfirmId)}
+                    className="flex-1 px-5 py-3 bg-[hsl(var(--gov-red))] text-white rounded-2xl hover:opacity-90 text-sm font-bold transition-colors shadow-lg shadow-[hsl(var(--gov-red))/0.2]"
+                  >
+                    {t('admin_bilans.labels.confirm_reset_btn', { defaultValue: 'Réinitialiser' })}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

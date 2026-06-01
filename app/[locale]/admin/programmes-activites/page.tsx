@@ -95,6 +95,9 @@ export default function AdminProgrammesActivitesPage() {
   const [selectedActivite, setSelectedActivite] = useState<ProgrammeActivite | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  
+  // Deletion confirmation state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   // Stats
   const stats = useMemo(() => {
@@ -108,19 +111,40 @@ export default function AdminProgrammesActivitesPage() {
     };
   }, [activites]);
 
-  // Filtrer les activités
-  const filteredActivites = activites.filter((a: any) => {
-    const matchSearch = !search || 
-      a.titre.toLowerCase().includes(search.toLowerCase()) ||
-      a.etablissement.nom.toLowerCase().includes(search.toLowerCase()) ||
-      a.typeActivite.toLowerCase().includes(search.toLowerCase());
-    
-    const matchStatut = !filterStatut || a.statut === filterStatut;
-    const matchValidation = !filterValidation || 
-      (filterValidation === 'validated' ? a.isValideParAdmin : !a.isValideParAdmin);
-    
-    return matchSearch && matchStatut && matchValidation;
-  });
+  // Filtrer les activités (Mémoïsé)
+  const filteredActivites = useMemo(() => {
+    return activites.filter((a: any) => {
+      const matchSearch = !search || 
+        a.titre.toLowerCase().includes(search.toLowerCase()) ||
+        a.etablissement.nom.toLowerCase().includes(search.toLowerCase()) ||
+        a.typeActivite.toLowerCase().includes(search.toLowerCase());
+      
+      const matchStatut = !filterStatut || a.statut === filterStatut;
+      const matchValidation = !filterValidation || 
+        (filterValidation === 'validated' ? a.isValideParAdmin : !a.isValideParAdmin);
+      
+      return matchSearch && matchStatut && matchValidation;
+    });
+  }, [activites, search, filterStatut, filterValidation]);
+
+  const handleDelete = async (id: number) => {
+    setDeleteConfirmId(null);
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/programmes-activites/${id}`, { method: 'DELETE' });
+        await fetchActivites();
+        resolve(true);
+      } catch (e: any) {
+        reject(new Error(e.message || 'Erreur de connexion'));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Suppression en cours...',
+      success: 'Programme supprimé',
+      error: (err) => err.message,
+    });
+  };
 
   // Actions - Utiliser l'API de validation dédiée
   const handleValidate = async (id: number, validate: boolean) => {
@@ -402,25 +426,7 @@ export default function AdminProgrammesActivitesPage() {
                           </button>
                           
                           <button
-                            onClick={async () => {
-                              if (confirm('Voulez-vous vraiment supprimer ce programme ?')) {
-                                const promise = new Promise(async (resolve, reject) => {
-                                  try {
-                                    await actionMutation.mutate(`/api/programmes-activites/${activite.id}`, { method: 'DELETE' });
-                                    await fetchActivites();
-                                    resolve(true);
-                                  } catch (e: any) {
-                                    reject(new Error(e.message || 'Erreur de connexion'));
-                                  }
-                                });
-
-                                toast.promise(promise, {
-                                  loading: 'Suppression en cours...',
-                                  success: 'Programme supprimé',
-                                  error: (err) => err.message,
-                                });
-                              }
-                            }}
+                            onClick={() => setDeleteConfirmId(activite.id)}
                             className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05] hover:border-[hsl(var(--gov-red))/0.2] rounded-xl transition-all shadow-sm"
                             title="Supprimer"
                           >
@@ -633,6 +639,53 @@ export default function AdminProgrammesActivitesPage() {
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+      {/* Modal Confirmation de Suppression */}
+      <AnimatePresence>
+        {deleteConfirmId !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setDeleteConfirmId(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-border rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-2xl mb-4">
+                  <Trash2 size={32} />
+                </div>
+                <h3 className="text-xl font-extrabold text-foreground mb-2">
+                  {tModal('delete_confirm_title', { defaultValue: 'Confirmation de suppression' })}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {tModal('delete_confirm_subtitle', { defaultValue: 'Voulez-vous vraiment supprimer ce programme ? Cette action est irréversible.' })}
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setDeleteConfirmId(null)}
+                    className="flex-1 px-5 py-3 border border-border text-muted-foreground rounded-2xl hover:bg-muted text-sm font-bold transition-colors"
+                  >
+                    {tModal('cancel', { defaultValue: 'Annuler' })}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(deleteConfirmId)}
+                    className="flex-1 px-5 py-3 bg-[hsl(var(--gov-red))] text-white rounded-2xl hover:opacity-90 text-sm font-bold transition-colors shadow-lg shadow-[hsl(var(--gov-red))/0.2]"
+                  >
+                    {tModal('confirm', { defaultValue: 'Supprimer' })}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

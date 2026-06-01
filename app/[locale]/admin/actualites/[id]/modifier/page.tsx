@@ -64,6 +64,7 @@ export default function ModifierActualitePage() {
   const actionMutation = useMutation();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const [formData, setFormData] = useState({
     titre: '',
@@ -127,9 +128,12 @@ export default function ModifierActualitePage() {
     });
   };
 
-  const handleDelete = async () => {
-    if (!confirm(tNewsPage('messages.delete_confirm') || 'Êtes-vous sûr ?')) return;
-    
+  const handleDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setShowDeleteConfirm(false);
     setDeleting(true);
     try {
       await actionMutation.mutate(`/api/actualites/${id}`, { method: 'DELETE' });
@@ -281,7 +285,7 @@ export default function ModifierActualitePage() {
             "px-4 py-1.5 rounded-full ring-1 ring-inset shadow-sm",
             actualite.isPublie ? "bg-gov-green text-gov-green-dark ring-gov-green/20" :
             actualite.isValide ? "bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] ring-[hsl(var(--gov-blue))/0.2]" :
-            "bg-gov-gold/10/10 text-gov-gold ring-amber-500/20"
+            "bg-gov-gold/10 text-gov-gold ring-amber-500/20"
           )}>
             {actualite.isPublie ? t('form.is_publie') : actualite.isValide ? t('form.is_valide') : tNewsPage('statuses.EN_ATTENTE_VALIDATION')}
           </div>
@@ -447,6 +451,40 @@ export default function ModifierActualitePage() {
           </motion.div>
         </div>
       </form>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-red">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{tNewsPage('actions.delete') || 'Suppression'}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {tNewsPage('messages.delete_confirm') || 'Êtes-vous sûr de vouloir supprimer cette actualité ?'}
+              </p>
+              <div className="flex justify-end gap-3">
+                <GovButton
+                  onClick={() => setShowDeleteConfirm(false)}
+                  variant="outline"
+                  size="sm"
+                >
+                  {tNewsPage('cancel') || 'Annuler'}
+                </GovButton>
+                <GovButton
+                  onClick={handleDeleteConfirm}
+                  variant="danger"
+                  size="sm"
+                  loading={deleting}
+                >
+                  {tNewsPage('actions.delete') || 'Supprimer'}
+                </GovButton>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

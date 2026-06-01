@@ -87,6 +87,7 @@ export default function ModifierEvenementPage() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showClotureForm, setShowClotureForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   // Image states
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -185,30 +186,18 @@ export default function ModifierEvenementPage() {
           if (!imageUrl || !imageUrl.startsWith('/')) {
             console.error("URL d'image invalide:", imageUrl, "Réponse complète:", uploadData);
             imageUploadFailed = true;
-            toast.error("L'URL de l'image uploadée est invalide");
-            const continueWithCurrentImage = confirm(
-              `⚠️ L'image a été uploadée mais l'URL est invalide.\n\nVoulez-vous sauvegarder avec l'image actuelle ?`
-            );
-            if (!continueWithCurrentImage) {
-              setSaving(false);
-              return;
-            }
-            imageUrl = currentImageUrl;
+            toast.error("L'image a été uploadée mais l'URL retournée est invalide. Enregistrement annulé.");
+            setSaving(false);
+            return;
           } else {
             toast.success(t('admin_evenement_modifier.messages.upload_success'));
           }
         } catch (uploadError: any) {
           console.error("Erreur réseau upload:", uploadError);
           imageUploadFailed = true;
-          toast.error("Erreur réseau lors de l'upload");
-          const continueWithCurrentImage = confirm(
-            `⚠️ Erreur réseau lors de l'upload de l'image.\n\nVoulez-vous sauvegarder avec l'image actuelle ?`
-          );
-          if (!continueWithCurrentImage) {
-            setSaving(false);
-            return;
-          }
-          imageUrl = currentImageUrl;
+          toast.error("Erreur réseau lors de l'upload de l'image. Enregistrement annulé.");
+          setSaving(false);
+          return;
         }
       }
 
@@ -284,13 +273,15 @@ export default function ModifierEvenementPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm(t('admin_evenement_modifier.messages.delete_confirm'))) return;
-    
+  const handleDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setShowDeleteConfirm(false);
     setDeleting(true);
     try {
       await actionMutation.mutate(`/api/evenements/${id}`, { method: 'DELETE' });
-      
       toast.success(t('admin_evenement_modifier.messages.delete_success'));
       router.push('/admin/evenements');
     } catch (error: any) {
@@ -794,6 +785,37 @@ export default function ModifierEvenementPage() {
           </div>
         </div>
       </form>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+          <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+            <div className="flex items-center gap-3 text-gov-red">
+              <Trash2 className="w-6 h-6" />
+              <h3 className="text-lg font-bold">{t('admin_evenement_modifier.delete') || 'Suppression'}</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t('admin_evenement_modifier.messages.delete_confirm')}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+              >
+                {t('admin_evenement_modifier.cancel') || 'Annuler'}
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium animate-pulse-once"
+              >
+                {t('admin_evenement_modifier.delete') || 'Supprimer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

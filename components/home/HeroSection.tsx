@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,7 @@ export default function HeroSection() {
   const t = useTranslations();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Slides with translations
   const slides = [
@@ -51,14 +52,25 @@ export default function HeroSection() {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
 
+  const pauseAutoPlay = () => {
+    setIsAutoPlaying(false);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setIsAutoPlaying(true), 10000);
+  };
+
+  const manualNextSlide = () => {
+    nextSlide();
+    pauseAutoPlay();
+  };
+
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    pauseAutoPlay();
   };
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 10000);
+    pauseAutoPlay();
   };
 
   // Auto-play carousel
@@ -71,7 +83,7 @@ export default function HeroSection() {
   const isAr = useLocale() === 'ar';
 
   return (
-    <section className="relative h-screen w-full overflow-hidden" dir="ltr">
+    <section className="relative h-screen w-full overflow-hidden">
       {/* Background Slides */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -95,7 +107,7 @@ export default function HeroSection() {
       </AnimatePresence>
 
       {/* Bande tricolore en haut */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green z-20" />
+      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green z-20" />
 
       {/* Motif géométrique marocain Premium */}
       <div 
@@ -106,7 +118,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex items-center" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="relative z-10 h-full flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <AnimatePresence mode="wait">
             <motion.div
@@ -212,7 +224,7 @@ export default function HeroSection() {
       {/* Navigation Arrows - styled gouvernemental */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-14 h-14 hidden md:flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-gov-gold hover:border-gov-gold hover:scale-110 transition-all duration-300 group"
+        className="absolute start-4 md:start-8 top-1/2 -translate-y-1/2 z-20 w-14 h-14 hidden md:flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-gov-gold hover:border-gov-gold hover:scale-110 transition-all duration-300 group"
         aria-label="Slide précédent"
       >
         <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,8 +232,8 @@ export default function HeroSection() {
         </svg>
       </button>
       <button
-        onClick={nextSlide}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-14 h-14 hidden md:flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-gov-gold hover:border-gov-gold hover:scale-110 transition-all duration-300 group"
+        onClick={manualNextSlide}
+        className="absolute end-4 md:end-8 top-1/2 -translate-y-1/2 z-20 w-14 h-14 hidden md:flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-gov-gold hover:border-gov-gold hover:scale-110 transition-all duration-300 group"
         aria-label="Slide suivant"
       >
         <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -230,7 +242,7 @@ export default function HeroSection() {
       </button>
 
       {/* Slide Indicators - styled gouvernemental */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4">
+      <div className="absolute bottom-10 inset-x-0 z-20 flex items-center justify-center gap-4">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -250,7 +262,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-8 right-8 z-20 hidden md:flex flex-col items-center gap-3"
+        className="absolute bottom-8 end-8 z-20 hidden md:flex flex-col items-center gap-3"
       >
         <span className="text-white/60 text-xs font-bold uppercase tracking-widest rotate-90 origin-center translate-x-3 translate-y-3">{t('common.scroll')}</span>
         <motion.div

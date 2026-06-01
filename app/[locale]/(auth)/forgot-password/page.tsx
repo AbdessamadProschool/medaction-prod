@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -16,9 +17,9 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const forgotPasswordSchema = z.object({
+  const forgotPasswordSchema = useMemo(() => z.object({
     email: z.string().min(1, tErrors('required')).email(tErrors('invalid_email')),
-  });
+  }), [tErrors]);
 
   const {
     register,
@@ -29,25 +30,43 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
+    // Client-side rate limiting
+    const attempts = parseInt(sessionStorage.getItem('forgot_pwd_attempts') || '0');
+    if (attempts >= 3) {
+      setError(tErrors('too_many_attempts') || 'Trop de tentatives. Veuillez réessayer plus tard.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
+      const { getCsrfToken } = await import('next-auth/react');
+      const csrfToken = await getCsrfToken();
+
       const response = await fetch('/api/auth/forgot-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {})
+        },
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.message || tErrors('generic'));
+        sessionStorage.setItem('forgot_pwd_attempts', (attempts + 1).toString());
+        throw new Error(tErrors('generic') || 'Une erreur est survenue');
       }
 
+      sessionStorage.removeItem('forgot_pwd_attempts');
       setSuccess(true);
+      toast.success(t('email_sent'));
     } catch (err) {
-      setError(err instanceof Error ? err.message : tErrors('generic'));
+      const errorMsg = err instanceof Error ? err.message : tErrors('generic');
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

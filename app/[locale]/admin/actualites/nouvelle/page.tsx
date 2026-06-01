@@ -81,6 +81,10 @@ export default function AdminNouvelleActualitePage() {
         toast.error(t('form.image_help'));
         return;
       }
+      if (!file.type.startsWith('image/')) {
+        toast.error('Format de fichier non supporté. Veuillez sélectionner une image.');
+        return;
+      }
       setSelectedImage(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -104,7 +108,6 @@ export default function AdminNouvelleActualitePage() {
               });
               imageUrl = uploadData.url;
           } catch (e) {
-               console.error("Upload error:", e);
                reject(new Error("Erreur téléchargement image"));
                return;
           }
@@ -122,7 +125,6 @@ export default function AdminNouvelleActualitePage() {
         router.push('/admin/actualites');
         router.refresh();
       } catch (error: any) {
-        console.error(error);
         reject(new Error('Erreur: ' + (error.message || 'Erreur serveur')));
       } finally {
         setLoading(false);

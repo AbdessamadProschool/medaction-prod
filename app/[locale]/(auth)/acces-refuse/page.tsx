@@ -49,7 +49,7 @@ export default function AccesRefusePage() {
           <div className="space-y-3">
             <Link
               href="/"
-              className="block w-full py-3 px-4 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl shadow-lg shadow-gov-green/25 hover:shadow-gov-green/40 hover:bg-gov-green-dark transition-all duration-200"
+              className="gov-btn gov-btn-primary w-full"
             >
               {t('back_home')}
             </Link>

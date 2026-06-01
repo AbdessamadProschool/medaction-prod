@@ -35,6 +35,10 @@ export const POST = withErrorHandler(async (request: Request) => {
     throw new UnauthorizedError('Vous devez être connecté');
   }
 
+  if (!request.headers.get('content-type')?.includes('application/json')) {
+    throw new UnauthorizedError('Content-Type must be application/json');
+  }
+
   const body = await request.json();
   const validation = changePasswordSchema.safeParse(body);
 

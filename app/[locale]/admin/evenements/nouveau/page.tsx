@@ -97,6 +97,10 @@ export default function NouveauEventPage() {
         toast.error(t('errors.image_size'));
         return;
       }
+      if (!file.type.startsWith('image/')) {
+        toast.error('Format de fichier non supporté. Veuillez sélectionner une image.');
+        return;
+      }
       setSelectedImage(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -162,7 +166,7 @@ export default function NouveauEventPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+    <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 py-8">
         
         {/* Header */}
@@ -356,7 +360,7 @@ export default function NouveauEventPage() {
           >
             <div className="p-8 border-b border-border bg-gradient-to-br from-muted/50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-gov-gold/10/10 flex items-center justify-center text-gov-gold">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-700">
                   <Calendar size={20} />
                 </div>
                 <div>
@@ -510,7 +514,7 @@ export default function NouveauEventPage() {
                   <label className={cn(
                     "flex items-start gap-4 p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all w-full group shadow-sm",
                     watchedInscriptions 
-                      ? "border-gov-green/30 bg-gov-green shadow-gov-green/20 shadow-lg" 
+                      ? "border-[hsl(var(--gov-green))/0.3] bg-[hsl(var(--gov-green))/0.05] shadow-[hsl(var(--gov-green))/0.1] shadow-lg" 
                       : "border-border bg-muted/10 hover:border-border/80"
                   )}>
                     <input

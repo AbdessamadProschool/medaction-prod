@@ -81,6 +81,7 @@ export default function SuperAdminPermissionsPage() {
   const [selectedPermission, setSelectedPermission] = useState<Permission | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [form, setForm] = useState({ code: '', nom: '', description: '', groupe: '', groupeLabel: '' });
+  const [deleteConfirmPerm, setDeleteConfirmPerm] = useState<Permission | null>(null);
 
   const permissions = useMemo(() => {
     return permissionsData?.permissions || [];
@@ -126,8 +127,6 @@ export default function SuperAdminPermissionsPage() {
 
   // Delete permission
   const handleDelete = async (perm: Permission) => {
-    if (!confirm(t('messages.confirm_delete', { name: perm.nom }))) return;
-    
     setActionLoading(`delete-${perm.id}`);
     try {
       await actionMutation.mutate(`/api/permissions/${perm.id}`, { method: 'DELETE' });
@@ -353,7 +352,7 @@ export default function SuperAdminPermissionsPage() {
                             <Edit size={18} />
                           </button>
                           <button
-                            onClick={() => handleDelete(perm)}
+                            onClick={() => setDeleteConfirmPerm(perm)}
                             disabled={!!actionLoading}
                             className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
                           >
@@ -551,6 +550,53 @@ export default function SuperAdminPermissionsPage() {
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Confirmation de Suppression */}
+      <AnimatePresence>
+        {deleteConfirmPerm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setDeleteConfirmPerm(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-2xl mb-4">
+                  <Trash2 size={32} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t('messages.confirm_delete_title', { defaultValue: 'Confirmer la suppression' })}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  {t('messages.confirm_delete', { name: deleteConfirmPerm.nom })}
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setDeleteConfirmPerm(null)}
+                    className="flex-1 px-5 py-3 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-bold transition-colors"
+                  >
+                    {t('modal.cancel', { defaultValue: 'Annuler' })}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(deleteConfirmPerm)}
+                    className="flex-1 px-5 py-3 bg-red-600 text-white rounded-2xl hover:bg-red-700 text-sm font-bold transition-colors shadow-lg shadow-red-500/20"
+                  >
+                    {t('modal.delete', { defaultValue: 'Supprimer' })}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

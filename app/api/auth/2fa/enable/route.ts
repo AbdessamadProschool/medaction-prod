@@ -40,6 +40,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
     }
 
+    if (!request.headers.get('content-type')?.includes('application/json') && request.headers.get('content-type') !== null) {
+      // Allow empty body or application/json, wait, POST 2FA enable doesn't require a body actually, it just generates a secret.
+      // But standard CSRF prevention should still be applied if we want.
+      // Actually `request.json()` might fail if there's no body.
+    }
+    
+    // Oh wait, if POST does not use request.json(), it still shouldn't accept form submissions.
+    if (request.headers.get('content-type') === 'application/x-www-form-urlencoded' || request.headers.get('content-type')?.startsWith('multipart/form-data') || request.headers.get('content-type') === 'text/plain') {
+        return NextResponse.json({ error: 'Unsupported Media Type' }, { status: 415 });
+    }
+
     const userId = parseInt(session.user.id);
 
     // Vérifier si 2FA n'est pas déjà activé
@@ -120,6 +131,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     const userId = parseInt(session.user.id);
+    
+    if (!request.headers.get('content-type')?.includes('application/json')) {
+      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 415 });
+    }
+
     const body = await request.json();
     const { code, password } = body;
 

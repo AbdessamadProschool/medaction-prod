@@ -72,14 +72,18 @@ export default function AdminArticlesPage() {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [articleToDeleteId, setArticleToDeleteId] = useState<number | null>(null);
 
   const actionMutation = useMutation();
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '12');
-  if (search) queryParams.set('search', search);
-  if (statutFilter) queryParams.set('statut', statutFilter);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    if (search) params.set('search', search);
+    if (statutFilter) params.set('statut', statutFilter);
+    return params;
+  }, [page, search, statutFilter]);
 
   const { data: articlesData, isLoading: loading, mutate: fetchArticles } = useData(`/api/articles?${queryParams.toString()}`);
 
@@ -141,9 +145,14 @@ export default function AdminArticlesPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm(tModal('delete') + ' ?')) return;
-    
+  const handleDelete = (id: number) => {
+    setArticleToDeleteId(id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!articleToDeleteId) return;
+    const id = articleToDeleteId;
+    setArticleToDeleteId(null);
     setActionLoading(`delete-${id}`);
     try {
       await actionMutation.mutate(`/api/articles/${id}`, { method: 'DELETE' });
@@ -641,6 +650,39 @@ export default function AdminArticlesPage() {
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {articleToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-red">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{tModal('delete') || 'Suppression'}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {tModal('delete_confirm') || 'Êtes-vous sûr de vouloir supprimer cet article ?'}
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setArticleToDeleteId(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  {tModal('cancel') || 'Annuler'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  {tModal('delete') || 'Supprimer'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>

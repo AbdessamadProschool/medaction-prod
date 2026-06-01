@@ -78,6 +78,7 @@ export default function SuggestionsPage() {
   const [statutFilter, setStatutFilter] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [itemToDeleteId, setItemToDeleteId] = useState<number | null>(null);
 
   // ECC: useData
   const queryStr = useMemo(() => {
@@ -350,21 +351,7 @@ export default function SuggestionsPage() {
                       <div className="flex items-center gap-2">
                         {session?.user?.id && Number(session.user.id) === suggestion.user.id && (
                           <button
-                            onClick={async () => {
-                              if (!confirm(t('delete_confirm'))) return;
-                              try {
-                                const res = await fetch(`/api/suggestions/${suggestion.id}`, { method: 'DELETE' });
-                                if (res.ok) {
-                                  toast.success(t('delete_success'));
-                                  fetchSuggestions();
-                                } else {
-                                  const data = await res.json();
-                                  toast.error(data.error || 'Erreur lors de la suppression');
-                                }
-                              } catch {
-                                toast.error('Erreur serveur');
-                              }
-                            }}
+                            onClick={() => setItemToDeleteId(suggestion.id)}
                             className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                             title="Supprimer"
                           >
@@ -450,6 +437,76 @@ export default function SuggestionsPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {itemToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6 relative overflow-hidden text-start"
+            >
+              <div className="absolute top-0 end-0 w-24 h-24 bg-red-500/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Trash2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">{t('delete_title') || 'Suppression'}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('irreversible_action') || 'Cette action est irréversible'}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                {t('delete_confirm')}
+              </p>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setItemToDeleteId(null)}
+                  className="px-5 py-2.5 bg-muted border border-border text-foreground rounded-xl hover:bg-muted/80 text-sm font-bold transition-all"
+                >
+                  {t('cancel') || 'Annuler'}
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const id = itemToDeleteId;
+                    setItemToDeleteId(null);
+                    const promise = new Promise(async (resolve, reject) => {
+                      try {
+                        const res = await fetch(`/api/suggestions/${id}`, { method: 'DELETE' });
+                        if (res.ok) {
+                          fetchSuggestions();
+                          resolve(true);
+                        } else {
+                          const data = await res.json();
+                          reject(new Error(data.error || 'Erreur lors de la suppression'));
+                        }
+                      } catch {
+                        reject(new Error('Erreur serveur'));
+                      }
+                    });
+
+                    toast.promise(promise, {
+                      loading: t('deleting') || 'Suppression en cours...',
+                      success: t('delete_success'),
+                      error: (err) => err.message,
+                    });
+                  }}
+                  className="px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 text-sm font-bold transition-all shadow-lg shadow-red-600/10"
+                >
+                  {t('delete') || 'Supprimer'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

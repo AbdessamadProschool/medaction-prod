@@ -84,8 +84,8 @@ export default function AdminRolesPage() {
     <PermissionGuard permission="permissions.manage">
       <div className="min-h-screen bg-background py-8 px-4 sm:px-6 relative overflow-hidden">
         {/* Decorative Background */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 end-0 w-[600px] h-[600px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 start-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 rtl:translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto relative z-10">
           {/* Header Section */}
@@ -160,7 +160,7 @@ export default function AdminRolesPage() {
                       <button
                         key={role}
                         onClick={() => setSelectedRole(role)}
-                        className={`w-full text-left px-4 py-4 rounded-xl transition-all group flex items-center justify-between ${
+                        className={`w-full text-start px-4 py-4 rounded-xl transition-all group flex items-center justify-between ${
                           selectedRole === role
                             ? 'bg-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] ring-2 ring-[hsl(var(--gov-blue)/0.1)] scale-[1.02]'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -230,7 +230,7 @@ export default function AdminRolesPage() {
                       </div>
                     </div>
                     {/* Decorative pattern */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-foreground/5 to-transparent rounded-full translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
+                    <div className="absolute top-0 end-0 w-64 h-64 bg-gradient-to-br from-foreground/5 to-transparent rounded-full translate-x-1/2 rtl:-translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
                   </div>
 
                   {/* Permissions Grid */}
@@ -252,7 +252,7 @@ export default function AdminRolesPage() {
                             <h3 className="font-black text-xs uppercase tracking-widest text-foreground">
                               {t('groups.' + group)}
                             </h3>
-                            <div className="ml-auto text-[10px] font-black bg-muted px-2 py-1 rounded text-muted-foreground">
+                            <div className="ms-auto text-[10px] font-black bg-muted px-2 py-1 rounded text-muted-foreground">
                               {perms.length}
                             </div>
                           </div>

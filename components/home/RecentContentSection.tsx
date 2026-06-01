@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { 
   Clock, 
   Calendar, 
@@ -188,10 +188,11 @@ export default function RecentContentSection() {
                     {/* Image */}
                     <div className="relative h-40 overflow-hidden bg-gray-100">
                       {item.imageUrl ? (
-                        <Image
+                        <OptimizedImage
                           src={item.imageUrl}
                           alt={item.titre}
                           fill
+                          type={item.type === 'evenement' ? 'evenement' : 'default'}
                           className="object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (

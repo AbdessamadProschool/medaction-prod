@@ -7,7 +7,7 @@ import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, NotFoundError, BadRequestError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
 import { auditLog } from '@/lib/logger';
-import { sanitizeName, sanitizePhone } from '@/lib/security/sanitize';
+import { sanitizeName, sanitizePhone, sanitizeString } from '@/lib/security/sanitize';
 
 const updateUserSchema = z.object({
   nom: z.string().min(2).optional().transform(val => val ? sanitizeName(val) : val),
@@ -17,7 +17,7 @@ const updateUserSchema = z.object({
   password: z.string().min(8).optional(),
   isActive: z.boolean().optional(),
   telephone: z.string().optional().nullable().transform(val => val ? sanitizePhone(val) : val),
-  secteurResponsable: z.any().optional(),
+  secteurResponsable: z.string().optional().nullable().transform(val => val ? sanitizeString(val) : val),
 });
 
 export const GET = withPermission('users.read', withErrorHandler(async (request: NextRequest, { params }) => {
@@ -67,8 +67,8 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
     throw new ForbiddenError('Un Administrateur ne peut pas modifier le profil d\'un autre Administrateur');
   }
 
-  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut promouvoir vers SUPER_ADMIN ou GOUVERNEUR
-  if ((data.role === 'SUPER_ADMIN' || data.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
+  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut promouvoir vers SUPER_ADMIN, GOUVERNEUR ou ADMIN
+  if (data.role && ['SUPER_ADMIN', 'GOUVERNEUR', 'ADMIN'].includes(data.role) && session.user.role !== 'SUPER_ADMIN') {
     throw new ForbiddenError(`Vous ne pouvez pas assigner le rôle ${data.role}`);
   }
   
@@ -82,6 +82,11 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
   // Protection contre l'auto-dégradation
   if (id === parseInt(session.user.id) && data.role && data.role !== session.user.role) {
     throw new BadRequestError('Vous ne pouvez pas modifier votre propre rôle');
+  }
+
+  // Protection contre l'auto-désactivation
+  if (id === parseInt(session.user.id) && data.isActive === false) {
+    throw new BadRequestError('Vous ne pouvez pas désactiver votre propre compte');
   }
 
   const updatedUser = await prisma.user.update({

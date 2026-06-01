@@ -118,9 +118,14 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
   if (!existingUser) throw new NotFoundError("Utilisateur non trouvé");
 
   // IDOR / Permission Escalation Prevention: 
-  // 1. Seul un SUPER_ADMIN peut modifier un SUPER_ADMIN
-  if (existingUser.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError("Seul un Super Admin peut modifier un Super Admin");
+  // 1. Seul un SUPER_ADMIN peut modifier un SUPER_ADMIN ou un GOUVERNEUR
+  if (['SUPER_ADMIN', 'GOUVERNEUR'].includes(existingUser.role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Seul un Super Admin peut modifier un compte ${existingUser.role}`);
+  }
+
+  // Empêcher un administrateur de modifier un autre administrateur
+  if (existingUser.role === 'ADMIN' && session.user.role === 'ADMIN' && userId !== parseInt(session.user.id)) {
+    throw new ForbiddenError("Un Administrateur ne peut pas modifier un autre Administrateur");
   }
 
   const body = await request.json();
@@ -132,9 +137,19 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
 
   const data = validation.data;
 
-  // 2. Empêcher un ADMIN de se promouvoir ou promouvoir quelqu'un en SUPER_ADMIN
-  if (data.role === 'SUPER_ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError("Vous ne pouvez pas assigner le rôle Super Admin");
+  // 2. Empêcher un ADMIN de se promouvoir ou promouvoir quelqu'un en SUPER_ADMIN, GOUVERNEUR, ou ADMIN
+  if (data.role && ['SUPER_ADMIN', 'GOUVERNEUR', 'ADMIN'].includes(data.role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Vous ne pouvez pas assigner le rôle ${data.role}`);
+  }
+
+  // 3. Protection contre l'auto-dégradation ou changement de rôle
+  if (userId === parseInt(session.user.id) && data.role && data.role !== session.user.role) {
+    throw new ForbiddenError("Vous ne pouvez pas modifier votre propre rôle");
+  }
+
+  // 4. Protection contre l'auto-désactivation
+  if (userId === parseInt(session.user.id) && data.isActive === false) {
+    throw new ForbiddenError("Vous ne pouvez pas désactiver votre propre compte");
   }
 
   // Vérifier unicité email/téléphone si modifiés
@@ -215,14 +230,19 @@ export const DELETE = withErrorHandler(async (
   if (!existingUser) throw new NotFoundError("Utilisateur non trouvé");
 
   // Security Rules:
-  // 1. Ne pas se supprimer soi-même ici (utiliser une route dédiée ou bloquer)
+  // 1. Ne pas se supprimer soi-même ici
   if (existingUser.id === parseInt(session.user.id)) {
-    throw new ForbiddenError("Vous ne pouvez pas supprimer votre propre compte via cet API");
+    throw new ForbiddenError("Vous ne pouvez pas supprimer votre propre compte");
   }
 
-  // 2. Ne pas supprimer un autre SUPER_ADMIN
-  if (existingUser.role === 'SUPER_ADMIN') {
-    throw new ForbiddenError("Impossible de supprimer un compte Super Admin");
+  // 2. Ne pas supprimer un SUPER_ADMIN ou GOUVERNEUR
+  if (['SUPER_ADMIN', 'GOUVERNEUR'].includes(existingUser.role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Impossible de supprimer un compte ${existingUser.role}`);
+  }
+
+  // 3. Un ADMIN ne peut pas supprimer un autre ADMIN
+  if (existingUser.role === 'ADMIN' && session.user.role === 'ADMIN') {
+    throw new ForbiddenError("Impossible de supprimer un autre Administrateur");
   }
 
   await prisma.user.delete({ where: { id: userId } });

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import {
   Bell,
   Check,
@@ -102,6 +103,7 @@ export default function NotificationsPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
@@ -157,7 +159,7 @@ export default function NotificationsPage() {
   };
 
   const deleteRead = async () => {
-    if (!confirm(t('notifications_page.confirm_delete'))) return;
+    setShowDeleteConfirm(false);
     try {
       await fetch('/api/notifications', { method: 'DELETE' });
       fetchNotifications();
@@ -194,7 +196,7 @@ export default function NotificationsPage() {
                </button>
              )}
              <button
-               onClick={deleteRead}
+               onClick={() => setShowDeleteConfirm(true)}
                className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
              >
                <Trash2 size={18} />
@@ -356,6 +358,37 @@ export default function NotificationsPage() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px]">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-red-500">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold text-foreground">Supprimer les notifications</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">{t('notifications_page.confirm_delete')}</p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={deleteRead}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

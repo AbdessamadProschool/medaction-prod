@@ -38,6 +38,7 @@ import { GovButton } from '@/components/ui/GovButton';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { useData } from '@/hooks/use-data';
+import { usePermission } from '@/hooks/use-permission';
 
 interface DashboardStats {
   utilisateurs: { total: number; nouveaux: number; variation: number };
@@ -118,9 +119,9 @@ function QuickActionCard({
           </div>
           <h3 className="font-bold text-lg mb-1">{title}</h3>
           <p className="text-sm opacity-80 line-clamp-1">{description}</p>
-          <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0">
+          <div className="mt-4 flex items-center gap-1 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform ltr:-translate-x-2.5 rtl:translate-x-2.5 group-hover:translate-x-0">
             {t('access')}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 rtl:rotate-180" />
           </div>
         </div>
       </motion.div>
@@ -141,9 +142,13 @@ const DonutChart = dynamic(() => import('@/components/ui/Charts').then(m => ({ d
 export default function AdminDashboard() {
   const t = useTranslations('admin.dashboard');
   const tCommon = useTranslations('common');
+  const { can } = usePermission();
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, isLoading: loading, mutate } = useData('/api/admin/stats');
+  const { data, isLoading: loading, mutate } = useData('/api/admin/stats', {
+    refreshInterval: 60000,
+    revalidateOnFocus: true
+  });
   const stats = data?.data?.stats || null;
   const chartData = data?.data?.charts || null;
 
@@ -205,7 +210,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 p-6 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700" />
+              <div className="absolute top-0 inset-x-0 h-1 bg-gray-200 dark:bg-gray-700" />
               <div className="flex justify-between items-start">
                  <div className="space-y-3">
                     <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -309,7 +314,7 @@ export default function AdminDashboard() {
               {t('header.title')}
             </h1>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-1">
+          <p className="text-muted-foreground font-medium text-lg ms-1">
             {t('header.subtitle')}
           </p>
         </div>
@@ -370,50 +375,58 @@ export default function AdminDashboard() {
 
       {/* KPI Cards */}
       <KpiGrid cols={4}>
-        <KpiCard
-          index={0}
-          label={t('metrics.users')}
-          value={stats?.utilisateurs?.total ?? 0}
-          change={stats?.utilisateurs?.variation}
-          changeType={stats?.utilisateurs?.variation && stats?.utilisateurs?.variation > 0 ? 'up' : 'neutral'}
-          icon={Users}
-          variant="blue"
-          subValue={stats?.utilisateurs?.nouveaux}
-          subLabel={t('metrics.new_this_month')}
-        />
-        <KpiCard
-          index={1}
-          label={t('metrics.establishments')}
-          value={stats?.etablissements?.total ?? 0}
-          change={stats?.etablissements?.variation}
-          changeType={stats?.etablissements?.variation && stats?.etablissements?.variation > 0 ? 'up' : 'neutral'}
-          icon={Building2}
-          variant="green"
-          subValue={stats?.etablissements?.valides}
-          subLabel={t('metrics.validated')}
-        />
-        <KpiCard
-          index={2}
-          label={t('metrics.events')}
-          value={stats?.evenements?.total ?? 0}
-          change={stats?.evenements?.variation}
-          changeType={stats?.evenements?.variation && stats?.evenements?.variation > 0 ? 'up' : 'neutral'}
-          icon={Calendar}
-          variant="gold"
-          subValue={stats?.evenements?.enCours}
-          subLabel={t('metrics.in_progress')}
-        />
-        <KpiCard
-          index={3}
-          label={t('metrics.reclamations')}
-          value={stats?.reclamations?.total ?? 0}
-          change={reclamationVariation}
-          changeType={reclamationVariation > 0 ? 'up' : reclamationVariation < 0 ? 'down' : 'neutral'}
-          icon={MessageSquare}
-          variant="red"
-          subValue={stats?.reclamations?.enAttente}
-          subLabel={t('metrics.pending')}
-        />
+        {can('users.read') && (
+          <KpiCard
+            index={0}
+            label={t('metrics.users')}
+            value={stats?.utilisateurs?.total ?? 0}
+            change={stats?.utilisateurs?.variation}
+            changeType={stats?.utilisateurs?.variation && stats?.utilisateurs?.variation > 0 ? 'up' : 'neutral'}
+            icon={Users}
+            variant="blue"
+            subValue={stats?.utilisateurs?.nouveaux}
+            subLabel={t('metrics.new_this_month')}
+          />
+        )}
+        {can('etablissements.read') && (
+          <KpiCard
+            index={1}
+            label={t('metrics.establishments')}
+            value={stats?.etablissements?.total ?? 0}
+            change={stats?.etablissements?.variation}
+            changeType={stats?.etablissements?.variation && stats?.etablissements?.variation > 0 ? 'up' : 'neutral'}
+            icon={Building2}
+            variant="green"
+            subValue={stats?.etablissements?.valides}
+            subLabel={t('metrics.validated')}
+          />
+        )}
+        {can('evenements.read') && (
+          <KpiCard
+            index={2}
+            label={t('metrics.events')}
+            value={stats?.evenements?.total ?? 0}
+            change={stats?.evenements?.variation}
+            changeType={stats?.evenements?.variation && stats?.evenements?.variation > 0 ? 'up' : 'neutral'}
+            icon={Calendar}
+            variant="gold"
+            subValue={stats?.evenements?.enCours}
+            subLabel={t('metrics.in_progress')}
+          />
+        )}
+        {can('reclamations.read') && (
+          <KpiCard
+            index={3}
+            label={t('metrics.reclamations')}
+            value={stats?.reclamations?.total ?? 0}
+            change={reclamationVariation}
+            changeType={reclamationVariation > 0 ? 'up' : reclamationVariation < 0 ? 'down' : 'neutral'}
+            icon={MessageSquare}
+            variant="red"
+            subValue={stats?.reclamations?.enAttente}
+            subLabel={t('metrics.pending')}
+          />
+        )}
       </KpiGrid>
 
       {/* Quick Actions */}
@@ -423,38 +436,46 @@ export default function AdminDashboard() {
           {t('quick_actions.title')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <QuickActionCard
-            title={t('quick_actions.claims')}
-            description={t('quick_actions.claims_desc')}
-            icon={MessageSquare}
-            href="/admin/reclamations"
-            color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
-            count={stats?.reclamations?.enAttente}
-            urgent={!!(stats?.reclamations?.enAttente && stats?.reclamations?.enAttente > 0)}
-          />
-          <QuickActionCard
-            title={t('quick_actions.validation')}
-            description={t('quick_actions.validation_desc')}
-            icon={CheckCircle2}
-            href="/admin/validation"
-            color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
-          />
-          <QuickActionCard
-            title={t('quick_actions.campaigns')}
-            description={t('quick_actions.campaigns_desc')}
-            icon={Megaphone}
-            href="/admin/campagnes"
-            color="from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]"
-            count={stats?.campagnesEnAttente}
-            urgent={!!(stats?.campagnesEnAttente && stats.campagnesEnAttente > 0)}
-          />
-          <QuickActionCard
-            title={t('quick_actions.users')}
-            description={t('quick_actions.users_desc')}
-            icon={Users}
-            href="/admin/utilisateurs"
-            color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
-          />
+          {can('reclamations.read') && (
+            <QuickActionCard
+              title={t('quick_actions.claims')}
+              description={t('quick_actions.claims_desc')}
+              icon={MessageSquare}
+              href="/admin/reclamations"
+              color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
+              count={stats?.reclamations?.enAttente}
+              urgent={!!(stats?.reclamations?.enAttente && stats?.reclamations?.enAttente > 0)}
+            />
+          )}
+          {can('reclamations.validate') && (
+            <QuickActionCard
+              title={t('quick_actions.validation')}
+              description={t('quick_actions.validation_desc')}
+              icon={CheckCircle2}
+              href="/admin/validation"
+              color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
+            />
+          )}
+          {can('campagnes.read') && (
+            <QuickActionCard
+              title={t('quick_actions.campaigns')}
+              description={t('quick_actions.campaigns_desc')}
+              icon={Megaphone}
+              href="/admin/campagnes"
+              color="from-[hsl(var(--gov-gold))] to-[hsl(var(--gov-gold-dark))]"
+              count={stats?.campagnesEnAttente}
+              urgent={!!(stats?.campagnesEnAttente && stats.campagnesEnAttente > 0)}
+            />
+          )}
+          {can('users.read') && (
+            <QuickActionCard
+              title={t('quick_actions.users')}
+              description={t('quick_actions.users_desc')}
+              icon={Users}
+              href="/admin/utilisateurs"
+              color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
+            />
+          )}
         </div>
       </motion.div>
 
@@ -471,7 +492,7 @@ export default function AdminDashboard() {
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('charts.events_distribution')}</p>
             </div>
             <Link href="/admin/evenements" className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl hover:bg-foreground hover:text-background transition-all">
-              <ChevronRight size={20} />
+              <ChevronRight size={20} className="rtl:rotate-180" />
             </Link>
           </div>
           {chartData?.evenementsParSecteur && (
@@ -503,7 +524,7 @@ export default function AdminDashboard() {
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{t('charts.current_breakdown')}</p>
             </div>
             <Link href="/admin/reclamations" className="w-10 h-10 flex items-center justify-center bg-muted rounded-xl hover:bg-foreground hover:text-background transition-all">
-              <ChevronRight size={20} />
+              <ChevronRight size={20} className="rtl:rotate-180" />
             </Link>
           </div>
           {chartData?.reclamationsParStatut && (
@@ -526,81 +547,91 @@ export default function AdminDashboard() {
       </div>
 
       {/* Additional Management Sections */}
-      <motion.div variants={itemVariants}>
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-[hsl(var(--gov-blue-dark))]" />
-          {t('other_sections.title')}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href="/admin/actualites">
-            <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue))] hover:shadow-lg transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
-                  <Newspaper className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.news')}</h3>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.news_desc')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+      {(can('actualites.read') || can('campagnes.read') || can('suggestions.read.own') || can('users.read')) && (
+        <motion.div variants={itemVariants}>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-[hsl(var(--gov-blue-dark))]" />
+            {t('other_sections.title')}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {can('actualites.read') && (
+              <Link href="/admin/actualites">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="gov-card p-5 group hover:border-[hsl(var(--gov-blue))] hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
+                      <Newspaper className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.news')}</h3>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.news_desc')}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            )}
 
-          <Link href="/admin/campagnes">
-            <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-gold))] hover:shadow-lg transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold)/0.1)] flex items-center justify-center text-[hsl(var(--gov-gold-dark))] group-hover:scale-110 transition-transform">
-                  <Megaphone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-gold-dark))] transition-colors tracking-tight">{t('other_sections.campaigns')}</h3>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.campaigns_desc')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+            {can('campagnes.read') && (
+              <Link href="/admin/campagnes">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="gov-card p-5 group hover:border-[hsl(var(--gov-gold))] hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold)/0.1)] flex items-center justify-center text-[hsl(var(--gov-gold-dark))] group-hover:scale-110 transition-transform">
+                      <Megaphone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-gold-dark))] transition-colors tracking-tight">{t('other_sections.campaigns')}</h3>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.campaigns_desc')}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            )}
 
-          <Link href="/admin/suggestions">
-            <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-blue-light))] hover:shadow-lg transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue-light)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
-                  <Lightbulb className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.suggestions')}</h3>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.suggestions_desc')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
+            {(can('suggestions.read.own') || can('suggestions.read.all')) && (
+              <Link href="/admin/suggestions">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="gov-card p-5 group hover:border-[hsl(var(--gov-blue-light))] hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue-light)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
+                      <Lightbulb className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.suggestions')}</h3>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.suggestions_desc')}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            )}
 
-          <Link href="/admin/talents">
-            <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="gov-card p-5 group hover:border-[hsl(var(--gov-green))] hover:shadow-lg transition-all duration-300"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green)/0.1)] flex items-center justify-center text-[hsl(var(--gov-green))] group-hover:scale-110 transition-transform">
-                  <Star className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-green))] transition-colors tracking-tight">{t('other_sections.talents')}</h3>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.talents_desc')}</p>
-                </div>
-              </div>
-            </motion.div>
-          </Link>
-        </div>
-      </motion.div>
+            {can('users.read') && (
+              <Link href="/admin/talents">
+                <motion.div
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="gov-card p-5 group hover:border-[hsl(var(--gov-green))] hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green)/0.1)] flex items-center justify-center text-[hsl(var(--gov-green))] group-hover:scale-110 transition-transform">
+                      <Star className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-green))] transition-colors tracking-tight">{t('other_sections.talents')}</h3>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.talents_desc')}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Footer Stats */}
       <motion.div 

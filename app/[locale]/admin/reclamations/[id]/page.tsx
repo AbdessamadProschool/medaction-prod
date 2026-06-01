@@ -264,6 +264,7 @@ export default function ReclamationDetailPage() {
                 {tCategories(reclamation.categorie)}
               </span>
               <p className="text-foreground/80 leading-relaxed font-medium text-lg whitespace-pre-wrap">
+                {/* 🛡️ SÉCURITÉ: Contenu saisi par un citoyen - NE JAMAIS utiliser dangerouslySetInnerHTML ici */}
                 {reclamation.description}
               </p>
             </div>
@@ -388,6 +389,7 @@ export default function ReclamationDetailPage() {
                 {t('reject_reason_title')}
               </h2>
               <p className="text-[hsl(var(--gov-red))] text-lg font-medium leading-relaxed">
+                {/* 🛡️ SÉCURITÉ: Contenu saisi par un citoyen - NE JAMAIS utiliser dangerouslySetInnerHTML ici */}
                 {reclamation.motifRejet}
               </p>
             </motion.div>
@@ -405,6 +407,7 @@ export default function ReclamationDetailPage() {
                 {t('solution_title')}
               </h2>
               <p className="text-[hsl(var(--gov-green))] text-lg font-medium leading-relaxed">
+                {/* 🛡️ SÉCURITÉ: Contenu saisi par un citoyen - NE JAMAIS utiliser dangerouslySetInnerHTML ici */}
                 {reclamation.solutionApportee}
               </p>
             </motion.div>
@@ -553,10 +556,10 @@ export default function ReclamationDetailPage() {
                 <Clock size={18} className="text-gov-blue" />
                 {t('history_title')}
               </h2>
-              <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-border">
+              <div className="space-y-6 relative before:absolute before:inset-y-0 ltr:before:left-[11px] rtl:before:right-[11px] before:w-[2px] before:bg-border">
                 {reclamation.historique.map((h: any, i: any) => (
-                  <div key={h.id} className="relative flex gap-4 text-sm pl-8">
-                    <div className="absolute left-0 top-1.5 w-6 h-6 bg-background rounded-full border-[3px] border-gov-blue/30 shadow-sm" />
+                  <div key={h.id} className="relative flex gap-4 text-sm ps-8">
+                    <div className="absolute start-0 top-1.5 w-6 h-6 bg-background rounded-full border-[3px] border-gov-blue/30 shadow-sm" />
                     <div>
                       <p className="font-extrabold text-foreground uppercase tracking-tight text-xs mb-1">{tHistory(h.action)}</p>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

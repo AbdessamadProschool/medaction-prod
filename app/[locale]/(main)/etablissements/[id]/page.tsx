@@ -307,7 +307,7 @@ export default function EtablissementDetailPage() {
   }
 
   const config = secteurConfig[etablissement.secteur as keyof typeof secteurConfig] || secteurConfig.AUTRE;
-  const images = (etablissement.medias || []).filter(m => m.type === 'IMAGE');
+  const images = (etablissement.medias || []).filter((m: any) => m.type === 'IMAGE');
   const allImages = etablissement.photoPrincipale 
     ? [{ id: 0, urlPublique: etablissement.photoPrincipale, type: 'IMAGE' }, ...images]
     : images;
@@ -1057,7 +1057,7 @@ export default function EtablissementDetailPage() {
                          <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.available_services')}</h3>
                             <div className="flex flex-wrap gap-2">
-                             {(etablissement.services || []).map((s, i) => (
+                             {(etablissement.services || []).map((s: any, i: number) => (
                                <span key={i} className="px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-sm font-medium border border-gray-200">
                                  {s}
                                </span>
@@ -1070,7 +1070,7 @@ export default function EtablissementDetailPage() {
                          <div>
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.educ_programs')}</h3>
                             <div className="flex flex-wrap gap-2">
-                             {(etablissement.programmes || []).map((p, i) => (
+                             {(etablissement.programmes || []).map((p: any, i: number) => (
                                <span key={i} className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${config.badge}`}>
                                  {p}
                                </span>
@@ -1093,7 +1093,7 @@ export default function EtablissementDetailPage() {
                      </div>
                      
                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {allImages.map((img, i) => (
+                        {allImages.map((img: any, i: number) => (
                            <button 
                              key={i}
                              onClick={() => { setActiveImage(i); setShowGallery(true); }}
@@ -1220,7 +1220,7 @@ export default function EtablissementDetailPage() {
                exit={{ opacity: 0 }}
                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
              >
-                 {displayEvents.length > 0 ? displayEvents.map((evt, i) => (
+                 {displayEvents.length > 0 ? displayEvents.map((evt: any, i: number) => (
                     <EventCard key={evt.id} event={evt} index={i} />
                  )) : (
                     <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
@@ -1239,7 +1239,7 @@ export default function EtablissementDetailPage() {
                exit={{ opacity: 0 }}
                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
              >
-                 {displayActualites.length > 0 ? displayActualites.map((actu, i) => (
+                 {displayActualites.length > 0 ? displayActualites.map((actu: any, i: number) => (
                     <NewsCard key={actu.id} news={actu} index={i} />
                  )) : (
                     <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
@@ -1258,7 +1258,7 @@ export default function EtablissementDetailPage() {
                exit={{ opacity: 0 }}
                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
              >
-                 {displayActivites.length > 0 ? displayActivites.map((act, i) => (
+                 {displayActivites.length > 0 ? displayActivites.map((act: any, i: number) => (
                     <ActivityCard key={act.id} activity={act} index={i} locale={locale} />
                  )) : (
                     <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-300">
@@ -1305,7 +1305,7 @@ export default function EtablissementDetailPage() {
                 </div>
 
                 <div className="space-y-4">
-                   {(etablissement.evaluations || []).map((evaluation) => (
+                   {(etablissement.evaluations || []).map((evaluation: any) => (
                       <div key={evaluation.id} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                          <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">

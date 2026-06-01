@@ -18,7 +18,7 @@ const updateProfileSchema = z.object({
     .regex(/^(\+212|0)[5-7]\d{8}$/, 'Numéro de téléphone marocain invalide')
     .nullable()
     .optional(),
-  preferences: z.any().optional(),
+  preferences: z.record(z.string(), z.boolean()).optional(),
 });
 
 /**
@@ -58,6 +58,7 @@ export const GET = withErrorHandler(async () => {
           nom: true,
         },
       },
+      preferences: true,
     },
   });
 
@@ -77,6 +78,10 @@ export const PATCH = withErrorHandler(async (request: Request) => {
 
   if (!session?.user?.id) {
     throw new UnauthorizedError('Vous devez être connecté');
+  }
+
+  if (!request.headers.get('content-type')?.includes('application/json')) {
+    throw new UnauthorizedError('Content-Type must be application/json');
   }
 
   const body = await request.json();
@@ -131,6 +136,7 @@ export const PATCH = withErrorHandler(async (request: Request) => {
       telephone: true,
       photo: true,
       role: true,
+      preferences: true,
       updatedAt: true,
     },
   });

@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useState, Suspense } from 'react';
+import { toast } from 'sonner';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -29,14 +30,19 @@ function VerifyEmailContent() {
           body: JSON.stringify({ token }),
         });
 
-        const result = await response.json();
+        const result = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-          throw new Error(result.message || 'Erreur lors de la vérification');
+          throw new Error(
+            result.code === 'ALREADY_VERIFIED' 
+              ? 'Cet email a déjà été vérifié' 
+              : 'Le lien de vérification est invalide ou a expiré.'
+          );
         }
 
         setStatus('success');
         setMessage(result.message);
+        toast.success(result.message || 'Email vérifié avec succès');
         
         // Redirect to login after 3 seconds
         setTimeout(() => {
@@ -44,7 +50,9 @@ function VerifyEmailContent() {
         }, 3000);
       } catch (err) {
         setStatus('error');
-        setMessage(err instanceof Error ? err.message : 'Une erreur est survenue');
+        const errorMsg = err instanceof Error ? err.message : 'Une erreur est survenue';
+        setMessage(errorMsg);
+        toast.error(errorMsg);
       }
     };
 
@@ -92,7 +100,7 @@ function VerifyEmailContent() {
             <div className="animate-pulse text-gov-green mb-6">Redirection vers la connexion...</div>
             <Link
               href="/login"
-              className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="gov-btn gov-btn-primary w-full max-w-xs mx-auto"
             >
               Se connecter maintenant
             </Link>
@@ -112,7 +120,7 @@ function VerifyEmailContent() {
             <div className="space-y-3">
               <Link
                 href="/login"
-                className="block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                className="gov-btn gov-btn-primary w-full"
               >
                 Retour à la connexion
               </Link>
@@ -140,7 +148,7 @@ function VerifyEmailContent() {
             </p>
             <Link
               href="/login"
-              className="inline-block px-6 py-3 bg-gov-green hover:bg-gov-green-dark text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+              className="gov-btn gov-btn-primary w-full max-w-xs mx-auto"
             >
               Retour à la connexion
             </Link>

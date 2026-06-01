@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import { useTranslations, useLocale } from 'next-intl';
@@ -46,6 +47,7 @@ export default function MesCampagnesPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [campagneToDeleteId, setCampagneToDeleteId] = useState<number | null>(null);
 
   const searchParams = new URLSearchParams({
     page: page.toString(),
@@ -61,17 +63,30 @@ export default function MesCampagnesPage() {
   
   const actionMutation = useMutation();
 
-  const deleteCampagne = async (id: number) => {
-    if (!confirm(t('delete_confirm'))) return;
+  const handleDeleteClick = (id: number) => {
+    setCampagneToDeleteId(id);
+  };
 
-    try {
-      await actionMutation.mutate(`/api/delegation/campagnes/${id}`, { method: 'DELETE' });
-      await refreshCampagnes();
-      toast.success(t('delete_success'));
-    } catch (error: any) {
-      console.error('Erreur suppression:', error);
-      toast.error(error.message || t('delete_error'));
-    }
+  const handleDeleteConfirm = async () => {
+    if (!campagneToDeleteId) return;
+    const id = campagneToDeleteId;
+    setCampagneToDeleteId(null);
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/delegation/campagnes/${id}`, { method: 'DELETE' });
+        await refreshCampagnes();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('delete_error')));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: t('deleting') || 'جاري الحذف...',
+      success: t('delete_success'),
+      error: (err) => err.message,
+    });
   };
 
   const typeColors: Record<string, string> = {
@@ -286,7 +301,7 @@ export default function MesCampagnesPage() {
 
                       {['BROUILLON', 'EN_ATTENTE'].includes(campagne.statut) && (
                         <button
-                          onClick={() => deleteCampagne(campagne.id)}
+                          onClick={() => handleDeleteClick(campagne.id)}
                           className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0"
                         >
                           <Trash2 size={18} />
@@ -323,6 +338,55 @@ export default function MesCampagnesPage() {
           )}
         </>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {campagneToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setCampagneToDeleteId(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6 relative overflow-hidden text-right"
+              dir="rtl"
+            >
+              <div className="absolute top-0 end-0 w-24 h-24 bg-red-500/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Trash2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">{t('details.delete') || 'حذف الحملة'}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{t('irreversible_action') || 'هذا الإجراء غير قابل للتراجع'}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-500 font-medium">
+                {t('delete_confirm')}
+              </p>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setCampagneToDeleteId(null)}
+                  className="px-5 py-2.5 bg-gray-100 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-200 text-sm font-bold transition-all"
+                >
+                  {t('cancel') || 'إلغاء'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 text-sm font-bold transition-all shadow-lg shadow-red-600/10"
+                >
+                  {t('delete') || 'حذف'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

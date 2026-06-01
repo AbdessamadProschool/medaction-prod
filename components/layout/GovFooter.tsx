@@ -15,51 +15,49 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
+const hiddenRoutes = [
+  '/etablissements',
+  '/evenements',
+  '/carte',
+  '/actualites',
+  '/campagnes',
+  '/articles',
+  '/reclamations/nouvelle',
+  '/mes-reclamations',
+  '/suggestions',
+  '/profil'
+];
+
+const quickLinks = [
+  { href: '/etablissements', labelKey: 'nav.etablissements' },
+  { href: '/evenements', labelKey: 'nav.evenements' },
+  { href: '/actualites', labelKey: 'nav.actualites' },
+  { href: '/reclamations', labelKey: 'nav.reclamations' },
+  { href: '/suggestions', labelKey: 'nav.suggestions' },
+];
+
+const adminLinks = [
+  { href: 'https://www.idarati.ma', labelKey: 'footer.idarati', external: true },
+  { href: 'https://www.watiqa.ma', labelKey: 'footer.watiqa', external: true },
+];
+
+const legalLinks = [
+  { href: '/politique-confidentialite', labelKey: 'footer.confidentialite' },
+  { href: '/conditions-utilisation', labelKey: 'footer.conditions' },
+  { href: '/accessibilite', labelKey: 'nav.accessibilite' },
+];
+
 export default function GovFooter() {
   const t = useTranslations();
   const locale = useLocale();
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
-  // Routes sans footer pour maximiser l'espace de la carte/liste et éviter le scroll
-  const hiddenRoutes = [
-    '/etablissements',
-    '/evenements',
-    '/carte',
-    '/actualites',
-    '/campagnes',
-    '/articles',
-    '/reclamations/nouvelle',
-    '/mes-reclamations',
-    '/suggestions',
-    '/profil'
-  ];
-
   const shouldHide = hiddenRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (shouldHide) return null;
-
-
-  const quickLinks = [
-    { href: '/etablissements', labelKey: 'nav.etablissements' },
-    { href: '/evenements', labelKey: 'nav.evenements' },
-    { href: '/actualites', labelKey: 'nav.actualites' },
-    { href: '/reclamations', labelKey: 'nav.reclamations' },
-    { href: '/suggestions', labelKey: 'nav.suggestions' },
-  ];
-
-  const adminLinks = [
-    { href: 'https://www.idarati.ma', labelKey: 'footer.idarati', external: true },
-    { href: 'https://www.watiqa.ma', labelKey: 'footer.watiqa', external: true },
-  ];
-
-  const legalLinks = [
-    { href: '/politique-confidentialite', labelKey: 'footer.confidentialite' },
-    { href: '/conditions-utilisation', labelKey: 'footer.conditions' },
-    { href: '/accessibilite', labelKey: 'nav.accessibilite' },
-  ];
 
   return (
     <footer className="gov-footer relative overflow-hidden">
@@ -139,7 +137,7 @@ export default function GovFooter() {
                     href={link.href}
                     className="text-white/70 hover:text-gov-gold text-sm flex items-center gap-2 group transition-colors"
                   >
-                    <ChevronRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all rtl:rotate-180" />
+                    <ChevronRight size={14} className="opacity-0 -ms-4 group-hover:opacity-100 group-hover:ms-0 transition-all rtl:rotate-180" />
                     {t(link.labelKey)}
                   </Link>
                 </li>
@@ -162,7 +160,7 @@ export default function GovFooter() {
                     rel="noopener noreferrer"
                     className="text-white/70 hover:text-gov-gold text-sm flex items-center gap-2 group transition-colors"
                   >
-                    <ChevronRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all rtl:rotate-180" />
+                    <ChevronRight size={14} className="opacity-0 -ms-4 group-hover:opacity-100 group-hover:ms-0 transition-all rtl:rotate-180" />
                     {t(link.labelKey)}
                     <ExternalLink size={12} className="opacity-50" />
                   </a>
@@ -238,10 +236,10 @@ export default function GovFooter() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-white/50 text-sm text-center md:text-left">
+            <p className="text-white/50 text-sm text-center md:text-start">
               © {currentYear} {t('footer.copyright')}
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex flex-wrap justify-center md:justify-end gap-4 text-sm">
               {legalLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -257,7 +255,7 @@ export default function GovFooter() {
       </div>
 
       {/* Mention développeur */}
-      <div className="bg-[hsl(var(--gov-blue-dark)/0.28)] py-2">
+      <div className="bg-black/20 py-2">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-white/40 text-xs">
             {t('footer.developpeur')} v1.0.0

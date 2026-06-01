@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Search,
   Plus,
@@ -97,15 +97,23 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
+  // New state variables for state-based dialogs/modals
+  const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
+  const [showResetId, setShowResetId] = useState<number | null>(null);
+  const [generatedPassword, setGeneratedPassword] = useState<string | null>(null);
+  const [targetUser, setTargetUser] = useState<User | null>(null);
+
   const actionMutation = useMutation();
 
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search }),
-    ...(roleFilter && { role: roleFilter }),
-    ...(statusFilter && { isActive: statusFilter }),
-  });
+  const queryParams = useMemo(() => {
+    return new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search }),
+      ...(roleFilter && { role: roleFilter }),
+      ...(statusFilter && { isActive: statusFilter }),
+    });
+  }, [page, limit, search, roleFilter, statusFilter]);
 
   const { data: responseData, isLoading: loading, mutate: fetchUsers } = useData(`/api/users?${queryParams.toString()}`);
 
@@ -133,17 +141,14 @@ export default function UsersPage() {
   const total = paginationData?.total ?? 0;
 
   const handleToggleStatus = async (user: User) => {
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        await actionMutation.mutate(`/api/users/${user.id}/status`, {
-          method: 'PATCH',
-          data: { isActive: !user.isActive },
-        });
-        await fetchUsers();
-        resolve(true);
-      } catch (error: any) {
-        reject(new Error(error.message || t('messages.error')));
-      }
+    const promise = actionMutation.mutate(`/api/users/${user.id}/status`, {
+      method: 'PATCH',
+      data: { isActive: !user.isActive },
+    }).then(async () => {
+      await fetchUsers();
+      return true;
+    }).catch((error: any) => {
+      throw new Error(error.message || t('messages.error'));
     });
 
     toast.promise(promise, {
@@ -157,19 +162,22 @@ export default function UsersPage() {
     setActiveDropdown(null);
   };
 
-  const handleDelete = async (user: User) => {
-    if (!confirm(t('messages.delete_confirm', { name: `${user.prenom} ${user.nom}` }))) {
-      return;
-    }
+  const handleDelete = (user: User) => {
+    setTargetUser(user);
+    setShowDeleteId(user.id);
+    setActiveDropdown(null);
+  };
 
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        await actionMutation.mutate(`/api/users/${user.id}`, { method: 'DELETE' });
-        await fetchUsers();
-        resolve(true);
-      } catch (error: any) {
-        reject(new Error(error.message || t('messages.error')));
-      }
+  const handleDeleteConfirm = async () => {
+    if (!targetUser) return;
+    const user = targetUser;
+    const promise = actionMutation.mutate(`/api/users/${user.id}`, { method: 'DELETE' }).then(async () => {
+      await fetchUsers();
+      setShowDeleteId(null);
+      setTargetUser(null);
+      return true;
+    }).catch((error: any) => {
+      throw new Error(error.message || t('messages.error'));
     });
 
     toast.promise(promise, {
@@ -177,7 +185,6 @@ export default function UsersPage() {
       success: t('messages.user_deleted'),
       error: (err) => err.message,
     });
-    setActiveDropdown(null);
   };
 
   const handleEditRole = (user: User) => {
@@ -186,39 +193,38 @@ export default function UsersPage() {
     setActiveDropdown(null);
   };
 
-  const handleResetPassword = async (user: User) => {
-    if (!confirm(t('messages.reset_password_confirm', { name: `${user.prenom} ${user.nom}` }))) {
-      return;
-    }
+  const handleResetPassword = (user: User) => {
+    setTargetUser(user);
+    setShowResetId(user.id);
+    setActiveDropdown(null);
+  };
 
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        const data = await actionMutation.mutate(`/api/admin/users/${user.id}/reset-password`, {
-          method: 'POST',
-        });
-        resolve(data.generatedPassword);
-      } catch (error: any) {
-        reject(new Error(error.message || t('messages.error')));
-      }
+  const handleResetPasswordConfirm = async () => {
+    if (!targetUser) return;
+    const user = targetUser;
+    const promise = actionMutation.mutate(`/api/admin/users/${user.id}/reset-password`, {
+      method: 'POST',
+    }).then((data: any) => {
+      setGeneratedPassword(data.generatedPassword);
+      setShowResetId(null);
+      return data.generatedPassword;
+    }).catch((error: any) => {
+      throw new Error(error.message || t('messages.error'));
     });
 
     toast.promise(promise, {
       loading: t('messages.resetting'),
-      success: (password) => {
-        alert(t('messages.reset_password_alert', { password: password as string }));
-        return t('messages.reset_password_success');
-      },
+      success: t('messages.reset_password_success'),
       error: (err) => err.message,
     });
-    setActiveDropdown(null);
   };
 
   return (
     <PermissionGuard permission="users.read">
       <div className="min-h-screen bg-background py-8 px-4 sm:px-6 relative overflow-hidden">
         {/* Decorative Background */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 end-0 w-[600px] h-[600px] bg-[hsl(var(--gov-blue)/0.03)] rounded-full -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 start-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 rtl:translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto relative z-10 space-y-8">
           {/* Header */}
@@ -268,13 +274,13 @@ export default function UsersPage() {
           <div className="gov-card p-6 bg-card/50 backdrop-blur-sm border-dashed">
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex-1 min-w-[300px] relative group">
-                <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
                 <input
                   type="text"
                   placeholder={t('search_placeholder')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="gov-input ltr:pl-12 rtl:pr-12 py-3.5 bg-muted/30 focus:bg-background transition-all"
+                  className="gov-input ps-12 py-3.5 bg-muted/30 focus:bg-background transition-all"
                 />
               </div>
 
@@ -330,7 +336,7 @@ export default function UsersPage() {
                 <GovTh>{t('table.status')}</GovTh>
                 <GovTh>{t('table.sector_establishment')}</GovTh>
                 <GovTh>{t('table.activity')}</GovTh>
-                <GovTh className="text-right">{t('table.actions')}</GovTh>
+                <GovTh className="text-end">{t('table.actions')}</GovTh>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
@@ -342,7 +348,7 @@ export default function UsersPage() {
                     <td className="px-6 py-6"><div className="h-6 w-20 bg-muted rounded-full" /></td>
                     <td className="px-6 py-6"><div className="h-4 w-32 bg-muted rounded" /></td>
                     <td className="px-6 py-6"><div className="h-4 w-24 bg-muted rounded" /></td>
-                    <td className="px-6 py-6 text-right"><div className="h-10 w-10 bg-muted rounded-xl ml-auto" /></td>
+                    <td className="px-6 py-6 text-end"><div className="h-10 w-10 bg-muted rounded-xl ms-auto" /></td>
                   </tr>
                 ))
               ) : users.length === 0 ? (
@@ -413,7 +419,7 @@ export default function UsersPage() {
                           </div>
                         </div>
                       </GovTd>
-                      <GovTd className="text-right relative">
+                      <GovTd className="text-end relative">
                         <div className={cn(
                           "flex items-center justify-end gap-2 transition-all duration-300 transform",
                           activeDropdown === user.id ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100"
@@ -434,25 +440,25 @@ export default function UsersPage() {
                               initial={{ opacity: 0, scale: 0.95, y: 10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                              className="absolute ltr:right-0 rtl:left-0 mt-3 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-50 backdrop-blur-xl bg-card/95 overflow-hidden"
+                              className="absolute end-0 mt-3 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-50 backdrop-blur-xl bg-card/95 overflow-hidden"
                             >
                               <button
                                 onClick={() => handleEditRole(user)}
-                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
+                                className="w-full px-5 py-3 text-start text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
                               >
                                 <Edit size={16} />
                                 {t('actions.edit_role')}
                               </button>
                               <button
                                 onClick={() => handleResetPassword(user)}
-                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
+                                className="w-full px-5 py-3 text-start text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
                               >
                                 <KeyRound size={16} />
                                 {t('actions.reset_password')}
                               </button>
                               <button
                                 onClick={() => handleToggleStatus(user)}
-                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-foreground hover:bg-muted flex items-center gap-3 transition-colors"
+                                className="w-full px-5 py-3 text-start text-xs font-black uppercase tracking-widest text-foreground hover:bg-muted flex items-center gap-3 transition-colors"
                               >
                                 {user.isActive 
                                   ? <UserX size={16} className="text-gov-red" /> 
@@ -462,7 +468,7 @@ export default function UsersPage() {
                               <div className="h-px bg-border my-2 mx-2 opacity-50" />
                               <button
                                 onClick={() => handleDelete(user)}
-                                className="w-full px-5 py-3 text-left rtl:text-right text-xs font-black uppercase tracking-widest text-gov-red hover:bg-gov-red/5 flex items-center gap-3 transition-colors"
+                                className="w-full px-5 py-3 text-start text-xs font-black uppercase tracking-widest text-gov-red hover:bg-gov-red/5 flex items-center gap-3 transition-colors"
                               >
                                 <Trash2 size={16} />
                                 {t('actions.delete')}
@@ -480,7 +486,7 @@ export default function UsersPage() {
 
             {totalPages > 1 && (
               <div className="px-8 py-8 bg-muted/20 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6">
-                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest text-center sm:text-left">
+                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest text-center sm:text-start">
                   {t('pagination', { 
                     start: (page - 1) * limit + 1, 
                     end: Math.min(page * limit, total), 
@@ -545,6 +551,99 @@ export default function UsersPage() {
 
         {activeDropdown && (
           <div className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px]" onClick={() => setActiveDropdown(null)} />
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteId && targetUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-red">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{t('actions.delete') || 'Suppression'}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t('messages.delete_confirm', { name: `${targetUser.prenom} ${targetUser.nom}` })}
+              </p>
+              <div className="flex justify-end gap-3">
+                <GovButton
+                  onClick={() => { setShowDeleteId(null); setTargetUser(null); }}
+                  variant="outline"
+                  size="sm"
+                >
+                  {t('cancel') || 'Annuler'}
+                </GovButton>
+                <GovButton
+                  onClick={handleDeleteConfirm}
+                  variant="danger"
+                  size="sm"
+                  loading={actionMutation.isLoading}
+                >
+                  {t('actions.delete') || 'Supprimer'}
+                </GovButton>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reset Password Confirmation Modal */}
+        {showResetId && targetUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-gold">
+                <KeyRound className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{t('actions.reset_password') || 'Réinitialisation'}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t('messages.reset_password_confirm', { name: `${targetUser.prenom} ${targetUser.nom}` })}
+              </p>
+              <div className="flex justify-end gap-3">
+                <GovButton
+                  onClick={() => { setShowResetId(null); setTargetUser(null); }}
+                  variant="outline"
+                  size="sm"
+                >
+                  {t('cancel') || 'Annuler'}
+                </GovButton>
+                <GovButton
+                  onClick={handleResetPasswordConfirm}
+                  variant="primary"
+                  size="sm"
+                  loading={actionMutation.isLoading}
+                >
+                  {t('confirm') || 'Confirmer'}
+                </GovButton>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reset Password Result Modal */}
+        {generatedPassword && targetUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-green-dark">
+                <UserCheck className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{t('messages.reset_password_success') || 'Mot de passe réinitialisé'}</h3>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Le mot de passe pour <strong>{targetUser.prenom} {targetUser.nom}</strong> a été réinitialisé avec succès. Veuillez copier le nouveau mot de passe temporaire :
+                </p>
+                <div className="bg-muted p-4 rounded-xl font-mono text-center text-lg select-all border border-border text-foreground">
+                  {generatedPassword}
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <GovButton
+                  onClick={() => { setGeneratedPassword(null); setTargetUser(null); }}
+                  variant="primary"
+                  size="sm"
+                >
+                  {t('close') || 'Fermer'}
+                </GovButton>
+              </div>
+            </div>
+          </div>
         )}
     </PermissionGuard>
   );

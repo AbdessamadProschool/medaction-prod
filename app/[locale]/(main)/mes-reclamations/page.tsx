@@ -9,7 +9,7 @@ import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import ReclamationCard from '@/components/reclamations/ReclamationCard';
 import ReclamationModal from '@/components/reclamations/ReclamationModal';
-import { ClipboardList, Clock, CheckCircle2, Inbox } from 'lucide-react';
+import { ClipboardList, Clock, CheckCircle2, Inbox, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Reclamation {
@@ -36,6 +36,7 @@ export default function MesReclamationsPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reclamationToDeleteId, setReclamationToDeleteId] = useState<number | null>(null);
 
   // ECC: useData
   const queryParams = activeTab !== 'all' ? `?statut=${activeTab}` : '';
@@ -62,6 +63,24 @@ export default function MesReclamationsPage() {
   const openModal = (id: number) => {
     setSelectedId(id);
     setIsModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!reclamationToDeleteId) return;
+    const id = reclamationToDeleteId;
+    setReclamationToDeleteId(null);
+    try {
+      const res = await fetch(`/api/reclamations/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success(t('delete_success'));
+        refreshList();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || 'Erreur lors de la suppression');
+      }
+    } catch (e) {
+      toast.error('Erreur serveur');
+    }
   };
 
   return (
@@ -233,21 +252,7 @@ export default function MesReclamationsPage() {
                     key={rec.id}
                     reclamation={rec}
                     onClick={() => openModal(rec.id)}
-                    onDelete={async () => {
-                      if (!confirm(t('delete_confirm'))) return;
-                      try {
-                        const res = await fetch(`/api/reclamations/${rec.id}`, { method: 'DELETE' });
-                        if (res.ok) {
-                          toast.success(t('delete_success'));
-                          refreshList();
-                        } else {
-                          const data = await res.json();
-                          toast.error(data.error || 'Erreur lors de la suppression');
-                        }
-                      } catch (e) {
-                         toast.error('Erreur serveur');
-                      }
-                    }}
+                    onDelete={() => setReclamationToDeleteId(rec.id)}
                   />
                 ))}
               </AnimatePresence>
@@ -255,12 +260,43 @@ export default function MesReclamationsPage() {
           )}
         </div>
 
-        {/* Modal */}
+        {/* Reclamation Detail Modal */}
         <ReclamationModal
           reclamationId={selectedId}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
         />
+
+        {/* Delete Confirmation Modal */}
+        <AnimatePresence>
+          {reclamationToDeleteId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px]">
+              <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+                <div className="flex items-center gap-3 text-red-500">
+                  <Trash2 className="w-6 h-6" />
+                  <h3 className="text-lg font-bold text-foreground">Supprimer la réclamation</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">{t('delete_confirm')}</p>
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setReclamationToDeleteId(null)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteConfirm}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </PermissionGuard>
   );

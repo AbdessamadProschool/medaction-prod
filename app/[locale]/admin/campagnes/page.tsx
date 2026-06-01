@@ -54,9 +54,9 @@ interface Campagne {
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
   BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit, label: 'Brouillon' },
-  EN_ATTENTE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Clock, label: 'En attente' },
+  EN_ATTENTE: { bg: 'bg-[hsl(var(--gov-gold)/0.1)]', text: 'text-gov-gold', icon: Clock, label: 'En attente' },
   ACTIVE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Play, label: 'Active' },
-  EN_PAUSE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Pause, label: 'En pause' },
+  EN_PAUSE: { bg: 'bg-[hsl(var(--gov-gold)/0.1)]', text: 'text-gov-gold', icon: Pause, label: 'En pause' },
   TERMINEE: { bg: 'bg-[hsl(var(--gov-blue))/0.1]', text: 'text-[hsl(var(--gov-blue))]', icon: CheckCircle, label: 'Terminée' },
   ANNULEE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle, label: 'Annulée' },
 };
@@ -86,15 +86,19 @@ export default function AdminCampagnesPage() {
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [campagneToDeleteId, setCampagneToDeleteId] = useState<number | null>(null);
 
   const actionMutation = useMutation();
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '12');
-  if (search) queryParams.set('search', search);
-  if (statutFilter) queryParams.set('statut', statutFilter);
-  if (secteurFilter) queryParams.set('secteur', secteurFilter);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    if (search) params.set('search', search);
+    if (statutFilter) params.set('statut', statutFilter);
+    if (secteurFilter) params.set('secteur', secteurFilter);
+    return params;
+  }, [page, search, statutFilter, secteurFilter]);
 
   const { data: campagnesData, isLoading: loading, mutate: fetchCampagnes } = useData(`/api/campagnes?${queryParams.toString()}`);
 
@@ -136,8 +140,14 @@ export default function AdminCampagnesPage() {
     });
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm(tModal('delete') + ' ?')) return;
+  const handleDelete = (id: number) => {
+    setCampagneToDeleteId(id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!campagneToDeleteId) return;
+    const id = campagneToDeleteId;
+    setCampagneToDeleteId(null);
     
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -610,6 +620,39 @@ export default function AdminCampagnesPage() {
               </div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {campagneToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-gov-red">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold">{tModal('delete') || 'Suppression'}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {tModal('delete_confirm') || 'Êtes-vous sûr de vouloir supprimer cette campagne ?'}
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCampagneToDeleteId(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  {tModal('cancel') || 'Annuler'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  {tModal('delete') || 'Supprimer'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>

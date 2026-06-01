@@ -26,7 +26,7 @@ export default function CTASection() {
       </div>
 
       {/* Gold accent line at top */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gov-gold" />
+      <div className="absolute top-0 inset-x-0 h-1 bg-gov-gold" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" dir={isAr ? 'rtl' : 'ltr'}>
         <div className="grid lg:grid-cols-2 gap-12 items-center">

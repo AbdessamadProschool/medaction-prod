@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -55,7 +56,7 @@ export default function RegisterPage() {
   }, []);
 
   // Schemas Locaux traduits
-  const step1Schema = z.object({
+  const step1Schema = useMemo(() => z.object({
     prenom: z
       .string()
       .min(2, tErrors('firstname_min'))
@@ -66,9 +67,9 @@ export default function RegisterPage() {
       .min(2, tErrors('lastname_min'))
       .max(50, tErrors('lastname_max'))
       .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, tErrors('lastname_invalid')),
-  });
+  }), [tErrors]);
 
-  const step2Schema = z.object({
+  const step2Schema = useMemo(() => z.object({
     email: z
       .string()
       .min(1, tErrors('required'))
@@ -80,9 +81,9 @@ export default function RegisterPage() {
         (val) => !val || /^(\+212|0)(5|6|7)[0-9]{8}$/.test(val),
         tErrors('phone_invalid')
       ),
-  });
+  }), [tErrors]);
 
-  const step3Schema = z.object({
+  const step3Schema = useMemo(() => z.object({
     password: z
       .string()
       .min(8, tErrors('password_min'))
@@ -94,7 +95,7 @@ export default function RegisterPage() {
   }).refine((data) => data.password === data.confirmPassword, {
     message: tErrors('password_mismatch'),
     path: ['confirmPassword'],
-  });
+  }), [tErrors]);
 
   // Form pour étape 1
   const step1Form = useForm<RegisterStep1Input>({
@@ -124,15 +125,29 @@ export default function RegisterPage() {
   };
 
   const handleStep3Submit = async (data: RegisterStep3Input) => {
+    // Client-side rate limiting
+    const attempts = parseInt(sessionStorage.getItem('register_attempts') || '0');
+    if (attempts >= 5) {
+      setError(tErrors('too_many_attempts') || 'Trop de tentatives. Veuillez réessayer plus tard.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     const finalData = { ...formData, ...data };
 
     try {
+      // Import CSRF token dynamically to avoid initial load block
+      const { getCsrfToken } = await import('next-auth/react');
+      const csrfToken = await getCsrfToken();
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {})
+        },
         body: JSON.stringify({
           email: finalData.email,
           password: finalData.password,
@@ -142,18 +157,28 @@ export default function RegisterPage() {
         }),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.message || 'Erreur lors de l\'inscription');
+        sessionStorage.setItem('register_attempts', (attempts + 1).toString());
+        // Sanitize error message: do not leak internal result.message
+        throw new Error(
+          result.code === 'USER_EXISTS' 
+            ? (tErrors('user_exists') || 'Cet utilisateur existe déjà')
+            : (tErrors('registration_failed') || 'Erreur lors de l\'inscription')
+        );
       }
 
+      sessionStorage.removeItem('register_attempts');
       setSuccess(true);
+      toast.success(t('register_success'));
       setTimeout(() => {
         router.push('/login?registered=true');
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      const errorMsg = err instanceof Error ? err.message : 'Une erreur est survenue';
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -230,10 +255,10 @@ export default function RegisterPage() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)]">
         {/* Bande tricolore */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-[hsl(45,93%,47%)]/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-20 start-20 w-72 h-72 bg-[hsl(45,93%,47%)]/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 end-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
         <div className="relative z-10 flex flex-col justify-center px-12 text-white">

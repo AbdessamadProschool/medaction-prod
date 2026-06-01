@@ -55,6 +55,7 @@ export default function MesEvenementsPage() {
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [eventToDeleteId, setEventToDeleteId] = useState<number | null>(null);
 
   // Status mapping
   const getStatusLabel = (status: string) => {
@@ -98,17 +99,30 @@ export default function MesEvenementsPage() {
   
   const actionMutation = useMutation();
 
-  const deleteEvenement = async (id: number) => {
-    if (!confirm(t('item.delete_confirm'))) return;
+  const handleDeleteClick = (id: number) => {
+    setEventToDeleteId(id);
+  };
 
-    try {
-      await actionMutation.mutate(`/api/delegation/evenements/${id}`, { method: 'DELETE' });
-      await refreshEvenements();
-      toast.success(t('success_message'));
-    } catch (error: any) {
-      console.error('Erreur suppression:', error);
-      toast.error(error.message || 'Erreur système');
-    }
+  const handleDeleteConfirm = async () => {
+    if (!eventToDeleteId) return;
+    const id = eventToDeleteId;
+    setEventToDeleteId(null);
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/delegation/evenements/${id}`, { method: 'DELETE' });
+        await refreshEvenements();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur système'));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: t('deleting') || 'جاري الحذف...',
+      success: t('success_message'),
+      error: (err) => err.message,
+    });
   };
 
   return (
@@ -342,15 +356,15 @@ export default function MesEvenementsPage() {
                                     <Edit2 size={18} />
                                     </Link>
                                 )}
-                                {['BROUILLON', 'EN_ATTENTE_VALIDATION', 'REJETEE'].includes(event.statut) && (
-                                    <button
-                                    onClick={() => deleteEvenement(event.id)}
-                                    className="p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors hover:shadow-sm border border-red-100"
-                                    title={t('item.delete')}
-                                    >
-                                    <Trash2 size={18} />
-                                    </button>
-                                )}
+                                 {['BROUILLON', 'EN_ATTENTE_VALIDATION', 'REJETEE'].includes(event.statut) && (
+                                     <button
+                                     onClick={() => handleDeleteClick(event.id)}
+                                     className="p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors hover:shadow-sm border border-red-100"
+                                     title={t('item.delete')}
+                                     >
+                                     <Trash2 size={18} />
+                                     </button>
+                                 )}
                                 </div>
                             </td>
                             </motion.tr>
@@ -454,15 +468,15 @@ export default function MesEvenementsPage() {
                                 </Link>
                                 )}
 
-                                {['BROUILLON', 'EN_ATTENTE_VALIDATION', 'REJETEE'].includes(event.statut) && (
-                                <button
-                                    onClick={() => deleteEvenement(event.id)}
-                                    className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors border border-red-100"
-                                    title={t('item.delete')}
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                                )}
+                                 {['BROUILLON', 'EN_ATTENTE_VALIDATION', 'REJETEE'].includes(event.statut) && (
+                                 <button
+                                     onClick={() => handleDeleteClick(event.id)}
+                                     className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors border border-red-100"
+                                     title={t('item.delete')}
+                                 >
+                                     <Trash2 size={18} />
+                                 </button>
+                                 )}
                             </div>
                         </div>
                         </div>
@@ -500,6 +514,55 @@ export default function MesEvenementsPage() {
             </>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {eventToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setEventToDeleteId(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6 relative overflow-hidden text-right"
+              dir="rtl"
+            >
+              <div className="absolute top-0 end-0 w-24 h-24 bg-red-500/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-500/10 text-red-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Trash2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">{t('item.delete') || 'حذف الفعالية'}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{t('irreversible_action') || 'هذا الإجراء غير قابل للتراجع'}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-500 font-medium">
+                {t('item.delete_confirm')}
+              </p>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEventToDeleteId(null)}
+                  className="px-5 py-2.5 bg-gray-100 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-200 text-sm font-bold transition-all"
+                >
+                  {t('cancel') || 'إلغاء'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteConfirm}
+                  className="px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 text-sm font-bold transition-all shadow-lg shadow-red-600/10"
+                >
+                  {t('delete') || 'حذف'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

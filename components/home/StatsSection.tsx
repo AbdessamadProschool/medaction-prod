@@ -99,6 +99,14 @@ export default function StatsSection() {
       label: t('stats.delai', { defaultMessage: 'Délai Moyen' }),
       description: t('stats.desc_delai', { defaultMessage: 'De réponse aux réclamations urgentes' }),
       icon: <Zap className="w-10 h-10" />,
+    },
+    {
+      id: 4,
+      value: 48,
+      suffix: 'h',
+      label: t('stats.delai', { defaultMessage: 'Délai Moyen' }),
+      description: t('stats.desc_delai', { defaultMessage: 'De réponse aux réclamations urgentes' }),
+      icon: <Zap className="w-10 h-10" />,
       colorClass: 'text-gov-red-light',
     },
   ];
@@ -106,7 +114,7 @@ export default function StatsSection() {
   return (
     <section ref={ref} className="py-24 bg-gradient-to-br from-gov-blue-dark via-gov-blue-dark to-gov-blue-dark relative overflow-hidden" dir="ltr">
       {/* Bande tricolore en haut */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
+      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-gov-red via-gov-gold to-gov-green" />
       
       {/* Background pattern */}
       <div className="absolute inset-0">
@@ -179,7 +187,7 @@ export default function StatsSection() {
               
               <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-gov-gold/50 transition-all duration-300 flex flex-col items-center text-center h-full">
                 {/* Gold accent line */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gov-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-t-2xl" />
+                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-gov-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-t-2xl" />
                 
                 {/* Icon */}
                 <div className="text-4xl mb-4 text-white drop-shadow-md">{stat.icon}</div>
@@ -200,7 +208,7 @@ export default function StatsSection() {
                 </p>
 
                 {/* Decorative corner - Gold */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gov-gold to-gov-gold-light opacity-10 rounded-bl-full" />
+                <div className="absolute top-0 end-0 w-20 h-20 bg-gradient-to-br from-gov-gold to-gov-gold-light opacity-10 rounded-bl-full rtl:rounded-bl-none rtl:rounded-br-full" />
               </div>
             </motion.div>
           ))}

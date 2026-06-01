@@ -9,27 +9,32 @@ import {
   Eye,
   Loader2,
   ArrowLeft,
+  ArrowRight,
   Calendar,
   MessageSquare,
   Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { motion } from 'framer-motion';
+import { GovButton } from '@/components/ui/GovButton';
 
 export default function SuggestionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { data: session } = useSession();
   const t = useTranslations();
+  const locale = useLocale();
   
   const { data: responseData, isLoading: loading, mutate: fetchSuggestion } = useData(`/api/suggestions/${id}`);
   const suggestion = responseData?.data || responseData;
   const actionMutation = useMutation();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [reponseAdmin, setReponseAdmin] = useState(suggestion?.reponseAdmin || '');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (suggestion?.reponseAdmin) {
@@ -38,12 +43,12 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
   }, [suggestion?.reponseAdmin]);
 
   // Configuration with translations
-  const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
-    SOUMISE: { bg: 'bg-gray-100', text: 'text-gray-700', icon: Clock, label: t('suggestions.status.SOUMISE') },
-    EN_EXAMEN: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Eye, label: t('suggestions.status.EN_EXAMEN') },
-    APPROUVEE: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t('suggestions.status.APPROUVEE') },
-    REJETEE: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t('suggestions.status.REJETEE') },
-    IMPLEMENTEE: { bg: 'bg-gov-blue/10', text: 'text-gov-blue-dark', icon: Sparkles, label: t('suggestions.status.IMPLEMENTEE') },
+  const STATUT_CONFIG: Record<string, { icon: React.ElementType; label: string }> = {
+    SOUMISE: { icon: Clock, label: t('suggestions.status.SOUMISE') },
+    EN_EXAMEN: { icon: Eye, label: t('suggestions.status.EN_EXAMEN') },
+    APPROUVEE: { icon: CheckCircle, label: t('suggestions.status.APPROUVEE') },
+    REJETEE: { icon: XCircle, label: t('suggestions.status.REJETEE') },
+    IMPLEMENTEE: { icon: Sparkles, label: t('suggestions.status.IMPLEMENTEE') },
   };
 
   const CATEGORIES: Record<string, { label: string; emoji: string }> = {
@@ -64,28 +69,37 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
     if (!suggestion) return;
     setActionLoading(newStatut);
     
-    try {
-      await actionMutation.mutate(`/api/suggestions/${suggestion.id}/statut`, {
-        method: 'PATCH',
-        data: {
-          statut: newStatut,
-          reponseAdmin: reponseAdmin || undefined,
-        },
-      });
+    // Optimistic UI update
+    fetchSuggestion(
+      { ...responseData, data: { ...suggestion, statut: newStatut } },
+      { revalidate: false }
+    );
 
-      toast.success(t('suggestions.messages.status_updated'));
-      await fetchSuggestion();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || t('toasts.error'));
-    } finally {
-      setActionLoading(null);
-    }
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/suggestions/${suggestion.id}/statut`, {
+          method: 'PATCH',
+          data: { statut: newStatut, reponseAdmin: reponseAdmin || undefined },
+        });
+        await fetchSuggestion();
+        resolve(true);
+      } catch (error: any) {
+        await fetchSuggestion(); // Rollback
+        reject(new Error(error.message || t('toasts.error')));
+      } finally {
+        setActionLoading(null);
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Mise à jour du statut...',
+      success: t('suggestions.messages.status_updated'),
+      error: (err) => err.message,
+    });
   };
 
   const handleDelete = async () => {
     if (!suggestion) return;
-    if (!confirm(t('suggestions.messages.delete_confirm'))) return;
 
     setActionLoading('DELETE');
     try {
@@ -96,13 +110,14 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
        toast.error(error.message || t('toasts.error'));
     } finally {
       setActionLoading(null);
+      setShowDeleteConfirm(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-gov-green-dark animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -114,134 +129,182 @@ export default function SuggestionDetailsPage({ params }: { params: Promise<{ id
   const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      {/* HeaderNav */}
-      <button 
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="max-w-5xl mx-auto px-4 py-8 space-y-8"
+    >
+      <GovButton 
+        variant="ghost"
         onClick={() => router.push('/admin/suggestions')}
-        className="flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors -ms-4"
       >
-        <ArrowLeft className="w-4 h-4" />
+        {locale === 'ar' ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
         {t('actions.back')}
-      </button>
+      </GovButton>
 
-      {/* Main Content */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Banner Status */}
-        <div className={`px-6 py-4 flex items-center justify-between border-b border-gray-100 ${info.bg}`}>
-          <div className="flex items-center gap-3">
-             <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-white/50 backdrop-blur-sm ${info.text}`}>
-               <Icon className="w-5 h-5" />
+      <div className="bg-card rounded-[2.5rem] shadow-sm border border-border overflow-hidden">
+        <div className="px-8 py-6 flex items-center justify-between border-b border-border bg-muted/30 backdrop-blur-md">
+          <div className="flex items-center gap-4">
+             <div className="w-12 h-12 rounded-full flex items-center justify-center bg-background border border-border shadow-sm text-foreground">
+               <Icon className="w-6 h-6" />
              </div>
              <div>
-               <p className={`text-sm font-medium ${info.text} opacity-80`}>{t('admin_management.columns.status')}</p>
-               <h1 className={`text-lg font-bold ${info.text}`}>{info.label}</h1>
+               <p className="text-sm font-medium text-muted-foreground">{t('admin_management.columns.status')}</p>
+               <h1 className="text-xl font-bold text-foreground">{info.label}</h1>
              </div>
           </div>
-          <span className="text-sm font-mono text-gray-500 bg-white/50 px-3 py-1 rounded-full">
+          <span className="text-sm font-mono text-muted-foreground bg-background px-4 py-1.5 rounded-full border border-border shadow-sm">
             #{suggestion.id}
           </span>
         </div>
 
-        <div className="p-8 space-y-8">
-           {/* Section Titre & Desc */}
-           <div>
+        <div className="p-8 space-y-10">
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.1 }}
+           >
               <div className="flex items-start justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{suggestion.titre}</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-4">{suggestion.titre}</h2>
                 {suggestion.categorie && CATEGORIES[suggestion.categorie] && (
-                   <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
+                   <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted rounded-full text-sm font-medium text-foreground border border-border">
                       <span>{CATEGORIES[suggestion.categorie].emoji}</span>
                       {CATEGORIES[suggestion.categorie].label}
                    </span>
                 )}
               </div>
-              <p className="text-gray-600 whitespace-pre-wrap leading-relaxed mt-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed mt-4 bg-muted/20 p-8 rounded-[2rem] border border-border backdrop-blur-sm text-lg">
                 {suggestion.description}
               </p>
-           </div>
+           </motion.div>
 
-           {/* Section Meta User */}
-           <div className="flex flex-col md:flex-row gap-6">
-             <div className="flex-1 bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
-                <div className="w-12 h-12 bg-gov-green/10 rounded-full flex items-center justify-center text-gov-green-dark font-bold text-xl">
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.2 }}
+             className="flex flex-col md:flex-row gap-6"
+           >
+             <div className="flex-1 bg-card border border-border rounded-[2rem] p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-2xl border border-primary/20">
                   {suggestion.user.prenom[0]}{suggestion.user.nom[0]}
                 </div>
                 <div>
-                   <p className="text-sm text-gray-500">{t('audit_page.columns.user')}</p>
-                   <p className="font-semibold text-gray-900">{suggestion.user.prenom} {suggestion.user.nom}</p>
-                   {suggestion.user.email && <p className="text-xs text-gray-400">{suggestion.user.email}</p>}
+                   <p className="text-sm text-muted-foreground mb-1">{t('audit_page.columns.user')}</p>
+                   <p className="font-semibold text-foreground text-lg">{suggestion.user.prenom} {suggestion.user.nom}</p>
+                   {suggestion.user.email && <p className="text-sm text-muted-foreground">{suggestion.user.email}</p>}
                 </div>
              </div>
              
-             <div className="flex-1 bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">
+             <div className="flex-1 bg-card border border-border rounded-[2rem] p-6 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center text-foreground border border-border">
                    <Calendar className="w-6 h-6" />
                 </div>
                 <div>
-                   <p className="text-sm text-gray-500">{t('audit_page.columns.date')}</p>
-                   <p className="font-semibold text-gray-900">
-                     {new Date(suggestion.createdAt).toLocaleDateString('fr-FR', { dateStyle: 'long' })}
+                   <p className="text-sm text-muted-foreground mb-1">{t('audit_page.columns.date')}</p>
+                   <p className="font-semibold text-foreground text-lg">
+                     {new Date(suggestion.createdAt).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'long' })}
                    </p>
-                   <p className="text-xs text-gray-400">
-                     {new Date(suggestion.createdAt).toLocaleTimeString('fr-FR', { timeStyle: 'short' })}
+                   <p className="text-sm text-muted-foreground">
+                     {new Date(suggestion.createdAt).toLocaleTimeString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { timeStyle: 'short' })}
                    </p>
                 </div>
              </div>
-           </div>
+           </motion.div>
            
-           {/* Section Admin Response */}
-           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-             <div className="flex items-center gap-2 mb-4">
-               <MessageSquare className="w-5 h-5 text-gray-700" />
-               <h3 className="font-semibold text-gray-900">{t('suggestions.admin_response_title')}</h3>
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.3 }}
+             className="bg-muted/20 rounded-[2rem] p-8 border border-border backdrop-blur-sm"
+           >
+             <div className="flex items-center gap-3 mb-6">
+               <MessageSquare className="w-6 h-6 text-foreground" />
+               <h3 className="font-bold text-foreground text-xl">{t('suggestions.admin_response_title')}</h3>
              </div>
              <textarea
                value={reponseAdmin}
                onChange={(e) => setReponseAdmin(e.target.value)}
                placeholder={t('suggestions.admin_response_placeholder')}
-               className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gov-green/20 outline-none resize-y"
+               className="w-full min-h-[120px] p-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 outline-none resize-y transition-all text-base"
              />
-           </div>
+           </motion.div>
 
-           {/* Actions Toolbar */}
-           <div className="border-t border-gray-100 pt-6">
-             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">{t('admin_management.columns.actions')}</h3>
-             <div className="flex flex-wrap gap-3">
+           <motion.div 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.4 }}
+             className="border-t border-border pt-8"
+           >
+             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-6">{t('admin_management.columns.actions')}</h3>
+             <div className="flex flex-wrap gap-4">
                {Object.entries(STATUT_CONFIG).map(([key, config]) => {
-                  if (key === suggestion.statut) return null; // Don't show current status
+                  if (key === suggestion.statut) return null;
                   const BtnIcon = config.icon;
                   const isLoading = actionLoading === key;
                   
                   return (
-                    <button
+                    <GovButton
                       key={key}
+                      variant="outline"
                       onClick={() => handleChangeStatut(key)}
                       disabled={!!actionLoading}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${config.bg} ${config.text} border-transparent hover:border-current disabled:opacity-50`}
+                      className="rounded-xl px-6 py-5 border-border hover:bg-muted"
                     >
-                      {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <BtnIcon className="w-4 h-4" />}
+                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin me-2" /> : <BtnIcon className="w-5 h-5 me-2" />}
                       {config.label}
-                    </button>
+                    </GovButton>
                   );
                })}
              </div>
              
-             {/* Delete Button for Admin/SuperAdmin - checking requirement */}
+             {/* Delete Button for Admin/SuperAdmin */}
              {isSuperAdmin && (
-               <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-                  <button
-                    onClick={handleDelete}
-                    disabled={!!actionLoading}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium border border-red-100"
-                  >
-                    {actionLoading === 'DELETE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                    {t('actions.delete')}
-                  </button>
-                  <p className="text-xs text-gray-400 mt-2 text-right w-full block">{t('suggestions.super_admin_delete_warning')}</p>
+               <div className="mt-10 pt-8 border-t border-border flex flex-col items-end">
+                  {!showDeleteConfirm ? (
+                    <GovButton
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={!!actionLoading}
+                      variant="danger"
+                      className="rounded-xl px-6"
+                    >
+                      <XCircle className="w-5 h-5 me-2" />
+                      {t('actions.delete')}
+                    </GovButton>
+                  ) : (
+                    <div className="flex flex-col items-end gap-3 bg-destructive/10 p-5 rounded-2xl border border-destructive/20 w-full md:w-auto backdrop-blur-sm">
+                      <p className="text-sm font-bold text-destructive">{t('suggestions.messages.delete_confirm')}</p>
+                      <div className="flex items-center gap-3 w-full justify-end">
+                        <GovButton
+                          onClick={() => setShowDeleteConfirm(false)}
+                          disabled={!!actionLoading}
+                          variant="outline"
+                          size="sm"
+                          className="border-border hover:bg-muted"
+                        >
+                          {t('actions.cancel')}
+                        </GovButton>
+                        <GovButton
+                          onClick={handleDelete}
+                          disabled={!!actionLoading}
+                          variant="danger"
+                          size="sm"
+                        >
+                          {actionLoading === 'DELETE' ? <Loader2 className="w-4 h-4 animate-spin me-2" /> : <XCircle className="w-4 h-4 me-2" />}
+                          {t('actions.confirm')}
+                        </GovButton>
+                      </div>
+                    </div>
+                  )}
+                  {!showDeleteConfirm && (
+                    <p className="text-sm text-muted-foreground mt-3 text-end block">{t('suggestions.super_admin_delete_warning')}</p>
+                  )}
                </div>
              )}
-           </div>
+           </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -63,6 +63,11 @@ function estimateReadTime(contenu?: string): string {
   return minutes.toString();
 }
 
+function sanitizeText(html?: string): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+}
+
 // Mapping des catégories reçues de l'API vers les clés de traduction
 const categoryKeys: Record<string, string> = {
   'Santé': 'SANTE',
@@ -219,19 +224,19 @@ export default function NewsSection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90" />
                   
                     {featuredNews.categorie && (
-                    <div className="absolute top-4 left-4">
+                    <div className="absolute top-4 start-4">
                       <span className={`shadow-lg ${getCategoryColor(featuredNews.categorie)}`}>
                         {translateCategory(featuredNews.categorie)}
                       </span>
                     </div>
                   )}
 
-                  <div className="absolute bottom-0 left-0 right-0 p-6 pt-12 bg-gradient-to-t from-black/80 to-transparent">
+                  <div className="absolute bottom-0 inset-x-0 p-6 pt-12 bg-gradient-to-t from-black/80 to-transparent">
                     <h3 className={`font-bold mb-3 text-white group-hover:text-gov-green-light transition-colors drop-shadow-xl ${locale === 'ar' ? 'text-3xl lg:text-4xl leading-snug font-cairo' : 'text-2xl lg:text-3xl leading-tight'}`} style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}>
                       {featuredNews.titre}
                     </h3>
                     <p className={`text-gray-100 mb-4 line-clamp-2 drop-shadow-lg font-medium ${locale === 'ar' ? 'text-lg leading-relaxed' : ''}`} style={{ textShadow: '0 1px 5px rgba(0,0,0,0.8)' }}>
-                      {featuredNews.description || featuredNews.contenu?.substring(0, 150)}
+                      {sanitizeText(featuredNews.description || featuredNews.contenu).substring(0, 150)}
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-200 font-medium" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
                       <span>{formatDate(featuredNews.datePublication || featuredNews.createdAt, locale)}</span>
@@ -316,7 +321,7 @@ export default function NewsSection() {
                       {news.titre}
                     </h3>
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {news.description || news.contenu?.substring(0, 100)}
+                      {sanitizeText(news.description || news.contenu).substring(0, 100)}
                     </p>
                     <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span>{formatDate(news.datePublication || news.createdAt, locale)}</span>

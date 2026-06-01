@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Lightbulb,
@@ -96,11 +96,24 @@ export default function AdminSuggestionsPage() {
 
   const [reponseAdmin, setReponseAdmin] = useState('');
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '15');
-  if (statutFilter) queryParams.set('statut', statutFilter);
-  if (search) queryParams.set('search', search);
+  // Debounce de la recherche pour éviter trop d'appels API
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '15');
+    if (statutFilter) params.set('statut', statutFilter);
+    if (debouncedSearch) params.set('search', debouncedSearch);
+    return params;
+  }, [page, statutFilter, debouncedSearch]);
 
   const { data: suggestionsData, isLoading: loading, mutate: fetchSuggestions } = useData(`/api/suggestions?${queryParams.toString()}`);
 
@@ -109,16 +122,20 @@ export default function AdminSuggestionsPage() {
   const total = suggestionsData?.pagination?.total || 0;
   const stats = suggestionsData?.stats?.parStatut || {};
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1);
-      fetchSuggestions();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [search, fetchSuggestions]);
-
   const handleChangeStatut = async (suggestionId: number, newStatut: string) => {
     setActionLoading(`${suggestionId}-${newStatut}`);
+    
+    // Optimistic UI Update
+    fetchSuggestions(
+      {
+        ...suggestionsData,
+        data: suggestionsData?.data?.map((s: any) => 
+          s.id === suggestionId ? { ...s, statut: newStatut, reponseAdmin: reponseAdmin || s.reponseAdmin } : s
+        )
+      },
+      { revalidate: false }
+    );
+
     const promise = new Promise(async (resolve, reject) => {
       try {
         await actionMutation.mutate(`/api/suggestions/${suggestionId}/statut`, {
@@ -134,6 +151,7 @@ export default function AdminSuggestionsPage() {
         setReponseAdmin('');
         resolve(true);
       } catch (error: any) {
+        await fetchSuggestions(); // Rollback on error
         reject(new Error(error.message || 'Erreur lors du changement de statut'));
       } finally {
         setActionLoading(null);
@@ -202,13 +220,13 @@ export default function AdminSuggestionsPage() {
       <div className="bg-card rounded-2xl shadow-sm border border-border p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
+            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_placeholder')}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-muted/30 focus:ring-2 focus:ring-[hsl(var(--gov-blue))/0.2] focus:border-[hsl(var(--gov-blue))] transition-all"
+              className="w-full ps-12 pe-4 py-3 rounded-xl border border-border bg-muted/30 focus:ring-2 focus:ring-[hsl(var(--gov-blue))/0.2] focus:border-[hsl(var(--gov-blue))] transition-all"
             />
           </div>
           
@@ -225,7 +243,9 @@ export default function AdminSuggestionsPage() {
       </div>
 
       {/* Table */}
-      <GovTable>
+      <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden mb-6">
+        <div className="overflow-x-auto custom-scrollbar">
+          <GovTable>
         <thead>
           <tr>
             <GovTh>{t('table.suggestion')}</GovTh>
@@ -233,7 +253,7 @@ export default function AdminSuggestionsPage() {
             <GovTh>{t('table.citizen')}</GovTh>
             <GovTh>{t('table.status')}</GovTh>
             <GovTh>{t('table.date')}</GovTh>
-            <GovTh className="text-right">{t('table.actions')}</GovTh>
+            <GovTh className="text-end">{t('table.actions')}</GovTh>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -242,15 +262,7 @@ export default function AdminSuggestionsPage() {
               const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
               const StatutIcon = statutInfo.icon;
               const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;
-
-              // Map status to StatusBadge colors
-              const statusColorMap: Record<string, any> = {
-                SOUMISE: 'gold',
-                EN_EXAMEN: 'blue',
-                APPROUVEE: 'green',
-                REJETEE: 'red',
-                IMPLEMENTEE: 'purple'
-              };
+              // suggestionColorMap est défini comme constante de module en dehors du composant
 
               return (
                 <GovTr
@@ -295,7 +307,7 @@ export default function AdminSuggestionsPage() {
                       {formatDate(suggestion.createdAt)}
                     </div>
                   </GovTd>
-                  <GovTd className="text-right">
+                  <GovTd className="text-end">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
                       <GovButton
                         onClick={(e) => {
@@ -326,6 +338,8 @@ export default function AdminSuggestionsPage() {
           )}
         </tbody>
       </GovTable>
+        </div>
+      </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -427,7 +441,7 @@ export default function AdminSuggestionsPage() {
                       {t(`statuses.${selectedSuggestion.statut}`)}
                     </StatusBadge>
                   </div>
-                  <div className="text-right">
+                  <div className="text-end">
                     <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">
                       {t('table.date')}
                     </label>

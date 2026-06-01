@@ -35,6 +35,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePermission } from '@/hooks/use-permission';
 import { PermissionCode } from '@/lib/permissions-types';
 import { useTranslations, useLocale } from 'next-intl';
+import { useSidebar } from './SidebarContext';
+import { useData } from '@/hooks/use-data';
 
 // ... existing imports ...
 
@@ -101,8 +103,7 @@ export default function AdminSidebar() {
   
   // currentPath is no longer needed for logic, pathname is clean.
   
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
   const [badges, setBadges] = useState<BadgeCounts>({
     reclamations: 0,
     suggestions: 0,
@@ -114,41 +115,26 @@ export default function AdminSidebar() {
     etablissementsRequests: 0,
   });
 
-  // Synchroniser l'état collapsed avec le document pour que le layout puisse s'adapter
+  // SWR pour récupérer les badges avec rafraîchissement automatique
+  const { data: badgeData } = useData('/api/admin/pending-counts', { 
+    refreshInterval: 10000 
+  });
+
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-sidebar-collapsed', collapsed ? 'true' : 'false');
+    if (badgeData) {
+      const counts = badgeData?.data || badgeData || {};
+      setBadges({
+        reclamations: counts.reclamations || 0,
+        suggestions: counts.suggestions || 0,
+        activites: counts.activites || 0,
+        validation: counts.validation || 0,
+        evenements: counts.evenements || 0,
+        utilisateurs: counts.utilisateurs || 0,
+        messages: counts.messages || 0,
+        etablissementsRequests: counts.etablissementRequests || counts.etablissementsRequests || 0,
+      });
     }
-  }, [collapsed]);
-
-  // Charger les badges à intervalles réguliers
-  useEffect(() => {
-    const fetchBadges = async () => {
-      try {
-        const res = await fetch('/api/admin/pending-counts');
-        if (res.ok) {
-          const data = await res.json();
-          const counts = data?.data || data || {};
-          setBadges({
-            reclamations: counts.reclamations || 0,
-            suggestions: counts.suggestions || 0,
-            activites: counts.activites || 0,
-            validation: counts.validation || 0,
-            evenements: counts.evenements || 0,
-            utilisateurs: counts.utilisateurs || 0,
-            messages: counts.messages || 0,
-            etablissementsRequests: counts.etablissementRequests || counts.etablissementsRequests || 0,
-          });
-        }
-      } catch (error) {
-        // Silencieux en cas d'erreur
-      }
-    };
-
-    fetchBadges();
-    const interval = setInterval(fetchBadges, 10000); // Rafraîchir toutes les 10 secondes
-    return () => clearInterval(interval);
-  }, []);
+  }, [badgeData]);
 
   // Construire NAV_ITEMS avec les badges ET filtrés par permission
   const NAV_ITEMS = NAV_ITEMS_CONFIG

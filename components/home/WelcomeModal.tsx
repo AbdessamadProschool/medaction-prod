@@ -57,12 +57,12 @@ export default function WelcomeModal() {
             className="relative bg-card rounded-lg shadow-lg max-w-lg w-full overflow-hidden border border-border"
           >
             {/* Decoration Background */}
-            <div className="absolute top-0 left-0 w-full h-32 bg-[hsl(var(--gov-blue))]" />
+            <div className="absolute top-0 inset-x-0 w-full h-32 bg-[hsl(var(--gov-blue))]" />
             
             {/* Close Button */}
             <button
               onClick={() => handleClose(true)}
-              className="absolute top-4 right-4 p-2 bg-white/15 hover:bg-white/25 rounded-lg text-white transition-colors z-10"
+              className="absolute top-4 end-4 p-2 bg-white/15 hover:bg-white/25 rounded-lg text-white transition-colors z-10"
               aria-label={t('dont_show_again')}
             >
               <X size={20} />

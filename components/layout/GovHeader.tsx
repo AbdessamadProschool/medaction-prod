@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, usePathname } from '@/i18n/navigation';
-import { useRouter } from 'next/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import GlobalSearch from '@/components/search/GlobalSearch';
 
 import {
@@ -37,6 +36,17 @@ import {
 import { useSession, signOut } from 'next-auth/react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { useTranslations, useLocale } from 'next-intl';
+
+// Utility to sanitize dynamically fetched URLs and prevent XSS (javascript:, data:, etc.)
+const getSafeUrl = (url?: string | null, fallback = '/') => {
+  if (!url || typeof url !== 'string') return fallback;
+  const sanitized = url.trim();
+  const lowerUrl = sanitized.toLowerCase();
+  if (lowerUrl.startsWith('javascript:') || lowerUrl.startsWith('data:') || lowerUrl.startsWith('vbscript:')) {
+    return fallback;
+  }
+  return sanitized;
+};
 
 export default function GovHeader() {
   const pathname = usePathname();
@@ -95,8 +105,9 @@ export default function GovHeader() {
   const [loadingNotifs, setLoadingNotifs] = useState(false);
 
   // Fetch notifications
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (showLoading = false) => {
     if (!session) return;
+    if (showLoading) setLoadingNotifs(true);
     try {
       const res = await fetch('/api/notifications?limit=5');
       if (res.ok) {
@@ -106,13 +117,15 @@ export default function GovHeader() {
       }
     } catch (error) {
       console.error('Erreur notifications:', error);
+    } finally {
+      if (showLoading) setLoadingNotifs(false);
     }
   };
 
   useEffect(() => {
     if (session) {
-      fetchNotifications();
-      const interval = setInterval(fetchNotifications, 60000); // Poll every minute
+      fetchNotifications(true);
+      const interval = setInterval(() => fetchNotifications(false), 60000); // Poll every minute
       return () => clearInterval(interval);
     }
   }, [session]);
@@ -163,7 +176,7 @@ export default function GovHeader() {
   const isPro = !!dashboardLink;
 
   return (
-    <header className={`gov-header-container sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-lg bg-[hsl(213,80%,15%)]/95 backdrop-blur-md' : 'bg-[hsl(213,80%,15%)]'}`}>
+    <header className={`gov-header-container sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-lg bg-gov-blue-dark/95 backdrop-blur-md' : 'bg-gov-blue-dark'}`}>
       {/* Bande tricolore */}
       <div className="gov-tricolor-strip" />
       
@@ -259,14 +272,14 @@ export default function GovHeader() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.1 }}
-                      className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
+                      className="absolute top-full start-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
                     >
                       <div className="p-2">
                         {kiosqueItems.map((item) => (
                           <Link
                             key={item.href}
                             href={item.href}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-gov-blue transition-colors group"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gov-blue/5 hover:text-gov-blue transition-colors group"
                           >
                             <div className="w-8 h-8 rounded-lg bg-gov-blue/5 flex items-center justify-center text-gov-blue group-hover:bg-gov-blue group-hover:text-white transition-colors">
                               <item.icon size={16} />
@@ -305,7 +318,7 @@ export default function GovHeader() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
-                        className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
+                        className="absolute top-full end-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
                       >
                          <div className="p-2">
                           {serviceItems
@@ -319,7 +332,7 @@ export default function GovHeader() {
                             <Link
                               key={item.href}
                               href={item.href}
-                              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-[hsl(213,80%,48%)]/5 hover:text-gov-blue transition-colors group"
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gov-blue/5 hover:text-gov-blue transition-colors group"
                             >
                                <div className="w-8 h-8 rounded-lg bg-gov-gold/10 flex items-center justify-center text-gov-blue group-hover:bg-gov-gold group-hover:text-gov-blue transition-colors">
                                   {item.id === 'reclamation' || item.id === 'mes_reclamations' ? <Shield size={16} /> : item.id === 'propose' ? <Lightbulb size={16} /> : <MessageSquare size={16} />}
@@ -366,7 +379,7 @@ export default function GovHeader() {
                   >
                     <Bell size={20} />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-[hsl(213,80%,15%)] animate-pulse" />
+                      <span className="absolute top-1.5 end-1.5 w-2.5 h-2.5 bg-gov-red rounded-full ring-2 ring-gov-blue-dark animate-pulse" />
                     )}
                   </button>
 
@@ -375,7 +388,7 @@ export default function GovHeader() {
                         <>
                           {/* Overlay mobile pour fermer en cliquant à côté */}
                           <div 
-                            className="fixed inset-0 z-40 md:hidden bg-[hsl(var(--gov-blue-dark)/0.32)]"
+                            className="fixed inset-0 z-40 md:hidden bg-gov-blue-dark/40 backdrop-blur-sm"
                             onClick={() => setNotificationsOpen(false)}
                           />
                           <motion.div
@@ -383,9 +396,9 @@ export default function GovHeader() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.1 }}
-                            className={`fixed left-4 right-4 top-20 md:absolute md:top-full ${locale === 'ar' ? 'md:left-0 md:right-auto' : 'md:right-0 md:left-auto'} md:mt-3 md:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-50 ring-1 ring-black/5`}
+                            className="fixed start-4 end-4 top-20 md:absolute md:top-full md:end-0 md:start-auto md:mt-3 md:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 overflow-hidden z-50 ring-1 ring-black/5"
                           >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600" />
+                            <div className="absolute top-0 start-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600" />
                             <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between bg-gray-50/50 dark:bg-slate-900/50">
                               <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Bell className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -408,7 +421,7 @@ export default function GovHeader() {
                                 notifications.map((notif: any) => (
                                   <Link 
                                     key={notif.id} 
-                                    href={notif.lien || '/notifications'}
+                                    href={getSafeUrl(notif.lien, '/notifications')}
                                     onClick={() => setNotificationsOpen(false)}
                                     className={`group flex gap-4 p-4 border-b border-gray-50 dark:border-slate-800 hover:bg-amber-50/30 dark:hover:bg-amber-900/10 transition-colors ${!notif.isLue ? 'bg-blue-50/30 dark:bg-blue-900/5' : ''}`}
                                   >
@@ -451,7 +464,7 @@ export default function GovHeader() {
                                 className="flex items-center justify-center gap-2 w-full py-2.5 text-xs font-bold text-amber-600 dark:text-amber-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm rounded-lg transition-all"
                               >
                                 {t('notifications.view_all')}
-                                <span className="transform group-hover:translate-x-1 duration-200">→</span>
+                                <span className="transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 duration-200 inline-block rtl:rotate-180">→</span>
                               </Link>
                             </div>
                           </motion.div>
@@ -477,7 +490,7 @@ export default function GovHeader() {
                     {session.user?.photo ? (
                       <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-gov-gold">
                         <OptimizedImage 
-                          src={session.user.photo} 
+                          src={getSafeUrl(session.user.photo, '')} 
                           alt="Photo profil"
                           type="profile"
                           fill
@@ -502,7 +515,7 @@ export default function GovHeader() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
-                        className="absolute top-full right-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
+                        className="absolute top-full end-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 ring-1 ring-black/5"
                       >
                         {/* En-tête avec photo */}
                         <div className="px-5 py-5 border-b border-gray-100 bg-gradient-to-r from-gov-blue/5 to-transparent">
@@ -510,7 +523,7 @@ export default function GovHeader() {
                             {session.user?.photo ? (
                               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gov-blue">
                                 <OptimizedImage 
-                                  src={session.user.photo} 
+                                  src={getSafeUrl(session.user.photo, '')} 
                                   alt="Photo profil"
                                   type="profile"
                                   fill
@@ -562,10 +575,10 @@ export default function GovHeader() {
                             href="/profil/securite"
                             className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                           >
-                            <Shield size={18} className="text-[hsl(var(--gov-green))]" />
+                            <Shield size={18} className="text-gov-green" />
                             <span>{t('nav.user_menu.security')}</span>
                             {!session.user?.isEmailVerifie && (
-                              <span className="ml-auto px-1.5 py-0.5 text-[10px] bg-amber-100 text-amber-700 rounded-full font-bold">!</span>
+                              <span className="ms-auto px-1.5 py-0.5 text-[10px] bg-amber-100 text-amber-700 rounded-full font-bold">!</span>
                             )}
                           </Link>
 
@@ -637,7 +650,7 @@ export default function GovHeader() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="xl:hidden bg-[hsl(213,80%,15%)] border-t border-white/10 overflow-hidden"
+            className="xl:hidden bg-gov-blue-dark border-t border-white/10 overflow-hidden"
           >
             <nav className="px-4 py-4 space-y-1">
               {dashboardLink && (
@@ -763,7 +776,9 @@ export default function GovHeader() {
                   showFilters
                   onResultClick={(result) => {
                     setSearchOpen(false);
-                    router.push(result.url);
+                    if (result?.url) {
+                      router.push(getSafeUrl(result.url, '/'));
+                    }
                   }}
                 />
               </div>

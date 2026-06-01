@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -74,7 +74,7 @@ const SECTEURS = [
   { value: 'SANTE', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' },
   { value: 'SPORT', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
   { value: 'SOCIAL', color: 'bg-gov-blue/10 text-gov-blue-dark dark:bg-gov-blue dark:text-gov-blue' },
-  { value: 'CULTUREL', color: 'bg-gov-gold/10 text-gov-gold dark:bg-gov-gold/10/30 dark:text-gov-gold' },
+  { value: 'CULTUREL', color: 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400' },
   { value: 'AUTRE', color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300' },
 ];
 
@@ -96,17 +96,22 @@ export default function AdminEtablissementsPage() {
   const [selectedEtablissement, setSelectedEtablissement] = useState<Etablissement | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
+  const [showBulkConfirm, setShowBulkConfirm] = useState<'publish' | 'delete' | null>(null);
 
   // Mutations
   const actionMutation = useMutation();
   const bulkMutation = useMutation('/api/etablissements/bulk');
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('page', page.toString());
-  queryParams.set('limit', '12');
-  queryParams.set('includeNonPublie', 'true');
-  if (search) queryParams.set('search', search);
-  if (secteurFilter) queryParams.set('secteur', secteurFilter);
+  const queryParams = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('limit', '12');
+    params.set('includeNonPublie', 'true');
+    if (search) params.set('search', search);
+    if (secteurFilter) params.set('secteur', secteurFilter);
+    return params;
+  }, [page, search, secteurFilter]);
 
   const { data: etablissementsData, isLoading: loading, mutate: fetchEtablissements } = useData(`/api/etablissements?${queryParams.toString()}`);
   
@@ -125,36 +130,41 @@ export default function AdminEtablissementsPage() {
 
   const handleValidate = async (id: number, action: 'valider' | 'publier' | 'misEnAvant') => {
     setActionLoading(`${action}-${id}`);
-    try {
-      const body: { isValide?: boolean; isPublie?: boolean; isMisEnAvant?: boolean } = {};
-      
-      if (action === 'valider') {
-        const etab = etablissements.find((e: Etablissement) => e.id === id);
-        body.isValide = !etab?.isValide;
-      } else if (action === 'publier') {
-        const etab = etablissements.find((e: Etablissement) => e.id === id);
-        body.isPublie = !etab?.isPublie;
-      } else if (action === 'misEnAvant') {
-        const etab = etablissements.find((e: Etablissement) => e.id === id);
-        body.isMisEnAvant = !etab?.isMisEnAvant;
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const body: { isValide?: boolean; isPublie?: boolean; isMisEnAvant?: boolean } = {};
+        if (action === 'valider') {
+          const etab = etablissements.find((e: Etablissement) => e.id === id);
+          body.isValide = !etab?.isValide;
+        } else if (action === 'publier') {
+          const etab = etablissements.find((e: Etablissement) => e.id === id);
+          body.isPublie = !etab?.isPublie;
+        } else if (action === 'misEnAvant') {
+          const etab = etablissements.find((e: Etablissement) => e.id === id);
+          body.isMisEnAvant = !etab?.isMisEnAvant;
+        }
+        await actionMutation.mutate(`/api/etablissements/${id}/valider`, { method: 'PATCH', data: body });
+        await fetchEtablissements();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || t('messages.error')));
+      } finally {
+        setActionLoading(null);
       }
-
-      await actionMutation.mutate(`/api/etablissements/${id}/valider`, {
-        method: 'PATCH',
-        data: body,
-      });
-
-      toast.success(t('messages.updated'));
-      await fetchEtablissements();
-    } catch (error: any) {
-      toast.error(error.message || t('messages.error'));
-    } finally {
-      setActionLoading(null);
-    }
+    });
+    toast.promise(promise, {
+      loading: t('messages.updating') || 'Mise à jour...',
+      success: t('messages.updated'),
+      error: (err) => err.message,
+    });
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm(t('messages.delete_confirm'))) return;
+    if (showDeleteId !== id) {
+      setShowDeleteId(id);
+      return;
+    }
+    setShowDeleteId(null);
     
     setActionLoading(`delete-${id}`);
     try {
@@ -180,8 +190,8 @@ export default function AdminEtablissementsPage() {
   };
 
   const handlePublishAll = async () => {
-    if (!confirm(t('messages.bulk_publish_confirm'))) return;
-    
+    if (showBulkConfirm !== 'publish') { setShowBulkConfirm('publish'); return; }
+    setShowBulkConfirm(null);
     const toastId = toast.loading(t('messages.publishing'));
     try {
         await bulkMutation.mutate('/api/admin/etablissements/bulk', {
@@ -195,9 +205,9 @@ export default function AdminEtablissementsPage() {
   };
 
   const handleDeleteAll = async () => {
-     if (!confirm(t('messages.bulk_delete_confirm'))) return;
-     
-     const toastId = toast.loading(t('messages.deleting'));
+    if (showBulkConfirm !== 'delete') { setShowBulkConfirm('delete'); return; }
+    setShowBulkConfirm(null);
+    const toastId = toast.loading(t('messages.deleting'));
      try {
         await bulkMutation.mutate('/api/admin/etablissements/bulk', {
             method: 'POST', data: { action: 'delete_all' }

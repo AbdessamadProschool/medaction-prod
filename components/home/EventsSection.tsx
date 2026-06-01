@@ -254,13 +254,13 @@ export default function EventsSection() {
                     
                     {/* Badge catégorie */}
                     {event.typeCategorique && (
-                      <span className={`absolute top-4 ${locale === 'ar' ? 'right-4' : 'left-4'} ${categoryColor}`}>
+                      <span className={`absolute top-4 start-4 ${categoryColor}`}>
                         {translateCategory(event.typeCategorique)}
                       </span>
                     )}
                     
                     {/* Countdown */}
-                    <div className={`absolute bottom-4 ${locale === 'ar' ? 'left-4' : 'right-4'} bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm`}>
+                    <div className="absolute bottom-4 end-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
                       <span className={`text-sm font-bold ${getPreciseStatus(event.dateDebut, event.dateFin).includes('جارية') || getPreciseStatus(event.dateDebut, event.dateFin).includes('cours') ? 'text-emerald-600' : 'text-gray-900'}`}>
                         {getPreciseStatus(event.dateDebut, event.dateFin)}
                       </span>

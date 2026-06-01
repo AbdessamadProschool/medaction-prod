@@ -17,7 +17,7 @@ const createUserSchema = z.object({
   prenom: z.string().min(2, 'Le prénom est requis').transform(sanitizeName),
   role: z.enum(['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR']),
   telephone: z.string().optional().transform(val => val ? sanitizePhone(val) : val),
-  secteurResponsable: z.any().optional(),
+  secteurResponsable: z.string().transform(sanitizeString).optional().nullable(),
   etablissementId: z.number().int().positive().optional(),
 });
 
@@ -82,9 +82,9 @@ export const POST = withPermission('users.create', withErrorHandler(async (reque
   const body = await request.json();
   const { email, password, nom, prenom, role, telephone, secteurResponsable, etablissementId } = createUserSchema.parse(body);
 
-  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut créer des comptes ADMIN ou SUPER_ADMIN
-  if (['ADMIN', 'SUPER_ADMIN'].includes(role) && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Seul un Super Admin peut créer des comptes administrateurs');
+  // 🛡️ Anti-escalade : seul SUPER_ADMIN peut créer des comptes de haut niveau
+  if (['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(role) && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Seul un Super Admin peut créer des comptes de ce niveau');
   }
 
   // Vérifier unicité email

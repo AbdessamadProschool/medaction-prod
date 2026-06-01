@@ -22,6 +22,29 @@ export function withPermission(permission: PermissionCode, handler: ApiHandler) 
         return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
       }
 
+      // 1.5 CSRF Validation for mutating requests
+      if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+        if (origin) {
+          const originHost = new URL(origin).host;
+          if (originHost !== host) {
+            return NextResponse.json({ error: 'CSRF Validation Failed' }, { status: 403 });
+          }
+        } else {
+          const referer = request.headers.get('referer');
+          if (referer) {
+            const refererHost = new URL(referer).host;
+            if (refererHost !== host) {
+              return NextResponse.json({ error: 'CSRF Validation Failed' }, { status: 403 });
+            }
+          } else {
+             // If both are missing, reject state-changing requests relying on cookies
+             return NextResponse.json({ error: 'CSRF Validation Failed: Missing Origin and Referer' }, { status: 403 });
+          }
+        }
+      }
+
       // 2. Validation de l'ID utilisateur (MAJ-02)
       const userId = validateId(session.user.id);
       if (!userId) {
@@ -68,6 +91,28 @@ export function withRole(allowedRoles: Role[], handler: ApiHandler) {
       const session = await getServerSession(authOptions);
       if (!session?.user) {
         return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
+      }
+
+      // CSRF Validation for mutating requests
+      if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+        if (origin) {
+          const originHost = new URL(origin).host;
+          if (originHost !== host) {
+            return NextResponse.json({ error: 'CSRF Validation Failed' }, { status: 403 });
+          }
+        } else {
+          const referer = request.headers.get('referer');
+          if (referer) {
+            const refererHost = new URL(referer).host;
+            if (refererHost !== host) {
+              return NextResponse.json({ error: 'CSRF Validation Failed' }, { status: 403 });
+            }
+          } else {
+             return NextResponse.json({ error: 'CSRF Validation Failed: Missing Origin and Referer' }, { status: 403 });
+          }
+        }
       }
 
       if (!allowedRoles.includes(session.user.role as Role)) {

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import TalentForm from '@/components/admin/talents/TalentForm';
 import Image from 'next/image';
 import { 
@@ -48,17 +49,27 @@ export default function AdminTalentsPage() {
   
   const actionMutation = useMutation();
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce talent ?')) return;
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
-    try {
-      await actionMutation.mutate(`/api/talents/${id}`, {
-        method: 'DELETE',
-      });
-      await fetchTalents();
-    } catch (error) {
-      console.error('Erreur:', error);
-    }
+  const handleDelete = async (id: number) => {
+    setDeleteConfirmId(null);
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/talents/${id}`, {
+          method: 'DELETE',
+        });
+        await fetchTalents();
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error(error.message || 'Erreur lors de la suppression'));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Suppression du talent en cours...',
+      success: 'Talent supprimé avec succès',
+      error: (err) => err.message,
+    });
   };
 
   const filteredTalents = talents.filter(t => 
@@ -321,7 +332,7 @@ export default function AdminTalentsPage() {
                               <Edit2 size={16} />
                             </button>
                             <button
-                              onClick={() => handleDelete(talent.id)}
+                              onClick={() => setDeleteConfirmId(talent.id)}
                               className="w-9 h-9 flex items-center justify-center bg-card border border-border text-muted-foreground hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05] hover:border-[hsl(var(--gov-red))/0.2] rounded-xl transition-all shadow-sm"
                               title="Supprimer"
                             >
@@ -338,6 +349,52 @@ export default function AdminTalentsPage() {
           </div>
         </div>
       )}
+      {/* Modal Confirmation de Suppression */}
+      <AnimatePresence>
+        {deleteConfirmId !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setDeleteConfirmId(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-border rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-2xl mb-4">
+                  <Trash2 size={32} />
+                </div>
+                <h3 className="text-xl font-extrabold text-foreground mb-2">
+                  Confirmation de suppression
+                </h3>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Êtes-vous sûr de vouloir supprimer ce talent ? Cette action est irréversible.
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setDeleteConfirmId(null)}
+                    className="flex-1 px-5 py-3 border border-border text-muted-foreground rounded-2xl hover:bg-muted text-sm font-bold transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={() => handleDelete(deleteConfirmId)}
+                    className="flex-1 px-5 py-3 bg-[hsl(var(--gov-red))] text-white rounded-2xl hover:opacity-90 text-sm font-bold transition-colors shadow-lg shadow-[hsl(var(--gov-red))/0.2]"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

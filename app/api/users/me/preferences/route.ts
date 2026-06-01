@@ -71,6 +71,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     const userId = parseInt(session.user.id);
+    
+    if (!request.headers.get('content-type')?.includes('application/json')) {
+      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 415 });
+    }
+
     const body = await request.json();
 
     // Récupérer les préférences actuelles
@@ -110,6 +115,11 @@ function deepMerge(target: Record<string, unknown>, source: Record<string, unkno
   const result = { ...target };
   
   for (const key of Object.keys(source)) {
+    // Protéger contre la pollution de prototype
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      continue;
+    }
+    
     if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
       result[key] = deepMerge(
         (target[key] as Record<string, unknown>) || {},

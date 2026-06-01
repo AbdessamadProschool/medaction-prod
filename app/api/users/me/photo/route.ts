@@ -21,6 +21,16 @@ export async function POST(request: Request) {
       );
     }
 
+    // CSRF Protection using Origin
+    const origin = request.headers.get('origin');
+    const host = request.headers.get('host');
+    if (origin && host && new URL(origin).host !== host) {
+      return NextResponse.json(
+        { success: false, message: 'Requête non autorisée (CSRF)' },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('photo') as File | null;
 

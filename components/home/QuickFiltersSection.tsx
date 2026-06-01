@@ -82,8 +82,8 @@ export default function QuickFiltersSection() {
     <section className="py-24 relative overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-white">
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(213,80%,35%)]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gov-gold/8 rounded-full blur-3xl" />
+        <div className="absolute top-0 start-1/4 w-96 h-96 bg-[hsl(213,80%,35%)]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 end-1/4 w-80 h-80 bg-gov-gold/8 rounded-full blur-3xl" />
         <div className="absolute inset-0 gov-pattern opacity-20" />
       </div>
 
@@ -183,7 +183,7 @@ export default function QuickFiltersSection() {
                   {isSelected && (
                     <motion.div
                       layoutId="secteurCheck"
-                      className="absolute -top-3 -right-3 w-8 h-8 bg-gov-gold rounded-full flex items-center justify-center shadow-lg border-2 border-white"
+                      className="absolute -top-3 -end-3 w-8 h-8 bg-gov-gold rounded-full flex items-center justify-center shadow-lg border-2 border-white"
                       aria-hidden="true"
                     >
                       <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -225,7 +225,7 @@ export default function QuickFiltersSection() {
                     </option>
                   ))}
                 </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
@@ -254,7 +254,7 @@ export default function QuickFiltersSection() {
             {/* Action Buttons */}
             <div className="flex items-end gap-3">
               <Link
-                href={`/etablissements?secteur=${selectedSecteur || ''}&communeId=${selectedCommune || ''}&search=${searchQuery}`}
+                href={`/etablissements?secteur=${encodeURIComponent(selectedSecteur || '')}&communeId=${encodeURIComponent(selectedCommune || '')}&search=${encodeURIComponent(searchQuery)}`}
                 className="flex-1 gov-btn gov-btn-primary flex items-center justify-center gap-2 py-3"
               >
                 <Search className="w-5 h-5" />

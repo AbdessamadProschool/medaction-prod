@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -190,6 +190,7 @@ export default function SuperAdminSettingsPage() {
   const [settings, setSettings] = useState<SystemSettings>(DEFAULT_SETTINGS);
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { data: settingsData, isLoading: loading } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/settings' : null);
   const actionMutation = useMutation();
@@ -247,11 +248,14 @@ export default function SuperAdminSettingsPage() {
 
   // Reset settings
   const handleReset = () => {
-    if (confirm('Réinitialiser tous les paramètres par défaut ?')) {
-      setSettings(DEFAULT_SETTINGS);
-      setHasChanges(true);
-      toast.info('Paramètres réinitialisés');
-    }
+    setShowResetConfirm(true);
+  };
+
+  const handleResetConfirm = () => {
+    setSettings(DEFAULT_SETTINGS);
+    setHasChanges(true);
+    setShowResetConfirm(false);
+    toast.info('Paramètres réinitialisés aux valeurs par défaut');
   };
 
   if (status === 'loading' || loading) {
@@ -312,6 +316,44 @@ export default function SuperAdminSettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Reset Confirmation Banner */}
+      <AnimatePresence>
+        {showResetConfirm && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-amber-500">
+                <AlertTriangle className="w-6 h-6" />
+                <h3 className="text-lg font-bold text-foreground">Réinitialisation des paramètres</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Êtes-vous sûr de vouloir réinitialiser tous les paramètres système aux valeurs par défaut ? Cette action est réversible après une sauvegarde.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowResetConfirm(false)}
+                  className="px-4 py-2 border border-border rounded-lg hover:bg-muted text-sm font-medium text-foreground transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetConfirm}
+                  className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 text-sm font-medium transition-colors"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
         {/* General Settings */}

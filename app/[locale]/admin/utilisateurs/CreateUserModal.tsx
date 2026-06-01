@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { GovInput, GovSelect, GovButton } from '@/components/ui';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { z } from 'zod';
 
 interface CreateUserModalProps {
   onClose: () => void;
@@ -98,83 +99,92 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
     setError('');
     setFieldErrors({});
 
-    // Validation locale
-    const newFieldErrors: Record<string, string[]> = {};
+    const validationSchema = z.object({
+      prenom: z.string().min(1, t('errors.required') || 'Requis'),
+      nom: z.string().min(1, t('errors.required') || 'Requis'),
+      email: z.string().email(t('errors.invalid_email') || 'Email invalide'),
+      telephone: z.string().optional(),
+      motDePasse: z.string().min(6, t('errors.password_length') || '6 caractères min'),
+      confirmMotDePasse: z.string(),
+      role: z.string().min(1, t('errors.role_required') || 'Requis'),
+      secteurResponsable: z.string().optional(),
+      communeResponsableId: z.string().optional(),
+      etablissementsGeres: z.array(z.number()),
+      isActive: z.boolean()
+    }).superRefine((data, ctx) => {
+      if (data.motDePasse !== data.confirmMotDePasse) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['confirmMotDePasse'],
+          message: t('errors.password_mismatch') || 'Mots de passe différents',
+        });
+      }
+      if (data.role === 'DELEGATION' && !data.secteurResponsable) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['secteurResponsable'],
+          message: t('errors.sector_required') || 'Secteur requis',
+        });
+      }
+      if (data.role === 'AUTORITE_LOCALE' && !data.communeResponsableId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['communeResponsableId'],
+          message: t('errors.commune_required') || 'Commune requise',
+        });
+      }
+      if (data.role === 'COORDINATEUR_ACTIVITES' && data.etablissementsGeres.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['etablissementsGeres'],
+          message: t('errors.establishment_required') || 'Etablissement requis',
+        });
+      }
+    });
 
-    if (formData.motDePasse !== formData.confirmMotDePasse) {
-      newFieldErrors.confirmMotDePasse = [t('errors.password_mismatch')];
-    }
-
-    if (formData.motDePasse.length < 6) {
-      newFieldErrors.motDePasse = [t('errors.password_length')];
-    }
-
-    if (formData.role === 'DELEGATION' && !formData.secteurResponsable) {
-      newFieldErrors.secteurResponsable = [t('errors.sector_required')];
-    }
-
-    if (formData.role === 'AUTORITE_LOCALE' && !formData.communeResponsableId) {
-      newFieldErrors.communeResponsableId = [t('errors.commune_required')];
-    }
-
-    if (formData.role === 'COORDINATEUR_ACTIVITES' && formData.etablissementsGeres.length === 0) {
-      newFieldErrors.etablissementsGeres = [t('errors.establishment_required')];
-    }
-
-    if (Object.keys(newFieldErrors).length > 0) {
-      setFieldErrors(newFieldErrors);
-      setError(t('errors.create_error'));
+    const parsed = validationSchema.safeParse(formData);
+    if (!parsed.success) {
+      const formattedErrors = parsed.error.flatten().fieldErrors;
+      setFieldErrors(formattedErrors as Record<string, string[]>);
+      setError(t('errors.create_error') || 'Erreur de validation');
       return;
     }
 
     setLoading(true);
 
-    const submitPromise = new Promise(async (resolve, reject) => {
-      try {
-        const res = await fetch('/api/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            nom: formData.nom,
-            prenom: formData.prenom,
-            email: formData.email,
-            telephone: formData.telephone || null,
-            motDePasse: formData.motDePasse,
-            role: formData.role,
-            secteurResponsable: formData.secteurResponsable || null,
-            communeResponsableId: formData.communeResponsableId ? parseInt(formData.communeResponsableId) : null,
-            etablissementsGeres: formData.etablissementsGeres,
-            // nosemgrep
-            isActive: formData.isActive,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          onSuccess();
-          resolve(data);
-        } else {
-          if (data.error) {
-            if (data.error.fieldErrors) {
-              setFieldErrors(data.error.fieldErrors);
-            }
-            if (data.error.field) {
-              setFieldErrors(prev => ({
-                ...prev,
-                [data.error.field]: [data.error.message]
-              }));
-            }
-            reject(new Error(data.error.message || t('errors.create_error')));
-          } else {
-            reject(new Error(t('errors.create_error')));
-          }
+    const submitPromise = fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nom: formData.nom,
+        prenom: formData.prenom,
+        email: formData.email,
+        telephone: formData.telephone || null,
+        motDePasse: formData.motDePasse,
+        role: formData.role,
+        secteurResponsable: formData.secteurResponsable || null,
+        communeResponsableId: formData.communeResponsableId ? parseInt(formData.communeResponsableId) : null,
+        etablissementsGeres: formData.etablissementsGeres,
+        isActive: formData.isActive,
+      }),
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error?.fieldErrors) {
+          setFieldErrors(data.error.fieldErrors);
         }
-      } catch (err) {
-        reject(new Error(t('errors.server_error')));
-      } finally {
-        setLoading(false);
+        if (data.error?.field) {
+          setFieldErrors(prev => ({
+            ...prev,
+            [data.error.field]: [data.error.message]
+          }));
+        }
+        throw new Error(data.error?.message || t('errors.create_error'));
       }
+      onSuccess();
+      return data;
+    }).finally(() => {
+      setLoading(false);
     });
 
     toast.promise(submitPromise, {
@@ -222,7 +232,8 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
+          <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
           {error && (
             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
               {error}
@@ -449,8 +460,9 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
             </div>
           </div>
 
+          </div>
           {/* Actions */}
-          <div className="flex items-center justify-end gap-4 mt-8 pt-8 border-t border-border shrink-0">
+          <div className="flex items-center justify-end gap-4 px-6 py-4 border-t border-border shrink-0 bg-card/95">
             <GovButton
               type="button"
               onClick={onClose}

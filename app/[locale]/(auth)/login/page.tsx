@@ -2,7 +2,8 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useMemo } from 'react';
+import { toast } from 'sonner';
 import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { Link, useRouter } from '@/i18n/navigation';
@@ -28,7 +29,7 @@ function LoginForm() {
   const [isLocked, setIsLocked] = useState(false);
   const [lockoutMinutes, setLockoutMinutes] = useState(0);
 
-  const loginSchema = z.object({
+  const loginSchema = useMemo(() => z.object({
     email: z
       .string()
       .min(1, tErrors('required'))
@@ -37,7 +38,7 @@ function LoginForm() {
       .string()
       .min(1, tErrors('required')),
     code: z.string().optional(),
-  });
+  }), [tErrors]);
 
   const {
     register,
@@ -112,10 +113,17 @@ function LoginForm() {
 
     try {
       // === SECURITY: Check IP-based rate limit BEFORE login attempt ===
-      const rateLimitCheck = await fetch('/api/auth/login-check', { method: 'POST' });
-      const rateLimitData = await rateLimitCheck.json();
+      const { getCsrfToken } = await import('next-auth/react');
+      const csrfToken = await getCsrfToken();
+      const rateLimitCheck = await fetch('/api/auth/login-check', { 
+        method: 'POST',
+        headers: {
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {})
+        }
+      });
+      const rateLimitData = await rateLimitCheck.json().catch(() => ({}));
       
-      if (!rateLimitData.success || rateLimitData.blocked) {
+      if (rateLimitData.blocked) {
         setIsLocked(true);
         setLockoutMinutes(rateLimitData.retryAfterMinutes || 30);
         setError(t('too_many_attempts', { minutes: rateLimitData.retryAfterMinutes || 30 }));
@@ -160,6 +168,7 @@ function LoginForm() {
            }
            
            setError(errorMessage);
+           toast.error(errorMessage);
 
            // Si le compte est bloqué, désactiver le bouton
            if (result.error.includes('Compte temporairement bloqué') || result.error.includes('Trop de tentatives') || result.error.includes('Account locked')) {
@@ -205,7 +214,9 @@ function LoginForm() {
         }
       }
     } catch (e) {
-      setError(t('error_generic'));
+      const errorMsg = t('error_generic');
+      setError(errorMsg);
+      toast.error(errorMsg);
       setIsLoading(false);
     }
   };
@@ -215,13 +226,13 @@ function LoginForm() {
       {/* Left Side - Branding Gouvernemental */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-[hsl(213,80%,20%)] via-[hsl(213,80%,28%)] to-[hsl(213,80%,35%)]">
         {/* Bande tricolore */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
         
         {/* Animated Background Patterns */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-[hsl(45,93%,47%)]/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-[hsl(145,63%,32%)]/10 rounded-full blur-3xl animate-pulse delay-1000" />
-          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-white/5 rounded-full blur-2xl animate-pulse delay-500" />
+          <div className="absolute top-20 start-20 w-72 h-72 bg-[hsl(45,93%,47%)]/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 end-20 w-96 h-96 bg-[hsl(145,63%,32%)]/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/2 start-1/3 w-64 h-64 bg-white/5 rounded-full blur-2xl animate-pulse delay-500" />
         </div>
 
         <div 
@@ -288,7 +299,7 @@ function LoginForm() {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
 
       {/* Right Side - Login Form */}
@@ -318,7 +329,7 @@ function LoginForm() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div className="text-left font-outfit">
+              <div className="text-start font-outfit">
                 <h2 className="text-lg font-bold text-gray-900">
                   <span>PORTAIL </span>
                   <span className="text-[hsl(45,93%,47%)]">MEDIOUNA</span>
@@ -425,7 +436,7 @@ function LoginForm() {
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-[hsl(213,80%,28%)] focus:ring-[hsl(213,80%,28%)] transition-colors"
                     />
-                    <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{t('remember_me')}</span>
+                    <span className="ms-2 text-sm text-gray-700 group-hover:text-gray-900 transition-colors">{t('remember_me')}</span>
                   </label>
                   <Link
                     href="/forgot-password"

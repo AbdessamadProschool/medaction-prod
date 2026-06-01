@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { toast } from 'sonner';
 import {
   Bell,
   BellOff,
@@ -65,6 +66,7 @@ export default function AbonnementsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [abonnementToUnsubscribe, setAbonnementToUnsubscribe] = useState<Abonnement | null>(null);
 
   const queryStr = useMemo(() => {
     return `page=${page}&limit=12`;
@@ -86,26 +88,25 @@ export default function AbonnementsPage() {
         data: { notificationsActives: !abonnement.notificationsActives },
       });
       refreshData();
-    } catch (error) {
-      console.error('Erreur toggle notifications:', error);
+      toast.success(t('notif_updated', { defaultMessage: 'Préférences mises à jour' }));
+    } catch (error: any) {
+      toast.error(error.message || tCommon('error', { defaultMessage: 'Une erreur est survenue' }));
     } finally {
       setActionLoading(null);
     }
   };
 
   const unsubscribe = async (abonnement: Abonnement) => {
-    if (!confirm(t('unsubscribe_confirm', { name: abonnement.etablissement.nom }))) {
-      return;
-    }
-
+    setAbonnementToUnsubscribe(null);
     setActionLoading(abonnement.id);
     try {
       await unsubscribeMutation.mutate(`/api/abonnements/${abonnement.id}`, {
         method: 'DELETE',
       });
       refreshData();
-    } catch (error) {
-      console.error('Erreur désabonnement:', error);
+      toast.success(t('unsubscribe_success', { defaultMessage: 'Désabonnement réussi' }));
+    } catch (error: any) {
+      toast.error(error.message || tCommon('error', { defaultMessage: 'Une erreur est survenue' }));
     } finally {
       setActionLoading(null);
     }
@@ -179,13 +180,13 @@ export default function AbonnementsPage() {
           {/* Barre de recherche */}
           <div className="gov-card p-4 mb-6">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('search_placeholder')}
-                className="gov-input pl-12"
+                className="gov-input ps-12"
               />
             </div>
           </div>
@@ -244,12 +245,12 @@ export default function AbonnementsPage() {
                         )}
                         
                         {/* Badge secteur */}
-                        <span className="absolute top-3 left-3 px-2 py-1 bg-white/90 backdrop-blur rounded-lg text-xs font-medium text-gray-700">
+                        <span className="absolute top-3 start-3 px-2 py-1 bg-white/90 backdrop-blur rounded-lg text-xs font-medium text-gray-700">
                           {tCommon(`sectors.${abonnement.etablissement.secteur.toLowerCase()}`)}
                         </span>
                         
                         {/* Notification badge */}
-                        <span className={`absolute top-3 right-3 p-1.5 rounded-lg backdrop-blur ${
+                        <span className={`absolute top-3 end-3 p-1.5 rounded-lg backdrop-blur ${
                           abonnement.notificationsActives 
                             ? 'bg-gov-gold/90 text-gray-900' 
                             : 'bg-white/50 text-gray-500'
@@ -306,7 +307,7 @@ export default function AbonnementsPage() {
                             {abonnement.notificationsActives ? t('notif_on') : t('notif_off')}
                           </button>
                           <button
-                            onClick={() => unsubscribe(abonnement)}
+                            onClick={() => setAbonnementToUnsubscribe(abonnement)}
                             disabled={actionLoading === abonnement.id}
                             className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                             title={t('unsubscribe')}
@@ -346,6 +347,39 @@ export default function AbonnementsPage() {
           )}
         </div>
       </div>
+
+      {/* Unsubscribe Confirmation Modal */}
+      <AnimatePresence>
+        {abonnementToUnsubscribe && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px]">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-red-500">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold text-foreground">Se désabonner</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t('unsubscribe_confirm', { name: abonnementToUnsubscribe.etablissement.nom })}
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAbonnementToUnsubscribe(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={() => unsubscribe(abonnementToUnsubscribe)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  Se désabonner
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </PermissionGuard>
   );
 }

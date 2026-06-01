@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { 
   Database, 
   Download, 
@@ -43,6 +44,10 @@ export default function SuperAdminBackupsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(false);
+  
+  // React confirm states
+  const [restoreFile, setRestoreFile] = useState<File | null>(null);
+  const [deleteConfirmFilename, setDeleteConfirmFilename] = useState<string | null>(null);
 
   const { data: backupsData, isLoading: loading, mutate: refreshBackups } = useData(session?.user?.role === 'SUPER_ADMIN' ? '/api/backups' : null);
   const actionMutation = useMutation();
@@ -66,35 +71,54 @@ export default function SuperAdminBackupsPage() {
     setCreating(true);
     setError(null);
     setSuccess(null);
+    
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate('/api/backups', {
+          method: 'POST',
+        });
+        refreshBackups();
+        resolve(true);
+      } catch (err: any) {
+        reject(new Error(err.message || t('messages.error_create')));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.creating', { defaultValue: 'Création de la sauvegarde...' }),
+      success: t('messages.created'),
+      error: (err) => err.message,
+    });
+
     try {
-      await actionMutation.mutate('/api/backups', {
-        method: 'POST',
-      });
-      
+      await promise;
       setSuccess(t('messages.created'));
-      refreshBackups();
-    } catch (error: any) {
-      setError(error.message || t('messages.error_create'));
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setCreating(false);
     }
   };
 
-  const handleRestore = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRestoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
     // Validate file extension
     if (!file.name.endsWith('.json')) {
       setError(t('messages.error_format'));
+      e.target.value = '';
       return;
     }
 
-    if (!confirm(t('confirm_restore'))) {
-      e.target.value = ''; // Reset input
-      return;
-    }
+    setRestoreFile(file);
+    e.target.value = ''; // Reset input
+  };
 
+  const handleConfirmRestore = async () => {
+    if (!restoreFile) return;
+    const file = restoreFile;
+    setRestoreFile(null);
     setRestoring(true);
     setSuccess(null);
     setError(null);
@@ -102,42 +126,72 @@ export default function SuperAdminBackupsPage() {
     const formData = new FormData();
     formData.append('file', file);
 
-    try {
-      const res = await fetch('/api/backups/restore', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      const data = await res.json();
-      
-      if (res.ok) {
-        setSuccess(t('messages.restored'));
-        setTimeout(() => window.location.reload(), 2000); // Reload to reflect data changes
-      } else {
-        setError(data.error || t('messages.error_restore'));
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/backups/restore', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        if (res.ok) {
+          resolve(true);
+          setTimeout(() => window.location.reload(), 2000);
+        } else {
+          reject(new Error(data.error || t('messages.error_restore')));
+        }
+      } catch (err) {
+        reject(new Error(t('messages.error_network')));
       }
-    } catch (err) {
-      setError(t('messages.error_network'));
+    });
+
+    toast.promise(promise, {
+      loading: t('messages.restoring', { defaultValue: 'Restauration en cours...' }),
+      success: t('messages.restored'),
+      error: (err) => err.message,
+    });
+
+    try {
+      await promise;
+      setSuccess(t('messages.restored'));
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setRestoring(false);
-      e.target.value = ''; // Reset input
     }
   };
 
-  const handleDelete = async (filename: string) => {
-    if (!confirm(t('confirm_delete'))) return;
-
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmFilename) return;
+    const filename = deleteConfirmFilename;
+    setDeleteConfirmFilename(null);
     setDeleting(filename);
-    try {
-      await actionMutation.mutate(`/api/backups/${filename}`, {
-        method: 'DELETE',
-      });
+    setError(null);
+    setSuccess(null);
 
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await actionMutation.mutate(`/api/backups/${filename}`, {
+          method: 'DELETE',
+        });
+        // Optimistic update
+        setBackups(prev => prev.filter(b => b.name !== filename));
+        resolve(true);
+      } catch (err: any) {
+        reject(new Error(err.message || t('messages.error_delete')));
+      }
+    });
+
+    toast.promise(promise, {
+      loading: 'Suppression de la sauvegarde...',
+      success: t('messages.deleted'),
+      error: (err) => err.message,
+    });
+
+    try {
+      await promise;
       setSuccess(t('messages.deleted'));
-      // Mise à jour optimiste
-      setBackups(prev => prev.filter(b => b.name !== filename));
-    } catch (error: any) {
-      setError(error.message || t('messages.error_delete'));
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setDeleting(null);
     }
@@ -250,7 +304,7 @@ export default function SuperAdminBackupsPage() {
                   id="restore-upload"
                   accept=".json"
                   className="hidden"
-                  onChange={handleRestore}
+                  onChange={handleRestoreChange}
                   disabled={restoring || creating}
                 />
                 <label
@@ -298,7 +352,7 @@ export default function SuperAdminBackupsPage() {
                                 <Download size={18} />
                             </a>
                             <button
-                                onClick={() => handleDelete(backup.name)}
+                                onClick={() => setDeleteConfirmFilename(backup.name)}
                                 disabled={deleting === backup.name}
                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 dark:hover:text-red-400 rounded-lg transition-colors"
                                 title="Supprimer"
@@ -359,6 +413,102 @@ export default function SuperAdminBackupsPage() {
             )}
         </div>
       </div>
+
+      {/* Modal Confirmation de Restauration */}
+      <AnimatePresence>
+        {restoreFile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setRestoreFile(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-950/30 text-yellow-600 dark:text-yellow-400 rounded-2xl mb-4">
+                  <AlertTriangle size={32} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t('restore_confirm_title', { defaultValue: 'Confirmer la restauration' })}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  {t('confirm_restore', { defaultValue: 'Attention ! La restauration va écraser les données actuelles de la base de données. Êtes-vous sûr de vouloir continuer ?' })}
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setRestoreFile(null)}
+                    className="flex-1 px-5 py-3 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-bold transition-colors"
+                  >
+                    {t('cancel', { defaultValue: 'Annuler' })}
+                  </button>
+                  <button
+                    onClick={handleConfirmRestore}
+                    className="flex-1 px-5 py-3 bg-yellow-600 text-white rounded-2xl hover:bg-yellow-700 text-sm font-bold transition-colors shadow-lg shadow-yellow-500/20"
+                  >
+                    {t('confirm', { defaultValue: 'Confirmer' })}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Confirmation de Suppression */}
+      <AnimatePresence>
+        {deleteConfirmFilename && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4"
+            onClick={() => setDeleteConfirmFilename(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-7 shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="p-4 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-2xl mb-4">
+                  <Trash2 size={32} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {t('delete_confirm_title', { defaultValue: 'Confirmer la suppression' })}
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  {t('confirm_delete', { defaultValue: 'Êtes-vous sûr de vouloir supprimer définitivement cette sauvegarde ?' })}
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    onClick={() => setDeleteConfirmFilename(null)}
+                    className="flex-1 px-5 py-3 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-bold transition-colors"
+                  >
+                    {t('cancel', { defaultValue: 'Annuler' })}
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="flex-1 px-5 py-3 bg-red-600 text-white rounded-2xl hover:bg-red-700 text-sm font-bold transition-colors shadow-lg shadow-red-500/20"
+                  >
+                    {t('confirm', { defaultValue: 'Supprimer' })}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

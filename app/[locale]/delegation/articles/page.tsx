@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
+import { AnimatePresence } from 'framer-motion';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import { useTranslations } from 'next-intl';
@@ -39,6 +40,7 @@ export default function MesArticlesPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [articleToDeleteId, setArticleToDeleteId] = useState<number | null>(null);
 
   const searchParams = new URLSearchParams({
     page: page.toString(),
@@ -55,8 +57,7 @@ export default function MesArticlesPage() {
   const actionMutation = useMutation();
 
   const deleteArticle = async (id: number) => {
-    if (!confirm(t('delete_confirm'))) return;
-
+    setArticleToDeleteId(null);
     try {
       await actionMutation.mutate(`/api/delegation/articles/${id}`, { method: 'DELETE' });
       await refreshArticles();
@@ -217,7 +218,7 @@ export default function MesArticlesPage() {
                     {t('edit')}
                   </Link>
                   <button
-                    onClick={() => deleteArticle(article.id)}
+                    onClick={() => setArticleToDeleteId(article.id)}
                     className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
                   >
                     <Trash2 size={18} />
@@ -251,6 +252,36 @@ export default function MesArticlesPage() {
           )}
         </>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {articleToDeleteId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px]">
+            <div className="bg-card w-full max-w-md rounded-2xl border border-border p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 text-red-500">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-lg font-bold text-foreground">{t('delete_confirm')}</h3>
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setArticleToDeleteId(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deleteArticle(articleToDeleteId)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

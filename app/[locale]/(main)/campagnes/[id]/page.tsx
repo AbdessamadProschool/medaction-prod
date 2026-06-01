@@ -116,7 +116,7 @@ export default function CampagneDetailPage() {
         <Target className="w-20 h-20 text-gray-300 mb-4" />
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('not_found_title')}</h1>
         <p className="text-gray-500 mb-6">{t('not_found_desc')}</p>
-        <Link href="/campagnes" className="inline-flex items-center gap-2 px-6 py-3 bg-gov-gold text-white rounded-xl hover:bg-gov-gold-dark transition-colors">
+        <Link href="/campagnes" className="inline-flex items-center gap-2 px-6 py-3 bg-gov-gold text-gray-900 rounded-xl hover:bg-gov-gold-dark hover:text-white transition-colors">
           <ArrowLeft className={`w-4 h-4 ${locale === 'ar' ? 'rotate-180' : ''}`} />
           {t('back_to_list')}
         </Link>

@@ -347,9 +347,9 @@ export default function AdminDashboard() {
 
       {/* Alerts Section */}
       {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
-        <motion.div variants={itemVariants} className="bg-gov-gold/5 border border-gov-gold/30 rounded-2xl p-4 flex items-center justify-between">
+        <motion.div variants={itemVariants} className="bg-[hsl(var(--gov-gold))/0.1] border border-[hsl(var(--gov-gold))/0.3] rounded-2xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gov-gold/10 rounded-full flex items-center justify-center text-gov-gold">
+            <div className="w-10 h-10 bg-[hsl(var(--gov-gold))/0.2] rounded-full flex items-center justify-center text-[hsl(var(--gov-gold-dark))]">
                <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
@@ -361,7 +361,7 @@ export default function AdminDashboard() {
           </div>
           <Link 
             href="/admin/evenements?statut=A_CLOTURER" 
-            className="px-4 py-2 bg-gov-gold/10 text-white rounded-lg text-sm font-medium hover:bg-gov-gold/10 transition-colors"
+            className="px-4 py-2 bg-[hsl(var(--gov-gold))] hover:bg-[hsl(var(--gov-gold-dark))] text-white shadow-md rounded-lg text-sm font-bold transition-colors"
           >
             {t('alerts.manage_now')}
           </Link>

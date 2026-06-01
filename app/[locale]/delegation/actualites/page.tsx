@@ -100,7 +100,7 @@ export default function MesActualitesPage() {
             
             <Link
                 href="/delegation/actualites/nouvelle"
-                className="group relative px-6 py-3 bg-gov-gold/10 text-white rounded-xl font-black text-sm shadow-xl shadow-orange-500/20 hover:bg-gov-gold/10 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
+                className="group relative px-6 py-3 bg-gov-blue text-white rounded-xl font-black text-sm shadow-xl shadow-blue-500/20 hover:bg-gov-blue-dark hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center gap-2 overflow-hidden no-underline"
             >
                 <Plus size={18} className="stroke-[4px]" />
                 <span>{t('create_new')}</span>
@@ -164,7 +164,7 @@ export default function MesActualitesPage() {
               <p className="text-gray-500 mb-8 max-w-md mx-auto text-lg leading-relaxed">
                 {t('empty_state.description')}
               </p>
-              <Link href="/delegation/actualites/nouvelle" className="px-10 py-4 bg-gov-gold/10 text-white rounded-2xl hover:bg-gov-gold/10 transition-all shadow-lg shadow-orange-500/20 font-bold flex items-center gap-3 hover:-translate-y-1">
+              <Link href="/delegation/actualites/nouvelle" className="px-10 py-4 bg-gov-blue text-white rounded-2xl hover:bg-gov-blue-dark transition-all shadow-lg shadow-blue-500/20 font-bold flex items-center gap-3 hover:-translate-y-1">
                 <Plus size={22} />
                 {t('empty_state.action')}
               </Link>

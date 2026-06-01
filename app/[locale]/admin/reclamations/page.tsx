@@ -985,7 +985,7 @@ export default function AdminReclamationsPage() {
               className="bg-card/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col border border-rose-500/20"
             >
               <div className="p-10 text-center space-y-8">
-                <div className="w-24 h-24 bg-gov-red/10/10 text-gov-red rounded-[2rem] flex items-center justify-center mx-auto ring-8 ring-rose-500/5 group">
+                <div className="w-24 h-24 bg-[hsl(var(--gov-red))/0.1] text-[hsl(var(--gov-red))] rounded-[2rem] flex items-center justify-center mx-auto ring-8 ring-rose-500/5 group">
                   <Trash2 size={48} className="group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <div>
@@ -1005,7 +1005,7 @@ export default function AdminReclamationsPage() {
                   <GovButton 
                     onClick={handleDelete}
                     variant="primary"
-                    className="flex-1 h-14 bg-gov-red/10 hover:bg-gov-red/10 shadow-xl shadow-rose-500/25 border-none"
+                    className="flex-1 h-14 bg-[hsl(var(--gov-red))] hover:bg-red-700 text-white shadow-xl shadow-rose-500/25 border-none"
                     loading={actionLoading}
                   >
                     {tCommon('delete')}

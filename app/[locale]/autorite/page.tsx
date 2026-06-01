@@ -76,7 +76,7 @@ const secteurColors: Record<string, string> = {
   SANTE: 'bg-gov-green text-white',
   SPORT: 'bg-gov-gold text-gray-900',
   CULTUREL: 'bg-gov-blue text-white',
-  SOCIAL: 'bg-gov-red/10 text-white',
+  SOCIAL: 'bg-gov-red text-white',
   AUTRE: 'bg-gray-500 text-white',
 };
 

@@ -73,9 +73,9 @@ export default function AdminRolesPage() {
   const roleColors: Record<string, { bg: string, text: string, border: string, icon: any }> = {
     CITOYEN: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-100', icon: Users },
     DELEGATION: { bg: 'bg-gov-green/5', text: 'text-gov-green-dark', border: 'border-gov-green/30', icon: Briefcase },
-    AUTORITE_LOCALE: { bg: 'bg-gov-gold/5', text: 'text-gov-gold', border: 'border-gov-gold/30', icon: Globe },
+    AUTORITE_LOCALE: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', icon: Globe },
     ADMIN: { bg: 'bg-gov-blue/5', text: 'text-gov-blue-dark', border: 'border-gov-blue/30', icon: Shield },
-    SUPER_ADMIN: { bg: 'bg-gov-red/5', text: 'text-gov-red', border: 'border-rose-100', icon: Lock },
+    SUPER_ADMIN: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', icon: Lock },
     GOUVERNEUR: { bg: 'bg-gov-blue/5', text: 'text-gov-blue-dark', border: 'border-gov-blue/30', icon: Award },
     COORDINATEUR_ACTIVITES: { bg: 'bg-gov-green/5', text: 'text-gov-green', border: 'border-teal-100', icon: Calendar },
   };

@@ -134,8 +134,8 @@ export default function CoordinateurDashboard() {
       labelKey: 'cancelled' 
     },
     REPORTEE: { 
-      bg: 'bg-gov-gold/10', 
-      text: 'text-gov-gold', 
+      bg: 'bg-amber-50', 
+      text: 'text-amber-700', 
       icon: Clock, 
       labelKey: 'postponed' 
     },
@@ -570,7 +570,7 @@ export default function CoordinateurDashboard() {
                   <p className="text-xs text-gray-500 font-medium">{t('quick_actions.report.subtitle')}</p>
                 </div>
                 {(stats?.rapportsEnAttente || 0) > 0 && (
-                  <span className="px-3 py-1 bg-gov-red/10 text-white text-xs font-bold rounded-full shadow-lg shadow-rose-500/30">
+                  <span className="px-3 py-1 bg-gov-red text-white text-xs font-bold rounded-full shadow-lg shadow-rose-500/30">
                     {stats?.rapportsEnAttente}
                   </span>
                 )}

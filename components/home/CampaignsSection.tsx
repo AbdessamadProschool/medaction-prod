@@ -23,10 +23,10 @@ interface Campagne {
 }
 
 const colorVariants = [
-  { bg: 'bg-gov-green/10', progress: 'bg-gradient-to-r from-gov-green to-gov-green-light', text: 'text-gov-green', hoverText: 'group-hover:text-gov-green' },
-  { bg: 'bg-gov-blue/10', progress: 'bg-gradient-to-r from-gov-blue to-gov-blue-light', text: 'text-gov-blue', hoverText: 'group-hover:text-gov-blue' },
-  { bg: 'bg-gov-red/10', progress: 'bg-gradient-to-r from-gov-red to-gov-red-light', text: 'text-gov-red', hoverText: 'group-hover:text-gov-red' },
-  { bg: 'bg-gov-gold/10', progress: 'bg-gradient-to-r from-gov-gold to-gov-gold-light', text: 'text-gov-gold-dark', hoverText: 'group-hover:text-gov-gold-dark' },
+  { bg: 'bg-gov-green/10', buttonBg: 'bg-gov-green', buttonText: 'text-white', progress: 'bg-gradient-to-r from-gov-green to-gov-green-light', text: 'text-gov-green', hoverText: 'group-hover:text-gov-green' },
+  { bg: 'bg-gov-blue/10', buttonBg: 'bg-gov-blue', buttonText: 'text-white', progress: 'bg-gradient-to-r from-gov-blue to-gov-blue-light', text: 'text-gov-blue', hoverText: 'group-hover:text-gov-blue' },
+  { bg: 'bg-gov-red/10', buttonBg: 'bg-gov-red', buttonText: 'text-white', progress: 'bg-gradient-to-r from-gov-red to-gov-red-light', text: 'text-gov-red', hoverText: 'group-hover:text-gov-red' },
+  { bg: 'bg-gov-gold/10', buttonBg: 'bg-amber-500', buttonText: 'text-gray-900', progress: 'bg-gradient-to-r from-gov-gold to-gov-gold-light', text: 'text-gov-gold-dark', hoverText: 'group-hover:text-gov-gold-dark' },
 ];
 
 function getCampaignStatusText(dateDebut?: string, dateFin?: string, locale?: string): string {
@@ -180,7 +180,7 @@ export default function CampaignsSection() {
                         )}
 
                         {/* CTA */}
-                        <button className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold ${colors.bg} ${colors.text} group-hover:scale-105 transition-transform`}>
+                        <button className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold ${colors.buttonBg} ${colors.buttonText} group-hover:scale-105 transition-transform`}>
                           {t('actions.participer')}
                           <svg className="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

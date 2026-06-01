@@ -51,7 +51,7 @@ interface Article {
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType }> = {
   BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit },
-  EN_ATTENTE: { bg: 'bg-gov-gold/10/10', text: 'text-gov-gold', icon: Clock },
+  EN_ATTENTE: { bg: 'bg-amber-50', text: 'text-amber-700', icon: Clock },
   PUBLIE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Globe },
   REJETE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle },
   ARCHIVE: { bg: 'bg-slate-500/10', text: 'text-slate-600', icon: FileText },
@@ -245,7 +245,7 @@ export default function AdminArticlesPage() {
           className="gov-stat-card bg-card"
         >
           <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 bg-gov-gold/10/10 text-gov-gold rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center">
               <Clock className="w-6 h-6" />
             </div>
             <span className="text-3xl font-extrabold text-foreground">{stats.enAttente}</span>
@@ -361,7 +361,7 @@ export default function AdminArticlesPage() {
                         {t('status.' + (statusKeyMap[article.statut] || 'draft'))}
                       </span>
                       {article.isMisEnAvant && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gov-gold/10/10 text-gov-gold border border-gov-gold/30/20 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-50 text-amber-700 border border-amber-200 shadow-sm">
                           <Star className="w-3 h-3 fill-current" />
                           {t('labels.featured')}
                         </span>
@@ -518,7 +518,7 @@ export default function AdminArticlesPage() {
                       );
                     })()}
                     {selectedArticle.isMisEnAvant && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-gov-gold/10/10 text-gov-gold border border-gov-gold/30/20 shadow-sm">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-50 text-amber-700 border border-amber-200 shadow-sm">
                         <Star className="w-3 h-3 fill-current" />
                         {t('labels.featured')}
                       </span>
@@ -609,9 +609,7 @@ export default function AdminArticlesPage() {
                     <button
                       onClick={() => handleToggleMisEnAvant(selectedArticle.id, selectedArticle.isMisEnAvant)}
                       disabled={!!actionLoading}
-                      className={`flex items-center justify-center gap-2 px-4 py-4 rounded-2xl font-bold text-sm transition-all border shadow-sm ${
-                        selectedArticle.isMisEnAvant
-                          ? 'bg-gov-gold/10/10 text-gov-gold border-gov-gold/30/20 hover:bg-gov-gold/10 hover:text-white'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
                           : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                       }`}
                     >

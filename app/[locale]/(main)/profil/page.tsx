@@ -297,8 +297,8 @@ export default function ProfilPage() {
               exit={{ opacity: 0, y: -10 }}
               className={`mb-6 p-4 rounded-xl ${
                 message.type === 'success' 
-                  ? 'bg-gov-green/10 border border-gov-green/30 text-gov-green' 
-                  : 'bg-gov-red/10 border border-gov-red/30 text-gov-red'
+                  ? 'bg-gov-green text-white shadow-lg' 
+                  : 'bg-gov-red text-white shadow-lg'
               }`}
             >
               {message.text}

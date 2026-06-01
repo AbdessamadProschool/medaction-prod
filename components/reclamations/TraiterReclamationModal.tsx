@@ -303,12 +303,12 @@ export default function TraiterReclamationModal({
                 {/* Rejeter - motif obligatoire */}
                 {action === 'rejeter' && (
                   <div className="space-y-4">
-                    <div className="bg-gov-red/10 border border-gov-red/20 rounded-xl p-4">
+                    <div className="bg-gov-red border border-gov-red-dark rounded-xl p-4 shadow-lg">
                       <div className="flex items-start gap-3">
-                        <XCircle className="w-6 h-6 text-gov-red flex-shrink-0" />
+                        <XCircle className="w-6 h-6 text-white flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-gray-900">Rejeter cette réclamation</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium text-white">Rejeter cette réclamation</p>
+                          <p className="text-sm text-red-100">
                             Le citoyen sera informé du rejet avec le motif fourni.
                           </p>
                         </div>
@@ -409,7 +409,7 @@ export default function TraiterReclamationModal({
 
                 {/* Error */}
                 {error && (
-                  <div className="bg-gov-red/10 border border-gov-red/20 rounded-lg p-3 flex items-center gap-2 text-gov-red">
+                  <div className="bg-gov-red border border-gov-red-dark rounded-lg p-3 flex items-center gap-2 text-white shadow-md">
                     <AlertTriangle size={16} />
                     <span className="text-sm">{error}</span>
                   </div>

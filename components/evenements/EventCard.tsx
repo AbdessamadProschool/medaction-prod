@@ -126,11 +126,11 @@ export default function EventCard({ event, index, view = 'grid' }: EventCardProp
 
       {/* Content Body */}
       <div className={`p-6 flex flex-col flex-1 ${!isGrid && 'justify-center'}`}>
-        <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl line-clamp-1'}`}>
+        <h3 dir="auto" className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl line-clamp-1'}`}>
           {event.titre}
         </h3>
         
-        <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
+        <p dir="auto" className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
           {event.description}
         </p>
 

@@ -213,7 +213,7 @@ export default function ActualiteDetailPage() {
                   </span>
                </div>
 
-               <h1 className={`text-3xl md:text-5xl font-black mb-6 drop-shadow-lg !text-white text-shadow-md ${locale === 'ar' ? 'font-cairo leading-normal md:leading-relaxed' : 'leading-tight'}`}>
+               <h1 dir="auto" className={`text-3xl md:text-5xl font-black mb-6 drop-shadow-lg !text-white text-shadow-md ${locale === 'ar' ? 'font-cairo leading-normal md:leading-relaxed' : 'leading-tight'}`}>
                  {locale === 'ar' && actualite.titreAr ? actualite.titreAr : actualite.titre}
                </h1>
 
@@ -271,19 +271,21 @@ export default function ActualiteDetailPage() {
            <div className="p-8 md:p-12">
               {/* Lead Text / Description */}
               {actualite.description && (
-                <div className={`text-xl md:text-2xl font-medium text-gray-900 mb-8 max-w-3xl ${locale === 'ar' ? 'leading-loose' : 'leading-relaxed'}`}>
+                <div dir="auto" className={`text-xl md:text-2xl font-medium text-gray-900 mb-8 max-w-3xl text-justify ${locale === 'ar' ? 'leading-loose' : 'leading-relaxed'}`}>
                    {locale === 'ar' && actualite.descriptionAr ? actualite.descriptionAr : actualite.description}
                 </div>
               )}
 
               {/* Main HTML Content */}
-              <SafeHTML 
-                 className={`prose prose-lg prose-slate max-w-none 
-                 prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-gov-blue
-                 prose-a:text-gov-gold prose-a:no-underline hover:prose-a:underline
-                 prose-blockquote:border prose-blockquote:border-[hsl(var(--gov-gold)/0.35)] prose-blockquote:bg-gov-gold/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
-                 html={locale === 'ar' && actualite.contenuAr ? actualite.contenuAr : actualite.contenu}
-              />
+              <div dir="auto" className="w-full text-justify">
+                <SafeHTML 
+                   className={`prose prose-lg prose-slate max-w-none 
+                   prose-img:rounded-2xl prose-img:shadow-lg prose-headings:font-bold prose-headings:text-gov-blue
+                   prose-a:text-gov-gold prose-a:no-underline hover:prose-a:underline
+                   prose-blockquote:border prose-blockquote:border-[hsl(var(--gov-gold)/0.35)] prose-blockquote:bg-gov-gold/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:rounded-lg ${locale === 'ar' ? 'prose-p:leading-[2.2] prose-ul:leading-[2.2] prose-ol:leading-[2.2] prose-headings:leading-normal' : ''}`}
+                   html={locale === 'ar' && actualite.contenuAr ? actualite.contenuAr : actualite.contenu}
+                />
+              </div>
 
               {/* Tags */}
               {actualite.tags && actualite.tags.length > 0 && (

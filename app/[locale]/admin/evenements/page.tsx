@@ -657,7 +657,7 @@ function AdminEvenementsContent() {
               {/* Header */}
               <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
                 <div>
-                  <h2 className="text-xl font-extrabold text-foreground">
+                  <h2 dir="auto" className="text-xl font-extrabold text-foreground">
                     {selectedEvenement.titre}
                   </h2>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
@@ -737,7 +737,7 @@ function AdminEvenementsContent() {
                     <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
                     {tModal('description_event')}
                   </h4>
-                  <div className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium">
+                  <div dir="auto" className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium text-justify">
                     {selectedEvenement.description}
                   </div>
                 </div>

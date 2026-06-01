@@ -92,11 +92,11 @@ export default function ArticleCard({ article, index }: ArticleCardProps) {
               </span>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-gov-blue transition-colors leading-tight">
+            <h3 dir="auto" className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-gov-blue transition-colors leading-tight">
               {article.titre}
             </h3>
 
-            <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-1 text-balanced">
+            <p dir="auto" className="text-gray-500 text-sm line-clamp-3 mb-6 flex-1 text-balanced">
               {article.resume}
             </p>
 

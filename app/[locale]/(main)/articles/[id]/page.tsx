@@ -187,7 +187,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+            <h1 dir="auto" className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight text-justify">
               {locale === 'ar' && article.titreAr ? article.titreAr : article.titre}
             </h1>
 
@@ -229,17 +229,19 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             {/* Resume / Abstract */}
             {article.resume && (
                <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-2 border-gov-gold">
-                  <p className="text-lg text-gray-700 italic leading-relaxed font-medium">
+                  <p dir="auto" className="text-lg text-gray-700 italic leading-relaxed font-medium text-justify">
                      {locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume}
                   </p>
                </div>
             )}
 
             {/* Main Content */}
-            <SafeHTML 
-              className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-gov-blue prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
-              html={locale === 'ar' && article.contenuAr ? article.contenuAr : article.contenu}
-            />
+            <div dir="auto" className="w-full text-justify">
+              <SafeHTML 
+                className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-gov-blue prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-lg"
+                html={locale === 'ar' && article.contenuAr ? article.contenuAr : article.contenu}
+              />
+            </div>
 
             {/* Tags Footer */}
             {article.tags && article.tags.length > 0 && (

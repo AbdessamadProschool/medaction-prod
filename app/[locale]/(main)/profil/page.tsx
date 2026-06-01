@@ -209,6 +209,7 @@ export default function ProfilPage() {
 
 
   const getRoleLabel = (role: string) => {
+    if (!role) return '';
     const labels: Record<string, string> = {
       CITOYEN: 'citizen',
       DELEGATION: 'delegation',

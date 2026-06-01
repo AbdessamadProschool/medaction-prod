@@ -129,12 +129,12 @@ export default function NewsCard({ news, view = 'grid', index = 0 }: NewsCardPro
           </div>
 
           {/* Title */}
-          <h3 className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl'}`}>
+          <h3 dir="auto" className={`font-bold text-gray-900 mb-2 group-hover:text-gov-blue transition-colors leading-tight ${isGrid ? 'text-lg line-clamp-2' : 'text-xl'}`}>
             {news.titre}
           </h3>
 
           {/* Description (Grid only, or truncated in list) */}
-          <p className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
+          <p dir="auto" className="text-gray-500 text-sm line-clamp-2 mb-4 flex-1">
             {news.description}
           </p>
 

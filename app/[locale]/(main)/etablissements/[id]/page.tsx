@@ -306,7 +306,7 @@ export default function EtablissementDetailPage() {
   }
 
   const config = secteurConfig[etablissement.secteur as keyof typeof secteurConfig] || secteurConfig.AUTRE;
-  const images = etablissement.medias.filter(m => m.type === 'IMAGE');
+  const images = (etablissement.medias || []).filter(m => m.type === 'IMAGE');
   const allImages = etablissement.photoPrincipale 
     ? [{ id: 0, urlPublique: etablissement.photoPrincipale, type: 'IMAGE' }, ...images]
     : images;
@@ -1056,7 +1056,7 @@ export default function EtablissementDetailPage() {
                          <div className="mb-6">
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.available_services')}</h3>
                             <div className="flex flex-wrap gap-2">
-                             {etablissement.services.map((s, i) => (
+                             {(etablissement.services || []).map((s, i) => (
                                <span key={i} className="px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-sm font-medium border border-gray-200">
                                  {s}
                                </span>
@@ -1069,7 +1069,7 @@ export default function EtablissementDetailPage() {
                          <div>
                             <h3 className="text-sm font-semibold text-gray-500 mb-3">{t('labels.educ_programs')}</h3>
                             <div className="flex flex-wrap gap-2">
-                             {etablissement.programmes.map((p, i) => (
+                             {(etablissement.programmes || []).map((p, i) => (
                                <span key={i} className={`px-3 py-1.5 rounded-lg text-sm font-medium border ${config.badge}`}>
                                  {p}
                                </span>
@@ -1304,7 +1304,7 @@ export default function EtablissementDetailPage() {
                 </div>
 
                 <div className="space-y-4">
-                   {etablissement.evaluations.map((evaluation) => (
+                   {(etablissement.evaluations || []).map((evaluation) => (
                       <div key={evaluation.id} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
                          <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">

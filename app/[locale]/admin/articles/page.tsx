@@ -609,6 +609,8 @@ export default function AdminArticlesPage() {
                     <button
                       onClick={() => handleToggleMisEnAvant(selectedArticle.id, selectedArticle.isMisEnAvant)}
                       disabled={!!actionLoading}
+                      className={`flex items-center justify-center gap-2 px-4 py-4 rounded-2xl font-bold text-sm transition-all border shadow-sm ${
+                        selectedArticle.isMisEnAvant
                           ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
                           : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                       }`}

@@ -268,19 +268,20 @@ export default function EtablissementDetailPage() {
   const [showGallery, setShowGallery] = useState(false);
 
   // Fetching data via ECC Standard hook (SWR)
-  const { data: etablissement, isLoading: loading } = useData<Etablissement>(params.id ? `/api/etablissements/${params.id}` : null);
+  const { data: etablissementResponse, isLoading: loading } = useData<any>(params.id ? `/api/etablissements/${params.id}` : null);
+  const etablissement = etablissementResponse?.data;
 
   const shouldFetchEvents = activeTab === 'events' && etablissement;
-  const { data: evenementsData } = useData<Evenement[]>(shouldFetchEvents ? `/api/evenements?etablissementId=${etablissement.id}` : null);
-  const evenements = evenementsData || [];
+  const { data: evenementsResponse } = useData<any>(shouldFetchEvents ? `/api/evenements?etablissementId=${etablissement.id}` : null);
+  const evenements = evenementsResponse?.data || [];
 
   const shouldFetchActivites = activeTab === 'activites' && etablissement;
-  const { data: activitesData } = useData<any[]>(shouldFetchActivites ? `/api/programmes-activites?etablissementId=${etablissement.id}` : null);
-  const activites = activitesData || [];
+  const { data: activitesResponse } = useData<any>(shouldFetchActivites ? `/api/programmes-activites?etablissementId=${etablissement.id}` : null);
+  const activites = activitesResponse?.data || [];
 
   const shouldFetchActualites = activeTab === 'actualites' && etablissement;
-  const { data: actualitesData } = useData<Actualite[]>(shouldFetchActualites ? `/api/actualites?etablissementId=${etablissement.id}` : null);
-  const actualites = actualitesData || [];
+  const { data: actualitesResponse } = useData<any>(shouldFetchActualites ? `/api/actualites?etablissementId=${etablissement.id}` : null);
+  const actualites = actualitesResponse?.data || [];
 
   if (loading) {
     return (

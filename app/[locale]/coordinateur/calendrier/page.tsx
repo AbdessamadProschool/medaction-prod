@@ -26,6 +26,7 @@ import {
   BarChart3,
   Hourglass,
   ClipboardList,
+  Sparkles,
 } from 'lucide-react';
 import {
   startOfWeek,
@@ -44,7 +45,7 @@ import {
 } from 'date-fns';
 import { arMA } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import BulkImportModal from '@/components/coordinateur/BulkImportModal';
@@ -71,6 +72,9 @@ interface Activite {
   recurrenceEndDate?: string;
   recurrenceDays?: number[]; // Array of day indices (0-6)
   recurrenceParentId?: number | null;
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
+  lieuEtablissement?: { id: number; nom: string; nomArabe?: string; secteur: string; adresseComplete?: string; quartierDouar?: string } | null;
 }
 
 interface CreateActivityData {
@@ -542,6 +546,7 @@ function ActivityDetailModal({
 }) {
     const t = useTranslations('coordinator.calendar.detail_modal');
     const tStatus = useTranslations('coordinator.status');
+    const locale = useLocale();
     const { del: deleteActivite, isMutating: isDeleting } = useMutation(`/api/programmes-activites/${activite.id}`);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -576,6 +581,25 @@ function ActivityDetailModal({
 
                 {/* Scrollable Content */}
                 <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                    {/* Provincial Partnership Banner */}
+                    {activite.sousCouvertProvince && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+                            <Sparkles className="w-5 h-5 text-amber-500" />
+                            <div className="text-sm font-bold text-amber-800">
+                                {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
+                            </div>
+                        </div>
+                    )}
+
+                    {activite.isOrganiseParProvince && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-3">
+                            <Sparkles className="w-5 h-5 text-amber-500" />
+                            <div className="text-sm font-bold text-amber-800">
+                                {locale === 'ar' ? 'رسمي - عمالة إقليم مديونة' : 'Officiel - Province de Médiouna'}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Dates */}
                     <div className="flex items-center gap-3 text-gray-600">
                         <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
@@ -594,19 +618,30 @@ function ActivityDetailModal({
                         </div>
                         <div>
                             <p className="text-xs text-gray-400 font-bold">{t('time_start')} / {t('time_end')}</p>
-                            <p className="font-bold dir-ltr">{activite.heureDebut} - {activite.heureFin}</p>
+                            <p className="font-bold dir-ltr text-right">{activite.heureDebut} - {activite.heureFin}</p>
                         </div>
                     </div>
 
                      {/* Location */}
-                     {activite.lieu && (
-                        <div className="flex items-center gap-3 text-gray-600">
-                            <div className="w-10 h-10 rounded-xl bg-gov-green/5 flex items-center justify-center text-gov-green-dark flex-shrink-0">
+                     {(activite.lieu || activite.lieuEtablissement) && (
+                        <div className="flex items-start gap-3 text-gray-600">
+                            <div className="w-10 h-10 rounded-xl bg-gov-green/5 flex items-center justify-center text-gov-green-dark flex-shrink-0 mt-0.5">
                                 <MapPin className="w-5 h-5" />
                             </div>
                             <div>
                                 <p className="text-xs text-gray-400 font-bold">{t('location')}</p>
-                                <p className="font-bold">{activite.lieu}</p>
+                                <p className="font-bold">
+                                    {(() => {
+                                        const parts: string[] = [];
+                                        if (activite.lieu) parts.push(activite.lieu);
+                                        if (activite.lieuEtablissement) {
+                                            parts.push(locale === 'ar' && activite.lieuEtablissement.nomArabe ? activite.lieuEtablissement.nomArabe : activite.lieuEtablissement.nom);
+                                            if (activite.lieuEtablissement.quartierDouar) parts.push(activite.lieuEtablissement.quartierDouar);
+                                            if (activite.lieuEtablissement.adresseComplete) parts.push(activite.lieuEtablissement.adresseComplete);
+                                        }
+                                        return parts.join(', ');
+                                    })()}
+                                </p>
                             </div>
                         </div>
                     )}
@@ -659,7 +694,7 @@ function ActivityDetailModal({
                             onClick={handleDelete} 
                             disabled={isDeleting}
                             className="py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
-                         >
+                          >
                              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                              {t('delete')}
                          </button>

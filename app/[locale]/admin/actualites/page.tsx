@@ -285,7 +285,7 @@ export default function AdminActualitesPage() {
         </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
         {Object.entries(STATUT_STYLES).map(([key, style], i) => {
           const count = stats[key] || 0;
           const Icon = style.icon;

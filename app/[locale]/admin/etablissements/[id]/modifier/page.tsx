@@ -3,7 +3,8 @@ import { Construction } from 'lucide-react';
 import Link from 'next/link';
 import { GovButton } from '@/components/ui/GovButton';
 
-export default function EditEtablissementPage({ params }: { params: { id: string } }) {
+export default async function EditEtablissementPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const t = useTranslations();
   
   return (
@@ -15,7 +16,7 @@ export default function EditEtablissementPage({ params }: { params: { id: string
         Page en cours de développement
       </h1>
       <p className="text-muted-foreground font-medium max-w-lg mb-8">
-        La modification de l'établissement (ID: {params.id}) sera bientôt disponible dans une prochaine mise à jour du portail.
+        La modification de l'établissement (ID: {id}) sera bientôt disponible dans une prochaine mise à jour du portail.
       </p>
       <GovButton asChild variant="primary">
         <Link href="/admin/etablissements">

@@ -27,10 +27,11 @@ import {
   Play,
   Pause,
   BarChart3,
+  Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
@@ -50,6 +51,16 @@ interface Campagne {
   createdAt: string;
   createdByUser: { id: number; nom: string; prenom: string } | null;
   commune: { id: number; nom: string } | null;
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
+  lieuEtablissement?: { 
+    id: number; 
+    nom: string; 
+    nomArabe?: string; 
+    secteur: string;
+    adresseComplete?: string;
+    quartierDouar?: string;
+  } | null;
 }
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
@@ -74,6 +85,7 @@ const SECTEURS = [
 export default function AdminCampagnesPage() {
   const t = useTranslations('admin_campagnes');
   const tModal = useTranslations('admin.common_modal');
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   
   // Filters
@@ -549,8 +561,21 @@ export default function AdminCampagnesPage() {
                   </div>
                 )}
 
-                {/* Dates */}
-                <div className="grid grid-cols-2 gap-4">
+                {/* Partnership Banner */}
+                {(selectedCampagne.isOrganiseParProvince || selectedCampagne.sousCouvertProvince) && (
+                  <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800">
+                    <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div className="text-sm font-bold">
+                      {selectedCampagne.sousCouvertProvince 
+                        ? (locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna')
+                        : (locale === 'ar' ? 'رسمي - عمالة إقليم مديونة' : 'Officiel - Province de Médiouna')
+                      }
+                    </div>
+                  </div>
+                )}
+
+                {/* Dates & Location */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 bg-muted/50 rounded-2xl border border-border/50">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{t('start_date')}</p>
                     <p className="font-bold text-foreground">{formatDate(selectedCampagne.dateDebut)}</p>
@@ -561,6 +586,26 @@ export default function AdminCampagnesPage() {
                       <p className="font-bold text-foreground">{formatDate(selectedCampagne.dateFin)}</p>
                     </div>
                   )}
+                </div>
+
+                <div className="p-4 bg-muted/50 rounded-2xl border border-border/50 space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tModal('location') || 'Lieu'}</p>
+                  <div className="flex items-start gap-2 text-foreground font-bold">
+                    <MapPin className="w-4 h-4 text-[hsl(var(--gov-red))] shrink-0 mt-0.5" />
+                    <p>
+                      {(() => {
+                        const parts: string[] = [];
+                        if (selectedCampagne.lieuEtablissement) {
+                          parts.push(locale === 'ar' && selectedCampagne.lieuEtablissement.nomArabe ? selectedCampagne.lieuEtablissement.nomArabe : selectedCampagne.lieuEtablissement.nom);
+                          if (selectedCampagne.lieuEtablissement.quartierDouar) parts.push(selectedCampagne.lieuEtablissement.quartierDouar);
+                          if (selectedCampagne.lieuEtablissement.adresseComplete) parts.push(selectedCampagne.lieuEtablissement.adresseComplete);
+                        } else {
+                          parts.push(locale === 'ar' ? 'عمالة مديونة' : 'Province de Médiouna');
+                        }
+                        return parts.join(', ');
+                      })()}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Actions */}

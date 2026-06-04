@@ -99,14 +99,6 @@ export default function StatsSection() {
       label: t('stats.delai', { defaultMessage: 'Délai Moyen' }),
       description: t('stats.desc_delai', { defaultMessage: 'De réponse aux réclamations urgentes' }),
       icon: <Zap className="w-10 h-10" />,
-    },
-    {
-      id: 4,
-      value: 48,
-      suffix: 'h',
-      label: t('stats.delai', { defaultMessage: 'Délai Moyen' }),
-      description: t('stats.desc_delai', { defaultMessage: 'De réponse aux réclamations urgentes' }),
-      icon: <Zap className="w-10 h-10" />,
       colorClass: 'text-gov-red-light',
     },
   ];

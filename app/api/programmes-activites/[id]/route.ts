@@ -68,6 +68,9 @@ export const GET = withErrorHandler(async (
       createdByUser: {
         select: { id: true, nom: true, prenom: true }
       },
+      lieuEtablissement: {
+        select: { id: true, nom: true, nomArabe: true, secteur: true }
+      },
     }
   });
 

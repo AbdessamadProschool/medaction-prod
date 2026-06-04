@@ -43,6 +43,7 @@ export const GET = withErrorHandler(async (
       commune: { select: { id: true, nom: true } },
       medias: true,
       createdByUser: { select: { id: true, nom: true, prenom: true } },
+      lieuEtablissement: { select: { id: true, nom: true, nomArabe: true, secteur: true } },
     }
   });
 

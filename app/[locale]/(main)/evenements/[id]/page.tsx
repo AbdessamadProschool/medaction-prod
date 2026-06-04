@@ -18,6 +18,7 @@ import { PermissionGuard } from '@/hooks/use-permission';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
+import { cn } from '@/lib/utils';
 
 // Map dynamique (SSR disabled)
 const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
@@ -57,6 +58,7 @@ interface Evenement {
   compteRenduUrl?: string;
   tags: string[];
   etablissement?: { nom: string; nomArabe?: string; secteur: string } | null;
+  lieuEtablissement?: { id: number; nom: string; nomArabe?: string; secteur: string } | null;
   commune: { nom: string; nomArabe?: string };
   createdByUser: { nom: string; prenom: string };
   medias: { id: number; urlPublique: string; type: string }[];
@@ -198,6 +200,41 @@ export default function EvenementDetailPage() {
   const isEnded = eventStatus.status === 'ended';
   const isLive = eventStatus.status === 'live';
 
+  const dateRangeStr = (() => {
+    const startStr = new Date(event.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (event.dateFin) {
+      const endStr = new Date(event.dateFin).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+      if (event.dateDebut.split('T')[0] !== event.dateFin.split('T')[0]) {
+        return locale === 'ar' ? `من ${startStr} إلى ${endStr}` : `Du ${startStr} au ${endStr}`;
+      }
+    }
+    return startStr;
+  })();
+
+  const timeRangeStr = (() => {
+    if (event.heureDebut) {
+      if (event.heureFin) {
+        return locale === 'ar' 
+          ? `من الساعة ${event.heureDebut} إلى الساعة ${event.heureFin}` 
+          : `De ${event.heureDebut} à ${event.heureFin}`;
+      }
+      return locale === 'ar' ? `على الساعة ${event.heureDebut}` : `À ${event.heureDebut}`;
+    }
+    return locale === 'ar' ? 'طيلة اليوم' : 'Toute la journée';
+  })();
+
+  const fullLocationStr = (() => {
+    const parts: string[] = [];
+    if (event.lieu) parts.push(event.lieu);
+    if (event.lieuEtablissement?.nom) {
+      parts.push(locale === 'ar' && event.lieuEtablissement.nomArabe ? event.lieuEtablissement.nomArabe : event.lieuEtablissement.nom);
+    }
+    if (event.quartierDouar) parts.push(event.quartierDouar);
+    if (event.adresse) parts.push(event.adresse);
+    parts.push(locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom);
+    return parts.join(', ');
+  })();
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ==================== IMMERSIVE HERO ==================== */}
@@ -304,8 +341,8 @@ export default function EvenementDetailPage() {
                   </div>
                   <div>
                      <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.date_time')}</p>
-                     <p className="font-bold text-lg leading-tight">{new Date(event.dateDebut).toLocaleDateString(locale, { day: 'numeric', month: 'long' })}</p>
-                     <p className="text-sm opacity-80">{event.heureDebut || t('labels.all_day')}</p>
+                     <p className="font-bold text-lg leading-tight">{dateRangeStr}</p>
+                     <p className="text-sm opacity-80">{timeRangeStr}</p>
                   </div>
                </div>
 
@@ -317,8 +354,10 @@ export default function EvenementDetailPage() {
                   <div>
                    <div>
                       <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.location')}</p>
-                      <p className="font-bold text-lg leading-tight truncate max-w-[200px]">{event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}</p>
-                      <p className="text-sm opacity-80 truncate max-w-[200px]">{locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom}</p>
+                      <p className="font-bold text-lg leading-tight truncate max-w-[200px]" title={fullLocationStr}>
+                        {event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}
+                      </p>
+                      <p className="text-xs opacity-80 truncate max-w-[200px]" title={fullLocationStr}>{fullLocationStr}</p>
                    </div>
                   </div>
                </div>
@@ -336,14 +375,21 @@ export default function EvenementDetailPage() {
                        (locale === 'ar' ? 'عمالة إقليم مديونة' : 'Province de Médiouna'))}
                      </p>
                      {event.sousCouvertProvince ? (
-                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gov-gold/10/20 border border-gov-gold/30/30 text-gov-gold text-xs font-bold shadow-sm backdrop-blur-md">
+                         <div className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[hsl(var(--gov-gold)/0.15)] border border-[hsl(var(--gov-gold)/0.3)] text-gov-gold text-xs font-bold shadow-sm backdrop-blur-md">
                              <Sparkles className="w-3 h-3" />
                              {locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna'}
                          </div>
                      ) : (
-                         <p className="text-sm opacity-80 line-clamp-1 mt-0.5">
-                            {event.isOrganiseParProvince ? t('labels.provincial_event') : t('labels.official_event')}
-                         </p>
+                         <div className="mt-1.5">
+                            <span className={cn(
+                              "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border",
+                              event.isOrganiseParProvince 
+                                ? "bg-[hsl(var(--gov-gold)/0.1)] border-[hsl(var(--gov-gold)/0.25)] text-gov-gold" 
+                                : "bg-white/10 border-white/20 text-white"
+                            )}>
+                              {event.isOrganiseParProvince ? (locale === 'ar' ? 'رسمي - عمالة مديونة' : 'Officiel - Province') : t('labels.official_event')}
+                            </span>
+                         </div>
                      )}
                   </div>
                </div>

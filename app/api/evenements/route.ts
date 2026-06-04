@@ -267,6 +267,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         commune: { select: { nom: true, nomArabe: true } },
         medias: { take: 1, select: { urlPublique: true } },
         createdByUser: { select: { nom: true, prenom: true } },
+        lieuEtablissement: { select: { id: true, nom: true, nomArabe: true, secteur: true } },
       },
       orderBy: isAdminOrGouv ? { createdAt: 'desc' } : { dateDebut: 'asc' },
       skip: (page - 1) * limit,

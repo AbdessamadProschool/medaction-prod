@@ -159,6 +159,9 @@ export async function GET(request: NextRequest) {
           createdByUser: {
             select: { id: true, nom: true, prenom: true }
           },
+          lieuEtablissement: {
+            select: { id: true, nom: true, nomArabe: true, secteur: true }
+          },
         },
         orderBy: [
           { date: 'asc' },

@@ -202,20 +202,23 @@ function ActualitesContent() {
                         {t('all_news')}
                         {!categorie && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                       </button>
-                      {CATEGORIES.map(cat => (
-                        <button
-                          key={cat}
-                          onClick={() => updateFilter('categorie', cat)}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
-                            categorie === cat
-                              ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20'
-                              : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
-                          }`}
-                        >
-                          {t('categories.' + getCategoryKey(cat))}
-                          {categorie === cat && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
-                        </button>
-                      ))}
+                      {CATEGORIES.map(cat => {
+                        const catKey = getCategoryKey(cat);
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => updateFilter('categorie', catKey)}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all group ${
+                              categorie === catKey
+                                ? 'bg-gov-blue text-white font-bold shadow-lg shadow-blue-900/20'
+                                : 'text-gray-600 hover:bg-gray-50 hover:translate-x-1'
+                            }`}
+                          >
+                            {t('categories.' + catKey)}
+                            {categorie === catKey && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

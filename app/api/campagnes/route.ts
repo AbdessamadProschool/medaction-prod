@@ -74,6 +74,24 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
           where,
           include: {
             _count: { select: { participations: true } },
+            lieuEtablissement: {
+              select: {
+                id: true,
+                nom: true,
+                nomArabe: true,
+                secteur: true,
+                adresseComplete: true,
+                quartierDouar: true,
+                commune: {
+                  select: {
+                    id: true,
+                    nom: true,
+                    nomArabe: true,
+                  },
+                },
+              },
+            },
+            createdByUser: { select: { id: true, nom: true, prenom: true } },
           },
           orderBy: [
             { isFeatured: 'desc' },
@@ -103,6 +121,10 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         imagePrincipale: c.imagePrincipale,
         isFeatured: c.isFeatured,
         isActive: c.isActive,
+        isOrganiseParProvince: c.isOrganiseParProvince,
+        sousCouvertProvince: c.sousCouvertProvince,
+        lieuEtablissement: c.lieuEtablissement,
+        createdByUser: c.createdByUser,
         createdAt: c.createdAt.toISOString(),
       }));
 

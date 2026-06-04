@@ -31,6 +31,23 @@ export async function GET(
             nom: true,
           },
         },
+        lieuEtablissement: {
+          select: {
+            id: true,
+            nom: true,
+            nomArabe: true,
+            secteur: true,
+            adresseComplete: true,
+            quartierDouar: true,
+            commune: {
+              select: {
+                id: true,
+                nom: true,
+                nomArabe: true,
+              },
+            },
+          },
+        },
       },
     });
 

@@ -27,6 +27,7 @@ import {
   Trash2,
   Star,
   X,
+  Sparkles,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -49,6 +50,8 @@ interface Evenement {
   typeCategorique: string;
   dateDebut: string;
   dateFin: string | null;
+  heureDebut?: string | null;
+  heureFin?: string | null;
   lieu: string | null;
   statut: string;
   isMisEnAvant: boolean;
@@ -58,7 +61,10 @@ interface Evenement {
   createdAt: string;
   commune: { id: number; nom: string; nomArabe?: string };
   etablissement: { id: number; nom: string; nomArabe?: string } | null;
+  lieuEtablissement: { id: number; nom: string; nomArabe?: string; secteur: string } | null;
   createdByUser: { nom: string; prenom: string } | null;
+  isOrganiseParProvince?: boolean;
+  sousCouvertProvince?: boolean;
 }
 
 interface Filters {
@@ -706,6 +712,19 @@ function AdminEvenementsContent() {
 
                 {/* Info List */}
                 <div className="space-y-6">
+                  {/* Provincial Partnership Banner */}
+                  {(selectedEvenement.isOrganiseParProvince || selectedEvenement.sousCouvertProvince) && (
+                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800">
+                      <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+                      <div className="text-sm font-bold">
+                        {selectedEvenement.sousCouvertProvince 
+                          ? (locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna')
+                          : (locale === 'ar' ? 'رسمي - عمالة إقليم مديونة' : 'Officiel - Province de Médiouna')
+                        }
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
                       <Calendar className="w-5 h-5 text-muted-foreground" />
@@ -719,6 +738,14 @@ function AdminEvenementsContent() {
                             au {new Date(selectedEvenement.dateFin).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                           </span>
                         )}
+                        {selectedEvenement.heureDebut && (
+                          <span className="block text-xs text-muted-foreground mt-1">
+                            {locale === 'ar' 
+                              ? `من الساعة ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `إلى ${selectedEvenement.heureFin}` : ''}`
+                              : `De ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `à ${selectedEvenement.heureFin}` : ''}`
+                            }
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -730,7 +757,17 @@ function AdminEvenementsContent() {
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('location')}</p>
                       <p className="font-bold text-foreground">
-                        {selectedEvenement.lieu || (locale === 'ar' ? (selectedEvenement.commune?.nomArabe || selectedEvenement.commune?.nom) : selectedEvenement.commune?.nom)}
+                        {(() => {
+                          const parts: string[] = [];
+                          if (selectedEvenement.lieu) parts.push(selectedEvenement.lieu);
+                          if (selectedEvenement.lieuEtablissement) {
+                            parts.push(locale === 'ar' && selectedEvenement.lieuEtablissement.nomArabe ? selectedEvenement.lieuEtablissement.nomArabe : selectedEvenement.lieuEtablissement.nom);
+                          }
+                          if (selectedEvenement.commune) {
+                            parts.push(locale === 'ar' ? (selectedEvenement.commune.nomArabe || selectedEvenement.commune.nom) : selectedEvenement.commune.nom);
+                          }
+                          return parts.join(', ');
+                        })()}
                       </p>
                     </div>
                   </div>

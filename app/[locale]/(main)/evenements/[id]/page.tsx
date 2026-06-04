@@ -225,14 +225,35 @@ export default function EvenementDetailPage() {
 
   const fullLocationStr = (() => {
     const parts: string[] = [];
-    if (event.lieu) parts.push(event.lieu);
+    
+    const addPart = (val: any) => {
+      if (val && typeof val === 'string') {
+        const cleaned = val.trim();
+        if (cleaned && cleaned.toLowerCase() !== 'null' && cleaned.toLowerCase() !== 'undefined') {
+          parts.push(cleaned);
+        }
+      } else if (val && typeof val !== 'object') {
+        parts.push(String(val));
+      }
+    };
+
+    addPart(event.lieu);
     if (event.lieuEtablissement?.nom) {
-      parts.push(locale === 'ar' && event.lieuEtablissement.nomArabe ? event.lieuEtablissement.nomArabe : event.lieuEtablissement.nom);
+      const estabName = locale === 'ar' && event.lieuEtablissement.nomArabe 
+        ? event.lieuEtablissement.nomArabe 
+        : event.lieuEtablissement.nom;
+      addPart(estabName);
     }
-    if (event.quartierDouar) parts.push(event.quartierDouar);
-    if (event.adresse) parts.push(event.adresse);
-    parts.push(locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom);
-    return parts.join(', ');
+    addPart(event.quartierDouar);
+    addPart(event.adresse);
+    if (event.commune) {
+      const communeName = locale === 'ar' 
+        ? (event.commune.nomArabe || event.commune.nom) 
+        : event.commune.nom;
+      addPart(communeName);
+    }
+    
+    return parts.length > 0 ? parts.join(', ') : (locale === 'ar' ? 'عمالة مديونة' : 'Province de Médiouna');
   })();
 
   return (

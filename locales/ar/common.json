@@ -2394,6 +2394,7 @@
         "subtitle": "شارك مقترحاتك لتحسين إقليم مديونة. كل فكرة تهمنا ويمكن أن تحدث الفرق!",
         "propose_btn": "اقتراح فكرة",
         "search_placeholder": "البحث عن اقتراح...",
+        "search_btn": "بحث",
         "reset_filter": "إعادة تعيين التصفية",
         "results_found": "{count} اقتراح(ات)",
         "filter_label": "تصفية: {label}",
@@ -3393,7 +3394,8 @@
             "closed": "التسجيل مغلق",
             "organization": "التنظيم",
             "report": "تقرير الفعالية",
-            "report_hint": "التقرير متاح للإدارة."
+            "report_hint": "التقرير متاح للإدارة.",
+            "provincial_organization": "تنظيم إقليمي"
         },
         "toasts": {
             "link_copied": "تم نسخ الرابط!",

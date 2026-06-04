@@ -77,6 +77,7 @@ export default function SuggestionsPage() {
   const [modalOpen, setModalOpen] = useState(searchParams.get('new') === 'true');
   const [statutFilter, setStatutFilter] = useState('');
   const [search, setSearch] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
   const [page, setPage] = useState(1);
   const [itemToDeleteId, setItemToDeleteId] = useState<number | null>(null);
 
@@ -199,7 +200,12 @@ export default function SuggestionsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-16">
 
         {/* Search & Filters */}
-        <motion.div
+        <motion.form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearch(localSearch);
+            setPage(1);
+          }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -209,23 +215,37 @@ export default function SuggestionsPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
             <input
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               placeholder={t('search_placeholder')}
               className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[hsl(var(--gov-blue)/0.15)] focus:border-[hsl(var(--gov-blue))] transition-all bg-gray-50/50 font-medium text-sm"
             />
           </div>
 
-          {statutFilter && (
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-[hsl(var(--gov-blue))] text-white rounded-xl font-bold shadow-lg shadow-blue-900/10 hover:bg-[hsl(var(--gov-blue-dark))] transition-all text-sm whitespace-nowrap"
+          >
+            <Search className="w-4 h-4" />
+            <span>{t('search_btn')}</span>
+          </button>
+
+          {(statutFilter || search) && (
             <button
-              onClick={() => setStatutFilter('')}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 rounded-xl text-gray-600 hover:bg-gray-200 transition-colors text-sm font-bold"
+              type="button"
+              onClick={() => {
+                setStatutFilter('');
+                setSearch('');
+                setLocalSearch('');
+                setPage(1);
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 rounded-xl text-gray-600 hover:bg-gray-200 transition-colors text-sm font-bold"
             >
               <XCircle className="w-4 h-4" />
               {t('reset_filter')}
             </button>
           )}
-        </motion.div>
+        </motion.form>
 
         {/* Results count */}
         <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-6">
@@ -270,7 +290,7 @@ export default function SuggestionsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <AnimatePresence mode="popLayout">
               {suggestions.map((suggestion, index) => {
@@ -290,9 +310,9 @@ export default function SuggestionsPage() {
                     className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:border-[hsl(var(--gov-blue)/0.15)] transition-all duration-300 flex flex-col"
                   >
                     {/* Card Header */}
-                    <div className="p-5 flex-1">
+                    <div className="p-4 flex-1">
                       {/* Top row: category + status + date */}
-                      <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-2 flex-wrap">
                           {catInfo && CatIcon && (
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest ${catInfo.color}`}>
@@ -312,18 +332,18 @@ export default function SuggestionsPage() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="font-bold text-gray-900 line-clamp-2 mb-2.5 group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-snug">
+                      <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-[hsl(var(--gov-blue))] transition-colors leading-snug">
                         {suggestion.titre}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed">
+                      <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
                         {suggestion.description}
                       </p>
 
                       {/* Admin response preview */}
                       {suggestion.reponseAdmin && (
-                        <div className="mt-4 p-3 bg-[hsl(var(--gov-blue)/0.04)] border border-[hsl(var(--gov-blue)/0.1)] rounded-xl">
+                        <div className="mt-3 p-3 bg-[hsl(var(--gov-blue)/0.04)] border border-[hsl(var(--gov-blue)/0.1)] rounded-xl">
                           <p className="text-[10px] font-black uppercase tracking-widest text-[hsl(var(--gov-blue))] mb-1 flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
                             {t('admin_response')}
@@ -336,7 +356,7 @@ export default function SuggestionsPage() {
                     </div>
 
                     {/* Card Footer */}
-                    <div className="px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                    <div className="px-4 py-2.5 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[hsl(var(--gov-blue)/0.1)] to-[hsl(var(--gov-blue)/0.2)] flex items-center justify-center border border-[hsl(var(--gov-blue)/0.15)]">
                           <span className="text-[9px] font-black text-[hsl(var(--gov-blue))]">

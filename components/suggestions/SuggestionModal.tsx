@@ -55,15 +55,15 @@ const categoryIcons: Record<string, React.ElementType> = {
 };
 
 const categoryColors: Record<string, { bg: string; text: string; border: string; activeBg: string }> = {
-  infrastructure: { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-100', activeBg: 'bg-orange-100' },
-  services:       { bg: 'bg-blue-50',   text: 'text-blue-600',   border: 'border-blue-100',   activeBg: 'bg-blue-100' },
-  environnement:  { bg: 'bg-green-50',  text: 'text-green-600',  border: 'border-green-100',  activeBg: 'bg-green-100' },
-  education:      { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-100', activeBg: 'bg-indigo-100' },
-  sante:          { bg: 'bg-pink-50',   text: 'text-pink-600',   border: 'border-pink-100',   activeBg: 'bg-pink-100' },
-  transport:      { bg: 'bg-sky-50',    text: 'text-sky-600',    border: 'border-sky-100',    activeBg: 'bg-sky-100' },
-  culture:        { bg: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-100', activeBg: 'bg-violet-100' },
-  numerique:      { bg: 'bg-cyan-50',   text: 'text-cyan-600',   border: 'border-cyan-100',   activeBg: 'bg-cyan-100' },
-  autre:          { bg: 'bg-gray-50',   text: 'text-gray-600',   border: 'border-gray-200',   activeBg: 'bg-gray-100' },
+  infrastructure: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', activeBg: 'bg-orange-100/70' },
+  services:       { bg: 'bg-blue-50',   text: 'text-blue-700',   border: 'border-blue-200',   activeBg: 'bg-blue-100/70' },
+  environnement:  { bg: 'bg-green-50',  text: 'text-green-700',  border: 'border-green-200',  activeBg: 'bg-green-100/70' },
+  education:      { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200', activeBg: 'bg-indigo-100/70' },
+  sante:          { bg: 'bg-pink-50',   text: 'text-pink-700',   border: 'border-pink-200',   activeBg: 'bg-pink-100/70' },
+  transport:      { bg: 'bg-sky-50',    text: 'text-sky-700',    border: 'border-sky-200',    activeBg: 'bg-sky-100/70' },
+  culture:        { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200', activeBg: 'bg-violet-100/70' },
+  numerique:      { bg: 'bg-cyan-50',   text: 'text-cyan-700',   border: 'border-cyan-200',   activeBg: 'bg-cyan-100/70' },
+  autre:          { bg: 'bg-gray-50',   text: 'text-gray-700',   border: 'border-gray-300',   activeBg: 'bg-gray-200/70' },
 };
 
 export default function SuggestionModal({ isOpen, onClose, onSuccess }: SuggestionModalProps) {
@@ -162,7 +162,7 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
             style={{ zIndex: 100000 }}
           >
             <div
-              className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-lg max-h-[90vh] flex flex-col"
+              className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-2xl max-h-[90vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* ── Header ── */}
@@ -266,7 +266,7 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
                               className={`relative p-3 rounded-2xl text-center transition-all duration-200 flex flex-col items-center justify-center gap-1.5 border ${
                                 isSelected
                                   ? `${colors.activeBg} ${colors.border} ${colors.text} shadow-sm scale-[1.02]`
-                                  : `bg-white border-gray-100 text-gray-500 hover:border-gray-200 hover:bg-gray-50/50`
+                                  : `bg-white border-gray-200 text-gray-700 hover:text-gray-950 hover:border-gray-300 hover:bg-gray-50/50`
                               }`}
                             >
                               {isSelected && (
@@ -276,12 +276,12 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
                                   </svg>
                                 </div>
                               )}
-                              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                              <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                                 isSelected ? `${colors.bg}` : 'bg-gray-100'
                               }`}>
-                                <Icon className={`w-4 h-4 ${isSelected ? colors.text : 'text-gray-400'}`} strokeWidth={1.5} />
+                                <Icon className={`w-5 h-5 ${isSelected ? colors.text : 'text-gray-500'}`} strokeWidth={1.5} />
                               </div>
-                              <span className="text-[10px] font-bold leading-tight text-center">
+                              <span className="text-xs font-bold leading-tight text-center">
                                 {t(`categories.${catId}`)}
                               </span>
                             </button>

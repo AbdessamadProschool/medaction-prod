@@ -2159,6 +2159,7 @@
         "subtitle": "Partagez vos suggestions pour améliorer la province de Médiouna. Chaque idée compte et peut faire la différence !",
         "propose_btn": "Proposer une idée",
         "search_placeholder": "Rechercher une suggestion...",
+        "search_btn": "Rechercher",
         "reset_filter": "Réinitialiser filtre",
         "results_found": "{count} suggestion(s) trouvée(s)",
         "filter_label": "Filtre : {label}",
@@ -3022,7 +3023,8 @@
             "closed": "Inscriptions fermées",
             "organization": "Organisation",
             "report": "Bilan de l'événement",
-            "report_hint": "Rapport disponible pour l'administration."
+            "report_hint": "Rapport disponible pour l'administration.",
+            "provincial_organization": "Organisation Provinciale"
         },
         "toasts": {
             "link_copied": "Lien copié !",

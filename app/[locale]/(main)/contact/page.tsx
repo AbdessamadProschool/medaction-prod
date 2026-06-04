@@ -259,47 +259,39 @@ export default function ContactPage() {
                 {t('coords_title')}
               </h3>
               
-              <div className="space-y-8">
-                <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                    <Building2 className="w-6 h-6" />
-                  </div>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Building2 className="w-6 h-6 text-gov-blue flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('address_label')}</p>
-                    <p className="text-lg font-medium text-gray-900 leading-relaxed">{t('address_value')}</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('address_label')}</p>
+                    <p className="text-base font-semibold text-gray-800 leading-relaxed">{t('address_value')}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-gov-green/5 text-gov-green-dark rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                    <Phone className="w-6 h-6" />
-                  </div>
+                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Phone className="w-6 h-6 text-gov-green-dark flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('phone_label')}</p>
-                    <div className="flex flex-col" dir="ltr">
-                      <a href="tel:0522510051" className="text-lg font-medium text-gray-900 hover:text-gov-green-dark transition-colors font-mono text-left">05 22 51 00 51 (Standard)</a>
-                      <a href="tel:0522510010" className="text-lg font-medium text-gray-900 hover:text-gov-green-dark transition-colors font-mono text-left">05 22 51 00 10 (Fax)</a>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('phone_label')}</p>
+                    <div className="flex flex-col text-start" dir="ltr">
+                      <a href="tel:0522510051" className="text-base font-semibold text-gray-800 hover:text-gov-green-dark transition-colors font-mono text-left block">05 22 51 00 51 (Standard)</a>
+                      <a href="tel:0522510010" className="text-base font-semibold text-gray-800 hover:text-gov-green-dark transition-colors font-mono text-left block">05 22 51 00 10 (Fax)</a>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-gov-blue/5 text-gov-blue-dark rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                    <Mail className="w-6 h-6" />
-                  </div>
+                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Mail className="w-6 h-6 text-gov-blue-dark flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('email_contact_label')}</p>
-                    <a href="mailto:contact@provincemediouna.ma" className="text-lg font-medium text-gray-900 hover:text-gov-blue-dark transition-colors break-all" dir="ltr">contact@provincemediouna.ma</a>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('email_contact_label')}</p>
+                    <a href="mailto:contact@provincemediouna.ma" className="text-base font-semibold text-gray-800 hover:text-gov-blue-dark transition-colors break-all text-left block" dir="ltr">contact@provincemediouna.ma</a>
                   </div>
                 </div>
 
-                 <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
-                  <div className="w-12 h-12 bg-gov-gold/5 text-gov-gold rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                    <Clock className="w-6 h-6" />
-                  </div>
+                 <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Clock className="w-6 h-6 text-gov-gold flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('hours_label')}</p>
-                    <p className="text-lg font-medium text-gray-900">{t('hours_value')}</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('hours_label')}</p>
+                    <p className="text-base font-semibold text-gray-800 leading-relaxed">{t('hours_value')}</p>
                   </div>
                 </div>
               </div>

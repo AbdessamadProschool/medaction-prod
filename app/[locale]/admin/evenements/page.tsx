@@ -278,7 +278,7 @@ function AdminEvenementsContent() {
               {t('title')}
             </h1>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-15">
+          <p className="text-muted-foreground font-medium text-base sm:text-lg ms-0">
             {t('subtitle', { count: total })}
           </p>
         </div>
@@ -512,12 +512,14 @@ function AdminEvenementsContent() {
                   </div>
                 </GovTd>
                 <GovTd className="text-right">
-                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
+                  {/* Actions toujours visibles sur mobile */}
+                  <div className="flex items-center justify-end gap-1">
                     <GovButton
                       onClick={() => { setSelectedEvenement(evenement); setShowDetailModal(true); }}
                       variant="outline"
                       size="icon"
                       title={t('actions.view')}
+                      aria-label={t('actions.view')}
                     >
                       <Eye size={16} />
                     </GovButton>
@@ -543,6 +545,7 @@ function AdminEvenementsContent() {
                           variant="outline"
                           size="icon"
                           title={t('actions.validate')}
+                          aria-label={t('actions.validate')}
                           className="text-[hsl(var(--gov-green))] hover:bg-[hsl(var(--gov-green))] hover:text-white"
                         >
                           <CheckCircle size={16} />
@@ -552,6 +555,7 @@ function AdminEvenementsContent() {
                           variant="outline"
                           size="icon"
                           title={t('actions.reject')}
+                          aria-label={t('actions.reject')}
                           className="text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))] hover:text-white"
                         >
                           <XCircle size={16} />
@@ -564,6 +568,7 @@ function AdminEvenementsContent() {
                       variant="outline"
                       size="icon"
                       title={tModal('delete')}
+                      aria-label={tModal('delete')}
                       className="hover:text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05]"
                     >
                       <Trash2 size={16} />

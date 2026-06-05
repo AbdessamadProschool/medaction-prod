@@ -253,12 +253,14 @@ export default function MesEvenementsPage() {
                     className="bg-white rounded-[1.5rem] shadow-sm border border-gray-100 overflow-hidden"
                 >
                 <div className="overflow-x-auto">
-                    <table className="w-full text-right">
+                    <table className="w-full text-right" style={{ minWidth: '600px' }}>
                     <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-500 font-bold tracking-wider border-b border-gray-100">
                         <tr>
+                        {/* Always visible on all screens */}
                         <th className="px-6 py-4 w-1/3 text-right">{t('columns.event')}</th>
-                        <th className="px-4 py-4 text-right">{t('columns.date_location')}</th>
-                        <th className="px-4 py-4 text-center">{t('columns.stats')}</th>
+                        {/* Hidden on mobile, visible sm+ */}
+                        <th className="px-4 py-4 text-right hidden sm:table-cell">{t('columns.date_location')}</th>
+                        <th className="px-4 py-4 text-center hidden md:table-cell">{t('columns.stats')}</th>
                         <th className="px-4 py-4 text-center">{t('columns.status')}</th>
                         <th className="px-4 py-4 text-left">{t('columns.actions')}</th>
                         </tr>
@@ -275,26 +277,26 @@ export default function MesEvenementsPage() {
                                 className="hover:bg-gov-blue/5/30 transition-colors group"
                             >
                             <td className="px-8 py-5">
-                                <div className="flex items-start gap-5">
-                                    {/* Thumbnail */}
-                                    <div className="w-20 h-20 rounded-2xl bg-gray-100 flex-shrink-0 overflow-hidden border border-gray-200 shadow-sm group-hover:shadow-md transition-all">
+                                <div className="flex items-start gap-3 sm:gap-5">
+                                    {/* Thumbnail — hidden on very small, shown sm+ */}
+                                    <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-gray-100 flex-shrink-0 overflow-hidden border border-gray-200 shadow-sm group-hover:shadow-md transition-all">
                                         {event.medias && event.medias[0] ? (
                                             <img src={event.medias[0].urlPublique} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-gov-blue-dark bg-gov-blue/5">
-                                                <Calendar size={28} />
+                                                <Calendar size={24} aria-hidden="true" />
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0 py-1">
-                                        <Link href={`/delegation/evenements/${event.id}`} className="block text-base font-bold text-gray-900 hover:text-gov-blue-dark transition-colors truncate mb-0.5">
+                                        <Link href={`/delegation/evenements/${event.id}`} className="block text-base font-bold text-gray-900 hover:text-gov-blue-dark transition-colors line-clamp-2 mb-0.5">
                                             {event.titre}
                                         </Link>
                                         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500">
                                             <span className="px-2 py-0.5 bg-gray-100 rounded-md text-gray-500 border border-gray-200">#{event.id}</span>
                                             {event.etablissement && (
-                                            <span className="truncate max-w-[200px] flex items-center gap-1.5 bg-gov-blue/5 text-gov-blue-dark px-2 py-0.5 rounded-md border border-gov-blue/30">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-gov-blue/10"></span>
+                                            <span className="truncate max-w-[120px] sm:max-w-[200px] flex items-center gap-1.5 bg-gov-blue/5 text-gov-blue-dark px-2 py-0.5 rounded-md border border-gov-blue/30">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-gov-blue/10" aria-hidden="true" />
                                                 {event.etablissement.nom}
                                             </span>
                                             )}
@@ -302,27 +304,29 @@ export default function MesEvenementsPage() {
                                     </div>
                                 </div>
                             </td>
-                            <td className="px-6 py-5">
+                            {/* Date/lieu — hidden on mobile */}
+                            <td className="px-6 py-5 hidden sm:table-cell">
                                 <div className="space-y-2 text-sm font-semibold text-gray-600">
                                 <div className="flex items-center gap-2.5">
-                                    <Clock size={16} className="text-gray-400" />
+                                    <Clock size={16} className="text-gray-400" aria-hidden="true" />
                                     <span className="text-gray-900">{new Date(event.dateDebut).toLocaleDateString('ar-MA')}</span>
                                 </div>
                                 {event.lieu && (
                                     <div className="flex items-center gap-2.5">
-                                    <MapPin size={16} className="text-gray-400" />
+                                    <MapPin size={16} className="text-gray-400" aria-hidden="true" />
                                     <span className="truncate max-w-[150px]">{event.lieu}</span>
                                     </div>
                                 )}
                                 </div>
                             </td>
-                            <td className="px-6 py-5 text-center">
-                                <div className="inline-flex items-center gap-6 text-sm text-gray-600 bg-gray-50 px-5 py-2.5 rounded-2xl border border-gray-100">
+                            {/* Stats — hidden on mobile and tablet */}
+                            <td className="px-6 py-5 text-center hidden md:table-cell">
+                                <div className="inline-flex items-center gap-4 sm:gap-6 text-sm text-gray-600 bg-gray-50 px-3 sm:px-5 py-2.5 rounded-2xl border border-gray-100">
                                 <div className="text-center">
                                     <span className="block font-bold text-gray-900 text-lg leading-none">{event.nombreVues}</span>
                                     <span className="text-[10px] uppercase font-bold text-gray-400 mt-1 block">{t('item.views')}</span>
                                 </div>
-                                <div className="w-px h-8 bg-gray-200" />
+                                <div className="w-px h-8 bg-gray-200" aria-hidden="true" />
                                 <div className="text-center">
                                     <span className="block font-bold text-gray-900 text-lg leading-none">{event.nombreInscrits}</span>
                                     <span className="text-[10px] uppercase font-bold text-gray-400 mt-1 block">{t('item.registered')}</span>
@@ -330,39 +334,39 @@ export default function MesEvenementsPage() {
                                 </div>
                             </td>
                             <td className="px-6 py-5 text-center">
-                                <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border ${statut.bg} ${statut.color} ${statut.border} shadow-sm`}>
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${statut.bg} ${statut.color} ${statut.border} shadow-sm whitespace-nowrap`}>
                                 {statut.label}
                                 </span>
                             </td>
-                            <td className="px-6 py-5 text-left">
-                                <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                            <td className="px-4 sm:px-6 py-5 text-left">
+                                <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                                 {(event.statut === 'PUBLIEE' || event.statut === 'EN_ACTION') &&
                                 event.dateFin && new Date(event.dateFin) < new Date() && (
                                     <Link
                                     href={`/delegation/evenements/${event.id}/cloture`}
-                                    className="flex items-center gap-2 px-3 py-2 bg-gov-gold/5 text-gov-gold rounded-xl hover:bg-gov-gold/10 transition-colors animate-pulse border border-gov-gold/30 hover:shadow-sm"
+                                    className="flex items-center gap-1.5 px-2 sm:px-3 py-2 bg-gov-gold/5 text-gov-gold rounded-xl hover:bg-gov-gold/10 transition-colors animate-pulse border border-gov-gold/30 hover:shadow-sm"
                                     title={t('item.close_action')}
                                     >
-                                    <CheckCircle size={18} />
+                                    <CheckCircle size={16} aria-hidden="true" />
                                     <span className="text-xs font-bold hidden xl:inline">{t('item.close_action')}</span>
                                     </Link>
                                 )}
                                 {event.statut !== 'CLOTUREE' && !(event.dateFin && new Date(event.dateFin) < new Date() && (event.statut === 'PUBLIEE' || event.statut === 'EN_ACTION')) && (
                                     <Link
                                     href={`/delegation/evenements/${event.id}/modifier`}
-                                    className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors hover:shadow-sm border border-blue-100"
+                                    className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors hover:shadow-sm border border-blue-100"
                                     title={t('item.edit')}
                                     >
-                                    <Edit2 size={18} />
+                                    <Edit2 size={16} aria-hidden="true" />
                                     </Link>
                                 )}
                                  {['BROUILLON', 'EN_ATTENTE_VALIDATION', 'REJETEE'].includes(event.statut) && (
                                      <button
                                      onClick={() => handleDeleteClick(event.id)}
-                                     className="p-2.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors hover:shadow-sm border border-red-100"
+                                     className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors hover:shadow-sm border border-red-100"
                                      title={t('item.delete')}
                                      >
-                                     <Trash2 size={18} />
+                                     <Trash2 size={16} aria-hidden="true" />
                                      </button>
                                  )}
                                 </div>

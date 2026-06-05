@@ -162,9 +162,13 @@ export default function AdminSidebar() {
       <Link
         href={item.href}
         onClick={() => setMobileOpen(false)}
-        className={`gov-sidebar-nav-item group relative flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg mx-2 my-1 transition-all duration-200 ${
+        aria-label={collapsed ? t(item.labelKey) : undefined}
+        aria-current={active ? 'page' : undefined}
+        className={`gov-sidebar-nav-item group relative flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg mx-2 my-0.5 transition-all duration-200 ${
+          collapsed ? 'justify-center' : ''
+        } ${
           active 
-            ? 'text-white bg-[hsl(var(--gov-blue-dark))/10] border-s-4 border-s-[hsl(var(--gov-gold))] bg-white/10' 
+            ? 'text-white bg-white/10 border-s-4 border-s-[hsl(var(--gov-gold))]' 
             : 'text-white/70 hover:text-white hover:bg-white/5'
         }`}
       >
@@ -172,6 +176,7 @@ export default function AdminSidebar() {
           <motion.div
             whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="shrink-0"
           >
             <Icon 
               size={20} 
@@ -180,7 +185,7 @@ export default function AdminSidebar() {
           </motion.div>
           
           {!collapsed && (
-            <span className="flex-1">{t(item.labelKey)}</span>
+            <span className="flex-1 truncate">{t(item.labelKey)}</span>
           )}
           
           <AnimatePresence>
@@ -190,7 +195,7 @@ export default function AdminSidebar() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center shadow-sm ${
+                className={`min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full flex items-center justify-center shadow-sm shrink-0 ${
                   active 
                     ? 'bg-[hsl(var(--gov-gold))] text-gray-900' 
                     : 'bg-[hsl(var(--gov-gold)/0.2)] text-[hsl(var(--gov-gold))] border border-[hsl(var(--gov-gold)/0.3)]'
@@ -201,9 +206,15 @@ export default function AdminSidebar() {
             )}
           </AnimatePresence>
           
+          {/* Tooltip en mode collapsed (desktop uniquement) */}
           {collapsed && (
-            <div className="absolute px-2 py-1 bg-[hsl(var(--gov-blue-dark))] text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 start-full ms-2 shadow-xl border border-white/10">
+            <div className="absolute left-full ms-3 px-2.5 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 shadow-xl border border-white/10 pointer-events-none">
               {t(item.labelKey)}
+              {item.badge !== undefined && item.badge > 0 && (
+                <span className="ms-1.5 bg-[hsl(var(--gov-gold))] text-gray-900 text-[10px] font-bold px-1.5 rounded-full">
+                  {item.badge > 99 ? '99+' : item.badge}
+                </span>
+              )}
             </div>
           )}
         </>
@@ -299,12 +310,14 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* Mobile menu button — min 44x44px touch target */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 z-50 p-2 bg-gov-blue text-white rounded-lg shadow-lg start-4"
+        className="lg:hidden fixed top-3 z-50 min-w-[44px] min-h-[44px] flex items-center justify-center bg-gov-blue text-white rounded-xl shadow-lg start-3"
+        aria-label="Ouvrir le menu"
+        aria-expanded={mobileOpen}
       >
-        <Menu size={24} />
+        <Menu size={22} />
       </button>
 
       {/* Mobile overlay */}

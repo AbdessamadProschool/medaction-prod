@@ -147,6 +147,12 @@ function StatCard({
   color: string;
   subStats?: { label: string; value: number | string }[];
 }) {
+  // Derive flat icon color from gradient class
+  const iconColorClass = color.includes('gov-blue') ? 'text-[hsl(var(--gov-blue))]'
+    : color.includes('gov-green') ? 'text-[hsl(var(--gov-green))]'
+    : color.includes('orange') || color.includes('amber') ? 'text-amber-500'
+    : color.includes('red') || color.includes('rose') ? 'text-[hsl(var(--gov-red))]'
+    : 'text-gray-500';
   return (
     <motion.div
       variants={itemVariants}
@@ -154,9 +160,8 @@ function StatCard({
       className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all"
     >
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-br ${color}`}>
-          <Icon className="w-6 h-6 text-white" />
-        </div>
+        {/* Flat icon — no colored background */}
+        <Icon className={`w-7 h-7 ${iconColorClass}`} aria-hidden="true" />
         {trend && (
           <span className={`flex items-center gap-1 text-xs font-medium ${
             trend === 'up' ? 'text-[hsl(var(--gov-green))]' : 'text-[hsl(var(--gov-red))]'
@@ -730,9 +735,8 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue))] flex items-center justify-center text-white mb-4">
-                    <UserCog className="w-6 h-6" />
-                  </div>
+                  {/* Flat icon — no rounded-xl box */}
+                  <UserCog className="w-7 h-7 text-[hsl(var(--gov-blue))] mb-4" aria-hidden="true" />
                   <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-blue))] transition-colors">
                     {t('super_admin.features.admin_management')}
                   </h3>
@@ -745,9 +749,8 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold))] flex items-center justify-center text-[hsl(var(--gov-blue-dark))] mb-4">
-                    <Key className="w-6 h-6" />
-                  </div>
+                  {/* Flat icon — no rounded-xl box */}
+                  <Key className="w-7 h-7 text-[hsl(var(--gov-gold))] mb-4" aria-hidden="true" />
                   <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-amber-600 transition-colors">
                     {t('super_admin.features.permissions')}
                   </h3>
@@ -760,9 +763,8 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center text-white mb-4">
-                    <Settings className="w-6 h-6" />
-                  </div>
+                  {/* Flat icon — no rounded-xl box */}
+                  <Settings className="w-7 h-7 text-gray-600 dark:text-gray-400 mb-4" aria-hidden="true" />
                   <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-gray-600 transition-colors">
                     {t('super_admin.features.system_settings')}
                   </h3>
@@ -775,9 +777,8 @@ export default function SuperAdminDashboard() {
                   whileHover={{ scale: 1.02 }}
                   className="p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green))] flex items-center justify-center text-white mb-4">
-                    <Database className="w-6 h-6" />
-                  </div>
+                  {/* Flat icon — no rounded-xl box */}
+                  <Database className="w-7 h-7 text-[hsl(var(--gov-green))] mb-4" aria-hidden="true" />
                   <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-[hsl(var(--gov-green))] transition-colors">
                     {t('super_admin.features.backups')}
                   </h3>

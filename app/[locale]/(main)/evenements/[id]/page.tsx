@@ -361,7 +361,7 @@ export default function EvenementDetailPage() {
                      <Calendar className="w-6 h-6 text-gov-gold" />
                   </div>
                   <div>
-                     <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.date_time')}</p>
+                     <p className="text-sm text-white/70 uppercase tracking-wider font-bold mb-0.5">{t('labels.date_time')}</p>
                      <p className="font-bold text-lg leading-tight">{dateRangeStr}</p>
                      <p className="text-sm opacity-80">{timeRangeStr}</p>
                   </div>
@@ -374,7 +374,7 @@ export default function EvenementDetailPage() {
                   </div>
                   <div>
                    <div>
-                      <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.location')}</p>
+                      <p className="text-sm text-white/70 uppercase tracking-wider font-bold mb-0.5">{t('labels.location')}</p>
                       <p className="font-bold text-lg leading-tight truncate max-w-[200px]" title={fullLocationStr}>
                         {event.lieu || (locale === 'ar' ? (event.commune.nomArabe || event.commune.nom) : event.commune.nom)}
                       </p>
@@ -389,7 +389,7 @@ export default function EvenementDetailPage() {
                      <Building2 className="w-6 h-6 text-blue-300" />
                   </div>
                   <div>
-                     <p className="text-sm text-white/50 uppercase tracking-wider font-bold mb-0.5">{t('labels.organizer')}</p>
+                     <p className="text-sm text-white/70 uppercase tracking-wider font-bold mb-0.5">{t('labels.organizer')}</p>
                      <p className="font-bold text-lg leading-tight line-clamp-2">
                       {event.organisateur || 
                        (event.etablissement ? (locale === 'ar' ? (event.etablissement.nomArabe || event.etablissement.nom) : event.etablissement.nom) : 
@@ -468,10 +468,8 @@ export default function EvenementDetailPage() {
                   className="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100"
                 >
                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                         <div className="p-3 rounded-xl bg-gov-blue/5">
-                            <Eye className="w-6 h-6 text-gov-blue-dark" />
-                         </div>
+                      <div className="flex items-center gap-3 mb-6">
+                         <Eye className="w-6 h-6 text-gov-blue-dark" />
                          <h2 className="text-2xl font-bold text-gray-900">{t('labels.gallery')}</h2>
                       </div>
                       <button 
@@ -512,9 +510,7 @@ export default function EvenementDetailPage() {
                   className="bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100"
                 >
                    <div className="flex items-center gap-3 mb-6">
-                       <div className="p-3 rounded-xl bg-gov-green/5">
-                          <MapPin className="w-6 h-6 text-gov-green-dark" />
-                       </div>
+                       <MapPin className="w-6 h-6 text-gov-green-dark" />
                        <h2 className="text-2xl font-bold text-gray-900">{t('labels.location')}</h2>
                     </div>
                    

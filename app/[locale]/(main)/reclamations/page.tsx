@@ -36,7 +36,7 @@ export default function ReclamationsPage() {
         <div className="absolute inset-0">
            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-gov-blue-dark blur-3xl opacity-50" />
            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-gov-gold blur-3xl opacity-20" />
-           <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-5" />
+           <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         </div>
         
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
@@ -45,8 +45,8 @@ export default function ReclamationsPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center justify-center p-3 bg-white/10 backdrop-blur-md rounded-2xl mb-8 border border-white/20 shadow-2xl">
-              <MessageSquare size={32} className="text-gov-gold" />
+            <div className="flex items-center justify-center mb-8">
+              <MessageSquare size={40} className="text-gov-gold" />
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
               Espace Réclamations Citoyen
@@ -76,8 +76,8 @@ export default function ReclamationsPage() {
                   <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gov-gold/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-gov-gold/20 transition-all" />
                     
-                    <div className="w-16 h-16 bg-gov-gold/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Plus size={32} className="text-gov-gold" />
+                    <div className="mb-6">
+                      <Plus size={32} className="text-gov-gold mb-4" />
                     </div>
                     
                     <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-blue transition-colors">
@@ -106,8 +106,8 @@ export default function ReclamationsPage() {
                 <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-blue-200 transition-all" />
                   
-                  <div className="w-16 h-16 bg-gov-blue/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Plus size={32} className="text-gov-blue" />
+                  <div className="mb-6">
+                    <Plus size={32} className="text-gov-blue mb-4" />
                   </div>
                   
                   <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-blue transition-colors">
@@ -137,8 +137,8 @@ export default function ReclamationsPage() {
               <div className="bg-white rounded-3xl p-8 h-full shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group relative overflow-hidden">
                  <div className="absolute top-0 right-0 w-32 h-32 bg-gov-green/10 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-gov-green/10 transition-all" />
 
-                <div className="w-16 h-16 bg-gov-green/10/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <List size={32} className="text-gov-green-dark" />
+                <div className="mb-6">
+                  <List size={32} className="text-gov-green-dark mb-4" />
                 </div>
                 
                 <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gov-green-dark transition-colors">

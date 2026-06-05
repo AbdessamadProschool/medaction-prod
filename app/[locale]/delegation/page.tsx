@@ -176,9 +176,8 @@ export default function DelegationDashboard() {
           <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-blue/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-gov-blue/5 dark:bg-gov-blue text-gov-blue-dark dark:text-gov-blue shadow-sm">
-                  <Calendar size={24} strokeWidth={2.5} />
-                </div>
+                {/* Flat icon — no colored background */}
+                <Calendar size={26} strokeWidth={2} className="text-[hsl(var(--gov-blue))]" aria-hidden="true" />
                 {stats?.evenements?.enAttente ? (
                   <span className="text-[10px] font-black bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full border border-yellow-100 animate-pulse uppercase">
                     {t('kpi.pending', { count: stats.evenements.enAttente })}
@@ -188,7 +187,7 @@ export default function DelegationDashboard() {
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.events')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.evenements.total || 0}</p>
               <div className="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                <div className="h-full bg-gov-blue rounded-full" style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} />
+                <div className="h-full bg-[hsl(var(--gov-blue))] rounded-full" style={{ width: `${(stats?.evenements.publies! / (stats?.evenements.total || 1)) * 100}%` }} />
               </div>
             </div>
           </div>
@@ -199,14 +198,13 @@ export default function DelegationDashboard() {
           <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-gold/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-gov-gold/5 dark:bg-gov-gold/10/20 text-gov-gold dark:text-gov-gold shadow-sm">
-                  <Newspaper size={24} strokeWidth={2.5} />
-                </div>
+                {/* Flat icon — no colored background */}
+                <Newspaper size={26} strokeWidth={2} className="text-[hsl(var(--gov-gold))]" aria-hidden="true" />
               </div>
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.news')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.actualites.total || 0}</p>
-              <div className="flex items-center gap-2 p-2 bg-gov-gold/5/50 dark:bg-gov-gold/10/10 rounded-xl text-xs font-bold text-gov-gold dark:text-gov-gold border border-gov-gold/30/50 dark:border-gov-gold/30/30">
-                <Eye size={14} />
+              <div className="flex items-center gap-2 p-2 bg-gov-gold/5/50 dark:bg-gov-gold/10/10 rounded-xl text-xs font-bold text-[hsl(var(--gov-gold))] dark:text-gov-gold border border-gov-gold/30/50 dark:border-gov-gold/30/30">
+                <Eye size={14} aria-hidden="true" />
                 <span>{t('kpi.views_this_month', { count: stats?.actualites.vues || 0 })}</span>
               </div>
             </div>
@@ -218,14 +216,13 @@ export default function DelegationDashboard() {
           <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-gov-green/30/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-gov-green/5 dark:bg-gov-green text-gov-green-dark dark:text-gov-green shadow-sm">
-                  <Megaphone size={24} strokeWidth={2.5} />
-                </div>
+                {/* Flat icon — no colored background */}
+                <Megaphone size={26} strokeWidth={2} className="text-[hsl(var(--gov-green))]" aria-hidden="true" />
               </div>
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.campaigns')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.campagnes.actives || 0}</p>
               <p className="text-xs font-bold text-gov-green-dark dark:text-gov-green flex items-center gap-2">
-                <Users size={14} />
+                <Users size={14} aria-hidden="true" />
                 {t('kpi.participants', { count: stats?.campagnes.participations || 0 })}
               </p>
             </div>
@@ -237,9 +234,8 @@ export default function DelegationDashboard() {
           <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group-hover:border-blue-500/50">
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 shadow-sm">
-                  <FileText size={24} strokeWidth={2.5} />
-                </div>
+                {/* Flat icon — no colored background */}
+                <FileText size={26} strokeWidth={2} className="text-blue-600 dark:text-blue-400" aria-hidden="true" />
               </div>
               <h3 className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">{t('kpi.library')}</h3>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-2 mb-4 tabular-nums">{stats?.articles.total || 0}</p>
@@ -386,9 +382,8 @@ export default function DelegationDashboard() {
           {/* Rappels / Notifications */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-7">
             <h2 className="font-black text-lg text-gray-900 dark:text-white mb-6 flex items-center gap-3">
-              <div className="p-2 bg-gov-gold/5 dark:bg-gov-gold/10/20 rounded-xl">
-                <AlertCircle size={22} className="text-gov-gold dark:text-gov-gold" />
-              </div>
+              {/* Flat icon — no colored background */}
+              <AlertCircle size={22} className="text-[hsl(var(--gov-gold))] flex-shrink-0" aria-hidden="true" />
               {t('todo.title')}
             </h2>
             <div className="space-y-4">

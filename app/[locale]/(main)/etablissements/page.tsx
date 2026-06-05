@@ -471,9 +471,7 @@ function EtablissementsContent() {
                    animate={{ opacity: 1, scale: 1 }}
                    className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center"
                 >
-                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                     <Search className="w-8 h-8 text-gray-400" />
-                   </div>
+                   <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                    <h3 className="text-lg font-bold text-gray-900 mb-1">{t('directory.empty_title')}</h3>
                    <p className="text-gray-500 max-w-sm mx-auto mb-6">
                      {t('directory.empty_desc')}

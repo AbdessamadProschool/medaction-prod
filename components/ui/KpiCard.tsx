@@ -96,12 +96,14 @@ export function KpiCard({
       <div className="relative z-10">
         {/* Ligne supérieure : icône + badge variation */}
         <div className="flex items-center justify-between mb-4">
-          <div
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-current/10"
-            style={{ backgroundColor: `${color}0D`, color }}
-          >
-            <Icon className="h-5 w-5" />
-          </div>
+        {/* Flat icon — pas de fond arrondi, style impeccable flat Lucide */}
+        <div
+          className="flex h-10 w-10 items-center justify-center"
+          style={{ color }}
+          aria-hidden="true"
+        >
+          <Icon className="h-6 w-6" />
+        </div>
 
           {change !== undefined && (
             <span
@@ -134,8 +136,8 @@ export function KpiCard({
             <span className="text-xs font-black text-foreground">
               {typeof subValue === 'number' ? subValue.toLocaleString('fr-MA') : subValue}
             </span>
-            {subLabel && (
-              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          {subLabel && (
+              <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
                 {subLabel}
               </span>
             )}

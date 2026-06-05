@@ -22,6 +22,7 @@ const customJestConfig = {
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
+    '<rootDir>/e2e/',
   ],
   
   // Alias de modules (pour matcher les paths de tsconfig)

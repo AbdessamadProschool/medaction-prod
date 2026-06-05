@@ -126,10 +126,8 @@ export default function SuggestionsPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--gov-gold))]" />
                 {t('badge') || 'Province de Médiouna'}
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-outfit drop-shadow-sm flex items-center gap-4">
-                <div className="w-14 h-14 bg-[hsl(var(--gov-gold)/0.15)] backdrop-blur-sm border border-[hsl(var(--gov-gold)/0.3)] rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Lightbulb className="w-7 h-7 text-[hsl(var(--gov-gold))]" />
-                </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-outfit drop-shadow-sm flex items-center gap-3">
+                <Lightbulb className="w-8 h-8 text-[hsl(var(--gov-gold))] flex-shrink-0" />
                 {t('title')}
               </h1>
               <p className="text-blue-100/90 max-w-xl text-lg leading-relaxed">
@@ -442,9 +440,7 @@ export default function SuggestionsPage() {
         <div className="relative bg-gradient-to-r from-[hsl(var(--gov-blue-dark))] to-[hsl(var(--gov-blue))] py-16 overflow-hidden">
           <div className="absolute inset-0 gov-pattern opacity-10" />
           <div className="relative max-w-3xl mx-auto px-4 text-center z-10">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/20">
-              <Lightbulb className="w-8 h-8 text-[hsl(var(--gov-gold))]" />
-            </div>
+            <Lightbulb className="w-10 h-10 text-[hsl(var(--gov-gold))] mx-auto mb-6" />
             <h2 className="text-3xl font-extrabold text-white mb-4 font-outfit">{t('cta_title')}</h2>
             <p className="text-blue-100/80 mb-8 text-lg max-w-xl mx-auto leading-relaxed">{t('cta_text')}</p>
             <Link

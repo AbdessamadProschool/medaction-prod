@@ -65,11 +65,11 @@ interface Campagne {
 
 const STATUT_CONFIG: Record<string, { bg: string; text: string; icon: React.ElementType; label: string }> = {
   BROUILLON: { bg: 'bg-muted', text: 'text-muted-foreground', icon: Edit, label: 'Brouillon' },
-  EN_ATTENTE: { bg: 'bg-[hsl(var(--gov-gold)/0.1)]', text: 'text-gov-gold', icon: Clock, label: 'En attente' },
-  ACTIVE: { bg: 'bg-[hsl(var(--gov-green))/0.1]', text: 'text-[hsl(var(--gov-green))]', icon: Play, label: 'Active' },
-  EN_PAUSE: { bg: 'bg-[hsl(var(--gov-gold)/0.1)]', text: 'text-gov-gold', icon: Pause, label: 'En pause' },
-  TERMINEE: { bg: 'bg-[hsl(var(--gov-blue))/0.1]', text: 'text-[hsl(var(--gov-blue))]', icon: CheckCircle, label: 'Terminée' },
-  ANNULEE: { bg: 'bg-[hsl(var(--gov-red))/0.1]', text: 'text-[hsl(var(--gov-red))]', icon: XCircle, label: 'Annulée' },
+  EN_ATTENTE: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-400', icon: Clock, label: 'En attente' },
+  ACTIVE: { bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-700 dark:text-emerald-400', icon: Play, label: 'Active' },
+  EN_PAUSE: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-400', icon: Pause, label: 'En pause' },
+  TERMINEE: { bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-700 dark:text-blue-400', icon: CheckCircle, label: 'Terminée' },
+  ANNULEE: { bg: 'bg-red-50 dark:bg-red-950/30', text: 'text-red-700 dark:text-red-400', icon: XCircle, label: 'Annulée' },
 };
 
 const SECTEURS = [
@@ -241,11 +241,11 @@ export default function AdminCampagnesPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: t('stats.total'), value: stats.total, icon: BarChart3, gradient: 'from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]' },
-          { label: t('stats.active'), value: stats.actives, icon: Play, gradient: 'from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]' },
-          { label: t('stats.pending'), value: stats.enAttente, icon: Clock, gradient: 'from-amber-400 to-amber-600' },
-          { label: t('stats.participants'), value: stats.totalParticipants, icon: Users, gradient: 'from-purple-500 to-gov-blue-dark' },
+      {[
+          { label: t('stats.total'), value: stats.total, icon: BarChart3, color: 'hsl(var(--gov-blue))' },
+          { label: t('stats.active'), value: stats.actives, icon: Play, color: 'hsl(var(--gov-green))' },
+          { label: t('stats.pending'), value: stats.enAttente, icon: Clock, color: '#F59E0B' },
+          { label: t('stats.participants'), value: stats.totalParticipants, icon: Users, color: 'hsl(var(--gov-blue-dark))' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -255,8 +255,13 @@ export default function AdminCampagnesPage() {
             className="gov-stat-card group"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
-                <stat.icon className="w-5 h-5" />
+              {/* Flat icon — pas de bg gradient (impeccable.style flat) */}
+              <div
+                className="flex items-center justify-center w-10 h-10 group-hover:scale-110 transition-transform"
+                style={{ color: stat.color }}
+                aria-hidden="true"
+              >
+                <stat.icon className="w-6 h-6" />
               </div>
             </div>
             <p className="gov-stat-value">{stat.value}</p>

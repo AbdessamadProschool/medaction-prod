@@ -369,8 +369,8 @@ export default function AdminReclamationsPage() {
           {/* Header Section */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
-                <Flag className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
+              <div className="w-14 h-14 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
+                <Flag className="w-7 h-7" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -667,7 +667,8 @@ export default function AdminReclamationsPage() {
                         </div>
                       </GovTd>
                       <GovTd className="text-end">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
+                        {/* Actions toujours visibles sur mobile (pas de opacity-0 group-hover) */}
+                        <div className="flex items-center justify-end gap-1">
                           <GovButton 
                             onClick={(e) => {
                               e.stopPropagation();
@@ -678,8 +679,9 @@ export default function AdminReclamationsPage() {
                             size="icon"
                             className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                             title={t('actions.assign')}
+                            aria-label={t('actions.assign')}
                           >
-                            <UserPlus size={18} />
+                            <UserPlus size={16} />
                           </GovButton>
                           <GovButton 
                             onClick={(e) => {
@@ -691,8 +693,9 @@ export default function AdminReclamationsPage() {
                             size="icon"
                             className="text-gov-green-dark hover:text-gov-green-dark hover:bg-gov-green/5"
                             title={t('actions.update_status')}
+                            aria-label={t('actions.update_status')}
                           >
-                            <Edit size={18} />
+                            <Edit size={16} />
                           </GovButton>
                           <GovButton 
                             onClick={(e) => {
@@ -704,8 +707,9 @@ export default function AdminReclamationsPage() {
                             size="icon"
                             className="text-gov-red hover:text-gov-red hover:bg-gov-red/5"
                             title={tActions('delete')}
+                            aria-label={tActions('delete')}
                           >
-                            <Trash2 size={18} />
+                            <Trash2 size={16} />
                           </GovButton>
                         </div>
                       </GovTd>

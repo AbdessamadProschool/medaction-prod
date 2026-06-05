@@ -46,10 +46,29 @@ afterAll(() => {
   console.error = originalError;
 });
 
-// Nettoyage après chaque test
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 // Global fetch mock
 global.fetch = jest.fn();
+
+// Polyfill TextEncoder/TextDecoder first (required by undici in JSDOM environment)
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
+if (typeof global.ReadableStream === 'undefined') {
+  const { ReadableStream } = require('stream/web');
+  global.ReadableStream = ReadableStream;
+}
+
+// Polyfill Web APIs for next/server inside Jest
+if (typeof global.Request === 'undefined') {
+  const { Request, Response, Headers } = require('undici');
+  global.Request = Request;
+  global.Response = Response;
+  global.Headers = Headers;
+}

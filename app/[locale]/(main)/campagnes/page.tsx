@@ -388,9 +388,7 @@ function CampagnesContent() {
                 </div>
              ) : campagnes.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
-                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Megaphone className="w-8 h-8 text-gray-300" />
-                   </div>
+                   <Megaphone className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                    <h3 className="text-xl font-bold text-gray-900 mb-2">{t('no_campaigns_found')}</h3>
                    <p className="text-gray-500 mb-6">{t('check_filters')}</p>
                    <button 

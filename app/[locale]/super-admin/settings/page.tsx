@@ -142,6 +142,13 @@ function SettingCard({
   color: string;
   children: React.ReactNode;
 }) {
+  // Extract a text color from the gradient string (e.g. "from-blue-500 to-indigo-600" → use first color class)
+  const iconColorClass = color.includes('blue') ? 'text-blue-600 dark:text-blue-400'
+    : color.includes('red') || color.includes('rose') ? 'text-red-500 dark:text-red-400'
+    : color.includes('amber') || color.includes('orange') ? 'text-amber-500 dark:text-amber-400'
+    : color.includes('gov-blue') ? 'text-[hsl(var(--gov-blue))]'
+    : color.includes('green') ? 'text-[hsl(var(--gov-green))]'
+    : 'text-gray-600 dark:text-gray-400';
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -149,9 +156,8 @@ function SettingCard({
       className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
     >
       <div className="flex items-start gap-4 mb-6">
-        <div className={`p-3 rounded-xl bg-gradient-to-br ${color}`}>
-          <Icon className="w-6 h-6 text-white" />
-        </div>
+        {/* Flat icon — no colored background per impeccable.style guidelines */}
+        <Icon className={`w-6 h-6 flex-shrink-0 mt-0.5 ${iconColorClass}`} aria-hidden="true" />
         <div>
           <h3 className="font-bold text-gray-900 dark:text-white">{title}</h3>
           <p className="text-sm text-gray-500">{description}</p>
@@ -173,12 +179,12 @@ function SettingRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-0">
-      <div>
-        <p className="font-medium text-gray-900 dark:text-white">{label}</p>
-        {description && <p className="text-sm text-gray-500">{description}</p>}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0">
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-gray-900 dark:text-white leading-snug">{label}</p>
+        {description && <p className="text-sm text-gray-500 mt-0.5">{description}</p>}
       </div>
-      <div>{children}</div>
+      <div className="flex-shrink-0">{children}</div>
     </div>
   );
 }
@@ -272,44 +278,47 @@ export default function SuperAdminSettingsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
+      {/* Header — fully responsive mobile-first */}
       <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white">
-        <div className="max-w-5xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/super-admin"
-                className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-              >
-                <ArrowLeft size={20} />
-              </Link>
-              <div className="p-2 bg-white/10 rounded-xl backdrop-blur">
-                <Settings className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">{t('system_settings.title')}</h1>
-                <p className="text-gray-300 text-sm">{t('system_settings.subtitle')}</p>
-              </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          {/* Row 1: Back + Title */}
+          <div className="flex items-center gap-3 mb-4">
+            <Link
+              href="/super-admin"
+              className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors flex-shrink-0"
+              aria-label="Retour"
+            >
+              <ArrowLeft size={20} />
+            </Link>
+            {/* Flat icon — no background */}
+            <Settings className="w-6 h-6 text-white/80 flex-shrink-0" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-2xl font-bold leading-tight truncate">{t('system_settings.title')}</h1>
+              <p className="text-gray-300 text-xs sm:text-sm truncate">{t('system_settings.subtitle')}</p>
             </div>
-            <div className="flex items-center gap-3">
-              {hasChanges && (
-                <span className="flex items-center gap-2 px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">
-                  <AlertTriangle size={14} />
-                  Modifications non sauvegardées
-                </span>
-              )}
+          </div>
+          {/* Row 2: Status badge + Actions — scrolls horizontally on tiny screens */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {hasChanges && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/20 text-amber-300 rounded-full text-xs font-medium flex-shrink-0">
+                <AlertTriangle size={13} aria-hidden="true" />
+                <span className="hidden xs:inline">Modifications non sauvegardées</span>
+                <span className="xs:hidden">Non sauvegardé</span>
+              </span>
+            )}
+            <div className="flex items-center gap-2 ml-auto">
               <button
                 onClick={handleReset}
-                className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors text-sm"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors text-xs sm:text-sm font-medium"
               >
                 {t('system_settings.reset')}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving || !hasChanges}
-                className="flex items-center gap-2 px-5 py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-5 sm:py-2 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 disabled:opacity-50 transition-colors text-xs sm:text-sm"
               >
-                {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                {saving ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Save size={16} aria-hidden="true" />}
                 {t('system_settings.save')}
               </button>
             </div>

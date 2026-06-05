@@ -134,9 +134,7 @@ export default function MesReclamationsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="gov-card p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gov-blue">
-                  <ClipboardList className="w-5 h-5" />
-                </div>
+                <ClipboardList className="w-5 h-5 text-gov-blue" />
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                   <p className="text-xs text-gray-500">{t('stats.total')}</p>
@@ -145,9 +143,7 @@ export default function MesReclamationsPage() {
             </div>
             <div className="gov-card p-4 border-gov-gold/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gov-gold/20 flex items-center justify-center text-[hsl(45,93%,40%)]">
-                  <Clock className="w-5 h-5" />
-                </div>
+                <Clock className="w-5 h-5 text-[hsl(45,93%,40%)]" />
                 <div>
                   <p className="text-2xl font-bold text-[hsl(45,93%,40%)]">{stats.enAttente}</p>
                   <p className="text-xs text-gray-500">{t('stats.pending')}</p>
@@ -156,9 +152,7 @@ export default function MesReclamationsPage() {
             </div>
             <div className="gov-card p-4 border-gov-green/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gov-green/20 flex items-center justify-center text-gov-green">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
+                <CheckCircle2 className="w-5 h-5 text-gov-green" />
                 <div>
                   <p className="text-2xl font-bold text-gov-green">{stats.acceptees}</p>
                   <p className="text-xs text-gray-500">{t('stats.accepted')}</p>
@@ -215,9 +209,7 @@ export default function MesReclamationsPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white rounded-2xl p-12 text-center"
             >
-              <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4">
-                <Inbox className="w-10 h-10" />
-              </div>
+              <Inbox className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {t('empty.title')}
               </h3>

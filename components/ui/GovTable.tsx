@@ -16,13 +16,16 @@ const GovTable = React.forwardRef<HTMLTableElement, GovTableProps>(
   ({ className, wrapperClassName, children, ...props }, ref) => {
     return (
       <div className={cn('gov-table-wrapper bg-card/50 backdrop-blur-sm shadow-xl rounded-xl overflow-hidden border border-border', wrapperClassName)}>
-        <table
-          ref={ref}
-          className={cn('gov-table w-full border-collapse font-sans', className)}
-          {...props}
-        >
-          {children}
-        </table>
+        {/* overflow-x-auto with -webkit-overflow-scrolling for iOS momentum scroll */}
+        <div className="overflow-x-auto -webkit-overflow-scrolling-touch w-full">
+          <table
+            ref={ref}
+            className={cn('gov-table w-full min-w-[640px] border-collapse font-sans', className)}
+            {...props}
+          >
+            {children}
+          </table>
+        </div>
       </div>
     );
   }
@@ -34,7 +37,9 @@ const GovTh = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTML
     <th
       ref={ref}
       className={cn(
-        'px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider bg-[#1E3A5F] border-b border-[#1E3A5F]/10',
+        // bg-[#1E3A5F] → white text contrast ratio ≈ 9.8:1 ✓ WCAG AAA
+        // text-xs = 12px minimum pour lisibilité WCAG
+        'px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide bg-[#1E3A5F] border-b border-[#1E3A5F]/10 whitespace-nowrap',
         className
       )}
       {...props}

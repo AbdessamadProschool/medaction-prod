@@ -110,7 +110,7 @@ export default function ContactPage() {
       />
       {/* Header */}
       <div className="bg-gradient-to-br from-gov-blue-dark to-gov-blue-dark py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10" />
+        <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             {t('title')}
@@ -126,9 +126,7 @@ export default function ContactPage() {
           {/* Formulaire */}
           <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 lg:p-10 border border-gray-100 order-2 lg:order-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-gov-green/5 rounded-xl">
-                <MessageSquare className="w-6 h-6 text-gov-green-dark" />
-              </div>
+              <MessageSquare className="w-6 h-6 text-gov-green-dark" />
               <h2 className="text-2xl font-bold text-gray-900">{t('form_title')}</h2>
             </div>
 
@@ -260,16 +258,16 @@ export default function ContactPage() {
               </h3>
               
               <div className="space-y-6">
-                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
-                  <Building2 className="w-6 h-6 text-gov-blue flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Building2 className="w-5 h-5 text-gov-blue flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('address_label')}</p>
                     <p className="text-base font-semibold text-gray-800 leading-relaxed">{t('address_value')}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
-                  <Phone className="w-6 h-6 text-gov-green-dark flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Phone className="w-5 h-5 text-gov-green-dark flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('phone_label')}</p>
                     <div className="flex flex-col text-start" dir="ltr">
@@ -279,16 +277,16 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
-                  <Mail className="w-6 h-6 text-gov-blue-dark flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Mail className="w-5 h-5 text-gov-blue-dark flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('email_contact_label')}</p>
                     <a href="mailto:contact@provincemediouna.ma" className="text-base font-semibold text-gray-800 hover:text-gov-blue-dark transition-colors break-all text-left block" dir="ltr">contact@provincemediouna.ma</a>
                   </div>
                 </div>
 
-                 <div className="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
-                  <Clock className="w-6 h-6 text-gov-gold flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300" />
+                <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-slate-50/50 transition-colors group">
+                  <Clock className="w-5 h-5 text-gov-gold flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('hours_label')}</p>
                     <p className="text-base font-semibold text-gray-800 leading-relaxed">{t('hours_value')}</p>

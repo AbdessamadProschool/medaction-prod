@@ -420,15 +420,15 @@ export default function UsersPage() {
                         </div>
                       </GovTd>
                       <GovTd className="text-end relative">
-                        <div className={cn(
-                          "flex items-center justify-end gap-2 transition-all duration-300 transform",
-                          activeDropdown === user.id ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100"
-                        )}>
+                        {/* Toujours visible sur mobile + desktop (pas de group-hover) */}
+                        <div className="flex items-center justify-end gap-2">
                           <GovButton
                             onClick={() => setActiveDropdown(activeDropdown === user.id ? null : user.id)}
                             variant="outline"
                             size="icon"
                             className={activeDropdown === user.id ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))]' : ''}
+                            aria-label="Actions"
+                            aria-expanded={activeDropdown === user.id}
                           >
                             <MoreVertical size={18} />
                           </GovButton>
@@ -440,7 +440,8 @@ export default function UsersPage() {
                               initial={{ opacity: 0, scale: 0.95, y: 10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                              className="absolute end-0 mt-3 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-50 backdrop-blur-xl bg-card/95 overflow-hidden"
+                              // z-[60] pour être au-dessus de tout sur mobile
+                              className="absolute end-0 mt-2 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-[60] backdrop-blur-xl bg-card/95 overflow-hidden"
                             >
                               <button
                                 onClick={() => handleEditRole(user)}
@@ -485,35 +486,38 @@ export default function UsersPage() {
           </GovTable>
 
             {totalPages > 1 && (
-              <div className="px-8 py-8 bg-muted/20 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-6">
-                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest text-center sm:text-start">
+              <div className="px-4 sm:px-8 py-6 bg-muted/20 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide text-center sm:text-start">
                   {t('pagination', { 
                     start: (page - 1) * limit + 1, 
                     end: Math.min(page * limit, total), 
                     total: total 
                   })}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                   <button
                     onClick={() => setPage(page - 1)}
                     disabled={page === 1}
-                    className="p-3 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
+                    className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
+                    aria-label="Page précédente"
                   >
                     <ChevronLeft size={18} />
                   </button>
-                  <div className="flex items-center gap-1.5 px-1.5">
+                  <div className="flex items-center gap-1 flex-wrap justify-center">
                     {[...Array(totalPages)].map((_, i) => {
                       const pageNum = i + 1;
-                      if (totalPages > 7 && Math.abs(page - pageNum) > 2 && pageNum !== 1 && pageNum !== totalPages) return null;
+                      // Sur mobile, afficher max 5 pages autour de la courante
+                      if (totalPages > 5 && Math.abs(page - pageNum) > 2 && pageNum !== 1 && pageNum !== totalPages) return null;
                       return (
                         <button
                           key={pageNum}
                           onClick={() => setPage(pageNum)}
-                          className={`min-w-[40px] h-10 rounded-xl text-xs font-black transition-all border shadow-sm ${
+                          className={`min-w-[36px] h-9 rounded-xl text-xs font-black transition-all border shadow-sm ${
                             page === pageNum
                               ? 'bg-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]'
                               : 'bg-card text-foreground border-border hover:bg-muted'
                           }`}
+                          aria-current={page === pageNum ? 'page' : undefined}
                         >
                           {pageNum}
                         </button>
@@ -523,7 +527,8 @@ export default function UsersPage() {
                   <button
                     onClick={() => setPage(page + 1)}
                     disabled={page === totalPages}
-                    className="p-3 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
+                    className="p-2.5 bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-20 transition-all shadow-sm active:scale-95"
+                    aria-label="Page suivante"
                   >
                     <ChevronRight size={18} />
                   </button>

@@ -307,14 +307,13 @@ export default function AdminDashboard() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <BarChart3 className="text-[hsl(var(--gov-blue))] w-6 h-6" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+            {/* Flat icon - pas de bg container */}
+            <BarChart3 className="text-[hsl(var(--gov-blue))] w-7 h-7" aria-hidden="true" />
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
               {t('header.title')}
             </h1>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ms-1">
+          <p className="text-muted-foreground font-medium text-base sm:text-lg">
             {t('header.subtitle')}
           </p>
         </div>
@@ -354,9 +353,8 @@ export default function AdminDashboard() {
       {stats?.evenements?.aCloturer && stats?.evenements?.aCloturer > 0 && (
         <motion.div variants={itemVariants} className="bg-[hsl(var(--gov-gold))/0.1] border border-[hsl(var(--gov-gold))/0.3] rounded-2xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[hsl(var(--gov-gold))/0.2] rounded-full flex items-center justify-center text-[hsl(var(--gov-gold-dark))]">
-               <AlertTriangle className="w-5 h-5" />
-            </div>
+            {/* Flat icon - pas de bg arrondi */}
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" aria-hidden="true" />
             <div>
                <h3 className="font-semibold text-gov-gold">{t('alerts.events_action_required')}</h3>
                <p className="text-sm text-gov-gold">
@@ -484,7 +482,7 @@ export default function AdminDashboard() {
         {/* Events by Sector */}
         <motion.div 
           variants={itemVariants}
-          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
+          className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -516,7 +514,7 @@ export default function AdminDashboard() {
         {/* Reclamations by Status */}
         <motion.div 
           variants={itemVariants}
-          className="bg-card border border-border rounded-3xl p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
+          className="bg-card border border-border rounded-3xl p-5 sm:p-8 shadow-xl shadow-[hsl(var(--gov-blue))/0.02]"
         >
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -561,12 +559,11 @@ export default function AdminDashboard() {
                   className="gov-card p-5 group hover:border-[hsl(var(--gov-blue))] hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
-                      <Newspaper className="w-6 h-6" />
-                    </div>
+                    {/* Flat icon */}
+                    <Newspaper className="w-6 h-6 text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform shrink-0" aria-hidden="true" />
                     <div>
                       <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.news')}</h3>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.news_desc')}</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.news_desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -580,12 +577,11 @@ export default function AdminDashboard() {
                   className="gov-card p-5 group hover:border-[hsl(var(--gov-gold))] hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-gold)/0.1)] flex items-center justify-center text-[hsl(var(--gov-gold-dark))] group-hover:scale-110 transition-transform">
-                      <Megaphone className="w-6 h-6" />
-                    </div>
+                    {/* Flat icon */}
+                    <Megaphone className="w-6 h-6 text-amber-600 group-hover:scale-110 transition-transform shrink-0" aria-hidden="true" />
                     <div>
-                      <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-gold-dark))] transition-colors tracking-tight">{t('other_sections.campaigns')}</h3>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.campaigns_desc')}</p>
+                      <h3 className="font-bold text-foreground group-hover:text-amber-700 transition-colors tracking-tight">{t('other_sections.campaigns')}</h3>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.campaigns_desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -599,12 +595,11 @@ export default function AdminDashboard() {
                   className="gov-card p-5 group hover:border-[hsl(var(--gov-blue-light))] hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-blue-light)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform">
-                      <Lightbulb className="w-6 h-6" />
-                    </div>
+                    {/* Flat icon */}
+                    <Lightbulb className="w-6 h-6 text-[hsl(var(--gov-blue))] group-hover:scale-110 transition-transform shrink-0" aria-hidden="true" />
                     <div>
                       <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors tracking-tight">{t('other_sections.suggestions')}</h3>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.suggestions_desc')}</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.suggestions_desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -618,12 +613,11 @@ export default function AdminDashboard() {
                   className="gov-card p-5 group hover:border-[hsl(var(--gov-green))] hover:shadow-lg transition-all duration-300"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--gov-green)/0.1)] flex items-center justify-center text-[hsl(var(--gov-green))] group-hover:scale-110 transition-transform">
-                      <Star className="w-6 h-6" />
-                    </div>
+                    {/* Flat icon */}
+                    <Star className="w-6 h-6 text-[hsl(var(--gov-green))] group-hover:scale-110 transition-transform shrink-0" aria-hidden="true" />
                     <div>
                       <h3 className="font-bold text-foreground group-hover:text-[hsl(var(--gov-green))] transition-colors tracking-tight">{t('other_sections.talents')}</h3>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.talents_desc')}</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('other_sections.talents_desc')}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -638,27 +632,27 @@ export default function AdminDashboard() {
         variants={itemVariants}
         className="bg-gradient-to-r from-[hsl(var(--gov-blue-dark))] to-slate-900 rounded-3xl p-6 text-white shadow-lg"
       >
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-              <Activity className="w-6 h-6" />
-            </div>
+            {/* Flat icon */}
+            <Activity className="w-6 h-6 text-white/80" aria-hidden="true" />
             <div>
               <h3 className="font-bold text-white">{t('footer.system_activity')}</h3>
               <p className="text-sm text-white/60">{t('footer.system_operational')}</p>
             </div>
           </div>
-          <div className="flex items-center gap-6">
+          {/* Stats en ligne — flex-wrap sur mobile */}
+          <div className="flex items-center gap-4 flex-wrap">
             <div className="text-center">
               <p className="text-2xl font-bold">{stats?.utilisateurs?.nouveaux ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.new_users')}</p>
             </div>
-            <div className="w-px h-10 bg-white/20" />
+            <div className="hidden sm:block w-px h-10 bg-white/20" />
             <div className="text-center">
               <p className="text-2xl font-bold">{stats?.reclamations?.enAttente ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.to_process')}</p>
             </div>
-            <div className="w-px h-10 bg-white/20" />
+            <div className="hidden sm:block w-px h-10 bg-white/20" />
             <div className="text-center">
               <p className="text-2xl font-bold">{stats?.evenements?.enCours ?? 0}</p>
               <p className="text-xs text-white/60">{t('footer.active_events')}</p>

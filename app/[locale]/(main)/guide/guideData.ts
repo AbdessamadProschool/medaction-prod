@@ -365,7 +365,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'Ciblage et niveau d\'urgence',
-              text: 'Sélectionnez le niveau d'urgence (Info, Vigilance, Critique) et la zone ciblée. Les alertes critiques (coupure d\'eau majeure, travaux bloquant une route principale) déclenchent des notifications instantanées.'
+              text: 'Sélectionnez le niveau d\'urgence (Info, Vigilance, Critique) et la zone ciblée. Les alertes critiques (coupure d\'eau majeure, travaux bloquant une route principale) déclenchent des notifications instantanées.'
             }
           ]
         }

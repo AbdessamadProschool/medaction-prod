@@ -36,7 +36,8 @@ export default getRequestConfig(async ({requestLocale}) => {
     'admin_reclamations.json',
     'admin_roles.json',
     'admin_settings.json',
-    'admin_users.json'
+    'admin_users.json',
+    'guide.json'
   ];
 
   let messages = {};

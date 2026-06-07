@@ -1957,7 +1957,15 @@
         "subtitle": "الإدارة الكاملة لمنصة Medaction",
         "export": "تصدير",
         "manage_admins": "إدارة المسؤولين",
-        "permissions": "الصلاحيات",
+        "permissions": {
+            "title": "الصلاحيات",
+            "subtitle": "إدارة الصلاحيات",
+            "new": "إضافة صلاحية",
+            "total": "مجموع الصلاحيات",
+            "active": "نشطة",
+            "inactive": "غير نشطة",
+            "groups": "مجموعات الصلاحيات"
+        },
         "system_status": {
             "title": "حالة النظام",
             "operational": "يعمل بشكل طبيعي",

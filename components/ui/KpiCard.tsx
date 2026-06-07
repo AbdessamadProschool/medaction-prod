@@ -40,6 +40,8 @@ export interface KpiCardProps {
   subValue?: number | string;
   /** Label de la sous-valeur */
   subLabel?: string;
+  /** Tableau de sous-statistiques */
+  subStats?: { label: string; value: number | string }[];
   /** Indice pour le stagger animation */
   index?: number;
   /** Classes CSS additionnelles */
@@ -57,6 +59,7 @@ export function KpiCard({
   changeType = 'neutral',
   subValue,
   subLabel,
+  subStats,
   index = 0,
   className,
   onClick,
@@ -130,17 +133,32 @@ export function KpiCard({
           {label}
         </p>
 
-        {/* Sous-valeur optionnelle */}
-        {subValue !== undefined && (
-          <div className="mt-3 flex items-center gap-2 border-t border-border/50 pt-3">
-            <span className="text-xs font-black text-foreground">
-              {typeof subValue === 'number' ? subValue.toLocaleString('fr-MA') : subValue}
-            </span>
-          {subLabel && (
-              <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                {subLabel}
-              </span>
+        {/* Sous-valeur(s) optionnelle(s) */}
+        {(subValue !== undefined || subStats !== undefined) && (
+          <div className="mt-3 flex items-center gap-4 border-t border-border/50 pt-3">
+            {subValue !== undefined && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black text-foreground">
+                  {typeof subValue === 'number' ? subValue.toLocaleString('fr-MA') : subValue}
+                </span>
+                {subLabel && (
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
+                    {subLabel}
+                  </span>
+                )}
+              </div>
             )}
+            
+            {subStats && subStats.map((stat, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="text-xs font-black text-foreground">
+                  {typeof stat.value === 'number' ? stat.value.toLocaleString('fr-MA') : stat.value}
+                </span>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>

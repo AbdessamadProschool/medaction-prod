@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import {
   Shield,
   ShieldCheck,
@@ -129,64 +130,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0 }
 };
 
-// Stat Card Component
-function StatCard({
-  title,
-  value,
-  icon: Icon,
-  trend,
-  trendValue,
-  color,
-  subStats,
-}: {
-  title: string;
-  value: number | string;
-  icon: React.ElementType;
-  trend?: 'up' | 'down';
-  trendValue?: string;
-  color: string;
-  subStats?: { label: string; value: number | string }[];
-}) {
-  // Derive flat icon color from gradient class
-  const iconColorClass = color.includes('gov-blue') ? 'text-[hsl(var(--gov-blue))]'
-    : color.includes('gov-green') ? 'text-[hsl(var(--gov-green))]'
-    : color.includes('orange') || color.includes('amber') ? 'text-amber-500'
-    : color.includes('red') || color.includes('rose') ? 'text-[hsl(var(--gov-red))]'
-    : 'text-gray-500';
-  return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ scale: 1.02, y: -4 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all"
-    >
-      <div className="flex items-start justify-between mb-4">
-        {/* Flat icon — no colored background */}
-        <Icon className={`w-7 h-7 ${iconColorClass}`} aria-hidden="true" />
-        {trend && (
-          <span className={`flex items-center gap-1 text-xs font-medium ${
-            trend === 'up' ? 'text-[hsl(var(--gov-green))]' : 'text-[hsl(var(--gov-red))]'
-          }`}>
-            {trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-            {trendValue}
-          </span>
-        )}
-      </div>
-      <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{title}</p>
-      
-      {subStats && subStats.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 grid grid-cols-2 gap-2">
-          {subStats.map((stat, i) => (
-            <div key={i}>
-              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </motion.div>
-  );
-}
+
 
 // Quick Action Button
 function QuickAction({
@@ -395,8 +339,8 @@ export default function SuperAdminDashboard() {
                 <ShieldCheck className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">{t('super_admin.title')}</h1>
-                <p className="text-white/75 text-sm">{t('super_admin.subtitle')}</p>
+                <h1 className="text-2xl font-bold text-white drop-shadow-sm">{t('super_admin.title')}</h1>
+                <p className="text-white/80 text-sm font-medium mt-1">{t('super_admin.subtitle')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -566,50 +510,54 @@ export default function SuperAdminDashboard() {
           </motion.div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard
-              title={t('super_admin.stats.total_users')}
+          <KpiGrid cols={4}>
+            <KpiCard
+              index={0}
+              label={t('super_admin.stats.total_users')}
               value={stats?.users.total || 0}
               icon={Users}
-              trend="up"
-              trendValue={`+${stats?.users.newThisMonth || 0} ${t('super_admin.stats.this_month')}`}
-              color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
+              change={stats?.users.newThisMonth || 0}
+              changeType="up"
+              variant="blue"
               subStats={[
                 { label: t('super_admin.stats.admins'), value: stats?.users.admins || 0 },
                 { label: t('super_admin.stats.citizens'), value: stats?.users.citoyens || 0 },
               ]}
             />
-            <StatCard
-              title={t('super_admin.stats.establishments')}
+            <KpiCard
+              index={1}
+              label={t('super_admin.stats.establishments')}
               value={stats?.content.etablissements || 0}
               icon={Building2}
-              color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
+              variant="green"
               subStats={[
                 { label: t('super_admin.stats.validated'), value: stats?.content.etablissementsValides || 0 },
                 { label: t('super_admin.stats.events'), value: stats?.content.evenements || 0 },
               ]}
             />
-            <StatCard
-              title={t('super_admin.stats.reclamations')}
+            <KpiCard
+              index={2}
+              label={t('super_admin.stats.reclamations')}
               value={stats?.reclamations.total || 0}
               icon={MessageSquare}
-              color="from-orange-500 to-amber-600"
+              variant="gold"
               subStats={[
                 { label: t('super_admin.stats.pending'), value: stats?.reclamations.enAttente || 0 },
                 { label: t('super_admin.stats.urgent'), value: stats?.reclamations.urgentes || 0 },
               ]}
             />
-            <StatCard
-              title={t('super_admin.stats.content')}
+            <KpiCard
+              index={3}
+              label={t('super_admin.stats.content')}
               value={(stats?.content.actualites || 0) + (stats?.content.articles || 0)}
               icon={Newspaper}
-              color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
+              variant="red"
               subStats={[
                 { label: t('super_admin.stats.news'), value: stats?.content.actualites || 0 },
                 { label: t('super_admin.stats.articles'), value: stats?.content.articles || 0 },
               ]}
             />
-          </div>
+          </KpiGrid>
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

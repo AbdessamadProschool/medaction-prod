@@ -216,7 +216,7 @@ export default function ProfilPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
         <div className="max-w-4xl mx-auto px-4 space-y-6 animate-pulse">
           {/* Header skeleton */}
           <div className="h-9 w-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
@@ -262,7 +262,7 @@ export default function ProfilPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 relative z-0">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 relative z-0">
       {/* Background Pattern */}
       <div 
         className="absolute inset-0 z-[-1] opacity-[0.08] pointer-events-none"
@@ -277,8 +277,8 @@ export default function ProfilPage() {
       <div className="max-w-4xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-          <p className="text-gray-500 mt-1">{t('subtitle')}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</p>
         </div>
 
         <div className="gov-card overflow-hidden">
@@ -361,7 +361,7 @@ export default function ProfilPage() {
           </div>
 
           {/* Tabs */}
-          <div className="border-b border-gray-200 overflow-x-auto scrollbar-hide">
+          <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto scrollbar-hide">
             <div className="flex min-w-max">
               {tabs.map((tab) => (
                 <button
@@ -369,8 +369,8 @@ export default function ProfilPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-gov-blue text-gov-blue'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                      ? 'border-[hsl(var(--gov-blue))] text-[hsl(var(--gov-blue))]'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
@@ -395,7 +395,7 @@ export default function ProfilPage() {
                 >
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.firstname')}</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.firstname')}</label>
                       <input
                         {...profileForm.register('prenom')}
                         className="gov-input"
@@ -405,7 +405,7 @@ export default function ProfilPage() {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.lastname')}</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.lastname')}</label>
                       <input
                         {...profileForm.register('nom')}
                         className="gov-input"
@@ -417,18 +417,18 @@ export default function ProfilPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.email')}</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.email')}</label>
                     <input
                       type="email"
                       value={profile?.email || ''}
                       disabled
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
                     />
                     <p className="mt-1 text-xs text-gray-400">{t('form.email_hint')}</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.phone')}</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.phone')}</label>
                     <input
                       {...profileForm.register('telephone')}
                       placeholder={t('form.phone_placeholder')}
@@ -461,10 +461,10 @@ export default function ProfilPage() {
                   onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}
                   className="space-y-6 max-w-md"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900">{t('form.change_password_title')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('form.change_password_title')}</h3>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.current_password')}</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.current_password')}</label>
                     <input
                       type="password"
                       {...passwordForm.register('currentPassword')}
@@ -476,7 +476,7 @@ export default function ProfilPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.new_password')}</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.new_password')}</label>
                     <input
                       type="password"
                       {...passwordForm.register('newPassword')}
@@ -488,7 +488,7 @@ export default function ProfilPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('form.confirm_password')}</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">{t('form.confirm_password')}</label>
                     <input
                       type="password"
                       {...passwordForm.register('confirmPassword')}
@@ -518,7 +518,7 @@ export default function ProfilPage() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900">{t('notifications.title')}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('notifications.title')}</h3>
                   
                   <div className="space-y-4">
                     {[
@@ -526,7 +526,7 @@ export default function ProfilPage() {
                       { id: 'email_evenements', label: t('notifications.events'), description: t('notifications.events_desc') },
                       { id: 'email_actualites', label: t('notifications.news'), description: t('notifications.news_desc') },
                     ].map((item) => (
-                      <div key={item.id} className="flex items-start gap-4 p-4 border border-gray-200 rounded-xl hover:border-gray-300 transition-colors">
+                      <div key={item.id} className="flex items-start gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
                         <input
                           type="checkbox"
                           id={item.id}
@@ -535,8 +535,8 @@ export default function ProfilPage() {
                           className="mt-1 w-5 h-5 rounded border-gray-300 text-gov-blue focus:ring-gov-blue"
                         />
                         <label htmlFor={item.id} className="flex-1 cursor-pointer">
-                          <p className="font-medium text-gray-900">{item.label}</p>
-                          <p className="text-sm text-gray-500">{item.description}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{item.label}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
                         </label>
                       </div>
                     ))}

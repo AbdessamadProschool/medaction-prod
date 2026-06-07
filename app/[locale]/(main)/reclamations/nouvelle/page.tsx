@@ -393,7 +393,7 @@ export default function NouvelleReclamationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/50 p-6 mb-8"
+            className="bg-white dark:bg-gray-800 shadow-xl shadow-[hsl(var(--gov-blue))/0.05] rounded-[2rem] border border-gray-100 dark:border-gray-700 p-6 mb-8 relative z-10"
           >
             <div className="flex items-center justify-between">
               {steps.map((step, index) => {
@@ -410,7 +410,7 @@ export default function NouvelleReclamationPage() {
                             ? 'bg-[hsl(var(--gov-green))] text-white shadow-lg shadow-[hsl(var(--gov-green)/0.4)]'
                             : isActive
                             ? 'bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] text-white shadow-lg shadow-blue-200'
-                            : 'bg-gray-100 text-gray-400'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                         }`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -430,11 +430,11 @@ export default function NouvelleReclamationPage() {
                       </motion.div>
                       <div className="mt-3 text-center">
                         <p className={`font-semibold text-sm ${
-                          isActive ? 'text-[hsl(var(--gov-blue))]' : isCompleted ? 'text-[hsl(var(--gov-green))]' : 'text-gray-400'
+                          isActive ? 'text-[hsl(var(--gov-blue))]' : isCompleted ? 'text-[hsl(var(--gov-green))]' : 'text-gray-500 dark:text-gray-400'
                         }`}>
                           {step.title}
                         </p>
-                        <p className="text-xs text-gray-400 mt-0.5 hidden sm:block">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">
                           {step.description}
                         </p>
                       </div>

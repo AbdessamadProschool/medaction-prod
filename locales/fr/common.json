@@ -5379,7 +5379,15 @@
         "subtitle": "Gestion complète de la plateforme Medaction",
         "export": "Exporter",
         "manage_admins": "Gérer les Administrateurs",
-        "permissions": "Permissions",
+        "permissions": {
+            "title": "Permissions",
+            "subtitle": "Gestion des permissions du système",
+            "new": "Nouvelle permission",
+            "total": "Total des permissions",
+            "active": "Actives",
+            "inactive": "Inactives",
+            "groups": "Groupes de permissions"
+        },
         "system_status": {
             "title": "État du Système",
             "operational": "Opérationnel",

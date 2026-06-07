@@ -192,6 +192,11 @@ export default function GovHeader() {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/guide" className="hover:text-[#ebd281] transition-colors flex items-center gap-1 font-bold">
+              <BookOpen size={12} className="text-gov-gold" />
+              {t('nav.guide')}
+            </Link>
+            <span className="text-slate-700">|</span>
             <Link href="/accessibilite" className="hover:text-white transition-colors">{t('nav.accessibilite')}</Link>
             <span className="text-slate-700">|</span>
             <Link href="/contact" className="hover:text-white transition-colors">{t('nav.contact')}</Link>

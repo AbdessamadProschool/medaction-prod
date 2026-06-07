@@ -50,54 +50,6 @@ export default function AnnouncementModal() {
     }
   };
 
-'use client';
-
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import { X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-
-interface AnnouncementConfig {
-  isActive: boolean;
-  title: string;
-  message: string;
-  showOncePerSession: boolean;
-}
-
-export default function AnnouncementModal() {
-  const t = useTranslations('announcement_modal');
-  const [isOpen, setIsOpen] = useState(false);
-  const [config, setConfig] = useState<AnnouncementConfig | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const checkAndShow = async () => {
-      try {
-        const res = await fetch('/api/settings/announcement');
-        const data = await res.json();
-        setConfig(data);
-
-        if (data.isActive) {
-          // Délai d'apparition élégant
-          setTimeout(() => setIsOpen(true), 1500);
-        }
-      } catch (error) {
-        console.error('Failed to load announcement', error);
-      }
-    };
-
-    checkAndShow();
-  }, []);
-
-  const handleClose = () => {
-    setIsOpen(false);
-    if (config?.showOncePerSession) {
-      sessionStorage.setItem('announcement_seen', 'true');
-    }
-  };
-
   if (!mounted) return null;
 
   // Détection basique pour changer la police si Arabe présent

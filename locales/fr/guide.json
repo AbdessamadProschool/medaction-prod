@@ -1,31 +1,33 @@
 {
-  "title": "Guide Rapide",
-  "subtitle": "Découvrez comment utiliser le portail",
-  "start": "Commencer le guide",
-  "next": "Suivant",
-  "prev": "Précédent",
-  "finish": "Terminer",
-  "skip": "Passer",
-  "steps": {
-    "home": {
-      "title": "Tableau de Bord Citoyen",
-      "description": "Découvrez en un coup d'œil les chiffres clés de la province et filtrez rapidement les événements ou projets par secteur ou commune."
-    },
-    "reclamation": {
-      "title": "Dépôt de Réclamation",
-      "description": "Signalez facilement un problème. Joignez une photo, localisez l'incident sur la carte interactive et suivez son traitement en temps réel par les autorités."
-    },
-    "news": {
-      "title": "Actualités & Événements",
-      "description": "Restez informé des alertes importantes, participez aux événements à venir et soutenez les campagnes locales de Médiouna."
-    },
-    "map": {
-      "title": "Explorateur de Carte",
-      "description": "Utilisez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et les équipements de votre région."
-    },
-    "participation": {
-      "title": "Participation Citoyenne",
-      "description": "Proposez vos idées d'amélioration ou inscrivez-vous en tant que talent local pour contribuer activement au développement et au rayonnement de la province."
+  "guide": {
+    "title": "Guide Rapide",
+    "subtitle": "Découvrez comment utiliser le portail",
+    "start": "Commencer le guide",
+    "next": "Suivant",
+    "prev": "Précédent",
+    "finish": "Terminer",
+    "skip": "Passer",
+    "steps": {
+      "home": {
+        "title": "Tableau de Bord Citoyen",
+        "description": "Découvrez en un coup d'œil les chiffres clés de la province et filtrez rapidement les événements ou projets par secteur ou commune."
+      },
+      "reclamation": {
+        "title": "Dépôt de Réclamation",
+        "description": "Signalez facilement un problème. Joignez une photo, localisez l'incident sur la carte interactive et suivez son traitement en temps réel par les autorités."
+      },
+      "news": {
+        "title": "Actualités & Événements",
+        "description": "Restez informé des alertes importantes, participez aux événements à venir et soutenez les campagnes locales de Médiouna."
+      },
+      "map": {
+        "title": "Explorateur de Carte",
+        "description": "Utilisez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et les équipements de votre région."
+      },
+      "participation": {
+        "title": "Participation Citoyenne",
+        "description": "Proposez vos idées d'amélioration ou inscrivez-vous en tant que talent local pour contribuer activement au développement et au rayonnement de la province."
+      }
     }
   }
 }

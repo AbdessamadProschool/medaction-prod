@@ -522,6 +522,7 @@
     },
     "nav": {
         "home": "Accueil",
+        "guide": "Guide",
         "etablissements": "Établissements",
         "reclamations": "Réclamations",
         "evenements": "Événements",

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { X, ChevronRight, ChevronLeft, Calendar, Building2, Megaphone, Users, LayoutDashboard, Flag, MapPin, CheckCircle2 } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 
 const STEPS_DATA = [
@@ -75,18 +76,19 @@ export default function UserGuideModal() {
 
   return (
     <>
-      {/* Floating Action Button Trigger */}
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 end-6 z-[90] w-14 h-14 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-full shadow-2xl flex items-center justify-center text-[#0a3b68] hover:scale-110 transition-transform ring-4 ring-white/50 group"
-        aria-label="Guide Utilisateur"
-      >
-        <div className="absolute inset-0 rounded-full animate-ping bg-[#ebd281] opacity-20"></div>
-        <span className="text-2xl font-black italic">?</span>
-      </motion.button>
+      {/* Floating Action Button Trigger Redirects to /guide */}
+      <Link href="/guide">
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 2, duration: 0.5 }}
+          className="fixed bottom-6 end-6 z-[90] w-14 h-14 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-full shadow-2xl flex items-center justify-center text-[#0a3b68] hover:scale-110 transition-transform ring-4 ring-white/50 cursor-pointer group"
+          aria-label="Guide Utilisateur"
+        >
+          <div className="absolute inset-0 rounded-full animate-ping bg-[#ebd281] opacity-20"></div>
+          <span className="text-2xl font-black italic">?</span>
+        </motion.div>
+      </Link>
 
       <AnimatePresence>
         {isOpen && (

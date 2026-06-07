@@ -393,7 +393,7 @@ export default function NouvelleReclamationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-[hsl(var(--gov-blue-dark)/0.08)] border border-white p-6 mb-8"
+            className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/50 p-6 mb-8"
           >
             <div className="flex items-center justify-between">
               {steps.map((step, index) => {

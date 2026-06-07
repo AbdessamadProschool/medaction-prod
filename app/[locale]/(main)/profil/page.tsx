@@ -328,10 +328,10 @@ export default function ProfilPage() {
               </div>
 
               {/* Info */}
-              <div className="text-white">
-                <h2 className="text-2xl font-bold">{profile?.prenom} {profile?.nom}</h2>
-                <p className="text-white/80">{profile?.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-gov-gold text-gray-900 rounded-full text-sm font-medium">
+              <div className="text-white drop-shadow-md">
+                <h2 className="text-2xl font-bold text-white drop-shadow-sm">{profile?.prenom} {profile?.nom}</h2>
+                <p className="text-white/90 font-medium drop-shadow-sm">{profile?.email}</p>
+                <span className="inline-block mt-2 px-3 py-1 bg-gov-gold text-gray-900 rounded-full text-sm font-bold shadow-md border border-yellow-500/20">
                   {getRoleLabel(profile?.role || '')}
                 </span>
               </div>

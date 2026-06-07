@@ -143,6 +143,7 @@ export default function AdminDashboard() {
   const t = useTranslations('admin.dashboard');
   const tCommon = useTranslations('common');
   const { can } = usePermission();
+  const locale = useLocale();
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, isLoading: loading, mutate } = useData('/api/admin/stats', {
@@ -495,18 +496,28 @@ export default function AdminDashboard() {
           </div>
           {chartData?.evenementsParSecteur && (
             <MiniBarChart 
-              data={chartData.evenementsParSecteur.map((item: any, i: any) => ({
-                label: item.secteur,
-                value: item.count,
-                color: [
-                  'hsl(var(--gov-blue))', 
-                  'hsl(var(--gov-green))', 
-                  'hsl(var(--gov-yellow))', 
-                  'hsl(var(--gov-red))',
-                  'hsl(var(--gov-muted))',
-                  '#8B5CF6'
-                ][i % 6]
-              }))}
+              data={chartData.evenementsParSecteur.map((item: any, i: any) => {
+                const sectorMap: Record<string, string> = {
+                  'EDUCATION': locale === 'ar' ? 'التعليم' : 'Éducation',
+                  'SANTE': locale === 'ar' ? 'الصحة' : 'Santé',
+                  'SPORT': locale === 'ar' ? 'الرياضة' : 'Sport',
+                  'SOCIAL': locale === 'ar' ? 'الشؤون الاجتماعية' : 'Social',
+                  'CULTUREL': locale === 'ar' ? 'الثقافة' : 'Culture',
+                  'AUTRE': locale === 'ar' ? 'أخرى' : 'Autre',
+                };
+                return {
+                  label: sectorMap[item.secteur] || item.secteur,
+                  value: item.count,
+                  color: [
+                    'hsl(var(--gov-blue))', 
+                    'hsl(var(--gov-green))', 
+                    'hsl(var(--gov-yellow))', 
+                    'hsl(var(--gov-red))',
+                    'hsl(var(--gov-muted))',
+                    '#8B5CF6'
+                  ][i % 6]
+                };
+              })}
             />
           )}
         </motion.div>
@@ -527,18 +538,27 @@ export default function AdminDashboard() {
           </div>
           {chartData?.reclamationsParStatut && (
             <DonutChart
-              data={chartData.reclamationsParStatut.map((item: any, i: any) => ({
-                label: item.statut.replace('_', ' '),
-                value: item.count,
-                color: [
-                  'hsl(var(--gov-blue))', 
-                  'hsl(var(--gov-green))', 
-                  'hsl(var(--gov-yellow))', 
-                  'hsl(var(--gov-red))',
-                  'hsl(var(--gov-muted))',
-                  '#8B5CF6'
-                ][i % 6]
-              }))}
+              data={chartData.reclamationsParStatut.map((item: any, i: any) => {
+                const statusMap: Record<string, string> = {
+                  'EN_ATTENTE': locale === 'ar' ? 'في الانتظار' : 'En attente',
+                  'EN_COURS': locale === 'ar' ? 'قيد الإنجاز' : 'En cours',
+                  'RESOLUE': locale === 'ar' ? 'تم الحل' : 'Résolue',
+                  'REJETEE': locale === 'ar' ? 'مرفوضة' : 'Rejetée',
+                  'CLOTUREE': locale === 'ar' ? 'مغلقة' : 'Clôturée',
+                };
+                return {
+                  label: statusMap[item.statut] || item.statut.replace('_', ' '),
+                  value: item.count,
+                  color: [
+                    'hsl(var(--gov-blue))', 
+                    'hsl(var(--gov-green))', 
+                    'hsl(var(--gov-yellow))', 
+                    'hsl(var(--gov-red))',
+                    'hsl(var(--gov-muted))',
+                    '#8B5CF6'
+                  ][i % 6]
+                };
+              })}
             />
           )}
         </motion.div>

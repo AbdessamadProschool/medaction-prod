@@ -1957,6 +1957,7 @@
         "subtitle": "الإدارة الكاملة لمنصة Medaction",
         "export": "تصدير",
         "manage_admins": "إدارة المسؤولين",
+        "permissions": "الصلاحيات",
         "system_status": {
             "title": "حالة النظام",
             "operational": "يعمل بشكل طبيعي",

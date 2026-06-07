@@ -28,7 +28,7 @@ export function MiniBarChart({ data }: { data: { label: string; value: number; c
             type="number" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
+            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--foreground))' }} 
           />
           <YAxis 
             dataKey="label" 
@@ -36,7 +36,7 @@ export function MiniBarChart({ data }: { data: { label: string; value: number; c
             width={100} 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--muted-foreground))' }} 
+            tick={{ fontSize: 10, fontWeight: 'bold', fill: 'hsl(var(--foreground))' }} 
           />
           <RechartsTooltip 
             cursor={{ fill: 'hsl(var(--muted)/0.3)' }}

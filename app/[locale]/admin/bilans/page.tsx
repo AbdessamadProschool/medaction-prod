@@ -404,7 +404,7 @@ export default function BilansPage() {
       >
         <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center border border-[hsl(var(--gov-blue))/0.1] group-hover:scale-110 transition-transform shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Calendar className="w-7 h-7 text-[hsl(var(--gov-blue))]" />
             </div>
             <div>
@@ -416,7 +416,7 @@ export default function BilansPage() {
 
         <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-gov-blue flex items-center justify-center border border-gov-blue/30/10 group-hover:scale-110 transition-transform shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform">
               <ClipboardList className="w-7 h-7 text-gov-blue-dark" />
             </div>
             <div>
@@ -428,7 +428,7 @@ export default function BilansPage() {
 
         <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-gov-gold/10/10 flex items-center justify-center border border-gov-gold/30/10 group-hover:scale-110 transition-transform shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Megaphone className="w-7 h-7 text-gov-gold" />
             </div>
             <div>
@@ -440,7 +440,7 @@ export default function BilansPage() {
 
         <motion.div variants={itemVariants} whileHover={{ y: -5, scale: 1.02, transition: { duration: 0.2 } }} className="gov-stat-card group border-[hsl(var(--gov-green))/0.3] shadow-[hsl(var(--gov-green))/0.05]">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center border border-[hsl(var(--gov-green))/0.1] group-hover:scale-110 transition-transform shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-7 h-7 text-[hsl(var(--gov-green))]" />
             </div>
             <div>

@@ -370,8 +370,8 @@
   }
 
   .gov-stat-icon {
-    @apply absolute top-4 right-4 w-12 h-12 rounded-full;
-    @apply bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center;
+    @apply absolute top-4 right-4 w-12 h-12;
+    @apply flex items-center justify-center;
     @apply text-[hsl(var(--gov-blue))];
   }
 

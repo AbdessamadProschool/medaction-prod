@@ -186,16 +186,11 @@ export default function SuggestionsPage() {
           </motion.div>
         </div>
 
-        {/* Bottom curve */}
-        <div className="absolute bottom-0 w-full">
-          <svg viewBox="0 0 1440 80" className="relative w-full h-[50px] fill-[hsl(var(--background))]" preserveAspectRatio="none">
-            <path d="M0,0 C480,80 960,80 1440,0 L1440,80 L0,80 Z" />
-          </svg>
-        </div>
+        {/* Bottom curve enlevée pour un design plus propre */}
       </div>
 
       {/* ── Content ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pb-16">
 
         {/* Search & Filters */}
         <motion.form

@@ -393,7 +393,7 @@ export default function NouvelleReclamationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 mb-8"
+            className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-[hsl(var(--gov-blue-dark)/0.08)] border border-white p-6 mb-8"
           >
             <div className="flex items-center justify-between">
               {steps.map((step, index) => {
@@ -460,7 +460,7 @@ export default function NouvelleReclamationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
+            className="bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-50 overflow-hidden"
           >
             {/* Form Header */}
             <div className="px-6 sm:px-8 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">

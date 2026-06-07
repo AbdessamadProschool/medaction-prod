@@ -176,8 +176,8 @@ export default function SuggestionModal({ isOpen, onClose, onSuccess }: Suggesti
                       <Lightbulb className="w-6 h-6 text-[hsl(var(--gov-gold))]" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-extrabold tracking-tight font-outfit">{t('modal_title')}</h2>
-                      <p className="text-white/60 text-xs font-medium mt-0.5">{t('modal_subtitle')}</p>
+                      <h2 className="text-xl font-extrabold tracking-tight font-outfit text-white">{t('modal_title')}</h2>
+                      <p className="text-white/80 text-xs font-medium mt-0.5">{t('modal_subtitle')}</p>
                     </div>
                   </div>
                   <button

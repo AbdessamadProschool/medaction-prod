@@ -42,17 +42,34 @@ const AnimatedIcons = () => {
   );
 };
 
+import { useLocale } from 'next-intl';
+
 export default function PageLoader({ 
-  message = 'Chargement en cours...', 
+  message, 
   variant = 'default' 
 }: PageLoaderProps) {
+  const locale = useLocale();
   const [currentPhrase, setCurrentPhrase] = useState(0);
-  const phrases = [
+  
+  const defaultMessage = locale === 'ar' ? 'جاري التحميل...' : 'Chargement en cours...';
+  const displayMessage = message || defaultMessage;
+
+  const phrases = locale === 'ar' ? [
+    'جاري تجهيز مساحتك...',
+    'تحميل البيانات...',
+    'الاتصال بالخدمات...',
+    'شبه جاهز...'
+  ] : [
     'Préparation de votre espace...',
     'Chargement des données...',
     'Connexion aux services...',
     'Presque prêt...',
   ];
+
+  const titleAr = 'بوابة مديونة';
+  const titleFr = 'PORTAIL MEDIOUNA';
+  const subAr = 'عمالة إقليم مديونة';
+  const subFr = 'Province de Médiouna';
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -76,7 +93,7 @@ export default function PageLoader({
               <span className="text-white font-bold text-sm">M</span>
             </div>
           </div>
-          <span className="text-gray-600 text-sm font-medium">{message}</span>
+          <span className="text-gray-600 text-sm font-medium">{displayMessage}</span>
         </motion.div>
       </div>
     );
@@ -114,7 +131,7 @@ export default function PageLoader({
             />
           </div>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{message}</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{displayMessage}</h3>
         <div className="flex items-center justify-center gap-1.5">
           {[0, 1, 2].map((i) => (
             <motion.div
@@ -202,11 +219,18 @@ export default function PageLoader({
           transition={{ delay: 0.5 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl font-bold tracking-wider mb-2">
-            <span className="text-white">PORTAIL </span>
-            <span className="text-gov-gold">MEDIOUNA</span>
-          </h1>
-          <p className="text-white/50 text-sm">Province de Médiouna</p>
+          {locale === 'ar' ? (
+            <h1 className="text-3xl font-bold tracking-wider mb-2 font-cairo">
+              <span className="text-gov-gold">بوابة </span>
+              <span className="text-white">مديونة</span>
+            </h1>
+          ) : (
+            <h1 className="text-3xl font-bold tracking-wider mb-2">
+              <span className="text-white">PORTAIL </span>
+              <span className="text-gov-gold">MEDIOUNA</span>
+            </h1>
+          )}
+          <p className="text-white/50 text-sm">{locale === 'ar' ? subAr : subFr}</p>
         </motion.div>
 
         {/* Simple progress bar */}

@@ -63,7 +63,8 @@ export default function ProfilPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Data fetching
-  const { data: profile, isLoading, mutate: mutateProfile } = useData(session ? '/api/users/me' : null);
+  const { data: rawProfile, isLoading, mutate: mutateProfile } = useData(session ? '/api/users/me' : null);
+  const profile = rawProfile?.data || rawProfile;
 
   // Mutations
   const { patch: updateProfileApi } = useMutation('/api/users/me');

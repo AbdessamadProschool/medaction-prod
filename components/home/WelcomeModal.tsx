@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { X, Sparkles } from 'lucide-react';
+import { X, ArrowLeft, Building2, Calendar, Megaphone, Users, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 
 export default function WelcomeModal() {
@@ -13,25 +13,13 @@ export default function WelcomeModal() {
 
   useEffect(() => {
     setMounted(true);
-    // Check localStorage only on client side
-    const hasSeen = localStorage.getItem('hasSeenWelcomePopup');
-    if (!hasSeen) {
-      // Small delay for entrance animation
-      const timer = setTimeout(() => setIsOpen(true), 1500);
-      return () => clearTimeout(timer);
-    }
+    // Afficher à chaque consultation du site (suppression du localStorage)
+    const timer = setTimeout(() => setIsOpen(true), 1500);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleClose = (dontShowAgain = false) => {
+  const handleClose = () => {
     setIsOpen(false);
-    if (dontShowAgain) {
-      localStorage.setItem('hasSeenWelcomePopup', 'true');
-    } else {
-      // Even if they just close it, we counts it as seen for this session?
-      // Usually "Welcome" popups are annoying if they come back every refresh.
-      // So we set it to true anyway.
-      localStorage.setItem('hasSeenWelcomePopup', 'true');
-    }
   };
 
   if (!mounted) return null;
@@ -39,14 +27,14 @@ export default function WelcomeModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-[hsl(var(--gov-blue-dark)/0.72)]"
-            onClick={() => handleClose(true)}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={handleClose}
           />
 
           {/* Modal */}
@@ -54,50 +42,63 @@ export default function WelcomeModal() {
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative bg-card rounded-lg shadow-lg max-w-lg w-full overflow-hidden border border-border"
+            className="relative bg-[#ebd281] rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border-4 border-white/20"
           >
-            {/* Decoration Background */}
-            <div className="absolute top-0 inset-x-0 w-full h-32 bg-[hsl(var(--gov-blue))]" />
+            {/* Background Decorative Icons */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 text-[#0a3b68]">
+               <Calendar className="absolute top-16 left-4 w-16 h-16" strokeWidth={1} />
+               <Building2 className="absolute top-24 right-4 w-20 h-20" strokeWidth={1} />
+               <Megaphone className="absolute bottom-40 left-6 w-14 h-14" strokeWidth={1} />
+               <Users className="absolute bottom-20 right-8 w-16 h-16" strokeWidth={1} />
+            </div>
             
             {/* Close Button */}
             <button
-              onClick={() => handleClose(true)}
-              className="absolute top-4 end-4 p-2 bg-white/15 hover:bg-white/25 rounded-lg text-white transition-colors z-10"
-              aria-label={t('dont_show_again')}
+              onClick={handleClose}
+              className="absolute top-4 end-4 p-2 bg-[#0a3b68]/10 hover:bg-[#0a3b68]/20 rounded-full text-[#0a3b68] transition-colors z-20"
+              aria-label="Fermer"
             >
-              <X size={20} />
+              <X size={20} strokeWidth={2.5} />
             </button>
 
-            <div className="relative pt-12 px-8 pb-8 flex flex-col items-center text-center">
-              {/* Icon/Logo */}
-              <div className="w-20 h-20 bg-card rounded-lg shadow-md flex items-center justify-center mb-6">
-                 <Image src="/images/logo-portal-mediouna.png" alt="Logo" width={50} height={50} className="w-12 h-12 object-contain" />
+            <div className="relative pt-10 px-6 sm:px-10 pb-8 flex flex-col items-center text-center">
+              {/* Logo */}
+              <div className="mb-6 relative z-10">
+                 <Image src="/images/logo-portal-mediouna.png" alt="Logo" width={100} height={100} className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-md" />
               </div>
 
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                {t('title')}
-              </h2>
+              {/* Title Pill */}
+              <div className="bg-[#dfb22e] rounded-2xl px-6 py-3 mb-8 shadow-inner border border-white/20 relative z-10 w-full max-w-[90%]">
+                <h2 className="text-xl sm:text-2xl font-black text-[#0a3b68] leading-tight">
+                  {t('title')}
+                </h2>
+              </div>
 
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
-                {t('content')}
-              </p>
+              {/* Content */}
+              <div className="relative z-10 mb-8 space-y-4">
+                <p className="text-[#0a3b68] font-bold text-sm sm:text-base leading-relaxed whitespace-pre-line text-balance drop-shadow-sm">
+                  {t('content')}
+                </p>
+              </div>
 
-              <button
-                onClick={() => handleClose(true)}
-                className="w-full py-3.5 bg-[hsl(var(--gov-blue))] hover:bg-[hsl(var(--gov-blue-dark))] text-white rounded-lg font-semibold shadow-sm active:scale-[0.98] transition-colors flex items-center justify-center gap-2"
+              {/* Start Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleClose}
+                className="w-full max-w-[80%] py-4 bg-[#0a3b68] hover:bg-[#072a4c] text-white rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 relative z-10 overflow-hidden group"
               >
-                <Sparkles size={20} />
-                {t('start_button')}
-              </button>
-
-              <div className="mt-4">
-                 <button 
-                    onClick={() => handleClose(true)}
-                    className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                 >
-                    {t('dont_show_again')}
-                 </button>
-              </div>
+                <div className="absolute inset-0 bg-white/10 w-0 group-hover:w-full transition-all duration-300 ease-out" />
+                <span>{t('start_button')}</span>
+                <div className="bg-white/20 p-1.5 rounded-full">
+                  <ArrowLeft size={18} strokeWidth={3} className="rtl:rotate-180" />
+                </div>
+              </motion.button>
+            </div>
+            
+            {/* Bottom Graphic Decoration */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-20 pointer-events-none opacity-30 flex justify-center items-end">
+               <div className="w-16 h-24 bg-[#0a3b68] rounded-t-full absolute bottom-[-40px]" />
             </div>
           </motion.div>
         </div>

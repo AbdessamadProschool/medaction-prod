@@ -937,7 +937,7 @@
             "subtitle": "Gérez les articles et contenus de la plateforme",
             "create": "Nouvel Article",
             "create_title": "Nouvel Article",
-            "create_subtitle": "Rédigez un article pour la plateforme MedAction.",
+            "create_subtitle": "Rédigez un article pour le Portail Médiouna.",
             "back_list": "Retour aux articles",
             "search": "Rechercher un article...",
             "filters": "Filtres",
@@ -5377,7 +5377,7 @@
         "home": "Accueil",
         "dashboard_admin": "Tableau de Bord Admin",
         "title": "Administration Globale",
-        "subtitle": "Gestion complète de la plateforme Medaction",
+        "subtitle": "Gestion complète du Portail Médiouna",
         "export": "Exporter",
         "manage_admins": "Gérer les Administrateurs",
         "permissions": {

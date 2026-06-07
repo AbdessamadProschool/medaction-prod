@@ -1,6 +1,17 @@
+export interface StepHighlight {
+  top: string;
+  left: string;
+  width: string;
+  height: string;
+  tooltipFr: string;
+  tooltipAr: string;
+}
+
 export interface GuideStep {
   title: string;
   text: string;
+  image?: string;
+  highlight?: StepHighlight;
 }
 
 export interface GuideAlert {
@@ -36,17 +47,19 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'intro',
           title: 'Introduction au Portail',
-          subtitle: 'Bienvenue sur la plateforme officielle MedAction',
+          subtitle: 'Bienvenue sur le Portail Médiouna officiel',
           image: '/images/guide/home.png',
-          intro: 'La plateforme MedAction est le portail d\'information et de participation citoyenne de la Province de Médiouna. Elle permet à chaque citoyen et visiteur d\'accéder en toute transparence aux informations locales, de suivre les projets et événements publics, et de participer activement au développement de la province.',
+          intro: 'Le Portail Médiouna est la plateforme officielle d\'information et de participation citoyenne de la Province de Médiouna. Elle permet à chaque citoyen et visiteur d\'accéder en toute transparence aux informations locales, de suivre les projets et événements publics, et de participer activement au développement de la province.',
           steps: [
             {
               title: 'Exploration sans compte',
-              text: 'En tant que visiteur anonyme (consulteur), vous pouvez parcourir l\'annuaire complet des établissements publics, consulter la carte interactive, voir l\'agenda provincial, lire les actualités et consulter les suggestions citoyennes.'
+              text: 'En tant que visiteur anonyme (consulteur), vous pouvez parcourir l\'annuaire complet des établissements publics, consulter la carte interactive, voir l\'agenda provincial, lire les actualités et consulter les suggestions citoyennes.',
+              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'Transparence et Données Ouvertes',
-              text: 'Accédez aux statistiques publiques et aux bilans des actions menées par les autorités locales et les délégations provinciales.'
+              text: 'Accédez aux statistiques publiques et aux bilans des actions menées par les autorités locales et les délégations provinciales.',
+              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -65,15 +78,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Chiffres Clés',
-              text: 'Visualisez instantanément le nombre de réclamations soumises, le taux de résolution par les autorités et d\'autres statistiques de performance de la province.'
+              text: 'Visualisez instantanément le nombre de réclamations soumises, le taux de résolution par les autorités et d\'autres statistiques de performance de la province.',
+              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'Mises en Avant',
-              text: 'Consultez rapidement les derniers événements programmés, les actualités urgentes et les établissements évalués les plus actifs.'
+              text: 'Consultez rapidement les derniers événements programmés, les actualités urgentes et les établissements évalués les plus actifs.',
+              highlight: { top: '45%', left: '5%', width: '90%', height: '45%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
               title: 'Recherche Globale',
-              text: 'Utilisez le raccourci clavier Ctrl+K ou cliquez sur l\'icône loupe dans l\'en-tête pour rechercher instantanément un établissement public, un événement ou une actualité.'
+              text: 'Utilisez le raccourci clavier Ctrl+K ou cliquez sur l\'icône loupe dans l\'en-tête pour rechercher instantanément un établissement public, un événement ou une actualité.',
+              highlight: { top: '1.5%', left: '30%', width: '40%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
           ],
           alerts: [
@@ -92,19 +108,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Bascule 2D / 3D',
-              text: 'Cliquez sur le bouton 3D en haut à droite de la carte pour activer la vue en relief et naviguer à travers les reliefs et bâtiments de la province en maintenant le clic droit enfoncé.'
+              text: 'Cliquez sur le bouton 3D en haut à droite de la carte pour activer la vue en relief et naviguer à travers les reliefs et bâtiments de la province en maintenant le clic droit enfoncé.',
+              highlight: { top: '3%', left: '88%', width: '10%', height: '8%', tooltipFr: 'Activer la vue en relief 3D', tooltipAr: 'تفعيل العرض ثلاثي الأبعاد' }
             },
             {
               title: 'Filtres de recherche',
-              text: 'Affinez votre affichage grâce au panneau de contrôle : sélectionnez les communes (Médiouna, Tit Mellil, Lahraouiyine, etc.), choisissez des secteurs spécifiques (Santé, Éducation, Sport) ou filtrez selon la note des établissements.'
+              text: 'Affinez votre affichage grâce au panneau de contrôle : sélectionnez les communes (Médiouna, Tit Mellil, Lahraouiyine, etc.), choisissez des secteurs spécifiques (Santé, Éducation, Sport) ou filtrez selon la note des établissements.',
+              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'Clustering intelligent',
-              text: 'Les marqueurs se regroupent automatiquement lorsque vous zoomez en arrière pour garder une carte lisible. Cliquez sur un cluster pour zoomer directement sur la zone concernée.'
+              text: 'Les marqueurs se regroupent automatiquement lorsque vous zoomez en arrière pour garder une carte lisible. Cliquez sur un cluster pour zoomer directement sur la zone concernée.',
+              highlight: { top: '35%', left: '40%', width: '20%', height: '20%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
             },
             {
               title: 'Panneau latéral de détails',
-              text: 'Cliquez sur l\'icône d\'un établissement pour ouvrir le panneau latéral interactif et parcourir ses informations, ses événements programmés, ses actualités et les évaluations laissées par les citoyens.'
+              text: 'Cliquez sur l\'icône d\'un établissement pour ouvrir le panneau latéral interactif et parcourir ses informations, ses événements programmés, ses actualités et les évaluations laissées par les citoyens.',
+              highlight: { top: '10%', left: '72%', width: '26%', height: '80%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -123,15 +143,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Filtres avancés',
-              text: 'Recherchez par nom ou filtrez par type d\'établissement (Hôpital, Lycée, Administration, Terrain de sport) et par commune.'
+              text: 'Recherchez par nom ou filtrez par type d\'établissement (Hôpital, Lycée, Administration, Terrain de sport) et par commune.',
+              highlight: { top: '10%', left: '5%', width: '90%', height: '10%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'Fiches détaillées',
-              text: 'Consultez les horaires d\'ouverture, les adresses exactes, les numéros de contact et la liste des responsables.'
+              text: 'Consultez les horaires d\'ouverture, les adresses exactes, les numéros de contact et la liste des responsables.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'Abonnement aux notifications',
-              text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.'
+              text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -146,19 +169,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'Événements & Campagnes',
           subtitle: 'Participer à la vie de la communauté',
           image: '/images/guide/news.png',
-          intro: 'La plateforme MedAction centralise l\'ensemble des actions sociales, sportives, éducatives et culturelles portées par les délégations provinciales.',
+          intro: 'Le Portail Médiouna centralise l\'ensemble des actions sociales, sportives, éducatives et culturelles portées par les délégations provinciales.',
           steps: [
             {
               title: 'Agenda provincial',
-              text: 'Consultez l\'onglet Événements pour voir la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.'
+              text: 'Consultez l\'onglet Événements pour voir la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'Détail et inscription',
-              text: 'Chaque événement précise le nombre de places disponibles, le lieu et l\'organisateur. Vous pouvez copier le lien de l\'événement en un clic pour le partager avec vos proches.'
+              text: 'Chaque événement précise le nombre de places disponibles, le lieu et l\'organisateur. Vous pouvez copier le lien de l\'événement en un clic pour le partager avec vos proches.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
             },
             {
               title: 'Campagnes de Sensibilisation',
-              text: 'Suivez les campagnes de santé publique, de propreté et d\'éducation citoyenne menées dans la province de Médiouna.'
+              text: 'Suivez les campagnes de santé publique, de propreté et d\'éducation citoyenne menées dans la province de Médiouna.',
+              highlight: { top: '15%', left: '5%', width: '40%', height: '20%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
             }
           ],
           alerts: [
@@ -173,15 +199,17 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'Propositions & Talents',
           subtitle: 'Contribuer activement et découvrir nos forces',
           image: '/images/guide/participation.png',
-          intro: 'Médiouna regorge de talents et d\'idées novatrices. MedAction offre un espace d\'expression et de valorisation pour la communauté.',
+          intro: 'Médiouna regorge de talents et d\'idées novatrices. Le Portail Médiouna offre un espace d\'expression et de valorisation pour la communauté.',
           steps: [
             {
               title: 'Boîte à suggestions',
-              text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées les plus populaires classées par catégorie.'
+              text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées les plus populaires classées par catégorie.',
+              highlight: { top: '15%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             },
             {
               title: 'Mise en valeur des talents',
-              text: 'Découvrez la section Talents locaux qui met en avant les réussites des jeunes et des associations de la région dans les domaines culturels, scientifiques et sportifs.'
+              text: 'Découvrez la section Talents locaux qui met en avant les réussites des jeunes et des associations de la région dans les domaines culturels, scientifiques et sportifs.',
+              highlight: { top: '15%', left: '52%', width: '45%', height: '65%', tooltipFr: 'Talents de Médiouna', tooltipAr: 'مواهب وكفاءات إقليم مديونة' }
             }
           ],
           alerts: [
@@ -203,19 +231,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'Inscription & Profil',
           subtitle: 'Créer votre compte et configurer vos alertes',
           image: '/images/guide/home.png',
-          intro: 'En créant votre compte citoyen MedAction, vous devenez un acteur actif du développement de votre commune. Vous accédez à un espace personnel personnalisé.',
+          intro: 'En créant votre compte citoyen sur le Portail Médiouna, vous devenez un acteur actif du développement de votre commune. Vous accédez à un espace personnel personnalisé.',
           steps: [
             {
               title: 'Création de compte',
-              text: 'Cliquez sur le bouton "Connexion" puis "S\'inscrire". Saisissez votre nom, email, téléphone, et sélectionnez votre commune de résidence au sein de la province de Médiouna.'
+              text: 'Cliquez sur le bouton "Connexion" puis "S\'inscrire". Saisissez votre nom, email, téléphone, et sélectionnez votre commune de résidence au sein de la province de Médiouna.',
+              highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
             },
             {
               title: 'Personnalisation du profil',
-              text: 'Choisissez vos secteurs d\'intérêt (Santé, Éducation, Environnement, Transport) pour recevoir en priorité les alertes et événements de ces catégories.'
+              text: 'Choisissez vos secteurs d\'intérêt (Santé, Éducation, Environnement, Transport) pour recevoir en priorité les alertes et événements de ces catégories.',
+              highlight: { top: '35%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Abonnement aux secteurs d\'intérêt', tooltipAr: 'تحديد مجالات الاهتمام المفضل' }
             },
             {
               title: 'Système d\'activité et points',
-              text: 'Chaque action citoyenne constructive (signalement validé, suggestion populaire, participation à des campagnes) vous rapporte des points de citoyenneté active visible sur votre profil.'
+              text: 'Chaque action citoyenne constructive (signalement validé, suggestion populaire, participation à des campagnes) vous rapporte des points de citoyenneté active visible sur votre profil.',
+              highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
             }
           ],
           alerts: [
@@ -234,19 +265,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Initier le signalement',
-              text: 'Cliquez sur le bouton "Signaler un Incident" depuis l\'accueil ou votre tableau de bord.'
+              text: 'Cliquez sur le bouton "Signaler un Incident" depuis l\'accueil ou votre tableau de bord.',
+              highlight: { top: '2%', left: '78%', width: '18%', height: '6%', tooltipFr: 'Bouton de signalement', tooltipAr: 'زر إضافة شكاية جديدة' }
             },
             {
               title: 'Localisation précise',
-              text: 'Utilisez la carte interactive pour placer un repère exactement à l\'emplacement de l\'incident. Le système détectera automatiquement la commune correspondante.'
+              text: 'Utilisez la carte interactive pour placer un repère exactement à l\'emplacement de l\'incident. Le système détectera automatiquement la commune correspondante.',
+              highlight: { top: '65%', left: '15%', width: '70%', height: '22%', tooltipFr: 'Placer l\'incident sur la carte', tooltipAr: 'تحديد موقع الحادث بدقة' }
             },
             {
               title: 'Détails et photos',
-              text: 'Décrivez brièvement le problème et chargez une ou plusieurs photos réelles de l\'incident. Les photos permettent une intervention beaucoup plus rapide des équipes techniques.'
+              text: 'Décrivez brièvement le problème et chargez une ou plusieurs photos réelles de l\'incident. Les photos permettent une intervention beaucoup plus rapide des équipes techniques.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '35%', tooltipFr: 'Titre, description et photo preuve', tooltipAr: 'عنوان، وصف وإرفاق صورة الحادث' }
             },
             {
               title: 'Catégorisation et envoi',
-              text: 'Sélectionnez le secteur concerné et soumettez la réclamation. Elle sera immédiatement envoyée aux services de votre commune.'
+              text: 'Sélectionnez le secteur concerné et soumettez la réclamation. Elle sera immédiatement envoyée aux services de votre commune.',
+              highlight: { top: '52%', left: '15%', width: '70%', height: '10%', tooltipFr: 'Sélection du secteur', tooltipAr: 'اختيار تصنيف وقطاع الشكاية' }
             }
           ],
           alerts: [
@@ -265,19 +300,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Statut : Soumis',
-              text: 'Votre signalement a été enregistré avec succès et attend d\'être validé par les agents modérateurs de la commune.'
+              text: 'Votre signalement a été enregistré avec succès et attend d\'être validé par les agents modérateurs de la commune.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '10%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
             },
             {
               title: 'Statut : Assigné / En cours',
-              text: 'L\'autorité locale a validé le problème et l\'a attribué à une équipe technique ou une délégation sectorielle.'
+              text: 'L\'autorité locale a validé le problème et l\'a attribué à une équipe technique ou une délégation sectorielle.',
+              highlight: { top: '30%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Traitement ou affectation en cours', tooltipAr: 'شكاية مقبولة وقيد الإنجاز' }
             },
             {
               title: 'Messagerie intégrée',
-              text: 'Vous pouvez ajouter des commentaires à votre réclamation si vous avez de nouvelles informations, et lire les messages officiels de l\'agent en charge.'
+              text: 'Vous pouvez ajouter des commentaires à votre réclamation si vous avez de nouvelles informations, et lire les messages officiels de l\'agent en charge.',
+              highlight: { top: '55%', left: '10%', width: '80%', height: '35%', tooltipFr: 'Messagerie de suivi avec l\'agent', tooltipAr: 'تواصل مباشر بالتعليقات مع المسؤول' }
             },
             {
               title: 'Statut : Résolu',
-              text: 'Une fois le problème réglé, l\'autorité publie une photo de preuve. Vous recevez un email automatique et une notification sur la plateforme.'
+              text: 'Une fois le problème réglé, l\'autorité publie une photo de preuve. Vous recevez un email automatique et une notification sur la plateforme.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'Résolution confirmée par photo', tooltipAr: 'تأكيد الحل بصور ميدانية' }
             }
           ],
           alerts: [
@@ -292,19 +331,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'Boîte à Idées & Talents',
           subtitle: 'Proposer des projets et valoriser vos compétences',
           image: '/images/guide/participation.png',
-          intro: 'MedAction vous permet d\'influencer positivement l\'avenir de votre quartier en proposant des projets d\'intérêt général.',
+          intro: 'Le Portail Médiouna vous permet d\'influencer positivement l\'avenir de votre quartier en proposant des projets d\'intérêt général.',
           steps: [
             {
               title: 'Proposer une suggestion',
-              text: 'Rédigez une proposition d\'aménagement ou de projet culturel pour votre commune et soumettez-la aux votes de la communauté.'
+              text: 'Rédigez une proposition d\'aménagement ou de projet culturel pour votre commune et soumettez-la aux votes de la communauté.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
             },
             {
               title: 'Voter et débattre',
-              text: 'Soutenez les idées de vos concitoyens en votant pour elles et participez aux discussions dans la section commentaires.'
+              text: 'Soutenez les idées de vos concitoyens en votant pour elles et participez aux discussions dans la section commentaires.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
             },
             {
               title: 'Inscription des Talents',
-              text: 'Vous êtes artiste, athlète, scientifique, ou portez un projet associatif à Médiouna ? Inscrivez-vous dans la section Talents pour être mis en avant sur le portail.'
+              text: 'Vous êtes artiste, athlète, scientifique, ou portez un projet associatif à Médiouna ? Inscrivez-vous dans la section Talents pour être mis en avant sur le portail.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Enregistrement de profil talent', tooltipAr: 'تسجيل وتعريف المواهب المحلية' }
             }
           ],
           alerts: [
@@ -330,19 +372,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Réception et validation',
-              text: 'Consultez la file d\'attente de votre commune. Analysez le signalement, la localisation et la photo pour vérifier s\'il s\'agit d\'un incident réel situé sur votre territoire.'
+              text: 'Consultez la file d\'attente de votre commune. Analysez le signalement, la localisation et la photo pour vérifier s\'il s\'agit d\'un incident réel situé sur votre territoire.',
+              highlight: { top: '10%', left: '5%', width: '90%', height: '20%', tooltipFr: 'File de validation communale', tooltipAr: 'دراسة الشكايات الواردة للجماعة' }
             },
             {
               title: 'Changement de statut',
-              text: 'Passez le statut à "En cours de traitement" pour informer le citoyen que sa demande a été prise en compte et qu\'une intervention est planifiée.'
+              text: 'Passez le statut à "En cours de traitement" pour informer le citoyen que sa demande a été prise en compte et qu\'une intervention est planifiée.',
+              highlight: { top: '35%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Mise en traitement de l\'incident', tooltipAr: 'تحديث حالة الشكاية قيد المعالجة' }
             },
             {
               title: 'Assignation sectorielle',
-              text: 'Si le problème relève d\'une délégation spécifique (ex: coupure d\'eau pour la Lydec/ONEE, entretien d\'un lycée pour l\'Éducation), transférez le dossier à la délégation concernée en un clic.'
+              text: 'Si le problème relève d\'une délégation spécifique (ex: coupure d\'eau pour la Lydec/ONEE, entretien d\'un lycée pour l\'Éducation), transférez le dossier à la délégation concernée en un clic.',
+              highlight: { top: '55%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Affecter à une délégation', tooltipAr: 'إحالة الشكاية للمندوبية المختصة' }
             },
             {
               title: 'Clôture avec preuve',
-              text: 'Une fois le problème résolu sur le terrain, modifiez le statut à "Résolu" et chargez obligatoirement une photo constatant la fin des travaux. Saisissez une brève description de l\'action menée.'
+              text: 'Une fois le problème résolu sur le terrain, modifiez le statut à "Résolu" et chargez obligatoirement une photo constatant la fin des travaux. Saisissez une brève description de l\'action menée.',
+              highlight: { top: '75%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Clôturer avec photo preuve', tooltipAr: 'إغلاق الشكاية وإرفاق صورة الإثبات' }
             }
           ],
           alerts: [
@@ -361,11 +407,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Création d\'alerte',
-              text: 'Depuis votre panneau d\'administration, cliquez sur "Créer une alerte". Rédigez le titre et le corps de l\'annonce.'
+              text: 'Depuis votre panneau d\'administration, cliquez sur "Créer une alerte". Rédigez le titre et le corps de l\'annonce.',
+              highlight: { top: '10%', left: '15%', width: '70%', height: '40%', tooltipFr: 'Rédiger l\'alerte communale', tooltipAr: 'كتابة تفاصيل التنبيه المحلي' }
             },
             {
               title: 'Ciblage et niveau d\'urgence',
-              text: 'Sélectionnez le niveau d\'urgence (Info, Vigilance, Critique) et la zone ciblée. Les alertes critiques (coupure d\'eau majeure, travaux bloquant une route principale) déclenchent des notifications instantanées.'
+              text: 'Sélectionnez le niveau d\'urgence (Info, Vigilance, Critique) et la zone ciblée. Les alertes critiques (coupure d\'eau majeure, travaux bloquant une route principale) déclenchent des notifications instantanées.',
+              highlight: { top: '55%', left: '15%', width: '70%', height: '30%', tooltipFr: 'Urgence et ciblage géographique', tooltipAr: 'تحديد درجة الخطورة والنطاق المستهدف' }
             }
           ]
         }
@@ -385,15 +433,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Remplir le stepper de création',
-              text: 'Accédez à votre espace, cliquez sur "Nouvel Événement" et suivez les étapes du stepper interactif : Informations générales, Date et lieu, jauge de participants.'
+              text: 'Accédez à votre espace, cliquez sur "Nouvel Événement" et suivez les étapes du stepper interactif : Informations générales, Date et lieu, jauge de participants.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '50%', tooltipFr: 'Remplir les étapes de création', tooltipAr: 'ملء خطوات الاستمارة التفاعلية' }
             },
             {
               title: 'Localisation de l\'activité',
-              text: 'Associez l\'événement à un établissement public de votre secteur (ex: caravane de don du sang dans un hôpital de Tit Mellil).'
+              text: 'Associez l\'événement à un établissement public de votre secteur (ex: caravane de don du sang dans un hôpital de Tit Mellil).',
+              highlight: { top: '70%', left: '15%', width: '70%', height: '15%', tooltipFr: 'Géolocaliser l\'événement', tooltipAr: 'ربط النشاط بمرفق عمومي محدد' }
             },
             {
               title: 'Gestion des inscriptions',
-              text: 'Activez la jauge d\'inscription si les places sont limitées. Vous pourrez exporter la liste des participants au format Excel ou PDF.'
+              text: 'Activez la jauge d\'inscription si les places sont limitées. Vous pourrez exporter la liste des participants au format Excel ou PDF.',
+              highlight: { top: '45%', left: '30%', width: '40%', height: '15%', tooltipFr: 'Gérer les places et participants', tooltipAr: 'تدبير التسجيل وقائمة الحضور' }
             }
           ],
           alerts: [
@@ -419,15 +470,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Indicateurs de performance (KPIs)',
-              text: 'Consultez les taux de résolution globaux, le temps moyen de traitement par commune, et le taux de satisfaction des citoyens.'
+              text: 'Consultez les taux de résolution globaux, le temps moyen de traitement par commune, et le taux de satisfaction des citoyens.',
+              highlight: { top: '15%', left: '5%', width: '90%', height: '20%', tooltipFr: 'Performance globale de la province', tooltipAr: 'مؤشرات الأداء ورضا المواطنين' }
             },
             {
               title: 'Suivi des retards',
-              text: 'Identifiez immédiatement les réclamations en souffrance qui dépassent les délais réglementaires de traitement. Vous pouvez envoyer un signal de rappel automatique à l\'autorité communale en charge.'
+              text: 'Identifiez immédiatement les réclamations en souffrance qui dépassent les délais réglementaires de traitement. Vous pouvez envoyer un signal de rappel automatique à l\'autorité communale en charge.',
+              highlight: { top: '40%', left: '5%', width: '90%', height: '25%', tooltipFr: 'Alertes de retards de traitement', tooltipAr: 'متابعة الشكايات المتأخرة والتعثرات' }
             },
             {
               title: 'Bilan d\'activité trimestriel',
-              text: 'Générez des rapports synthétiques sur l\'activité globale de la province de Médiouna en vue des comités de direction.'
+              text: 'Générez des rapports synthétiques sur l\'activité globale de la province de Médiouna en vue des comités de direction.',
+              highlight: { top: '75%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Télécharger les rapports d\'activité', tooltipAr: 'تحميل تقارير الحصيلة الدورية' }
             }
           ]
         },
@@ -440,11 +494,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Activer la carte de chaleur (Heatmap)',
-              text: 'Affichez la concentration des réclamations citoyennes pour identifier visuellement les quartiers ou zones industrielles nécessitant des investissements d\'infrastructure.'
+              text: 'Affichez la concentration des réclamations citoyennes pour identifier visuellement les quartiers ou zones industrielles nécessitant des investissements d\'infrastructure.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '8%', tooltipFr: 'Activer le calque Heatmap', tooltipAr: 'تفعيل خريطة الشكايات الحرارية' }
             },
             {
               title: 'Superposition des secteurs',
-              text: 'Filtrez par secteur d\'activité (ex: Éclairage public, Eau et électricité, Déchets) pour superposer les couches de réclamations sur la carte des projets en cours.'
+              text: 'Filtrez par secteur d\'activité (ex: Éclairage public, Eau et électricité, Déchets) pour superposer les couches de réclamations sur la carte des projets en cours.',
+              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Filtrer par secteur d\'activité', tooltipAr: 'تراكب قطاعات الخدمات والشكايات' }
             }
           ],
           alerts: [
@@ -470,15 +526,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Invitation d\'agents',
-              text: 'Invitez de nouveaux membres du personnel (agents communaux, délégués sectoriels) en renseignant leur adresse email professionnelle.'
+              text: 'Invitez de nouveaux membres du personnel (agents communaux, délégués sectoriels) en renseignant leur adresse email professionnelle.',
+              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Inviter un agent public', tooltipAr: 'دعوة مستخدم أو موظف جديد' }
             },
             {
               title: 'Attribution des rôles',
-              text: 'Attribuez le rôle adéquat avec précision (Citoyen, Autorité Locale, Délégation, Gouverneur, Administrateur) et associez l\'agent à une commune ou une délégation sectorielle.'
+              text: 'Attribuez le rôle adéquat avec précision (Citoyen, Autorité Locale, Délégation, Gouverneur, Administrateur) et associez l\'agent à une commune ou une délégation sectorielle.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Formulaire d\'attribution de rôle', tooltipAr: 'نموذج تحديد الأدوار والصلاحيات' }
             },
             {
               title: 'Audit des logs de connexion',
-              text: 'Surveillez les activités système pour identifier les anomalies de sécurité ou les tentatives d\'accès non autorisées.'
+              text: 'Surveillez les activités système pour identifier les anomalies de sécurité ou les tentatives d\'accès non autorisées.',
+              highlight: { top: '70%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Salles d\'audit de sécurité', tooltipAr: 'مراقبة سجل العمليات والأمان' }
             }
           ],
           alerts: [
@@ -497,11 +556,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Ajouter un établissement',
-              text: 'Créez un nouvel établissement (école, hôpital, commissariat), placez-le sur la carte par coordonnées GPS, et affectez-lui un gestionnaire.'
+              text: 'Créez un nouvel établissement (école, hôpital, commissariat), placez-le sur la carte par coordonnées GPS, et affectez-lui un gestionnaire.',
+              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Créer un point d\'intérêt public', tooltipAr: 'إضافة مرفق عمومي جديد' }
             },
             {
               title: 'Modération des avis',
-              text: 'Consultez les évaluations et commentaires laissés par les citoyens. Supprimez tout contenu injurieux, diffamatoire ou contraire aux CGU de la plateforme.'
+              text: 'Consultez les évaluations et commentaires laissés par les citoyens. Supprimez tout contenu injurieux, diffamatoire ou contraire aux CGU de la plateforme.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '55%', tooltipFr: 'Liste des avis à modérer', tooltipAr: 'مراقبة وتقييم التعليقات والآراء' }
             }
           ]
         }
@@ -517,23 +578,25 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'intro',
           title: 'مقدمة عن البوابة',
-          subtitle: 'مرحباً بكم في منصة مديونة أكشن الرسمية',
+          subtitle: 'مرحباً بكم في بوابة مديونة الرسمية',
           image: '/images/guide/home.png',
-          intro: 'منصة مديونة أكشن هي البوابة الرسمية للإعلام والمشاركة المواطنة لإقليم مديونة. تتيح لكل مواطن وزائر الوصول بكل شفافية إلى المعلومات المحلية، ومتابعة المشاريع والأنشطة العمومية، والمساهمة الفعالة في تنمية الإقليم.',
+          intro: 'بوابة مديونة هي المنصة الرسمية للإعلام والمشاركة المواطنة لإقليم مديونة. تتيح لكل مواطن وزائر الوصول بكل شفافية إلى المعلومات المحلية، ومتابعة المشاريع والأنشطة العمومية، والمساهمة الفعالة في تنمية الإقليم.',
           steps: [
             {
               title: 'تصفح بدون حساب',
-              text: 'بصفتك زائراً غير مسجل، يمكنك تصفح الدليل الكامل للمرافق العمومية، والاطلاع على الخريطة التفاعلية، ومعرفة أجندة الإقليم، وقراءة الأخبار، والاطلاع على مقترحات المواطنين.'
+              text: 'بصفتك زائراً غير مسجل، يمكنك تصفح الدليل الكامل للمرافق العمومية، والاطلاع على الخريطة التفاعلية، ومعرفة أجندة الإقليم، وقراءة الأخبار، والاطلاع على مقترحات المواطنين.',
+              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'الشفافية والبيانات المفتوحة',
-              text: 'الوصول إلى الإحصائيات العامة وتقارير الحصيلة للأنشطة والتدخلات التي تقوم بها السلطات المحلية والمندوبيات الإقليمية.'
+              text: 'الوصول إلى الإحصائيات العامة وتقارير الحصيلة للأنشطة والتدخلات التي تقوم بها السلطات المحلية والمندوبيات الإقليمية.',
+              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'لتقديم شكاية، أو التصويت على المقترحات، أو نشر محتوى، ستحتاج إلى تسجيل الدخول أو إنشاء حساب مواطن مجاني.'
+              text: 'لتقديم شكاية، أو التصويت على المقترحات، ou نشر محتوى، ستحتاج إلى تسجيل الدخول أو إنشاء حساب مواطن مجاني.'
             }
           ]
         },
@@ -546,15 +609,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'الأرقام والشركاء',
-              text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.'
+              text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
+              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'المحتوى البارز',
-              text: 'تصفح سريعاً أحدث الأنشطة المبرمجة، والأخبار العاجلة، والمرافق الأكثر تفاعلاً وتقييماً من قبل المواطنين.'
+              text: 'تصفح سريعاً أحدث الأنشطة المبرمجة، والأخبار العاجلة، والمرافق الأكثر تفاعلاً وتقييماً من قبل المواطنين.',
+              highlight: { top: '45%', left: '5%', width: '90%', height: '45%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
-              title: 'البحث الشامل',
-              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.'
+              title: 'البحث الشaml',
+              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
+              highlight: { top: '1.5%', left: '30%', width: '40%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
           ],
           alerts: [
@@ -573,19 +639,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'التبديل بين 2D و 3D',
-              text: 'اضغط على زر 3D في أعلى يمين الخريطة لتفعيل العرض ثلاثي الأبعاد والتنقل عبر التضاريس والمباني بالإقليم من خلال الاستمرار بالضغط على زر الفأرة الأيمن.'
+              text: 'اضغط على زر 3D في أعلى يمين الخريطة لتفعيل العرض ثلاثي الأبعاد والتنقل عبر التضاريس والمباني بالإقليم من خلال الاستمرار بالضغط على زر الفأرة الأيمن.',
+              highlight: { top: '3%', left: '88%', width: '10%', height: '8%', tooltipFr: 'Activer la vue en relief 3D', tooltipAr: 'تفعيل العرض ثلاثي الأبعاد' }
             },
             {
               title: 'مرشحات البحث',
-              text: 'خصص عرض الخريطة عبر لوحة التحكم: اختر الجماعات (مديونة، تيط مليل، الهراويين، إلخ)، وحدد قطاعات معينة (الصحة، التعليم، الرياضة) أو صفّ حسب تقييمات المرافق.'
+              text: 'خصص عرض الخريطة عبر لوحة التحكم: اختر الجماعات (مديونة، تيط مليل، الهراويين، إلخ)، وحدد قطاعات معينة (الصحة، التعليم، الرياضة) أو صفّ حسب تقييمات المرافق.',
+              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'التجميع الذكي للمؤشرات',
-              text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجميع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.'
+              text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجميع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.',
+              highlight: { top: '35%', left: '40%', width: '20%', height: '20%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
             },
             {
               title: 'اللوحة الجانبية للتفاصيل',
-              text: 'اضغط على أيقونة أي مرفق لفتح اللوحة الجانبية التفاعلية واستعراض معلوماته، والأنشطة المبرمجة لديه، وآخر أخباره، والتقييمات المكتوبة من طرف المواطنين.'
+              text: 'اضغط على أيقونة أي مرفق لفتح اللوحة الجانبية التفاعلية واستعراض معلوماته، والأنشطة المبرمجة لديه، وآخر أخباره، والتقييمات المكتوبة من طرف المواطنين.',
+              highlight: { top: '10%', left: '72%', width: '26%', height: '80%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -604,15 +674,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'البحث والتصفية',
-              text: 'ابحث بالاسم أو حدد نوع المرفق (مستشفى، ثانوية، إدارة، ملعب رياضي) وقم بالتصفية حسب الجماعة الترابية التابع لها.'
+              text: 'ابحث بالاسم أو حدد نوع المرفق (مستشفى، ثانوية، إدارة، ملعب رياضي) وقم بالتصفية حسب الجماعة الترابية التابع لها.',
+              highlight: { top: '10%', left: '5%', width: '90%', height: '10%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'بطاقة معلومات المرفق',
-              text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل، بالإضافة إلى أسماء المسؤولين.'
+              text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل، بالإضافة إلى أسماء المسؤولين.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'الاشتراك في التنبيهات',
-              text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.'
+              text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -627,19 +700,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'الأنشطة والحملات',
           subtitle: 'المشاركة الفعالة في حياة المجتمع',
           image: '/images/guide/news.png',
-          intro: 'تجمع منصة مديونة أكشن كافة الأنشطة والمبادرات الاجتماعية، الرياضية، التعليمية والثقافية التي تشرف عليها المندوبيات الإقليمية.',
+          intro: 'تجمع منصة بوابة مديونة كافة الأنشطة والمبادرات الاجتماعية، الرياضية، التعليمية والثقافية التي تشرف عليها المندوبيات الإقليمية.',
           steps: [
             {
               title: 'أجندة الإقليم',
-              text: 'تصفح قائمة الأنشطة المبرمجة. تشير البطاقات بوضوح إلى حالة النشاط (مستقبلي، جارٍ حالياً، أو منتهٍ).'
+              text: 'تصفح قائمة الأنشطة المبرمجة. تشير البطاقات بوضوح إلى حالة النشاط (مستقبلي، جارٍ حالياً، أو منتهٍ).',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'التفاصيل والتسجيل',
-              text: 'يوضح كل نشاط عدد المقاعد المتاحة، المكان الدقيق، والجهة المنظمة. يمكنك نسخ الرابط لمشاركته مع عائلتك بنقرة واحدة.'
+              text: 'يوضح كل نشاط عدد المقاعد المتاحة، المكان الدقيق، والجهة المنظمة. يمكنك نسخ الرابط لمشاركته مع عائلتك بنقرة واحدة.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
             },
             {
               title: 'حملات التوعية',
-              text: 'تابع حملات الصحة العامة، النظافة والتربية البيئية المنظمة على مستوى تراب إقليم مديونة.'
+              text: 'تابع حملات الصحة العامة، النظافة والتربية البيئية المنظمة على مستوى تراب إقليم مديونة.',
+              highlight: { top: '15%', left: '5%', width: '40%', height: '20%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
             }
           ],
           alerts: [
@@ -654,15 +730,17 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'المقترحات والمواهب',
           subtitle: 'تقديم الأفكار والتعرف على كفاءات الإقليم',
           image: '/images/guide/participation.png',
-          intro: 'يزخر إقليم مديونة بالطاقات الشابة والأفكار الخلاقة. وتوفر المنصة فضاءً للتعبير والتقدير والتميز.',
+          intro: 'يزخر إقليم مديونة بالطاقات الشابة والأفكار الخلاقة. وتوفر البوابة فضاءً للتعبير والتقدير والتميز.',
           steps: [
             {
               title: 'صندوق المقترحات',
-              text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار الأكثر شعبية وتصويتاً حسب كل فئة.'
+              text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار الأكثر شعبية وتصويتاً حسب كل فئة.',
+              highlight: { top: '15%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             },
             {
               title: 'إبراز الكفاءات والمواهب',
-              text: 'اكتشف فضاء المواهب المحلية الذي يسلط الضوء على نجاحات الشباب والجمعيات النشيطة في العلوم، الثقافة، الفنون، والرياضة.'
+              text: 'اكتشف فضاء المواهب المحلية الذي يسلط الضوء على نجاحات الشباب والجمعيات النشيطة في العلوم، الثقافة، الفنون، والرياضة.',
+              highlight: { top: '15%', left: '52%', width: '45%', height: '65%', tooltipFr: 'Talents de Médiouna', tooltipAr: 'مواهب وكفاءات إقليم مديونة' }
             }
           ],
           alerts: [
@@ -684,19 +762,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'التسجيل والملف الشخصي',
           subtitle: 'إنشاء حسابك وإعداد التنبيهات الخاصة بك',
           image: '/images/guide/home.png',
-          intro: 'من خلال إنشاء حساب مواطن في مديونة أكشن، تصبح فاعلاً نشطاً في تنمية جماعتك الترابية وتستفيد من مساحة شخصية مخصصة.',
+          intro: 'من خلال إنشاء حساب مواطن في بوابة مديونة، تصبح فاعلاً نشطاً في تنمية جماعتك الترابية وتستفيد من مساحة شخصية مخصصة.',
           steps: [
             {
               title: 'إنشاء الحساب',
-              text: 'اضغط على زر "تسجيل الدخول" ثم "إنشاء حساب". أدخل اسمك، بريدك الإلكتروني، ورقم هاتفك، واختر جماعتك الترابية داخل إقليم مديونة.'
+              text: 'اضغط على زر "تسجيل الدخول" ثم "إنشاء حساب". أدخل اسمك، بريدك الإلكتروني، ورقم هاتفك، واختر جماعتك الترابية داخل إقليم مديونة.',
+              highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
             },
             {
               title: 'تخصيص ملف التعريف',
-              text: 'اختر قطاعات اهتمامك (الصحة، التعليم، البيئة، النقل) لتلقي التنبيهات والأنشطة المتعلقة بهذه الفئات في المقام الأول.'
+              text: 'اختر قطاعات اهتمامك (الصحة، التعليم، البيئة، النقل) لتلقي التنبيهات والأنشطة المتعلقة بهذه الفئات في المقام الأول.',
+              highlight: { top: '35%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Abonnement aux secteurs d\'intérêt', tooltipAr: 'تحديد مجالات الاهتمام المفضل' }
             },
             {
               title: 'نظام النقاط والمواطنة النشطة',
-              text: 'كل عمل مواطن بناء (شكاية معتمدة، مقترح شائع، مشاركة في الأنشطة) يمنحك نقاط مواطنة تظهر على صفحتك الشخصية.'
+              text: 'كل عمل مواطن بناء (شكاية معتمدة، مقترح شائع، مشاركة في الأنشطة) يمنحك نقاط مواطنة تظهر على صفحتك الشخصية.',
+              highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
             }
           ],
           alerts: [
@@ -711,23 +792,27 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'تقديم الشكايات',
           subtitle: 'الإبلاغ عن حادث أو خلل في الفضاء العام',
           image: '/images/guide/reclamation.png',
-          intro: 'مصباح إنارة معطل، تراكم للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
+          intro: 'مصباح إنارة معطل، تراkm للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
           steps: [
             {
               title: 'بدء التبليغ',
-              text: 'اضغط على زر "تقديم شكاية" من الصفحة الرئيسية أو من لوحة التحكم الخاصة بك.'
+              text: 'اضغط sur زر "تقديم شكاية" من الصفحة الرئيسية أو من لوحة التحكم الخاصة بك.',
+              highlight: { top: '2%', left: '78%', width: '18%', height: '6%', tooltipFr: 'Bouton de signalement', tooltipAr: 'زر إضافة شكاية جديدة' }
             },
             {
               title: 'تحديد الموقع الجغرافي',
-              text: 'استخدم الخريطة التفاعلية لوضع علامة بدقة على مكان الحادث. سيقوم النظام تلقائياً بالتعرف على الجماعة المعنية.'
+              text: 'استخدم الخريطة التفاعلية لوضع علامة بدقة على مكان الحادث. سيقوم النظام تلقائياً بالتعرف على الجماعة المعنية.',
+              highlight: { top: '65%', left: '15%', width: '70%', height: '22%', tooltipFr: 'Placer l\'incident sur la carte', tooltipAr: 'تحديد موقع الحادث بدقة' }
             },
             {
               title: 'التفاصيل والصور',
-              text: 'اكتب وصفاً موجزاً للمشكلة وأرفق صورة أو أكثر من الواقع. تساعد الصور الفرق التقنية على التدخل السريع.'
+              text: 'اكتب وصفاً موجزاً للمشكلة وأرفق صورة أو أكثر من الواقع. تساعد الصور الفرق التقنية على التدخل السريع.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '35%', tooltipFr: 'Titre, description et photo preuve', tooltipAr: 'عنوان، وصف وإرفاق صورة الحادث' }
             },
             {
               title: 'تحديد القطاع والإرسال',
-              text: 'حدد القطاع المعني بالحادث وأرسل الشكاية. سيتم إرسالها على الفور إلى مصالح جماعتك الترابية.'
+              text: 'حدد القطاع المعني بالحادث وأرسل الشكاية. سيتم إرسالها على الفور إلى مصالح جماعتك الترابية.',
+              highlight: { top: '52%', left: '15%', width: '70%', height: '10%', tooltipFr: 'Sélection du secteur', tooltipAr: 'اختيار تصنيف وقطاع الشكاية' }
             }
           ],
           alerts: [
@@ -742,23 +827,27 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'متابعة الشكايات',
           subtitle: 'مراقبة حالة معالجة شكايتك في الوقت الفعلي',
           image: '/images/guide/reclamation.png',
-          intro: 'بمجرّد إرسالها، تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
+          intro: 'بمجرّد إرسالها, تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
           steps: [
             {
               title: 'الحالة: مرسلة',
-              text: 'تم تسجيل بلاغك بنجاح وفي انتظار التحقق والموافقة من قبل مشرفي الجماعة الترابية.'
+              text: 'تم تسجيل بلاغك بنجاح وفي انتظار التحقق والموافقة من قبل مشرفي الجماعة الترابية.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '10%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
             },
             {
               title: 'الحالة: معينة / قيد المعالجة',
-              text: 'وافقت السلطة المحلية على البلاغ وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.'
+              text: 'وافقت السلطة المحلية على البلاgh وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.',
+              highlight: { top: '30%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Traitement ou affectation en cours', tooltipAr: 'شكاية مقبولة وقيد الإنجاز' }
             },
             {
               title: 'المراسلة المدمجة',
-              text: 'يمكنك إضافة تعليقات جديدة على شكايتك لإضافة تفاصيل، وقراءة الرسائل والتوضيحات الرسمية من الموظف المسؤول.'
+              text: 'يمكنك إضافة تعليقات جديدة على شكايتك لإضافة تفاصيل، وقراءة الرسائل والتوضيحات الرسمية من الموظف المسؤول.',
+              highlight: { top: '55%', left: '10%', width: '80%', height: '35%', tooltipFr: 'Messagerie de suivi avec l\'agent', tooltipAr: 'تواصل مباشر بالتعليقات مع المسؤول' }
             },
             {
               title: 'الحالة: تم الحل',
-              text: 'عند حل المشكلة، تنشر السلطة صورة توضح النتيجة. ستتلقى بريداً إلكترونياً تلقائياً وإشعاراً على المنصة.'
+              text: 'عند حل المشكلة، تنشر السلطة صورة توضح النتيجة. ستتلقى بريداً إلكترونياً تلقائياً وإشعاراً على المنصة.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'Résolution confirmée par photo', tooltipAr: 'تأكيد الحل بصور ميدانية' }
             }
           ],
           alerts: [
@@ -773,19 +862,22 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'صندوق الأفكار والمواهب',
           subtitle: 'اقتراح مشاريع محلية وإبراز مهاراتك',
           image: '/images/guide/participation.png',
-          intro: 'تتيح لك منصة مديونة أكشن التأثير بشكل إيجابي على محيطك من خلال اقتراح مشاريع ذات منفعة عامة.',
+          intro: 'تتيح لك منصة بوابة مديونة التأثير بشكل إيجابي على محيطك من خلال اقتراح مشاريع ذات منفعة عامة.',
           steps: [
             {
               title: 'تقديم مقترح',
-              text: 'اكتب فكرة لمشروع تهيئة أو نشاط ثقافي لجماعتك، واعرضها لتصويت بقية المواطنين.'
+              text: 'اكتب فكرة لمشروع تهيئة أو نشاط ثقافي لجماعتك، واعرضها لتصويت بقية المواطنين.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
             },
             {
               title: 'التصويت والنقاش',
-              text: 'ادعم أفكار جيرانك ومواطني إقليمك بالتصويت لصالحها والمشاركة في النقاشات عبر التعليقات.'
+              text: 'ادعم أفكار جيرانك ومواطني إقليمك بالتصويت لصالحها والمشاركة في النقاشات عبر التعليقات.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
             },
             {
               title: 'تسجيل المواهب والكفاءات',
-              text: 'هل أنت فنان، رياضي، مخترع، أو تدير مشروعاً جمعوياً في مديونة ؟ سجل معلوماتك في فضاء المواهب ليتم إبرازك في البوابة.'
+              text: 'هل أنت فنان، رياضي، مخترع، أو تدير مشروعاً جمعوياً في مديونة ؟ سجل معلوماتك في فضاء المواهب ليتم إبرازك في البوابة.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Enregistrement de profil talent', tooltipAr: 'تسجيل وتعريف المواهب المحلية' }
             }
           ],
           alerts: [
@@ -811,19 +903,23 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'الاستلام والتحقق',
-              text: 'تصفح قائمة الشكايات الواردة إلى جماعتك. تحقق من الوصف، الموقع والصورة للتأكد من جدية البلاغ ووقوعه ضمن ترابك الجغرافي.'
+              text: 'تصفح قائمة الشكايات الواردة إلى جماعتك. تحقق من الوصف، الموقع والصورة للتأكد من جدية البلاغ ووقوعه ضمن ترابك الجغرافي.',
+              highlight: { top: '10%', left: '5%', width: '90%', height: '20%', tooltipFr: 'File de validation communale', tooltipAr: 'دراسة الشكايات الواردة للجماعة' }
             },
             {
               title: 'تغيير الحالة',
-              text: 'قم بتغيير الحالة إلى "قيد المعالجة" لإعلام المواطن بأن طلبه قيد الاهتمام وتمت جدولة التدخل التقني.'
+              text: 'قم بتغيير الحالة إلى "قيد المعالجة" لإعلام المواطن بأن طلبه قيد الاهتمام وتمت جدولة التدخل التقني.',
+              highlight: { top: '35%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Mise en traitement de l\'incident', tooltipAr: 'تحديث حالة الشكاية قيد المعالجة' }
             },
             {
               title: 'الإحالة للقطاع المختص',
-              text: 'إذا كانت المشكلة تقع ضمن مسؤولية مندوبية معينة (مثل ليدك للماء والكهرباء، أو وزارة التعليم)، يمكنك إحالة الملف بنقرة واحدة.'
+              text: 'إذا كانت المشكلة تقع ضمن مسؤولية مندوبية معينة (مثل ليدك للماء والكهرباء، أو وزارة التعليم)، يمكنك إحالة الملف بنقرة واحدة.',
+              highlight: { top: '55%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Affecter à une délégation', tooltipAr: 'إحالة الشكاية للمندوبية المختصة' }
             },
             {
               title: 'إغلاق الشكاية مع الإثبات',
-              text: 'بعد حل المشكلة ميدانياً، غير الحالة إلى "تم الحل" وقم بإرفاق صورة تثبت إنجاز الأشغال، واكتب تفاصيل التدخل.'
+              text: 'بعد حل المشكلة ميدانياً، غير الحالة إلى "تم الحل" وقم بإرفاق صورة تثبت إنجاز الأشغال، واكتب تفاصيل التدخل.',
+              highlight: { top: '75%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Clôturer avec photo preuve', tooltipAr: 'إغلاق الشكاية وإرفاق صورة الإثبات' }
             }
           ],
           alerts: [
@@ -842,11 +938,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'إنشاء تنبيه جديد',
-              text: 'من لوحة التحكم الإدارية، اضغط على "إنشاء تنبيه". اكتب العنوان والتفاصيل باللغتين العربية والفرنسية.'
+              text: 'من لوحة التحكم الإدارية، اضغط على "إنشاء تنبيه". اكتب العنوان والتفاصيل باللغتين العربية والفرنسية.',
+              highlight: { top: '10%', left: '15%', width: '70%', height: '40%', tooltipFr: 'Rédiger l\'alerte communale', tooltipAr: 'كتابة تفاصيل التنبيه المحلي' }
             },
             {
               title: 'تحديد درجة الخطورة والمنطقة',
-              text: 'اختر درجة الخطورة (معلومة، يقظة، حرج). تؤدي التنبيهات الحرجة (مثل انقطاع الماء الصالح للشرب، أشغال تعطل حركة السير) إلى إرسال إشعارات فورية للمواطنين المعنيين.'
+              text: 'اختر درجة الخطورة (معلومة، يقظة، حرج). تؤدي التنبيهات الحرجة (مثل انقطاع الماء الصالح للشرب، أشغال تعطل حركة السير) إلى إرسال إشعارات فورية للمواطنين المعنيين.',
+              highlight: { top: '55%', left: '15%', width: '70%', height: '30%', tooltipFr: 'Urgence et ciblage géographique', tooltipAr: 'تحديد درجة الخطورة والنطاق المستهدف' }
             }
           ]
         }
@@ -866,15 +964,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'ملء نموذج الإعداد',
-              text: 'ادخل إلى فضاء المندوبية، واضغط على "نشاط جديد"، ثم اتبع الخطوات التفاعلية: معلومات عامة، التاريخ والوقت، والعدد الأقصى للحضور.'
+              text: 'ادخل إلى فضاء المندوبية، واضغط على "نشاط جديد"، ثم اتبع الخطوات التفاعلية: معلومات عامة، التاريخ والوقت، والعدد الأقصى للحضور.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '50%', tooltipFr: 'Remplir les étapes de création', tooltipAr: 'ملء خطوات الاستمارة التفاعلية' }
             },
             {
               title: 'ربط النشاط بمرفق عمومي',
-              text: 'اربط النشاط بمرفق عمومي تابع لقطاعك (مثال: قافلة طبية في المركز الصحي بمديونة).'
+              text: 'اربط النشاط بمرفق عمومي تابع لقطاعك (مثال: قافلة طبية في المركز الصحي بمديونة).',
+              highlight: { top: '70%', left: '15%', width: '70%', height: '15%', tooltipFr: 'Géolocaliser l\'événement', tooltipAr: 'ربط النشاط بمرفق عمومي محدد' }
             },
             {
               title: 'تدبير طلبات التسجيل',
-              text: 'فَعِّل خيار التسجيل المسبق إذا كانت المقاعد محدودة. يمكنك تحميل قائمة المسجلين بصيغة Excel أو PDF.'
+              text: 'فَعِّل خيار التسجيل المسبق إذا كانت المقاعد محدودة. يمكنك تحميل قائمة المسجلين بصيغة Excel أو PDF.',
+              highlight: { top: '45%', left: '30%', width: '40%', height: '15%', tooltipFr: 'Gérer les places et participants', tooltipAr: 'تدبير التسجيل وقائمة الحضور' }
             }
           ],
           alerts: [
@@ -900,15 +1001,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'مؤشرات الأداء العامة (KPIs)',
-              text: 'تابع نسب حل الشكايات الإجمالية، ومتوسط وقت الاستجابة لكل جماعة ترابية، ونسبة رضا المواطنين عن التدخلات.'
+              text: 'تابع نسب حل الشكايات الإجمالية، ومتوسط وقت الاستجابة لكل جماعة ترابية، ونسبة رضا المواطنين عن التدخلات.',
+              highlight: { top: '15%', left: '5%', width: '90%', height: '20%', tooltipFr: 'Performance globale de la province', tooltipAr: 'مؤشرات الأداء ورضا المواطنين' }
             },
             {
               title: 'متابعة التأخيرات والتعثرات',
-              text: 'حدد فوراً الشكايات المتأخرة التي تجاوزت الآجال القانونية للمعالجة، لإصدار تذكيرات ومتابعتها مع الجماعة المعنية.'
+              text: 'حدد فوراً الشكايات المتأخرة التي تجاوزت الآجال القانونية للمعالجة، لإصدار تذكيرات ومتابعتها مع الجماعة المعنية.',
+              highlight: { top: '40%', left: '5%', width: '90%', height: '25%', tooltipFr: 'Alertes de retards de traitement', tooltipAr: 'متابعة الشكايات المتأخرة والتعثرات' }
             },
             {
               title: 'تقارير الحصيلة الدورية',
-              text: 'قم بتحميل تقارير دورية شاملة حول نشاط خدمات القرب ومؤشرات الاستجابة بإقليم مديونة.'
+              text: 'قم بتحميل تقارير دورية شاملة حول نشاط خدمات القرب ومؤشرات الاستجابة بإقليم مديونة.',
+              highlight: { top: '75%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Télécharger les rapports d\'activité', tooltipAr: 'تحميل تقارير الحصيلة الدورية' }
             }
           ]
         },
@@ -921,11 +1025,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'تفعيل الخريطة الحرارية (Heatmap)',
-              text: 'اعرض كثافة الشكايات لتحديد الأحياء أو المناطق الصناعية التي تعاني من نقص في خدمات أو بنيات تحتية معينة.'
+              text: 'اعرض كثافة الشكايات لتحديد الأحياء أو المناطق الصناعية التي تعاني من نقص في خدمات أو بنيات تحتية معينة.',
+              highlight: { top: '5%', left: '80%', width: '15%', height: '8%', tooltipFr: 'Activer le calque Heatmap', tooltipAr: 'تفعيل خريطة الشكايات الحرارية' }
             },
             {
               title: 'تراكب القطاعات والخدمات',
-              text: 'قم بتصفية الخريطة حسب القطاع (الإنارة، البيئة والتطهير، الطرق) لمقارنة الشكايات مع المشاريع المقررة في الميزانية الإقليمية.'
+              text: 'قم بتصفية الخريطة حسب القطاع (الإنارة، البيئة والتطهير، الطرق) لمقارنة الشكايات مع المشاريع المقررة في الميزانية الإقليمية.',
+              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Filtrer par secteur d\'activité', tooltipAr: 'تراكب قطاعات الخدمات والشكايات' }
             }
           ],
           alerts: [
@@ -951,15 +1057,18 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'دعوة الموظفين الجدد',
-              text: 'أرسل دعوات الانضمام للموظفين الجدد (جماعات ترابية، مندوبيات) باستخدام بريدهم الإلكتروني المهني والفرعي.'
+              text: 'أرسل دعوات الانضمام للموظفين الجدد (جماعات ترابية، مندوبيات) باستخدام بريدهم الإلكتروني المهني والفرعي.',
+              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Inviter un agent public', tooltipAr: 'دعوة مستخدم أو موظف جديد' }
             },
             {
               title: 'توزيع الصلاحيات والأدوار',
-              text: 'حدد بدقة دور كل موظف (مواطن، سلطة محلية، مندوبية، ديوان العامل، مدير النظام) واربط حسابه بالجماعة أو القطاع المناسب.'
+              text: 'حدد بدقة دور كل موظف (مواطن، سلطة محلية، مندوبية، ديوان العامل، مدير النظام) واربط حسابه بالجماعة أو القطاع المناسب.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Formulaire d\'attribution de rôle', tooltipAr: 'نموذج تحديد الأدوار والصلاحيات' }
             },
             {
               title: 'سجلات النشاط والأمان (Logs)',
-              text: 'راجع سجل العمليات في النظام لضمان نزاهة استخدام المعطيات ورصد أي عمليات مشبوهة أو دخول غير مصرح به.'
+              text: 'راجع سجل العمليات في النظام لضمان نزاهة استخدام المعطيات ورصد أي عمليات مشبوهة أو دخول غير مصرح به.',
+              highlight: { top: '70%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Salles d\'audit de sécurité', tooltipAr: 'مراقبة سجل العمليات والأمان' }
             }
           ],
           alerts: [
@@ -978,11 +1087,13 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'إضافة مرفق عمومي جديد',
-              text: 'أنشئ بطاقة لمرفق جديد (مستشفى، مؤسسة تعليمية، إدارة)، وحدد موقعه على الخريطة عبر إحداثيات GPS، وعين له مشرفاً.'
+              text: 'أنشئ بطاقة لمرفق جديد (مستشفى، مؤسسة تعليمية، إدارة)، وحدد موقعه على الخريطة عبر إحداثيات GPS، وعين له مشرفاً.',
+              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Créer un point d\'intérêt public', tooltipAr: 'إضافة مرفق عمومي جديد' }
             },
             {
               title: 'مراقبة وتقييم التعليقات',
-              text: 'راجع التقييمات والتعليقات المكتوبة من طرف المواطنين، واحذف كل محتوى مسيء، غير لائق أو مخالف لشروط استخدام البوابة.'
+              text: 'راجع التقييمات والتعليقات المكتوبة من طرف المواطنين، واحذف كل محتوى مسيء، غير لائق أو مخالف لشروط استخدام البوابة.',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '55%', tooltipFr: 'Liste des avis à modérer', tooltipAr: 'مراقبة وتقييم التعليقات والآراء' }
             }
           ]
         }

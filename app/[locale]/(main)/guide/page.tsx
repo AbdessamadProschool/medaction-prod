@@ -6,31 +6,71 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Search, ChevronRight, ChevronLeft, Info, CheckCircle2, 
   AlertTriangle, Menu, X, ExternalLink, Eye, Map, Building2, 
-  Users, Layout, Calendar, Megaphone, User, ShieldAlert, Settings, HelpCircle
+  Users, Layout, Calendar, Megaphone, User, ShieldAlert, Settings, HelpCircle, Lock
 } from 'lucide-react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import { guideData, GuideSection, GuideRole } from './guideData';
 import { Link } from '@/i18n/navigation';
 
 export default function GuidePage() {
   const locale = useLocale();
   const t = useTranslations('guide');
+  const { data: session } = useSession();
+  
   const [activeRole, setActiveRole] = useState<string>('consulteur');
   const [activeSection, setActiveSection] = useState<string>('intro');
+  const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const userRole = session?.user?.role || 'CONSULTEUR';
+  const isRtl = locale === 'ar';
+
   // Get data for current language (fallback to 'fr' if not found)
   const currentData = guideData[locale] || guideData['fr'];
-  const activeRoleData = currentData.find(r => r.id === activeRole) || currentData[0];
+  
+  // Available roles for the guide tabs (filtered by user session role)
+  const allRolesList = [
+    { id: 'consulteur', label: isRtl ? 'زائر' : 'Consulteur', icon: Eye, roleRequired: 'CONSULTEUR' },
+    { id: 'citoyen', label: isRtl ? 'مواطن' : 'Citoyen', icon: User, roleRequired: 'CITOYEN' },
+    { id: 'autorite', label: isRtl ? 'سلطة محلية' : 'Autorité Locale', icon: ShieldAlert, roleRequired: 'AUTORITE_LOCALE' },
+    { id: 'delegation', label: isRtl ? 'مندوبية' : 'Délégation', icon: Building2, roleRequired: 'DELEGATION' },
+    { id: 'gouverneur', label: isRtl ? 'عامل الإقليم' : 'Gouverneur', icon: CompassIcon, roleRequired: 'GOUVERNEUR' },
+    { id: 'admin', label: isRtl ? 'مدير المنصة' : 'Admin', icon: Settings, roleRequired: 'ADMIN' },
+  ];
+
+  // Logic to determine if a role tab should be shown
+  const isRoleTabVisible = (roleRequired: string) => {
+    if (userRole === 'SUPER_ADMIN' || userRole === 'ADMIN') {
+      return true; // Admin and Super Admin can see everything
+    }
+    if (roleRequired === 'CONSULTEUR') {
+      return true; // Consulteur is public
+    }
+    return userRole === roleRequired;
+  };
+
+  const visibleRoles = allRolesList.filter(role => isRoleTabVisible(role.roleRequired));
+
+  // Determine the active role data, falling back to consulteur if active role is not in the visible list
+  const resolvedActiveRole = visibleRoles.some(r => r.id === activeRole) ? activeRole : 'consulteur';
+  const activeRoleData = currentData.find(r => r.id === resolvedActiveRole) || currentData[0];
+  
+  // Active Section Data
   const activeSectionData = activeRoleData.sections.find(s => s.id === activeSection) || activeRoleData.sections[0];
+
+  // Reset active step index whenever section or role changes
+  useEffect(() => {
+    setActiveStepIndex(0);
+  }, [activeRole, activeSection]);
 
   const handleRoleChange = (roleId: string) => {
     startTransition(() => {
       setActiveRole(roleId);
-      // Select the first section of the new role
+      setActiveStepIndex(0);
       const newRole = currentData.find(r => r.id === roleId);
       if (newRole && newRole.sections.length > 0) {
         setActiveSection(newRole.sections[0].id);
@@ -41,11 +81,12 @@ export default function GuidePage() {
   const handleSectionChange = (sectionId: string) => {
     startTransition(() => {
       setActiveSection(sectionId);
+      setActiveStepIndex(0);
       setSidebarOpen(false);
     });
   };
 
-  // Next and Previous navigation
+  // Next and Previous navigation for sections
   const currentIndex = activeRoleData.sections.findIndex(s => s.id === activeSection);
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < activeRoleData.sections.length - 1;
@@ -69,18 +110,6 @@ export default function GuidePage() {
     s.intro.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.steps?.some(step => step.title.toLowerCase().includes(searchQuery.toLowerCase()) || step.text.toLowerCase().includes(searchQuery.toLowerCase()))
   );
-
-  const isRtl = locale === 'ar';
-
-  // Available roles for the guide tabs (showing progress)
-  const rolesList = [
-    { id: 'consulteur', label: isRtl ? 'زائر' : 'Consulteur', icon: Eye, active: true },
-    { id: 'citoyen', label: isRtl ? 'مواطن' : 'Citoyen', icon: User, active: true },
-    { id: 'autorite', label: isRtl ? 'سلطة محلية' : 'Autorité Locale', icon: ShieldAlert, active: true },
-    { id: 'delegation', label: isRtl ? 'مندوبية' : 'Délégation', icon: Building2, active: true },
-    { id: 'gouverneur', label: isRtl ? 'عامل الإقليم' : 'Gouverneur', icon: CompassIcon, active: true },
-    { id: 'admin', label: isRtl ? 'مدير المنصة' : 'Admin', icon: Settings, active: true },
-  ];
 
   function CompassIcon(props: any) {
     return <Compass {...props} />;
@@ -106,6 +135,9 @@ export default function GuidePage() {
     );
   }
 
+  const activeStepImage = activeSectionData.steps?.[activeStepIndex]?.image || activeSectionData.image;
+  const activeStepHighlight = activeSectionData.steps?.[activeStepIndex]?.highlight;
+
   return (
     <div className="min-h-screen bg-[#fdfaf2] text-[#0a3b68]" dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Immersive Header Banner */}
@@ -124,12 +156,12 @@ export default function GuidePage() {
                 <span>{isRtl ? 'دليل المستخدم' : 'Guide Utilisateur'}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight font-cairo">
-                {isRtl ? 'دليل مستخدم بوابة مديونة' : 'GUIDE UTILISATEUR MEDACTION'}
+                {isRtl ? 'دليل مستخدم بوابة مديونة' : 'GUIDE UTILISATEUR PORTAIL MÉDIOUNA'}
               </h1>
               <p className="text-lg text-slate-300 max-w-3xl mt-2 font-medium">
                 {isRtl 
                   ? 'دليل تفاعلي مصور لمساعدتكم على فهم واستخدام كافة ميزات المنصة خطوة بخطوة.' 
-                  : 'Un guide interactif illustré pour vous accompagner pas à pas dans l\'utilisation de la plateforme.'}
+                  : 'Un guide interactif illustré pour vous accompagner pas à pas dans l\'utilisation du portail.'}
               </p>
             </div>
 
@@ -154,35 +186,39 @@ export default function GuidePage() {
 
       {/* Role Tabs Nav Bar */}
       <div className="bg-white border-b border-gray-200/80 sticky top-20 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 py-3">
-            {rolesList.map((role) => {
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 py-2.5">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-1">
+            {visibleRoles.map((role) => {
               const IconComponent = role.icon;
-              const isActive = activeRole === role.id;
+              const isActive = resolvedActiveRole === role.id;
               return (
                 <button
                   key={role.id}
-                  onClick={() => role.active && handleRoleChange(role.id)}
-                  disabled={!role.active}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex-shrink-0 ${
+                  onClick={() => handleRoleChange(role.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all flex-shrink-0 ${
                     isActive 
                       ? 'bg-[#0a3b68] text-white shadow-md' 
-                      : role.active
-                        ? 'text-[#0a3b68] hover:bg-[#ebd281]/20'
-                        : 'text-gray-400 cursor-not-allowed opacity-60'
+                      : 'text-[#0a3b68] hover:bg-[#ebd281]/20'
                   }`}
                 >
                   <IconComponent size={16} />
                   <span>{role.label}</span>
-                  {role.badge && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">
-                      {role.badge}
-                    </span>
-                  )}
                 </button>
               );
             })}
           </div>
+
+          {/* Authentication Tip for Roles tab access */}
+          {userRole === 'CONSULTEUR' && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-800 rounded-xl border border-amber-200/60 text-xs font-semibold max-w-sm self-start md:self-auto">
+              <Lock size={14} className="shrink-0 text-amber-600" />
+              <span>
+                {isRtl 
+                  ? 'سجل الدخول بحسابك لعرض الدلائل الإدارية الخاصة بك.' 
+                  : 'Connectez-vous pour voir les guides liés à vos autres rôles.'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -335,56 +371,114 @@ export default function GuidePage() {
                     {activeSectionData.intro}
                   </p>
 
-                  {/* Screenshot Display */}
-                  {activeSectionData.image && (
+                  {/* Interactive Screenshot Display with Spotlight overlay */}
+                  {activeStepImage && (
                     <div className="relative mb-10 group rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 flex items-center justify-center">
                       <Image
-                        src={activeSectionData.image}
+                        src={activeStepImage}
                         alt={activeSectionData.title}
                         fill
-                        className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                        className="object-cover transition-all duration-300"
                         sizes="(max-width: 1024px) 100vw, 768px"
                       />
                       
+                      {/* Spotlight Overlay based on active step coordinates */}
+                      <AnimatePresence>
+                        {activeStepHighlight && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            key={`${activeSection}-${activeStepIndex}`}
+                            style={{
+                              position: 'absolute',
+                              top: activeStepHighlight.top,
+                              left: isRtl ? undefined : activeStepHighlight.left,
+                              right: isRtl ? activeStepHighlight.left : undefined,
+                              width: activeStepHighlight.width,
+                              height: activeStepHighlight.height,
+                              border: '3px dashed #ebd281',
+                              boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
+                              borderRadius: '12px',
+                              pointerEvents: 'none',
+                              zIndex: 20
+                            }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+                          >
+                            {/* Glowing Ping Indicator */}
+                            <span className={`absolute -top-2.5 ${isRtl ? '-right-2.5' : '-left-2.5'} flex h-5 w-5 z-30`}>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ebd281] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md"></span>
+                            </span>
+
+                            {/* Dynamic Spotlight tooltip explanation */}
+                            <div 
+                              className="absolute whitespace-normal bg-[#0a3b68] text-white text-xs font-bold py-2 px-3 rounded-lg shadow-xl border border-[#ebd281] pointer-events-auto leading-normal min-w-[200px] text-center"
+                              style={{
+                                top: 'calc(100% + 12px)',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                zIndex: 30
+                              }}
+                            >
+                              {isRtl ? activeStepHighlight.tooltipAr : activeStepHighlight.tooltipFr}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
                       {/* Zoom Lightbox Action Button */}
                       <button 
-                        onClick={() => setLightboxImage(activeSectionData.image || null)}
-                        className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                        onClick={() => setLightboxImage(activeStepImage)}
+                        className="absolute bottom-4 right-4 z-30 p-2.5 bg-[#ebd281] hover:bg-[#ebd281]/95 text-[#0a3b68] rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center"
+                        title={isRtl ? 'تكبير الصورة' : 'Agrandir l\'image'}
                       >
-                        <span className="px-5 py-2.5 bg-[#ebd281] text-[#0a3b68] text-xs font-black uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                          <Eye size={14} />
-                          {isRtl ? 'تكبير الصورة' : 'Agrandir l\'image'}
-                        </span>
+                        <Eye size={18} />
                       </button>
                     </div>
                   )}
 
-                  {/* Steps Guide */}
+                  {/* Steps Guide (Interactive on click) */}
                   {activeSectionData.steps && activeSectionData.steps.length > 0 && (
                     <div className="space-y-6 mb-8">
                       <h3 className="text-xl font-bold text-[#0a3b68] flex items-center gap-2.5 mb-4 font-cairo">
                         <span className="w-1.5 h-6 bg-[#ebd281] rounded-full" />
-                        {isRtl ? 'خطوات الاستخدام والتصفح' : 'Instructions pas à pas'}
+                        {isRtl ? 'خطوات الاستخدام (اضغط لتوضيح الصورة)' : 'Instructions (cliquez pour surligner sur l\'image)'}
                       </h3>
-                      <div className="grid gap-6">
-                        {activeSectionData.steps.map((step, idx) => (
-                          <div 
-                            key={idx}
-                            className="flex gap-4 p-5 rounded-2xl bg-[#0a3b68]/5 border border-[#0a3b68]/10 hover:border-[#ebd281]/40 hover:bg-[#ebd281]/5 transition-colors duration-200"
-                          >
-                            <div className="shrink-0 w-8 h-8 rounded-full bg-[#ebd281] flex items-center justify-center text-[#0a3b68] font-black text-sm shadow-sm">
-                              {idx + 1}
+                      <div className="grid gap-4">
+                        {activeSectionData.steps.map((step, idx) => {
+                          const isActive = activeStepIndex === idx;
+                          return (
+                            <div 
+                              key={idx}
+                              onClick={() => setActiveStepIndex(idx)}
+                              className={`flex gap-4 p-5 rounded-2xl cursor-pointer border transition-all duration-200 ${
+                                isActive 
+                                  ? 'bg-[#ebd281]/15 border-[#ebd281] shadow-md ring-1 ring-[#ebd281]/30 scale-[1.01]' 
+                                  : 'bg-[#0a3b68]/5 border-[#0a3b68]/10 hover:border-[#ebd281]/40 hover:bg-[#ebd281]/5'
+                              }`}
+                            >
+                              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-black text-sm shadow-sm transition-colors ${
+                                isActive ? 'bg-[#0a3b68] text-white' : 'bg-[#ebd281] text-[#0a3b68]'
+                              }`}>
+                                {idx + 1}
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-extrabold text-[#0a3b68] text-base mb-1.5 flex items-center justify-between">
+                                  <span>{step.title}</span>
+                                  {isActive && (
+                                    <span className="text-[10px] bg-[#0a3b68] text-white px-2 py-0.5 rounded font-black uppercase tracking-wider">
+                                      {isRtl ? 'محددة' : 'Active'}
+                                    </span>
+                                  )}
+                                </h4>
+                                <p className="text-sm text-slate-600 font-semibold leading-relaxed text-justify">
+                                  {step.text}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 className="font-extrabold text-[#0a3b68] text-base mb-1.5">
-                                {step.title}
-                              </h4>
-                              <p className="text-sm text-slate-600 font-semibold leading-relaxed text-justify">
-                                {step.text}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}

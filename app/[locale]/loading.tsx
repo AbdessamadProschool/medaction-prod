@@ -1,5 +1,5 @@
-import LoadingScreen from '@/components/ui/LoadingScreen';
+import PageLoader from '@/components/ui/PageLoader';
 
 export default function Loading() {
-  return <LoadingScreen message="Chargement de la page..." />;
+  return <PageLoader />;
 }

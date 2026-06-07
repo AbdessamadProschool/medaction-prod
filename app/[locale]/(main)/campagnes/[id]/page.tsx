@@ -74,14 +74,15 @@ export default function CampagneDetailPage() {
   useEffect(() => {
     if (fetchError) setError(true);
     if (rawData) {
+      const actualData = rawData.data || rawData;
       const mappedData = {
-        ...rawData,
-        imageUrl: rawData.imagePrincipale || rawData.imageCouverture,
-        objectif: rawData.objectifParticipations,
-        progression: rawData.nombreParticipations || 0,
-        statut: rawData.isActive ? 'EN_COURS' : rawData.statut,
-        isOrganiseParProvince: rawData.isOrganiseParProvince,
-        sousCouvertProvince: rawData.sousCouvertProvince,
+        ...actualData,
+        imageUrl: actualData.imagePrincipale || actualData.imageCouverture,
+        objectif: actualData.objectifParticipations,
+        progression: actualData.nombreParticipations || 0,
+        statut: actualData.isActive ? 'EN_COURS' : actualData.statut,
+        isOrganiseParProvince: actualData.isOrganiseParProvince,
+        sousCouvertProvince: actualData.sousCouvertProvince,
       };
       setCampagne(mappedData);
     }

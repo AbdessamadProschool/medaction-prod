@@ -337,12 +337,12 @@ export default function ProfilPage() {
               </div>
 
               {profile?.photo && (
-                <button
-                  onClick={handlePhotoDelete}
-                  className="ms-auto text-white/80 hover:text-white text-sm underline"
-                >
-                  {t('photo.delete_btn')}
-                </button>
+                  <button
+                    onClick={handlePhotoDelete}
+                    className="ms-auto text-red-100 hover:text-white text-sm font-bold underline px-3 py-1 bg-red-500/20 rounded-lg border border-red-500/30 transition-colors"
+                  >
+                    {t('photo.delete_btn')}
+                  </button>
               )}
             </div>
             
@@ -351,7 +351,7 @@ export default function ProfilPage() {
               <div className="mt-4 pt-4 border-t border-white/20">
                 <Link
                   href="/profil/abonnements"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[hsl(var(--gov-blue-dark))] font-bold rounded-xl hover:bg-gray-50 shadow-md transition-all"
                 >
                   <HeartIcon className="w-4 h-4" />
                   <span>{t('subscriptions_btn')}</span>

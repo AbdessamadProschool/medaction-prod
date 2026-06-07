@@ -63,8 +63,8 @@ export default function WelcomeModal() {
 
             <div className="relative pt-10 px-6 sm:px-10 pb-8 flex flex-col items-center text-center">
               {/* Logo */}
-              <div className="mb-6 relative z-10">
-                 <Image src="/images/logo-portal-mediouna.png" alt="Logo" width={100} height={100} className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-md" />
+              <div className="mb-6 relative z-10 mix-blend-multiply">
+                 <Image src="/images/logo-portal-mediouna.png" alt="Logo" width={140} height={140} className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md" quality={100} />
               </div>
 
               {/* Title Pill */}

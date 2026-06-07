@@ -73,8 +73,8 @@ export default function MessagesList() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-4">
-            <div className="p-3 bg-[hsl(var(--gov-blue))] rounded-lg shadow-sm">
-               <Mail className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900 group">
+               <Mail className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
             </div>
             <span className="text-foreground">
               {t('title')}

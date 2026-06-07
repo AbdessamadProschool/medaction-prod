@@ -180,7 +180,7 @@ export default function AdminArticlesPage() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
           <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
               <BookOpen className="w-6 h-6" />
             </div>
             {t('title')}
@@ -225,7 +225,7 @@ export default function AdminArticlesPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         <motion.div
           whileHover={{ y: -5 }}
-          className="bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-3xl p-6 text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.2)]"
+          className="bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-3xl p-6 text-[#0a3b68] shadow-xl shadow-[hsl(var(--gov-blue)/0.2)]"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
@@ -563,7 +563,7 @@ export default function AdminArticlesPage() {
                 {/* Author */}
                 {selectedArticle.auteur && (
                   <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-[hsl(var(--gov-blue))/0.05] to-transparent rounded-3xl border border-[hsl(var(--gov-blue))/0.1]">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white shadow-lg">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#ebd281] to-[#d4b962] flex items-center justify-center text-[#0a3b68] shadow-lg">
                       <User className="w-6 h-6" />
                     </div>
                     <div>

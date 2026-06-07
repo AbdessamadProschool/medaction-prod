@@ -188,7 +188,7 @@ export default function NouveauEventPage() {
           </Link>
           
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-[hsl(var(--gov-blue)/0.3)] ring-4 ring-white dark:ring-slate-900">
+            <div className="w-20 h-20 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-3xl flex items-center justify-center text-[#0a3b68] shadow-2xl shadow-[hsl(var(--gov-blue)/0.3)] ring-4 ring-white dark:ring-slate-900">
               <Sparkles className="w-10 h-10" />
             </div>
             <div>

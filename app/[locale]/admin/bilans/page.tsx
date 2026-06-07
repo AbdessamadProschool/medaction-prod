@@ -384,7 +384,7 @@ export default function BilansPage() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
           <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
               <BarChart3 className="w-6 h-6" />
             </div>
             {t('admin_bilans.title')}

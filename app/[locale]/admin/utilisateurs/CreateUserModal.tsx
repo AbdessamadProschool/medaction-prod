@@ -213,7 +213,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
         {/* Header */}
         <div className="px-8 py-6 border-b border-border flex items-center justify-between shrink-0 bg-gradient-to-br from-card/50 to-muted/30">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg">
               <User size={24} />
             </div>
             <div>

@@ -492,7 +492,7 @@ export default function AdminSuggestionsPage() {
                     {t('detail_modal.submitted_by')}
                   </label>
                   <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-card to-muted/20 rounded-2xl border border-border shadow-sm">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] flex items-center justify-center text-white text-xl font-black shadow-lg">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ebd281] to-[#d4b962] flex items-center justify-center text-[#0a3b68] text-xl font-black shadow-lg">
                       {selectedSuggestion.user.prenom.charAt(0)}{selectedSuggestion.user.nom.charAt(0)}
                     </div>
                     <div>

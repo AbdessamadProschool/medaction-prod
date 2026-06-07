@@ -369,8 +369,8 @@ export default function AdminReclamationsPage() {
           {/* Header Section */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
             <div className="flex items-center gap-5">
-              <div className="w-14 h-14 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
-                <Flag className="w-7 h-7" />
+              <div className="w-14 h-14 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900 group">
+                <Flag className="w-7 h-7 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -869,7 +869,7 @@ export default function AdminReclamationsPage() {
                       {t('table.citoyen')}
                     </h3>
                     <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
-                      <div className="w-14 h-14 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] text-xl font-black shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900">
                         {selectedReclamation.user?.nom?.[0] || 'U'}
                       </div>
                       <div>

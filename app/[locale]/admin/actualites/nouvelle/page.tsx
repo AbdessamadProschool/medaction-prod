@@ -394,7 +394,7 @@ export default function AdminNouvelleActualitePage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
-            className="p-8 bg-gradient-to-br from-[hsl(var(--gov-blue))] to-indigo-800 rounded-[2.5rem] text-white shadow-2xl shadow-[hsl(var(--gov-blue))/0.2] relative overflow-hidden"
+            className="p-8 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-[2.5rem] text-[#0a3b68] shadow-2xl shadow-[hsl(var(--gov-blue))/0.2] relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16" />
             <Sparkles className="w-8 h-8 mb-4 text-blue-200" />

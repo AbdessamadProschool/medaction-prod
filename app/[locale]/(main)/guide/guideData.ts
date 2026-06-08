@@ -621,7 +621,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'intro',
           title: 'مقدمة عن البوابة',
           subtitle: 'مرحباً بكم في بوابة مديونة الرسمية',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_ar.png',
           intro: 'بوابة مديونة هي المنصة الرسمية للإعلام والمشاركة المواطنة لإقليم مديونة. تتيح لكل مواطن وزائر الوصول بكل شفافية إلى المعلومات المحلية، ومتابعة المشاريع والأنشطة العمومية، والمساهمة الفعالة في تنمية الإقليم.',
           steps: [
             {
@@ -646,12 +646,12 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'accueil',
           title: 'الصفحة الرئيسية',
           subtitle: 'لوحة القيادة لإقليم مديونة',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_ar.png',
           intro: 'الصفحة الرئيسية هي نقطة الانطلاق لزيارتك. وتقدم ملخصاً ديناميكياً للحياة بالإقليم وحالة المرافق والخدمات العمومية.',
           steps: [
             {
               title: 'الأرقام والشركاء',
-              text: 'اطلع فوراً على عدد الشكايات القدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
+              text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
               highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
@@ -661,7 +661,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'البحث الشامل',
-              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، ou خبر.',
+              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
               highlight: { top: '1.7%', left: '13.4%', width: '2.5%', height: '0.6%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
           ],
@@ -676,7 +676,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'carte',
           title: 'الخريطة التفاعلية',
           subtitle: 'تحديد مواقع المرافق الإقليمية',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_ar.png',
           intro: 'تحدد الخريطة التفاعلية المواقع الجغرافية لكافة البنيات التحتية والمرافق العمومية لإقليم مديونة.',
           steps: [
             {
@@ -690,8 +690,8 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '14.2%', left: '1.1%', width: '22.2%', height: '45.3%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
-              title: 'التجميع الذكي للمؤشرات',
-              text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجميع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.',
+              title: 'التجمع الذكي للمؤشرات',
+              text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجمع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.',
               highlight: { top: '35%', left: '40%', width: '20%', height: '20%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
             },
             {
@@ -711,7 +711,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'etablissements',
           title: 'دليل المرافق العمومية',
           subtitle: 'البحث وتقييم الخدمات الإدارية والعمومية',
-          image: '/images/guide/etablissements.png',
+          image: '/images/guide/etablissements_ar.png',
           intro: 'يسرد الدليل بشكل شامل جميع البنيات التحتية والمؤسسات العمومية بمديونة، ويسهل متابعة جودة الخدمات المقدمة للمواطنين.',
           steps: [
             {
@@ -726,8 +726,8 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'الاشتراك في التنبيهات',
-              text: 'اشترك in المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
-              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
+              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتrack في التنبيهات' }
             }
           ],
           alerts: [
@@ -741,7 +741,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'evenements',
           title: 'الأنشطة والفعاليات',
           subtitle: 'المشاركة في أنشطة الإقليم',
-          image: '/images/guide/evenements.png',
+          image: '/images/guide/evenements_ar.png',
           intro: 'اكتشف الأنشطة، القوافل والمبادرات المواطنة المبرمجة في إقليم مديونة.',
           steps: [
             {
@@ -766,7 +766,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'campagnes',
           title: 'الحملات المواطنة',
           subtitle: 'متابعة حملات التوعية والتحسيس',
-          image: '/images/guide/campagnes.png',
+          image: '/images/guide/campagnes_ar.png',
           intro: 'اكتشف الحملات التوعوية الموضوعاتية المنظمة بالإقليم (البيئة، الصحة، التربية المواطنة).',
           steps: [
             {
@@ -785,7 +785,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'actualites',
           title: 'الأخبار الإقليمية',
           subtitle: 'متابعة آخر مستجدات الإقليم',
-          image: '/images/guide/actualites.png',
+          image: '/images/guide/actualites_ar.png',
           intro: 'ابق على اطلاع بآخر البلاغات، المشاريع والقرارات الرسمية لإقليم مديونة.',
           steps: [
             {
@@ -804,7 +804,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'statistiques',
           title: 'الإحصائيات العامة',
           subtitle: 'الاطلاع على مؤشرات الأداء والتقارير',
-          image: '/images/guide/statistiques.png',
+          image: '/images/guide/statistiques_ar.png',
           intro: 'ولوج شفاف إلى الأرقام الرئيسية للحصيلة الإقليمية ونسب معالجة شكايات المواطنين.',
           steps: [
             {
@@ -813,7 +813,7 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '27.5%', left: '7.2%', width: '85.5%', height: '7.2%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
             },
             {
-              title: 'الالرسوم البيانية القطاعية',
+              title: 'الرسوم البيانية القطاعية',
               text: 'حلل توزيع الطلبات حسب القطاع الخدماتي وحسب الجماعة الترابية عبر مبيانات تفاعلية.',
               highlight: { top: '39.3%', left: '7.2%', width: '85.5%', height: '60.7%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
             }
@@ -823,7 +823,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'suggestions',
           title: 'المقترحات المواطنة',
           subtitle: 'الاطلاع على أفكار التحسين المقدمة من طرف المجتمع',
-          image: '/images/guide/participation.png',
+          image: '/images/guide/participation_ar.png',
           intro: 'توفر البوابة فضاءً للتعبير والمشاركة المواطنة من أجل تحسين جودة الحياة والخدمات بالإقليم.',
           steps: [
             {
@@ -836,6 +836,114 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               type: 'info',
               text: 'رغم إمكانية قراءة المقترحات لجميع الزوار، فإن تقديم مقترح جديد يتطلب تسجيل الدخول بحساب مواطن.'
+            }
+          ]
+        },
+        {
+          id: 'suggestions_new',
+          title: 'اقتراح فكرة',
+          subtitle: 'تقديم اقتراح مواطن',
+          image: '/images/guide/suggestions_new_ar.png',
+          intro: 'يمكن للمواطنين اقتراح مشاريع ذات منفعة عامة لجماعتهم الترابية، ولكن هذه الخاصية تتطلب تسجيل الدخول إلى البوابة.',
+          steps: [
+            {
+              title: 'تسجيل الدخول مطلوب',
+              text: 'تقديم الاقتراحات أو الشكايات مخصص فقط للمستخدمين المسجلين. يجب على الزوار غير المسجلين اتباع دليل تسجيل الدخول إذا كان لديهم حساب بالفعل، أو دليل إنشاء حساب جديد.',
+              highlight: { top: '60%', left: '15%', width: '70%', height: '25%', tooltipFr: 'Invitation à la connexion', tooltipAr: 'دعوة لتسجيل الدخول' }
+            }
+          ]
+        },
+        {
+          id: 'login',
+          title: 'تسجيل الدخول',
+          subtitle: 'تسجيل الدخول إلى البوابة',
+          image: '/images/guide/login_ar.png',
+          intro: 'لتقديم شكاية أو اقتراح فكرة، يجب عليك تسجيل الدخول باستخدام بيانات الاعتماد الخاصة بك.',
+          steps: [
+            {
+              title: 'حقول تسجيل الدخول',
+              text: 'أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول بأمان.',
+              highlight: { top: '25%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
+            },
+            {
+              title: 'الوصول إلى التسجيل',
+              text: 'إذا لم يكن لديك حساب مواطن بعد، استخدم الرابط الموجود في أسفل الصفحة للوصول إلى نموذج إنشاء الحساب.',
+              highlight: { top: '65%', left: '30%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
+            }
+          ]
+        },
+        {
+          id: 'register',
+          title: 'إنشاء حساب',
+          subtitle: 'إنشاء حساب مواطن خاص بك',
+          image: '/images/guide/register_ar.png',
+          intro: 'أنشئ حسابك في بضع خطوات لتتمكن من المشاركة بنشاط في تنمية جماعتك الترابية.',
+          steps: [
+            {
+              title: 'نموذج التسجيل',
+              text: 'أدخل معلوماتك الشخصية (الاسم الكامل، البريد الإلكتروني، الهاتف، كلمة المرور) واختر جماعتك الترابية التي تقيم بها.',
+              highlight: { top: '20%', left: '25%', width: '50%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
+            }
+          ]
+        },
+        {
+          id: 'accessibilite',
+          title: 'سهولة الولوج',
+          subtitle: 'بوابة متاحة للجميع',
+          image: '/images/guide/accessibilite_ar.png',
+          intro: 'تم تحسين بوابة مديونة لتكون سهلة الولوج والاستخدام من طرف جميع المواطنين، بما في ذلك الأشخاص في وضعية إعاقة.',
+          steps: [
+            {
+              title: 'ميثاق الولوجيات',
+              text: 'اطّلع على معلومات التوافق مع معايير الولوج الرقمي العالمية (WCAG) مباشرة على هذه الصفحة المخصصة.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Informations d\'accessibilité', tooltipAr: 'معلومات الولوجيات' }
+            }
+          ]
+        },
+        {
+          id: 'contact',
+          title: 'الاتصال بنا',
+          subtitle: 'الاتصال بإدارة الإقليم',
+          image: '/images/guide/contact_ar.png',
+          intro: 'استخدم هذه الصفحة للاتصال مباشرة بمصالح إقليم مديونة لأي طلب عام.',
+          steps: [
+            {
+              title: 'نموذج الاتصال',
+              text: 'أدخل معلومات الاتصال ورسالتك لإرسال بريد إلكتروني مباشر إلى الخدمات الإدارية.',
+              highlight: { top: '25%', left: '7.2%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
+            },
+            {
+              title: 'معلومات الاتصال المباشرة',
+              text: 'ابحث عن عنوان الإقليم، ورقم هاتف الدعم، وعناوين البريد الإلكتروني الرسمية.',
+              highlight: { top: '25%', left: '62%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
+            }
+          ]
+        },
+        {
+          id: 'politique-confidentialite',
+          title: 'سياسة الخصوصية',
+          subtitle: 'حماية الحياة الخاصة',
+          image: '/images/guide/confidentialite_ar.png',
+          intro: 'اكتشف كيف تتم حماية معطياتك الشخصية وفقاً للقوانين الوطنية وتوجيهات اللجنة الوطنية لمراقبة حماية المعطيات ذات الطابع الشخصي (CNDP).',
+          steps: [
+            {
+              title: 'حماية المعطيات',
+              text: 'طالع التفاصيل المتعلقة بمعالجة واستخدام وحق تصحيح معطياتك ذات الطابع الشخصي.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Charte de protection des données', tooltipAr: 'سياسة حماية المعطيات' }
+            }
+          ]
+        },
+        {
+          id: 'conditions-utilisation',
+          title: 'شروط الاستخدام',
+          subtitle: 'الشروط العامة للاستخدام (CGU)',
+          image: '/images/guide/conditions_ar.png',
+          intro: 'الإطار القانوني الذي يحدد قواعد استخدام المنصة وضوابط تعديل الشكايات والمقترحات.',
+          steps: [
+            {
+              title: 'شروط الاستخدام',
+              text: 'طالع حقوقك وواجباتك كمستخدم مواطن أو زائر لبوبة مديونة.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Conditions Générales d\'Utilisation', tooltipAr: 'شروط الاستخدام العامة' }
             }
           ]
         }

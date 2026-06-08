@@ -727,7 +727,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'الاشتراك في التنبيهات',
               text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
-              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتrack في التنبيهات' }
+              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [

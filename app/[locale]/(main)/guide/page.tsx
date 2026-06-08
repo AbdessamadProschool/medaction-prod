@@ -27,6 +27,12 @@ export default function GuidePage() {
   const [isPending, startTransition] = useTransition();
   const screenshotContainerRef = useRef<HTMLDivElement>(null);
 
+  // --- Debug Mode States ---
+  const [debugMode, setDebugMode] = useState<boolean>(false);
+  const [debugClicks, setDebugClicks] = useState<number>(0);
+  const [debugCoords, setDebugCoords] = useState({ top: 10, left: 10, width: 20, height: 20 });
+
+
   const userRole = session?.user?.role || 'CONSULTEUR';
   const isRtl = locale === 'ar';
 
@@ -176,7 +182,17 @@ export default function GuidePage() {
                 <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
                 <span>{isRtl ? 'دليل المستخدم' : 'Guide Utilisateur'}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight font-cairo">
+              <h1 
+                className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight font-cairo cursor-pointer"
+                onClick={() => {
+                  if (debugClicks >= 4) {
+                    setDebugMode(!debugMode);
+                    setDebugClicks(0);
+                  } else {
+                    setDebugClicks(prev => prev + 1);
+                  }
+                }}
+              >
                 {isRtl ? 'دليل مستخدم بوابة مديونة' : 'GUIDE UTILISATEUR PORTAIL MÉDIOUNA'}
               </h1>
               <p className="text-lg text-slate-300 max-w-3xl mt-2 font-medium">
@@ -408,46 +424,59 @@ export default function GuidePage() {
                         
                         {/* Spotlight Overlay based on active step coordinates */}
                         <AnimatePresence>
-                          {activeStepHighlight && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.95 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              key={`${activeSection}-${activeStepIndex}`}
-                              style={{
-                                position: 'absolute',
-                                top: activeStepHighlight.top,
-                                left: activeStepHighlight.left,
-                                width: activeStepHighlight.width,
-                                height: activeStepHighlight.height,
-                                border: '3px dashed #ebd281',
-                                boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
-                                borderRadius: '12px',
-                                pointerEvents: 'none',
-                                zIndex: 20
-                              }}
-                              transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-                            >
-                              {/* Glowing Ping Indicator */}
-                              <span className={`absolute -top-2.5 ${isRtl ? '-right-2.5' : '-left-2.5'} flex h-5 w-5 z-30`}>
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ebd281] opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md"></span>
-                              </span>
+                          {(activeStepHighlight || debugMode) && (() => {
+                            const displayHighlight = debugMode ? {
+                              top: `${debugCoords.top}%`,
+                              left: `${debugCoords.left}%`,
+                              width: `${debugCoords.width}%`,
+                              height: `${debugCoords.height}%`,
+                              tooltipAr: 'Debug Mode',
+                              tooltipFr: 'Mode Debug'
+                            } : activeStepHighlight;
 
-                              {/* Dynamic Spotlight tooltip explanation */}
-                              <div 
-                                className="absolute whitespace-normal bg-[#0a3b68] text-white text-xs font-bold py-2 px-3 rounded-lg shadow-xl border border-[#ebd281] pointer-events-auto leading-normal min-w-[200px] text-center"
+                            if (!displayHighlight) return null;
+
+                            return (
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                key={`${activeSection}-${activeStepIndex}-${debugMode ? 'debug' : 'normal'}`}
                                 style={{
-                                  top: 'calc(100% + 12px)',
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  zIndex: 30
+                                  position: 'absolute',
+                                  top: displayHighlight.top,
+                                  left: displayHighlight.left,
+                                  width: displayHighlight.width,
+                                  height: displayHighlight.height,
+                                  border: '3px dashed #ebd281',
+                                  boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
+                                  borderRadius: '12px',
+                                  pointerEvents: 'none',
+                                  zIndex: 20
                                 }}
+                                transition={{ type: 'spring', damping: 25, stiffness: 120 }}
                               >
-                                {isRtl ? activeStepHighlight.tooltipAr : activeStepHighlight.tooltipFr}
-                              </div>
-                            </motion.div>
-                          )}
+                                {/* Glowing Ping Indicator */}
+                                <span className={`absolute -top-2.5 ${isRtl ? '-right-2.5' : '-left-2.5'} flex h-5 w-5 z-30`}>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ebd281] opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md"></span>
+                                </span>
+
+                                {/* Dynamic Spotlight tooltip explanation */}
+                                <div 
+                                  className="absolute whitespace-normal bg-[#0a3b68] text-white text-xs font-bold py-2 px-3 rounded-lg shadow-xl border border-[#ebd281] pointer-events-auto leading-normal min-w-[200px] text-center"
+                                  style={{
+                                    top: 'calc(100% + 12px)',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    zIndex: 30
+                                  }}
+                                >
+                                  {isRtl ? displayHighlight.tooltipAr : displayHighlight.tooltipFr}
+                                </div>
+                              </motion.div>
+                            );
+                          })()}
                         </AnimatePresence>
                       </div>
 
@@ -605,6 +634,39 @@ export default function GuidePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Debug Mode Panel */}
+      {debugMode && (
+        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-xl shadow-2xl border border-red-200 z-50 w-80 text-black">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-bold text-red-600 text-sm">Debug Highlight Mode</h3>
+            <button onClick={() => setDebugMode(false)} className="text-gray-400 hover:text-gray-600"><X size={16} /></button>
+          </div>
+          <div className="space-y-3">
+            {['top', 'left', 'width', 'height'].map((coord) => (
+              <div key={coord} className="flex flex-col">
+                <label className="text-xs font-semibold text-gray-600 flex justify-between">
+                  <span>{coord}</span>
+                  <span>{debugCoords[coord as keyof typeof debugCoords]}%</span>
+                </label>
+                <input 
+                  type="range" 
+                  min="0" max="100" step="0.1"
+                  value={debugCoords[coord as keyof typeof debugCoords]}
+                  onChange={(e) => setDebugCoords(prev => ({ ...prev, [coord]: parseFloat(e.target.value) }))}
+                  className="w-full accent-red-500"
+                />
+              </div>
+            ))}
+            <div className="mt-3 p-2 bg-gray-100 rounded text-xs font-mono break-all select-all">
+              {`top: '${debugCoords.top}%', left: '${debugCoords.left}%', width: '${debugCoords.width}%', height: '${debugCoords.height}%'`}
+            </div>
+            <p className="text-[10px] text-gray-500 leading-tight">
+              Ajustez les sliders pour positionner la zone pointillée. Ensuite, copiez le code ci-dessus et envoyez-le moi !
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

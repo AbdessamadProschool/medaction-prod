@@ -410,30 +410,18 @@ export default function GuidePage() {
                         
                         {/* Spotlight Overlay based on active step coordinates */}
                         <AnimatePresence>
-                          {(activeStepHighlight || debugMode) && (() => {
-                            const displayHighlight = debugMode ? {
-                              top: `${debugCoords.top}%`,
-                              left: `${debugCoords.left}%`,
-                              width: `${debugCoords.width}%`,
-                              height: `${debugCoords.height}%`,
-                              tooltipAr: 'Debug Mode',
-                              tooltipFr: 'Mode Debug'
-                            } : activeStepHighlight;
-
-                            if (!displayHighlight) return null;
-
-                            return (
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0 }}
-                                key={`${activeSection}-${activeStepIndex}-${debugMode ? 'debug' : 'normal'}`}
-                                style={{
+                          {activeStepHighlight && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              key={`${activeSection}-${activeStepIndex}`}
+                              style={{
                                   position: 'absolute',
-                                  top: displayHighlight.top,
-                                  left: displayHighlight.left,
-                                  width: displayHighlight.width,
-                                  height: displayHighlight.height,
+                                  top: activeStepHighlight.top,
+                                  left: activeStepHighlight.left,
+                                  width: activeStepHighlight.width,
+                                  height: activeStepHighlight.height,
                                   border: '3px dashed #ebd281',
                                   boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
                                   borderRadius: '12px',
@@ -458,11 +446,10 @@ export default function GuidePage() {
                                     zIndex: 30
                                   }}
                                 >
-                                  {isRtl ? displayHighlight.tooltipAr : displayHighlight.tooltipFr}
+                                  {isRtl ? activeStepHighlight.tooltipAr : activeStepHighlight.tooltipFr}
                                 </div>
                               </motion.div>
-                            );
-                          })()}
+                            )}
                         </AnimatePresence>
                       </div>
 

@@ -28,26 +28,6 @@ export default function GuidePage() {
   const screenshotContainerRef = useRef<HTMLDivElement>(null);
 
   const userRole = session?.user?.role || 'CONSULTEUR';
-
-  // Auto-scroll the screenshot container to center the active spotlight
-  useEffect(() => {
-    if (screenshotContainerRef.current && activeStepHighlight) {
-      const container = screenshotContainerRef.current;
-      const topPercent = parseFloat(activeStepHighlight.top);
-      if (!isNaN(topPercent)) {
-        const timer = setTimeout(() => {
-          const scrollHeight = container.scrollHeight;
-          const clientHeight = container.clientHeight;
-          const targetScrollTop = (scrollHeight * (topPercent / 100)) - (clientHeight / 2);
-          container.scrollTo({
-            top: Math.max(0, targetScrollTop),
-            behavior: 'smooth'
-          });
-        }, 150);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [activeStepIndex, activeSection, activeStepHighlight]);
   const isRtl = locale === 'ar';
 
   // Get data for current language (fallback to 'fr' if not found)
@@ -158,6 +138,26 @@ export default function GuidePage() {
 
   const activeStepImage = activeSectionData.steps?.[activeStepIndex]?.image || activeSectionData.image;
   const activeStepHighlight = activeSectionData.steps?.[activeStepIndex]?.highlight;
+
+  // Auto-scroll the screenshot container to center the active spotlight
+  useEffect(() => {
+    if (screenshotContainerRef.current && activeStepHighlight) {
+      const container = screenshotContainerRef.current;
+      const topPercent = parseFloat(activeStepHighlight.top);
+      if (!isNaN(topPercent)) {
+        const timer = setTimeout(() => {
+          const scrollHeight = container.scrollHeight;
+          const clientHeight = container.clientHeight;
+          const targetScrollTop = (scrollHeight * (topPercent / 100)) - (clientHeight / 2);
+          container.scrollTo({
+            top: Math.max(0, targetScrollTop),
+            behavior: 'smooth'
+          });
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [activeStepIndex, activeSection, activeStepHighlight]);
 
   return (
     <div className="min-h-screen bg-[#fdfaf2] text-[#0a3b68]" dir={isRtl ? 'rtl' : 'ltr'}>

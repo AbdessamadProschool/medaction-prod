@@ -65,7 +65,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'info',
-              text: 'Pour soumettre une réclamation, voter pour des suggestions ou publier du contenu, vous devrez vous connecter ou créer un compte citoyen gratuit.'
+              text: 'Pour soumettre une réclamation, proposer des suggestions ou publier du contenu, vous devrez vous connecter ou créer un compte citoyen gratuit.'
             }
           ]
         },
@@ -166,31 +166,83 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'evenements',
-          title: 'Événements & Campagnes',
-          subtitle: 'Participer à la vie de la communauté',
-          image: '/images/guide/news.png',
-          intro: 'Le Portail Médiouna centralise l\'ensemble des actions sociales, sportives, éducatives et culturelles portées par les délégations provinciales.',
+          title: 'Événements',
+          subtitle: 'Participer aux activités de la province',
+          image: '/images/guide/evenements.png',
+          intro: 'Découvrez les événements, caravanes et activités citoyennes programmés dans la Province de Médiouna.',
           steps: [
             {
               title: 'Agenda provincial',
-              text: 'Consultez l\'onglet Événements pour voir la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
+              text: 'Consultez la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
               highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
-              title: 'Détail et inscription',
-              text: 'Chaque événement précise le nombre de places disponibles, le lieu et l\'organisateur. Vous pouvez copier le lien de l\'événement en un clic pour le partager avec vos proches.',
-              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
-            },
-            {
-              title: 'Campagnes de Sensibilisation',
-              text: 'Suivez les campagnes de santé publique, de propreté et d\'éducation citoyenne menées dans la province de Médiouna.',
-              highlight: { top: '35%', left: '7.2%', width: '61.1%', height: '8%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
+              title: 'Filtres et recherche',
+              text: 'Recherchez par mot-clé ou filtrez par commune et par statut pour cibler un événement précis.',
+              highlight: { top: '37%', left: '70.5%', width: '22.2%', height: '60.5%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             }
           ],
           alerts: [
             {
               type: 'success',
-              text: 'Un événement "En Action" signifie qu\'il se déroule actuellement sur le terrain. Vous pouvez le suivre en direct ou vous rendre sur place si l\'accès est public.'
+              text: 'Un événement "En Action" signifie qu\'il se déroule actuellement sur le terrain. Vous pouvez le suivre en direct ou vous rendre sur place.'
+            }
+          ]
+        },
+        {
+          id: 'campagnes',
+          title: 'Campagnes Citoyennes',
+          subtitle: 'Suivre les campagnes de sensibilisation',
+          image: '/images/guide/campagnes.png',
+          intro: 'Découvrez les campagnes thématiques de sensibilisation menées par la province (environnement, santé, éducation).',
+          steps: [
+            {
+              title: 'Liste des campagnes',
+              text: 'Parcourez les différentes initiatives provinciales en cours ou planifiées pour la communauté.',
+              highlight: { top: '54.4%', left: '7.2%', width: '61.1%', height: '37%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
+            },
+            {
+              title: 'Recherche et filtres',
+              text: 'Filtrez les campagnes par domaine ou statut pour retrouver rapidement une initiative spécifique.',
+              highlight: { top: '45.2%', left: '70.5%', width: '22.2%', height: '46.1%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
+            }
+          ]
+        },
+        {
+          id: 'actualites',
+          title: 'Actualités Provinciales',
+          subtitle: 'Suivre les dernières nouvelles de la province',
+          image: '/images/guide/actualites.png',
+          intro: 'Restez informé des derniers communiqués, projets et décisions officielles de la Province de Médiouna.',
+          steps: [
+            {
+              title: 'Fil d\'actualités',
+              text: 'Consultez les articles et annonces officielles publiés par la Province et les communes.',
+              highlight: { top: '38%', left: '7.2%', width: '63.3%', height: '52.5%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+            },
+            {
+              title: 'Filtres sectoriels et géographiques',
+              text: 'Filtrez l\'actualité par commune ou par secteur d\'activité pour cibler les informations qui vous concernent.',
+              highlight: { top: '32%', left: '72.7%', width: '20%', height: '66%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
+            }
+          ]
+        },
+        {
+          id: 'statistiques',
+          title: 'Statistiques Publiques',
+          subtitle: 'Consulter les indicateurs et rapports de performance',
+          image: '/images/guide/statistiques.png',
+          intro: 'Accédez en toute transparence aux chiffres clés de la gestion provinciale et au taux de résolution des réclamations.',
+          steps: [
+            {
+              title: 'Chiffres clés de performance',
+              text: 'Visualisez les statistiques globales d\'activité de la province, telles que le volume total des signalements et le taux de traitement.',
+              highlight: { top: '27.5%', left: '7.2%', width: '85.5%', height: '7.2%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+            },
+            {
+              title: 'Graphiques sectoriels',
+              text: 'Analysez la répartition des demandes par secteur d\'activité et par commune via des graphiques interactifs.',
+              highlight: { top: '39.3%', left: '7.2%', width: '85.5%', height: '60.7%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
             }
           ]
         },
@@ -203,14 +255,14 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Boîte à suggestions',
-              text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées les plus populaires classées par catégorie.',
+              text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées classées par catégorie.',
               highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'Bien que vous puissiez lire les suggestions en tant que simple visiteur, la création d\'une nouvelle suggestion et le vote pour les idées existantes nécessitent d\'être connecté.'
+              text: 'Bien que vous puissiez lire les suggestions en tant que simple visiteur, la création d\'une nouvelle suggestion nécessite d\'être connecté.'
             }
           ]
         }
@@ -240,7 +292,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'Système d\'activité et points',
-              text: 'Chaque action citoyenne constructive (signalement validé, suggestion populaire, participation à des campagnes) vous rapporte des points de citoyenneté active visible sur votre profil.',
+              text: 'Chaque action citoyenne constructive (signalement validé, suggestion publiée, participation à des campagnes) vous rapporte des points de citoyenneté active visible sur votre profil.',
               highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
             }
           ],
@@ -330,19 +382,19 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'Proposer une suggestion',
-              text: 'Rédigez une proposition d\'aménagement ou de projet culturel pour votre commune et soumettez-la aux votes de la communauté.',
+              text: 'Rédigez une proposition d\'aménagement ou de projet culturel pour votre commune et publiez-la sur la plateforme.',
               highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
             },
             {
-              title: 'Voter et débattre',
-              text: 'Soutenez les idées de vos concitoyens en votant pour elles et participez aux discussions dans la section commentaires.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
+              title: 'Suivi des suggestions',
+              text: 'Consultez les suggestions publiées et suivez les réponses apportées par les administrateurs du portail.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi de votre suggestion', tooltipAr: 'متابعة مقترحك' }
             }
           ],
           alerts: [
             {
               type: 'success',
-              text: 'Les suggestions qui dépassent un seuil de 100 votes citoyens sont automatiquement inscrites à l\'ordre du jour de la commission provinciale d\'évaluation.'
+              text: 'Les suggestions pertinentes sont étudiées par les administrateurs pour une éventuelle intégration dans les projets de développement de la province.'
             }
           ]
         }
@@ -586,7 +638,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'info',
-              text: 'لتقديم شكاية، أو التصويت على المقترحات، ou نشر محتوى، ستحتاج إلى تسجيل الدخول أو إنشاء حساب مواطن مجاني.'
+              text: 'لتقديم شكاية، أو تقديم اقتراحات، أو نشر محتوى، ستحتاج إلى تسجيل الدخول أو إنشاء حساب مواطن مجاني.'
             }
           ]
         },
@@ -687,10 +739,10 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'evenements',
-          title: 'الأنشطة والحملات',
-          subtitle: 'المشاركة الفعالة في حياة المجتمع',
-          image: '/images/guide/news.png',
-          intro: 'تجمع منصة بوابة مديونة كافة الأنشطة والمبادرات الاجتماعية، الرياضية، التعليمية والثقافية التي تشرف عليها المندوبيات الإقليمية.',
+          title: 'الأنشطة والفعاليات',
+          subtitle: 'المشاركة في أنشطة الإقليم',
+          image: '/images/guide/evenements.png',
+          intro: 'اكتشف الأنشطة، القوافل والمبادرات المواطنة المبرمجة في إقليم مديونة.',
           steps: [
             {
               title: 'أجندة الإقليم',
@@ -698,20 +750,72 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
-              title: 'التفاصيل والتسجيل',
-              text: 'يوضح كل نشاط عدد المقاعد المتاحة، المكان الدقيق، والجهة المنظمة. يمكنك نسخ الرابط لمشاركته مع عائلتك بنقرة واحدة.',
-              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
-            },
-            {
-              title: 'حملات التوعية',
-              text: 'تابع حملات الصحة العامة، النظافة والتربية البيئية المنظمة على مستوى تراب إقليم مديونة.',
-              highlight: { top: '35%', left: '7.2%', width: '61.1%', height: '8%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
+              title: 'البحث والتصفية',
+              text: 'ابحث بكلمات مفتاحية أو صفّ حسب الجماعة الترابية والحالة لتحديد نشاط معين.',
+              highlight: { top: '37%', left: '70.5%', width: '22.2%', height: '60.5%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             }
           ],
           alerts: [
             {
               type: 'success',
-              text: 'نشاط "جارٍ حالياً" يعني أن الفعالية تقام الآن على أرض الواقع. يمكنك متابعة مجرياتها أو الحضور للمكان إذا كانت المبادرة مفتوحة للعموم.'
+              text: 'نشاط "جارٍ حالياً" يعني أن الفعالية تقام الآن على أرض الواقع. يمكنك متابعة مجرياتها أو الحضور للمكان.'
+            }
+          ]
+        },
+        {
+          id: 'campagnes',
+          title: 'الحملات المواطنة',
+          subtitle: 'متابعة حملات التوعية والتحسيس',
+          image: '/images/guide/campagnes.png',
+          intro: 'اكتشف الحملات التوعوية الموضوعاتية المنظمة بالإقليم (البيئة، الصحة، التربية المواطنة).',
+          steps: [
+            {
+              title: 'قائمة الحملات',
+              text: 'تصفح مختلف المبادرات الإقليمية الجارية أو المبرمجة لفائدة الساكنة.',
+              highlight: { top: '54.4%', left: '7.2%', width: '61.1%', height: '37%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
+            },
+            {
+              title: 'البحث والتصفية',
+              text: 'صفّ الحملات حسب المجال أو الحالة للعثور بسرعة على مبادرة معينة.',
+              highlight: { top: '45.2%', left: '70.5%', width: '22.2%', height: '46.1%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
+            }
+          ]
+        },
+        {
+          id: 'actualites',
+          title: 'الأخبار الإقليمية',
+          subtitle: 'متابعة آخر مستجدات الإقليم',
+          image: '/images/guide/actualites.png',
+          intro: 'ابق على اطلاع بآخر البلاغات، المشاريع والقرارات الرسمية لإقليم مديونة.',
+          steps: [
+            {
+              title: 'شريط الأخبار',
+              text: 'طالع المقالات والإعلانات الرسمية المنشورة من طرف الإقليم والجماعات الترابية.',
+              highlight: { top: '38%', left: '7.2%', width: '63.3%', height: '52.5%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+            },
+            {
+              title: 'مرشحات البحث والتصفية',
+              text: 'صفّ الأخبار حسب الجماعة أو القطاع للوصول إلى المعلومات التي تهمك مباشرة.',
+              highlight: { top: '32%', left: '72.7%', width: '20%', height: '66%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
+            }
+          ]
+        },
+        {
+          id: 'statistiques',
+          title: 'الإحصائيات العامة',
+          subtitle: 'الاطلاع على مؤشرات الأداء والتقارير',
+          image: '/images/guide/statistiques.png',
+          intro: 'ولوج شفاف إلى الأرقام الرئيسية للحصيلة الإقليمية ونسب معالجة شكايات المواطنين.',
+          steps: [
+            {
+              title: 'الأرقام الرئيسية للأداء',
+              text: 'طالع الإحصائيات العامة لنشاط الإقليم، مثل الحجم الإجمالي للبلاغات ومعدلات الاستجابة.',
+              highlight: { top: '27.5%', left: '7.2%', width: '85.5%', height: '7.2%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+            },
+            {
+              title: 'الالرسوم البيانية القطاعية',
+              text: 'حلل توزيع الطلبات حسب القطاع الخدماتي وحسب الجماعة الترابية عبر مبيانات تفاعلية.',
+              highlight: { top: '39.3%', left: '7.2%', width: '85.5%', height: '60.7%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
             }
           ]
         },
@@ -724,14 +828,14 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'صندوق المقترحات',
-              text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار الأكثر شعبية وتصويتاً حسب كل فئة.',
+              text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار حسب كل فئة.',
               highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'رغم إمكانية قراءة المقترحات لجميع الزوار، فإن تقديم مقترح جديد أو التصويت لصالح المقترحات الحالية يتطلب تسجيل الدخول بحساب مواطن.'
+              text: 'رغم إمكانية قراءة المقترحات لجميع الزوار، فإن تقديم مقترح جديد يتطلب تسجيل الدخول بحساب مواطن.'
             }
           ]
         }
@@ -761,7 +865,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'نظام النقاط والمواطنة النشطة',
-              text: 'كل عمل مواطن بناء (شكاية معتمدة، مقترح شائع، مشاركة في الأنشطة) يمنحك نقاط مواطنة تظهر على صفحتك الشخصية.',
+              text: 'كل عمل مواطن بناء (شكاية معتمدة، مقترح منشور، مشاركة في الأنشطة) يمنحك نقاط مواطنة تظهر على صفحتك الشخصية.',
               highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
             }
           ],
@@ -851,19 +955,19 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'تقديم مقترح',
-              text: 'اكتب فكرة لمشروع تهيئة أو نشاط ثقافي لجماعتك، واعرضها لتصويت بقية المواطنين.',
+              text: 'اكتب فكرة لمشروع تهيئة أو نشاط ثقافي لجماعتك، وانشرها على المنصة.',
               highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
             },
             {
-              title: 'التصويت والنقاش',
-              text: 'ادعم أفكار جيرانك ومواطني إقليمك بالتصويت لصالحها والمشاركة في النقاشات عبر التعليقات.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
+              title: 'متابعة المقترحات',
+              text: 'طالع المقترحات المنشورة وتتبع الردود المقدمة من طرف مديري البوابة.',
+              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi de votre suggestion', tooltipAr: 'متابعة مقترحك' }
             }
           ],
           alerts: [
             {
               type: 'success',
-              text: 'المقترحات التي تتجاوز عتبة 100 تصويت من المواطنين تدرج تلقائياً في جدول أعمال لجنة التقييم الإقليمية.'
+              text: 'يتم دراسة المقترحات الوجيهة من طرف المشرفين لإمكانية دمجها في مشاريع التنمية بالإقليم.'
             }
           ]
         }

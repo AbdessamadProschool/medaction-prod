@@ -48,18 +48,18 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'intro',
           title: 'Introduction au Portail',
           subtitle: 'Bienvenue sur le Portail Médiouna officiel',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_fr.png',
           intro: 'Le Portail Médiouna est la plateforme officielle d\'information et de participation citoyenne de la Province de Médiouna. Elle permet à chaque citoyen et visiteur d\'accéder en toute transparence aux informations locales, de suivre les projets et événements publics, et de participer activement au développement de la province.',
           steps: [
             {
               title: 'Exploration sans compte',
               text: 'En tant que visiteur anonyme (consulteur), vous pouvez parcourir l\'annuaire complet des établissements publics, consulter la carte interactive, voir l\'agenda provincial, lire les actualités et consulter les suggestions citoyennes.',
-              highlight: { top: '0%', left: '0%', width: '100%', height: '2.5%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              highlight: { top: '0%', left: '0%', width: '100%', height: '10%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'Données Publiques',
               text: 'Consultez les statistiques d\'activité globale et les indicateurs de performance de la province directement depuis la page d\'accueil.',
-              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -73,23 +73,23 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'accueil',
           title: 'Page d\'Accueil',
           subtitle: 'Le tableau de bord de la Province de Médiouna',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_fr.png',
           intro: 'La page d\'accueil est le point de départ de votre visite. Elle offre une synthèse dynamique de la vie provinciale et de l\'état des services publics.',
           steps: [
             {
               title: 'Chiffres Clés',
               text: 'Visualisez instantanément le nombre de réclamations soumises, le taux de résolution par les autorités et d\'autres statistiques de performance de la province.',
-              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'Mises en Avant',
               text: 'Consultez rapidement les derniers événements programmés, les actualités urgentes et les établissements évalués les plus actifs.',
-              highlight: { top: '31%', left: '0%', width: '100%', height: '40.4%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              highlight: { top: '25%', left: '5%', width: '90%', height: '35%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
               title: 'Recherche Globale',
               text: 'Utilisez le raccourci clavier Ctrl+K ou cliquez sur l\'icône loupe dans l\'en-tête pour rechercher instantanément un établissement public, un événement ou une actualité.',
-              highlight: { top: '1.7%', left: '13.4%', width: '2.5%', height: '0.6%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط Recherche instantanée' }
+              highlight: { top: '2%', left: '80%', width: '10%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط Recherche instantanée' }
             }
           ],
           alerts: [
@@ -103,28 +103,28 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'carte',
           title: 'Carte Interactive',
           subtitle: 'Visualiser les infrastructures provinciales',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_fr.png',
           intro: 'La carte interactive géolocalise l\'ensemble des infrastructures et des services publics de la Province de Médiouna.',
           steps: [
             {
               title: 'Localisation des services',
               text: 'Parcourez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et autres infrastructures de la province.',
-              highlight: { top: '12.4%', left: '0%', width: '100%', height: '87.6%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
+              highlight: { top: '10%', left: '0%', width: '100%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'Filtres de recherche',
               text: 'Affinez votre affichage grâce au panneau de contrôle : sélectionnez les communes (Médiouna, Tit Mellil, Lahraouiyine, etc.), choisissez des secteurs spécifiques (Santé, Éducation, Sport) ou filtrez selon la note des établissements.',
-              highlight: { top: '14.2%', left: '1.1%', width: '22.2%', height: '45.3%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
+              highlight: { top: '12%', left: '1%', width: '25%', height: '80%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'Clustering intelligent',
               text: 'Les marqueurs se regroupent automatiquement lorsque vous zoomez en arrière pour garder une carte lisible. Cliquez sur un cluster pour zoomer directement sur la zone concernée.',
-              highlight: { top: '35%', left: '40%', width: '20%', height: '20%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
+              highlight: { top: '45%', left: '45%', width: '10%', height: '10%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
             },
             {
               title: 'Panneau latéral de détails',
               text: 'Cliquez sur l\'icône d\'un établissement pour ouvrir le panneau latéral interactif et parcourir ses informations, ses événements programmés, ses actualités et les évaluations laissées par les citoyens.',
-              highlight: { top: '12.4%', left: '72.2%', width: '27.8%', height: '87.6%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
+              highlight: { top: '10%', left: '70%', width: '30%', height: '90%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -138,23 +138,23 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'etablissements',
           title: 'Annuaire des Établissements',
           subtitle: 'Trouver et évaluer les services publics',
-          image: '/images/guide/etablissements.png',
+          image: '/images/guide/etablissements_fr.png',
           intro: 'L\'annuaire liste de manière exhaustive toutes les infrastructures publiques de Médiouna. Il permet de suivre la qualité des services offerts.',
           steps: [
             {
               title: 'Filtres avancés',
               text: 'Recherchez par nom ou filtrez par type d\'établissement (Hôpital, Lycée, Administration, Terrain de sport) et par commune.',
-              highlight: { top: '24.8%', left: '72%', width: '19.3%', height: '2%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'Fiches détaillées',
               text: 'Consultez les horaires d\'ouverture, les adresses exactes, les numéros de contact et la liste des responsables.',
-              highlight: { top: '25.8%', left: '7.2%', width: '61.1%', height: '68%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'Abonnement aux notifications',
               text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.',
-              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              highlight: { top: '17%', left: '80%', width: '12%', height: '5%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -168,18 +168,18 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'evenements',
           title: 'Événements',
           subtitle: 'Participer aux activités de la province',
-          image: '/images/guide/evenements.png',
+          image: '/images/guide/evenements_fr.png',
           intro: 'Découvrez les événements, caravanes et activités citoyennes programmés dans la Province de Médiouna.',
           steps: [
             {
               title: 'Agenda provincial',
               text: 'Consultez la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
-              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'Filtres et recherche',
               text: 'Recherchez par mot-clé ou filtrez par commune et par statut pour cibler un événement précis.',
-              highlight: { top: '37%', left: '70.5%', width: '22.2%', height: '60.5%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             }
           ],
           alerts: [
@@ -193,18 +193,18 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'campagnes',
           title: 'Campagnes Citoyennes',
           subtitle: 'Suivre les campagnes de sensibilisation',
-          image: '/images/guide/campagnes.png',
+          image: '/images/guide/campagnes_fr.png',
           intro: 'Découvrez les campagnes thématiques de sensibilisation menées par la province (environnement, santé, éducation).',
           steps: [
             {
               title: 'Liste des campagnes',
               text: 'Parcourez les différentes initiatives provinciales en cours ou planifiées pour la communauté.',
-              highlight: { top: '54.4%', left: '7.2%', width: '61.1%', height: '37%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
+              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
             },
             {
               title: 'Recherche et filtres',
               text: 'Filtrez les campagnes par domaine ou statut pour retrouver rapidement une initiative spécifique.',
-              highlight: { top: '45.2%', left: '70.5%', width: '22.2%', height: '46.1%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
             }
           ]
         },
@@ -212,18 +212,18 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'actualites',
           title: 'Actualités Provinciales',
           subtitle: 'Suivre les dernières nouvelles de la province',
-          image: '/images/guide/actualites.png',
+          image: '/images/guide/actualites_fr.png',
           intro: 'Restez informé des derniers communiqués, projets et décisions officielles de la Province de Médiouna.',
           steps: [
             {
               title: 'Fil d\'actualités',
               text: 'Consultez les articles et annonces officielles publiés par la Province et les communes.',
-              highlight: { top: '38%', left: '7.2%', width: '63.3%', height: '52.5%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
             },
             {
               title: 'Filtres sectoriels et géographiques',
               text: 'Filtrez l\'actualité par commune ou par secteur d\'activité pour cibler les informations qui vous concernent.',
-              highlight: { top: '32%', left: '72.7%', width: '20%', height: '66%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
             }
           ]
         },
@@ -231,18 +231,18 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'statistiques',
           title: 'Statistiques Publiques',
           subtitle: 'Consulter les indicateurs et rapports de performance',
-          image: '/images/guide/statistiques.png',
+          image: '/images/guide/statistiques_fr.png',
           intro: 'Accédez en toute transparence aux chiffres clés de la gestion provinciale et au taux de résolution des réclamations.',
           steps: [
             {
               title: 'Chiffres clés de performance',
               text: 'Visualisez les statistiques globales d\'activité de la province, telles que le volume total des signalements et le taux de traitement.',
-              highlight: { top: '27.5%', left: '7.2%', width: '85.5%', height: '7.2%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+              highlight: { top: '10%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
             },
             {
               title: 'Graphiques sectoriels',
               text: 'Analysez la répartition des demandes par secteur d\'activité et par commune via des graphiques interactifs.',
-              highlight: { top: '39.3%', left: '7.2%', width: '85.5%', height: '60.7%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
+              highlight: { top: '30%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
             }
           ]
         },
@@ -627,12 +627,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'تصفح بدون حساب',
               text: 'بصفتك زائراً غير مسجل، يمكنك تصفح الدليل الكامل للمرافق العمومية، والاطلاع على الخريطة التفاعلية، ومعرفة أجندة الإقليم، وقراءة الأخبار، والاطلاع على مقترحات المواطنين.',
-              highlight: { top: '0%', left: '0%', width: '100%', height: '2.5%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              highlight: { top: '0%', left: '0%', width: '100%', height: '10%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'البيانات العامة',
               text: 'الاطلاع على إحصائيات النشاط العام ومؤشرات الأداء للإقليم مباشرة من الصفحة الرئيسية.',
-              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -652,17 +652,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'الأرقام والشركاء',
               text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
-              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'المحتوى البارز',
               text: 'تصفح سريعاً أحدث الأنشطة المبرمجة، والأخبار العاجلة، والمرافق الأكثر تفاعلاً وتقييماً من قبل المواطنين.',
-              highlight: { top: '31%', left: '0%', width: '100%', height: '40.4%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              highlight: { top: '25%', left: '5%', width: '90%', height: '35%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
               title: 'البحث الشامل',
               text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
-              highlight: { top: '1.7%', left: '13.4%', width: '2.5%', height: '0.6%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
+              highlight: { top: '2%', left: '10%', width: '10%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
           ],
           alerts: [
@@ -682,22 +682,22 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'تحديد مواقع الخدمات',
               text: 'تصفح الخريطة التفاعلية لتحديد مواقع المرافق العمومية، المدارس، المستشفيات وغيرها من البنيات التحتية للإقليم بسهولة.',
-              highlight: { top: '12.4%', left: '0%', width: '100%', height: '87.6%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
+              highlight: { top: '10%', left: '0%', width: '100%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'مرشحات البحث',
               text: 'خصص عرض الخريطة عبر لوحة التحكم: اختر الجماعات (مديونة، تيط مليل، الهراويين، إلخ)، وحدد قطاعات معينة (الصحة، التعليم، الرياضة) أو صفّ حسب تقييمات المرافق.',
-              highlight: { top: '14.2%', left: '1.1%', width: '22.2%', height: '45.3%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
+              highlight: { top: '12%', left: '74%', width: '25%', height: '80%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'التجمع الذكي للمؤشرات',
               text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجمع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.',
-              highlight: { top: '35%', left: '40%', width: '20%', height: '20%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
+              highlight: { top: '45%', left: '45%', width: '10%', height: '10%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
             },
             {
               title: 'اللوحة الجانبية للتفاصيل',
               text: 'اضغط على أيقونة أي مرفق لفتح اللوحة الجانبية التفاعلية واستعراض معلوماته، والأنشطة المبرمجة لديه، وآخر أخباره، والتقييمات المكتوبة من طرف المواطنين.',
-              highlight: { top: '12.4%', left: '72.2%', width: '27.8%', height: '87.6%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
+              highlight: { top: '10%', left: '0%', width: '30%', height: '90%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -717,17 +717,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'البحث والتصفية',
               text: 'ابحث بالاسم أو حدد نوع المرفق (مستشفى، ثانوية، إدارة، ملعب رياضي) وقم بالتصفية حسب الجماعة الترابية التابع لها.',
-              highlight: { top: '24.8%', left: '72%', width: '19.3%', height: '2%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'بطاقة معلومات المرفق',
               text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل, بالإضافة إلى أسماء المسؤولين.',
-              highlight: { top: '25.8%', left: '7.2%', width: '61.1%', height: '68%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'الاشتراك في التنبيهات',
               text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
-              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              highlight: { top: '17%', left: '5%', width: '12%', height: '5%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -747,12 +747,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'أجندة الإقليم',
               text: 'تصفح قائمة الأنشطة المبرمجة. تشير البطاقات بوضوح إلى حالة النشاط (مستقبلي، جارٍ حالياً، أو منتهٍ).',
-              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'البحث والتصفية',
               text: 'ابحث بكلمات مفتاحية أو صفّ حسب الجماعة الترابية والحالة لتحديد نشاط معين.',
-              highlight: { top: '37%', left: '70.5%', width: '22.2%', height: '60.5%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             }
           ],
           alerts: [
@@ -772,12 +772,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'قائمة الحملات',
               text: 'تصفح مختلف المبادرات الإقليمية الجارية أو المبرمجة لفائدة الساكنة.',
-              highlight: { top: '54.4%', left: '7.2%', width: '61.1%', height: '37%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
+              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
             },
             {
               title: 'البحث والتصفية',
               text: 'صفّ الحملات حسب المجال أو الحالة للعثور بسرعة على مبادرة معينة.',
-              highlight: { top: '45.2%', left: '70.5%', width: '22.2%', height: '46.1%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
             }
           ]
         },
@@ -791,12 +791,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'شريط الأخبار',
               text: 'طالع المقالات والإعلانات الرسمية المنشورة من طرف الإقليم والجماعات الترابية.',
-              highlight: { top: '38%', left: '7.2%', width: '63.3%', height: '52.5%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
             },
             {
               title: 'مرشحات البحث والتصفية',
               text: 'صفّ الأخبار حسب الجماعة أو القطاع للوصول إلى المعلومات التي تهمك مباشرة.',
-              highlight: { top: '32%', left: '72.7%', width: '20%', height: '66%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
             }
           ]
         },
@@ -810,12 +810,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'الأرقام الرئيسية للأداء',
               text: 'طالع الإحصائيات العامة لنشاط الإقليم، مثل الحجم الإجمالي للبلاغات ومعدلات الاستجابة.',
-              highlight: { top: '27.5%', left: '7.2%', width: '85.5%', height: '7.2%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+              highlight: { top: '10%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
             },
             {
               title: 'الرسوم البيانية القطاعية',
               text: 'حلل توزيع الطلبات حسب القطاع الخدماتي وحسب الجماعة الترابية عبر مبيانات تفاعلية.',
-              highlight: { top: '39.3%', left: '7.2%', width: '85.5%', height: '60.7%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
+              highlight: { top: '30%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
             }
           ]
         },

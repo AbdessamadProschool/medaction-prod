@@ -27,12 +27,6 @@ export default function GuidePage() {
   const [isPending, startTransition] = useTransition();
   const screenshotContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- Debug Mode States ---
-  const [debugMode, setDebugMode] = useState<boolean>(false);
-  const [debugClicks, setDebugClicks] = useState<number>(0);
-  const [debugCoords, setDebugCoords] = useState({ top: 10, left: 10, width: 20, height: 20 });
-
-
   const userRole = session?.user?.role || 'CONSULTEUR';
   const isRtl = locale === 'ar';
 
@@ -183,15 +177,7 @@ export default function GuidePage() {
                 <span>{isRtl ? 'دليل المستخدم' : 'Guide Utilisateur'}</span>
               </div>
               <h1 
-                className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight font-cairo cursor-pointer"
-                onClick={() => {
-                  if (debugClicks >= 4) {
-                    setDebugMode(!debugMode);
-                    setDebugClicks(0);
-                  } else {
-                    setDebugClicks(prev => prev + 1);
-                  }
-                }}
+                className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight font-cairo"
               >
                 {isRtl ? 'دليل مستخدم بوابة مديونة' : 'GUIDE UTILISATEUR PORTAIL MÉDIOUNA'}
               </h1>
@@ -412,7 +398,7 @@ export default function GuidePage() {
                   {activeStepImage && (
                     <div 
                       ref={screenshotContainerRef}
-                      className="relative mb-10 rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 overflow-y-auto scrollbar-thin select-none"
+                      className="relative mb-10 rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 select-none"
                     >
                       <div className="relative w-full font-sans" style={{ height: 'auto' }}>
                         <img
@@ -634,39 +620,6 @@ export default function GuidePage() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Debug Mode Panel */}
-      {debugMode && (
-        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-xl shadow-2xl border border-red-200 z-50 w-80 text-black">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-bold text-red-600 text-sm">Debug Highlight Mode</h3>
-            <button onClick={() => setDebugMode(false)} className="text-gray-400 hover:text-gray-600"><X size={16} /></button>
-          </div>
-          <div className="space-y-3">
-            {['top', 'left', 'width', 'height'].map((coord) => (
-              <div key={coord} className="flex flex-col">
-                <label className="text-xs font-semibold text-gray-600 flex justify-between">
-                  <span>{coord}</span>
-                  <span>{debugCoords[coord as keyof typeof debugCoords]}%</span>
-                </label>
-                <input 
-                  type="range" 
-                  min="0" max="100" step="0.1"
-                  value={debugCoords[coord as keyof typeof debugCoords]}
-                  onChange={(e) => setDebugCoords(prev => ({ ...prev, [coord]: parseFloat(e.target.value) }))}
-                  className="w-full accent-red-500"
-                />
-              </div>
-            ))}
-            <div className="mt-3 p-2 bg-gray-100 rounded text-xs font-mono break-all select-all">
-              {`top: '${debugCoords.top}%', left: '${debugCoords.left}%', width: '${debugCoords.width}%', height: '${debugCoords.height}%'`}
-            </div>
-            <p className="text-[10px] text-gray-500 leading-tight">
-              Ajustez les sliders pour positionner la zone pointillée. Ensuite, copiez le code ci-dessus et envoyez-le moi !
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -2,79 +2,106 @@ const { chromium } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
 
-async function run() {
-  console.log('Starting Playwright screenshot capture (comprehensive & clean)...');
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    locale: 'ar-MA',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 100;
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+        if (totalHeight >= scrollHeight - window.innerHeight || totalHeight > 3000) {
+          clearInterval(timer);
+          window.scrollTo(0, 0); // Scroll back to top
+          resolve();
+        }
+      }, 100);
+    });
   });
-  const page = await context.newPage();
+}
 
-  // Prevent welcome popup from showing by setting the correct session storage key
+async function captureLang(context, lang, suffix) {
+  const page = await context.newPage();
+  const outputDir = path.join(__dirname, '../public/images/guide');
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
   await page.addInitScript(() => {
     sessionStorage.setItem('hasSeenAnnouncement', 'true');
     sessionStorage.setItem('announcement_seen', 'true');
   });
 
-  const outputDir = path.join(__dirname, '../public/images/guide');
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const targets = [
-    { url: 'https://bo.provincemediouna.ma/ar', file: 'home.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/etablissements', file: 'etablissements.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/carte', file: 'map.png', fullPage: false },
-    { url: 'https://bo.provincemediouna.ma/ar/evenements', file: 'evenements.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/actualites', file: 'actualites.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/campagnes', file: 'campagnes.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/suggestions', file: 'participation.png', fullPage: true },
-    { url: 'https://bo.provincemediouna.ma/ar/statistiques-publiques', file: 'statistiques.png', fullPage: true }
+  const routes = [
+    { url: `/${lang}`, file: `home${suffix}.png` },
+    { url: `/${lang}/etablissements`, file: `etablissements${suffix}.png` },
+    { url: `/${lang}/carte`, file: `map${suffix}.png` },
+    { url: `/${lang}/evenements`, file: `evenements${suffix}.png` },
+    { url: `/${lang}/actualites`, file: `actualites${suffix}.png` },
+    { url: `/${lang}/campagnes`, file: `campagnes${suffix}.png` },
+    { url: `/${lang}/suggestions`, file: `participation${suffix}.png` },
+    { url: `/${lang}/statistiques-publiques`, file: `statistiques${suffix}.png` },
+    { url: `/${lang}/login`, file: `login${suffix}.png` },
+    { url: `/${lang}/register`, file: `register${suffix}.png` },
+    { url: `/${lang}/contact`, file: `contact${suffix}.png` },
+    { url: `/${lang}/accessibilite`, file: `accessibilite${suffix}.png` },
+    { url: `/${lang}/politique-confidentialite`, file: `confidentialite${suffix}.png` },
+    { url: `/${lang}/conditions-utilisation`, file: `conditions${suffix}.png` },
+    { url: `/${lang}/suggestions?new=true`, file: `suggestions_new${suffix}.png` }
   ];
 
-  for (const target of targets) {
-    console.log(`Navigating to ${target.url}...`);
+  for (const target of routes) {
+    const fullUrl = `https://bo.provincemediouna.ma${target.url}`;
+    console.log(`[${lang.toUpperCase()}] Navigating to ${fullUrl}...`);
     try {
-      // Use 'load' state and a 45 second timeout
-      await page.goto(target.url, { waitUntil: 'load', timeout: 45000 });
-      
-      // Wait 5 seconds for all visual elements/maps/charts to load and settle
-      await page.waitForTimeout(5000);
-      
-      // Additional check to remove any active modal overlays if they still manage to appear
+      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60000 });
+      await autoScroll(page); // Trigger lazy loading
+      await page.waitForTimeout(2000); // Wait for things to settle after scroll
+
+      // Remove modals
       await page.evaluate(() => {
         const modal = document.querySelector('div.fixed.z-\\[100\\]');
-        if (modal) {
-          modal.remove();
-        }
-        // Force-remove global announcement overlay if present
+        if (modal) modal.remove();
         document.querySelectorAll('div').forEach(div => {
           if (div.innerText && (div.innerText.includes('عيد الأضحى') || div.innerText.includes('مرحبًا بكم في بوابة مديونة'))) {
-            // Find its top-level parent modal container and remove it
             let parent = div;
             while (parent && parent.tagName !== 'BODY') {
-              if (window.getComputedStyle(parent).position === 'fixed') {
-                parent.remove();
-                break;
-              }
+              if (window.getComputedStyle(parent).position === 'fixed') { parent.remove(); break; }
               parent = parent.parentElement;
             }
           }
         });
       });
-      
+
       const outputPath = path.join(outputDir, target.file);
-      await page.screenshot({ path: outputPath, fullPage: target.fullPage });
-      console.log(`Successfully captured and saved to ${outputPath}`);
+      await page.screenshot({ path: outputPath, fullPage: false }); // ALWAYS VIEWPORT
+      console.log(`[${lang.toUpperCase()}] Captured ${target.file}`);
     } catch (e) {
-      console.error(`Error capturing ${target.url}:`, e.message);
+      console.error(`Error capturing ${fullUrl}:`, e.message);
     }
   }
+  await page.close();
+}
+
+async function run() {
+  console.log('Starting viewport screenshots...');
+  const browser = await chromium.launch({ headless: true });
+  
+  const arContext = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    locale: 'ar-MA',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/120.0.0.0 Safari/537.36'
+  });
+  await captureLang(arContext, 'ar', '_ar');
+  
+  const frContext = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    locale: 'fr-FR',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/120.0.0.0 Safari/537.36'
+  });
+  await captureLang(frContext, 'fr', '_fr');
 
   await browser.close();
-  console.log('Finished capturing screenshots!');
+  console.log('Finished capturing all viewport screenshots!');
 }
 
 run();

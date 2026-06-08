@@ -57,8 +57,8 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
-              title: 'Transparence et Données Ouvertes',
-              text: 'Accédez aux statistiques publiques et aux bilans des actions menées par les autorités locales et les délégations provinciales.',
+              title: 'Données Publiques',
+              text: 'Consultez les statistiques d\'activité globale et les indicateurs de performance de la province directement depuis la page d\'accueil.',
               highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
@@ -102,14 +102,14 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'carte',
           title: 'Carte Interactive',
-          subtitle: 'Explorer la Province de Médiouna en 2D et 3D',
+          subtitle: 'Visualiser les infrastructures provinciales',
           image: '/images/guide/map.png',
-          intro: 'La carte interactive est l\'un des outils les plus puissants du portail. Basée sur Mapbox GL JS, elle géolocalise l\'ensemble des infrastructures et événements de la province.',
+          intro: 'La carte interactive géolocalise l\'ensemble des infrastructures et des services publics de la Province de Médiouna.',
           steps: [
             {
-              title: 'Bascule 2D / 3D',
-              text: 'Cliquez sur le bouton 3D en haut à droite de la carte pour activer la vue en relief et naviguer à travers les reliefs et bâtiments de la province en maintenant le clic droit enfoncé.',
-              highlight: { top: '3%', left: '88%', width: '10%', height: '8%', tooltipFr: 'Activer la vue en relief 3D', tooltipAr: 'تفعيل العرض ثلاثي الأبعاد' }
+              title: 'Localisation des services',
+              text: 'Parcourez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et autres infrastructures de la province.',
+              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'Filtres de recherche',
@@ -130,7 +130,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'warning',
-              text: 'Pour des raisons de confidentialité, les localisations précises des réclamations citoyennes ne sont pas visibles pour le grand public. Seuls les décideurs (Gouverneur, Admin) disposent de ces informations sur leur carte privée.'
+              text: 'Pour des raisons de confidentialité et de protection de la vie privée, les localisations précises des réclamations ne sont pas affichées publiquement sur la carte.'
             }
           ]
         },
@@ -154,7 +154,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Abonnement aux notifications',
               text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.',
-              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتrack في التنبيهات' }
             }
           ],
           alerts: [
@@ -196,20 +196,15 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'suggestions',
-          title: 'Propositions & Talents',
-          subtitle: 'Contribuer activement et découvrir nos forces',
+          title: 'Propositions Citoyennes',
+          subtitle: 'Découvrir les idées d\'amélioration de la communauté',
           image: '/images/guide/participation.png',
-          intro: 'Médiouna regorge de talents et d\'idées novatrices. Le Portail Médiouna offre un espace d\'expression et de valorisation pour la communauté.',
+          intro: 'Le Portail Médiouna offre un espace d\'expression pour la communauté afin d\'améliorer la qualité de vie dans la province.',
           steps: [
             {
               title: 'Boîte à suggestions',
               text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées les plus populaires classées par catégorie.',
-              highlight: { top: '15%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
-            },
-            {
-              title: 'Mise en valeur des talents',
-              text: 'Découvrez la section Talents locaux qui met en avant les réussites des jeunes et des associations de la région dans les domaines culturels, scientifiques et sportifs.',
-              highlight: { top: '15%', left: '52%', width: '45%', height: '65%', tooltipFr: 'Talents de Médiouna', tooltipAr: 'مواهب وكفاءات إقليم مديونة' }
+              highlight: { top: '15%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [
@@ -224,7 +219,7 @@ export const guideData: Record<string, GuideRole[]> = {
     {
       id: 'citoyen',
       title: 'Citoyen (Résident)',
-      description: 'Découvrez comment soumettre des réclamations, suivre leur traitement, proposer des suggestions d\'amélioration et valoriser vos talents.',
+      description: 'Découvrez comment soumettre des réclamations, suivre leur traitement, et proposer des suggestions d\'amélioration pour votre commune.',
       sections: [
         {
           id: 'compte',
@@ -328,8 +323,8 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'participation_citoyenne',
-          title: 'Boîte à Idées & Talents',
-          subtitle: 'Proposer des projets et valoriser vos compétences',
+          title: 'Boîte à Idées',
+          subtitle: 'Proposer des projets d\'intérêt général',
           image: '/images/guide/participation.png',
           intro: 'Le Portail Médiouna vous permet d\'influencer positivement l\'avenir de votre quartier en proposant des projets d\'intérêt général.',
           steps: [
@@ -342,11 +337,6 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'Voter et débattre',
               text: 'Soutenez les idées de vos concitoyens en votant pour elles et participez aux discussions dans la section commentaires.',
               highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
-            },
-            {
-              title: 'Inscription des Talents',
-              text: 'Vous êtes artiste, athlète, scientifique, ou portez un projet associatif à Médiouna ? Inscrivez-vous dans la section Talents pour être mis en avant sur le portail.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Enregistrement de profil talent', tooltipAr: 'تسجيل وتعريف المواهب المحلية' }
             }
           ],
           alerts: [
@@ -588,8 +578,8 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
-              title: 'الشفافية والبيانات المفتوحة',
-              text: 'الوصول إلى الإحصائيات العامة وتقارير الحصيلة للأنشطة والتدخلات التي تقوم بها السلطات المحلية والمندوبيات الإقليمية.',
+              title: 'البيانات العامة',
+              text: 'الاطلاع على إحصائيات النشاط العام ومؤشرات الأداء للإقليم مباشرة من الصفحة الرئيسية.',
               highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
@@ -609,7 +599,7 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'الأرقام والشركاء',
-              text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
+              text: 'اطلع فوراً على عدد الشكايات القدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
               highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
@@ -618,7 +608,7 @@ export const guideData: Record<string, GuideRole[]> = {
               highlight: { top: '45%', left: '5%', width: '90%', height: '45%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
-              title: 'البحث الشaml',
+              title: 'البحث الشامل',
               text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
               highlight: { top: '1.5%', left: '30%', width: '40%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
@@ -633,14 +623,14 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'carte',
           title: 'الخريطة التفاعلية',
-          subtitle: 'استكشاف إقليم مديونة بأبعاد ثنائية وثلاثية',
+          subtitle: 'تحديد مواقع المرافق الإقليمية',
           image: '/images/guide/map.png',
-          intro: 'تعد الخريطة التفاعلية أحد أقوى أدوات البوابة. تعتمد على تكنولوجيا Mapbox GL JS، وتحدد المواقع الجغرافية لكافة البنيات التحتية والأنشطة بالإقليم.',
+          intro: 'تحدد الخريطة التفاعلية المواقع الجغرافية لكافة البنيات التحتية والمرافق العمومية لإقليم مديونة.',
           steps: [
             {
-              title: 'التبديل بين 2D و 3D',
-              text: 'اضغط على زر 3D في أعلى يمين الخريطة لتفعيل العرض ثلاثي الأبعاد والتنقل عبر التضاريس والمباني بالإقليم من خلال الاستمرار بالضغط على زر الفأرة الأيمن.',
-              highlight: { top: '3%', left: '88%', width: '10%', height: '8%', tooltipFr: 'Activer la vue en relief 3D', tooltipAr: 'تفعيل العرض ثلاثي الأبعاد' }
+              title: 'تحديد مواقع الخدمات',
+              text: 'تصفح الخريطة التفاعلية لتحديد مواقع المرافق العمومية، المدارس، المستشفيات وغيرها من البنيات التحتية للإقليم بسهولة.',
+              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'مرشحات البحث',
@@ -661,7 +651,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'warning',
-              text: 'لدواعي السرية والأمان، فإن المواقع الدقيقة لشكايات المواطنين غير مرئية للعموم. فقط متخذو القرار (العامل، المسؤول عن الإدارة) يملكون حق الاطلاع على هذه البيانات في خريطتهم الخاصة.'
+              text: 'لدواعي السرية وحماية المعطيات الشخصية، فإن المواقع الدقيقة للشكايات لا تظهر بشكل علني على الخريطة العامة.'
             }
           ]
         },
@@ -684,7 +674,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'الاشتراك في التنبيهات',
-              text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
+              text: 'اشترك in المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
               highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
@@ -727,20 +717,15 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'suggestions',
-          title: 'المقترحات والمواهب',
-          subtitle: 'تقديم الأفكار والتعرف على كفاءات الإقليم',
+          title: 'المقترحات المواطنة',
+          subtitle: 'الاطلاع على أفكار التحسين المقدمة من طرف المجتمع',
           image: '/images/guide/participation.png',
-          intro: 'يزخر إقليم مديونة بالطاقات الشابة والأفكار الخلاقة. وتوفر البوابة فضاءً للتعبير والتقدير والتميز.',
+          intro: 'توفر البوابة فضاءً للتعبير والمشاركة المواطنة من أجل تحسين جودة الحياة والخدمات بالإقليم.',
           steps: [
             {
               title: 'صندوق المقترحات',
               text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار الأكثر شعبية وتصويتاً حسب كل فئة.',
-              highlight: { top: '15%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
-            },
-            {
-              title: 'إبراز الكفاءات والمواهب',
-              text: 'اكتشف فضاء المواهب المحلية الذي يسلط الضوء على نجاحات الشباب والجمعيات النشيطة في العلوم، الثقافة، الفنون، والرياضة.',
-              highlight: { top: '15%', left: '52%', width: '45%', height: '65%', tooltipFr: 'Talents de Médiouna', tooltipAr: 'مواهب وكفاءات إقليم مديونة' }
+              highlight: { top: '15%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [
@@ -755,7 +740,7 @@ export const guideData: Record<string, GuideRole[]> = {
     {
       id: 'citoyen',
       title: 'المواطن (مقيم)',
-      description: 'اكتشف كيفية تقديم الشكايات، ومتابعة معالجتها، وتقديم مقترحات للتحسين، وإبراز مواهبك المحلية.',
+      description: 'اكتشف كيفية تقديم الشكايات، ومتابعة معالجتها، وتقديم مقترحات لتحسين جماعتك الترابية.',
       sections: [
         {
           id: 'compte',
@@ -792,11 +777,11 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'تقديم الشكايات',
           subtitle: 'الإبلاغ عن حادث أو خلل في الفضاء العام',
           image: '/images/guide/reclamation.png',
-          intro: 'مصباح إنارة معطل، تراkm للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
+          intro: 'مصباح إنارة معطل، تراكم للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
           steps: [
             {
               title: 'بدء التبليغ',
-              text: 'اضغط sur زر "تقديم شكاية" من الصفحة الرئيسية أو من لوحة التحكم الخاصة بك.',
+              text: 'اضغط على زر "تقديم شكاية" من الصفحة الرئيسية أو من لوحة التحكم الخاصة بك.',
               highlight: { top: '2%', left: '78%', width: '18%', height: '6%', tooltipFr: 'Bouton de signalement', tooltipAr: 'زر إضافة شكاية جديدة' }
             },
             {
@@ -827,7 +812,7 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'متابعة الشكايات',
           subtitle: 'مراقبة حالة معالجة شكايتك في الوقت الفعلي',
           image: '/images/guide/reclamation.png',
-          intro: 'بمجرّد إرسالها, تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
+          intro: 'بمجرّد إرسالها، تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
           steps: [
             {
               title: 'الحالة: مرسلة',
@@ -836,7 +821,7 @@ export const guideData: Record<string, GuideRole[]> = {
             },
             {
               title: 'الحالة: معينة / قيد المعالجة',
-              text: 'وافقت السلطة المحلية على البلاgh وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.',
+              text: 'وافقت السلطة المحلية على البلاغ وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.',
               highlight: { top: '30%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Traitement ou affectation en cours', tooltipAr: 'شكاية مقبولة وقيد الإنجاز' }
             },
             {
@@ -859,8 +844,8 @@ export const guideData: Record<string, GuideRole[]> = {
         },
         {
           id: 'participation_citoyenne',
-          title: 'صندوق الأفكار والمواهب',
-          subtitle: 'اقتراح مشاريع محلية وإبراز مهاراتك',
+          title: 'صندوق الأفكار',
+          subtitle: 'تقديم اقتراحات ومشاريع محلية',
           image: '/images/guide/participation.png',
           intro: 'تتيح لك منصة بوابة مديونة التأثير بشكل إيجابي على محيطك من خلال اقتراح مشاريع ذات منفعة عامة.',
           steps: [
@@ -873,11 +858,6 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'التصويت والنقاش',
               text: 'ادعم أفكار جيرانك ومواطني إقليمك بالتصويت لصالحها والمشاركة في النقاشات عبر التعليقات.',
               highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Vote et discussion publique', tooltipAr: 'التصويت والمناقشة على المقترحات' }
-            },
-            {
-              title: 'تسجيل المواهب والكفاءات',
-              text: 'هل أنت فنان، رياضي، مخترع، أو تدير مشروعاً جمعوياً في مديونة ؟ سجل معلوماتك في فضاء المواهب ليتم إبرازك في البوابة.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Enregistrement de profil talent', tooltipAr: 'تسجيل وتعريف المواهب المحلية' }
             }
           ],
           alerts: [
@@ -903,7 +883,7 @@ export const guideData: Record<string, GuideRole[]> = {
           steps: [
             {
               title: 'الاستلام والتحقق',
-              text: 'تصفح قائمة الشكايات الواردة إلى جماعتك. تحقق من الوصف، الموقع والصورة للتأكد من جدية البلاغ ووقوعه ضمن ترابك الجغرافي.',
+              text: 'تصفح قائمة الشكايات الواردة إلى جماعتك. تحقق من الوصف، الموقع والصورة للتأكد من جدية البlaغ ووقوعه ضمن ترابك الجغرافي.',
               highlight: { top: '10%', left: '5%', width: '90%', height: '20%', tooltipFr: 'File de validation communale', tooltipAr: 'دراسة الشكايات الواردة للجماعة' }
             },
             {
@@ -925,7 +905,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'warning',
-              text: 'كل رفض لشكاية (مثال: خارج النطاق الترابي، بلاغ كاذب) يجب أن يكون مبرراً كتابة بشكل واضح للشفافية مع المواطن.'
+              text: 'كل رفض لشكاية (مثال: خارج النطاق الترابي، بلاغ كاذب) يجب أن يكون مبرراً كتابة بشكل واضح للشفافية avec المواطن.'
             }
           ]
         },
@@ -1037,7 +1017,7 @@ export const guideData: Record<string, GuideRole[]> = {
           alerts: [
             {
               type: 'success',
-              text: 'تحدث هذه الخرائط بشكل لحظي بناءً على إحداثيات GPS الموثقة في بلاغات المواطنين المعتمدة.'
+              text: 'تحدث هذه الخرائط بشكل لفظي بناءً على إحداثيات GPS الموثقة في بلاغات المواطنين المعتمدة.'
             }
           ]
         }

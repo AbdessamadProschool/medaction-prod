@@ -54,12 +54,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Exploration sans compte',
               text: 'En tant que visiteur anonyme (consulteur), vous pouvez parcourir l\'annuaire complet des établissements publics, consulter la carte interactive, voir l\'agenda provincial, lire les actualités et consulter les suggestions citoyennes.',
-              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              highlight: { top: '0%', left: '0%', width: '100%', height: '2.5%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'Données Publiques',
               text: 'Consultez les statistiques d\'activité globale et les indicateurs de performance de la province directement depuis la page d\'accueil.',
-              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -79,17 +79,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Chiffres Clés',
               text: 'Visualisez instantanément le nombre de réclamations soumises, le taux de résolution par les autorités et d\'autres statistiques de performance de la province.',
-              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'Mises en Avant',
               text: 'Consultez rapidement les derniers événements programmés, les actualités urgentes et les établissements évalués les plus actifs.',
-              highlight: { top: '45%', left: '5%', width: '90%', height: '45%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              highlight: { top: '31%', left: '0%', width: '100%', height: '40.4%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
               title: 'Recherche Globale',
               text: 'Utilisez le raccourci clavier Ctrl+K ou cliquez sur l\'icône loupe dans l\'en-tête pour rechercher instantanément un établissement public, un événement ou une actualité.',
-              highlight: { top: '1.5%', left: '30%', width: '40%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
+              highlight: { top: '1.7%', left: '13.4%', width: '2.5%', height: '0.6%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط Recherche instantanée' }
             }
           ],
           alerts: [
@@ -109,12 +109,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Localisation des services',
               text: 'Parcourez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et autres infrastructures de la province.',
-              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
+              highlight: { top: '12.4%', left: '0%', width: '100%', height: '87.6%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'Filtres de recherche',
               text: 'Affinez votre affichage grâce au panneau de contrôle : sélectionnez les communes (Médiouna, Tit Mellil, Lahraouiyine, etc.), choisissez des secteurs spécifiques (Santé, Éducation, Sport) ou filtrez selon la note des établissements.',
-              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
+              highlight: { top: '14.2%', left: '1.1%', width: '22.2%', height: '45.3%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'Clustering intelligent',
@@ -124,7 +124,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Panneau latéral de détails',
               text: 'Cliquez sur l\'icône d\'un établissement pour ouvrir le panneau latéral interactif et parcourir ses informations, ses événements programmés, ses actualités et les évaluations laissées par les citoyens.',
-              highlight: { top: '10%', left: '72%', width: '26%', height: '80%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
+              highlight: { top: '12.4%', left: '72.2%', width: '27.8%', height: '87.6%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -138,23 +138,23 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'etablissements',
           title: 'Annuaire des Établissements',
           subtitle: 'Trouver et évaluer les services publics',
-          image: '/images/guide/home.png',
+          image: '/images/guide/etablissements.png',
           intro: 'L\'annuaire liste de manière exhaustive toutes les infrastructures publiques de Médiouna. Il permet de suivre la qualité des services offerts.',
           steps: [
             {
               title: 'Filtres avancés',
               text: 'Recherchez par nom ou filtrez par type d\'établissement (Hôpital, Lycée, Administration, Terrain de sport) et par commune.',
-              highlight: { top: '10%', left: '5%', width: '90%', height: '10%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              highlight: { top: '24.8%', left: '72%', width: '19.3%', height: '2%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'Fiches détaillées',
               text: 'Consultez les horaires d\'ouverture, les adresses exactes, les numéros de contact et la liste des responsables.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              highlight: { top: '25.8%', left: '7.2%', width: '61.1%', height: '68%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'Abonnement aux notifications',
               text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.',
-              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتrack في التنبيهات' }
+              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -174,17 +174,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Agenda provincial',
               text: 'Consultez l\'onglet Événements pour voir la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'Détail et inscription',
               text: 'Chaque événement précise le nombre de places disponibles, le lieu et l\'organisateur. Vous pouvez copier le lien de l\'événement en un clic pour le partager avec vos proches.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
+              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
             },
             {
               title: 'Campagnes de Sensibilisation',
               text: 'Suivez les campagnes de santé publique, de propreté et d\'éducation citoyenne menées dans la province de Médiouna.',
-              highlight: { top: '15%', left: '5%', width: '40%', height: '20%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
+              highlight: { top: '35%', left: '7.2%', width: '61.1%', height: '8%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
             }
           ],
           alerts: [
@@ -204,7 +204,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'Boîte à suggestions',
               text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées les plus populaires classées par catégorie.',
-              highlight: { top: '15%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
+              highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [
@@ -575,12 +575,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'تصفح بدون حساب',
               text: 'بصفتك زائراً غير مسجل، يمكنك تصفح الدليل الكامل للمرافق العمومية، والاطلاع على الخريطة التفاعلية، ومعرفة أجندة الإقليم، وقراءة الأخبار، والاطلاع على مقترحات المواطنين.',
-              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              highlight: { top: '0%', left: '0%', width: '100%', height: '2.5%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
               title: 'البيانات العامة',
               text: 'الاطلاع على إحصائيات النشاط العام ومؤشرات الأداء للإقليم مباشرة من الصفحة الرئيسية.',
-              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -600,17 +600,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'الأرقام والشركاء',
               text: 'اطلع فوراً على عدد الشكايات القدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
-              highlight: { top: '22%', left: '5%', width: '90%', height: '18%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              highlight: { top: '71.4%', left: '0%', width: '100%', height: '11.1%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
             },
             {
               title: 'المحتوى البارز',
               text: 'تصفح سريعاً أحدث الأنشطة المبرمجة، والأخبار العاجلة، والمرافق الأكثر تفاعلاً وتقييماً من قبل المواطنين.',
-              highlight: { top: '45%', left: '5%', width: '90%', height: '45%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              highlight: { top: '31%', left: '0%', width: '100%', height: '40.4%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
             },
             {
               title: 'البحث الشامل',
-              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
-              highlight: { top: '1.5%', left: '30%', width: '40%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
+              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، ou خبر.',
+              highlight: { top: '1.7%', left: '13.4%', width: '2.5%', height: '0.6%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
             }
           ],
           alerts: [
@@ -630,12 +630,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'تحديد مواقع الخدمات',
               text: 'تصفح الخريطة التفاعلية لتحديد مواقع المرافق العمومية، المدارس، المستشفيات وغيرها من البنيات التحتية للإقليم بسهولة.',
-              highlight: { top: '5%', left: '5%', width: '90%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
+              highlight: { top: '12.4%', left: '0%', width: '100%', height: '87.6%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
             },
             {
               title: 'مرشحات البحث',
               text: 'خصص عرض الخريطة عبر لوحة التحكم: اختر الجماعات (مديونة، تيط مليل، الهراويين، إلخ)، وحدد قطاعات معينة (الصحة، التعليم، الرياضة) أو صفّ حسب تقييمات المرافق.',
-              highlight: { top: '15%', left: '2%', width: '25%', height: '70%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
+              highlight: { top: '14.2%', left: '1.1%', width: '22.2%', height: '45.3%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
             },
             {
               title: 'التجميع الذكي للمؤشرات',
@@ -645,7 +645,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'اللوحة الجانبية للتفاصيل',
               text: 'اضغط على أيقونة أي مرفق لفتح اللوحة الجانبية التفاعلية واستعراض معلوماته، والأنشطة المبرمجة لديه، وآخر أخباره، والتقييمات المكتوبة من طرف المواطنين.',
-              highlight: { top: '10%', left: '72%', width: '26%', height: '80%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
+              highlight: { top: '12.4%', left: '72.2%', width: '27.8%', height: '87.6%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
             }
           ],
           alerts: [
@@ -659,23 +659,23 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'etablissements',
           title: 'دليل المرافق العمومية',
           subtitle: 'البحث وتقييم الخدمات الإدارية والعمومية',
-          image: '/images/guide/home.png',
+          image: '/images/guide/etablissements.png',
           intro: 'يسرد الدليل بشكل شامل جميع البنيات التحتية والمؤسسات العمومية بمديونة، ويسهل متابعة جودة الخدمات المقدمة للمواطنين.',
           steps: [
             {
               title: 'البحث والتصفية',
               text: 'ابحث بالاسم أو حدد نوع المرفق (مستشفى، ثانوية، إدارة، ملعب رياضي) وقم بالتصفية حسب الجماعة الترابية التابع لها.',
-              highlight: { top: '10%', left: '5%', width: '90%', height: '10%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              highlight: { top: '24.8%', left: '72%', width: '19.3%', height: '2%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
             },
             {
               title: 'بطاقة معلومات المرفق',
-              text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل، بالإضافة إلى أسماء المسؤولين.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل, بالإضافة إلى أسماء المسؤولين.',
+              highlight: { top: '25.8%', left: '7.2%', width: '61.1%', height: '68%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
             },
             {
               title: 'الاشتراك في التنبيهات',
               text: 'اشترك in المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
-              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              highlight: { top: '27%', left: '55%', width: '12%', height: '3%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
             }
           ],
           alerts: [
@@ -695,17 +695,17 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'أجندة الإقليم',
               text: 'تصفح قائمة الأنشطة المبرمجة. تشير البطاقات بوضوح إلى حالة النشاط (مستقبلي، جارٍ حالياً، أو منتهٍ).',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
             },
             {
               title: 'التفاصيل والتسجيل',
               text: 'يوضح كل نشاط عدد المقاعد المتاحة، المكان الدقيق، والجهة المنظمة. يمكنك نسخ الرابط لمشاركته مع عائلتك بنقرة واحدة.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
+              highlight: { top: '44.6%', left: '7.2%', width: '61.1%', height: '34.3%', tooltipFr: 'Détails et lien de partage', tooltipAr: 'تفاصيل النشاط ورابط المشاركة' }
             },
             {
               title: 'حملات التوعية',
               text: 'تابع حملات الصحة العامة، النظافة والتربية البيئية المنظمة على مستوى تراب إقليم مديونة.',
-              highlight: { top: '15%', left: '5%', width: '40%', height: '20%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
+              highlight: { top: '35%', left: '7.2%', width: '61.1%', height: '8%', tooltipFr: 'Campagnes provinciales', tooltipAr: 'حملات التوعية الإقليمية' }
             }
           ],
           alerts: [
@@ -725,7 +725,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'صندوق المقترحات',
               text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار الأكثر شعبية وتصويتاً حسب كل فئة.',
-              highlight: { top: '15%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
+              highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
             }
           ],
           alerts: [

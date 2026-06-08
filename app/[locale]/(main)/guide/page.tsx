@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -25,8 +25,29 @@ export default function GuidePage() {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const screenshotContainerRef = useRef<HTMLDivElement>(null);
 
   const userRole = session?.user?.role || 'CONSULTEUR';
+
+  // Auto-scroll the screenshot container to center the active spotlight
+  useEffect(() => {
+    if (screenshotContainerRef.current && activeStepHighlight) {
+      const container = screenshotContainerRef.current;
+      const topPercent = parseFloat(activeStepHighlight.top);
+      if (!isNaN(topPercent)) {
+        const timer = setTimeout(() => {
+          const scrollHeight = container.scrollHeight;
+          const clientHeight = container.clientHeight;
+          const targetScrollTop = (scrollHeight * (topPercent / 100)) - (clientHeight / 2);
+          container.scrollTo({
+            top: Math.max(0, targetScrollTop),
+            behavior: 'smooth'
+          });
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [activeStepIndex, activeSection, activeStepHighlight]);
   const isRtl = locale === 'ar';
 
   // Get data for current language (fallback to 'fr' if not found)
@@ -373,59 +394,62 @@ export default function GuidePage() {
 
                   {/* Interactive Screenshot Display with Spotlight overlay */}
                   {activeStepImage && (
-                    <div className="relative mb-10 group rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 flex items-center justify-center">
-                      <Image
-                        src={activeStepImage}
-                        alt={activeSectionData.title}
-                        fill
-                        className="object-cover transition-all duration-300"
-                        sizes="(max-width: 1024px) 100vw, 768px"
-                      />
-                      
-                      {/* Spotlight Overlay based on active step coordinates */}
-                      <AnimatePresence>
-                        {activeStepHighlight && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            key={`${activeSection}-${activeStepIndex}`}
-                            style={{
-                              position: 'absolute',
-                              top: activeStepHighlight.top,
-                              left: isRtl ? undefined : activeStepHighlight.left,
-                              right: isRtl ? activeStepHighlight.left : undefined,
-                              width: activeStepHighlight.width,
-                              height: activeStepHighlight.height,
-                              border: '3px dashed #ebd281',
-                              boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
-                              borderRadius: '12px',
-                              pointerEvents: 'none',
-                              zIndex: 20
-                            }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-                          >
-                            {/* Glowing Ping Indicator */}
-                            <span className={`absolute -top-2.5 ${isRtl ? '-right-2.5' : '-left-2.5'} flex h-5 w-5 z-30`}>
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ebd281] opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md"></span>
-                            </span>
-
-                            {/* Dynamic Spotlight tooltip explanation */}
-                            <div 
-                              className="absolute whitespace-normal bg-[#0a3b68] text-white text-xs font-bold py-2 px-3 rounded-lg shadow-xl border border-[#ebd281] pointer-events-auto leading-normal min-w-[200px] text-center"
+                    <div 
+                      ref={screenshotContainerRef}
+                      className="relative mb-10 rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 overflow-y-auto scrollbar-thin select-none"
+                    >
+                      <div className="relative w-full font-sans" style={{ height: 'auto' }}>
+                        <img
+                          src={activeStepImage}
+                          alt={activeSectionData.title}
+                          className="w-full h-auto block select-none pointer-events-none"
+                          draggable={false}
+                        />
+                        
+                        {/* Spotlight Overlay based on active step coordinates */}
+                        <AnimatePresence>
+                          {activeStepHighlight && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              key={`${activeSection}-${activeStepIndex}`}
                               style={{
-                                top: 'calc(100% + 12px)',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                zIndex: 30
+                                position: 'absolute',
+                                top: activeStepHighlight.top,
+                                left: activeStepHighlight.left,
+                                width: activeStepHighlight.width,
+                                height: activeStepHighlight.height,
+                                border: '3px dashed #ebd281',
+                                boxShadow: '0 0 0 9999px rgba(10, 59, 104, 0.45), 0 0 15px 3px #ebd281',
+                                borderRadius: '12px',
+                                pointerEvents: 'none',
+                                zIndex: 20
                               }}
+                              transition={{ type: 'spring', damping: 25, stiffness: 120 }}
                             >
-                              {isRtl ? activeStepHighlight.tooltipAr : activeStepHighlight.tooltipFr}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                              {/* Glowing Ping Indicator */}
+                              <span className={`absolute -top-2.5 ${isRtl ? '-right-2.5' : '-left-2.5'} flex h-5 w-5 z-30`}>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ebd281] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-white shadow-md"></span>
+                              </span>
+
+                              {/* Dynamic Spotlight tooltip explanation */}
+                              <div 
+                                className="absolute whitespace-normal bg-[#0a3b68] text-white text-xs font-bold py-2 px-3 rounded-lg shadow-xl border border-[#ebd281] pointer-events-auto leading-normal min-w-[200px] text-center"
+                                style={{
+                                  top: 'calc(100% + 12px)',
+                                  left: '50%',
+                                  transform: 'translateX(-50%)',
+                                  zIndex: 30
+                                }}
+                              >
+                                {isRtl ? activeStepHighlight.tooltipAr : activeStepHighlight.tooltipFr}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
 
                       {/* Zoom Lightbox Action Button */}
                       <button 

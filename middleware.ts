@@ -179,6 +179,7 @@ const PUBLIC_PAGES = [
   '/explorer',
   '/talents',
   '/suggestions',
+  '/guide',
 ];
 
 // ═══════════════════════════════════════════════════════════════════

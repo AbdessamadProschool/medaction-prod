@@ -386,7 +386,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'compte',
           title: 'Inscription & Profil',
           subtitle: 'Créer votre compte et configurer vos alertes',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_fr.png',
           intro: 'En créant votre compte citoyen sur le Portail Médiouna, vous devenez un acteur actif du développement de votre commune. Vous accédez à un espace personnel personnalisé.',
           steps: [
             {
@@ -486,7 +486,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'participation_citoyenne',
           title: 'Boîte à Idées',
           subtitle: 'Proposer des projets d\'intérêt général',
-          image: '/images/guide/participation.png',
+          image: '/images/guide/participation_fr.png',
           intro: 'Le Portail Médiouna vous permet d\'influencer positivement l\'avenir de votre quartier en proposant des projets d\'intérêt général.',
           steps: [
             {
@@ -616,7 +616,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'dashboard_gouverneur',
           title: 'Supervision Provinciale',
           subtitle: 'Suivi des indicateurs clés de performance',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_fr.png',
           intro: 'Le rôle de Gouverneur (et son cabinet) dispose d\'une console de décision de haut niveau pour piloter le développement provincial et veiller à l\'efficacité des services publics.',
           steps: [
             {
@@ -640,7 +640,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'heatmaps_gouverneur',
           title: 'Cartes Thématiques & Chaleur',
           subtitle: 'Identifier les zones de tension et besoins d\'infrastructures',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_fr.png',
           intro: 'La carte décisionnelle du Gouverneur intègre des calques de données avancés pour analyser géographiquement les besoins de la province.',
           steps: [
             {
@@ -672,7 +672,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'gestion_rbac',
           title: 'Gestion des Utilisateurs',
           subtitle: 'Contrôle des accès basés sur les rôles (RBAC)',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_fr.png',
           intro: 'L\'administrateur gère l\'intégrité des comptes et distribue les droits d\'accès aux différents agents publics de la Province de Médiouna.',
           steps: [
             {
@@ -702,7 +702,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'gestion_carte',
           title: 'Administration de la Carte',
           subtitle: 'Gérer l\'annuaire et les points géolocalisés',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_fr.png',
           intro: 'Configurez et mettez à jour le référentiel géographique de la province.',
           steps: [
             {
@@ -1068,7 +1068,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'compte',
           title: 'التسجيل والملف الشخصي',
           subtitle: 'إنشاء حسابك وإعداد التنبيهات الخاصة بك',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_ar.png',
           intro: 'من خلال إنشاء حساب مواطن في بوابة مديونة، تصبح فاعلاً نشطاً في تنمية جماعتك الترابية وتستفيد من مساحة شخصية مخصصة.',
           steps: [
             {
@@ -1168,7 +1168,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'participation_citoyenne',
           title: 'صندوق الأفكار',
           subtitle: 'تقديم اقتراحات ومشاريع محلية',
-          image: '/images/guide/participation.png',
+          image: '/images/guide/participation_ar.png',
           intro: 'تتيح لك منصة بوابة مديونة التأثير بشكل إيجابي على محيطك من خلال اقتراح مشاريع ذات منفعة عامة.',
           steps: [
             {
@@ -1298,7 +1298,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'dashboard_gouverneur',
           title: 'المراقبة والإشراف الإقليمي',
           subtitle: 'متابعة مؤشرات الأداء وجودة الخدمات العمومية',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_ar.png',
           intro: 'يملك عامل الإقليم وديوانه لوحة تحكم رفيعة المستوى لمتابعة التنمية المحلية وقياس مدى كفاءة معالجة شكايات المواطنين في مختلف الجماعات الترابية.',
           steps: [
             {
@@ -1322,7 +1322,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'heatmaps_gouverneur',
           title: 'الخرائط الموضوعاتية والحرارية',
           subtitle: 'تحديد بؤر المشكلات واحتياجات البنيات التحتية',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_ar.png',
           intro: 'تدمج خريطة اتخاذ القرار الخاصة بالعامل طبقات متطورة لتحليل المشكلات جغرافياً وتوجيه المشاريع التنموية.',
           steps: [
             {
@@ -1354,7 +1354,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'gestion_rbac',
           title: 'إدارة المستخدمين والصلاحيات',
           subtitle: 'التحكم في الوصول والأدوار الإدارية (RBAC)',
-          image: '/images/guide/home.png',
+          image: '/images/guide/home_ar.png',
           intro: 'يتحكم مدير المنصة في سلامة الحسابات ويوزع حقوق الوصول لمختلف الموظفين العموميين بإقليم مديونة.',
           steps: [
             {
@@ -1384,7 +1384,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'gestion_carte',
           title: 'إدارة وتحديث الخريطة',
           subtitle: 'تدبير المرافق العمومية والتقييمات',
-          image: '/images/guide/map.png',
+          image: '/images/guide/map_ar.png',
           intro: 'إعداد وتحديث البيانات الجغرافية للإقليم والمحافظة على مصداقية تفاعلات البوابة.',
           steps: [
             {

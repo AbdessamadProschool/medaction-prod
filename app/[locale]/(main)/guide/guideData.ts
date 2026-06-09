@@ -52,14 +52,15 @@ export const guideData: Record<string, GuideRole[]> = {
           intro: 'Le Portail Médiouna est la plateforme officielle d\'information et de participation citoyenne de la Province de Médiouna. Elle permet à chaque citoyen et visiteur d\'accéder en toute transparence aux informations locales, de suivre les projets et événements publics, et de participer activement au développement de la province.',
           steps: [
             {
-              title: 'Exploration sans compte',
-              text: 'En tant que visiteur anonyme (consulteur), vous pouvez parcourir l\'annuaire complet des établissements publics, consulter la carte interactive, voir l\'agenda provincial, lire les actualités et consulter les suggestions citoyennes.',
+              title: 'Navigation libre',
+              text: 'En tant que visiteur non inscrit, vous pouvez parcourir l\'annuaire complet des services publics, consulter la carte interactive, découvrir l\'agenda de la province, lire les actualités et consulter les suggestions des citoyens.',
               highlight: { top: '0%', left: '0%', width: '100%', height: '10%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
             },
             {
-              title: 'Données Publiques',
-              text: 'Consultez les statistiques d\'activité globale et les indicateurs de performance de la province directement depuis la page d\'accueil.',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              title: 'Données globales',
+              text: 'Visualisez les statistiques de l\'activité publique et les indicateurs de performance de la Province directement depuis la page d\'accueil.',
+              image: '/images/guide/home_stats_fr.png',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -250,7 +251,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'suggestions',
           title: 'Propositions Citoyennes',
           subtitle: 'Découvrir les idées d\'amélioration de la communauté',
-          image: '/images/guide/participation.png',
+          image: '/images/guide/participation_fr.png',
           intro: 'Le Portail Médiouna offre un espace d\'expression pour la communauté afin d\'améliorer la qualité de vie dans la province.',
           steps: [
             {
@@ -263,6 +264,114 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               type: 'info',
               text: 'Bien que vous puissiez lire les suggestions en tant que simple visiteur, la création d\'une nouvelle suggestion nécessite d\'être connecté.'
+            }
+          ]
+        },
+        {
+          id: 'suggestions_new',
+          title: 'Proposer une Idée',
+          subtitle: 'Soumettre une suggestion citoyenne',
+          image: '/images/guide/suggestions_new_fr.png',
+          intro: 'Les citoyens peuvent proposer des projets d\'intérêt général pour leur commune, mais cette fonctionnalité nécessite d\'être connecté au portail.',
+          steps: [
+            {
+              title: 'Connexion requise',
+              text: 'La soumission de suggestions ou de réclamations est réservée aux utilisateurs enregistrés. Les visiteurs non inscrits doivent suivre le guide de connexion s\'ils ont déjà un compte, ou le guide d\'inscription.',
+              highlight: { top: '60%', left: '15%', width: '70%', height: '25%', tooltipFr: 'Invitation à la connexion', tooltipAr: 'دعوة لتسجيل الدخول' }
+            }
+          ]
+        },
+        {
+          id: 'login',
+          title: 'Connexion',
+          subtitle: 'Se connecter au portail',
+          image: '/images/guide/login_fr.png',
+          intro: 'Pour soumettre une réclamation ou proposer une idée, vous devez vous connecter avec vos identifiants.',
+          steps: [
+            {
+              title: 'Champs de connexion',
+              text: 'Saisissez votre e-mail et votre mot de passe pour vous connecter en toute sécurité.',
+              highlight: { top: '25%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
+            },
+            {
+              title: 'Accès à l\'inscription',
+              text: 'Si vous n\'avez pas encore de compte citoyen, utilisez le lien en bas de la page pour accéder au formulaire d\'inscription.',
+              highlight: { top: '65%', left: '30%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
+            }
+          ]
+        },
+        {
+          id: 'register',
+          title: 'Inscription',
+          subtitle: 'Créer votre compte citoyen',
+          image: '/images/guide/register_fr.png',
+          intro: 'Créez votre compte en quelques étapes pour participer activement au développement de votre commune.',
+          steps: [
+            {
+              title: 'Formulaire d\'inscription',
+              text: 'Saisissez vos informations personnelles (Nom complet, e-mail, téléphone, mot de passe) et choisissez votre commune de résidence.',
+              highlight: { top: '20%', left: '25%', width: '50%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
+            }
+          ]
+        },
+        {
+          id: 'accessibilite',
+          title: 'Accessibilité',
+          subtitle: 'Un portail accessible à tous',
+          image: '/images/guide/accessibilite_fr.png',
+          intro: 'Le portail de Médiouna a été optimisé pour être accessible et facile d\'utilisation pour tous les citoyens, y compris les personnes en situation de handicap.',
+          steps: [
+            {
+              title: 'Charte d\'accessibilité',
+              text: 'Consultez les informations de compatibilité avec les normes mondiales d\'accessibilité numérique (WCAG) directement sur cette page dédiée.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Informations d\'accessibilité', tooltipAr: 'معلومات الولوجيات' }
+            }
+          ]
+        },
+        {
+          id: 'contact',
+          title: 'Nous Contacter',
+          subtitle: 'Contacter l\'administration de la Province',
+          image: '/images/guide/contact_fr.png',
+          intro: 'Utilisez cette page pour contacter directement les services de la Province de Médiouna pour toute demande générale.',
+          steps: [
+            {
+              title: 'Formulaire de contact',
+              text: 'Saisissez vos coordonnées et votre message pour envoyer un e-mail direct aux services administratifs.',
+              highlight: { top: '25%', left: '7.2%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
+            },
+            {
+              title: 'Coordonnées directes',
+              text: 'Trouvez l\'adresse de la Province, le numéro de téléphone du support et les adresses e-mail officielles.',
+              highlight: { top: '25%', left: '62%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
+            }
+          ]
+        },
+        {
+          id: 'politique-confidentialite',
+          title: 'Politique de Confidentialité',
+          subtitle: 'Protection de la vie privée',
+          image: '/images/guide/confidentialite_fr.png',
+          intro: 'Découvrez comment vos données personnelles sont protégées conformément aux lois nationales et aux directives de la CNDP.',
+          steps: [
+            {
+              title: 'Protection des données',
+              text: 'Consultez les détails relatifs au traitement, à l\'utilisation et au droit de rectification de vos données à caractère personnel.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Charte de protection des données', tooltipAr: 'سياسة حماية المعطيات' }
+            }
+          ]
+        },
+        {
+          id: 'conditions-utilisation',
+          title: 'Conditions d\'Utilisation',
+          subtitle: 'Conditions Générales d\'Utilisation (CGU)',
+          image: '/images/guide/conditions_fr.png',
+          intro: 'Le cadre légal définissant les règles d\'utilisation de la plateforme et les conditions de modération des réclamations et suggestions.',
+          steps: [
+            {
+              title: 'Conditions d\'utilisation',
+              text: 'Consultez vos droits et devoirs en tant qu\'utilisateur citoyen ou visiteur du portail de Médiouna.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Conditions Générales d\'Utilisation', tooltipAr: 'شروط الاستخدام العامة' }
             }
           ]
         }
@@ -632,7 +741,8 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'البيانات العامة',
               text: 'الاطلاع على إحصائيات النشاط العام ومؤشرات الأداء للإقليم مباشرة من الصفحة الرئيسية.',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
+              image: '/images/guide/home_stats_ar.png',
+              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
             }
           ],
           alerts: [
@@ -863,12 +973,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'حقول تسجيل الدخول',
               text: 'أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول بأمان.',
-              highlight: { top: '25%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
+              highlight: { top: '25%', left: '5%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
             },
             {
               title: 'الوصول إلى التسجيل',
               text: 'إذا لم يكن لديك حساب مواطن بعد، استخدم الرابط الموجود في أسفل الصفحة للوصول إلى نموذج إنشاء الحساب.',
-              highlight: { top: '65%', left: '30%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
+              highlight: { top: '65%', left: '5%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
             }
           ]
         },
@@ -882,7 +992,7 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'نموذج التسجيل',
               text: 'أدخل معلوماتك الشخصية (الاسم الكامل، البريد الإلكتروني، الهاتف، كلمة المرور) واختر جماعتك الترابية التي تقيم بها.',
-              highlight: { top: '20%', left: '25%', width: '50%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
+              highlight: { top: '20%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
             }
           ]
         },
@@ -910,12 +1020,12 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               title: 'نموذج الاتصال',
               text: 'أدخل معلومات الاتصال ورسالتك لإرسال بريد إلكتروني مباشر إلى الخدمات الإدارية.',
-              highlight: { top: '25%', left: '7.2%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
+              highlight: { top: '25%', left: '42%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
             },
             {
               title: 'معلومات الاتصال المباشرة',
               text: 'ابحث عن عنوان الإقليم، ورقم هاتف الدعم، وعناوين البريد الإلكتروني الرسمية.',
-              highlight: { top: '25%', left: '62%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
+              highlight: { top: '25%', left: '7.2%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
             }
           ]
         },

@@ -33,6 +33,7 @@ async function captureLang(context, lang, suffix) {
 
   const routes = [
     { url: `/${lang}`, file: `home${suffix}.png` },
+    { url: `/${lang}`, file: `home_stats${suffix}.png`, scrollY: 1000 },
     { url: `/${lang}/etablissements`, file: `etablissements${suffix}.png` },
     { url: `/${lang}/carte`, file: `map${suffix}.png` },
     { url: `/${lang}/evenements`, file: `evenements${suffix}.png` },
@@ -54,7 +55,14 @@ async function captureLang(context, lang, suffix) {
     console.log(`[${lang.toUpperCase()}] Navigating to ${fullUrl}...`);
     try {
       await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 60000 });
-      await autoScroll(page); // Trigger lazy loading
+      await autoScroll(page); // Trigger all lazy loading on the page
+
+      if (target.scrollY) {
+        await page.evaluate((y) => window.scrollTo(0, y), target.scrollY);
+      } else {
+        await page.evaluate(() => window.scrollTo(0, 0));
+      }
+      
       await page.waitForTimeout(2000); // Wait for things to settle after scroll
 
       // Remove modals

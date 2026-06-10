@@ -2,104 +2,158 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-async function autoScroll(page) {
-    await page.evaluate(async () => {
-        await new Promise((resolve) => {
-            let totalHeight = 0;
-            const distance = 100;
-            const timer = setInterval(() => {
-                const scrollHeight = document.body.scrollHeight;
-                window.scrollBy(0, distance);
-                totalHeight += distance;
+async function markZones(page) {
+  await page.evaluate(() => {
+    // Inject CSS for zones if not already present
+    if (!document.getElementById('zone-marker-styles')) {
+      const style = document.createElement('style');
+      style.id = 'zone-marker-styles';
+      style.innerHTML = `
+        .highlight-zone {
+          position: relative !important;
+        }
+        .highlight-zone::after {
+          content: attr(data-zone-name);
+          position: absolute;
+          top: 0;
+          left: 0;
+          background: rgba(239, 68, 68, 0.9);
+          color: white;
+          font-weight: bold;
+          padding: 4px 8px;
+          font-size: 12px;
+          z-index: 10000;
+          pointer-events: none;
+          border-bottom-right-radius: 8px;
+        }
+        .highlight-zone::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border: 3px dashed rgba(239, 68, 68, 0.8);
+          background: rgba(239, 68, 68, 0.05);
+          z-index: 9999;
+          pointer-events: none;
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
-                if (totalHeight >= scrollHeight - window.innerHeight) {
-                    clearInterval(timer);
-                    // Scroll back to top
-                    window.scrollTo(0, 0);
-                    setTimeout(resolve, 500); // Wait for things to settle
-                }
-            }, 100);
-        });
-    });
+    // Function to add the zone securely
+    const addZone = (selector, name) => {
+      const el = document.querySelector(selector);
+      if (el) {
+        el.classList.add('highlight-zone');
+        el.setAttribute('data-zone-name', name);
+      }
+    };
+
+    addZone('header', 'Navigation Principale');
+    addZone('main', 'Contenu Principal');
+    addZone('footer', 'Pied de page');
+    addZone('form', 'Formulaire Citoyen');
+  });
 }
 
-async function capture() {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 }
-  });
-  const page = await context.newPage();
+const citoyenPagesToCapture = [
+  { name: 'Profil', filename: 'profil', url: '/profil' },
+  { name: 'Nouvelle_Reclamation', filename: 'nouvelle_reclamation', url: '/nouvelle-reclamation' },
+  { name: 'Mes_Reclamations', filename: 'mes_reclamations', url: '/mes-reclamations' },
+  { name: 'Participation', filename: 'participation', url: '/suggestions' }
+];
 
+async function main() {
+  const browser = await chromium.launch({ headless: true });
   const baseUrl = 'http://localhost:3000';
   const outDir = path.join(__dirname, 'public', 'images', 'guide');
 
-  const locales = ['ar'];
-
-  // Define routes to capture
-  const routes = [
-    { url: '/mes-reclamations', filename: 'mes_reclamations' },
-    { url: '/suggestions', filename: 'suggestions_citoyen' }
-  ];
-
-  for (const locale of locales) {
-    console.log(`\n=== Processing locale: ${locale} ===`);
-    
-    try {
-      // Login
-      console.log(`Logging in for ${locale}...`);
-      page.setDefaultTimeout(120000); // 120 seconds
-      await page.goto(`${baseUrl}/${locale}/login`);
-      
-      await page.waitForSelector('input[type="email"]', { state: 'visible', timeout: 120000 });
-      
-      // Try to dismiss the beta modal if it appears
-      try {
-        await page.click('button:has-text("OK")', { timeout: 2000 });
-      } catch (e) {
-        // Modal not present, ignore
-      }
-
-      await page.fill('input[type="email"]', 'citoyen_test2@mediouna.ma');
-      await page.fill('input[type="password"]', 'Password123!');
-      await page.click('button[type="submit"]');
-      
-      // Wait for login to complete and redirect
-      await page.waitForURL(url => !url.href.includes('/login'), { timeout: 120000 });
-      console.log('Logged in successfully!');
-      
-      // Wait a bit for the session to be fully established and UI to stabilize
-      await page.waitForTimeout(5000);
-    } catch (e) {
-      console.error('Error during login:', e);
-      await page.screenshot({ path: path.join(outDir, `debug_login_${locale}.png`) });
-      throw e;
-    }
-
-    for (const route of routes) {
-      console.log(`Capturing ${route.url}...`);
-      const targetUrl = `${baseUrl}/${locale}${route.url}`;
-      await page.goto(targetUrl, { timeout: 120000 });
-      
-      await page.waitForLoadState('load', { timeout: 120000 });
-      await page.waitForTimeout(5000); // Extra wait for client-side data
-      
-      await autoScroll(page);
-      
-      const screenshotPath = path.join(outDir, `${route.filename}_${locale}.png`);
-      await page.screenshot({ path: screenshotPath, fullPage: false });
-      console.log(`Saved ${screenshotPath}`);
-    }
-    
-    // Logout to prepare for next locale
-    console.log('Logging out...');
-    await page.goto(`${baseUrl}/${locale}`);
-    await page.waitForTimeout(2000);
-    
-    // Try to click logout if there's a button, or just clear cookies
-    await context.clearCookies();
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
   }
 
+  const locales = ['fr', 'ar'];
+
+  for (const locale of locales) {
+    console.log(`=== Processing CITOYEN Pages | Locale: ${locale} ===`);
+    
+    const context = await browser.newContext({
+      viewport: { width: 1440, height: 900 },
+      locale: locale === 'ar' ? 'ar-MA' : 'fr-FR',
+      timezoneId: 'Africa/Casablanca'
+    });
+    
+    const page = await context.newPage();
+    
+    page.on('console', msg => {
+      if (msg.type() === 'error') console.log(`[BROWSER ERROR]`, msg.text());
+    });
+
+    // Login CITOYEN
+    console.log(`Logging in CITOYEN for ${locale}...`);
+    await page.goto(`${baseUrl}/${locale}/login`, { waitUntil: 'networkidle', timeout: 60000 });
+    
+    try {
+      await page.waitForTimeout(2000);
+      await page.waitForSelector('input[type="email"]', { state: 'visible', timeout: 30000 });
+      await page.fill('input[type="email"]', 'citoyen_test2@mediouna.ma'); // Replace with your standard test citoyen email
+      await page.fill('input[type="password"]', 'Password123!');
+      
+      const submitBtnSelector = locale === 'ar' ? 'button:has-text("الدخول للبوابة")' : 'button:has-text("Se connecter")';
+      await page.click(submitBtnSelector, { force: true });
+      
+      await page.waitForTimeout(5000); 
+      console.log(`Successfully logged in CITOYEN`);
+    } catch (e) {
+      console.error(`Failed to login for CITOYEN / ${locale}:`, e);
+      continue;
+    }
+
+    for (const item of citoyenPagesToCapture) {
+      console.log(`Capturing CITOYEN -> ${item.name} (${locale})...`);
+      
+      try {
+        await page.goto(`${baseUrl}/${locale}${item.url}`, { waitUntil: 'networkidle', timeout: 60000 });
+        
+        await page.waitForTimeout(3000);
+        
+        // Remove cookie banners / modals
+        try {
+          await page.evaluate(() => {
+            document.querySelectorAll('button').forEach(btn => {
+              const text = btn.innerText.toLowerCase();
+              if (text.includes('ok') || text.includes('موافق') || text.includes('fermer') || text.includes('إغلاق')) {
+                btn.click();
+              }
+            });
+          });
+          await page.waitForTimeout(1000);
+        } catch (e) {}
+
+        await markZones(page);
+        
+        await page.waitForTimeout(500);
+
+        const filename = `${item.filename}_${locale}.png`;
+        
+        await page.screenshot({ 
+          path: path.join(outDir, filename),
+          fullPage: false
+        });
+        
+        console.log(`Saved ${filename}`);
+      } catch (e) {
+        console.error(`Failed to capture ${item.name} (${locale}):`, e.message);
+      }
+    }
+
+    await context.close();
+  }
+
+  console.log('All CITOYEN captures done.');
   await browser.close();
 }
 
-capture().catch(console.error);
+main().catch(console.error);

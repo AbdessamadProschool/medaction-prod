@@ -40,460 +40,202 @@ export interface GuideRole {
 export const guideData: Record<string, GuideRole[]> = {
   fr: [
     {
-      id: 'consulteur',
-      title: 'Consulteur (Visiteur)',
-      description: 'Découvrez comment explorer la province de Médiouna, consulter les établissements publics, participer aux événements et suivre les actualités sans compte.',
+      id: 'citoyen',
+      title: 'Citoyen (Visiteur & Résident)',
+      description: 'Découvrez comment explorer la province, consulter les services publics, soumettre des réclamations et participer aux événements.',
       sections: [
         {
-          id: 'intro',
-          title: 'Introduction au Portail',
+          id: 'intro_navigation',
+          title: 'Accueil & Navigation Générale',
           subtitle: 'Bienvenue sur le Portail Médiouna officiel',
-          image: '/images/guide/home_fr.png',
-          intro: 'Le Portail Médiouna est la plateforme officielle d\'information et de participation citoyenne de la Province de Médiouna. Elle permet à chaque citoyen et visiteur d\'accéder en toute transparence aux informations locales, de suivre les projets et événements publics, et de participer activement au développement de la province.',
+          image: '/images/guide/citoyen/accueil_fr.png',
+          intro: 'Le portail vous offre un accès centralisé à toutes les informations de la province. Depuis l\'en-tête, vous pouvez accéder rapidement aux services essentiels.',
           steps: [
             {
-              title: 'Navigation libre',
-              text: 'En tant que visiteur non inscrit, vous pouvez parcourir l\'annuaire complet des services publics, consulter la carte interactive, découvrir l\'agenda de la province, lire les actualités et consulter les suggestions des citoyens.',
-              highlight: { top: '0%', left: '0%', width: '100%', height: '10%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              title: 'Notifications',
+              text: 'Cliquez sur l\'icône en forme de cloche pour consulter vos dernières alertes et mises à jour concernant vos abonnements.',
+              image: '/images/guide/citoyen/notifications_fr.png',
+              highlight: { top: '2%', left: '85%', width: '4%', height: '6%', tooltipFr: 'Vos notifications', tooltipAr: 'إشعاراتك' }
             },
             {
-              title: 'Données globales',
-              text: 'Visualisez les statistiques de l\'activité publique et les indicateurs de performance de la Province directement depuis la page d\'accueil.',
-              image: '/images/guide/home_stats_fr.png',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'Pour soumettre une réclamation, proposer des suggestions ou publier du contenu, vous devrez vous connecter ou créer un compte citoyen gratuit.'
+              title: 'Changement de langue',
+              text: 'Utilisez le sélecteur de langue pour basculer facilement entre la version Arabe et Française du portail.',
+              image: '/images/guide/citoyen/langues_fr.png',
+              highlight: { top: '2%', left: '75%', width: '8%', height: '6%', tooltipFr: 'Changer la langue', tooltipAr: 'تغيير اللغة' }
             }
           ]
         },
         {
-          id: 'accueil',
-          title: 'Page d\'Accueil',
-          subtitle: 'Le tableau de bord de la Province de Médiouna',
-          image: '/images/guide/home_fr.png',
-          intro: 'La page d\'accueil est le point de départ de votre visite. Elle offre une synthèse dynamique de la vie provinciale et de l\'état des services publics.',
+          id: 'gestion_compte',
+          title: 'Mon Compte & Sécurité',
+          subtitle: 'Gérez vos informations et sécurisez votre espace',
+          image: '/images/guide/citoyen/profil_fr.png',
+          intro: 'L\'espace profil vous permet de garder vos informations à jour et de renforcer la sécurité de votre compte citoyen.',
           steps: [
             {
-              title: 'Chiffres Clés',
-              text: 'Visualisez instantanément le nombre de réclamations soumises, le taux de résolution par les autorités et d\'autres statistiques de performance de la province.',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              title: 'Informations Personnelles',
+              text: 'Consultez et modifiez vos coordonnées (Nom, Email, Téléphone) directement depuis votre espace "Mon Profil".',
+              highlight: { top: '25%', left: '15%', width: '70%', height: '40%', tooltipFr: 'Vos informations', tooltipAr: 'معلوماتك الشخصية' }
             },
             {
-              title: 'Mises en Avant',
-              text: 'Consultez rapidement les derniers événements programmés, les actualités urgentes et les établissements évalués les plus actifs.',
-              highlight: { top: '25%', left: '5%', width: '90%', height: '35%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              title: 'Mes Abonnements',
+              text: 'Retrouvez la liste des établissements auxquels vous êtes abonnés pour suivre leurs événements et actualités.',
+              image: '/images/guide/citoyen/abonnements_fr.png',
+              highlight: { top: '15%', left: '20%', width: '60%', height: '70%', tooltipFr: 'Gérer vos abonnements', tooltipAr: 'إدارة اشتراكاتك' }
             },
             {
-              title: 'Recherche Globale',
-              text: 'Utilisez le raccourci clavier Ctrl+K ou cliquez sur l\'icône loupe dans l\'en-tête pour rechercher instantanément un établissement public, un événement ou une actualité.',
-              highlight: { top: '2%', left: '80%', width: '10%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط Recherche instantanée' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'La plateforme est entièrement responsive. Vous pouvez l\'utiliser de manière fluide sur votre smartphone, tablette ou ordinateur.'
-            }
-          ]
-        },
-        {
-          id: 'carte',
-          title: 'Carte Interactive',
-          subtitle: 'Visualiser les infrastructures provinciales',
-          image: '/images/guide/map_fr.png',
-          intro: 'La carte interactive géolocalise l\'ensemble des infrastructures et des services publics de la Province de Médiouna.',
-          steps: [
-            {
-              title: 'Localisation des services',
-              text: 'Parcourez la carte interactive pour localiser facilement les établissements publics, les écoles, les hôpitaux et autres infrastructures de la province.',
-              highlight: { top: '10%', left: '0%', width: '100%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
-            },
-            {
-              title: 'Filtres de recherche',
-              text: 'Affinez votre affichage grâce au panneau de contrôle : sélectionnez les communes (Médiouna, Tit Mellil, Lahraouiyine, etc.), choisissez des secteurs spécifiques (Santé, Éducation, Sport) ou filtrez selon la note des établissements.',
-              highlight: { top: '12%', left: '1%', width: '25%', height: '80%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
-            },
-            {
-              title: 'Clustering intelligent',
-              text: 'Les marqueurs se regroupent automatiquement lorsque vous zoomez en arrière pour garder une carte lisible. Cliquez sur un cluster pour zoomer directement sur la zone concernée.',
-              highlight: { top: '45%', left: '45%', width: '10%', height: '10%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
-            },
-            {
-              title: 'Panneau latéral de détails',
-              text: 'Cliquez sur l\'icône d\'un établissement pour ouvrir le panneau latéral interactif et parcourir ses informations, ses événements programmés, ses actualités et les évaluations laissées par les citoyens.',
-              highlight: { top: '10%', left: '70%', width: '30%', height: '90%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'warning',
-              text: 'Pour des raisons de confidentialité et de protection de la vie privée, les localisations précises des réclamations ne sont pas affichées publiquement sur la carte.'
+              title: 'Sécurité et 2FA',
+              text: 'Activez l\'Authentification à Double Facteur (2FA) pour protéger au maximum votre compte contre les accès non autorisés.',
+              image: '/images/guide/citoyen/securite_2fa_fr.png',
+              highlight: { top: '30%', left: '25%', width: '50%', height: '25%', tooltipFr: 'Activer le 2FA', tooltipAr: 'تفعيل المصادقة الثنائية' }
             }
           ]
         },
         {
           id: 'etablissements',
-          title: 'Annuaire des Établissements',
-          subtitle: 'Trouver et évaluer les services publics',
-          image: '/images/guide/etablissements_fr.png',
-          intro: 'L\'annuaire liste de manière exhaustive toutes les infrastructures publiques de Médiouna. Il permet de suivre la qualité des services offerts.',
+          title: 'Guide des Établissements',
+          subtitle: 'Trouvez et interagissez avec les services publics',
+          image: '/images/guide/citoyen/etablissements_liste_fr.png',
+          intro: 'Explorez tous les établissements publics, écoles, centres de santé et infrastructures sportives de la province.',
           steps: [
             {
-              title: 'Filtres avancés',
-              text: 'Recherchez par nom ou filtrez par type d\'établissement (Hôpital, Lycée, Administration, Terrain de sport) et par commune.',
-              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              title: 'Recherche et Filtrage',
+              text: 'Utilisez les filtres par secteur (Santé, Éducation, Sport) ou tapez le nom de l\'établissement pour le trouver rapidement.',
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             },
             {
-              title: 'Fiches détaillées',
-              text: 'Consultez les horaires d\'ouverture, les adresses exactes, les numéros de contact et la liste des responsables.',
-              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              title: 'Détails de l\'Établissement',
+              text: 'Sur la fiche détaillée, consultez les informations complètes, événements associés, et les avis des autres citoyens.',
+              image: '/images/guide/citoyen/etablissement_details_fr.png',
+              highlight: { top: '10%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Fiche détaillée', tooltipAr: 'تفاصيل المرفق' }
             },
             {
-              title: 'Abonnement aux notifications',
-              text: 'Abonnez-vous à un établissement pour recevoir des alertes par email et des notifications en temps réel dès qu\'un nouvel événement ou une actualité le concernant est publié.',
-              highlight: { top: '17%', left: '80%', width: '12%', height: '5%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              title: 'S\'abonner',
+              text: 'Cliquez sur le bouton "S\'abonner" pour recevoir des notifications immédiates lors de la publication de nouvelles actualités pour cet établissement.',
+              highlight: { top: '40%', left: '15%', width: '15%', height: '8%', tooltipFr: 'Bouton d\'abonnement', tooltipAr: 'زر الاشتراك' }
+            }
+          ]
+        },
+        {
+          id: 'carte_interactive',
+          title: 'Carte Interactive',
+          subtitle: 'Visualisez les infrastructures géolocalisées',
+          image: '/images/guide/citoyen/carte_interactive_fr.png',
+          intro: 'La carte interactive est l\'outil idéal pour localiser tous les services publics proches de chez vous.',
+          steps: [
+            {
+              title: 'Exploration de la Carte',
+              text: 'Naviguez sur la carte pour voir la répartition des établissements. Les points sont regroupés pour une meilleure lisibilité.',
+              highlight: { top: '10%', left: '25%', width: '70%', height: '85%', tooltipFr: 'Carte géolocalisée', tooltipAr: 'الخريطة التفاعلية' }
+            },
+            {
+              title: 'Filtres Rapides',
+              text: 'Utilisez les filtres latéraux pour n\'afficher que certains types d\'infrastructures (ex: Uniquement les écoles ou les centres de santé).',
+              highlight: { top: '15%', left: '2%', width: '20%', height: '30%', tooltipFr: 'Filtres par catégorie', tooltipAr: 'تصفية حسب الفئة' }
+            }
+          ]
+        },
+        {
+          id: 'demarches_reclamations',
+          title: 'Soumettre une Réclamation',
+          subtitle: 'Signaler un incident en 4 étapes simples',
+          image: '/images/guide/citoyen/reclamation_etape1_fr.png',
+          intro: 'Participez à l\'amélioration de votre commune en signalant les incidents sur la voie publique (éclairage, voirie, propreté).',
+          steps: [
+            {
+              title: 'Étape 1: Localisation',
+              text: 'Indiquez l\'emplacement exact de l\'incident sur la carte interactive pour faciliter l\'intervention.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '60%', tooltipFr: 'Placer le repère', tooltipAr: 'تحديد الموقع' }
+            },
+            {
+              title: 'Étape 2: Détails',
+              text: 'Choisissez la catégorie de l\'incident et décrivez précisément le problème rencontré.',
+              image: '/images/guide/citoyen/reclamation_etape2_fr.png',
+              highlight: { top: '25%', left: '20%', width: '60%', height: '50%', tooltipFr: 'Catégorie et description', tooltipAr: 'التصنيف والوصف' }
+            },
+            {
+              title: 'Étape 3: Preuves',
+              text: 'Ajoutez des photos ou des documents pour appuyer votre demande et aider les autorités à évaluer la situation.',
+              image: '/images/guide/citoyen/reclamation_etape3_fr.png',
+              highlight: { top: '30%', left: '25%', width: '50%', height: '30%', tooltipFr: 'Upload de fichiers', tooltipAr: 'تحميل الملفات المرفقة' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'Les citoyens peuvent évaluer les établissements en leur attribuant une note de 1 à 5 étoiles avec un commentaire. Chaque citoyen dispose d\'un délai de 7 jours après publication pour modifier son avis.'
+              text: 'Une fois soumise, vous pourrez suivre l\'état d\'avancement de votre réclamation depuis votre tableau de bord.'
             }
           ]
         },
         {
           id: 'evenements',
-          title: 'Événements',
-          subtitle: 'Participer aux activités de la province',
-          image: '/images/guide/evenements_fr.png',
-          intro: 'Découvrez les événements, caravanes et activités citoyennes programmés dans la Province de Médiouna.',
+          title: 'Événements & Activités',
+          subtitle: 'Ne manquez aucune activité provinciale',
+          image: '/images/guide/citoyen/evenements_liste_fr.png',
+          intro: 'Restez informé de tous les événements, festivals, et campagnes organisés dans la province.',
           steps: [
             {
-              title: 'Agenda provincial',
-              text: 'Consultez la liste des activités en cours ou à venir. Les statuts indiquent clairement si l\'événement est programmé, en cours d\'action ou clôturé.',
-              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              title: 'Agenda Provincial',
+              text: 'Explorez la liste complète des événements avec des filtres par date (Passé, En cours, À venir) et par secteur.',
+              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres d\'événements', tooltipAr: 'تصفية الفعاليات' }
             },
             {
-              title: 'Filtres et recherche',
-              text: 'Recherchez par mot-clé ou filtrez par commune et par statut pour cibler un événement précis.',
-              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'Un événement "En Action" signifie qu\'il se déroule actuellement sur le terrain. Vous pouvez le suivre en direct ou vous rendre sur place.'
-            }
-          ]
-        },
-        {
-          id: 'campagnes',
-          title: 'Campagnes Citoyennes',
-          subtitle: 'Suivre les campagnes de sensibilisation',
-          image: '/images/guide/campagnes_fr.png',
-          intro: 'Découvrez les campagnes thématiques de sensibilisation menées par la province (environnement, santé, éducation).',
-          steps: [
-            {
-              title: 'Liste des campagnes',
-              text: 'Parcourez les différentes initiatives provinciales en cours ou planifiées pour la communauté.',
-              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
+              title: 'Aperçu Rapide',
+              text: 'Chaque carte d\'événement (Box) présente la date, le lieu, et l\'organisateur pour un survol rapide.',
+              image: '/images/guide/citoyen/evenement_box_fr.png',
+              highlight: { top: '25%', left: '30%', width: '40%', height: '40%', tooltipFr: 'Carte d\'événement', tooltipAr: 'بطاقة الفعالية' }
             },
             {
-              title: 'Recherche et filtres',
-              text: 'Filtrez les campagnes par domaine ou statut pour retrouver rapidement une initiative spécifique.',
-              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
+              title: 'Détails et Inscription',
+              text: 'Accédez à la page complète de l\'événement pour lire le programme détaillé et vous y inscrire si nécessaire.',
+              image: '/images/guide/citoyen/evenement_details_fr.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations détaillées', tooltipAr: 'المعلومات التفصيلية' }
             }
           ]
         },
         {
-          id: 'actualites',
-          title: 'Actualités Provinciales',
-          subtitle: 'Suivre les dernières nouvelles de la province',
-          image: '/images/guide/actualites_fr.png',
-          intro: 'Restez informé des derniers communiqués, projets et décisions officielles de la Province de Médiouna.',
+          id: 'actualites_ressources',
+          title: 'Actualités, Campagnes & Articles',
+          subtitle: 'Toute l\'information de la province',
+          image: '/images/guide/citoyen/actualites_liste_fr.png',
+          intro: 'Le portail est votre source d\'information officielle pour les actualités, les grandes campagnes citoyennes et les articles de ressources.',
           steps: [
             {
-              title: 'Fil d\'actualités',
-              text: 'Consultez les articles et annonces officielles publiés par la Province et les communes.',
-              highlight: { top: '15%', left: '35%', width: '60%', height: '80%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+              title: 'Fil d\'Actualités',
+              text: 'Lisez les dernières nouvelles et annonces officielles. Le système de filtrage fonctionne de la même manière que pour les événements.',
+              highlight: { top: '20%', left: '30%', width: '60%', height: '60%', tooltipFr: 'Liste des actualités', tooltipAr: 'قائمة الأخبار' }
             },
             {
-              title: 'Filtres sectoriels et géographiques',
-              text: 'Filtrez l\'actualité par commune ou par secteur d\'activité pour cibler les informations qui vous concernent.',
-              highlight: { top: '15%', left: '5%', width: '25%', height: '80%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
-            }
-          ]
-        },
-        {
-          id: 'statistiques',
-          title: 'Statistiques Publiques',
-          subtitle: 'Consulter les indicateurs et rapports de performance',
-          image: '/images/guide/statistiques_fr.png',
-          intro: 'Accédez en toute transparence aux chiffres clés de la gestion provinciale et au taux de résolution des réclamations.',
-          steps: [
-            {
-              title: 'Chiffres clés de performance',
-              text: 'Visualisez les statistiques globales d\'activité de la province, telles que le volume total des signalements et le taux de traitement.',
-              highlight: { top: '10%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+              title: 'Campagnes Citoyennes',
+              text: 'Découvrez les grandes campagnes de sensibilisation et d\'action menées par les autorités locales et les délégations.',
+              image: '/images/guide/citoyen/campagnes_liste_fr.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Campagnes en cours', tooltipAr: 'الحملات الحالية' }
             },
             {
-              title: 'Graphiques sectoriels',
-              text: 'Analysez la répartition des demandes par secteur d\'activité et par commune via des graphiques interactifs.',
-              highlight: { top: '30%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
+              title: 'Ressources et Articles',
+              text: 'Accédez à des guides pratiques, des documents téléchargeables et des articles d\'information pour faciliter vos démarches.',
+              image: '/images/guide/citoyen/articles_liste_fr.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Centre de ressources', tooltipAr: 'مركز الموارد والمقالات' }
             }
           ]
         },
         {
-          id: 'suggestions',
-          title: 'Propositions Citoyennes',
-          subtitle: 'Découvrir les idées d\'amélioration de la communauté',
-          image: '/images/guide/participation_fr.png',
-          intro: 'Le Portail Médiouna offre un espace d\'expression pour la communauté afin d\'améliorer la qualité de vie dans la province.',
+          id: 'boite_a_idees',
+          title: 'Participation (Boîte à Idées)',
+          subtitle: 'Contribuez au développement de Médiouna',
+          image: '/images/guide/citoyen/idees_liste_fr.png',
+          intro: 'La Boîte à Idées vous permet de proposer des projets innovants et d\'interagir avec les suggestions des autres citoyens.',
           steps: [
             {
-              title: 'Boîte à suggestions',
-              text: 'Consultez les propositions soumises par les citoyens pour améliorer la vie dans la province. Vous pouvez voir les idées classées par catégorie.',
-              highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'Bien que vous puissiez lire les suggestions en tant que simple visiteur, la création d\'une nouvelle suggestion nécessite d\'être connecté.'
-            }
-          ]
-        },
-        {
-          id: 'suggestions_new',
-          title: 'Proposer une Idée',
-          subtitle: 'Soumettre une suggestion citoyenne',
-          image: '/images/guide/suggestions_new_fr.png',
-          intro: 'Les citoyens peuvent proposer des projets d\'intérêt général pour leur commune, mais cette fonctionnalité nécessite d\'être connecté au portail.',
-          steps: [
-            {
-              title: 'Connexion requise',
-              text: 'La soumission de suggestions ou de réclamations est réservée aux utilisateurs enregistrés. Les visiteurs non inscrits doivent suivre le guide de connexion s\'ils ont déjà un compte, ou le guide d\'inscription.',
-              highlight: { top: '60%', left: '15%', width: '70%', height: '25%', tooltipFr: 'Invitation à la connexion', tooltipAr: 'دعوة لتسجيل الدخول' }
-            }
-          ]
-        },
-        {
-          id: 'login',
-          title: 'Connexion',
-          subtitle: 'Se connecter au portail',
-          image: '/images/guide/login_fr.png',
-          intro: 'Pour soumettre une réclamation ou proposer une idée, vous devez vous connecter avec vos identifiants.',
-          steps: [
-            {
-              title: 'Champs de connexion',
-              text: 'Saisissez votre e-mail et votre mot de passe pour vous connecter en toute sécurité.',
-              highlight: { top: '25%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
+              title: 'Tableau des Suggestions',
+              text: 'Suivez le statut de vos idées et de celles de la communauté : "En attente", "Validée", ou "Rejetée".',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '30%', tooltipFr: 'Statut des idées', tooltipAr: 'حالة المقترحات' }
             },
             {
-              title: 'Accès à l\'inscription',
-              text: 'Si vous n\'avez pas encore de compte citoyen, utilisez le lien en bas de la page pour accéder au formulaire d\'inscription.',
-              highlight: { top: '65%', left: '30%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
-            }
-          ]
-        },
-        {
-          id: 'register',
-          title: 'Inscription',
-          subtitle: 'Créer votre compte citoyen',
-          image: '/images/guide/register_fr.png',
-          intro: 'Créez votre compte en quelques étapes pour participer activement au développement de votre commune.',
-          steps: [
-            {
-              title: 'Formulaire d\'inscription',
-              text: 'Saisissez vos informations personnelles (Nom complet, e-mail, téléphone, mot de passe) et choisissez votre commune de résidence.',
-              highlight: { top: '20%', left: '25%', width: '50%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
-            }
-          ]
-        },
-        {
-          id: 'accessibilite',
-          title: 'Accessibilité',
-          subtitle: 'Un portail accessible à tous',
-          image: '/images/guide/accessibilite_fr.png',
-          intro: 'Le portail de Médiouna a été optimisé pour être accessible et facile d\'utilisation pour tous les citoyens, y compris les personnes en situation de handicap.',
-          steps: [
-            {
-              title: 'Charte d\'accessibilité',
-              text: 'Consultez les informations de compatibilité avec les normes mondiales d\'accessibilité numérique (WCAG) directement sur cette page dédiée.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Informations d\'accessibilité', tooltipAr: 'معلومات الولوجيات' }
-            }
-          ]
-        },
-        {
-          id: 'contact',
-          title: 'Nous Contacter',
-          subtitle: 'Contacter l\'administration de la Province',
-          image: '/images/guide/contact_fr.png',
-          intro: 'Utilisez cette page pour contacter directement les services de la Province de Médiouna pour toute demande générale.',
-          steps: [
-            {
-              title: 'Formulaire de contact',
-              text: 'Saisissez vos coordonnées et votre message pour envoyer un e-mail direct aux services administratifs.',
-              highlight: { top: '25%', left: '7.2%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
-            },
-            {
-              title: 'Coordonnées directes',
-              text: 'Trouvez l\'adresse de la Province, le numéro de téléphone du support et les adresses e-mail officielles.',
-              highlight: { top: '25%', left: '62%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
-            }
-          ]
-        },
-        {
-          id: 'politique-confidentialite',
-          title: 'Politique de Confidentialité',
-          subtitle: 'Protection de la vie privée',
-          image: '/images/guide/confidentialite_fr.png',
-          intro: 'Découvrez comment vos données personnelles sont protégées conformément aux lois nationales et aux directives de la CNDP.',
-          steps: [
-            {
-              title: 'Protection des données',
-              text: 'Consultez les détails relatifs au traitement, à l\'utilisation et au droit de rectification de vos données à caractère personnel.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Charte de protection des données', tooltipAr: 'سياسة حماية المعطيات' }
-            }
-          ]
-        },
-        {
-          id: 'conditions-utilisation',
-          title: 'Conditions d\'Utilisation',
-          subtitle: 'Conditions Générales d\'Utilisation (CGU)',
-          image: '/images/guide/conditions_fr.png',
-          intro: 'Le cadre légal définissant les règles d\'utilisation de la plateforme et les conditions de modération des réclamations et suggestions.',
-          steps: [
-            {
-              title: 'Conditions d\'utilisation',
-              text: 'Consultez vos droits et devoirs en tant qu\'utilisateur citoyen ou visiteur du portail de Médiouna.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Conditions Générales d\'Utilisation', tooltipAr: 'شروط الاستخدام العامة' }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'citoyen',
-      title: 'Citoyen (Résident)',
-      description: 'Découvrez comment soumettre des réclamations, suivre leur traitement, et proposer des suggestions d\'amélioration pour votre commune.',
-      sections: [
-        {
-          id: 'compte',
-          title: 'Inscription & Profil',
-          subtitle: 'Créer votre compte et gérer vos informations',
-          image: '/images/guide/profil_fr.png',
-          intro: 'En créant votre compte citoyen sur le Portail Médiouna, vous devenez un acteur actif du développement de votre commune. Vous accédez à un espace personnel personnalisé.',
-          steps: [
-            {
-              title: 'Création de compte',
-              text: 'Cliquez sur le bouton "Connexion" puis "S\'inscrire". Saisissez votre nom, email, téléphone, et sélectionnez votre commune de résidence.',
-              highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
-            },
-            {
-              title: 'Gestion du profil',
-              text: 'Depuis votre espace personnel, vous pouvez consulter et mettre à jour vos informations de contact ainsi que vos abonnements aux établissements.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Informations personnelles', tooltipAr: 'المعلومات الشخصية' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'Vos données personnelles sont strictement confidentielles et traitées conformément aux directives de la CNDP.'
-            }
-          ]
-        },
-        {
-          id: 'signalement',
-          title: 'Dépôt de Réclamation',
-          subtitle: 'Signaler un incident sur la voie publique',
-          image: '/images/guide/nouvelle_reclamation_fr.png',
-          intro: 'Un lampadaire en panne, un dépôt sauvage de déchets, ou une chaussée endommagée ? Signalez l\'incident en moins de deux minutes pour que les autorités compétentes interviennent.',
-          steps: [
-            {
-              title: 'Initier le signalement',
-              text: 'Cliquez sur le bouton "Signaler un Incident" depuis l\'accueil ou votre tableau de bord.',
-              highlight: { top: '2%', left: '78%', width: '18%', height: '6%', tooltipFr: 'Bouton de signalement', tooltipAr: 'زر إضافة شكاية جديدة' }
-            },
-            {
-              title: 'Localisation précise',
-              text: 'Utilisez la carte interactive pour placer un repère exactement à l\'emplacement de l\'incident. Le système détectera automatiquement la commune correspondante.',
-              highlight: { top: '65%', left: '15%', width: '70%', height: '22%', tooltipFr: 'Placer l\'incident sur la carte', tooltipAr: 'تحديد موقع الحادث بدقة' }
-            },
-            {
-              title: 'Détails et photos',
-              text: 'Décrivez brièvement le problème et chargez une ou plusieurs photos réelles de l\'incident. Les photos permettent une intervention beaucoup plus rapide des équipes techniques.',
-              highlight: { top: '15%', left: '15%', width: '70%', height: '35%', tooltipFr: 'Titre, description et photo preuve', tooltipAr: 'عنوان، وصف وإرفاق صورة الحادث' }
-            },
-            {
-              title: 'Catégorisation et envoi',
-              text: 'Sélectionnez le secteur concerné et soumettez la réclamation. Elle sera immédiatement envoyée aux services de votre commune.',
-              highlight: { top: '52%', left: '15%', width: '70%', height: '10%', tooltipFr: 'Sélection du secteur', tooltipAr: 'اختيار تصنيف وقطاع الشكاية' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'warning',
-              text: 'Veillez à ce que vos photos ne montrent pas de visages lisibles ou de plaques d\'immatriculation afin de respecter le droit à la vie privée d\'autrui.'
-            }
-          ]
-        },
-        {
-          id: 'suivi_reclamation',
-          title: 'Suivi des Réclamations',
-          subtitle: 'Suivre le traitement de votre réclamation',
-          image: '/images/guide/mes_reclamations_fr.png',
-          intro: 'Une fois soumise, votre réclamation suit un parcours de traitement transparent jusqu\'à sa résolution.',
-          steps: [
-            {
-              title: 'Statut : En attente',
-              text: 'Votre signalement a été enregistré avec succès et attend d\'être validé par les agents modérateurs de la commune.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
-            },
-            {
-              title: 'Statut : Acceptée',
-              text: 'L\'autorité locale a validé le problème et l\'a attribué à une équipe technique ou une délégation sectorielle.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation acceptée', tooltipAr: 'شكاية مقبولة' }
-            },
-            {
-              title: 'Statut : Rejetée',
-              text: 'L\'autorité a rejeté le signalement. Vous pouvez consulter le motif exact du rejet (doublon, fausse information, etc.).',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation rejetée', tooltipAr: 'شكاية مرفوضة' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'Si vous estimez que le problème n\'est pas réglé, vous pouvez cliquer sur "Réouvrir la réclamation" pour la contester.'
-            }
-          ]
-        },
-        {
-          id: 'participation_citoyenne',
-          title: 'Boîte à Idées',
-          subtitle: 'Proposer des projets d\'intérêt général',
-          image: '/images/guide/participation_fr.png',
-          intro: 'Le Portail Médiouna vous permet d\'influencer positivement l\'avenir de votre quartier en proposant des projets d\'intérêt général.',
-          steps: [
-            {
-              title: 'Proposer une suggestion',
-              text: 'Rédigez une proposition d\'aménagement ou de projet culturel pour votre commune et publiez-la sur la plateforme.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
-            },
-            {
-              title: 'Suivi des suggestions',
-              text: 'Consultez les suggestions publiées et suivez les réponses apportées par les administrateurs du portail.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi de votre suggestion', tooltipAr: 'متابعة مقترحك' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'Les suggestions pertinentes sont étudiées par les administrateurs pour une éventuelle intégration dans les projets de développement de la province.'
+              title: 'Proposer une Idée',
+              text: 'Cliquez sur "Nouvelle suggestion" pour rédiger votre proposition. Vous pouvez ajouter un titre, une description détaillée et une image d\'illustration.',
+              image: '/images/guide/citoyen/idee_nouvelle_fr.png',
+              highlight: { top: '20%', left: '20%', width: '60%', height: '60%', tooltipFr: 'Formulaire de proposition', tooltipAr: 'نموذج تقديم المقترح' }
             }
           ]
         }
@@ -744,460 +486,202 @@ export const guideData: Record<string, GuideRole[]> = {
   ],
   ar: [
     {
-      id: 'consulteur',
-      title: 'متصفح الموقع (زائر)',
-      description: 'اكتشف كيفية استكشاف إقليم مديونة، والاطلاع على المرافق العمومية، والمشاركة في الأنشطة ومتابعة الأخبار دون الحاجة إلى إنشاء حساب.',
+      id: 'citoyen',
+      title: 'مواطن (زائر ومقيم)',
+      description: 'اكتشف كيف يمكنك استكشاف الإقليم، استشارة المرافق العامة، تقديم الشكايات، والمشاركة في الفعاليات.',
       sections: [
         {
-          id: 'intro',
-          title: 'مقدمة عن البوابة',
-          subtitle: 'مرحباً بكم في بوابة مديونة الرسمية',
-          image: '/images/guide/home_ar.png',
-          intro: 'بوابة مديونة هي المنصة الرسمية للإعلام والمشاركة المواطنة لإقليم مديونة. تتيح لكل مواطن وزائر الوصول بكل شفافية إلى المعلومات المحلية، ومتابعة المشاريع والأنشطة العمومية، والمساهمة الفعالة في تنمية الإقليم.',
+          id: 'intro_navigation',
+          title: 'الرئيسية والتنقل العام',
+          subtitle: 'مرحباً بك في البوابة الرسمية لمديونة',
+          image: '/images/guide/citoyen/accueil_ar.png',
+          intro: 'توفر لك البوابة وصولاً مركزياً لجميع المعلومات الخاصة بالإقليم. من خلال القائمة العلوية، يمكنك الوصول بسرعة إلى الخدمات الأساسية.',
           steps: [
             {
-              title: 'تصفح بدون حساب',
-              text: 'بصفتك زائراً غير مسجل، يمكنك تصفح الدليل الكامل للمرافق العمومية، والاطلاع على الخريطة التفاعلية، ومعرفة أجندة الإقليم، وقراءة الأخبار، والاطلاع على مقترحات المواطنين.',
-              highlight: { top: '0%', left: '0%', width: '100%', height: '10%', tooltipFr: 'Accès libre à tout le contenu public', tooltipAr: 'وصول حر لكافة المحتويات العامة' }
+              title: 'الإشعارات',
+              text: 'انقر على أيقونة الجرس للتحقق من أحدث التنبيهات والتحديثات المتعلقة باشتراكاتك.',
+              image: '/images/guide/citoyen/notifications_ar.png',
+              highlight: { top: '2%', left: '5%', width: '4%', height: '6%', tooltipFr: 'Vos notifications', tooltipAr: 'إشعاراتك' }
             },
             {
-              title: 'البيانات العامة',
-              text: 'الاطلاع على إحصائيات النشاط العام ومؤشرات الأداء للإقليم مباشرة من الصفحة الرئيسية.',
-              image: '/images/guide/home_stats_ar.png',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Statistiques de la province', tooltipAr: 'إحصائيات الإقليم' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'لتقديم شكاية، أو تقديم اقتراحات، أو نشر محتوى، ستحتاج إلى تسجيل الدخول أو إنشاء حساب مواطن مجاني.'
+              title: 'تغيير اللغة',
+              text: 'استخدم محدد اللغة للتبديل بسهولة بين النسختين العربية والفرنسية للبوابة.',
+              image: '/images/guide/citoyen/langues_ar.png',
+              highlight: { top: '2%', left: '10%', width: '8%', height: '6%', tooltipFr: 'Changer la langue', tooltipAr: 'تغيير اللغة' }
             }
           ]
         },
         {
-          id: 'accueil',
-          title: 'الصفحة الرئيسية',
-          subtitle: 'لوحة القيادة لإقليم مديونة',
-          image: '/images/guide/home_ar.png',
-          intro: 'الصفحة الرئيسية هي نقطة الانطلاق لزيارتك. وتقدم ملخصاً ديناميكياً للحياة بالإقليم وحالة المرافق والخدمات العمومية.',
+          id: 'gestion_compte',
+          title: 'حسابي والأمان',
+          subtitle: 'إدارة معلوماتك وتأمين مساحتك الخاصة',
+          image: '/images/guide/citoyen/profil_ar.png',
+          intro: 'تتيح لك صفحة الملف الشخصي تحديث معلوماتك وتعزيز أمان حسابك كمواطن.',
           steps: [
             {
-              title: 'الأرقام والشركاء',
-              text: 'اطلع فوراً على عدد الشكايات المقدمة، ومعدل معالجتها من قبل السلطات، وغيرها من مؤشرات أداء الخدمات بالإقليم.',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi des performances publiques', tooltipAr: 'متابعة الأداء العام' }
+              title: 'المعلومات الشخصية',
+              text: 'عرض وتعديل بيانات الاتصال الخاصة بك (الاسم، البريد الإلكتروني، الهاتف) مباشرة من مساحة "ملفي الشخصي".',
+              highlight: { top: '25%', left: '15%', width: '70%', height: '40%', tooltipFr: 'Vos informations', tooltipAr: 'معلوماتك الشخصية' }
             },
             {
-              title: 'المحتوى البارز',
-              text: 'تصفح سريعاً أحدث الأنشطة المبرمجة، والأخبار العاجلة، والمرافق الأكثر تفاعلاً وتقييماً من قبل المواطنين.',
-              highlight: { top: '25%', left: '5%', width: '90%', height: '35%', tooltipFr: 'Dernières actualités et activités', tooltipAr: 'أحدث الأخبار والأنشطة' }
+              title: 'اشتراكاتي',
+              text: 'ابحث عن قائمة المرافق التي اشتركت فيها لمتابعة فعالياتها وأخبارها.',
+              image: '/images/guide/citoyen/abonnements_ar.png',
+              highlight: { top: '15%', left: '20%', width: '60%', height: '70%', tooltipFr: 'Gérer vos abonnements', tooltipAr: 'إدارة اشتراكاتك' }
             },
             {
-              title: 'البحث الشامل',
-              text: 'استخدم اختصار لوحة المفاتيح Ctrl+K أو اضغط على أيقونة البحث في الأعلى للبحث الفوري عن مرفق عمومي، أو نشاط، أو خبر.',
-              highlight: { top: '2%', left: '10%', width: '10%', height: '5%', tooltipFr: 'Barre de recherche instantanée', tooltipAr: 'شريط البحث الفوري' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'المنصة متوافقة تماماً مع جميع الأجهزة. يمكنك تصفحها بسلاسة من هاتفك الذكي، جهازك اللوحي، أو حاسوبك الشخصي.'
-            }
-          ]
-        },
-        {
-          id: 'carte',
-          title: 'الخريطة التفاعلية',
-          subtitle: 'تحديد مواقع المرافق الإقليمية',
-          image: '/images/guide/map_ar.png',
-          intro: 'تحدد الخريطة التفاعلية المواقع الجغرافية لكافة البنيات التحتية والمرافق العمومية لإقليم مديونة.',
-          steps: [
-            {
-              title: 'تحديد مواقع الخدمات',
-              text: 'تصفح الخريطة التفاعلية لتحديد مواقع المرافق العمومية، المدارس، المستشفيات وغيرها من البنيات التحتية للإقليم بسهولة.',
-              highlight: { top: '10%', left: '0%', width: '100%', height: '90%', tooltipFr: 'Carte interactive de la province', tooltipAr: 'الخريطة التفاعلية للإقليم' }
-            },
-            {
-              title: 'مرشحات البحث',
-              text: 'خصص عرض الخريطة عبر لوحة التحكم: اختر الجماعات (مديونة، تيط مليل، الهراويين، إلخ)، وحدد قطاعات معينة (الصحة، التعليم، الرياضة) أو صفّ حسب تقييمات المرافق.',
-              highlight: { top: '12%', left: '74%', width: '25%', height: '80%', tooltipFr: 'Sélection des filtres cartographiques', tooltipAr: 'اختيار مرشحات الخريطة' }
-            },
-            {
-              title: 'التجمع الذكي للمؤشرات',
-              text: 'تتجمع المؤشرات تلقائياً عند تصغير الخريطة للحفاظ على وضوحها. اضغط على أي تجمع (cluster) للتكبير المباشر للبلدة أو المنطقة المعنية.',
-              highlight: { top: '45%', left: '45%', width: '10%', height: '10%', tooltipFr: 'Groupement dynamique de marqueurs', tooltipAr: 'التجميع الديناميكي للمؤشرات' }
-            },
-            {
-              title: 'اللوحة الجانبية للتفاصيل',
-              text: 'اضغط على أيقونة أي مرفق لفتح اللوحة الجانبية التفاعلية واستعراض معلوماته، والأنشطة المبرمجة لديه، وآخر أخباره، والتقييمات المكتوبة من طرف المواطنين.',
-              highlight: { top: '10%', left: '0%', width: '30%', height: '90%', tooltipFr: 'Fiche détaillée de l\'établissement', tooltipAr: 'بطاقة معلومات المرفق' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'warning',
-              text: 'لدواعي السرية وحماية المعطيات الشخصية، فإن المواقع الدقيقة للشكايات لا تظهر بشكل علني على الخريطة العامة.'
+              title: 'الأمان والمصادقة الثنائية 2FA',
+              text: 'قم بتفعيل المصادقة الثنائية (2FA) لتوفير أقصى قدر من الحماية لحسابك من الوصول غير المصرح به.',
+              image: '/images/guide/citoyen/securite_2fa_ar.png',
+              highlight: { top: '30%', left: '25%', width: '50%', height: '25%', tooltipFr: 'Activer le 2FA', tooltipAr: 'تفعيل المصادقة الثنائية' }
             }
           ]
         },
         {
           id: 'etablissements',
-          title: 'دليل المرافق العمومية',
-          subtitle: 'البحث وتقييم الخدمات الإدارية والعمومية',
-          image: '/images/guide/etablissements_ar.png',
-          intro: 'يسرد الدليل بشكل شامل جميع البنيات التحتية والمؤسسات العمومية بمديونة، ويسهل متابعة جودة الخدمات المقدمة للمواطنين.',
+          title: 'دليل المؤسسات',
+          subtitle: 'ابحث وتفاعل مع المرافق العامة',
+          image: '/images/guide/citoyen/etablissements_liste_ar.png',
+          intro: 'استكشف جميع المرافق العامة، المدارس، المراكز الصحية، والمرافق الرياضية في الإقليم.',
           steps: [
             {
               title: 'البحث والتصفية',
-              text: 'ابحث بالاسم أو حدد نوع المرفق (مستشفى، ثانوية، إدارة، ملعب رياضي) وقم بالتصفية حسب الجماعة الترابية التابع لها.',
-              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Recherche par nom ou filtre', tooltipAr: 'البحث بالاسم أو التصفية' }
+              text: 'استخدم عوامل التصفية حسب القطاع (الصحة، التعليم، الرياضة) أو اكتب اسم المؤسسة للعثور عليها بسرعة.',
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
             },
             {
-              title: 'بطاقة معلومات المرفق',
-              text: 'اطلع على أوقات العمل، والعنوان الدقيق، وأرقام الهاتف للتواصل, بالإضافة إلى أسماء المسؤولين.',
-              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Informations de contact et horaires', tooltipAr: 'معلومات الاتصال وأوقات العمل' }
+              title: 'تفاصيل المؤسسة',
+              text: 'في البطاقة التفصيلية، يمكنك عرض المعلومات الكاملة، الفعاليات المرتبطة، وتقييمات المواطنين الآخرين.',
+              image: '/images/guide/citoyen/etablissement_details_ar.png',
+              highlight: { top: '10%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Fiche détaillée', tooltipAr: 'تفاصيل المرفق' }
             },
             {
-              title: 'الاشتراك في التنبيهات',
-              text: 'اشترك في المرفق لتلقي إشعارات فورية عبر البريد الإلكتروني والمنصة عند نشر أي نشاط جديد أو إعلان يخصه.',
-              highlight: { top: '17%', left: '5%', width: '12%', height: '5%', tooltipFr: 'S\'abonner aux alertes', tooltipAr: 'الاشتراك في التنبيهات' }
+              title: 'الاشتراك',
+              text: 'انقر على زر "اشتراك" لتلقي إشعارات فورية عند نشر أخبار جديدة لهذه المؤسسة.',
+              highlight: { top: '40%', left: '70%', width: '15%', height: '8%', tooltipFr: 'Bouton d\'abonnement', tooltipAr: 'زر الاشتراك' }
+            }
+          ]
+        },
+        {
+          id: 'carte_interactive',
+          title: 'الخريطة التفاعلية',
+          subtitle: 'رؤية البنية التحتية المحددة جغرافياً',
+          image: '/images/guide/citoyen/carte_interactive_ar.png',
+          intro: 'الخريطة التفاعلية هي الأداة المثالية لتحديد موقع جميع الخدمات العامة القريبة منك.',
+          steps: [
+            {
+              title: 'استكشاف الخريطة',
+              text: 'تصفح الخريطة لرؤية توزيع المرافق. يتم تجميع النقاط لتسهيل القراءة.',
+              highlight: { top: '10%', left: '5%', width: '70%', height: '85%', tooltipFr: 'Carte géolocalisée', tooltipAr: 'الخريطة التفاعلية' }
+            },
+            {
+              title: 'عوامل التصفية السريعة',
+              text: 'استخدم عوامل التصفية الجانبية لعرض أنواع معينة من البنية التحتية فقط (مثل: المدارس فقط أو المراكز الصحية).',
+              highlight: { top: '15%', left: '78%', width: '20%', height: '30%', tooltipFr: 'Filtres par catégorie', tooltipAr: 'تصفية حسب الفئة' }
+            }
+          ]
+        },
+        {
+          id: 'demarches_reclamations',
+          title: 'تقديم شكاية',
+          subtitle: 'الإبلاغ عن حادث في 4 خطوات بسيطة',
+          image: '/images/guide/citoyen/reclamation_etape1_ar.png',
+          intro: 'شارك في تحسين جماعتك من خلال الإبلاغ عن الحوادث في الأماكن العامة (الإنارة، الطرق، النظافة).',
+          steps: [
+            {
+              title: 'الخطوة 1: تحديد الموقع',
+              text: 'حدد الموقع الدقيق للحادث على الخريطة التفاعلية لتسهيل التدخل.',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '60%', tooltipFr: 'Placer le repère', tooltipAr: 'تحديد الموقع' }
+            },
+            {
+              title: 'الخطوة 2: التفاصيل',
+              text: 'اختر فئة الحادث واوصف المشكلة التي واجهتها بدقة.',
+              image: '/images/guide/citoyen/reclamation_etape2_ar.png',
+              highlight: { top: '25%', left: '20%', width: '60%', height: '50%', tooltipFr: 'Catégorie et description', tooltipAr: 'التصنيف والوصف' }
+            },
+            {
+              title: 'الخطوة 3: الأدلة',
+              text: 'أضف صوراً أو مستندات لدعم طلبك ومساعدة السلطات في تقييم الوضع.',
+              image: '/images/guide/citoyen/reclamation_etape3_ar.png',
+              highlight: { top: '30%', left: '25%', width: '50%', height: '30%', tooltipFr: 'Upload de fichiers', tooltipAr: 'تحميل الملفات المرفقة' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'يمكن للمواطنين تقييم المرافق بمنحها تنقيطاً من 1 إلى 5 نجوم مع تعليق. يحق للمواطن تعديل تقييمه خلال 7 أيام من تاريخ النشر فقط.'
+              text: 'بمجرد التقديم، ستتمكن من تتبع تقدم شكايتك من لوحة القيادة الخاصة بك.'
             }
           ]
         },
         {
           id: 'evenements',
-          title: 'الأنشطة والفعاليات',
-          subtitle: 'المشاركة في أنشطة الإقليم',
-          image: '/images/guide/evenements_ar.png',
-          intro: 'اكتشف الأنشطة، القوافل والمبادرات المواطنة المبرمجة في إقليم مديونة.',
+          title: 'الفعاليات والأنشطة',
+          subtitle: 'لا تفوت أي نشاط إقليمي',
+          image: '/images/guide/citoyen/evenements_liste_ar.png',
+          intro: 'ابق على اطلاع بجميع الفعاليات، المهرجانات، والحملات المنظمة في الإقليم.',
           steps: [
             {
-              title: 'أجندة الإقليم',
-              text: 'تصفح قائمة الأنشطة المبرمجة. تشير البطاقات بوضوح إلى حالة النشاط (مستقبلي، جارٍ حالياً، أو منتهٍ).',
-              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Consulter l\'agenda', tooltipAr: 'تصفح الأجندة الإقليمية' }
+              title: 'الأجندة الإقليمية',
+              text: 'استكشف القائمة الكاملة للفعاليات مع عوامل تصفية حسب التاريخ (الماضية، الجارية، القادمة) والقطاع.',
+              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres d\'événements', tooltipAr: 'تصفية الفعاليات' }
             },
             {
-              title: 'البحث والتصفية',
-              text: 'ابحث بكلمات مفتاحية أو صفّ حسب الجماعة الترابية والحالة لتحديد نشاط معين.',
-              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'مرشحات البحث' }
-            }
-          ],
-          alerts: [
+              title: 'نظرة سريعة',
+              text: 'كل بطاقة فعالية (Box) تعرض التاريخ، المكان، والجهة المنظمة لإلقاء نظرة سريعة.',
+              image: '/images/guide/citoyen/evenement_box_ar.png',
+              highlight: { top: '25%', left: '30%', width: '40%', height: '40%', tooltipFr: 'Carte d\'événement', tooltipAr: 'بطاقة الفعالية' }
+            },
             {
-              type: 'success',
-              text: 'نشاط "جارٍ حالياً" يعني أن الفعالية تقام الآن على أرض الواقع. يمكنك متابعة مجرياتها أو الحضور للمكان.'
+              title: 'التفاصيل والتسجيل',
+              text: 'قم بزيارة الصفحة الكاملة للفعالية لقراءة البرنامج المفصل والتسجيل إذا لزم الأمر.',
+              image: '/images/guide/citoyen/evenement_details_ar.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '50%', tooltipFr: 'Informations détaillées', tooltipAr: 'المعلومات التفصيلية' }
             }
           ]
         },
         {
-          id: 'campagnes',
-          title: 'الحملات المواطنة',
-          subtitle: 'متابعة حملات التوعية والتحسيس',
-          image: '/images/guide/campagnes_ar.png',
-          intro: 'اكتشف الحملات التوعوية الموضوعاتية المنظمة بالإقليم (البيئة، الصحة، التربية المواطنة).',
-          steps: [
-            {
-              title: 'قائمة الحملات',
-              text: 'تصفح مختلف المبادرات الإقليمية الجارية أو المبرمجة لفائدة الساكنة.',
-              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Campagnes citoyennes', tooltipAr: 'الحملات المواطنة' }
-            },
-            {
-              title: 'البحث والتصفية',
-              text: 'صفّ الحملات حسب المجال أو الحالة للعثور بسرعة على مبادرة معينة.',
-              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Filtres de recherche', tooltipAr: 'تصفية البحث' }
-            }
-          ]
-        },
-        {
-          id: 'actualites',
-          title: 'الأخبار الإقليمية',
-          subtitle: 'متابعة آخر مستجدات الإقليم',
-          image: '/images/guide/actualites_ar.png',
-          intro: 'ابق على اطلاع بآخر البلاغات، المشاريع والقرارات الرسمية لإقليم مديونة.',
+          id: 'actualites_ressources',
+          title: 'الأخبار، المبادرات والمقالات',
+          subtitle: 'كل المعلومات عن الإقليم',
+          image: '/images/guide/citoyen/actualites_liste_ar.png',
+          intro: 'البوابة هي مصدرك الرسمي للمعلومات للأخبار، حملات المواطنين الكبرى والمقالات المرجعية.',
           steps: [
             {
               title: 'شريط الأخبار',
-              text: 'طالع المقالات والإعلانات الرسمية المنشورة من طرف الإقليم والجماعات الترابية.',
-              highlight: { top: '15%', left: '5%', width: '60%', height: '80%', tooltipFr: 'Articles et annonces', tooltipAr: 'المقالات والإعلانات' }
+              text: 'اقرأ آخر الأخبار والإعلانات الرسمية. يعمل نظام التصفية بنفس طريقة الفعاليات.',
+              highlight: { top: '20%', left: '10%', width: '60%', height: '60%', tooltipFr: 'Liste des actualités', tooltipAr: 'قائمة الأخبار' }
             },
             {
-              title: 'مرشحات البحث والتصفية',
-              text: 'صفّ الأخبار حسب الجماعة أو القطاع للوصول إلى المعلومات التي تهمك مباشرة.',
-              highlight: { top: '15%', left: '70%', width: '25%', height: '80%', tooltipFr: 'Recherche et filtres', tooltipAr: 'البحث والتصفية' }
-            }
-          ]
-        },
-        {
-          id: 'statistiques',
-          title: 'الإحصائيات العامة',
-          subtitle: 'الاطلاع على مؤشرات الأداء والتقارير',
-          image: '/images/guide/statistiques_ar.png',
-          intro: 'ولوج شفاف إلى الأرقام الرئيسية للحصيلة الإقليمية ونسب معالجة شكايات المواطنين.',
-          steps: [
-            {
-              title: 'الأرقام الرئيسية للأداء',
-              text: 'طالع الإحصائيات العامة لنشاط الإقليم، مثل الحجم الإجمالي للبلاغات ومعدلات الاستجابة.',
-              highlight: { top: '10%', left: '5%', width: '90%', height: '15%', tooltipFr: 'Statistiques globales', tooltipAr: 'الإحصائيات العامة' }
+              title: 'الحملات والمبادرات',
+              text: 'اكتشف حملات التوعية والعمل الكبرى التي تقودها السلطات المحلية والمندوبيات.',
+              image: '/images/guide/citoyen/campagnes_liste_ar.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Campagnes en cours', tooltipAr: 'الحملات الحالية' }
             },
             {
-              title: 'الرسوم البيانية القطاعية',
-              text: 'حلل توزيع الطلبات حسب القطاع الخدماتي وحسب الجماعة الترابية عبر مبيانات تفاعلية.',
-              highlight: { top: '30%', left: '5%', width: '90%', height: '65%', tooltipFr: 'Graphiques interactifs', tooltipAr: 'الرسوم البيانية التفاعلية' }
+              title: 'الموارد والمقالات',
+              text: 'الوصول إلى أدلة عملية، مستندات قابلة للتنزيل، ومقالات إعلامية لتسهيل إجراءاتك.',
+              image: '/images/guide/citoyen/articles_liste_ar.png',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Centre de ressources', tooltipAr: 'مركز الموارد والمقالات' }
             }
           ]
         },
         {
-          id: 'suggestions',
-          title: 'المقترحات المواطنة',
-          subtitle: 'الاطلاع على أفكار التحسين المقدمة من طرف المجتمع',
-          image: '/images/guide/participation_ar.png',
-          intro: 'توفر البوابة فضاءً للتعبير والمشاركة المواطنة من أجل تحسين جودة الحياة والخدمات بالإقليم.',
+          id: 'boite_a_idees',
+          title: 'المشاركة (صندوق الأفكار)',
+          subtitle: 'ساهم في تنمية مديونة',
+          image: '/images/guide/citoyen/idees_liste_ar.png',
+          intro: 'يتيح لك صندوق الأفكار اقتراح مشاريع مبتكرة والتفاعل مع مقترحات المواطنين الآخرين.',
           steps: [
             {
-              title: 'صندوق المقترحات',
-              text: 'طالع الأفكار والمقترحات التي يقدمها المواطنون لتحسين جودة الحياة بالإقليم، وتصفح الأفكار حسب كل فئة.',
-              highlight: { top: '28.4%', left: '7.8%', width: '84.4%', height: '8%', tooltipFr: 'Suggestions des citoyens', tooltipAr: 'مقترحات وأفكار المواطنين' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'رغم إمكانية قراءة المقترحات لجميع الزوار، فإن تقديم مقترح جديد يتطلب تسجيل الدخول بحساب مواطن.'
-            }
-          ]
-        },
-        {
-          id: 'suggestions_new',
-          title: 'اقتراح فكرة',
-          subtitle: 'تقديم اقتراح مواطن',
-          image: '/images/guide/suggestions_new_ar.png',
-          intro: 'يمكن للمواطنين اقتراح مشاريع ذات منفعة عامة لجماعتهم الترابية، ولكن هذه الخاصية تتطلب تسجيل الدخول إلى البوابة.',
-          steps: [
-            {
-              title: 'تسجيل الدخول مطلوب',
-              text: 'تقديم الاقتراحات أو الشكايات مخصص فقط للمستخدمين المسجلين. يجب على الزوار غير المسجلين اتباع دليل تسجيل الدخول إذا كان لديهم حساب بالفعل، أو دليل إنشاء حساب جديد.',
-              highlight: { top: '60%', left: '15%', width: '70%', height: '25%', tooltipFr: 'Invitation à la connexion', tooltipAr: 'دعوة لتسجيل الدخول' }
-            }
-          ]
-        },
-        {
-          id: 'login',
-          title: 'تسجيل الدخول',
-          subtitle: 'تسجيل الدخول إلى البوابة',
-          image: '/images/guide/login_ar.png',
-          intro: 'لتقديم شكاية أو اقتراح فكرة، يجب عليك تسجيل الدخول باستخدام بيانات الاعتماد الخاصة بك.',
-          steps: [
-            {
-              title: 'حقول تسجيل الدخول',
-              text: 'أدخل بريدك الإلكتروني وكلمة المرور لتسجيل الدخول بأمان.',
-              highlight: { top: '25%', left: '5%', width: '40%', height: '30%', tooltipFr: 'Champs d\'authentification', tooltipAr: 'حقول تسجيل الدخول' }
+              title: 'لوحة المقترحات',
+              text: 'تتبع حالة أفكارك وأفكار المجتمع: "في الانتظار"، "مقبولة"، أو "مرفوضة".',
+              highlight: { top: '15%', left: '15%', width: '70%', height: '30%', tooltipFr: 'Statut des idées', tooltipAr: 'حالة المقترحات' }
             },
             {
-              title: 'الوصول إلى التسجيل',
-              text: 'إذا لم يكن لديك حساب مواطن بعد، استخدم الرابط الموجود في أسفل الصفحة للوصول إلى نموذج إنشاء الحساب.',
-              highlight: { top: '65%', left: '5%', width: '40%', height: '10%', tooltipFr: 'Lien d\'inscription', tooltipAr: 'رابط التسجيل' }
-            }
-          ]
-        },
-        {
-          id: 'register',
-          title: 'إنشاء حساب',
-          subtitle: 'إنشاء حساب مواطن خاص بك',
-          image: '/images/guide/register_ar.png',
-          intro: 'أنشئ حسابك في بضع خطوات لتتمكن من المشاركة بنشاط في تنمية جماعتك الترابية.',
-          steps: [
-            {
-              title: 'نموذج التسجيل',
-              text: 'أدخل معلوماتك الشخصية (الاسم الكامل، البريد الإلكتروني، الهاتف، كلمة المرور) واختر جماعتك الترابية التي تقيم بها.',
-              highlight: { top: '20%', left: '5%', width: '45%', height: '65%', tooltipFr: 'Formulaire d\'inscription', tooltipAr: 'استمارة التسجيل' }
-            }
-          ]
-        },
-        {
-          id: 'accessibilite',
-          title: 'سهولة الولوج',
-          subtitle: 'بوابة متاحة للجميع',
-          image: '/images/guide/accessibilite_ar.png',
-          intro: 'تم تحسين بوابة مديونة لتكون سهلة الولوج والاستخدام من طرف جميع المواطنين، بما في ذلك الأشخاص في وضعية إعاقة.',
-          steps: [
-            {
-              title: 'ميثاق الولوجيات',
-              text: 'اطّلع على معلومات التوافق مع معايير الولوج الرقمي العالمية (WCAG) مباشرة على هذه الصفحة المخصصة.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Informations d\'accessibilité', tooltipAr: 'معلومات الولوجيات' }
-            }
-          ]
-        },
-        {
-          id: 'contact',
-          title: 'الاتصال بنا',
-          subtitle: 'الاتصال بإدارة الإقليم',
-          image: '/images/guide/contact_ar.png',
-          intro: 'استخدم هذه الصفحة للاتصال مباشرة بمصالح إقليم مديونة لأي طلب عام.',
-          steps: [
-            {
-              title: 'نموذج الاتصال',
-              text: 'أدخل معلومات الاتصال ورسالتك لإرسال بريد إلكتروني مباشر إلى الخدمات الإدارية.',
-              highlight: { top: '25%', left: '42%', width: '50%', height: '60%', tooltipFr: 'Formulaire de contact', tooltipAr: 'استمارة الاتصال' }
-            },
-            {
-              title: 'معلومات الاتصال المباشرة',
-              text: 'ابحث عن عنوان الإقليم، ورقم هاتف الدعم، وعناوين البريد الإلكتروني الرسمية.',
-              highlight: { top: '25%', left: '7.2%', width: '30%', height: '40%', tooltipFr: 'Coordonnées de la province', tooltipAr: 'معلومات الاتصال بالإقليم' }
-            }
-          ]
-        },
-        {
-          id: 'politique-confidentialite',
-          title: 'سياسة الخصوصية',
-          subtitle: 'حماية الحياة الخاصة',
-          image: '/images/guide/confidentialite_ar.png',
-          intro: 'اكتشف كيف تتم حماية معطياتك الشخصية وفقاً للقوانين الوطنية وتوجيهات اللجنة الوطنية لمراقبة حماية المعطيات ذات الطابع الشخصي (CNDP).',
-          steps: [
-            {
-              title: 'حماية المعطيات',
-              text: 'طالع التفاصيل المتعلقة بمعالجة واستخدام وحق تصحيح معطياتك ذات الطابع الشخصي.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Charte de protection des données', tooltipAr: 'سياسة حماية المعطيات' }
-            }
-          ]
-        },
-        {
-          id: 'conditions-utilisation',
-          title: 'شروط الاستخدام',
-          subtitle: 'الشروط العامة للاستخدام (CGU)',
-          image: '/images/guide/conditions_ar.png',
-          intro: 'الإطار القانوني الذي يحدد قواعد استخدام المنصة وضوابط تعديل الشكايات والمقترحات.',
-          steps: [
-            {
-              title: 'شروط الاستخدام',
-              text: 'طالع حقوقك وواجباتك كمستخدم مواطن أو زائر لبوبة مديونة.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '70%', tooltipFr: 'Conditions Générales d\'Utilisation', tooltipAr: 'شروط الاستخدام العامة' }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'citoyen',
-      title: 'المواطن (مقيم)',
-      description: 'اكتشف كيفية تقديم الشكايات، ومتابعة معالجتها، وتقديم مقترحات لتحسين جماعتك الترابية.',
-      sections: [
-        {
-          id: 'compte',
-          title: 'التسجيل والملف الشخصي',
-          subtitle: 'إنشاء حسابك وإدارة معلوماتك',
-          image: '/images/guide/profil_ar.png',
-          intro: 'من خلال إنشاء حساب مواطن في بوابة مديونة، تصبح فاعلاً نشطاً في تنمية جماعتك الترابية وتستفيد من مساحة شخصية مخصصة.',
-          steps: [
-            {
-              title: 'إنشاء الحساب',
-              text: 'اضغط على زر "تسجيل الدخول" ثم "إنشاء حساب". أدخل اسمك، بريدك الإلكتروني، ورقم هاتفك، واختر جماعتك الترابية.',
-              highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
-            },
-            {
-              title: 'إدارة الملف الشخصي',
-              text: 'من خلال مساحتك الشخصية، يمكنك الإطلاع على معلومات الاتصال الخاصة بك وتحديثها، بالإضافة إلى إدارة اشتراكاتك في المؤسسات.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Informations personnelles', tooltipAr: 'المعلومات الشخصية' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'بياناتك الشخصية سرية للغاية ويتم معالجتها وفقاً لتعليمات اللجنة الوطنية لمراقبة حماية المعطيات ذات الطابع الشخصي (CNDP).'
-            }
-          ]
-        },
-        {
-          id: 'signalement',
-          title: 'تقديم الشكايات',
-          subtitle: 'الإبلاغ عن حادث أو خلل في الفضاء العام',
-          image: '/images/guide/nouvelle_reclamation_ar.png',
-          intro: 'مصباح إنارة معطل، تراكم للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
-          steps: [
-            {
-              title: 'بدء التبليغ',
-              text: 'اضغط على زر "تقديم شكاية" من الصفحة الرئيسية أو من لوحة التحكم الخاصة بك.',
-              highlight: { top: '2%', left: '78%', width: '18%', height: '6%', tooltipFr: 'Bouton de signalement', tooltipAr: 'زر إضافة شكاية جديدة' }
-            },
-            {
-              title: 'تحديد الموقع الجغرافي',
-              text: 'استخدم الخريطة التفاعلية لوضع علامة بدقة على مكان الحادث. سيقوم النظام تلقائياً بالتعرف على الجماعة المعنية.',
-              highlight: { top: '65%', left: '15%', width: '70%', height: '22%', tooltipFr: 'Placer l\'incident sur la carte', tooltipAr: 'تحديد موقع الحادث بدقة' }
-            },
-            {
-              title: 'التفاصيل والصور',
-              text: 'اكتب وصفاً موجزاً للمشكلة وأرفق صورة أو أكثر من الواقع. تساعد الصور الفرق التقنية على التدخل السريع.',
-              highlight: { top: '15%', left: '15%', width: '70%', height: '35%', tooltipFr: 'Titre, description et photo preuve', tooltipAr: 'عنوان، وصف وإرفاق صورة الحادث' }
-            },
-            {
-              title: 'تحديد القطاع والإرسال',
-              text: 'حدد القطاع المعني بالحادث وأرسل الشكاية. سيتم إرسالها على الفور إلى مصالح جماعتك الترابية.',
-              highlight: { top: '52%', left: '15%', width: '70%', height: '10%', tooltipFr: 'Sélection du secteur', tooltipAr: 'اختيار تصنيف وقطاع الشكاية' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'warning',
-              text: 'يرجى الحرص على ألا تظهر الصور وجوه الأشخاص أو لوحات ترخيص السيارات احتراماً للخصوصية وحماية للمعطيات الشخصية.'
-            }
-          ]
-        },
-        {
-          id: 'suivi_reclamation',
-          title: 'متابعة الشكايات',
-          subtitle: 'مراقبة حالة معالجة شكايتك',
-          image: '/images/guide/mes_reclamations_ar.png',
-          intro: 'بمجرّد إرسالها، تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
-          steps: [
-            {
-              title: 'الحالة: قيد الانتظار',
-              text: 'تم تسجيل بلاغك بنجاح وفي انتظار التحقق والموافقة من قبل مشرفي الجماعة الترابية.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
-            },
-            {
-              title: 'الحالة: مقبولة',
-              text: 'وافقت السلطة المحلية على البلاغ وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation acceptée', tooltipAr: 'شكاية مقبولة' }
-            },
-            {
-              title: 'الحالة: مرفوضة',
-              text: 'رفضت السلطة البلاغ. يمكنك الإطلاع على سبب الرفض الدقيق (تكرار، معلومات خاطئة، إلخ).',
-              highlight: { top: '65%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation rejetée', tooltipAr: 'شكاية مرفوضة' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'info',
-              text: 'إذا رأيت أن المشكلة لم تحل بالشكل الصحيح، يمكنك الضغط على زر "إعادة فتح الشكاية" للاعتراض.'
-            }
-          ]
-        },
-        {
-          id: 'participation_citoyenne',
-          title: 'صندوق الأفكار',
-          subtitle: 'تقديم اقتراحات ومشاريع محلية',
-          image: '/images/guide/participation_ar.png',
-          intro: 'تتيح لك منصة بوابة مديونة التأثير بشكل إيجابي على محيطك من خلال اقتراح مشاريع ذات منفعة عامة.',
-          steps: [
-            {
-              title: 'تقديم مقترح',
-              text: 'اكتب فكرة لمشروع تهيئة أو نشاط ثقافي لجماعتك، وانشرها على المنصة.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '25%', tooltipFr: 'Soumission d\'idée projet', tooltipAr: 'تقديم مقترح لمشروع محلي' }
-            },
-            {
-              title: 'متابعة المقترحات',
-              text: 'طالع المقترحات المنشورة وتتبع الردود المقدمة من طرف مديري البوابة.',
-              highlight: { top: '45%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Suivi de votre suggestion', tooltipAr: 'متابعة مقترحك' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'success',
-              text: 'يتم دراسة المقترحات الوجيهة من طرف المشرفين لإمكانية دمجها في مشاريع التنمية بالإقليم.'
+              title: 'اقتراح فكرة',
+              text: 'انقر على "مقترح جديد" لكتابة مقترحك. يمكنك إضافة عنوان، وصف تفصيلي وصورة توضيحية.',
+              image: '/images/guide/citoyen/idee_nouvelle_ar.png',
+              highlight: { top: '20%', left: '20%', width: '60%', height: '60%', tooltipFr: 'Formulaire de proposition', tooltipAr: 'نموذج تقديم المقترح' }
             }
           ]
         }
@@ -1352,62 +836,6 @@ export const guideData: Record<string, GuideRole[]> = {
             {
               type: 'success',
               text: 'تحدث هذه الخرائط بشكل لفظي بناءً على إحداثيات GPS الموثقة في بلاغات المواطنين المعتمدة.'
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'admin',
-      title: 'مدير المنصة',
-      description: 'اكتشف كيفية إدارة المستخدمين، وإعدادات النظام، وتدبير الخريطة التفاعلية، ومراقبة المنشورات.',
-      sections: [
-        {
-          id: 'gestion_rbac',
-          title: 'إدارة المستخدمين والصلاحيات',
-          subtitle: 'التحكم في الوصول والأدوار الإدارية (RBAC)',
-          image: '/images/guide/home_ar.png',
-          intro: 'يتحكم مدير المنصة في سلامة الحسابات ويوزع حقوق الوصول لمختلف الموظفين العموميين بإقليم مديونة.',
-          steps: [
-            {
-              title: 'دعوة الموظفين الجدد',
-              text: 'أرسل دعوات الانضمام للموظفين الجدد (جماعات ترابية، مندوبيات) باستخدام بريدهم الإلكتروني المهني والفرعي.',
-              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Inviter un agent public', tooltipAr: 'دعوة مستخدم أو موظف جديد' }
-            },
-            {
-              title: 'توزيع الصلاحيات والأدوار',
-              text: 'حدد بدقة دور كل موظف (مواطن، سلطة محلية، مندوبية، ديوان العامل، مدير النظام) واربط حسابه بالجماعة أو القطاع المناسب.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Formulaire d\'attribution de rôle', tooltipAr: 'نموذج تحديد الأدوار والصلاحيات' }
-            },
-            {
-              title: 'سجلات النشاط والأمان (Logs)',
-              text: 'راجع سجل العمليات في النظام لضمان نزاهة استخدام المعطيات ورصد أي عمليات مشبوهة أو دخول غير مصرح به.',
-              highlight: { top: '70%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Salles d\'audit de sécurité', tooltipAr: 'مراقبة سجل العمليات والأمان' }
-            }
-          ],
-          alerts: [
-            {
-              type: 'warning',
-              text: 'يتطلب منح دور السلطة المحلية أو المندوبية تفعيلاً مزدوجاً للبريد الإلكتروني المهني لمنع أي انتحال للصفة الرسمية.'
-            }
-          ]
-        },
-        {
-          id: 'gestion_carte',
-          title: 'إدارة وتحديث الخريطة',
-          subtitle: 'تدبير المرافق العمومية والتقييمات',
-          image: '/images/guide/map_ar.png',
-          intro: 'إعداد وتحديث البيانات الجغرافية للإقليم والمحافظة على مصداقية تفاعلات البوابة.',
-          steps: [
-            {
-              title: 'إضافة مرفق عمومي جديد',
-              text: 'أنشئ بطاقة لمرفق جديد (مستشفى، مؤسسة تعليمية، إدارة)، وحدد موقعه على الخريطة عبر إحداثيات GPS، وعين له مشرفاً.',
-              highlight: { top: '10%', left: '75%', width: '20%', height: '8%', tooltipFr: 'Créer un point d\'intérêt public', tooltipAr: 'إضافة مرفق عمومي جديد' }
-            },
-            {
-              title: 'مراقبة وتقييم التعليقات',
-              text: 'راجع التقييمات والتعليقات المكتوبة من طرف المواطنين، واحذف كل محتوى مسيء، غير لائق أو مخالف لشروط استخدام البوابة.',
-              highlight: { top: '25%', left: '10%', width: '80%', height: '55%', tooltipFr: 'Liste des avis à modérer', tooltipAr: 'مراقبة وتقييم التعليقات والآراء' }
             }
           ]
         }

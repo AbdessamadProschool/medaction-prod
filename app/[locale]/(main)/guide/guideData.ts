@@ -385,30 +385,25 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'compte',
           title: 'Inscription & Profil',
-          subtitle: 'Créer votre compte et configurer vos alertes',
-          image: '/images/guide/home_fr.png',
+          subtitle: 'Créer votre compte et gérer vos informations',
+          image: '/images/guide/profil_fr.png',
           intro: 'En créant votre compte citoyen sur le Portail Médiouna, vous devenez un acteur actif du développement de votre commune. Vous accédez à un espace personnel personnalisé.',
           steps: [
             {
               title: 'Création de compte',
-              text: 'Cliquez sur le bouton "Connexion" puis "S\'inscrire". Saisissez votre nom, email, téléphone, et sélectionnez votre commune de résidence au sein de la province de Médiouna.',
+              text: 'Cliquez sur le bouton "Connexion" puis "S\'inscrire". Saisissez votre nom, email, téléphone, et sélectionnez votre commune de résidence.',
               highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
             },
             {
-              title: 'Personnalisation du profil',
-              text: 'Choisissez vos secteurs d\'intérêt (Santé, Éducation, Environnement, Transport) pour recevoir en priorité les alertes et événements de ces catégories.',
-              highlight: { top: '35%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Abonnement aux secteurs d\'intérêt', tooltipAr: 'تحديد مجالات الاهتمام المفضل' }
-            },
-            {
-              title: 'Système d\'activité et points',
-              text: 'Chaque action citoyenne constructive (signalement validé, suggestion publiée, participation à des campagnes) vous rapporte des points de citoyenneté active visible sur votre profil.',
-              highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
+              title: 'Gestion du profil',
+              text: 'Depuis votre espace personnel, vous pouvez consulter et mettre à jour vos informations de contact ainsi que vos abonnements aux établissements.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Informations personnelles', tooltipAr: 'المعلومات الشخصية' }
             }
           ],
           alerts: [
             {
               type: 'success',
-              text: 'Vos données personnelles sont strictement confidentielles et traitées conformément aux directives de la CNDP pour la protection des données personnelles.'
+              text: 'Vos données personnelles sont strictement confidentielles et traitées conformément aux directives de la CNDP.'
             }
           ]
         },
@@ -416,7 +411,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'signalement',
           title: 'Dépôt de Réclamation',
           subtitle: 'Signaler un incident sur la voie publique',
-          image: '/images/guide/reclamation.png',
+          image: '/images/guide/nouvelle_reclamation_fr.png',
           intro: 'Un lampadaire en panne, un dépôt sauvage de déchets, ou une chaussée endommagée ? Signalez l\'incident en moins de deux minutes pour que les autorités compétentes interviennent.',
           steps: [
             {
@@ -450,35 +445,30 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'suivi_reclamation',
           title: 'Suivi des Réclamations',
-          subtitle: 'Suivre le traitement de votre réclamation en temps réel',
-          image: '/images/guide/reclamation.png',
+          subtitle: 'Suivre le traitement de votre réclamation',
+          image: '/images/guide/mes_reclamations_fr.png',
           intro: 'Une fois soumise, votre réclamation suit un parcours de traitement transparent jusqu\'à sa résolution.',
           steps: [
             {
-              title: 'Statut : Soumis',
+              title: 'Statut : En attente',
               text: 'Votre signalement a été enregistré avec succès et attend d\'être validé par les agents modérateurs de la commune.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '10%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
+              highlight: { top: '25%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
             },
             {
-              title: 'Statut : Assigné / En cours',
+              title: 'Statut : Acceptée',
               text: 'L\'autorité locale a validé le problème et l\'a attribué à une équipe technique ou une délégation sectorielle.',
-              highlight: { top: '30%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Traitement ou affectation en cours', tooltipAr: 'شكاية مقبولة وقيد الإنجاز' }
+              highlight: { top: '45%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation acceptée', tooltipAr: 'شكاية مقبولة' }
             },
             {
-              title: 'Messagerie intégrée',
-              text: 'Vous pouvez ajouter des commentaires à votre réclamation si vous avez de nouvelles informations, et lire les messages officiels de l\'agent en charge.',
-              highlight: { top: '55%', left: '10%', width: '80%', height: '35%', tooltipFr: 'Messagerie de suivi avec l\'agent', tooltipAr: 'تواصل مباشر بالتعليقات مع المسؤول' }
-            },
-            {
-              title: 'Statut : Résolu',
-              text: 'Une fois le problème réglé, l\'autorité publie une photo de preuve. Vous recevez un email automatique et une notification sur la plateforme.',
-              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'Résolution confirmée par photo', tooltipAr: 'تأكيد الحل بصور ميدانية' }
+              title: 'Statut : Rejetée',
+              text: 'L\'autorité a rejeté le signalement. Vous pouvez consulter le motif exact du rejet (doublon, fausse information, etc.).',
+              highlight: { top: '65%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation rejetée', tooltipAr: 'شكاية مرفوضة' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'Si vous estimez que le problème n\'est pas correctement résolu, vous disposez d\'un bouton "Réouvrir" dans un délai de 3 jours pour soumettre une objection motivée.'
+              text: 'Si vous estimez que le problème n\'est pas réglé, vous pouvez cliquer sur "Réouvrir la réclamation" pour la contester.'
             }
           ]
         },
@@ -541,11 +531,43 @@ export const guideData: Record<string, GuideRole[]> = {
               text: 'Une fois le problème résolu sur le terrain, modifiez le statut à "Résolu" et chargez obligatoirement une photo constatant la fin des travaux. Saisissez une brève description de l\'action menée.',
               highlight: { top: '75%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Clôturer avec photo preuve', tooltipAr: 'إغلاق الشكاية وإرفاق صورة الإثبات' }
             }
-          ],
-          alerts: [
+          ]
+        },
+        {
+          id: 'etablissement_autorite',
+          title: 'Gestion des Établissements',
+          subtitle: 'Superviser les infrastructures de la commune',
+          image: '/images/guide/etablissement_autorite_fr.png',
+          intro: 'En tant qu\'autorité locale, vous avez la supervision des établissements publics situés sur votre commune. Vous pouvez suivre leurs performances et les avis citoyens.',
+          steps: [
             {
-              type: 'warning',
-              text: 'Chaque rejet de réclamation (ex: hors territoire, fausse alerte) doit être explicitement justifié par écrit. Le citoyen sera notifié de la raison.'
+              title: 'Suivi des évaluations',
+              text: 'Consultez la liste des établissements de votre territoire et visualisez leurs notes moyennes attribuées par les citoyens.',
+              highlight: { top: '20%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Liste des établissements', tooltipAr: 'قائمة المرافق' }
+            },
+            {
+              title: 'Détail par établissement',
+              text: 'Accédez à la fiche détaillée d\'un établissement pour voir les réclamations et événements qui y sont liés.',
+              highlight: { top: '65%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Détail de l\'établissement', tooltipAr: 'تفاصيل المرفق' }
+            }
+          ]
+        },
+        {
+          id: 'statistiques_autorite',
+          title: 'Statistiques & Performance',
+          subtitle: 'Analyser les données de votre commune',
+          image: '/images/guide/statistiques_autorite_fr.png',
+          intro: 'Le tableau de bord statistique vous offre une vue globale sur les performances de traitement des réclamations et l\'état des établissements de votre commune.',
+          steps: [
+            {
+              title: 'Indicateurs de résolution',
+              text: 'Suivez le taux de résolution des réclamations, le nombre de signalements en attente et les statistiques globales par secteur.',
+              highlight: { top: '15%', left: '5%', width: '90%', height: '35%', tooltipFr: 'Taux de résolution et KPIs', tooltipAr: 'معدل الحل والمؤشرات الرئيسية' }
+            },
+            {
+              title: 'Analyse par catégorie',
+              text: 'Visualisez la répartition des problèmes par catégorie (propreté, voirie, éclairage) pour mieux orienter vos ressources communales.',
+              highlight: { top: '55%', left: '10%', width: '80%', height: '40%', tooltipFr: 'Répartition par catégorie', tooltipAr: 'التوزيع حسب الفئة' }
             }
           ]
         },
@@ -1067,24 +1089,19 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'compte',
           title: 'التسجيل والملف الشخصي',
-          subtitle: 'إنشاء حسابك وإعداد التنبيهات الخاصة بك',
-          image: '/images/guide/home_ar.png',
+          subtitle: 'إنشاء حسابك وإدارة معلوماتك',
+          image: '/images/guide/profil_ar.png',
           intro: 'من خلال إنشاء حساب مواطن في بوابة مديونة، تصبح فاعلاً نشطاً في تنمية جماعتك الترابية وتستفيد من مساحة شخصية مخصصة.',
           steps: [
             {
               title: 'إنشاء الحساب',
-              text: 'اضغط على زر "تسجيل الدخول" ثم "إنشاء حساب". أدخل اسمك، بريدك الإلكتروني، ورقم هاتفك، واختر جماعتك الترابية داخل إقليم مديونة.',
+              text: 'اضغط على زر "تسجيل الدخول" ثم "إنشاء حساب". أدخل اسمك، بريدك الإلكتروني، ورقم هاتفك، واختر جماعتك الترابية.',
               highlight: { top: '20%', left: '30%', width: '40%', height: '60%', tooltipFr: 'Formulaire de création de compte', tooltipAr: 'استمارة التسجيل وإنشاء الحساب' }
             },
             {
-              title: 'تخصيص ملف التعريف',
-              text: 'اختر قطاعات اهتمامك (الصحة، التعليم، البيئة، النقل) لتلقي التنبيهات والأنشطة المتعلقة بهذه الفئات في المقام الأول.',
-              highlight: { top: '35%', left: '30%', width: '40%', height: '30%', tooltipFr: 'Abonnement aux secteurs d\'intérêt', tooltipAr: 'تحديد مجالات الاهتمام المفضل' }
-            },
-            {
-              title: 'نظام النقاط والمواطنة النشطة',
-              text: 'كل عمل مواطن بناء (شكاية معتمدة، مقترح منشور، مشاركة في الأنشطة) يمنحك نقاط مواطنة تظهر على صفحتك الشخصية.',
-              highlight: { top: '5%', left: '75%', width: '20%', height: '10%', tooltipFr: 'Points de citoyenneté active', tooltipAr: 'مؤشر نقاط المواطنة النشطة' }
+              title: 'إدارة الملف الشخصي',
+              text: 'من خلال مساحتك الشخصية، يمكنك الإطلاع على معلومات الاتصال الخاصة بك وتحديثها، بالإضافة إلى إدارة اشتراكاتك في المؤسسات.',
+              highlight: { top: '15%', left: '10%', width: '80%', height: '30%', tooltipFr: 'Informations personnelles', tooltipAr: 'المعلومات الشخصية' }
             }
           ],
           alerts: [
@@ -1098,7 +1115,7 @@ export const guideData: Record<string, GuideRole[]> = {
           id: 'signalement',
           title: 'تقديم الشكايات',
           subtitle: 'الإبلاغ عن حادث أو خلل في الفضاء العام',
-          image: '/images/guide/reclamation.png',
+          image: '/images/guide/nouvelle_reclamation_ar.png',
           intro: 'مصباح إنارة معطل، تراكم للنفايات، أو طريق متضرر ؟ أبلغ عن الحادث في أقل من دقيقتين لتتدخل السلطات المعنية بسرعة.',
           steps: [
             {
@@ -1132,35 +1149,30 @@ export const guideData: Record<string, GuideRole[]> = {
         {
           id: 'suivi_reclamation',
           title: 'متابعة الشكايات',
-          subtitle: 'مراقبة حالة معالجة شكايتك في الوقت الفعلي',
-          image: '/images/guide/reclamation.png',
+          subtitle: 'مراقبة حالة معالجة شكايتك',
+          image: '/images/guide/mes_reclamations_ar.png',
           intro: 'بمجرّد إرسالها، تتبع شكايتك مسار معالجة شفاف بالكامل حتى حل المشكلة بنجاح.',
           steps: [
             {
-              title: 'الحالة: مرسلة',
+              title: 'الحالة: قيد الانتظار',
               text: 'تم تسجيل بلاغك بنجاح وفي انتظار التحقق والموافقة من قبل مشرفي الجماعة الترابية.',
-              highlight: { top: '15%', left: '10%', width: '80%', height: '10%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
+              highlight: { top: '25%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Statut initial de dépôt', tooltipAr: 'الحالة الأولية للإرسال' }
             },
             {
-              title: 'الحالة: معينة / قيد المعالجة',
+              title: 'الحالة: مقبولة',
               text: 'وافقت السلطة المحلية على البلاغ وأحالته إلى الفريق التقني أو المندوبية الإقليمية المختصة.',
-              highlight: { top: '30%', left: '10%', width: '80%', height: '20%', tooltipFr: 'Traitement ou affectation en cours', tooltipAr: 'شكاية مقبولة وقيد الإنجاز' }
+              highlight: { top: '45%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation acceptée', tooltipAr: 'شكاية مقبولة' }
             },
             {
-              title: 'المراسلة المدمجة',
-              text: 'يمكنك إضافة تعليقات جديدة على شكايتك لإضافة تفاصيل، وقراءة الرسائل والتوضيحات الرسمية من الموظف المسؤول.',
-              highlight: { top: '55%', left: '10%', width: '80%', height: '35%', tooltipFr: 'Messagerie de suivi avec l\'agent', tooltipAr: 'تواصل مباشر بالتعليقات مع المسؤول' }
-            },
-            {
-              title: 'الحالة: تم الحل',
-              text: 'عند حل المشكلة، تنشر السلطة صورة توضح النتيجة. ستتلقى بريداً إلكترونياً تلقائياً وإشعاراً على المنصة.',
-              highlight: { top: '5%', left: '80%', width: '15%', height: '6%', tooltipFr: 'Résolution confirmée par photo', tooltipAr: 'تأكيد الحل بصور ميدانية' }
+              title: 'الحالة: مرفوضة',
+              text: 'رفضت السلطة البلاغ. يمكنك الإطلاع على سبب الرفض الدقيق (تكرار، معلومات خاطئة، إلخ).',
+              highlight: { top: '65%', left: '10%', width: '80%', height: '15%', tooltipFr: 'Réclamation rejetée', tooltipAr: 'شكاية مرفوضة' }
             }
           ],
           alerts: [
             {
               type: 'info',
-              text: 'إذا رأيت أن المشكلة لم تحل بالشكل الصحيح، يمكنك الضغط على زر "إعادة فتح الشكاية" خلال 3 أيام لتقديم اعتراض مبرر.'
+              text: 'إذا رأيت أن المشكلة لم تحل بالشكل الصحيح، يمكنك الضغط على زر "إعادة فتح الشكاية" للاعتراض.'
             }
           ]
         },

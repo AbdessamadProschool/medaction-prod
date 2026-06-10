@@ -789,9 +789,13 @@ const authMiddleware = withAuth(
     
     if (e2eBypass) {
         // Skip all security and auth checks for E2E tests
-        return stripped
-            ? NextResponse.next({ request: { headers: strippedHeaders } })
-            : NextResponse.next();
+        if (isApi) {
+            return stripped
+                ? NextResponse.next({ request: { headers: strippedHeaders } })
+                : NextResponse.next();
+        } else {
+            return handleI18nRouting(req);
+        }
     }
     
     // ─────────────────────────────────────────────────────────────────

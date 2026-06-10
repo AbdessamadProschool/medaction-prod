@@ -11,12 +11,13 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginInput } from '@/lib/validations/auth';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { z } from 'zod';
 import { ClipboardList, Landmark, CalendarDays } from 'lucide-react';
 
 function LoginForm() {
   const t = useTranslations('auth');
+  const locale = useLocale();
   const tErrors = useTranslations('errors');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -58,31 +59,19 @@ function LoginForm() {
       // Redirection selon le rôle
       if (targetUrl === '/') {
         switch (role) {
-          case 'GOUVERNEUR':
-            targetUrl = '/gouverneur';
-            break;
-          case 'DELEGATION':
-            targetUrl = '/delegation';
-            break;
-          case 'AUTORITE_LOCALE':
-            targetUrl = '/autorite';
-            break;
-          case 'COORDINATEUR_ACTIVITES':
-            targetUrl = '/coordinateur';
-            break;
-          case 'ADMIN':
-          case 'SUPER_ADMIN':
-            targetUrl = '/admin';
-            break;
-          default:
-            targetUrl = '/';
+          case 'GOUVERNEUR': targetUrl = '/gouverneur'; break;
+          case 'DELEGATION': targetUrl = '/delegation'; break;
+          case 'AUTORITE_LOCALE': targetUrl = '/autorite'; break;
+          case 'COORDINATEUR_ACTIVITES': targetUrl = '/coordinateur'; break;
+          case 'ADMIN': case 'SUPER_ADMIN': targetUrl = '/admin'; break;
+          default: targetUrl = '/';
         }
-        router.replace(targetUrl);
+        window.location.href = `/${locale}${targetUrl === '/' ? '' : targetUrl}`;
       } else {
-        window.location.replace(targetUrl);
+        window.location.replace(`/${locale}${targetUrl === '/' ? '' : targetUrl}`);
       }
     }
-  }, [status, session, router, callbackUrl]);
+  }, [status, session, locale, callbackUrl]);
 
   // Afficher un loader pendant la vérification de session
   if (status === 'loading') {
@@ -207,10 +196,9 @@ function LoginForm() {
             default:
               targetUrl = '/';
           }
-          router.push(targetUrl);
-          router.refresh();
+          window.location.href = `/${locale}${targetUrl === '/' ? '' : targetUrl}`;
         } else {
-          window.location.href = targetUrl;
+          window.location.href = `/${locale}${targetUrl === '/' ? '' : targetUrl}`;
         }
       }
     } catch (e) {

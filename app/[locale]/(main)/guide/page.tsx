@@ -398,7 +398,7 @@ export default function GuidePage() {
                   {activeStepImage && (
                     <div 
                       ref={screenshotContainerRef}
-                      className="relative mb-10 rounded-2xl overflow-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 select-none"
+                      className="relative mb-10 rounded-2xl overflow-y-auto overflow-x-hidden shadow-md border border-gray-200/60 max-w-3xl mx-auto aspect-[16/10] bg-slate-900 select-none custom-scrollbar"
                     >
                       <div className="relative w-full font-sans" style={{ height: 'auto' }}>
                         <img

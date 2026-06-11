@@ -639,6 +639,22 @@ export const guideData: Record<string, GuideRole[]> = {
       description: 'اكتشف كيف يمكنك استكشاف الإقليم، استشارة المرافق العامة، والمشاركة في الفعاليات.',
       sections: [
         {
+          id: 'guide_accueil',
+          title: 'دليل المستخدم',
+          subtitle: 'كيفية استخدام هذا الدليل التفاعلي',
+          image: '/images/guide/citoyen/guide_accueil_ar.png',
+          intro: 'تم تصميم هذا الدليل التفاعلي لمساعدتك على فهم واستخدام كافة ميزات المنصة خطوة بخطوة بطريقة سهلة ومبسطة.',
+          steps: [
+            {
+              title: 'تصفح الدليل',
+              text: 'استخدم القائمة الجانبية للتنقل بين الأقسام المختلفة، واستفد من أزرار "الانتقال إلى الصفحة" للوصول المباشر إلى الخدمات.',
+              image: '/images/guide/citoyen/guide_accueil_ar.png',
+              link: '/ar/guide',
+              highlight: { top: '10%', left: '10%', width: '80%', height: '80%', tooltipFr: 'Navigation du guide', tooltipAr: 'تصفح الدليل' }
+            }
+          ]
+        },
+        {
           id: 'intro_navigation',
           title: 'الرئيسية والتنقل العام',
           subtitle: 'مرحباً بك في البوابة الرسمية لمديونة',
@@ -906,6 +922,22 @@ export const guideData: Record<string, GuideRole[]> = {
       title: 'مواطن (زائر ومقيم)',
       description: 'اكتشف كيف يمكنك استكشاف الإقليم، استشارة المرافق العامة، تقديم الشكايات، والمشاركة في الفعاليات.',
       sections: [
+        {
+          id: 'guide_accueil',
+          title: 'دليل المستخدم',
+          subtitle: 'كيفية استخدام هذا الدليل التفاعلي',
+          image: '/images/guide/citoyen/guide_accueil_ar.png',
+          intro: 'تم تصميم هذا الدليل التفاعلي لمساعدتك على فهم واستخدام كافة ميزات المنصة خطوة بخطوة بطريقة سهلة ومبسطة.',
+          steps: [
+            {
+              title: 'تصفح الدليل',
+              text: 'استخدم القائمة الجانبية للتنقل بين الأقسام المختلفة، واستفد من أزرار "الانتقال إلى الصفحة" للوصول المباشر إلى الخدمات.',
+              image: '/images/guide/citoyen/guide_accueil_ar.png',
+              link: '/ar/guide',
+              highlight: { top: '10%', left: '10%', width: '80%', height: '80%', tooltipFr: 'Navigation du guide', tooltipAr: 'تصفح الدليل' }
+            }
+          ]
+        },
         {
           id: 'intro_navigation',
           title: 'الرئيسية والتنقل العام',

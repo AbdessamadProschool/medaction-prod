@@ -98,7 +98,7 @@ async function main() {
     try {
       await page.waitForTimeout(2000);
       await page.waitForSelector('input[type="email"]', { state: 'visible', timeout: 30000 });
-      await page.fill('input[type="email"]', 'citoyen_test2@mediouna.ma'); // Replace with your standard test citoyen email
+      await page.fill('input[type="email"]', 'citoyen_test@mediouna.ma'); // The correct test citoyen email
       await page.fill('input[type="password"]', 'Password123!');
       
       const submitBtnSelector = locale === 'ar' ? 'button:has-text("الدخول للبوابة")' : 'button:has-text("Se connecter")';

@@ -501,6 +501,18 @@ export default function GuidePage() {
                                 <p className="text-sm text-slate-600 font-semibold leading-relaxed text-justify">
                                   {step.text}
                                 </p>
+                                {step.link && (
+                                  <div className="mt-3">
+                                    <Link href={step.link} className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                                      isActive 
+                                        ? 'bg-[#0a3b68] text-white shadow-md hover:bg-[#072a4c]' 
+                                        : 'bg-[#0a3b68]/10 text-[#0a3b68] hover:bg-[#0a3b68] hover:text-white'
+                                    }`}>
+                                      {isRtl ? 'الانتقال إلى الصفحة' : 'Accéder à la page'}
+                                      <ExternalLink size={14} />
+                                    </Link>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           );

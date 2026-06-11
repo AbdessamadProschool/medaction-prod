@@ -649,7 +649,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'تصفح الدليل',
               text: 'استخدم القائمة الجانبية للتنقل بين الأقسام المختلفة، واستفد من أزرار "الانتقال إلى الصفحة" للوصول المباشر إلى الخدمات.',
               image: '/images/guide/citoyen/guide_accueil_ar.png',
-              link: '/ar/guide',
+              link: '/guide',
               highlight: { top: '10%', left: '10%', width: '80%', height: '80%', tooltipFr: 'Navigation du guide', tooltipAr: 'تصفح الدليل' }
             }
           ]
@@ -689,7 +689,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'الأحداث الأخيرة',
               text: 'ابق على اطلاع بآخر الفعاليات والأنشطة القادمة في الإقليم مع إمكانية التصفح السريع.',
               image: '/images/guide/citoyen/derniers_evenements_ar.png',
-              link: '/ar/events',
+              link: '/events',
               highlight: { top: '10%', left: '5%', width: '90%', height: '80%', tooltipFr: 'Derniers événements', tooltipAr: 'الأحداث الأخيرة' }
             },
             {
@@ -702,7 +702,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'آخر الأخبار',
               text: 'تصفح أحدث الأخبار والإعلانات الهامة الخاصة بالإقليم لتكون دائماً في قلب الحدث.',
               image: '/images/guide/citoyen/dernieres_actualites_ar.png',
-              link: '/ar/news',
+              link: '/news',
               highlight: { top: '20%', left: '5%', width: '90%', height: '70%', tooltipFr: 'Dernières actualités', tooltipAr: 'آخر الأخبار' }
             },
             {
@@ -719,34 +719,34 @@ export const guideData: Record<string, GuideRole[]> = {
           title: 'إنشاء حساب وتسجيل الدخول',
           subtitle: 'انضم لمجتمعنا واستفد من جميع الخدمات',
           image: '/images/guide/citoyen/register_step1_ar.png',
-          intro: 'بإنشاء حساب على البوابة، ستتمكن من تقديم الشكايات، المشاركة في صندوق الأفكار، وتخصيص إشعاراتك.',
+          intro: 'بإنشاء حساب على البوابة، ستتمكن من تقديم الشكايات، المشاركة in صندوق الأفكار، وتخصيص إشعاراتك.',
           steps: [
             {
               title: 'الهوية (الخطوة 1)',
               text: 'قم بإدخال معلوماتك الشخصية كالاسم العائلي والشخصي للبدء في إنشاء الحساب.',
               image: '/images/guide/citoyen/register_step1_ar.png',
-              link: '/ar/register',
+              link: '/register',
               highlight: { top: '25%', left: '10%', width: '30%', height: '45%', tooltipFr: 'Identité', tooltipAr: 'الهوية' }
             },
             {
               title: 'التواصل (الخطوة 2)',
               text: 'أدخل بريدك الإلكتروني ورقم هاتفك (اختياري) لتتمكن الإدارة من التواصل معك.',
               image: '/images/guide/citoyen/register_step2_ar.png',
-              link: '/ar/register',
+              link: '/register',
               highlight: { top: '25%', left: '10%', width: '30%', height: '45%', tooltipFr: 'Contact', tooltipAr: 'التواصل' }
             },
             {
               title: 'الأمان (الخطوة 3)',
               text: 'قم بتعيين كلمة مرور آمنة لحماية حسابك وتأكيدها لإتمام التسجيل.',
               image: '/images/guide/citoyen/register_step3_ar.png',
-              link: '/ar/register',
+              link: '/register',
               highlight: { top: '25%', left: '10%', width: '30%', height: '45%', tooltipFr: 'Sécurité', tooltipAr: 'الأمان' }
             },
             {
               title: 'تسجيل الدخول',
               text: 'إذا كان لديك حساب بالفعل، يمكنك تسجيل الدخول للوصول إلى فضائك الشخصي.',
               image: '/images/guide/citoyen/login_ar.png',
-              link: '/ar/login',
+              link: '/login',
               highlight: { top: '30%', left: '30%', width: '40%', height: '40%', tooltipFr: 'Connexion', tooltipAr: 'تسجيل الدخول' }
             }
           ]
@@ -762,21 +762,21 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'بيان إمكانية الوصول',
               text: 'نعمل باستمرار على تحسين تجربة المستخدم للجميع، اقرأ بيان إمكانية الوصول لمعرفة الميزات المتوفرة.',
               image: '/images/guide/citoyen/accessibilite_ar.png',
-              link: '/ar/accessibilite',
+              link: '/accessibilite',
               highlight: { top: '20%', left: '20%', width: '60%', height: '60%', tooltipFr: 'Accessibilité', tooltipAr: 'إمكانية الوصول' }
             },
             {
               title: 'سياسة الخصوصية',
               text: 'اطلع على كيفية جمع ومعالجة البوابة لبياناتك الشخصية لضمان أقصى درجات الحماية.',
               image: '/images/guide/citoyen/politique_confidentialite_ar.png',
-              link: '/ar/politique-confidentialite',
+              link: '/politique-confidentialite',
               highlight: { top: '20%', left: '20%', width: '60%', height: '60%', tooltipFr: 'Politique de confidentialité', tooltipAr: 'سياسة الخصوصية' }
             },
             {
               title: 'شروط الاستخدام',
               text: 'راجع الشروط والأحكام العامة لاستخدام بوابة مديونة.',
               image: '/images/guide/citoyen/conditions_utilisation_ar.png',
-              link: '/ar/conditions-utilisation',
+              link: '/conditions-utilisation',
               highlight: { top: '20%', left: '20%', width: '60%', height: '60%', tooltipFr: 'Conditions d\'utilisation', tooltipAr: 'شروط الاستخدام' }
             }
           ]
@@ -792,7 +792,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'تواصل معنا',
               text: 'استخدم نموذج التواصل أو معلومات الاتصال المتاحة لإرسال استفسارك مباشرة إلى الإدارة.',
               image: '/images/guide/citoyen/contact_ar.png',
-              link: '/ar/contact',
+              link: '/contact',
               highlight: { top: '20%', left: '10%', width: '80%', height: '60%', tooltipFr: 'Nous contacter', tooltipAr: 'تواصل معنا' }
             }
           ]
@@ -933,7 +933,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'تصفح الدليل',
               text: 'استخدم القائمة الجانبية للتنقل بين الأقسام المختلفة، واستفد من أزرار "الانتقال إلى الصفحة" للوصول المباشر إلى الخدمات.',
               image: '/images/guide/citoyen/guide_accueil_ar.png',
-              link: '/ar/guide',
+              link: '/guide',
               highlight: { top: '10%', left: '10%', width: '80%', height: '80%', tooltipFr: 'Navigation du guide', tooltipAr: 'تصفح الدليل' }
             }
           ]
@@ -973,7 +973,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'الأحداث الأخيرة',
               text: 'ابق على اطلاع بآخر الفعاليات والأنشطة القادمة في الإقليم مع إمكانية التصفح السريع.',
               image: '/images/guide/citoyen/derniers_evenements_ar.png',
-              link: '/ar/events',
+              link: '/events',
               highlight: { top: '10%', left: '5%', width: '90%', height: '80%', tooltipFr: 'Derniers événements', tooltipAr: 'الأحداث الأخيرة' }
             },
             {
@@ -986,7 +986,7 @@ export const guideData: Record<string, GuideRole[]> = {
               title: 'آخر الأخبار',
               text: 'تصفح أحدث الأخبار والإعلانات الهامة الخاصة بالإقليم لتكون دائماً في قلب الحدث.',
               image: '/images/guide/citoyen/dernieres_actualites_ar.png',
-              link: '/ar/news',
+              link: '/news',
               highlight: { top: '20%', left: '5%', width: '90%', height: '70%', tooltipFr: 'Dernières actualités', tooltipAr: 'آخر الأخبار' }
             },
             {

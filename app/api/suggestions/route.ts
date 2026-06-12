@@ -251,15 +251,38 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         data: admins.map((admin) => ({
           userId: admin.id,
           type: 'NOUVELLE_SUGGESTION',
-          titre: 'Nouvelle suggestion reçue',
-          message: `${session.user.prenom} ${session.user.nom} a soumis une suggestion : "${titre.substring(0, 50)}${titre.length > 50 ? '...' : ''}"`,
+          titre: 'Nouvelle suggestion',
+          message: `Une nouvelle suggestion "${suggestion.titre}" a été soumise.`,
           lien: `/admin/suggestions/${suggestion.id}`,
         })),
       });
     }
-  } catch (notifError) {
-    console.warn('Erreur notification suggestion:', notifError);
+  } catch (error) {
+    console.warn('Erreur lors de la notification des admins:', error);
   }
 
-  return successResponse(suggestion, 'Suggestion soumise avec succès', 201);
+  await prisma.activityLog.create({
+    data: {
+      action: 'Création d\'une suggestion',
+      entity: 'Suggestions',
+      entityId: suggestion.id.toString(),
+      details: `L'utilisateur a soumis la suggestion "${suggestion.titre}"`,
+      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+      userAgent: request.headers.get('user-agent') || 'Unknown',
+      userId: userId
+    }
+  });
+
+  // Use dynamic import for auditLog
+  const { auditLog } = await import("@/lib/logger");
+  auditLog('CREATE_SUGGESTION', 'Suggestion', suggestion.id, userId, {
+    title: suggestion.titre,
+    categorie: suggestion.categorie
+  });
+
+  return NextResponse.json({
+    success: true,
+    message: 'Suggestion soumise avec succès.',
+    data: suggestion,
+  }, { status: 201 });
 });

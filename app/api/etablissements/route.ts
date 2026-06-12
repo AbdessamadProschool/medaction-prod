@@ -228,6 +228,18 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     }
   });
 
+  await prisma.activityLog.create({
+    data: {
+      action: 'Création d\'un établissement',
+      entity: 'Établissements',
+      entityId: etablissement.id.toString(),
+      details: `L'utilisateur a ajouté l'établissement "${etablissement.nom}" (${etablissement.code})`,
+      ipAddress: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1',
+      userAgent: req.headers.get('user-agent') || 'Unknown',
+      userId: parseInt(session.user.id)
+    }
+  });
+
   return NextResponse.json({
     message: "Établissement créé avec succès",
     data: etablissement

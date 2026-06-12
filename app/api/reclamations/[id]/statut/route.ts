@@ -143,6 +143,18 @@ export async function PATCH(
           effectuePar: parseInt(session.user.id),
         }
       });
+
+      await prisma.activityLog.create({
+        data: {
+          action: action === 'ACCEPTATION' ? 'Validation réclamation' : action === 'REJET' ? 'Rejet réclamation' : 'Affectation réclamation',
+          entity: 'Réclamations',
+          entityId: reclamation.id.toString(),
+          details: `L'utilisateur a effectué l'action "${action}" sur la réclamation "${reclamation.titre}"`,
+          ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+          userAgent: request.headers.get('user-agent') || 'Unknown',
+          userId: parseInt(session.user.id)
+        }
+      });
     }
 
     // Envoyer les notifications

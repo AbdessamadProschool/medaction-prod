@@ -18,9 +18,11 @@ import {
   X,
   KeyRound,
   Users,
+  History,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PermissionGuard } from '@/hooks/use-permission';
 import EmptyState from '@/components/ui/EmptyState';
@@ -466,6 +468,13 @@ export default function UsersPage() {
                                   : <UserCheck size={16} className="text-gov-green-dark" />}
                                 {user.isActive ? t('actions.deactivate') : t('actions.activate')}
                               </button>
+                              <Link
+                                href={`/admin/logs?userId=${user.id}`}
+                                className="w-full px-5 py-3 text-start text-xs font-black uppercase tracking-widest text-foreground hover:bg-[hsl(var(--gov-blue))] hover:text-white flex items-center gap-3 transition-colors"
+                              >
+                                <History size={16} />
+                                {t('actions.view_timeline')}
+                              </Link>
                               <div className="h-px bg-border my-2 mx-2 opacity-50" />
                               <button
                                 onClick={() => handleDelete(user)}

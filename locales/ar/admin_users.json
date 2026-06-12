@@ -58,6 +58,7 @@
         "reset_password": "إعادة تعيين كلمة المرور",
         "deactivate": "إيقاف الوصول",
         "activate": "استعادة الوصول",
+        "view_timeline": "عرض المخطط الزمني",
         "delete": "حذف الحساب"
       },
       "messages": {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Activity,
   Server,
@@ -174,6 +174,35 @@ export default function AdminLogsPage() {
     resourceType: '',
     success: '',
   });
+  
+  const searchParams = useSearchParams();
+  const queryUserId = searchParams.get('userId');
+  const [selectedUserFilter, setSelectedUserFilter] = useState<{ prenom: string; nom: string } | null>(null);
+
+  useEffect(() => {
+    if (queryUserId) {
+      setFilters(prev => ({ ...prev, userId: queryUserId }));
+      setViewMode('timeline');
+      setActiveTab('activity');
+    }
+  }, [queryUserId]);
+
+  useEffect(() => {
+    if (filters.userId) {
+      fetch(`/api/users/${filters.userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.success && data.data) {
+            setSelectedUserFilter(data.data);
+          } else if (data && data.prenom) {
+            setSelectedUserFilter(data);
+          }
+        })
+        .catch(() => setSelectedUserFilter(null));
+    } else {
+      setSelectedUserFilter(null);
+    }
+  }, [filters.userId]);
   
   const resetFilters = () => {
     setFilters({
@@ -519,6 +548,31 @@ export default function AdminLogsPage() {
           </div>
         </div>
 
+        {selectedUserFilter && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 flex items-center justify-between shadow-sm dark:bg-blue-950/20 dark:border-blue-900 dark:text-blue-400">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              <span className="text-sm font-semibold">
+                {locale === 'ar' 
+                  ? `تصفية حسب المستخدم: ${selectedUserFilter.prenom} ${selectedUserFilter.nom}`
+                  : `Filtré par l'utilisateur : ${selectedUserFilter.prenom} ${selectedUserFilter.nom}`}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setFilters(prev => ({ ...prev, userId: '' }));
+                const url = new URL(window.location.href);
+                url.searchParams.delete('userId');
+                window.history.pushState({}, '', url.toString());
+              }}
+              className="text-xs bg-blue-100 hover:bg-blue-200 dark:bg-blue-950 dark:hover:bg-blue-900 text-blue-800 dark:text-blue-400 font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 animate-fade-in"
+            >
+              <X size={14} />
+              {locale === 'ar' ? 'إزالة التصفية' : 'Effacer'}
+            </button>
+          </div>
+        )}
+
         {/* Onglets */}
         <div className="flex gap-2 mb-6">
           <button
@@ -770,11 +824,33 @@ export default function AdminLogsPage() {
                           <td className="px-4 py-3">
                             {log.user ? (
                               <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                                <button
+                                  onClick={() => {
+                                    setFilters(prev => ({ ...prev, userId: String(log.user?.id || '') }));
+                                    setViewMode('timeline');
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('userId', String(log.user?.id || ''));
+                                    window.history.pushState({}, '', url.toString());
+                                  }}
+                                  className="w-7 h-7 rounded-none bg-gov-blue hover:bg-gov-blue-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0 transition-colors"
+                                  title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
+                                >
                                   {log.user.prenom?.[0]}{log.user.nom?.[0]}
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="text-xs font-bold text-foreground truncate">{log.user.prenom} {log.user.nom}</p>
+                                </button>
+                                <div className="min-w-0 text-start">
+                                  <button
+                                    onClick={() => {
+                                      setFilters(prev => ({ ...prev, userId: String(log.user?.id || '') }));
+                                      setViewMode('timeline');
+                                      const url = new URL(window.location.href);
+                                      url.searchParams.set('userId', String(log.user?.id || ''));
+                                      window.history.pushState({}, '', url.toString());
+                                    }}
+                                    className="text-xs font-bold text-foreground hover:text-blue-600 hover:underline text-start truncate block"
+                                    title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
+                                  >
+                                    {log.user.prenom} {log.user.nom}
+                                  </button>
                                   <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
                                 </div>
                               </div>
@@ -832,7 +908,22 @@ export default function AdminLogsPage() {
                           <div className="flex-1 min-w-0 bg-muted/20 dark:bg-muted/5 rounded-2xl p-5 border border-border transition-all hover:bg-card hover:shadow-md hover:border-border">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                               <h3 className="text-base font-black text-foreground flex items-center gap-2 flex-wrap">
-                                <span className="font-bold">{log.user ? `${log.user.prenom} ${log.user.nom}` : t('system_user')}</span>
+                                {log.user ? (
+                                  <button
+                                    onClick={() => {
+                                      setFilters(prev => ({ ...prev, userId: String(log.user?.id || '') }));
+                                      const url = new URL(window.location.href);
+                                      url.searchParams.set('userId', String(log.user?.id || ''));
+                                      window.history.pushState({}, '', url.toString());
+                                    }}
+                                    className="font-bold text-foreground hover:text-blue-600 hover:underline text-start transition-colors"
+                                    title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
+                                  >
+                                    {log.user.prenom} {log.user.nom}
+                                  </button>
+                                ) : (
+                                  <span className="font-bold text-muted-foreground">{t('system_user')}</span>
+                                )}
                                 <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
                                   {actionInfo.label}
                                 </span>
@@ -988,11 +1079,42 @@ export default function AdminLogsPage() {
                           <td className="px-4 py-3">
                             {log.user ? (
                               <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                                <button
+                                  onClick={() => {
+                                    if (log.userId) {
+                                      setFilters(prev => ({ ...prev, userId: String(log.userId) }));
+                                      setViewMode('timeline');
+                                      setActiveTab('activity');
+                                      const url = new URL(window.location.href);
+                                      url.searchParams.set('userId', String(log.userId));
+                                      window.history.pushState({}, '', url.toString());
+                                    }
+                                  }}
+                                  disabled={!log.userId}
+                                  className={`w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0 transition-colors ${log.userId ? 'hover:bg-gov-blue-dark' : 'cursor-default'}`}
+                                  title={log.userId ? (locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline') : undefined}
+                                >
                                   {log.user.name?.[0]}
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="text-xs font-bold text-foreground truncate">{log.user.name}</p>
+                                </button>
+                                <div className="min-w-0 text-start">
+                                  {log.userId ? (
+                                    <button
+                                      onClick={() => {
+                                        setFilters(prev => ({ ...prev, userId: String(log.userId) }));
+                                        setViewMode('timeline');
+                                        setActiveTab('activity');
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.set('userId', String(log.userId));
+                                        window.history.pushState({}, '', url.toString());
+                                      }}
+                                      className="text-xs font-bold text-foreground hover:text-blue-600 hover:underline text-start truncate block"
+                                      title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
+                                    >
+                                      {log.user.name}
+                                    </button>
+                                  ) : (
+                                    <p className="text-xs font-bold text-foreground truncate">{log.user.name}</p>
+                                  )}
                                   <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
                                 </div>
                               </div>
@@ -1046,7 +1168,28 @@ export default function AdminLogsPage() {
                           <div className="flex-1 min-w-0 bg-muted/20 dark:bg-muted/5 rounded-2xl p-5 border border-border transition-all hover:bg-card hover:shadow-md hover:border-border">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                               <h3 className="text-base font-black text-foreground flex items-center gap-2 flex-wrap">
-                                <span className="font-bold">{log.user ? log.user.name : t('system_user')}</span>
+                                {log.user ? (
+                                  log.userId ? (
+                                    <button
+                                      onClick={() => {
+                                        setFilters(prev => ({ ...prev, userId: String(log.userId) }));
+                                        setViewMode('timeline');
+                                        setActiveTab('activity');
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.set('userId', String(log.userId));
+                                        window.history.pushState({}, '', url.toString());
+                                      }}
+                                      className="font-bold text-foreground hover:text-blue-600 hover:underline text-start transition-colors"
+                                      title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
+                                    >
+                                      {log.user.name}
+                                    </button>
+                                  ) : (
+                                    <span className="font-bold">{log.user.name}</span>
+                                  )
+                                ) : (
+                                  <span className="font-bold text-muted-foreground">{t('system_user')}</span>
+                                )}
                                 <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
                                   {actionInfo.label}
                                 </span>

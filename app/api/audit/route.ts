@@ -17,11 +17,16 @@ export async function GET(request: NextRequest) {
     const success = searchParams.get('success');
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
+    const userId = searchParams.get('userId');
 
     const skip = (page - 1) * limit;
 
     // Construction du filtre
     const where: any = {};
+
+    if (userId) {
+      where.userId = safeParseInt(userId, 0);
+    }
 
     if (search) {
       where.OR = [

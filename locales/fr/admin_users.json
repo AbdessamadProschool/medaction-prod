@@ -58,6 +58,7 @@
         "reset_password": "Réinitialiser le mot de passe",
         "deactivate": "Suspendre l'accès",
         "activate": "Rétablir l'accès",
+        "view_timeline": "Voir la timeline",
         "delete": "Supprimer le compte"
       },
       "messages": {

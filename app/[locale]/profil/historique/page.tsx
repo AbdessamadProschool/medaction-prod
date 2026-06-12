@@ -92,68 +92,107 @@ export default function UserHistoriquePage() {
     <div className={`min-h-screen bg-gray-50 py-8 px-4 ${locale === 'ar' ? 'font-cairo' : ''}`} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <Link href="/profil" className={`inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-            <ArrowLeft size={18} className={locale === 'ar' ? 'rotate-180' : ''} />
-            {t('security_page.back_profile', { fallback: 'Retour au profil' })}
-          </Link>
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gov-blue text-white rounded-none shadow-sm">
-              <History className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{t('system.my_history', { fallback: 'Mon Historique' })}</h1>
-              <p className="text-gray-500">{t('audit_page.total_entries', { count: total, fallback: `${total} actions enregistrées` })}</p>
-            </div>
+        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+              <Link href="/profil" className={`inline-flex items-center gap-2 text-gray-500 hover:text-gov-blue font-medium mb-6 transition-colors ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                <ArrowLeft size={18} className={locale === 'ar' ? 'rotate-180' : ''} />
+                {t('security_page.back_profile', { fallback: 'Retour au profil' })}
+              </Link>
+              <div className="flex items-center gap-4">
+                <div className="p-4 bg-gov-blue text-white rounded-2xl shadow-lg shadow-blue-900/20">
+                  <History className="w-8 h-8" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-black text-gray-900 tracking-tight">{t('system.my_history', { fallback: 'Mon Historique' })}</h1>
+                  <p className="text-gray-500 mt-1 font-medium">{t('audit_page.total_entries', { count: total, fallback: `${total} actions enregistrées` })}</p>
+                </div>
+              </div>
+          </div>
+          <div className="bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-sm flex items-center gap-2">
+             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+             <span className="text-sm font-bold text-gray-700">Traçabilité Active</span>
           </div>
         </div>
 
         {/* Historique Timeline */}
-        <div className="bg-white rounded-none shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative">
           {logs.length === 0 ? (
-            <div className="text-center py-16">
-              <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 font-medium">{t('audit_page.no_logs', { fallback: 'Aucun historique trouvé' })}</p>
+            <div className="text-center py-20 px-6">
+              <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <History className="w-10 h-10 text-gray-300" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Aucune activité récente</h3>
+              <p className="text-gray-500 font-medium max-w-sm mx-auto">{t('audit_page.no_logs', { fallback: 'Votre historique de navigation et d\'actions apparaîtra ici de manière chronologique.' })}</p>
             </div>
           ) : (
-            <div className="p-0">
-              <ul className="divide-y divide-gray-100">
-                {logs.map((log) => {
+            <div className="p-8 relative">
+              {/* Ligne verticale de la timeline */}
+              <div className={`absolute top-8 bottom-8 w-0.5 bg-gray-100 ${locale === 'ar' ? 'right-[51px]' : 'left-[51px]'}`}></div>
+              
+              <ul className="space-y-8 relative">
+                {logs.map((log, index) => {
                   const style = getActionStyle(log.action);
                   const Icon = style.icon;
                   return (
-                    <li key={log.id} className="p-6 hover:bg-gray-50/50 transition-colors">
-                      <div className="flex items-start gap-4">
-                        <div className={`p-2 rounded-none border ${style.color} shrink-0 mt-1`}>
-                          <Icon size={18} />
+                    <li key={log.id} className="relative flex items-start gap-6 group">
+                      {/* Icône sur la timeline */}
+                      <div className={`relative z-10 p-2.5 rounded-full border-4 border-white shrink-0 shadow-sm transition-transform group-hover:scale-110 ${style.color.replace('border-', 'bg-').split(' ')[0]} ${style.color.split(' ')[1]}`}>
+                        <Icon size={18} className="text-current" />
+                      </div>
+                      
+                      {/* Carte de contenu */}
+                      <div className="flex-1 min-w-0 bg-gray-50 rounded-2xl p-5 border border-gray-100 transition-all hover:bg-white hover:shadow-md hover:border-gray-200">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                          <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
+                            {t(`audit_page.actions.${log.action}`, { fallback: log.action })}
+                            {!log.success && (
+                               <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] uppercase tracking-widest rounded-full">Échec</span>
+                            )}
+                          </h3>
+                          <span className="text-xs text-gray-500 font-mono font-medium flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
+                            <Clock size={12} className="text-gray-400" />
+                            {formatDate(log.createdAt)}
+                          </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-4 mb-1">
-                            <h3 className="text-sm font-bold text-gray-900">
-                              {t(`audit_page.actions.${log.action}`, { fallback: log.action })}
-                            </h3>
-                            <span className="text-xs text-gray-500 font-mono whitespace-nowrap flex items-center gap-1.5">
-                              <Clock size={12} />
-                              {formatDate(log.createdAt)}
+                        
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-sm font-bold text-gov-blue">
+                              {t(`audit_page.entities.${log.resourceType}`, { fallback: log.resourceType || 'Système' })}
                             </span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">
-                            {t(`audit_page.entities.${log.resourceType}`, { fallback: log.resourceType || 'Système' })} 
-                            {log.resourceId && <span className="text-gray-400 font-mono ms-1">#{log.resourceId}</span>}
-                          </p>
-                          {log.details && (
-                            <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded border border-gray-100 font-mono mt-2 overflow-x-auto">
-                               {(() => {
-                                 try {
-                                     const parsed = JSON.parse(log.details);
-                                     return JSON.stringify(parsed, null, 2);
-                                 } catch {
-                                     return log.details;
-                                 }
-                               })()}
-                            </div>
-                          )}
+                            {log.resourceId && (
+                                <span className="text-xs font-mono bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-bold">
+                                  #{log.resourceId}
+                                </span>
+                            )}
                         </div>
+
+                        {log.details && (
+                          <div className="mt-4 border-t border-gray-200 pt-3">
+                              <p className="text-[10px] uppercase tracking-widest text-gray-400 font-black mb-2">Détails Techniques</p>
+                              <div className="text-xs text-gray-600 bg-gray-100/50 p-3 rounded-xl border border-gray-200 font-mono overflow-x-auto">
+                                 {(() => {
+                                   try {
+                                       const parsed = JSON.parse(log.details);
+                                       return (
+                                          <pre className="whitespace-pre-wrap">
+                                              {JSON.stringify(parsed, null, 2)}
+                                          </pre>
+                                       );
+                                   } catch {
+                                       return log.details;
+                                   }
+                                 })()}
+                              </div>
+                          </div>
+                        )}
+                        
+                        {/* Affichage IP (si disponible) */}
+                        {log.ipAddress && (
+                            <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-400 font-mono font-medium">
+                                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                                IP: {log.ipAddress}
+                            </div>
+                        )}
                       </div>
                     </li>
                   );
@@ -164,24 +203,24 @@ export default function UserHistoriquePage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-              <span className="text-sm text-gray-500">
+            <div className="px-8 py-5 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+              <span className="text-sm font-bold text-gray-500">
                 {t('pagination.page_info', { page, total: totalPages, fallback: `Page ${page} sur ${totalPages}` })}
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="p-2 bg-white border border-gray-200 rounded text-gray-600 hover:text-gov-blue hover:border-gov-blue disabled:opacity-50"
+                  className="p-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:text-gov-blue hover:border-gov-blue hover:shadow-sm disabled:opacity-50 transition-all"
                 >
-                  <ChevronLeft size={18} className={locale === 'ar' ? 'rotate-180' : ''} />
+                  <ChevronLeft size={20} className={locale === 'ar' ? 'rotate-180' : ''} />
                 </button>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="p-2 bg-white border border-gray-200 rounded text-gray-600 hover:text-gov-blue hover:border-gov-blue disabled:opacity-50"
+                  className="p-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:text-gov-blue hover:border-gov-blue hover:shadow-sm disabled:opacity-50 transition-all"
                 >
-                  <ChevronRight size={18} className={locale === 'ar' ? 'rotate-180' : ''} />
+                  <ChevronRight size={20} className={locale === 'ar' ? 'rotate-180' : ''} />
                 </button>
               </div>
             </div>

@@ -421,7 +421,7 @@ export default function UsersPage() {
                           </div>
                         </div>
                       </GovTd>
-                      <GovTd className="text-end relative">
+                      <GovTd className={cn("text-end relative", activeDropdown === user.id ? "z-50" : "")}>
                         {/* Toujours visible sur mobile + desktop (pas de group-hover) */}
                         <div className="flex items-center justify-end gap-2">
                           <GovButton

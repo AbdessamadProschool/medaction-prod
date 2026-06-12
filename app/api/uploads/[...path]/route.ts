@@ -186,7 +186,56 @@ export async function GET(
             return new NextResponse('Forbidden', { status: 403 });
           }
         }
-      } else if (!isAdmin) {
+      }
+
+      // Ownership check for reports and bilans
+      const reportPrefixes = ['event_bilan', 'event_report', 'campaign_bilan', 'campaign_report', 'activity_report'];
+      if (reportPrefixes.includes(prefix) && isAdmin) {
+        if (['DELEGATION', 'COORDINATEUR_ACTIVITES'].includes(userRole)) {
+          try {
+            const media = await prisma.media.findFirst({
+              where: {
+                urlPublique: {
+                  endsWith: requestedPath
+                }
+              },
+              include: {
+                evenement: {
+                  select: { createdBy: true }
+                },
+                campagne: {
+                  select: { createdBy: true }
+                }
+              }
+            });
+
+            if (!media) {
+              return new NextResponse('Not Found', { status: 404 });
+            }
+
+            let isOwner = false;
+            if (prefix.startsWith('event') && media.evenement) {
+              isOwner = media.evenement.createdBy === userId;
+            } else if (prefix.startsWith('campaign') && media.campagne) {
+              isOwner = media.campagne.createdBy === userId;
+            } else {
+              isOwner = media.uploadePar === userId;
+            }
+
+            if (!isOwner) {
+              return NextResponse.json(
+                { error: 'Accès refusé', code: 'ACCESS_DENIED' },
+                { status: 403 }
+              );
+            }
+          } catch (err) {
+            console.error('[FILE-SERVE] Error in report ownership check:', err);
+            return new NextResponse('Forbidden', { status: 403 });
+          }
+        }
+      }
+
+      if (!isAdmin) {
         return NextResponse.json(
           { error: 'Accès refusé', code: 'ACCESS_DENIED' },
           { status: 403 }

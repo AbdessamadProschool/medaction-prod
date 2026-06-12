@@ -3621,18 +3621,45 @@
             "UPDATE_EVENEMENT": "Modif. Événement",
             "DELETE_EVENEMENT": "Suppr. Événement",
             "UPDATE_CAMPAGNE": "Modif. Campagne",
-            "DELETE_CAMPAGNE": "Suppr. Campagne"
+            "DELETE_CAMPAGNE": "Suppr. Campagne",
+            "CREATE_BACKUP": "Création Sauvegarde",
+            "RESTORE_BACKUP": "Restauration Sauvegarde",
+            "SYSTEM_CLEANUP": "Nettoyage Système",
+            "ASSIGN": "Assignation",
+            "UPLOAD": "Téléversement",
+            "DOWNLOAD": "Téléchargement",
+            "SEND_EMAIL": "Envoi Email",
+            "SEND_NOTIFICATION": "Envoi Notification",
+            "VIEW": "Consultation",
+            "CHANGE_ROLE": "Changement Rôle",
+            "LOGIN_FAILED": "Connexion Échouée",
+            "REGISTER": "Inscription"
         },
         "entities": {
             "User": "Utilisateur",
             "Reclamation": "Réclamation",
             "Evenement": "Événement",
+            "EVENEMENT": "Événement",
             "Actualite": "Actualité",
             "Etablissement": "Établissement",
             "RECLAMATION": "Réclamation",
             "ACTUALITE": "Actualité",
             "establishment_workflow": "Workflow d'établissement",
-            "ETABLISSEMENT": "Établissement"
+            "ETABLISSEMENT": "Établissement",
+            "System": "Système",
+            "SYSTEM": "Système",
+            "Campagne": "Campagne",
+            "CAMPAGNE": "Campagne",
+            "Activite": "Activité",
+            "ACTIVITE": "Activité",
+            "Programme": "Programme",
+            "PROGRAMME": "Programme",
+            "AUDIT_LOG": "Log d'audit",
+            "Permission": "Permission",
+            "Commune": "Commune",
+            "Province": "Province",
+            "Annexe": "Annexe",
+            "Notification": "Notification"
         },
         "action_label": "Action"
     },
@@ -5905,6 +5932,24 @@
         "UPDATE": "Mise à jour du dossier",
         "ACCEPTATION": "Acceptation de la réclamation",
         "AJOUT_MEDIA": "Ajout de pièces jointes"
+    },
+    "system": {
+        "my_history": "Mon Historique",
+        "traceability_active": "Traçabilité Active",
+        "admin_timeline": "Chronologie Administrateur",
+        "no_action": "Aucune activité"
+    },
+    "admin_timeline": {
+        "title": "Chronologie Globale",
+        "subtitle": "Registre séquentiel complet de toutes les actions utilisateurs",
+        "total": "Total des actions enregistrées",
+        "filter_user": "Filtrer par utilisateur",
+        "filter_action": "Filtrer par action",
+        "all_users": "Tous les utilisateurs",
+        "all_actions": "Toutes les actions",
+        "loading": "Chargement des journaux...",
+        "no_logs": "Aucun journal ne correspond aux filtres sélectionnés",
+        "technical_details": "Détails techniques"
     },
     "confirm_delete": "Confirmer la suppression"
 }

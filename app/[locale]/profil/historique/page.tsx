@@ -37,8 +37,33 @@ const ACTION_STYLES: Record<string, { icon: React.ElementType, color: string }> 
   'DELETE': { icon: Trash2, color: 'bg-red-100 text-red-700 border-red-200' },
   'LOGIN': { icon: ShieldAlert, color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
   'LOGOUT': { icon: ShieldAlert, color: 'bg-gray-100 text-gray-700 border-gray-200' },
-  'CLOTURE': { icon: Database, color: 'bg-slate-100 text-slate-700 border-slate-200' }
+  'CLOTURE': { icon: Database, color: 'bg-slate-100 text-slate-700 border-slate-200' },
+  'VALIDATE': { icon: ShieldAlert, color: 'bg-green-100 text-green-700 border-green-200' },
+  'REJECT': { icon: ShieldAlert, color: 'bg-orange-100 text-orange-700 border-orange-200' },
+  'ASSIGN': { icon: FileText, color: 'bg-purple-100 text-purple-700 border-purple-200' },
+  'EXPORT': { icon: FileText, color: 'bg-teal-100 text-teal-700 border-teal-200' },
 };
+
+// Known enum-style action keys that have translations
+const TRANSLATABLE_ACTIONS = new Set([
+  'CREATE','UPDATE','DELETE','LOGIN','LOGOUT','VALIDATE','REJECT',
+  'EXPORT','EXPORT_LOGS','UPDATE_PERMISSIONS','CREATE_USER','UPDATE_USER',
+  'DELETE_USER','CREATE_ESTABLISHMENT','UPDATE_ETABLISSEMENT','DELETE_ETABLISSEMENT',
+  'AFFECT_RECLAMATION','UPDATE_SETTINGS','CLOTURE','CLOTURE_EVENEMENT',
+  'CLOTURE_ACTIVITE','CLOTURE_CAMPAGNE','UPDATE_EVENEMENT','DELETE_EVENEMENT',
+  'UPDATE_CAMPAGNE','DELETE_CAMPAGNE','CREATE_BACKUP','RESTORE_BACKUP',
+  'SYSTEM_CLEANUP','ASSIGN','UPLOAD','DOWNLOAD','SEND_EMAIL','SEND_NOTIFICATION',
+  'VIEW','CHANGE_ROLE','LOGIN_FAILED','REGISTER',
+]);
+
+// Known translatable entity types
+const TRANSLATABLE_ENTITIES = new Set([
+  'User','Reclamation','Evenement','EVENEMENT','Actualite','Etablissement',
+  'RECLAMATION','ACTUALITE','establishment_workflow','ETABLISSEMENT',
+  'System','SYSTEM','Campagne','CAMPAGNE','Activite','ACTIVITE',
+  'Programme','PROGRAMME','AUDIT_LOG','Permission','Commune','Province',
+  'Annexe','Notification',
+]);
 
 export default function UserHistoriquePage() {
   const t = useTranslations();
@@ -144,7 +169,9 @@ export default function UserHistoriquePage() {
                       <div className="flex-1 min-w-0 bg-gray-50 rounded-2xl p-5 border border-gray-100 transition-all hover:bg-white hover:shadow-md hover:border-gray-200">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                           <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
-                            {t(`audit_page.actions.${log.action}`, { fallback: log.action })}
+                            {TRANSLATABLE_ACTIONS.has(log.action.toUpperCase())
+                              ? t(`audit_page.actions.${log.action.toUpperCase()}`)
+                              : log.action}
                             {!log.success && (
                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] uppercase tracking-widest rounded-full">Échec</span>
                             )}
@@ -157,7 +184,9 @@ export default function UserHistoriquePage() {
                         
                         <div className="flex items-center gap-2 mb-3">
                             <span className="text-sm font-bold text-gov-blue">
-                              {t(`audit_page.entities.${log.resourceType}`, { fallback: log.resourceType || 'Système' })}
+                              {log.resourceType && TRANSLATABLE_ENTITIES.has(log.resourceType)
+                                ? t(`audit_page.entities.${log.resourceType}`)
+                                : (log.resourceType || 'Système')}
                             </span>
                             {log.resourceId && (
                                 <span className="text-xs font-mono bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-bold">

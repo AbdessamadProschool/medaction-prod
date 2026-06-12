@@ -4286,18 +4286,45 @@
             "UPDATE_EVENEMENT": "تعديل الحدث",
             "DELETE_EVENEMENT": "حذف الحدث",
             "UPDATE_CAMPAGNE": "تعديل الحملة",
-            "DELETE_CAMPAGNE": "حذف الحملة"
+            "DELETE_CAMPAGNE": "حذف الحملة",
+            "CREATE_BACKUP": "إنشاء نسخة احتياطية",
+            "RESTORE_BACKUP": "استعادة نسخة احتياطية",
+            "SYSTEM_CLEANUP": "تنظيف النظام",
+            "ASSIGN": "إسناد",
+            "UPLOAD": "رفع ملف",
+            "DOWNLOAD": "تحميل ملف",
+            "SEND_EMAIL": "إرسال بريد إلكتروني",
+            "SEND_NOTIFICATION": "إرسال إشعار",
+            "VIEW": "عرض",
+            "CHANGE_ROLE": "تغيير الدور",
+            "LOGIN_FAILED": "فشل تسجيل الدخول",
+            "REGISTER": "تسجيل حساب"
         },
         "entities": {
             "User": "مستخدم",
             "Reclamation": "شكاية",
             "Evenement": "حدث",
+            "EVENEMENT": "الحدث",
             "Actualite": "خبر",
             "Etablissement": "مؤسسة",
             "RECLAMATION": "الشكاية",
             "ACTUALITE": "الخبر",
             "establishment_workflow": "مراحل المؤسسة",
-            "ETABLISSEMENT": "المؤسسة"
+            "ETABLISSEMENT": "المؤسسة",
+            "System": "النظام",
+            "SYSTEM": "النظام",
+            "Campagne": "حملة",
+            "CAMPAGNE": "الحملة",
+            "Activite": "نشاط",
+            "ACTIVITE": "النشاط",
+            "Programme": "برنامج",
+            "PROGRAMME": "البرنامج",
+            "AUDIT_LOG": "سجل التدقيق",
+            "Permission": "صلاحية",
+            "Commune": "جماعة",
+            "Province": "إقليم",
+            "Annexe": "ملحقة",
+            "Notification": "إشعار"
         },
         "action_label": "الإجراء"
     },
@@ -6232,6 +6259,24 @@
         "UPDATE": "تحديث الملف",
         "ACCEPTATION": "قبول الشكاية",
         "AJOUT_MEDIA": "إضافة مرفقات"
+    },
+    "system": {
+        "my_history": "سجلي التاريخي",
+        "traceability_active": "التتبع نشط",
+        "admin_timeline": "الجدول الزمني للإدارة",
+        "no_action": "لا يوجد نشاط"
+    },
+    "admin_timeline": {
+        "title": "الجدول الزمني الشامل",
+        "subtitle": "سجل تسلسلي كامل لجميع إجراءات المستخدمين",
+        "total": "إجمالي الإجراءات المسجلة",
+        "filter_user": "تصفية حسب المستخدم",
+        "filter_action": "تصفية حسب الإجراء",
+        "all_users": "جميع المستخدمين",
+        "all_actions": "جميع الإجراءات",
+        "loading": "جاري تحميل السجلات...",
+        "no_logs": "لا توجد سجلات مطابقة للفلاتر المحددة",
+        "technical_details": "التفاصيل التقنية"
     },
     "confirm_delete": "تأكيد الحذف"
 }

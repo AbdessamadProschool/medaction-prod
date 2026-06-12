@@ -357,13 +357,7 @@ export default function ProfilPage() {
                   <span>{t('subscriptions_btn')}</span>
                 </Link>
               </PermissionGuard>
-              <Link
-                href="/profil/historique"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 shadow-md transition-all border border-white/20"
-              >
-                <HistoryIcon className="w-4 h-4" />
-                <span>{t('system.my_history', { fallback: 'Mon Historique' })}</span>
-              </Link>
+              {/* Historique accessible uniquement aux Administrateurs via /admin/logs */}
             </div>
           </div>
 

@@ -62,10 +62,15 @@ const ACCESS_RULES: Record<string, AccessRule> = {
   'campagne':       { public: true }, // Singular added
   'talents':        { public: true },
   'talent':         { public: true }, // Singular added
+  'event_bilan':    { public: true }, // Event report gallery images
+  'campaign_bilan': { public: true }, // Campaign report gallery images
   // Private assets — auth + authorization required
   'reclamations':         { public: false, needsOwnerCheck: true, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'] },
   'reclamation':          { public: false, needsOwnerCheck: true, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'] }, // Singular added
   'bilan':                { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION'] },
+  'event_report':         { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION'] }, // Event PDF/Word reports
+  'campaign_report':      { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION'] }, // Campaign PDF/Word reports
+  'activity_report':      { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION', 'COORDINATEUR_ACTIVITES'] }, // Activity reports
   'programmes-activites': { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'DELEGATION', 'COORDINATEUR_ACTIVITES'] },
   'documents':            { public: false, adminRoles: ['ADMIN', 'SUPER_ADMIN'] },
 };

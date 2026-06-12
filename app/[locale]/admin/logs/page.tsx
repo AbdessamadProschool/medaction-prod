@@ -143,6 +143,7 @@ export default function AdminLogsPage() {
   const t = useTranslations('audit_page');
   
   const [activeTab, setActiveTab] = useState<TabType>('activity');
+  const [viewMode, setViewMode] = useState<'table' | 'timeline'>('table');
   const [exporting, setExporting] = useState(false);
   
   // Auto-refresh settings
@@ -422,6 +423,32 @@ export default function AdminLogsPage() {
               </select>
             </div>
             
+            {/* View Mode Toggle */}
+            <div className="flex items-center border border-border rounded-lg overflow-hidden bg-card">
+              <button
+                onClick={() => setViewMode('table')}
+                className={`p-2 transition-colors ${
+                  viewMode === 'table' 
+                    ? 'bg-blue-600 text-white shadow-sm' 
+                    : 'text-muted-foreground hover:bg-muted bg-card'
+                }`}
+                title={locale === 'ar' ? 'جدول' : 'Tableau'}
+              >
+                <Monitor size={16} />
+              </button>
+              <button
+                onClick={() => setViewMode('timeline')}
+                className={`p-2 transition-colors ${
+                  viewMode === 'timeline' 
+                    ? 'bg-blue-600 text-white shadow-sm' 
+                    : 'text-muted-foreground hover:bg-muted bg-card'
+                }`}
+                title={locale === 'ar' ? 'المخطط الزمني' : 'Timeline'}
+              >
+                <History size={16} />
+              </button>
+            </div>
+
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
@@ -713,203 +740,356 @@ export default function AdminLogsPage() {
           )}
         </AnimatePresence>
 
-        {/* Table */}
+        {/* Table / Timeline container */}
         <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
           <div className="overflow-x-auto">
             {activeTab === 'activity' && (
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('entity')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('ip')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {activityLogs.map((log) => {
-                    const actionInfo = getActionInfo(log.action);
-                    return (
-                      <tr key={log.id} className="hover:bg-muted/50 transition-colors">
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Clock size={14} className="shrink-0" />
-                            <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          {log.user ? (
-                            <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                                {log.user.prenom?.[0]}{log.user.nom?.[0]}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold text-foreground truncate">{log.user.prenom} {log.user.nom}</p>
-                                <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
-                              </div>
+              viewMode === 'table' ? (
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('entity')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('ip')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {activityLogs.map((log) => {
+                      const actionInfo = getActionInfo(log.action);
+                      return (
+                        <tr key={log.id} className="hover:bg-muted/50 transition-colors">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Clock size={14} className="shrink-0" />
+                              <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
                             </div>
-                          ) : (
-                            <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
-                            {actionInfo.label}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="text-sm">
-                            <span className="text-foreground font-medium">{t(`entities.${log.entity}`, { fallback: log.entity })}</span>
-                            {log.entityId && (
-                              <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.entityId}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {log.user ? (
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                                  {log.user.prenom?.[0]}{log.user.nom?.[0]}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-xs font-bold text-foreground truncate">{log.user.prenom} {log.user.nom}</p>
+                                  <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
                             )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          {log.ipAddress ? (
-                            <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
-                              <Globe size={12} className="shrink-0" />
-                              {log.ipAddress}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
+                              {actionInfo.label}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="text-sm">
+                              <span className="text-foreground font-medium">{t(`entities.${log.entity}`, { fallback: log.entity })}</span>
+                              {log.entityId && (
+                                <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.entityId}</span>
+                              )}
                             </div>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <button
-                            onClick={() => setSelectedLog(log)}
-                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
-                          >
-                            {t('view_details')}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="px-4 py-3">
+                            {log.ipAddress ? (
+                              <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
+                                <Globe size={12} className="shrink-0" />
+                                {log.ipAddress}
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => setSelectedLog(log)}
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                            >
+                              {t('view_details')}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="p-8 relative">
+                  <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
+                  <ul className="space-y-8 relative">
+                    {activityLogs.map((log) => {
+                      const actionInfo = getActionInfo(log.action);
+                      return (
+                        <li key={log.id} className="relative flex items-start gap-6 group">
+                          <div className={`relative z-10 p-2.5 rounded-full border-4 border-card shrink-0 shadow-sm transition-transform group-hover:scale-110 ${actionInfo.color.replace('text-', 'bg-').split(' ')[0]} ${actionInfo.color.split(' ')[1]}`}>
+                            <Activity size={18} className="text-current" />
+                          </div>
+                          <div className="flex-1 min-w-0 bg-muted/20 dark:bg-muted/5 rounded-2xl p-5 border border-border transition-all hover:bg-card hover:shadow-md hover:border-border">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                              <h3 className="text-base font-black text-foreground flex items-center gap-2 flex-wrap">
+                                <span className="font-bold">{log.user ? `${log.user.prenom} ${log.user.nom}` : t('system_user')}</span>
+                                <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
+                                  {actionInfo.label}
+                                </span>
+                              </h3>
+                              <span className="text-xs text-muted-foreground font-mono font-medium flex items-center gap-1.5 bg-card px-2 py-1 rounded-lg border border-border shadow-sm">
+                                <Clock size={12} className="text-muted-foreground/60" />
+                                {formatDate(log.createdAt)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-sm font-bold text-gov-blue">
+                                {t(`entities.${log.entity}`, { fallback: log.entity })}
+                              </span>
+                              {log.entityId && (
+                                <span className="text-xs font-mono bg-muted text-foreground px-1.5 py-0.5 rounded font-bold">
+                                  #{log.entityId}
+                                </span>
+                              )}
+                            </div>
+                            {log.ipAddress && (
+                              <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground font-mono font-medium">
+                                <Globe size={12} className="shrink-0" />
+                                IP: {log.ipAddress}
+                              </div>
+                            )}
+                            <div className="mt-3">
+                              <button
+                                onClick={() => setSelectedLog(log)}
+                                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                              >
+                                {t('view_details')}
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )
             )}
 
             {activeTab === 'system' && (
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('level')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('source')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('message')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {systemLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Clock size={14} className="shrink-0" />
-                          <span className="font-mono whitespace-nowrap">{formatDate(log.timestamp)}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${LEVEL_COLORS[log.level]}`}>
-                          {LEVEL_ICONS[log.level]}
-                          {t(`levels.${log.level}`)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded font-bold">
-                          {log.source}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <p className="text-sm text-foreground line-clamp-1" title={log.message}>{log.message}</p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => setSelectedLog(log)}
-                          className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold transition-colors"
-                        >
-                          {t('view_details')}
-                        </button>
-                      </td>
+              viewMode === 'table' ? (
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('level')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('source')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('message')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-
-            {activeTab === 'audit' && (
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('resource')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('status')}</th>
-                    <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {auditLogs.map((log) => {
-                    const actionInfo = getActionInfo(log.action);
-                    return (
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {systemLogs.map((log) => (
                       <tr key={log.id} className="hover:bg-muted/50 transition-colors">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Clock size={14} className="shrink-0" />
-                            <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
+                            <span className="font-mono whitespace-nowrap">{formatDate(log.timestamp)}</span>
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          {log.user ? (
-                            <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                                {log.user.name?.[0]}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold text-foreground truncate">{log.user.name}</p>
-                                <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
-                              </div>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
-                            {actionInfo.label}
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${LEVEL_COLORS[log.level]}`}>
+                            {LEVEL_ICONS[log.level]}
+                            {t(`levels.${log.level}`)}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="text-sm">
-                            <span className="text-foreground font-medium">{t(`entities.${log.resourceType ?? ''}`, { fallback: log.resourceType ?? '' })}</span>
-                            {log.resourceId && (
-                              <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.resourceId}</span>
-                            )}
-                          </div>
+                          <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded font-bold">
+                            {log.source}
+                          </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${log.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                            {log.success ? <Check size={10} /> : <X size={10} />}
-                            {log.success ? t('success') : t('failure')}
-                          </span>
+                          <p className="text-sm text-foreground line-clamp-1" title={log.message}>{log.message}</p>
                         </td>
                         <td className="px-4 py-3">
                           <button
                             onClick={() => setSelectedLog(log)}
-                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold transition-colors"
                           >
                             {t('view_details')}
                           </button>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="p-8 relative">
+                  <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
+                  <ul className="space-y-8 relative">
+                    {systemLogs.map((log) => (
+                      <li key={log.id} className="relative flex items-start gap-6 group">
+                        <div className={`relative z-10 p-2.5 rounded-full border-4 border-card shrink-0 shadow-sm transition-transform group-hover:scale-110 bg-slate-100 text-slate-700`}>
+                          <Server size={18} className="text-current" />
+                        </div>
+                        <div className="flex-1 min-w-0 bg-muted/20 dark:bg-muted/5 rounded-2xl p-5 border border-border transition-all hover:bg-card hover:shadow-md hover:border-border">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                            <h3 className="text-base font-black text-foreground flex items-center gap-2 flex-wrap">
+                              <span className="font-bold">{log.source}</span>
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${LEVEL_COLORS[log.level]}`}>
+                                {t(`levels.${log.level}`)}
+                              </span>
+                            </h3>
+                            <span className="text-xs text-muted-foreground font-mono font-medium flex items-center gap-1.5 bg-card px-2 py-1 rounded-lg border border-border shadow-sm">
+                              <Clock size={12} className="text-muted-foreground/60" />
+                              {formatDate(log.timestamp)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-foreground mb-3" title={log.message}>{log.message}</p>
+                          <div className="mt-3">
+                            <button
+                              onClick={() => setSelectedLog(log)}
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold transition-colors"
+                            >
+                              {t('view_details')}
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            )}
+
+            {activeTab === 'audit' && (
+              viewMode === 'table' ? (
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('resource')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('status')}</th>
+                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {auditLogs.map((log) => {
+                      const actionInfo = getActionInfo(log.action);
+                      return (
+                        <tr key={log.id} className="hover:bg-muted/50 transition-colors">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Clock size={14} className="shrink-0" />
+                              <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            {log.user ? (
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                                  {log.user.name?.[0]}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-xs font-bold text-foreground truncate">{log.user.name}</p>
+                                  <p className="text-[10px] text-muted-foreground truncate">{log.user.email}</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
+                              {actionInfo.label}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="text-sm">
+                              <span className="text-foreground font-medium">{t(`entities.${log.resourceType ?? ''}`, { fallback: log.resourceType ?? '' })}</span>
+                              {log.resourceId && (
+                                <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.resourceId}</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${log.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                              {log.success ? <Check size={10} /> : <X size={10} />}
+                              {log.success ? t('success') : t('failure')}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => setSelectedLog(log)}
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                            >
+                              {t('view_details')}
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="p-8 relative">
+                  <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
+                  <ul className="space-y-8 relative">
+                    {auditLogs.map((log) => {
+                      const actionInfo = getActionInfo(log.action);
+                      return (
+                        <li key={log.id} className="relative flex items-start gap-6 group">
+                          <div className={`relative z-10 p-2.5 rounded-full border-4 border-card shrink-0 shadow-sm transition-transform group-hover:scale-110 ${actionInfo.color.replace('text-', 'bg-').split(' ')[0]} ${actionInfo.color.split(' ')[1]}`}>
+                            <Database size={18} className="text-current" />
+                          </div>
+                          <div className="flex-1 min-w-0 bg-muted/20 dark:bg-muted/5 rounded-2xl p-5 border border-border transition-all hover:bg-card hover:shadow-md hover:border-border">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                              <h3 className="text-base font-black text-foreground flex items-center gap-2 flex-wrap">
+                                <span className="font-bold">{log.user ? log.user.name : t('system_user')}</span>
+                                <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
+                                  {actionInfo.label}
+                                </span>
+                                {!log.success && (
+                                  <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold uppercase rounded-full">Échec</span>
+                                )}
+                              </h3>
+                              <span className="text-xs text-muted-foreground font-mono font-medium flex items-center gap-1.5 bg-card px-2 py-1 rounded-lg border border-border shadow-sm">
+                                <Clock size={12} className="text-muted-foreground/60" />
+                                {formatDate(log.createdAt)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-sm font-bold text-gov-blue">
+                                {t(`entities.${log.resourceType ?? ''}`, { fallback: log.resourceType ?? '' })}
+                              </span>
+                              {log.resourceId && (
+                                <span className="text-xs font-mono bg-muted text-foreground px-1.5 py-0.5 rounded font-bold">
+                                  #{log.resourceId}
+                                </span>
+                              )}
+                            </div>
+                            {log.ipAddress && (
+                              <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground font-mono font-medium">
+                                <Globe size={12} className="shrink-0" />
+                                IP: {log.ipAddress}
+                              </div>
+                            )}
+                            <div className="mt-3">
+                              <button
+                                onClick={() => setSelectedLog(log)}
+                                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
+                              >
+                                {t('view_details')}
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )
             )}
           </div>
 

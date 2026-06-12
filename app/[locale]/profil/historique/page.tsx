@@ -76,8 +76,10 @@ export default function UserHistoriquePage() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
+    } else if (status === 'authenticated' && !['ADMIN', 'SUPER_ADMIN'].includes(session?.user?.role || '')) {
+      router.push('/');
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
   const endpoint = session?.user ? `/api/users/me/historique?page=${page}&limit=20` : null;
   const { data, isLoading } = useData(endpoint);

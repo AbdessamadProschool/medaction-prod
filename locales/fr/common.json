@@ -1541,7 +1541,13 @@
                 "validate": "Valider",
                 "highlight": "Mettre en avant",
                 "remove_highlight": "Retirer de l'avant",
-                "delete": "Supprimer"
+                "delete": "Supprimer",
+                "name": "Nom",
+                "sector": "Secteur",
+                "location": "Localisation",
+                "status": "Statut",
+                "rating": "Note",
+                "actions": "Actions"
             },
             "messages": {
                 "error": "Une erreur est survenue",
@@ -1564,7 +1570,8 @@
             "page": "Page",
             "limit": "Limite",
             "includeNonPublie": "Inclure non publiés",
-            "loading": "Chargement des établissements..."
+            "loading": "Chargement des établissements...",
+            "refresh": "Actualiser"
         },
         "programs_page": {
             "title": "Programmes et Activités",
@@ -1671,7 +1678,12 @@
                 "affectation": "Affectation"
             },
             "actions": {
-                "update_status": "Mettre à jour le statut"
+                "update_status": "Mettre à jour le statut",
+                "view_details": "Voir les détails",
+                "decide": "Décider",
+                "assign": "Affecter",
+                "edit_assignment": "Modifier l'affectation",
+                "delete": "Supprimer"
             },
             "delete_confirmation": "Êtes-vous sûr de vouloir supprimer cette réclamation ? Cette action est irréversible."
         },
@@ -1725,6 +1737,135 @@
             "email_not_provided": "Email non fourni",
             "no_suggestion": "Aucune suggestion",
             "photos": "Photos"
+        },
+        "users_page": {
+            "page_title": "Gestion des Utilisateurs",
+            "total_users": "{count} utilisateurs",
+            "export": "Exporter",
+            "add": "Ajouter",
+            "search_placeholder": "Rechercher...",
+            "filter_roles_all": "Tous les rôles",
+            "filter_status_all": "Tous les statuts",
+            "reset_filters": "Réinitialiser",
+            "no_users": "Aucun utilisateur trouvé",
+            "pagination": "Page {start}-{end} sur {total}",
+            "roles": {
+                "CITOYEN": "Citoyen",
+                "DELEGATION": "Délégation",
+                "AUTORITE_LOCALE": "Autorité Locale",
+                "COORDINATEUR_ACTIVITES": "Coordinateur d'Activités",
+                "ADMIN": "Administrateur",
+                "SUPER_ADMIN": "Super Administrateur",
+                "GOUVERNEUR": "Gouverneur"
+            },
+            "role_descriptions": {
+                "CITOYEN": "Accès citoyen standard",
+                "DELEGATION": "Représentant provincial",
+                "AUTORITE_LOCALE": "Administration territoriale",
+                "COORDINATEUR_ACTIVITES": "Supervision de terrain",
+                "ADMIN": "Administration technique",
+                "SUPER_ADMIN": "Accès complet",
+                "GOUVERNEUR": "Supervision globale"
+            },
+            "sectors": {
+                "EDUCATION": "Éducation",
+                "SANTE": "Santé",
+                "SPORT": "Sport",
+                "SOCIAL": "Social",
+                "CULTUREL": "Culture",
+                "AUTRE": "Autre"
+            },
+            "create_modal": {
+                "title": "Nouvel utilisateur",
+                "subtitle": "Créer un nouveau compte",
+                "fields": {
+                    "first_name": "Prénom",
+                    "last_name": "Nom",
+                    "email": "Adresse email",
+                    "phone": "Téléphone",
+                    "password": "Mot de passe",
+                    "confirm_password": "Confirmer le mot de passe",
+                    "role": "Rôle",
+                    "sector": "Secteur",
+                    "commune": "Commune",
+                    "establishments": "Établissements ({count})",
+                    "active_account": "Compte actif"
+                },
+                "placeholders": {
+                    "first_name": "Prénom",
+                    "last_name": "Nom",
+                    "email": "email@exemple.com",
+                    "password": "Mot de passe",
+                    "phone": "Téléphone"
+                },
+                "helpers": {
+                    "commune_helper": "Commune rattachée",
+                    "establishments_helper": "Établissements gérés (sélection multiple)"
+                },
+                "select_option": {
+                    "sector": "Sélectionner le secteur",
+                    "commune": "Sélectionner la commune"
+                },
+                "cancel_btn": "Annuler",
+                "submit_btn": "Créer",
+                "errors": {
+                    "password_mismatch": "Les mots de passe ne correspondent pas",
+                    "password_length": "Au moins 6 caractères",
+                    "sector_required": "Le secteur est requis",
+                    "commune_required": "La commune est requise",
+                    "establishment_required": "Au moins un établissement est requis",
+                    "create_error": "Erreur lors de la création",
+                    "server_error": "Erreur serveur"
+                },
+                "success": "L'utilisateur {name} a été créé",
+                "loading_establishments": "Chargement..."
+            },
+            "edit_role_modal": {
+                "title": "Modifier le rôle",
+                "current_role": "Rôle actuel",
+                "new_role": "Nouveau rôle",
+                "errors": {
+                    "edit_error": "Erreur lors de la modification",
+                    "sector_required": "Le secteur est requis",
+                    "commune_required": "La commune est requise",
+                    "establishment_required": "Au moins un établissement est requis",
+                    "server_error": "Erreur serveur"
+                },
+                "loading": "Chargement..."
+            },
+            "table": {
+                "user": "Utilisateur",
+                "role": "Rôle",
+                "status": "Statut",
+                "sector_establishment": "Secteur / Établissement",
+                "activity": "Activité",
+                "actions": "Actions",
+                "actions_count": "{count} opérations",
+                "estab_count": "{count} établissements"
+            },
+            "statuses": {
+                "active": "Actif",
+                "inactive": "Inactif",
+                "activated": "Activé",
+                "deactivated": "Désactivé"
+            },
+            "actions": {
+                "edit_role": "Modifier le rôle",
+                "reset_password": "Réinitialiser le mot de passe",
+                "deactivate": "Désactiver",
+                "activate": "Activer",
+                "delete": "Supprimer"
+            },
+            "messages": {
+                "error": "Une erreur est survenue",
+                "status_changed": "Le compte a été {status}",
+                "delete_confirm": "Supprimer {name} ?",
+                "user_deleted": "Utilisateur supprimé",
+                "reset_password_confirm": "Réinitialiser le mot de passe de {name} ?",
+                "reset_password_alert": "Nouveau mot de passe : {password}",
+                "reset_password_success": "Mot de passe réinitialisé"
+            },
+            "refresh": "Actualiser"
         }
     },
     "campaigns": {
@@ -3302,7 +3443,8 @@
         "tabs": {
             "events": "Événements",
             "activities": "Activités",
-            "campaigns": "Campagnes"
+            "campaigns": "Campagnes",
+            "aria_label": "Onglets des bilans"
         },
         "search_placeholder": "Rechercher...",
         "all_sectors": "Tous les secteurs",
@@ -3576,7 +3718,7 @@
         "new_value": "NOUVELLE VALEUR",
         "all": "Toutes",
         "export_btn": "Exporter",
-        "page_x_of_y": "Page {{x}} sur {{y}}",
+        "page_x_of_y": "Page {current} sur {total}",
         "details_modal_title": "Détails du Log #{id}",
         "type_level": "Type / Niveau",
         "source_action": "Source / Action",
@@ -5423,7 +5565,8 @@
             "total": "Total des permissions",
             "active": "Actives",
             "inactive": "Inactives",
-            "groups": "Groupes de permissions"
+            "groups": "Groupes de permissions",
+            "search": "Rechercher une permission..."
         },
         "system_status": {
             "title": "État du Système",

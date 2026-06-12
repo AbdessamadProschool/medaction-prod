@@ -1966,7 +1966,8 @@
             "total": "مجموع الصلاحيات",
             "active": "نشطة",
             "inactive": "غير نشطة",
-            "groups": "مجموعات الصلاحيات"
+            "groups": "مجموعات الصلاحيات",
+            "search": "بحث عن صلاحية..."
         },
         "system_status": {
             "title": "حالة النظام",
@@ -3683,7 +3684,8 @@
         "tabs": {
             "events": "الفعاليات",
             "activities": "الأنشطة",
-            "campaigns": "الحملات"
+            "campaigns": "الحملات",
+            "aria_label": "علامات تبويب التقارير"
         },
         "search_placeholder": "بحث...",
         "all_sectors": "جميع القطاعات",

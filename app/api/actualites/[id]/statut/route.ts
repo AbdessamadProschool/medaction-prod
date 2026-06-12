@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -116,6 +116,18 @@ export async function PATCH(
         }
       });
     }
+
+    await prisma.activityLog.create({
+      data: {
+        action: `Mise à jour statut actualité (${statut})`,
+        entity: 'Actualités',
+        entityId: actualite.id.toString(),
+        details: `L'utilisateur a changé le statut de l'actualité "${actualite.titre}" à "${statut}"`,
+        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+        userAgent: request.headers.get('user-agent') || 'Unknown',
+        userId: parseInt(session.user.id)
+      }
+    });
 
     return NextResponse.json({ 
       success: true,

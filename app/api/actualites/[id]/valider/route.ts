@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
@@ -125,6 +125,18 @@ export async function PATCH(
                decision === 'REJETEE' ? 'Actualité rejetée' : 'Actualité mise à jour',
         message: notificationMessages[decision],
         lien: `/actualites/${actualite.id}`,
+      }
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        action: `Validation actualité (${decision})`,
+        entity: 'Actualités',
+        entityId: actualite.id.toString(),
+        details: `L'utilisateur a défini le statut de l'actualité "${actualite.titre}" à "${decision}"`,
+        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+        userAgent: request.headers.get('user-agent') || 'Unknown',
+        userId: parseInt(session.user.id)
       }
     });
 

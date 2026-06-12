@@ -166,6 +166,18 @@ export const PATCH = withErrorHandler(async (
     console.error('Erreur notification (non bloquante):', notifError);
   }
 
+  await prisma.activityLog.create({
+    data: {
+      action: `Mise à jour statut événement (${nouveauStatut})`,
+      entity: 'Événements',
+      entityId: evenement.id.toString(),
+      details: `L'utilisateur a changé le statut de l'événement "${evenement.titre}" à "${STATUT_LABELS[nouveauStatut as keyof typeof STATUT_LABELS] || nouveauStatut}"`,
+      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+      userAgent: request.headers.get('user-agent') || 'Unknown',
+      userId: userId
+    }
+  });
+
   return successResponse(
     updated,
     `Événement "${evenement.titre}" marqué comme "${STATUT_LABELS[nouveauStatut]}"`

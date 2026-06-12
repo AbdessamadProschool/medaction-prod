@@ -1,4 +1,4 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -90,6 +90,18 @@ export async function PATCH(
         titre: decision === 'PUBLIEE' ? 'Événement approuvé' : 'Événement rejeté',
         message: notificationMessage,
         lien: `/evenements/${evenement.id}`,
+      }
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        action: decision === 'PUBLIEE' ? 'Validation événement' : 'Rejet événement',
+        entity: 'Événements',
+        entityId: evenement.id.toString(),
+        details: `L'utilisateur a ${decision === 'PUBLIEE' ? 'validé' : 'rejeté'} l'événement "${evenement.titre}"`,
+        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+        userAgent: request.headers.get('user-agent') || 'Unknown',
+        userId: parseInt(session.user.id)
       }
     });
 

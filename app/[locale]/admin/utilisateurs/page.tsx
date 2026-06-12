@@ -396,7 +396,7 @@ export default function UsersPage() {
                   };
 
                   return (
-                    <GovTr key={user.id}>
+                    <GovTr key={user.id} className={cn(activeDropdown === user.id ? "relative z-50" : "")}>
                       <GovTd>
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#ebd281] to-[#d4b962] flex items-center justify-center text-[#0a3b68] font-black text-sm shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] group-hover:scale-110 transition-transform duration-500">
@@ -436,7 +436,7 @@ export default function UsersPage() {
                           </div>
                         </div>
                       </GovTd>
-                      <GovTd className={cn("text-end relative", activeDropdown === user.id ? "z-50" : "")}>
+                      <GovTd className="text-end relative">
                         {/* Toujours visible sur mobile + desktop (pas de group-hover) */}
                         <div className="flex items-center justify-end gap-2">
                           <GovButton

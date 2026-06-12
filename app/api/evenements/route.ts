@@ -122,12 +122,23 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     console.warn('Erreur notification événement:', notifError);
   }
 
-  // Use dynamic import for auditLog since it's used after response, or static import at top. Let's do static import.
   const { auditLog } = await import("@/lib/logger");
   auditLog('CREATE_EVENEMENT', 'Evenement', evenement.id, userId, {
     title: evenement.titre,
     secteur: evenement.secteur,
     etablissementId: evenement.etablissementId
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      action: 'Création d\'un événement',
+      entity: 'Événements',
+      entityId: evenement.id.toString(),
+      details: `L'utilisateur a créé l'événement "${evenement.titre}"`,
+      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+      userAgent: request.headers.get('user-agent') || 'Unknown',
+      userId: userId
+    }
   });
 
   return NextResponse.json({

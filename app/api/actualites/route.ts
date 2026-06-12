@@ -121,6 +121,18 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     console.error('Erreur notification (non bloquante):', notifError);
   }
 
+  await prisma.activityLog.create({
+    data: {
+      action: 'Création d\'une actualité',
+      entity: 'Actualités',
+      entityId: actualite.id.toString(),
+      details: `L'utilisateur a créé l'actualité "${actualite.titre}"`,
+      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
+      userAgent: request.headers.get('user-agent') || 'Unknown',
+      userId: userId
+    }
+  });
+
   return NextResponse.json({
     success: true,
     message: 'Actualité créée avec succès. Elle sera visible après validation par un administrateur.',

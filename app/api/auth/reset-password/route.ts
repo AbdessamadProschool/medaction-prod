@@ -1,21 +1,19 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ValidationError, NotFoundError } from '@/lib/exceptions';
 
 /**
  * POST /api/auth/reset-password
  * Réinitialise le mot de passe avec un token valide
  */
-export async function POST(request: Request) {
-  try {
-    const { token, password } = await request.json();
+export const POST = withErrorHandler(async (request: Request) => {
+  const { token, password } = await request.json();
 
-    if (!token || !password) {
-      return NextResponse.json(
-        { success: false, message: 'Token et mot de passe requis' },
-        { status: 400 }
-      );
-    }
+  if (!token || !password) {
+    throw new ValidationError('Token et mot de passe requis');
+  }
 
     // Chercher l'utilisateur avec ce token
     const user = await prisma.user.findFirst({
@@ -27,12 +25,9 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: 'Token invalide ou expiré' },
-        { status: 400 }
-      );
-    }
+  if (!user) {
+    throw new ValidationError('Token invalide ou expiré');
+  }
 
     // Hasher le nouveau mot de passe
     const hashedPassword = await hashPassword(password);
@@ -47,17 +42,7 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log(`[PASSWORD RESET] Mot de passe réinitialisé pour: ${user.email}`);
+  console.log(`[PASSWORD RESET] Mot de passe réinitialisé pour: ${user.email}`);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Votre mot de passe a été réinitialisé avec succès',
-    });
-  } catch (error) {
-    console.error('[RESET PASSWORD] Erreur:', error);
-    return NextResponse.json(
-      { success: false, message: 'Une erreur est survenue' },
-      { status: 500 }
-    );
-  }
-}
+  return successResponse(null, 'Votre mot de passe a été réinitialisé avec succès');
+});

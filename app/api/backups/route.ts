@@ -3,10 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { writeFile, readdir, stat, unlink } from 'fs/promises';
+import { writeFile, readdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { safeResolvePath } from '@/lib/utils/safe-path';
-import { auditLog } from '@/lib/logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // Dossier de stockage des backups
 // Utilise /tmp/medaction-backups pour garantir l'accès en écriture dans tous les environnements Docker
@@ -19,12 +21,11 @@ if (!fs.existsSync(BACKUP_DIR)) {
 }
 
 // GET /api/backups - Lister les backups
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const files = await readdir(BACKUP_DIR);
     const backups = [];
@@ -40,23 +41,18 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Trier par date décroissante
-    backups.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  // Trier par date décroissante
+  backups.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-    return NextResponse.json(backups);
-  } catch (error) {
-    console.error('Erreur GET backups:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(backups, 'Liste des backups récupérée');
+});
 
 // POST /api/backups - Créer un nouveau backup
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     // Récupérer les données
     // On extrait les tables principales
@@ -123,36 +119,23 @@ export async function POST(request: NextRequest) {
     try {
       filePath = safeResolvePath(BACKUP_DIR, fileName);
     } catch {
-      return NextResponse.json({ error: 'Chemin invalide' }, { status: 400 });
+      throw new ValidationError('Chemin invalide');
     }
 
     await writeFile(filePath, JSON.stringify(backupData, null, 2));
 
-    // Log de l'activité (Désactivé temporairement - Schema locked)
-    
-    await prisma.activityLog.create({
-      data: {
-        userId: parseInt(session.user.id),
-        action: 'CREATE_BACKUP',
-        entity: 'System',
-        entityId: 0,
-        details: { fileName, stats: backupData.stats }
-      }
+    // Log de l'activité
+    await ActivityLogger.custom({
+      action: 'CREATE_BACKUP',
+      entity: 'System',
+      entityId: 0,
+      details: { fileName, stats: backupData.stats },
+      userId: parseInt(session.user.id)
     });
     
-    // Audit log
-    auditLog('CREATE_BACKUP', 'System', fileName, parseInt(session.user.id), {
-      stats: backupData.stats
-    });
 
-    return NextResponse.json({ 
-      message: 'Backup créé avec succès',
+    return successResponse({ 
       file: fileName,
       stats: backupData.stats
-    });
-
-  } catch (error) {
-    console.error('Erreur POST backup:', error);
-    return NextResponse.json({ error: 'Erreur lors de la création du backup' }, { status: 500 });
-  }
-}
+    }, 'Backup créé avec succès');
+});

@@ -1,85 +1,78 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { notifyAdmins } from '@/lib/notifications';
 
 const traiterSchema = z.object({
   solutionApportee: z.string().min(10, 'La solution doit contenir au moins 10 caractères'),
 });
 
 // PATCH - Traiter/Résoudre une réclamation (AUTORITE_LOCALE)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: Request,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+  const id = safeParseInt(params.id, 0);
+  
+  if (!id) {
+    throw new ValidationError('ID invalide');
+  }
 
-    const userId = parseInt(session.user.id);
-    const role = session.user.role;
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    // Seuls les autorités locales et admins peuvent traiter
-    if (!['AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN'].includes(role)) {
-      return NextResponse.json({ 
-        error: 'Vous n\'êtes pas autorisé à traiter cette réclamation' 
-      }, { status: 403 });
-    }
+  const userId = parseInt(session.user.id);
+  const role = session.user.role;
 
-    const id = safeParseInt(params.id, 0);
-    const body = await request.json();
-    const validation = traiterSchema.safeParse(body);
+  // Seuls les autorités locales et admins peuvent traiter
+  if (!['AUTORITE_LOCALE', 'ADMIN', 'SUPER_ADMIN'].includes(role)) {
+    throw new ForbiddenError('Vous n\'êtes pas autorisé à traiter cette réclamation');
+  }
 
-    if (!validation.success) {
-      return NextResponse.json({ 
-        error: 'Données invalides', 
-        details: validation.error.flatten() 
-      }, { status: 400 });
-    }
+  const body = await request.json();
+  const validation = traiterSchema.safeParse(body);
 
-    const { solutionApportee } = validation.data;
+  if (!validation.success) {
+    throw new ValidationError(validation.error.issues[0].message);
+  }
 
-    // Vérifier que la réclamation existe
-    const reclamation = await prisma.reclamation.findUnique({
-      where: { id },
-      include: { user: { select: { id: true } } }
-    });
+  const { solutionApportee } = validation.data;
 
-    if (!reclamation) {
-      return NextResponse.json({ error: 'Réclamation non trouvée' }, { status: 404 });
-    }
+  // Vérifier que la réclamation existe
+  const reclamation = await prisma.reclamation.findUnique({
+    where: { id },
+    include: { user: { select: { id: true } } }
+  });
 
-    // Vérifier que la réclamation est bien affectée à cette autorité (si rôle AUTORITE_LOCALE)
-    if (role === 'AUTORITE_LOCALE' && reclamation.affecteeAAutoriteId !== userId) {
-      return NextResponse.json({ 
-        error: 'Cette réclamation ne vous est pas affectée' 
-      }, { status: 403 });
-    }
+  if (!reclamation) {
+    throw new NotFoundError('Réclamation non trouvée');
+  }
 
-    // Vérifier que la réclamation est affectée et acceptée
-    if (reclamation.statut !== 'ACCEPTEE') {
-      return NextResponse.json({ 
-        error: 'Seule une réclamation acceptée peut être traitée' 
-      }, { status: 400 });
-    }
+  // Vérifier que la réclamation est bien affectée à cette autorité (si rôle AUTORITE_LOCALE)
+  if (role === 'AUTORITE_LOCALE' && reclamation.affecteeAAutoriteId !== userId) {
+    throw new ForbiddenError('Cette réclamation ne vous est pas affectée');
+  }
 
-    if (reclamation.affectationReclamation !== 'AFFECTEE') {
-      return NextResponse.json({ 
-        error: 'Cette réclamation n\'est pas encore affectée' 
-      }, { status: 400 });
-    }
+  if (reclamation.statut !== 'ACCEPTEE') {
+    throw new ValidationError('Seule une réclamation acceptée peut être traitée');
+  }
 
-    if (reclamation.dateResolution) {
-      return NextResponse.json({ 
-        error: 'Cette réclamation a déjà été résolue' 
-      }, { status: 400 });
-    }
+  if (reclamation.affectationReclamation !== 'AFFECTEE') {
+    throw new ValidationError('Cette réclamation n\'est pas encore affectée');
+  }
+
+  if (reclamation.dateResolution) {
+    throw new ValidationError('Cette réclamation a déjà été traitée ou résolue');
+  }
 
     // Mettre à jour la réclamation
     const updated = await prisma.reclamation.update({
@@ -116,29 +109,12 @@ export async function PATCH(
     });
 
     // Notifier les admins
-    const admins = await prisma.user.findMany({
-      take: 100,
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
-      select: { id: true }
+    await notifyAdmins({
+      type: 'RECLAMATION_RESOLUE',
+      titre: 'Réclamation résolue',
+      message: `La réclamation "${reclamation.titre}" a été résolue.`,
+      lien: `/admin/reclamations/${id}`,
     });
 
-    await prisma.notification.createMany({
-      data: admins.map(admin => ({
-        userId: admin.id,
-        type: 'RECLAMATION_RESOLUE',
-        titre: 'Réclamation résolue',
-        message: `La réclamation "${reclamation.titre}" a été résolue.`,
-        lien: `/admin/reclamations/${id}`,
-      }))
-    });
-
-    return NextResponse.json({ 
-      message: 'Réclamation résolue avec succès',
-      data: updated 
-    });
-
-  } catch (error) {
-    console.error('Erreur traitement réclamation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+    return successResponse(updated, 'Réclamation résolue avec succès');
+});

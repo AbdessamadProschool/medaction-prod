@@ -1,7 +1,9 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { prisma } from "@/lib/db";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from "@/lib/exceptions";
 import { z } from "zod";
 
 const validerSchema = z.object({
@@ -11,41 +13,34 @@ const validerSchema = z.object({
 });
 
 // PATCH - Valider/Publier un établissement (ADMIN uniquement)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
+) => {
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
-    // Seuls les admins peuvent valider
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json(
-        { error: "Seuls les administrateurs peuvent valider les établissements" },
-        { status: 403 }
-      );
-    }
+  // Seuls les admins peuvent valider
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    throw new ForbiddenError("Seuls les administrateurs peuvent valider les établissements");
+  }
 
-    const { id } = await params;
-    const etablissementId = parseInt(id);
+  const { id } = await params;
+  const etablissementId = parseInt(id);
 
-    if (isNaN(etablissementId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+  if (isNaN(etablissementId)) {
+    throw new ValidationError("ID invalide");
+  }
 
     const body = await req.json();
     const result = validerSchema.safeParse(body);
 
-    if (!result.success) {
-      return NextResponse.json(
-        { error: "Données invalides", details: result.error.flatten() },
-        { status: 400 }
-      );
-    }
+  if (!result.success) {
+    throw new ValidationError("Données invalides", { details: result.error.flatten() });
+  }
 
     // Vérifier existence
     const existing = await prisma.etablissement.findUnique({
@@ -53,9 +48,9 @@ export async function PATCH(
       select: { id: true, nom: true, code: true, isValide: true, isPublie: true }
     });
 
-    if (!existing) {
-      return NextResponse.json({ error: "Établissement non trouvé" }, { status: 404 });
-    }
+  if (!existing) {
+    throw new NotFoundError("Établissement non trouvé");
+  }
 
     const updatedEtablissement = await prisma.etablissement.update({
       where: { id: etablissementId },
@@ -82,12 +77,8 @@ export async function PATCH(
       messages.push(result.data.isMisEnAvant ? "mis en avant" : "retiré de la mise en avant");
     }
 
-    return NextResponse.json({
-      message: `Établissement "${existing.nom}" ${messages.join(" et ")}`,
-      data: updatedEtablissement
-    });
-  } catch (error) {
-    console.error("Erreur validation établissement:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse(
+    updatedEtablissement,
+    `Établissement "${existing.nom}" ${messages.join(" et ")}`
+  );
+});

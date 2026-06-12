@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { ActivityLogger } from '@/lib/activity-logger';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError, AppError } from '@/lib/exceptions';
 import { getSafeId } from '@/lib/utils/parse';
@@ -166,16 +167,14 @@ export const PATCH = withErrorHandler(async (
     console.error('Erreur notification (non bloquante):', notifError);
   }
 
-  await prisma.activityLog.create({
-    data: {
-      action: `Mise à jour statut événement (${nouveauStatut})`,
-      entity: 'Événements',
-      entityId: evenement.id.toString(),
-      details: `L'utilisateur a changé le statut de l'événement "${evenement.titre}" à "${STATUT_LABELS[nouveauStatut as keyof typeof STATUT_LABELS] || nouveauStatut}"`,
-      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-      userAgent: request.headers.get('user-agent') || 'Unknown',
-      userId: userId
-    }
+  await ActivityLogger.custom({
+    action: `Mise à jour statut événement (${nouveauStatut})`,
+    entity: 'Evenement',
+    entityId: evenement.id,
+    details: {
+      message: `L'utilisateur a changé le statut de l'événement "${evenement.titre}" à "${STATUT_LABELS[nouveauStatut as keyof typeof STATUT_LABELS] || nouveauStatut}"`
+    },
+    userId
   });
 
   return successResponse(

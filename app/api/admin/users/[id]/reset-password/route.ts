@@ -4,6 +4,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { hashPassword } from '@/lib/auth/password';
 import { checkPermission } from '@/lib/permissions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { getSafeId } from '@/lib/utils/parse';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 /**
  * POST /api/admin/users/[id]/reset-password
@@ -13,73 +17,58 @@ import { checkPermission } from '@/lib/permissions';
  * 🔐 Permissions requises : users.reset-password (ou SUPER_ADMIN bypass)
  * 🛡️ Sécurité : Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN
  */
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    const requesterId = parseInt(session.user.id);
+  const requesterId = parseInt(session.user.id);
 
-    // 🔐 Vérification de permission RBAC (remplace le check hardcodé)
-    // SUPER_ADMIN bypass automatique via checkPermission()
-    const hasPermission = await checkPermission(requesterId, 'users.reset-password');
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        error: 'Permission insuffisante',
-        details: "La permission 'users.reset-password' est requise pour cette action. Demandez au Super Admin de vous l'accorder."
-      }, { status: 403 });
-    }
+  // 🔐 Vérification de permission RBAC (remplace le check hardcodé)
+  // SUPER_ADMIN bypass automatique via checkPermission()
+  const hasPermission = await checkPermission(requesterId, 'users.reset-password');
+  if (!hasPermission) {
+    throw new ForbiddenError("La permission 'users.reset-password' est requise pour cette action. Demandez au Super Admin de vous l'accorder.");
+  }
 
-    // 🛡️ SECURITY FIX: Restreindre l'utilisation de cette route critique aux seuls ADMIN / SUPER_ADMIN
-    if (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN') {
-      return NextResponse.json({ 
-        error: 'Accès refusé. Seuls les administrateurs peuvent utiliser cette fonction.' 
-      }, { status: 403 });
-    }
+  // 🛡️ SECURITY FIX: Restreindre l'utilisation de cette route critique aux seuls ADMIN / SUPER_ADMIN
+  if (session.user.role !== 'SUPER_ADMIN' && session.user.role !== 'ADMIN') {
+    throw new ForbiddenError('Accès refusé. Seuls les administrateurs peuvent utiliser cette fonction.');
+  }
 
-    const userId = parseInt(params.id);
-    if (isNaN(userId)) {
-      return NextResponse.json({ error: 'ID utilisateur invalide' }, { status: 400 });
-    }
+  const userId = getSafeId(params.id);
 
-    // Empêcher de réinitialiser son propre mot de passe via cette route admin
-    if (userId === requesterId) {
-      return NextResponse.json({ 
-        error: 'Utilisez la route /api/users/me/password pour modifier votre propre mot de passe' 
-      }, { status: 400 });
-    }
+  // Empêcher de réinitialiser son propre mot de passe via cette route admin
+  if (userId === requesterId) {
+    throw new ValidationError('Utilisez la route /api/users/me/password pour modifier votre propre mot de passe');
+  }
 
-    // Vérifier que l'utilisateur cible existe
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, email: true, nom: true, prenom: true, role: true }
-    });
+  // Vérifier que l'utilisateur cible existe
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, nom: true, prenom: true, role: true }
+  });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
-    }
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé');
+  }
 
-    // 🛡️ Protection escalade (Account Takeover) : 
-    // Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN ni d'un GOUVERNEUR
-    if ((user.role === 'SUPER_ADMIN' || user.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ 
-        error: `Seul un Super Admin peut réinitialiser le mot de passe d'un ${user.role}` 
-      }, { status: 403 });
-    }
+  // 🛡️ Protection escalade (Account Takeover) : 
+  // Un non-SUPER_ADMIN ne peut pas reset le mdp d'un SUPER_ADMIN ni d'un GOUVERNEUR
+  if ((user.role === 'SUPER_ADMIN' || user.role === 'GOUVERNEUR') && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Seul un Super Admin peut réinitialiser le mot de passe d'un ${user.role}`);
+  }
 
-    // Un ADMIN ne peut pas reset le mdp d'un autre ADMIN
-    if (user.role === 'ADMIN' && session.user.role === 'ADMIN' && userId !== requesterId) {
-       return NextResponse.json({ 
-        error: 'Un Administrateur ne peut pas réinitialiser le mot de passe d\'un autre Administrateur' 
-      }, { status: 403 });
-    }
+  // Un ADMIN ne peut pas reset le mdp d'un autre ADMIN
+  if (user.role === 'ADMIN' && session.user.role === 'ADMIN' && userId !== requesterId) {
+    throw new ForbiddenError('Un Administrateur ne peut pas réinitialiser le mot de passe d\'un autre Administrateur');
+  }
 
     // Récupérer le nouveau mot de passe du body, ou en générer un
     const body = await request.json().catch(() => ({}));
@@ -90,12 +79,10 @@ export async function POST(
       newPassword = generateRandomPassword();
     }
 
-    // Valider le mot de passe (min 8 caractères)
-    if (newPassword.length < 8) {
-      return NextResponse.json({ 
-        error: 'Le mot de passe doit contenir au moins 8 caractères' 
-      }, { status: 400 });
-    }
+  // Valider le mot de passe (min 8 caractères)
+  if (newPassword.length < 8) {
+    throw new ValidationError('Le mot de passe doit contenir au moins 8 caractères');
+  }
 
     // Hasher le nouveau mot de passe
     const hashedPassword = await hashPassword(newPassword);
@@ -115,52 +102,44 @@ export async function POST(
       }
     });
 
-    // Logger l'action
-    await prisma.activityLog.create({
-      data: {
-        userId: requesterId,
-        action: 'PASSWORD_RESET_BY_ADMIN',
-        entity: 'User',
-        entityId: userId,
-        details: {
-          targetEmail: user.email,
-          performedBy: session.user.email,
-          performerRole: session.user.role,
-        }
-      }
-    });
+  // Logger l'action
+  await ActivityLogger.custom({
+    action: 'PASSWORD_RESET_BY_ADMIN',
+    entity: 'User',
+    entityId: userId,
+    details: {
+      targetEmail: user.email,
+      performedBy: session.user.email,
+      performerRole: session.user.role,
+    },
+    userId: requesterId
+  });
 
-    // Créer une notification pour l'utilisateur
-    await prisma.notification.create({
-      data: {
-        userId: userId,
-        type: 'MOT_DE_PASSE_REINITIALISE',
-        titre: 'Mot de passe réinitialisé',
-        message: 'Votre mot de passe a été réinitialisé par un administrateur. Veuillez vous connecter avec le nouveau mot de passe fourni.',
-        lien: '/login',
-      }
-    });
+  // Créer une notification pour l'utilisateur
+  await prisma.notification.create({
+    data: {
+      userId: userId,
+      type: 'MOT_DE_PASSE_REINITIALISE',
+      titre: 'Mot de passe réinitialisé',
+      message: 'Votre mot de passe a été réinitialisé par un administrateur. Veuillez vous connecter avec le nouveau mot de passe fourni.',
+      lien: '/login',
+    }
+  });
 
-    console.log(`[ADMIN] Password reset for user ${user.email} by ${session.user.email} (role: ${session.user.role})`);
+  console.log(`[ADMIN] Password reset for user ${user.email} by ${session.user.email} (role: ${session.user.role})`);
 
-    return NextResponse.json({
-      message: 'Mot de passe réinitialisé avec succès',
-      user: {
-        id: user.id,
-        email: user.email,
-        nom: user.nom,
-        prenom: user.prenom,
-      },
-      // Retourner le mot de passe généré pour que l'admin puisse le communiquer
-      generatedPassword: newPassword,
-      note: 'Communiquez ce mot de passe à l\'utilisateur de manière sécurisée.'
-    });
-
-  } catch (error) {
-    console.error('Erreur reset password:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    user: {
+      id: user.id,
+      email: user.email,
+      nom: user.nom,
+      prenom: user.prenom,
+    },
+    // Retourner le mot de passe généré pour que l'admin puisse le communiquer
+    generatedPassword: newPassword,
+    note: 'Communiquez ce mot de passe à l\'utilisateur de manière sécurisée.'
+  }, 'Mot de passe réinitialisé avec succès');
+});
 
 /**
  * Génère un mot de passe aléatoire sécurisé

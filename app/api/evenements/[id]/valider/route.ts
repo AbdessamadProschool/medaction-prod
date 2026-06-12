@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { ActivityLogger } from '@/lib/activity-logger';
 import { z } from 'zod';
 
 const validerSchema = z.object({
@@ -93,16 +94,14 @@ export async function PATCH(
       }
     });
 
-    await prisma.activityLog.create({
-      data: {
-        action: decision === 'PUBLIEE' ? 'Validation événement' : 'Rejet événement',
-        entity: 'Événements',
-        entityId: evenement.id.toString(),
-        details: `L'utilisateur a ${decision === 'PUBLIEE' ? 'validé' : 'rejeté'} l'événement "${evenement.titre}"`,
-        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-        userAgent: request.headers.get('user-agent') || 'Unknown',
-        userId: parseInt(session.user.id)
-      }
+    await ActivityLogger.custom({
+      action: decision === 'PUBLIEE' ? 'Validation événement' : 'Rejet événement',
+      entity: 'Evenement',
+      entityId: evenement.id,
+      details: {
+        message: `L'utilisateur a ${decision === 'PUBLIEE' ? 'validé' : 'rejeté'} l'événement "${evenement.titre}"`
+      },
+      userId: parseInt(session.user.id)
     });
 
     return NextResponse.json({ 

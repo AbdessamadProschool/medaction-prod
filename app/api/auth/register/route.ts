@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { checkRateLimit, getClientIP } from '@/lib/auth/security';
 import { isRegistrationEnabled } from '@/lib/settings/service';
 import { SecurityValidation } from '@/lib/security/validation';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { TooManyRequestsError, ValidationError, ForbiddenError, ConflictError } from '@/lib/exceptions';
 
 // SECURITY: Rate limit config for registration (5 per hour per IP)
 const REGISTER_RATE_LIMIT = { maxRequests: 5, windowMs: 60 * 60 * 1000 };
@@ -29,47 +31,31 @@ const registerSchema = z.object({
  * POST /api/auth/register
  * Inscription d'un nouvel utilisateur avec rôle CITOYEN par défaut
  */
-export async function POST(request: NextRequest) {
-  try {
-    // 1. Vérifier si les inscriptions sont ouvertes
-    const registrationOpen = await isRegistrationEnabled();
-    if (!registrationOpen) {
-      return NextResponse.json(
-        { success: false, message: 'Les inscriptions sont actuellement fermées par l\'administrateur.' },
-        { status: 403 }
-      );
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  // 1. Vérifier si les inscriptions sont ouvertes
+  const registrationOpen = await isRegistrationEnabled();
+  if (!registrationOpen) {
+    throw new ForbiddenError('Les inscriptions sont actuellement fermées par l\'administrateur.');
+  }
 
-    // SECURITY FIX: Rate limiting - 5 inscriptions par heure par IP
-    const clientIP = getClientIP(request);
-    const rateLimitResult = checkRateLimit(`register:${clientIP}`, REGISTER_RATE_LIMIT);
+  // SECURITY FIX: Rate limiting - 5 inscriptions par heure par IP
+  const clientIP = getClientIP(request);
+  const rateLimitResult = checkRateLimit(`register:${clientIP}`, REGISTER_RATE_LIMIT);
 
-    if (!rateLimitResult.allowed) {
-      return NextResponse.json(
-        { success: false, message: 'Trop de tentatives d\'inscription. Veuillez réessayer plus tard.' },
-        {
-          status: 429,
-          headers: { 'Retry-After': String(rateLimitResult.retryAfter || 3600) }
-        }
-      );
-    }
+  if (!rateLimitResult.allowed) {
+    throw new TooManyRequestsError('Trop de tentatives d\'inscription. Veuillez réessayer plus tard.', {
+      headers: { 'Retry-After': String(rateLimitResult.retryAfter || 3600) }
+    });
+  }
 
-    const body = await request.json();
+  const body = await request.json();
 
-    // Validation des données
-    const validationResult = registerSchema.safeParse(body);
-    
-    if (!validationResult.success) {
-      const errors = validationResult.error.flatten();
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Données invalides',
-          errors: errors.fieldErrors,
-        },
-        { status: 400 }
-      );
-    }
+  // Validation des données
+  const validationResult = registerSchema.safeParse(body);
+  
+  if (!validationResult.success) {
+    throw new ValidationError('Données invalides', validationResult.error.flatten().fieldErrors);
+  }
 
     const { email, password, nom, prenom, telephone } = validationResult.data;
 
@@ -79,111 +65,73 @@ export async function POST(request: NextRequest) {
       select: { id: true },
     });
 
-    // SECURITY FIX: Prevent account enumeration - same response whether email exists or not
-    if (existingUserByEmail) {
-      // Simulate the same time as a successful registration by doing a password hash
-      await hashPassword('dummy_password_processing');
-      
-      // Log the attempt for security monitoring
-      console.log(`[REGISTER] Tentative inscription email existant: ${email.replace(/(.{2}).*(@.*)/, '$1***$2')}`);
-      
-      // Return success message to prevent enumeration - but don't actually create account
-      return NextResponse.json(
-        {
-          success: true,
-          message: 'Inscription réussie. Vérifiez votre email pour confirmer votre compte.',
-          // Note: We don't return user data here for security
-        },
-        { status: 201 }
-      );
-    }
+  // SECURITY FIX: Prevent account enumeration - same response whether email exists or not
+  if (existingUserByEmail) {
+    // Simulate the same time as a successful registration by doing a password hash
+    await hashPassword('dummy_password_processing');
+    
+    // Log the attempt for security monitoring
+    console.log(`[REGISTER] Tentative inscription email existant: ${email.replace(/(.{2}).*(@.*)/, '$1***$2')}`);
+    
+    // Return success message to prevent enumeration - but don't actually create account
+    return successResponse(null, 'Inscription réussie. Vérifiez votre email pour confirmer votre compte.', 201);
+  }
 
-    // Vérifier si le téléphone existe déjà (si fourni)
-    if (telephone) {
-      const existingUserByPhone = await prisma.user.findUnique({
-        where: { telephone },
-        select: { id: true },
-      });
-
-      if (existingUserByPhone) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Ce numéro de téléphone est déjà utilisé',
-            errors: { telephone: ['Ce numéro est déjà associé à un compte'] },
-          },
-          { status: 409 }
-        );
-      }
-    }
-
-    // Hasher le mot de passe
-    const hashedPassword = await hashPassword(password);
-
-    // Créer l'utilisateur avec le rôle CITOYEN par défaut
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        motDePasse: hashedPassword,
-        nom,
-        prenom,
-        telephone: telephone || null,
-        role: 'CITOYEN', // Rôle par défaut
-        isActive: false,
-        isEmailVerifie: false, // Email non vérifié par défaut
-        isTelephoneVerifie: false,
-      },
-      select: {
-        id: true,
-        email: true,
-        nom: true,
-        prenom: true,
-        role: true,
-        createdAt: true,
-      },
+  // Vérifier si le téléphone existe déjà (si fourni)
+  if (telephone) {
+    const existingUserByPhone = await prisma.user.findUnique({
+      where: { telephone },
+      select: { id: true },
     });
 
-    console.log(`[REGISTER] Nouvel utilisateur créé: ${newUser.email} (ID: ${newUser.id})`);
-
-    return NextResponse.json(
-      {
-        success: true,
-        message: 'Compte créé avec succès. Votre compte est en attente d\'approbation par un administrateur.',
-        data: {
-          user: {
-            id: newUser.id,
-            email: newUser.email,
-            nom: newUser.nom,
-            prenom: newUser.prenom,
-            role: newUser.role,
-          },
-        },
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('[REGISTER] Erreur:', error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'Une erreur est survenue lors de l\'inscription',
-      },
-      { status: 500 }
-    );
+    if (existingUserByPhone) {
+      throw new ConflictError('Ce numéro de téléphone est déjà utilisé');
+    }
   }
-}
+
+  // Hasher le mot de passe
+  const hashedPassword = await hashPassword(password);
+
+  // Créer l'utilisateur avec le rôle CITOYEN par défaut
+  const newUser = await prisma.user.create({
+    data: {
+      email,
+      motDePasse: hashedPassword,
+      nom,
+      prenom,
+      telephone: telephone || null,
+      role: 'CITOYEN', // Rôle par défaut
+      isActive: false,
+      isEmailVerifie: false, // Email non vérifié par défaut
+      isTelephoneVerifie: false,
+    },
+    select: {
+      id: true,
+      email: true,
+      nom: true,
+      prenom: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  console.log(`[REGISTER] Nouvel utilisateur créé: ${newUser.email} (ID: ${newUser.id})`);
+
+  return successResponse({
+    user: {
+      id: newUser.id,
+      email: newUser.email,
+      nom: newUser.nom,
+      prenom: newUser.prenom,
+      role: newUser.role,
+    },
+  }, 'Compte créé avec succès. Votre compte est en attente d\'approbation par un administrateur.', 201);
+});
 
 /**
  * GET /api/auth/register
  * Retourne un message d'erreur (méthode non autorisée)
  */
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: false,
-      message: 'Méthode non autorisée. Utilisez POST pour l\'inscription.',
-    },
-    { status: 405 }
-  );
-}
+export const GET = withErrorHandler(async () => {
+  throw new ForbiddenError('Méthode non autorisée. Utilisez POST pour l\'inscription.');
+});

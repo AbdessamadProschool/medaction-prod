@@ -67,3 +67,9 @@ export class ConflictError extends AppError {
     super(message, 'CONFLICT', 409);
   }
 }
+
+export class TooManyRequestsError extends AppError {
+  constructor(message = 'Trop de requêtes', context?: Record<string, any>) {
+    super(message, 'RATE_LIMIT_EXCEEDED', 429, context);
+  }
+}

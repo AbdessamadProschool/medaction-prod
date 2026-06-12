@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { withPermission } from '@/lib/auth/api-guard';
+import { ForbiddenError } from '@/lib/exceptions';
 
 /**
  * POST /api/admin/system/sync-permissions
@@ -11,7 +12,7 @@ import { withPermission } from '@/lib/auth/api-guard';
  */
 export const POST = withPermission('system.settings.edit', withErrorHandler(async (request: NextRequest, { session }) => {
   if (session.user.role !== 'SUPER_ADMIN') {
-    return NextResponse.json({ error: 'Réservé au Super Admin' }, { status: 403 });
+    throw new ForbiddenError('Réservé au Super Admin');
   }
 
   const permissions = [

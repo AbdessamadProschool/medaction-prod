@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { notifyAdmins } from '@/lib/notifications';
 
 // GET - Liste des actualités de la délégation
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -56,9 +57,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.actualite.count({ where }),
   ]);
 
-  return NextResponse.json({
-    success: true,
-    data: actualites,
+  return successResponse({
+    actualites,
     pagination: {
       page,
       limit,
@@ -154,32 +154,16 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Notification aux admins (non bloquant)
-  try {
-    const admins = await prisma.user.findMany({
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
-      select: { id: true }
-    });
-    
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'ACTUALITE_CREATION',
-          titre: 'Nouvelle actualité à valider',
-          message: `L'actualité "${body.titre}" a été créée par la délégation et attend votre validation.`,
-          lien: `/admin/actualites`,
-          isLue: false,
-          createdAt: new Date()
-        }))
-      });
-    }
-  } catch (notifError) {
-    console.error('Erreur notification (non bloquante):', notifError);
-  }
+  await notifyAdmins({
+    type: 'ACTUALITE_CREATION',
+    titre: 'Nouvelle actualité à valider',
+    message: `L'actualité "${body.titre}" a été créée par la délégation et attend votre validation.`,
+    lien: `/admin/actualites`,
+  });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Actualité créée avec succès. Elle sera visible après validation par un administrateur.',
-    data: actualite,
-  }, { status: 201 });
+  return successResponse(
+    actualite,
+    'Actualité créée avec succès. Elle sera visible après validation par un administrateur.',
+    201
+  );
 });

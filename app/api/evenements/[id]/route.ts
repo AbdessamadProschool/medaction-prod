@@ -5,7 +5,8 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 import { z } from 'zod';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { successResponse } from '@/lib/api-handler';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
   EN_ATTENTE_VALIDATION: ['VALIDEE', 'ANNULEE'],
@@ -62,7 +63,7 @@ export const GET = withErrorHandler(async (
   // NOTE: L'incrément des vues est géré uniquement par POST /api/evenements/[id]/vues
   // avec vérification côté client via sessionStorage pour éviter les doublons
 
-  return NextResponse.json({ success: true, data: evenement });
+  return successResponse(evenement);
 });
 
 // PUT - Modifier un événement
@@ -197,23 +198,19 @@ export const PUT = withErrorHandler(async (
     }
   }
 
-  auditLog(
-    'UPDATE_EVENEMENT',
-    'Evenement',
-    id,
-    parseInt(session.user.id),
-    { 
+  await ActivityLogger.custom({
+    action: 'UPDATE_EVENEMENT',
+    entity: 'Evenement',
+    entityId: id,
+    userId: parseInt(session.user.id),
+    details: { 
       updatedFields: Object.keys(updateData),
       statut: updateData.statut || updated.statut,
       title: updated.titre
     }
-  );
-
-  return NextResponse.json({
-    success: true,
-    message: 'Événement mis à jour avec succès',
-    data: updated
   });
+
+  return successResponse(updated, 'Événement mis à jour avec succès');
 });
 
 // DELETE - Supprimer un événement
@@ -264,16 +261,13 @@ export const DELETE = withErrorHandler(async (
   // Supprimer l'événement
   await prisma.evenement.delete({ where: { id } });
 
-  auditLog(
-    'DELETE_EVENEMENT',
-    'Evenement',
-    id,
-    parseInt(session.user.id),
-    { title: evenement.titre }
-  );
-
-  return NextResponse.json({
-    success: true,
-    message: `L'événement "${evenement.titre}" a été supprimé`
+  await ActivityLogger.custom({
+    action: 'DELETE_EVENEMENT',
+    entity: 'Evenement',
+    entityId: id,
+    userId: parseInt(session.user.id),
+    details: { title: evenement.titre }
   });
+
+  return successResponse(null, `L'événement "${evenement.titre}" a été supprimé`);
 });

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from '@/lib/exceptions';
+import { notifyAdmins } from '@/lib/notifications';
 
 // GET - Liste des événements de la délégation
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -55,9 +56,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.evenement.count({ where }),
   ]);
 
-  return NextResponse.json({
-    success: true,
-    data: evenements,
+  return successResponse({
+    evenements,
     pagination: {
       page,
       limit,
@@ -216,32 +216,16 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   }
 
   // Notification aux admins
-  try {
-    const admins = await prisma.user.findMany({
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
-      select: { id: true }
-    });
-    
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'EVENT_CREATION',
-          titre: 'Nouvel événement à valider',
-          message: `L'événement "${body.titre}" a été créé par la délégation (Secteur: ${secteur}) et attend votre validation.`,
-          lien: `/admin/evenements`,
-          isLue: false,
-          createdAt: new Date()
-        }))
-      });
-    }
-  } catch (notifError) {
-    console.error('Erreur notification (non bloquante):', notifError);
-  }
+  await notifyAdmins({
+    type: 'EVENT_CREATION',
+    titre: 'Nouvel événement à valider',
+    message: `L'événement "${body.titre}" a été créé par la délégation (Secteur: ${secteur}) et attend votre validation.`,
+    lien: `/admin/evenements`,
+  });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Événement créé avec succès. Il sera visible après validation par un administrateur.',
-    data: evenement,
-  }, { status: 201 });
+  return successResponse(
+    evenement,
+    'Événement créé avec succès. Il sera visible après validation par un administrateur.',
+    201
+  );
 });

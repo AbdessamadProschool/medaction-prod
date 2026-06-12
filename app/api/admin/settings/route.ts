@@ -6,7 +6,6 @@ import { withPermission } from '@/lib/auth/api-guard';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { z } from 'zod';
-import { auditLog } from '@/lib/logger';
 
 // Chemin du fichier de configuration
 const SETTINGS_FILE = path.join(process.cwd(), 'data', 'settings.json');

@@ -3,15 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError } from '@/lib/exceptions';
+import { notifyAdmins } from '@/lib/notifications';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // POST - Soumettre TOUTES les activités en brouillon pour validation
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Vous devez être connecté');
+  }
 
     // Vérifier le rôle
     if (!['COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
@@ -79,55 +82,32 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    // Extraire les noms uniques des établissements
+    const etablissementsNomsArray = activites.map(a => a.etablissement ? a.etablissement.nom : 'Province');
+    const etablissementsNoms = Array.from(new Set(etablissementsNomsArray)).join(', ');
+    
     // Créer une notification pour les admins
-    const admins = await prisma.user.findMany({
-      where: { 
-        role: { in: ['ADMIN', 'SUPER_ADMIN'] },
-        isActive: true
-      },
-      select: { id: true }
+    await notifyAdmins({
+      type: 'ACTIVITES_A_VALIDER',
+      titre: `${result.count} activités à valider`,
+      message: `Le coordinateur a soumis ${result.count} activités pour validation (${etablissementsNoms})`,
+      lien: `/admin/programmes-activites`,
     });
-
-    if (admins.length > 0) {
-      // Extraire les noms uniques des établissements
-      const etablissementsNomsArray = activites.map(a => a.etablissement ? a.etablissement.nom : 'Province');
-      const etablissementsNoms = Array.from(new Set(etablissementsNomsArray)).join(', ');
-      
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'ACTIVITES_A_VALIDER',
-          titre: `${result.count} activités à valider`,
-          message: `Le coordinateur a soumis ${result.count} activités pour validation (${etablissementsNoms})`,
-          lien: `/admin/programmes-activites`,
-          isRead: false,
-        }))
-      });
-    }
 
     // Logger l'action
-    const etablissementsForLog = activites.map(a => a.etablissement ? a.etablissement.nom : 'Province');
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        action: 'BULK_SUBMIT_FOR_VALIDATION',
-        entity: 'ProgrammeActivite',
-        entityId: null, // Bulk operation - no single entity
-        details: {
-          count: result.count,
-          etablissements: Array.from(new Set(etablissementsForLog)),
-        },
-      }
+    await ActivityLogger.custom({
+      action: 'Soumission en masse d\'activités',
+      entity: 'Activite',
+      details: {
+        message: `Soumission de ${result.count} activités pour validation`,
+        count: result.count,
+        etablissements: Array.from(new Set(etablissementsNomsArray)),
+      },
+      userId
     });
 
-    return NextResponse.json({
-      success: true,
-      count: result.count,
-      message: `${result.count} activités soumises pour validation`
-    });
-
-  } catch (error) {
-    console.error('Erreur soumission en masse:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+    return successResponse(
+      { count: result.count }, 
+      `${result.count} activités soumises pour validation`
+    );
+});

@@ -8,7 +8,7 @@ import { SystemLogger } from '@/lib/system-logger';
 import { validateId } from '@/lib/security/validation';
 import { ApiContext } from '@/lib/api-handler'; // MAJ-01: Unifié
 
-type ApiHandler = (request: NextRequest, context: ApiContext) => Promise<NextResponse> | NextResponse;
+type ApiHandler = (request: NextRequest, context: ApiContext) => Promise<Response> | Response;
 
 /**
  * 🛡️ HOC (Higher-Order Component) pour protéger une Route API par une permission.

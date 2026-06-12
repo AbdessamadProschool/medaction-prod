@@ -6,7 +6,7 @@ import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 import { SecurityValidation } from '@/lib/security/validation';
 import { z } from 'zod';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // Schéma de validation pour la mise à jour
 const updateActualiteSchema = z.object({
@@ -142,17 +142,17 @@ export const PUT = withErrorHandler(async (
     }
   });
 
-  auditLog(
-    'UPDATE_ACTUALITE',
-    'Actualite',
-    id,
-    parseInt(session.user.id),
-    { 
+  await ActivityLogger.custom({
+    action: 'UPDATE_ACTUALITE',
+    entity: 'Actualite',
+    entityId: id,
+    userId: parseInt(session.user.id),
+    details: { 
       updatedFields: Object.keys(updateData),
       statut: updateData.statut || updated.statut,
       title: updated.titre
     }
-  );
+  });
 
   return successResponse(updated, 'Actualité modifiée avec succès');
 });
@@ -198,13 +198,13 @@ export const DELETE = withErrorHandler(async (
   // Supprimer l'actualité
   await prisma.actualite.delete({ where: { id } });
 
-  auditLog(
-    'DELETE_ACTUALITE',
-    'Actualite',
-    id,
-    parseInt(session.user.id),
-    { title: actualite.titre }
-  );
+  await ActivityLogger.custom({
+    action: 'DELETE_ACTUALITE',
+    entity: 'Actualite',
+    entityId: id,
+    userId: parseInt(session.user.id),
+    details: { title: actualite.titre }
+  });
 
   return successResponse(null, `L'actualité "${actualite.titre}" a été supprimée`);
 });

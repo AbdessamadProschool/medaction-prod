@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 import { z } from 'zod';
 import { sanitizeString } from '@/lib/security/validation';
@@ -122,8 +122,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     statut: a.statut,
   }));
 
-  return NextResponse.json({
-    success: true,
+  return successResponse({
     data: formattedArticles,
     categories: categories
       .filter(c => c.categorie)
@@ -182,9 +181,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     },
   });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Article créé avec succès',
-    data: article,
-  }, { status: 201 });
+  return successResponse(
+    article,
+    'Article créé avec succès',
+    201
+  );
 });

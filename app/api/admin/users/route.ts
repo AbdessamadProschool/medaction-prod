@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, ConflictError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
 import { sanitizeName, sanitizePhone, sanitizeString } from '@/lib/security/sanitize';
 
 // Schéma de validation pour la création d'utilisateur
@@ -130,18 +130,15 @@ export const POST = withPermission('users.create', withErrorHandler(async (reque
   });
 
   // Audit log
-  await auditLog({
+  await ActivityLogger.custom({
     action: 'CREATE_USER',
-    resource: 'USER',
-    resourceId: String(newUser.id),
-    userId: session.user.id,
+    entity: 'User',
+    entityId: newUser.id,
+    userId: parseInt(session.user.id),
     details: {
       email: newUser.email,
       role: newUser.role
-    },
-    status: 'SUCCESS',
-    ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
-    userAgent: request.headers.get('user-agent') || 'unknown'
+    }
   });
 
   return successResponse(newUser, 'Utilisateur créé avec succès', 201);

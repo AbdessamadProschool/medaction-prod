@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ValidationError, NotFoundError } from '@/lib/exceptions';
 
 /**
  * POST /api/auth/verify-email
  * Vérifie l'email d'un utilisateur avec un token
  */
-export async function POST(request: Request) {
-  try {
-    const { token } = await request.json();
+export const POST = withErrorHandler(async (request: Request) => {
+  const { token } = await request.json();
 
-    if (!token) {
-      return NextResponse.json(
-        { success: false, message: 'Token requis' },
-        { status: 400 }
-      );
-    }
+  if (!token) {
+    throw new ValidationError('Token requis');
+  }
 
     // Chercher l'utilisateur avec ce token
     const user = await prisma.user.findFirst({
@@ -26,12 +24,9 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: 'Token invalide ou expiré' },
-        { status: 400 }
-      );
-    }
+  if (!user) {
+    throw new ValidationError('Token invalide ou expiré');
+  }
 
     // Mettre à jour l'utilisateur
     await prisma.user.update({
@@ -43,17 +38,7 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log(`[EMAIL VERIFICATION] Email vérifié pour: ${user.email}`);
+  console.log(`[EMAIL VERIFICATION] Email vérifié pour: ${user.email}`);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Votre adresse email a été vérifiée avec succès',
-    });
-  } catch (error) {
-    console.error('[VERIFY EMAIL] Erreur:', error);
-    return NextResponse.json(
-      { success: false, message: 'Une erreur est survenue' },
-      { status: 500 }
-    );
-  }
-}
+  return successResponse(null, 'Votre adresse email a été vérifiée avec succès');
+});

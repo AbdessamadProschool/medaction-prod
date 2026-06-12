@@ -4,9 +4,9 @@ import { authOptions } from "@/lib/auth/config";
 import { prisma } from "@/lib/db";
 import { etablissementSchema, etablissementFilterSchema } from "@/lib/validations/etablissement";
 import { Prisma } from "@prisma/client";
-import { withErrorHandler } from "@/lib/api-handler";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
 import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from "@/lib/exceptions";
-import { auditLog } from "@/lib/logger";
+import { ActivityLogger } from "@/lib/activity-logger";
 
 // GET - Liste des établissements (Public avec filtres)
 export const GET = withErrorHandler(async (req: NextRequest) => {
@@ -138,7 +138,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     prisma.etablissement.count({ where }),
   ]);
 
-  return NextResponse.json(
+  const response = successResponse(
     {
       data: etablissements,
       pagination: {
@@ -148,13 +148,11 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
         totalPages: Math.ceil(total / limit),
       },
     },
-    {
-      headers: {
-        // Cache public requests for 5 minutes
-        'Cache-Control': isAdmin ? 'no-store' : 'public, max-age=300, s-maxage=300',
-      }
-    }
+    undefined,
+    200
   );
+  response.headers.set('Cache-Control', isAdmin ? 'no-store' : 'public, max-age=300, s-maxage=300');
+  return response;
 });
 
 // POST - Créer un établissement (ADMIN uniquement)
@@ -212,36 +210,18 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     },
   });
 
-  // Audit log
-  await auditLog({
-    action: 'CREATE_ESTABLISHMENT',
-    resource: 'ETABLISSEMENT',
-    resourceId: String(etablissement.id),
-    userId: session.user.id,
-    status: 'SUCCESS',
-    ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
-    userAgent: req.headers.get('user-agent') || 'unknown',
+  await ActivityLogger.custom({
+    action: 'Création d\'un établissement',
+    entity: 'Etablissement',
+    entityId: etablissement.id,
     details: {
+      message: `L'utilisateur a ajouté l'établissement "${etablissement.nom}" (${etablissement.code})`,
       nom: etablissement.nom,
       code: etablissement.code,
       secteur: etablissement.secteur
-    }
+    },
+    userId: parseInt(session.user.id)
   });
 
-  await prisma.activityLog.create({
-    data: {
-      action: 'Création d\'un établissement',
-      entity: 'Établissements',
-      entityId: etablissement.id.toString(),
-      details: `L'utilisateur a ajouté l'établissement "${etablissement.nom}" (${etablissement.code})`,
-      ipAddress: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1',
-      userAgent: req.headers.get('user-agent') || 'Unknown',
-      userId: parseInt(session.user.id)
-    }
-  });
-
-  return NextResponse.json({
-    message: "Établissement créé avec succès",
-    data: etablissement
-  }, { status: 201 });
+  return successResponse(etablissement, "Établissement créé avec succès", 201);
 });

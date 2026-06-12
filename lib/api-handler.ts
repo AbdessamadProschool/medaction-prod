@@ -15,7 +15,7 @@ export type ApiContext = {
 type ApiHandler = (
   req: NextRequest,
   context: any
-) => Promise<NextResponse>;
+) => Promise<Response>;
 
 /**
  * Wrapper professionnel pour sécuriser les routes API.
@@ -27,7 +27,7 @@ type ApiHandler = (
  * - Gestion des erreurs Prisma avec messages explicites
  * - Logging sécurisé (stack trace en dev seulement)
  */
-export function withErrorHandler(handler: ApiHandler): (req: NextRequest, context: any) => Promise<NextResponse> {
+export function withErrorHandler(handler: ApiHandler): (req: NextRequest, context: any) => Promise<Response> {
   return async (req: NextRequest, context: any) => {
     try {
       // Exécuter la logique métier

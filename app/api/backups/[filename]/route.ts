@@ -1,19 +1,22 @@
 import { safeResolvePath, sanitizeFilename } from '@/lib/utils/safe-path';
 import { join } from 'path';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 
 const BACKUP_DIR = process.env.BACKUP_DIR || join(process.cwd(), 'backups');
 
-export async function GET(
-  request: Request,
+export const GET = withErrorHandler(async (
+  request: NextRequest,
   { params }: { params: Promise<{ filename: string }> }
-) {
+) => {
   // ✅ Auth obligatoire — seuls ADMIN/SUPER_ADMIN peuvent accéder aux backups
   const session = await getServerSession(authOptions);
-  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-    return new Response('Non autorisé', { status: 403 });
+  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user?.role || '')) {
+    throw new ForbiddenError('Non autorisé');
   }
 
   const { filename } = await params;
@@ -21,33 +24,39 @@ export async function GET(
   // ✅ Sanitisation + confinement
   const safeFilename = sanitizeFilename(filename);
   if (!safeFilename || safeFilename !== filename) {
-    return new Response('Nom de fichier invalide', { status: 400 });
+    throw new ValidationError('Nom de fichier invalide');
   }
 
   let filePath: string;
   try {
     filePath = safeResolvePath(BACKUP_DIR, safeFilename);
   } catch {
-    return new Response('Accès refusé', { status: 403 });
+    throw new ForbiddenError('Accès refusé');
   }
 
   // ✅ Vérifier existence
   const { existsSync, statSync } = await import('fs');
   if (!existsSync(filePath) || !statSync(filePath).isFile()) {
-    return new Response('Fichier non trouvé', { status: 404 });
+    throw new NotFoundError('Fichier non trouvé');
   }
 
   // Whitelist des extensions autorisées pour les backups
   const ext = filePath.split('.').pop()?.toLowerCase();
   const ALLOWED_EXTENSIONS = ['dump', 'gz', 'zip', 'sql', 'json'];
   if (!ext || !ALLOWED_EXTENSIONS.includes(ext)) {
-    return new Response('Type de fichier non autorisé', { status: 400 });
+    throw new ValidationError('Type de fichier non autorisé');
   }
 
   const fileBuffer = await import('fs').then(fs => fs.readFileSync(filePath));
   
   // Audit log
-  auditLog('DOWNLOAD_BACKUP', 'System', safeFilename, parseInt(session.user.id));
+  await ActivityLogger.custom({
+    action: 'DOWNLOAD_BACKUP',
+    entity: 'System',
+    entityId: null,
+    userId: parseInt(session.user.id),
+    details: { filename: safeFilename }
+  });
 
   return new Response(fileBuffer, {
     headers: {
@@ -56,15 +65,15 @@ export async function GET(
       'Cache-Control': 'no-store, private',
     },
   });
-}
+});
 
-export async function DELETE(
-  request: Request,
+export const DELETE = withErrorHandler(async (
+  request: NextRequest,
   { params }: { params: Promise<{ filename: string }> }
-) {
+) => {
   const session = await getServerSession(authOptions);
-  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-    return new Response('Non autorisé', { status: 403 });
+  if (!session || !['ADMIN', 'SUPER_ADMIN'].includes(session.user?.role || '')) {
+    throw new ForbiddenError('Non autorisé');
   }
 
   const { filename } = await params;
@@ -74,18 +83,24 @@ export async function DELETE(
   try {
     filePath = safeResolvePath(BACKUP_DIR, safeFilename);
   } catch {
-    return new Response('Accès refusé', { status: 403 });
+    throw new ForbiddenError('Accès refusé');
   }
 
   const { existsSync, unlinkSync } = await import('fs');
   if (!existsSync(filePath)) {
-    return new Response('Fichier non trouvé', { status: 404 });
+    throw new NotFoundError('Fichier non trouvé');
   }
 
   unlinkSync(filePath);
   
   // Audit log
-  auditLog('DELETE_BACKUP', 'System', safeFilename, parseInt(session.user.id));
+  await ActivityLogger.custom({
+    action: 'DELETE_BACKUP',
+    entity: 'System',
+    entityId: null,
+    userId: parseInt(session.user.id),
+    details: { filename: safeFilename }
+  });
 
-  return Response.json({ success: true });
-}
+  return successResponse({ success: true });
+});

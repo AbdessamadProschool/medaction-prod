@@ -1,17 +1,18 @@
 import { safeParseInt } from '@/lib/utils/parse';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ConflictError } from '@/lib/exceptions';
 
 // GET - Détail d'une campagne
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
+) => {
+  const { id } = await params;
     
     // Peut être un ID numérique ou un slug
     const isNumeric = /^\d+$/.test(id);
@@ -51,9 +52,9 @@ export async function GET(
       },
     });
 
-    if (!campagne) {
-      return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
-    }
+  if (!campagne) {
+    throw new NotFoundError('Campagne non trouvée');
+  }
 
     // Récupérer les campagnes similaires
     const campagnesSimilaires = await prisma.campagne.findMany({
@@ -71,55 +72,45 @@ export async function GET(
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        ...campagne,
-        auteur: campagne.createdByUser,
-        nombreParticipations: campagne._count.participations,
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      campagnesSimilaires: campagnesSimilaires.map((c: any) => ({
-        id: c.id,
-        titre: c.titre,
-        slug: c.slug,
-        description: c.description,
-        type: c.type,
-        imageCouverture: c.imageCouverture || c.imagePrincipale,
-        nombreParticipations: c._count?.participations || 0,
-        objectifParticipations: c.objectifParticipations,
-      })),
-    });
-
-  } catch (error) {
-    console.error('Erreur campagne:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    ...campagne,
+    auteur: campagne.createdByUser,
+    nombreParticipations: campagne._count.participations,
+    campagnesSimilaires: campagnesSimilaires.map((c: any) => ({
+      id: c.id,
+      titre: c.titre,
+      slug: c.slug,
+      description: c.description,
+      type: c.type,
+      imageCouverture: c.imageCouverture || c.imagePrincipale,
+      nombreParticipations: c._count?.participations || 0,
+      objectifParticipations: c.objectifParticipations,
+    })),
+  });
+});
 
 // POST - Participer à une campagne
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Connexion requise' }, { status: 401 });
-    }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Connexion requise');
+  }
 
     const { id } = await params;
     const userId = parseInt(session.user.id);
     const campagneId = safeParseInt(id, 0);
 
-    // Vérification stricte de la permission de participer
-    const { checkPermission } = await import("@/lib/permissions");
-    const hasPermission = await checkPermission(userId, 'campagnes.participate');
+  // Vérification stricte de la permission de participer
+  const { checkPermission } = await import("@/lib/permissions");
+  const hasPermission = await checkPermission(userId, 'campagnes.participate');
 
-    if (!hasPermission) {
-      return NextResponse.json({ error: "Vous n'avez pas la permission de participer aux campagnes" }, { status: 403 });
-    }
+  if (!hasPermission) {
+    throw new ForbiddenError("Vous n'avez pas la permission de participer aux campagnes");
+  }
 
     const body = await request.json();
 
@@ -128,13 +119,13 @@ export async function POST(
       where: { id: campagneId },
     });
 
-    if (!campagne) {
-      return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
-    }
+  if (!campagne) {
+    throw new NotFoundError('Campagne non trouvée');
+  }
 
-    if (!campagne.isActive) {
-      return NextResponse.json({ error: 'Cette campagne n\'est plus active' }, { status: 400 });
-    }
+  if (!campagne.isActive) {
+    throw new ConflictError('Cette campagne n\'est plus active');
+  }
 
     // Vérifier si l'utilisateur a déjà participé
     const existingParticipation = await prisma.participationCampagne.findFirst({
@@ -144,9 +135,9 @@ export async function POST(
       },
     });
 
-    if (existingParticipation) {
-      return NextResponse.json({ error: 'Vous avez déjà participé à cette campagne' }, { status: 400 });
-    }
+  if (existingParticipation) {
+    throw new ConflictError('Vous avez déjà participé à cette campagne');
+  }
 
     // Créer la participation
     const participation = await prisma.participationCampagne.create({
@@ -158,39 +149,29 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: 'Participation enregistrée avec succès',
-      data: participation,
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error('Erreur participation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(participation, 'Participation enregistrée avec succès', 201);
+});
 
 // PATCH - Mettre à jour une campagne (Admin uniquement)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Connexion requise' }, { status: 401 });
-    }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Connexion requise');
+  }
 
     const userId = parseInt(session.user.id);
 
-    // Vérifier la permission
-    const { checkPermission } = await import("@/lib/permissions");
-    const hasPermission = await checkPermission(userId, 'campagnes.edit');
+  // Vérifier la permission
+  const { checkPermission } = await import("@/lib/permissions");
+  const hasPermission = await checkPermission(userId, 'campagnes.edit');
 
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
-    }
+  if (!hasPermission) {
+    throw new ForbiddenError('Action non autorisée');
+  }
 
     const { id } = await params;
     const campagneId = safeParseInt(id, 0);
@@ -201,9 +182,9 @@ export async function PATCH(
       where: { id: campagneId },
     });
 
-    if (!existingCampagne) {
-      return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
-    }
+  if (!existingCampagne) {
+    throw new NotFoundError('Campagne non trouvée');
+  }
 
     // Construire les données de mise à jour
     const updateData: any = {};
@@ -232,46 +213,42 @@ export async function PATCH(
       data: updateData,
     });
 
-    // Audit logging
-    auditLog('UPDATE_CAMPAGNE', 'Campagne', campagneId, userId, {
+  // Audit logging
+  await ActivityLogger.custom({
+    action: 'UPDATE_CAMPAGNE',
+    entity: 'Campagne',
+    entityId: campagneId,
+    userId: userId,
+    details: {
       titre: campagne.titre,
       statut: updateData.statut,
       updatedFields: Object.keys(updateData)
-    });
+    }
+  });
 
-    return NextResponse.json({
-      success: true,
-      message: 'Campagne mise à jour',
-      data: campagne,
-    });
-
-  } catch (error) {
-    console.error('Erreur mise à jour campagne:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(campagne, 'Campagne mise à jour');
+});
 
 // DELETE - Supprimer une campagne (Admin uniquement)
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Connexion requise' }, { status: 401 });
-    }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Connexion requise');
+  }
 
     const userId = parseInt(session.user.id);
 
-    // Vérifier la permission
-    const { checkPermission } = await import("@/lib/permissions");
-    const hasPermission = await checkPermission(userId, 'campagnes.delete');
+  // Vérifier la permission
+  const { checkPermission } = await import("@/lib/permissions");
+  const hasPermission = await checkPermission(userId, 'campagnes.delete');
 
-    if (!hasPermission) {
-      return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
-    }
+  if (!hasPermission) {
+    throw new ForbiddenError('Action non autorisée');
+  }
 
     const { id } = await params;
     const campagneId = safeParseInt(id, 0);
@@ -281,9 +258,9 @@ export async function DELETE(
       where: { id: campagneId },
     });
 
-    if (!existingCampagne) {
-      return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
-    }
+  if (!existingCampagne) {
+    throw new NotFoundError('Campagne non trouvée');
+  }
 
     // Supprimer les participations associées d'abord
     await prisma.participationCampagne.deleteMany({
@@ -295,18 +272,16 @@ export async function DELETE(
       where: { id: campagneId },
     });
 
-    // Audit logging
-    auditLog('DELETE_CAMPAGNE', 'Campagne', campagneId, userId, {
+  // Audit logging
+  await ActivityLogger.custom({
+    action: 'DELETE_CAMPAGNE',
+    entity: 'Campagne',
+    entityId: campagneId,
+    userId: userId,
+    details: {
       titre: existingCampagne.titre
-    });
+    }
+  });
 
-    return NextResponse.json({
-      success: true,
-      message: 'Campagne supprimée',
-    });
-
-  } catch (error) {
-    console.error('Erreur suppression campagne:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(null, 'Campagne supprimée');
+});

@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, NotFoundError, BadRequestError } from '@/lib/exceptions';
 import { withPermission } from '@/lib/auth/api-guard';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
 import { sanitizeName, sanitizePhone, sanitizeString } from '@/lib/security/sanitize';
 
 const updateUserSchema = z.object({
@@ -103,16 +103,15 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
   });
 
   // Audit log avec comparaison d'état
-  await auditLog({
+  await ActivityLogger.custom({
     action: 'UPDATE_USER',
-    resource: 'USER',
-    resourceId: String(updatedUser.id),
-    userId: session.user.id,
-    previousValue: targetUser,
-    newValue: updatedUser,
-    status: 'SUCCESS',
-    ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
-    userAgent: request.headers.get('user-agent') || 'unknown'
+    entity: 'User',
+    entityId: updatedUser.id,
+    userId: parseInt(session.user.id),
+    details: {
+      previousValue: targetUser,
+      newValue: updatedUser
+    }
   });
 
   return successResponse(updatedUser, 'Utilisateur mis à jour avec succès');
@@ -146,14 +145,11 @@ export const DELETE = withPermission('users.delete', withErrorHandler(async (req
     });
 
     // Audit log
-    await auditLog({
+    await ActivityLogger.custom({
       action: 'DELETE_USER',
-      resource: 'USER',
-      resourceId: String(id),
-      userId: session.user.id,
-      status: 'SUCCESS',
-      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
-      userAgent: request.headers.get('user-agent') || 'unknown'
+      entity: 'User',
+      entityId: id,
+      userId: parseInt(session.user.id)
     });
 
     return successResponse(null, 'Utilisateur supprimé');

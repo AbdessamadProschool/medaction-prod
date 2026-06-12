@@ -1,9 +1,11 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { hashPassword } from '@/lib/auth/password';
 import { z } from 'zod';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError, AppError } from '@/lib/exceptions';
 
 const updateAdminSchema = z.object({
   nom: z.string().min(2).optional(),
@@ -15,21 +17,20 @@ const updateAdminSchema = z.object({
 });
 
 // GET /api/admins/[id] - Récupérer un admin spécifique
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
 
     const admin = await prisma.user.findUnique({
       where: { id },
@@ -48,47 +49,42 @@ export async function GET(
       },
     });
 
-    if (!admin) {
-      return NextResponse.json({ error: 'Administrateur non trouvé' }, { status: 404 });
-    }
-
-    if (admin.role !== 'ADMIN' && admin.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Cet utilisateur n\'est pas un administrateur' }, { status: 400 });
-    }
-
-    return NextResponse.json(admin);
-  } catch (error) {
-    console.error('Erreur GET admin:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!admin) {
+    throw new NotFoundError('Administrateur non trouvé');
   }
-}
+
+  if (admin.role !== 'ADMIN' && admin.role !== 'SUPER_ADMIN') {
+    throw new ValidationError('Cet utilisateur n\'est pas un administrateur');
+  }
+
+  return successResponse(admin);
+});
 
 // PUT /api/admins/[id] - Mettre à jour un admin
-export async function PUT(
+export const PUT = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
 
     // Protection contre l'auto-modification via cette API (le profil a sa propre API)
     // Mais un Super Admin peut vouloir se modifier, donc on permet, mais avec prudence sur le rôle
     
-    const body = await request.json();
-    const validation = updateAdminSchema.safeParse(body);
+  const body = await request.json();
+  const validation = updateAdminSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({ error: validation.error.issues[0].message }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError(validation.error.issues[0].message);
+  }
 
     const data = validation.data;
     const updateData: any = {};
@@ -97,11 +93,11 @@ export async function PUT(
     if (data.prenom) updateData.prenom = data.prenom;
     if (data.email) updateData.email = data.email.toLowerCase();
     if (data.telephone !== undefined) updateData.telephone = data.telephone;
-    if (data.isActive !== undefined) {
-      // Protection: un Super Admin ne peut pas se désactiver lui-même
-      if (id === parseInt(session.user.id) && data.isActive === false) {
-        return NextResponse.json({ error: 'Vous ne pouvez pas désactiver votre propre compte' }, { status: 400 });
-      }
+  if (data.isActive !== undefined) {
+    // Protection: un Super Admin ne peut pas se désactiver lui-même
+    if (id === parseInt(session.user.id) && data.isActive === false) {
+      throw new ValidationError('Vous ne pouvez pas désactiver votre propre compte');
+    }
       updateData.isActive = data.isActive;
     }
 
@@ -109,18 +105,18 @@ export async function PUT(
       updateData.motDePasse = await hashPassword(data.password);
     }
 
-    // Vérifier l'unicité de l'email si changé
-    if (data.email) {
-      const existingUser = await prisma.user.findFirst({
-        where: { 
-          email: data.email,
-          NOT: { id }
-        }
-      });
-      if (existingUser) {
-        return NextResponse.json({ error: 'Cet email est déjà utilisé' }, { status: 400 });
+  // Vérifier l'unicité de l'email si changé
+  if (data.email) {
+    const existingUser = await prisma.user.findFirst({
+      where: { 
+        email: data.email,
+        NOT: { id }
       }
+    });
+    if (existingUser) {
+      throw new ValidationError('Cet email est déjà utilisé');
     }
+  }
 
     const updatedAdmin = await prisma.user.update({
       where: { id },
@@ -135,61 +131,52 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ 
-      message: 'Administrateur mis à jour avec succès',
-      admin: updatedAdmin 
-    });
-
-  } catch (error) {
-    console.error('Erreur PUT admin:', error);
-    return NextResponse.json({ error: 'Erreur lors de la mise à jour' }, { status: 500 });
-  }
-}
+  return successResponse({ 
+    admin: updatedAdmin 
+  }, 'Administrateur mis à jour avec succès');
+});
 
 // DELETE /api/admins/[id] - Supprimer un admin
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
+
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
+
+  // Protection contre l'auto-suppression
+  if (id === parseInt(session.user.id)) {
+    throw new ValidationError('Vous ne pouvez pas supprimer votre propre compte');
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
-
-    // Protection contre l'auto-suppression
-    if (id === parseInt(session.user.id)) {
-      return NextResponse.json({ error: 'Vous ne pouvez pas supprimer votre propre compte' }, { status: 400 });
-    }
-
     // Vérifier s'il a des activités critiques (optionnel, sinon le FK constraint échouera)
     // On tente la suppression
     await prisma.user.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: 'Administrateur supprimé avec succès' });
-
+    return successResponse(null, 'Administrateur supprimé avec succès');
   } catch (error: any) {
     console.error('Erreur DELETE admin:', error);
     
     // Gestion des contraintes de clé étrangère
     if (error.code === 'P2003') {
-      return NextResponse.json({ 
-        error: 'Impossible de supprimer cet administrateur car il est lié à d\'autres données (logs, actions, etc.). Veuillez plutôt le désactiver.' 
-      }, { status: 409 });
+      throw new AppError('Impossible de supprimer cet administrateur car il est lié à d\'autres données (logs, actions, etc.). Veuillez plutôt le désactiver.', 'CONFLICT', 409);
     }
 
     if (error.code === 'P2025') {
-      return NextResponse.json({ error: 'Administrateur introuvable' }, { status: 404 });
+      throw new NotFoundError('Administrateur introuvable');
     }
 
-    return NextResponse.json({ error: 'Erreur serveur lors de la suppression' }, { status: 500 });
+    throw error;
   }
-}
+});

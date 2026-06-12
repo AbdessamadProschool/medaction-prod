@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
-import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 import { z } from 'zod';
 import { sanitizeString } from '@/lib/security/validation';
 
@@ -28,7 +28,7 @@ export const GET = withErrorHandler(async (
   const articleId = parseInt(id);
 
   if (isNaN(articleId)) {
-    return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
+    throw new ValidationError('ID invalide');
   }
 
   const article = await prisma.article.findUnique({
@@ -45,7 +45,7 @@ export const GET = withErrorHandler(async (
   });
 
   if (!article) {
-    return NextResponse.json({ error: 'Article non trouvé' }, { status: 404 });
+    throw new NotFoundError('Article non trouvé');
   }
 
   // SECURITY FIX: Vérification de visibilité
@@ -57,7 +57,7 @@ export const GET = withErrorHandler(async (
 
     if (!isAdmin && !isAuthor) {
       // Ne pas révéler l'existence de l'article → 404
-      return NextResponse.json({ error: 'Article non trouvé' }, { status: 404 });
+      throw new NotFoundError('Article non trouvé');
     }
   }
 
@@ -88,15 +88,12 @@ export const GET = withErrorHandler(async (
     orderBy: { datePublication: 'desc' },
   });
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      ...article,
-      auteur: article.createdByUser,
-      vues: (article.nombreVues || 0) + (article.isPublie ? 1 : 0),
-      resume: article.description,
-      imageCouverture: article.imagePrincipale,
-    },
+  return successResponse({
+    ...article,
+    auteur: article.createdByUser,
+    vues: (article.nombreVues || 0) + (article.isPublie ? 1 : 0),
+    resume: article.description,
+    imageCouverture: article.imagePrincipale,
     articlesConnexes: articlesConnexes.map(a => ({
       ...a,
       resume: a.description,
@@ -144,7 +141,7 @@ export const PUT = withErrorHandler(async (
     },
   });
 
-  return NextResponse.json({ success: true, data: article });
+  return successResponse(article);
 });
 
 // DELETE - Supprimer un article
@@ -166,7 +163,7 @@ export const DELETE = withErrorHandler(async (
     where: { id: articleId },
   });
 
-  return NextResponse.json({ success: true, message: "Article supprimé" });
+  return successResponse(null, "Article supprimé");
 });
 
 // PATCH - Mise à jour partielle (statut, mise en avant)
@@ -204,5 +201,5 @@ export const PATCH = withErrorHandler(async (
     },
   });
 
-  return NextResponse.json({ success: true, data: article });
+  return successResponse(article);
 });

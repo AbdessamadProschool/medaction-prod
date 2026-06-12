@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 const VALID_STATUTS = [
   'BROUILLON',
@@ -14,40 +17,34 @@ const VALID_STATUTS = [
 ];
 
 // PATCH - Changer le statut d'une actualité (Admin uniquement)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+  { params: _p }: { params: Promise<{ id: string }> }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seuls les admins peuvent changer le statut
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ 
-        error: 'Seuls les administrateurs peuvent modifier le statut' 
-      }, { status: 403 });
-    }
+  // Seuls les admins peuvent changer le statut
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    throw new ForbiddenError('Seuls les administrateurs peuvent modifier le statut');
+  }
 
-    const { id } = await params;
+  const { id } = await _p;
     const actualiteId = parseInt(id);
     
-    if (isNaN(actualiteId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  if (isNaN(actualiteId)) {
+    throw new ValidationError('ID invalide');
+  }
 
     const body = await request.json();
     const { statut } = body;
 
-    if (!statut || !VALID_STATUTS.includes(statut)) {
-      return NextResponse.json({ 
-        error: 'Statut invalide', 
-        validStatuts: VALID_STATUTS 
-      }, { status: 400 });
-    }
+  if (!statut || !VALID_STATUTS.includes(statut)) {
+    throw new ValidationError('Statut invalide');
+  }
 
     // Vérifier que l'actualité existe
     const actualite = await prisma.actualite.findUnique({
@@ -55,9 +52,9 @@ export async function PATCH(
       select: { id: true, titre: true, createdBy: true, statut: true }
     });
 
-    if (!actualite) {
-      return NextResponse.json({ error: 'Actualité non trouvée' }, { status: 404 });
-    }
+  if (!actualite) {
+    throw new NotFoundError('Actualité non trouvée');
+  }
 
     // Préparer les données de mise à jour
     const updateData: any = { statut };
@@ -117,26 +114,15 @@ export async function PATCH(
       });
     }
 
-    await prisma.activityLog.create({
-      data: {
-        action: `Mise à jour statut actualité (${statut})`,
-        entity: 'Actualités',
-        entityId: actualite.id.toString(),
-        details: `L'utilisateur a changé le statut de l'actualité "${actualite.titre}" à "${statut}"`,
-        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-        userAgent: request.headers.get('user-agent') || 'Unknown',
-        userId: parseInt(session.user.id)
-      }
+    await ActivityLogger.custom({
+      action: `Mise à jour statut actualité (${statut})`,
+      entity: 'Actualite',
+      entityId: actualite.id,
+      details: {
+        message: `L'utilisateur a changé le statut de l'actualité "${actualite.titre}" à "${statut}"`
+      },
+      userId: parseInt(session.user.id)
     });
 
-    return NextResponse.json({ 
-      success: true,
-      message: `Statut modifié: ${statut}`,
-      data: updatedActualite 
-    });
-
-  } catch (error) {
-    console.error('Erreur changement statut actualité:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(updatedActualite, `Statut modifié: ${statut}`);
+});

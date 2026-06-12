@@ -7,6 +7,9 @@ import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { SecurityValidation } from '@/lib/security/validation';
 import { z } from 'zod';
 import { ForbiddenError } from '@/lib/exceptions';
+import { checkPermission } from '@/lib/permissions';
+import { notifyAdmins } from '@/lib/notifications';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // GET /api/suggestions - Liste des suggestions (Public + Staff)
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -164,7 +167,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   
   // Vérifier la permission
-  const { checkPermission } = await import("@/lib/permissions");
   const hasPermission = await checkPermission(userId, 'suggestions.create');
 
   if (!hasPermission) {
@@ -236,48 +238,18 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     },
   });
 
-  // Notifier les admins (non-bloquant)
-  try {
-    const admins = await prisma.user.findMany({
-      where: {
-        role: { in: ['ADMIN', 'SUPER_ADMIN'] },
-        isActive: true,
-      },
-      select: { id: true },
-    });
-
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map((admin) => ({
-          userId: admin.id,
-          type: 'NOUVELLE_SUGGESTION',
-          titre: 'Nouvelle suggestion',
-          message: `Une nouvelle suggestion "${suggestion.titre}" a été soumise.`,
-          lien: `/admin/suggestions/${suggestion.id}`,
-        })),
-      });
-    }
-  } catch (error) {
-    console.warn('Erreur lors de la notification des admins:', error);
-  }
-
-  await prisma.activityLog.create({
-    data: {
-      action: 'Création d\'une suggestion',
-      entity: 'Suggestions',
-      entityId: suggestion.id.toString(),
-      details: `L'utilisateur a soumis la suggestion "${suggestion.titre}"`,
-      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-      userAgent: request.headers.get('user-agent') || 'Unknown',
-      userId: userId
-    }
+  // Notifier les admins (non-bloquant) — centralisé dans lib/notifications.ts
+  await notifyAdmins({
+    type: 'NOUVELLE_SUGGESTION',
+    titre: 'Nouvelle suggestion',
+    message: `Une nouvelle suggestion "${suggestion.titre}" a été soumise.`,
+    lien: `/admin/suggestions/${suggestion.id}`,
   });
 
-  // Use dynamic import for auditLog
-  const { auditLog } = await import("@/lib/logger");
-  auditLog('CREATE_SUGGESTION', 'Suggestion', suggestion.id, userId, {
-    title: suggestion.titre,
-    categorie: suggestion.categorie
+  // Journalisation de l'activité — centralisée dans lib/activity-logger.ts
+  await ActivityLogger.create(userId, 'Suggestion', suggestion.id, {
+    titre: suggestion.titre,
+    categorie: suggestion.categorie,
   });
 
   return NextResponse.json({

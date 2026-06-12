@@ -1,10 +1,11 @@
 import { safeParseInt } from '@/lib/utils/parse';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
-import { logActivity } from '@/lib/activity-logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptions';
 
 interface RouteParams {
   params: Promise<{
@@ -13,13 +14,12 @@ interface RouteParams {
 }
 
 // GET - Récupérer une campagne
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export const GET = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
   const { id: idParam } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const userId = parseInt(session.user.id);
     const id = safeParseInt(idParam, 0);
@@ -31,40 +31,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }
     });
 
-    if (!campagne) {
-      return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
-    }
+  if (!campagne) {
+    throw new NotFoundError('Campagne non trouvée');
+  }
 
     // SECURITY FIX: Vérification ownership (alignement avec PUT/DELETE)
     const isOwner = campagne.createdBy === userId;
     const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role);
     const isGouverneur = session.user.role === 'GOUVERNEUR';
 
-    if (!isOwner && !isAdmin && !isGouverneur) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      data: {
-        ...campagne,
-        imagePrincipale: campagne.imagePrincipale || campagne.medias?.[0]?.urlPublique || null
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!isOwner && !isAdmin && !isGouverneur) {
+    throw new ForbiddenError('Accès refusé');
   }
-}
+
+  return successResponse({
+    ...campagne,
+    imagePrincipale: campagne.imagePrincipale || campagne.medias?.[0]?.urlPublique || null
+  });
+});
 
 // PUT - Modifier une campagne
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export const PUT = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
   const { id: idParam } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const userId = parseInt(session.user.id);
     const id = safeParseInt(idParam, 0);
@@ -75,13 +67,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       where: { id },
     });
 
-    if (!campagne) {
-      return NextResponse.json({ error: 'Campagne introuvable' }, { status: 404 });
-    }
+  if (!campagne) {
+    throw new NotFoundError('Campagne introuvable');
+  }
 
-    if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
-    }
+  if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Action non autorisée');
+  }
 
     // Préparation des données update
     const updateData: any = {};
@@ -116,46 +108,31 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
     const userAgent = request.headers.get('user-agent') || null;
-    const actionName = (body.statut === 'CLOTUREE') ? 'CLOTURE_CAMPAGNE' : 'UPDATE_CAMPAGNE';
+  const actionName = (body.statut === 'CLOTUREE') ? 'CLOTURE_CAMPAGNE' : 'UPDATE_CAMPAGNE';
 
-    await auditLog({
-      action: actionName,
-      resource: 'Campagne',
-      resourceId: id,
-      userId: userId,
-      details: { titre: updatedCampagne.titre, fields: Object.keys(updateData) },
+  await ActivityLogger.custom({
+    action: actionName,
+    entity: 'Campagne',
+    entityId: id,
+    userId: userId,
+    details: { 
+      titre: updatedCampagne.titre, 
+      fields: Object.keys(updateData),
       previousValue: campagne,
-      newValue: updatedCampagne,
-      ipAddress,
-      userAgent,
-      status: 'SUCCESS'
-    });
+      newValue: updatedCampagne
+    }
+  });
 
-    await logActivity({
-      userId: userId,
-      action: actionName,
-      entity: 'Campagne',
-      entityId: id,
-      details: { titre: updatedCampagne.titre },
-      ipAddress,
-      userAgent
-    });
-
-    return NextResponse.json({ success: true, data: updatedCampagne });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(updatedCampagne);
+});
 
 // DELETE - Supprimer une campagne
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export const DELETE = withErrorHandler(async (request: NextRequest, { params }: RouteParams) => {
   const { id: idParam } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const userId = parseInt(session.user.id);
     const id = safeParseInt(idParam, 0);
@@ -165,46 +142,25 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       where: { id },
     });
 
-    if (!campagne) {
-      return NextResponse.json({ error: 'Campagne introuvable' }, { status: 404 });
-    }
+  if (!campagne) {
+    throw new NotFoundError('Campagne introuvable');
+  }
 
-    if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
-    }
+  if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Action non autorisée');
+  }
 
     await prisma.campagne.delete({
       where: { id },
     });
 
-    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
-    const userAgent = request.headers.get('user-agent') || null;
+  await ActivityLogger.custom({
+    action: 'DELETE_CAMPAGNE',
+    entity: 'Campagne',
+    entityId: id,
+    userId: userId,
+    details: { titre: campagne.titre }
+  });
 
-    await auditLog({
-      action: 'DELETE_CAMPAGNE',
-      resource: 'Campagne',
-      resourceId: id,
-      userId: userId,
-      details: { titre: campagne.titre },
-      previousValue: campagne,
-      ipAddress,
-      userAgent,
-      status: 'SUCCESS'
-    });
-
-    await logActivity({
-      userId: userId,
-      action: 'DELETE_CAMPAGNE',
-      entity: 'Campagne',
-      entityId: id,
-      details: { titre: campagne.titre },
-      ipAddress,
-      userAgent
-    });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(null);
+});

@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 // Fonction pour nettoyer les objets (convertir les dates string en objets Date)
 const cleanData = (data: any[]) => {
@@ -24,26 +26,25 @@ const cleanData = (data: any[]) => {
   });
 };
 
-export async function POST(req: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (session?.user?.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
-    }
+export const POST = withErrorHandler(async (req: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Non autorisé');
+  }
 
-    const formData = await req.formData();
-    const file = formData.get('file') as File;
+  const formData = await req.formData();
+  const file = formData.get('file') as File;
 
-    if (!file) {
-      return NextResponse.json({ error: 'Aucun fichier fourni' }, { status: 400 });
-    }
+  if (!file) {
+    throw new ValidationError('Aucun fichier fourni');
+  }
 
-    const fileContent = await file.text();
-    const backup = JSON.parse(fileContent);
+  const fileContent = await file.text();
+  const backup = JSON.parse(fileContent);
 
-    if (!backup.data) {
-       return NextResponse.json({ error: 'Format de sauvegarde invalide (data manquant)' }, { status: 400 });
-    }
+  if (!backup.data) {
+    throw new ValidationError('Format de sauvegarde invalide (data manquant)');
+  }
 
     const d = backup.data;
 
@@ -178,21 +179,19 @@ export async function POST(req: Request) {
     console.log('[RESTORE] Restauration terminée avec succès');
 
     // Audit log
-    auditLog('RESTORE_BACKUP', 'System', file.name, parseInt(session.user.id), {
-      tablesCount: Object.keys(d).length
+    await ActivityLogger.custom({
+      action: 'RESTORE_BACKUP',
+      entity: 'System',
+      entityId: null,
+      userId: parseInt(session.user.id),
+      details: {
+        filename: file.name,
+        tablesCount: Object.keys(d).length
+      }
     });
 
-    return NextResponse.json({ 
+    return successResponse({ 
       success: true, 
-      message: 'Restauration complète effectuée avec succès',
       details: `${Object.keys(d).length} tables restaurées.`
-    });
-
-  } catch (error) {
-    console.error('Erreur restauration critique:', error);
-    return NextResponse.json({ 
-       error: 'Erreur lors de la restauration. La base de données peut être dans un état incohérent.',
-       details: String(error)
-    }, { status: 500 });
-  }
-}
+    }, 'Restauration complète effectuée avec succès');
+});

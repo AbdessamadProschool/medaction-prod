@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 import { z } from 'zod';
 
 const validerSchema = z.object({
@@ -10,39 +13,33 @@ const validerSchema = z.object({
 });
 
 // PATCH - Valider ou rejeter une actualité (ADMIN uniquement)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seuls les admins peuvent valider
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ 
-        error: 'Seuls les administrateurs peuvent valider les actualités' 
-      }, { status: 403 });
-    }
+  // Seuls les admins peuvent valider
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    throw new ForbiddenError('Seuls les administrateurs peuvent valider les actualités');
+  }
 
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
 
     const body = await request.json();
     const validation = validerSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({ 
-        error: 'Données invalides', 
-        details: validation.error.flatten() 
-      }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError('Données invalides');
+  }
 
     const { decision, motifRejet } = validation.data;
 
@@ -52,16 +49,14 @@ export async function PATCH(
       select: { id: true, statut: true, titre: true, createdBy: true }
     });
 
-    if (!actualite) {
-      return NextResponse.json({ error: 'Actualité non trouvée' }, { status: 404 });
-    }
+  if (!actualite) {
+    throw new NotFoundError('Actualité non trouvée');
+  }
 
-    // Validation des règles de transition
-    if (decision === 'REJETEE' && !motifRejet) {
-      return NextResponse.json({ 
-        error: 'Un motif de rejet est requis' 
-      }, { status: 400 });
-    }
+  // Validation des règles de transition
+  if (decision === 'REJETEE' && !motifRejet) {
+    throw new ValidationError('Un motif de rejet est requis');
+  }
 
     // Préparer les données de mise à jour
     const updateData: any = {
@@ -128,25 +123,15 @@ export async function PATCH(
       }
     });
 
-    await prisma.activityLog.create({
-      data: {
-        action: `Validation actualité (${decision})`,
-        entity: 'Actualités',
-        entityId: actualite.id.toString(),
-        details: `L'utilisateur a défini le statut de l'actualité "${actualite.titre}" à "${decision}"`,
-        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-        userAgent: request.headers.get('user-agent') || 'Unknown',
-        userId: parseInt(session.user.id)
-      }
+    await ActivityLogger.custom({
+      action: `Validation actualité (${decision})`,
+      entity: 'Actualite',
+      entityId: actualite.id,
+      details: {
+        message: `L'utilisateur a défini le statut de l'actualité "${actualite.titre}" à "${decision}"`
+      },
+      userId: parseInt(session.user.id)
     });
 
-    return NextResponse.json({ 
-      message: `Actualité ${decision.toLowerCase()}`,
-      data: updatedActualite 
-    });
-
-  } catch (error) {
-    console.error('Erreur validation actualité:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(updatedActualite, `Actualité ${decision.toLowerCase()}`);
+});

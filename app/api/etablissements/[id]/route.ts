@@ -6,7 +6,7 @@ import { etablissementUpdateSchema } from "@/lib/validations/etablissement";
 import { withErrorHandler, successResponse } from "@/lib/api-handler";
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from "@/lib/exceptions";
 import { getSafeId } from "@/lib/utils/parse";
-import { auditLog } from "@/lib/logger";
+import { ActivityLogger } from "@/lib/activity-logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -204,16 +204,15 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
   });
 
   // Audit logging avec comparaison d'état
-  await auditLog({
+  await ActivityLogger.custom({
     action: 'UPDATE_ETABLISSEMENT',
-    resource: 'ETABLISSEMENT',
-    resourceId: String(etablissementId),
-    userId: session.user.id,
-    previousValue: existing,
-    newValue: updatedEtablissement,
-    status: 'SUCCESS',
-    ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
-    userAgent: req.headers.get('user-agent') || 'unknown'
+    entity: 'ETABLISSEMENT',
+    entityId: etablissementId,
+    userId: parseInt(session.user.id),
+    details: {
+      previousValue: existing,
+      newValue: updatedEtablissement
+    }
   });
 
   return successResponse(updatedEtablissement, "Établissement modifié avec succès");
@@ -277,14 +276,11 @@ export const DELETE = withErrorHandler(async (req: NextRequest, { params }: Rout
   });
 
   // Audit logging
-  await auditLog({
+  await ActivityLogger.custom({
     action: 'DELETE_ETABLISSEMENT',
-    resource: 'ETABLISSEMENT',
-    resourceId: String(etablissementId),
-    userId: session.user.id,
-    status: 'SUCCESS',
-    ipAddress: req.headers.get('x-forwarded-for') || '0.0.0.0',
-    userAgent: req.headers.get('user-agent') || 'unknown',
+    entity: 'ETABLISSEMENT',
+    entityId: etablissementId,
+    userId: parseInt(session.user.id),
     details: {
       nom: existing.nom,
       code: existing.code

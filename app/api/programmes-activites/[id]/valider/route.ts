@@ -1,11 +1,11 @@
-﻿import { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 import { getSafeId } from '@/lib/utils/parse';
-
+import { ActivityLogger } from '@/lib/activity-logger';
 // POST - Valider une activité (Admin/Super Admin seulement)
 export const POST = withErrorHandler(async (
   request: NextRequest,
@@ -67,17 +67,15 @@ export const POST = withErrorHandler(async (
     }
 
     // Logger l'action
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        action: 'VALIDATE_ACTIVITY',
-        entity: 'ProgrammeActivite',
-        entityId: activityId,
-        details: {
-          titre: activite.titre,
-          etablissement: activite.etablissement ? activite.etablissement.nom : 'Province',
-        },
-      }
+    await ActivityLogger.custom({
+      action: 'VALIDATE_ACTIVITY',
+      entity: 'ProgrammeActivite',
+      entityId: activityId,
+      details: {
+        titre: activite.titre,
+        etablissement: activite.etablissement ? activite.etablissement.nom : 'Province',
+      },
+      userId
     });
 
     return successResponse(null, 'Activité validée et publiée');
@@ -108,17 +106,15 @@ export const POST = withErrorHandler(async (
     }
 
     // Logger l'action
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        action: 'REJECT_ACTIVITY',
-        entity: 'ProgrammeActivite',
-        entityId: activityId,
-        details: {
-          titre: activite.titre,
-          motif: motif || 'Non spécifié',
-        },
-      }
+    await ActivityLogger.custom({
+      action: 'REJECT_ACTIVITY',
+      entity: 'ProgrammeActivite',
+      entityId: activityId,
+      details: {
+        titre: activite.titre,
+        motif: motif || 'Non spécifié',
+      },
+      userId
     });
 
     return successResponse(null, 'Activité rejetée et renvoyée en brouillon');

@@ -2,26 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 // GET - Contenus récents de la délégation
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    if (session.user.role !== 'DELEGATION') {
-      return NextResponse.json({ error: 'Accès réservé aux délégations' }, { status: 403 });
-    }
+  if (session.user.role !== 'DELEGATION') {
+    throw new ForbiddenError('Accès réservé aux délégations');
+  }
 
-    const userIdStr = session.user.id;
-    const userId = parseInt(userIdStr);
-    
-    if (!userIdStr || isNaN(userId)) {
-      return NextResponse.json({ error: 'ID utilisateur invalide' }, { status: 400 });
-    }
+  const userIdStr = session.user.id;
+  const userId = parseInt(userIdStr);
+  
+  if (!userIdStr || isNaN(userId)) {
+    throw new ValidationError('ID utilisateur invalide');
+  }
 
     // Récupérer les contenus récents
     const [evenements, actualites, articles, campagnes] = await Promise.all([
@@ -84,13 +85,5 @@ export async function GET(request: NextRequest) {
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
      .slice(0, 10);
 
-    return NextResponse.json({
-      success: true,
-      data: allItems,
-    });
-
-  } catch (error) {
-    console.error('Erreur contenus récents:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(allItems);
+});

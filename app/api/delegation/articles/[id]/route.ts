@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 async function getArticleWithOwnershipCheck(articleId: number, session: any) {
   const article = await prisma.article.findUnique({
@@ -12,128 +14,110 @@ async function getArticleWithOwnershipCheck(articleId: number, session: any) {
   });
 
   if (!article) {
-    return { article: null, error: NextResponse.json({ error: 'Article non trouvé' }, { status: 404 }) };
+    throw new NotFoundError('Article non trouvé');
   }
 
   const isOwner = Number(article.createdBy) === Number(session.user.id);
   const isAdmin = ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '');
 
   if (!isOwner && !isAdmin) {
-    return { article: null, error: NextResponse.json({ error: 'Accès refusé' }, { status: 403 }) };
+    throw new ForbiddenError('Accès refusé');
   }
 
-  return { article, error: null };
+  return article;
 }
 
 // GET - Récupérer un article par ID
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   const { id } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    const articleId = parseInt(id);
-    if (isNaN(articleId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
-
-    const { article, error } = await getArticleWithOwnershipCheck(articleId, session);
-    if (error) return error;
-
-    return NextResponse.json({ success: true, data: article });
-  } catch (error) {
-    console.error('Erreur GET article:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
   }
-}
+
+  const articleId = parseInt(id);
+  if (isNaN(articleId)) {
+    throw new ValidationError('ID invalide');
+  }
+
+  const article = await getArticleWithOwnershipCheck(articleId, session);
+
+  return successResponse(article);
+});
 
 // PATCH - Modifier un article
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   const { id } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    if (!['DELEGATION', 'ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    const articleId = parseInt(id);
-    if (isNaN(articleId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
-
-    const { error } = await getArticleWithOwnershipCheck(articleId, session);
-    if (error) return error;
-
-    const body = await request.json();
-    const { titre, description, contenu, categorie, tags, imagePrincipale, isPublie } = body;
-
-    const article = await prisma.article.update({
-      where: { id: articleId },
-      data: {
-        titre,
-        description,
-        contenu,
-        categorie,
-        tags,
-        imagePrincipale,
-        isPublie,
-        updatedAt: new Date(),
-      }
-    });
-
-    return NextResponse.json({ success: true, data: article });
-  } catch (error) {
-    console.error('Erreur PATCH article:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
   }
-}
+
+  if (!['DELEGATION', 'ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError('Accès non autorisé');
+  }
+
+  const articleId = parseInt(id);
+  if (isNaN(articleId)) {
+    throw new ValidationError('ID invalide');
+  }
+
+  await getArticleWithOwnershipCheck(articleId, session);
+
+  const body = await request.json();
+  const { titre, description, contenu, categorie, tags, imagePrincipale, isPublie } = body;
+
+  const article = await prisma.article.update({
+    where: { id: articleId },
+    data: {
+      titre,
+      description,
+      contenu,
+      categorie,
+      tags,
+      imagePrincipale,
+      isPublie,
+      updatedAt: new Date(),
+    }
+  });
+
+  return successResponse(article);
+});
 
 // DELETE - Supprimer un article
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   const { id } = await params;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    if (!['DELEGATION', 'ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
-
-    const articleId = parseInt(id);
-    if (isNaN(articleId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
-
-    const { error } = await getArticleWithOwnershipCheck(articleId, session);
-    if (error) return error;
-
-    await prisma.article.delete({
-      where: { id: articleId }
-    });
-
-    return NextResponse.json({ success: true, message: 'Article supprimé' });
-  } catch (error) {
-    console.error('Erreur DELETE article:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
   }
-}
+
+  if (!['DELEGATION', 'ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError('Accès non autorisé');
+  }
+
+  const articleId = parseInt(id);
+  if (isNaN(articleId)) {
+    throw new ValidationError('ID invalide');
+  }
+
+  await getArticleWithOwnershipCheck(articleId, session);
+
+  await prisma.article.delete({
+    where: { id: articleId }
+  });
+
+  return successResponse(null, 'Article supprimé');
+});

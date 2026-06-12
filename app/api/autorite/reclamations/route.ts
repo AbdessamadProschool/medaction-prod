@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, AppError } from '@/lib/exceptions';
 
 // GET - Réclamations de la commune de l'autorité locale
@@ -129,9 +129,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     orderBy: { nom: 'asc' }
   });
 
-  return NextResponse.json({
-    success: true,
-    data: reclamations.map(r => ({
+  return successResponse({
+    reclamations: reclamations.map(r => ({
       ...r,
       isResolue: r.dateResolution !== null,
       joursDepuisAffectation: r.dateAffectation 
@@ -152,7 +151,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       page,
       limit,
       total,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit)
     }
   });
 });

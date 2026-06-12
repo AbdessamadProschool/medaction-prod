@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
-import { logActivity } from '@/lib/activity-logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 
 // Next.js 15: params is now a Promise
 interface RouteParams {
@@ -38,19 +39,18 @@ async function canAccessEvenement(session: any, evenement: any): Promise<boolean
 }
 
 // GET - Récupérer un événement
-export async function GET(request: NextRequest, segmentData: RouteParams) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest, segmentData: RouteParams) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const { id: idStr } = await segmentData.params;
     const id = parseInt(idStr);
 
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
 
     const evenement = await prisma.evenement.findUnique({
       where: { id },
@@ -63,50 +63,46 @@ export async function GET(request: NextRequest, segmentData: RouteParams) {
       }
     });
 
-    if (!evenement) {
-      return NextResponse.json({ error: 'Événement non trouvé' }, { status: 404 });
-    }
-
-    const allowed = await canAccessEvenement(session, evenement);
-    if (!allowed) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
-
-    return NextResponse.json({ success: true, data: evenement });
-  } catch (error) {
-    console.error('GET /api/delegation/evenements/[id] error:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!evenement) {
+    throw new NotFoundError('Événement non trouvé');
   }
-}
+
+  const allowed = await canAccessEvenement(session, evenement);
+
+  if (!allowed) {
+    throw new ForbiddenError('Accès refusé');
+  }
+
+  return successResponse(evenement);
+});
 
 // DELETE - Supprimer un événement
-export async function DELETE(request: NextRequest, segmentData: RouteParams) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const DELETE = withErrorHandler(async (request: NextRequest, segmentData: RouteParams) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const userId = parseInt(session.user.id);
     const { id: idStr } = await segmentData.params;
     const id = parseInt(idStr);
 
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
 
     // Vérifier propriété
     const evenement = await prisma.evenement.findUnique({
       where: { id },
     });
 
-    if (!evenement) {
-      return NextResponse.json({ error: 'Introuvable' }, { status: 404 });
-    }
+  if (!evenement) {
+    throw new NotFoundError('Introuvable');
+  }
 
-    if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
-      return NextResponse.json({ error: 'Action non autorisée sur cet événement' }, { status: 403 });
-    }
+  if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError('Action non autorisée sur cet événement');
+  }
 
     // Supprimer d'abord les médias associés (pas de cascade automatique)
     await prisma.media.deleteMany({
@@ -117,67 +113,45 @@ export async function DELETE(request: NextRequest, segmentData: RouteParams) {
       where: { id },
     });
 
-    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
-    const userAgent = request.headers.get('user-agent') || null;
+  await ActivityLogger.custom({
+    action: 'DELETE_EVENEMENT',
+    entity: 'Evenement',
+    entityId: id,
+    userId: userId,
+    details: { titre: evenement.titre }
+  });
 
-    await auditLog({
-      action: 'DELETE_EVENEMENT',
-      resource: 'Evenement',
-      resourceId: id,
-      userId: userId,
-      details: { titre: evenement.titre },
-      previousValue: evenement,
-      ipAddress,
-      userAgent,
-      status: 'SUCCESS'
-    });
-
-    await logActivity({
-      userId: userId,
-      action: 'DELETE_EVENEMENT',
-      entity: 'Evenement',
-      entityId: id,
-      details: { titre: evenement.titre },
-      ipAddress,
-      userAgent
-    });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('DELETE /api/delegation/evenements/[id] error:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(null);
+});
 
 // PUT - Modifier un événement (ou Clôturer)
-export async function PUT(request: NextRequest, segmentData: RouteParams) {
-    try {
-      const session = await getServerSession(authOptions);
-      if (!session?.user) {
-        return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-      }
+export const PUT = withErrorHandler(async (request: NextRequest, segmentData: RouteParams) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError('Non autorisé');
+  }
   
       const userId = parseInt(session.user.id);
       const { id: idStr } = await segmentData.params;
       const id = parseInt(idStr);
       const body = await request.json();
 
-      if (isNaN(id)) {
-        return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-      }
+  if (isNaN(id)) {
+    throw new ValidationError('ID invalide');
+  }
   
       // Vérifier propriété
       const evenement = await prisma.evenement.findUnique({
         where: { id },
       });
   
-      if (!evenement) {
-        return NextResponse.json({ error: 'Introuvable' }, { status: 404 });
-      }
+  if (!evenement) {
+    throw new NotFoundError('Introuvable');
+  }
   
-      if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
-        return NextResponse.json({ error: 'Action non autorisée' }, { status: 403 });
-      }
+  if (evenement.createdBy !== userId && !['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError('Action non autorisée');
+  }
   
       // Préparation des données update
       const updateData: any = {};
@@ -279,36 +253,20 @@ export async function PUT(request: NextRequest, segmentData: RouteParams) {
         }
       });
   
-      const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
-      const userAgent = request.headers.get('user-agent') || null;
-      const actionName = body.action === 'CLOTURE' ? 'CLOTURE_EVENEMENT' : 'UPDATE_EVENEMENT';
+  const actionName = body.action === 'CLOTURE' ? 'CLOTURE_EVENEMENT' : 'UPDATE_EVENEMENT';
 
-      await auditLog({
-        action: actionName,
-        resource: 'Evenement',
-        resourceId: id,
-        userId: userId,
-        details: { titre: updatedEvenement.titre, fields: Object.keys(updateData) },
-        previousValue: evenement,
-        newValue: updatedEvenement,
-        ipAddress,
-        userAgent,
-        status: 'SUCCESS'
-      });
-
-      await logActivity({
-        userId: userId,
-        action: actionName,
-        entity: 'Evenement',
-        entityId: id,
-        details: { titre: updatedEvenement.titre },
-        ipAddress,
-        userAgent
-      });
-
-      return NextResponse.json({ success: true, data: updatedEvenement });
-    } catch (error) {
-      console.error('PUT /api/delegation/evenements/[id] error:', error);
-      return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  await ActivityLogger.custom({
+    action: actionName,
+    entity: 'Evenement',
+    entityId: id,
+    userId: userId,
+    details: { 
+      titre: updatedEvenement.titre, 
+      fields: Object.keys(updateData),
+      previousValue: evenement,
+      newValue: updatedEvenement
     }
-  }
+  });
+
+  return successResponse(updatedEvenement);
+});

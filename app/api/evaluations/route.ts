@@ -115,10 +115,14 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   // Mettre à jour la note moyenne
   const stats = await updateNoteMoyenne(etablissementId);
 
-  return successResponse({
-    evaluation,
-    etablissementStats: stats,
-  }, "Évaluation créée avec succès", 201);
+  return successResponse(
+    {
+      evaluation,
+      etablissementStats: stats,
+    }, 
+    "Évaluation créée avec succès",
+    201
+  );
 });
 
 // GET /api/evaluations - Liste des évaluations (avec filtres)
@@ -168,9 +172,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.evaluation.count({ where }),
   ]);
 
-  return NextResponse.json({
-    success: true,
-    data: evaluations,
+  return successResponse({
+    evaluations,
     pagination: {
       page,
       limit,

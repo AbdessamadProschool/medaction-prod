@@ -2,21 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from '@/lib/exceptions';
 
 // GET - Liste de toutes les permissions disponibles
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seuls les admins peuvent voir les permissions
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  // Seuls les admins peuvent voir les permissions
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     // Récupérer toutes les permissions (actives et inactives pour SUPER_ADMIN)
     const showAll = session.user.role === 'SUPER_ADMIN';
@@ -56,54 +57,42 @@ export async function GET(request: NextRequest) {
       groupes: Object.keys(grouped).length,
     };
 
-    return NextResponse.json({
-      permissions,
-      grouped,
-      stats,
-    });
-
-  } catch (error) {
-    console.error('Erreur GET permissions:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    permissions,
+    grouped,
+    stats,
+  });
+});
 
 // POST - Créer une nouvelle permission (SUPER_ADMIN uniquement)
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seul SUPER_ADMIN peut créer des permissions
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès réservé aux Super Administrateurs' }, { status: 403 });
-    }
+  // Seul SUPER_ADMIN peut créer des permissions
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès réservé aux Super Administrateurs');
+  }
 
     const body = await request.json();
     const { code, nom, description, groupe, groupeLabel } = body;
 
-    // Validation
-    if (!code || !nom || !groupe) {
-      return NextResponse.json(
-        { error: 'Code, nom et groupe sont requis' },
-        { status: 400 }
-      );
-    }
+  // Validation
+  if (!code || !nom || !groupe) {
+    throw new ValidationError('Code, nom et groupe sont requis');
+  }
 
     // Vérifier si le code existe déjà
     const existing = await prisma.permission.findUnique({
       where: { code: code.toUpperCase() },
     });
 
-    if (existing) {
-      return NextResponse.json(
-        { error: 'Une permission avec ce code existe déjà' },
-        { status: 409 }
-      );
-    }
+  if (existing) {
+    throw new AppError('Une permission avec ce code existe déjà', 'CONFLICT', 409);
+  }
 
     // Trouver le prochain ordre dans le groupe
     const lastInGroup = await prisma.permission.findFirst({
@@ -125,19 +114,19 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Audit log
-    auditLog('CREATE_PERMISSION', 'Permission', permission.id, parseInt(session.user.id), {
+  // Audit log
+  await ActivityLogger.custom({
+    action: 'CREATE_PERMISSION',
+    entity: 'Permission',
+    entityId: permission.id,
+    userId: parseInt(session.user.id),
+    details: {
       code: permission.code,
       nom: permission.nom
-    });
+    }
+  });
 
-    return NextResponse.json({
-      message: 'Permission créée avec succès',
-      permission,
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error('Erreur POST permission:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    permission,
+  }, 'Permission créée avec succès', 201);
+});

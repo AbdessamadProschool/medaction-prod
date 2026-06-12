@@ -1,12 +1,15 @@
+import { NextRequest } from 'next/server';
 import { safeParseInt } from '@/lib/utils/parse';
-import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { requireRoles } from '@/lib/auth/role-guard';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/config';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
 
-export async function GET(request: NextRequest) {
-  try {
-    const auth = await requireRoles(['SUPER_ADMIN']);
-    if ('error' in auth) return auth.error;
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new UnauthorizedError();
+  if (session.user.role !== 'SUPER_ADMIN') throw new ForbiddenError();
 
     const { searchParams } = new URL(request.url);
     const limit = safeParseInt(searchParams.get('limit') || '50', 0);
@@ -31,8 +34,7 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { action: { contains: search, mode: 'insensitive' } },
-        { resourceType: { contains: search, mode: 'insensitive' } },
-        { resourceId: { contains: search, mode: 'insensitive' } },
+        { entity: { contains: search, mode: 'insensitive' } },
         { user: { nom: { contains: search, mode: 'insensitive' } } },
         { user: { prenom: { contains: search, mode: 'insensitive' } } },
         { user: { email: { contains: search, mode: 'insensitive' } } },
@@ -40,8 +42,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (action) where.action = action;
-    if (resourceType) where.resourceType = resourceType;
-    if (success !== null) where.success = success === 'true';
+    if (resourceType) where.entity = resourceType;
 
     if (dateFrom || dateTo) {
       where.createdAt = {};
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
 
     const [logs, total] = await Promise.all([
-      prisma.auditLog.findMany({
+      prisma.activityLog.findMany({
         where,
         take: limit,
         skip,
@@ -70,19 +71,19 @@ export async function GET(request: NextRequest) {
           },
         },
       }),
-      prisma.auditLog.count({ where }),
+      prisma.activityLog.count({ where }),
     ]);
 
     const formattedLogs = logs.map((log) => ({
       id: log.id,
       action: log.action,
-      resourceType: log.resourceType,
-      resourceId: log.resourceId,
+      resourceType: log.entity,
+      resourceId: log.entityId?.toString(),
       details: log.details,
-      previousValue: log.previousValue,
-      newValue: log.newValue,
+      previousValue: (log.details as any)?.previousValue ? JSON.stringify((log.details as any).previousValue) : null,
+      newValue: (log.details as any)?.newValue ? JSON.stringify((log.details as any).newValue) : null,
       ipAddress: log.ipAddress,
-      success: log.success,
+      success: true,
       user: log.user ? {
         name: `${log.user.prenom} ${log.user.nom}`,
         email: log.user.email,
@@ -91,17 +92,13 @@ export async function GET(request: NextRequest) {
       createdAt: log.createdAt.toISOString(),
     }));
 
-    return NextResponse.json({ 
-      data: formattedLogs,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
-      }
-    });
-  } catch (error) {
-    console.error('Erreur lors de la récupération de l\'audit:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({ 
+    data: formattedLogs,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  });
+});

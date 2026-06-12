@@ -1,11 +1,12 @@
 import { safeParseInt } from '@/lib/utils/parse';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
-import { auditLog } from '@/lib/logger';
-import { logActivity } from '@/lib/activity-logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
 
 const clotureSchema = z.object({
   presenceEffective: z.number().int().min(0),
@@ -19,16 +20,15 @@ const clotureSchema = z.object({
   statut: z.literal('RAPPORT_COMPLETE')
 });
 
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const { id } = params;
     const activityId = safeParseInt(id, 0);
@@ -40,9 +40,9 @@ export async function POST(
       include: { etablissement: true }
     });
 
-    if (!activite) {
-      return NextResponse.json({ error: 'Activité non trouvée' }, { status: 404 });
-    }
+  if (!activite) {
+    throw new NotFoundError('Activité non trouvée');
+  }
 
     // Check permissions (Coordinator of this establishment or Admin)
     const isCoordinator = session.user.role === 'COORDINATEUR_ACTIVITES';
@@ -58,23 +58,20 @@ export async function POST(
       
       const managesEtab = activite.etablissementId ? user?.etablissementsGeres.includes(activite.etablissementId) : false;
       
-      if (!managesEtab && activite.createdBy !== userId) {
-        return NextResponse.json({ error: 'Vous ne gérez pas cette activité' }, { status: 403 });
-      }
-    } else if (!isAdmin) {
-       return NextResponse.json({ error: 'Permission refusée' }, { status: 403 });
+    if (!managesEtab && activite.createdBy !== userId) {
+      throw new ForbiddenError('Vous ne gérez pas cette activité');
     }
+  } else if (!isAdmin) {
+    throw new ForbiddenError('Permission refusée');
+  }
 
     // 2. Validate Body
     const body = await request.json();
     const validation = clotureSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({
-        error: 'Données invalides',
-        details: validation.error.flatten()
-      }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError('Données invalides', { fieldErrors: validation.error.flatten().fieldErrors });
+  }
 
     const data = validation.data;
 
@@ -99,40 +96,18 @@ export async function POST(
       }
     });
 
-    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
-    const userAgent = request.headers.get('user-agent') || null;
-
-    await auditLog({
-      action: 'CLOTURE_ACTIVITE',
-      resource: 'ProgrammeActivite',
-      resourceId: activityId,
-      userId: userId,
-      details: { titre: updated.titre, presenceEffective: data.presenceEffective },
+  await ActivityLogger.custom({
+    action: 'CLOTURE_ACTIVITE',
+    entity: 'ProgrammeActivite',
+    entityId: activityId,
+    userId: userId,
+    details: { 
+      titre: updated.titre, 
+      presenceEffective: data.presenceEffective,
       previousValue: activite,
-      newValue: updated,
-      ipAddress,
-      userAgent,
-      status: 'SUCCESS'
-    });
+      newValue: updated
+    }
+  });
 
-    await logActivity({
-      userId: userId,
-      action: 'CLOTURE_ACTIVITE',
-      entity: 'ProgrammeActivite',
-      entityId: activityId,
-      details: { titre: updated.titre },
-      ipAddress,
-      userAgent
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: updated,
-      message: 'Rapport de clôture enregistré avec succès'
-    });
-
-  } catch (error) {
-    console.error('Erreur clôture activité:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(updated, 'Rapport de clôture enregistré avec succès');
+});

@@ -1,25 +1,26 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptions';
 
 // GET - Détail d'une réclamation affectée
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
     
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    if (session.user.role !== 'AUTORITE_LOCALE') {
-      return NextResponse.json({ error: 'Accès réservé aux autorités locales' }, { status: 403 });
-    }
+  if (session.user.role !== 'AUTORITE_LOCALE') {
+    throw new ForbiddenError('Accès réservé aux autorités locales');
+  }
 
     const reclamationId = safeParseInt(params.id, 0);
     const autoriteId = parseInt(session.user.id);
@@ -55,17 +56,9 @@ export async function GET(
       }
     });
 
-    if (!reclamation) {
-      return NextResponse.json({ error: 'Réclamation non trouvée' }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: reclamation,
-    });
-
-  } catch (error) {
-    console.error('Erreur détail réclamation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!reclamation) {
+    throw new NotFoundError('Réclamation non trouvée');
   }
-}
+
+  return successResponse(reclamation);
+});

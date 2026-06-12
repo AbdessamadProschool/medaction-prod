@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
 import { sanitizeString, validateId } from '@/lib/security/validation';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 const updateNotificationSchema = z.object({
   id: z.number().optional(),
@@ -12,14 +14,13 @@ const updateNotificationSchema = z.object({
   message: "Soit 'id' soit 'action' doit être fourni"
 });
 
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const userId = parseInt(session.user.id);
+  const userId = parseInt(session.user.id);
 
     const notifications = await prisma.notification.findMany({
       where: {
@@ -39,34 +40,25 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    return NextResponse.json({ 
-      notifications,
-      count
-    });
+  return successResponse({ 
+    notifications,
+    count
+  });
+});
 
-  } catch (error) {
-    console.error('Erreur notifications:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+export const PUT = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
   }
-}
 
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
-
-    const userId = parseInt(session.user.id);
-    const body = await request.json();
-    const validation = updateNotificationSchema.safeParse(body);
-    
-    if (!validation.success) {
-      return NextResponse.json({ 
-        error: 'Données invalides', 
-        details: validation.error.flatten() 
-      }, { status: 400 });
-    }
+  const userId = parseInt(session.user.id);
+  const body = await request.json();
+  const validation = updateNotificationSchema.safeParse(body);
+  
+  if (!validation.success) {
+    throw new ValidationError('Données invalides', validation.error.flatten());
+  }
 
     const data = validation.data;
 
@@ -80,12 +72,12 @@ export async function PUT(request: NextRequest) {
           isLue: true
         }
       });
-      return NextResponse.json({ success: true });
+      return successResponse({ success: true });
     }
     
     if (data.id) {
        const id = validateId(data.id);
-       if (!id) return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
+       if (!id) throw new ValidationError('ID invalide');
 
        // SECURITY FIX: IDOR Protection - Check ownership
        const updated = await prisma.notification.updateMany({
@@ -97,17 +89,11 @@ export async function PUT(request: NextRequest) {
        });
 
        if (updated.count === 0) {
-         return NextResponse.json({ 
-           error: 'Notification non trouvée ou non autorisée' 
-         }, { status: 404 });
+         throw new NotFoundError('Notification non trouvée ou non autorisée');
        }
 
-       return NextResponse.json({ success: true });
+       return successResponse({ success: true });
     }
 
-    return NextResponse.json({ error: 'Action invalide' }, { status: 400 });
-
-  } catch (error) {
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+    throw new ValidationError('Action invalide');
+});

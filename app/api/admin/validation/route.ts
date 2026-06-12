@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 // GET /api/admin/validation - Récupérer les contenus en attente de validation
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     // Vérifier la permission de validation (au moins une)
     const userId = parseInt(session.user.id);
@@ -23,9 +24,11 @@ export async function GET(request: NextRequest) {
     const canValidateProgs = await checkPermission(userId, 'programmes.validate');
     const canValidateEvals = await checkPermission(userId, 'evaluations.validate');
 
-    if (!canValidateEvents && !canValidateNews && !canValidateEtab && !canValidateProgs && !canValidateEvals) {
-      return NextResponse.json({ error: 'Accès réservé aux validateurs' }, { status: 403 });
-    }
+  const isSuperAdmin = session.user.role === 'SUPER_ADMIN';
+
+  if (!canValidateEvents && !canValidateNews && !canValidateEtab && !canValidateProgs && !canValidateEvals && !isSuperAdmin) {
+    throw new ForbiddenError('Aucune permission de validation');
+  }
 
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'all';
@@ -287,34 +290,28 @@ export async function GET(request: NextRequest) {
     // Trier par date décroissante
     items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    return NextResponse.json({
-      items,
-      counts: {
-        evenements: formattedEvenements.length,
-        actualites: formattedActualites.length,
-        articles: formattedArticles.length,
-        campagnes: formattedCampagnes.length,
-        etablissementRequests: formattedEtablissementRequests.length,
-        programmes: formattedProgrammes.length,
-        evaluations: formattedEvaluations.length,
-        total: items.length,
-      },
-    });
-
-  } catch (error) {
-    console.error('Erreur GET /api/admin/validation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    items,
+    counts: {
+      evenements: formattedEvenements.length,
+      actualites: formattedActualites.length,
+      articles: formattedArticles.length,
+      campagnes: formattedCampagnes.length,
+      etablissementRequests: formattedEtablissementRequests.length,
+      programmes: formattedProgrammes.length,
+      evaluations: formattedEvaluations.length,
+      total: items.length,
+    },
+  });
+});
 
 // POST /api/admin/validation - Approuver ou rejeter un contenu
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
     const body = await request.json();
     const { id, type, action, motifRejet } = body;
@@ -329,14 +326,21 @@ export async function POST(request: NextRequest) {
     else if (type === 'etablissement_request') hasPermission = await checkPermission(userId, 'etablissements.validate');
     else if (type === 'programme') hasPermission = await checkPermission(userId, 'programmes.validate');
     else if (type === 'evaluation') hasPermission = await checkPermission(userId, 'evaluations.validate');
-
-    if (!hasPermission) {
-       return NextResponse.json({ error: 'Action non autorisée pour ce type de contenu' }, { status: 403 });
+    else {
+      throw new ValidationError('Type non supporté pour la validation');
     }
+  
+  if (!hasPermission && session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError(`Permission '${type}.validate' requise`);
+  }
 
-    if (!id || !type || !action) {
-      return NextResponse.json({ error: 'Paramètres manquants' }, { status: 400 });
-    }
+  if (action !== 'approve' && action !== 'reject') {
+    throw new ValidationError('Action invalide, doit être approve ou reject');
+  }
+
+  if (!id || !type || !action) {
+    throw new ValidationError('Paramètres manquants');
+  }
 
     // --- LOGIQUE DE VALIDATION PAR TYPE ---
     
@@ -393,7 +397,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!requestData) {
-        return NextResponse.json({ error: 'Demande non trouvée' }, { status: 404 });
+        throw new NotFoundError('Demande non trouvée');
       }
 
       if (action === 'approve') {
@@ -421,25 +425,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Logging d'audit
-    await auditLog({
-      action: action === 'approve' ? 'VALIDATE' : 'REJECT',
-      resource: type.toUpperCase(),
-      resourceId: id.toString(),
-      userId: session.user.id,
-      details: { type, action, motifRejet },
-      status: 'SUCCESS',
-      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
-      userAgent: request.headers.get('user-agent') || 'unknown'
-    });
+  // Audit log
+  await ActivityLogger.custom({
+    action: action === 'approve' ? 'VALIDATE_CONTENT' : 'REJECT_CONTENT',
+    entity: type.toUpperCase(),
+    entityId: id,
+    userId: parseInt(session.user.id),
+    details: { type, motifRejet }
+  });
 
-    return NextResponse.json({
-      success: true,
-      message: action === 'approve' ? 'Contenu approuvé' : 'Contenu rejeté',
-    });
-
-  } catch (error) {
-    console.error('Erreur POST /api/admin/validation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({ success: true, action, id, type }, `Contenu ${action === 'approve' ? 'approuvé' : 'rejeté'} avec succès`);
+});

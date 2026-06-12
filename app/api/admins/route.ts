@@ -1,11 +1,12 @@
-import { safeParseInt } from '@/lib/utils/parse';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
 import { z } from 'zod';
-import { grantPermissions, getUserPermissions, DEFAULT_ADMIN_PERMISSIONS } from '@/lib/permissions';
+import { grantPermissions, DEFAULT_ADMIN_PERMISSIONS } from '@/lib/permissions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from '@/lib/exceptions';
 
 // Schéma de validation pour création d'admin
 const createAdminSchema = z.object({
@@ -18,30 +19,24 @@ const createAdminSchema = z.object({
 });
 
 // POST - Créer un admin (SUPER_ADMIN uniquement)
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seul SUPER_ADMIN peut créer des admins
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ 
-        error: 'Seul un Super Admin peut créer des administrateurs' 
-      }, { status: 403 });
-    }
+  // Seul SUPER_ADMIN peut créer des admins
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Seul un Super Admin peut créer des administrateurs');
+  }
 
-    const body = await request.json();
-    const validation = createAdminSchema.safeParse(body);
+  const body = await request.json();
+  const validation = createAdminSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({ 
-        error: 'Données invalides', 
-        details: validation.error.flatten() 
-      }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError('Données invalides');
+  }
 
     const data = validation.data;
 
@@ -50,9 +45,9 @@ export async function POST(request: NextRequest) {
       where: { email: data.email }
     });
 
-    if (existingUser) {
-      return NextResponse.json({ error: 'Cet email est déjà utilisé' }, { status: 409 });
-    }
+  if (existingUser) {
+    throw new AppError('Cet email est déjà utilisé', 'CONFLICT', 409);
+  }
 
     // Vérifier les permissions sont valides
     const permissionsToGrant = data.permissions || DEFAULT_ADMIN_PERMISSIONS;
@@ -66,12 +61,9 @@ export async function POST(request: NextRequest) {
     const validCodes = validPermissions.map(p => p.code);
     const invalidPermissions = permissionsToGrant.filter(p => !validCodes.includes(p));
     
-    if (invalidPermissions.length > 0) {
-      return NextResponse.json({ 
-        error: 'Permissions invalides', 
-        details: invalidPermissions 
-      }, { status: 400 });
-    }
+  if (invalidPermissions.length > 0) {
+    throw new ValidationError(`Permissions invalides: ${invalidPermissions.join(', ')}`);
+  }
 
     // Hasher le mot de passe
     const hashedPassword = await hashPassword(data.motDePasse);
@@ -113,36 +105,27 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    return NextResponse.json({ 
-      message: 'Administrateur créé avec succès',
-      data: {
-        ...admin,
-        permissions: validCodes,
-      }
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error('Erreur création admin:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    ...admin,
+    permissions: validCodes,
+  }, 'Administrateur créé avec succès', 201);
+});
 
 // GET - Liste des admins (SUPER_ADMIN uniquement)
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const { searchParams } = new URL(request.url);
-    const page = safeParseInt(searchParams.get('page') || '1', 0);
-    const limit = safeParseInt(searchParams.get('limit') || '20', 0);
+  const page = parseInt(searchParams.get('page') || '1') || 1;
+  const limit = parseInt(searchParams.get('limit') || '20') || 20;
     const search = searchParams.get('search') || '';
 
     const where: any = {
@@ -196,18 +179,13 @@ export async function GET(request: NextRequest) {
       userPermissions: undefined, // Retirer le champ brut
     }));
 
-    return NextResponse.json({
-      data: adminsWithPermissions,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
-    });
-
-  } catch (error) {
-    console.error('Erreur GET admins:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    data: adminsWithPermissions,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit)
+    }
+  });
+});

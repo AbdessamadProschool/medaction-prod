@@ -3,7 +3,9 @@ import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { invalidateSettingsCache } from '@/lib/settings/service';
-import { auditLog } from '@/lib/logger';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 // Paramètres par défaut
 const DEFAULT_SETTINGS = {
@@ -40,18 +42,18 @@ const DEFAULT_SETTINGS = {
 
 
 // GET /api/settings - Récupérer tous les paramètres
-export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+// GET /api/settings - Récupérer tous les paramètres
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seul SUPER_ADMIN peut voir les paramètres
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  // Seul SUPER_ADMIN peut voir les paramètres
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     // Récupérer tous les paramètres de la base de données
     const dbSettings = await prisma.systemSetting.findMany();
@@ -70,27 +72,22 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json(settings);
-
-  } catch (error) {
-    console.error('Erreur GET /api/settings:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(settings);
+});
 
 // PUT /api/settings - Mettre à jour les paramètres
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+// PUT /api/settings - Mettre à jour les paramètres
+export const PUT = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seul SUPER_ADMIN peut modifier les paramètres
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  // Seul SUPER_ADMIN peut modifier les paramètres
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const body = await request.json();
     const { general, security, notifications, reclamations } = body;
@@ -125,10 +122,16 @@ export async function PUT(request: NextRequest) {
     // Invalider le cache des settings
     invalidateSettingsCache();
 
-    // Audit log
-    auditLog('UPDATE_SETTINGS', 'System', 'global', parseInt(session.user.id), {
+  // Audit log
+  await ActivityLogger.custom({
+    action: 'UPDATE_SETTINGS',
+    entity: 'System',
+    entityId: 0,
+    userId: parseInt(session.user.id),
+    details: {
       categories: categories.filter(c => c.value).map(c => c.key)
-    });
+    }
+  });
 
     // Récupérer les paramètres mis à jour
     const updatedSettings = await prisma.systemSetting.findMany();
@@ -144,36 +147,30 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
-      message: 'Paramètres mis à jour avec succès',
-      settings,
-    });
-
-  } catch (error) {
-    console.error('Erreur PUT /api/settings:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    settings,
+  }, 'Paramètres mis à jour avec succès');
+});
 
 // PATCH /api/settings - Mettre à jour un paramètre spécifique
-export async function PATCH(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+// PATCH /api/settings - Mettre à jour un paramètre spécifique
+export const PATCH = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    if (session.user.role !== 'SUPER_ADMIN') {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  if (session.user.role !== 'SUPER_ADMIN') {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const body = await request.json();
     const { category, key, value } = body;
 
-    if (!category || !key) {
-      return NextResponse.json({ error: 'Catégorie et clé requises' }, { status: 400 });
-    }
+  if (!category || !key) {
+    throw new ValidationError('Catégorie et clé requises');
+  }
 
     // Récupérer le paramètre existant
     const existing = await prisma.systemSetting.findUnique({
@@ -198,19 +195,20 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Audit log
-    auditLog('PATCH_SETTING', 'System', category, parseInt(session.user.id), {
+  // Audit log
+  await ActivityLogger.custom({
+    action: 'PATCH_SETTING',
+    entity: 'System',
+    entityId: 0,
+    userId: parseInt(session.user.id),
+    details: {
+      category,
       key,
       value
-    });
+    }
+  });
 
-    return NextResponse.json({
-      message: `Paramètre ${category}.${key} mis à jour`,
-      setting,
-    });
-
-  } catch (error) {
-    console.error('Erreur PATCH /api/settings:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    setting,
+  }, `Paramètre ${category}.${key} mis à jour`);
+});

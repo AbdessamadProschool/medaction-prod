@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { checkRateLimit, getClientIP } from '@/lib/auth/security';
-import {
-  validateMobileApiKey,
-  unauthorizedResponse,
-  logSecurityEvent,
-} from '@/lib/mobile/security';
+import { validateMobileApiKey, logSecurityEvent } from '@/lib/mobile/security';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, AppError, ValidationError } from '@/lib/exceptions';
 
 // SECURITY: Rate limit config for password reset (3 requests per hour per IP)
 const RESET_RATE_LIMIT = { maxRequests: 3, windowMs: 60 * 60 * 1000 };
@@ -23,11 +21,9 @@ function generateToken(): string {
  * POST /api/auth/mobile/forgot-password
  * Request password reset - sends email with reset link
  */
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const clientIP = getClientIP(request);
   const userAgent = request.headers.get('user-agent') || undefined;
-
-  try {
     // 1. Validate Mobile API Key
     if (!validateMobileApiKey(request)) {
       await logSecurityEvent({
@@ -35,7 +31,7 @@ export async function POST(request: NextRequest) {
         ip: clientIP,
         userAgent,
       });
-      return unauthorizedResponse();
+      throw new UnauthorizedError('Clé API mobile invalide');
     }
 
     // 2. Rate limiting
@@ -47,13 +43,7 @@ export async function POST(request: NextRequest) {
         userAgent,
         details: { action: 'forgot-password' },
       });
-      return NextResponse.json(
-        { success: false, message: 'Trop de demandes. Veuillez réessayer plus tard.' },
-        { 
-          status: 429,
-          headers: { 'Retry-After': String(rateLimitResult.retryAfter || 3600) }
-        }
-      );
+      throw new AppError('Trop de demandes. Veuillez réessayer plus tard.', 'RATE_LIMIT_EXCEEDED', 429);
     }
 
     // 3. Parse body
@@ -62,19 +52,13 @@ export async function POST(request: NextRequest) {
     try {
       body = JSON.parse(rawBody);
     } catch (e) {
-      return NextResponse.json(
-        { success: false, message: 'Format JSON invalide' },
-        { status: 400 }
-      );
+      throw new ValidationError('Format JSON invalide');
     }
 
     const { email } = body;
 
     if (!email) {
-      return NextResponse.json(
-        { success: false, message: 'Email requis' },
-        { status: 400 }
-      );
+      throw new ValidationError('Email requis');
     }
 
     // 4. Find user
@@ -91,10 +75,10 @@ export async function POST(request: NextRequest) {
         userAgent,
         details: { found: false },
       });
-      return NextResponse.json({
-        success: true,
-        message: 'Si un compte existe avec cet email, un lien de réinitialisation sera envoyé.',
-      });
+      return successResponse(
+        null,
+        'Si un compte existe avec cet email, un lien de réinitialisation sera envoyé.'
+      );
     }
 
     // 5. Generate reset token
@@ -123,15 +107,8 @@ export async function POST(request: NextRequest) {
     // const resetLink = `${process.env.NEXTAUTH_URL}/reset-password/${resetToken}`;
     // await sendEmail({ to: email, subject: 'Reset password', html: `...` });
 
-    return NextResponse.json({
-      success: true,
-      message: 'Si un compte existe avec cet email, un lien de réinitialisation sera envoyé.',
-    });
-  } catch (error) {
-    console.error('[MOBILE_FORGOT_PASSWORD_ERROR]', error);
-    return NextResponse.json(
-      { success: false, message: 'Une erreur est survenue' },
-      { status: 500 }
+    return successResponse(
+      null,
+      'Si un compte existe avec cet email, un lien de réinitialisation sera envoyé.'
     );
-  }
-}
+});

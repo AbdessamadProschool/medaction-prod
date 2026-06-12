@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { z } from "zod";
 import { SecurityValidation } from "@/lib/security/validation";
-import { auditLog } from "@/lib/logger";
+import { ActivityLogger } from "@/lib/activity-logger";
 import { withErrorHandler, successResponse } from "@/lib/api-handler";
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from "@/lib/exceptions";
 import { withPermission } from "@/lib/auth/api-guard";
@@ -196,10 +196,16 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
   });
 
   // Audit logging
-  auditLog('UPDATE_USER', 'User', userId, parseInt(session.user.id), {
-    email: updatedUser.email,
-    role: updatedUser.role,
-    updatedFields: Object.keys(data)
+  await ActivityLogger.custom({
+    action: 'UPDATE_USER',
+    entity: 'User',
+    entityId: userId,
+    userId: parseInt(session.user.id),
+    details: {
+      email: updatedUser.email,
+      role: updatedUser.role,
+      updatedFields: Object.keys(data)
+    }
   });
 
   return successResponse(updatedUser, "Utilisateur modifié avec succès");
@@ -248,9 +254,15 @@ export const DELETE = withErrorHandler(async (
   await prisma.user.delete({ where: { id: userId } });
 
   // Audit logging
-  auditLog('DELETE_USER', 'User', userId, parseInt(session.user.id), {
-    email: existingUser.email,
-    role: existingUser.role
+  await ActivityLogger.custom({
+    action: 'DELETE_USER',
+    entity: 'User',
+    entityId: userId,
+    userId: parseInt(session.user.id),
+    details: {
+      email: existingUser.email,
+      role: existingUser.role
+    }
   });
 
   return successResponse(null, "Utilisateur supprimé avec succès");

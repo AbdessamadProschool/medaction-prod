@@ -1,22 +1,23 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, NotFoundError } from '@/lib/exceptions';
 
 // GET - Obtenir un abonnement spécifique
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  { params: _p }: { params: Promise<{ id: string }> }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const { id } = await params;
+  const { id } = await _p;
     const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
 
@@ -39,30 +40,25 @@ export async function GET(
       }
     });
 
-    if (!abonnement) {
-      return NextResponse.json({ error: 'Abonnement non trouvé' }, { status: 404 });
-    }
-
-    return NextResponse.json(abonnement);
-  } catch (error) {
-    console.error('Erreur récupération abonnement:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!abonnement) {
+    throw new NotFoundError('Abonnement non trouvé');
   }
-}
+
+  return successResponse(abonnement);
+});
 
 // PATCH - Mettre à jour un abonnement (notifications)
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  { params: _p }: { params: Promise<{ id: string }> }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const { id } = await params;
+  const { id } = await _p;
     const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
     const body = await request.json();
@@ -76,9 +72,9 @@ export async function PATCH(
       }
     });
 
-    if (!existing) {
-      return NextResponse.json({ error: 'Abonnement non trouvé' }, { status: 404 });
-    }
+  if (!existing) {
+    throw new NotFoundError('Abonnement non trouvé');
+  }
 
     const abonnement = await prisma.abonnementEtablissement.update({
       where: { id: abonnementId },
@@ -95,29 +91,21 @@ export async function PATCH(
       }
     });
 
-    return NextResponse.json({
-      message: 'Abonnement mis à jour',
-      abonnement
-    });
-  } catch (error) {
-    console.error('Erreur mise à jour abonnement:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(abonnement, 'Abonnement mis à jour');
+});
 
 // DELETE - Supprimer un abonnement
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  { params: _p }: { params: Promise<{ id: string }> }
+) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const { id } = await params;
+  const { id } = await _p;
     const abonnementId = safeParseInt(id, 0);
     const userId = parseInt(session.user.id);
 
@@ -134,19 +122,13 @@ export async function DELETE(
       }
     });
 
-    if (!abonnement) {
-      return NextResponse.json({ error: 'Abonnement non trouvé' }, { status: 404 });
-    }
-
-    await prisma.abonnementEtablissement.delete({
-      where: { id: abonnementId }
-    });
-
-    return NextResponse.json({
-      message: `Vous êtes désabonné de ${abonnement.etablissement.nom}`,
-    });
-  } catch (error) {
-    console.error('Erreur suppression abonnement:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!abonnement) {
+    throw new NotFoundError('Abonnement non trouvé');
   }
-}
+
+  await prisma.abonnementEtablissement.delete({
+    where: { id: abonnementId }
+  });
+
+  return successResponse(null, `Vous êtes désabonné de ${abonnement.etablissement.nom}`);
+});

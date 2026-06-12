@@ -4,7 +4,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { z } from "zod";
 import { Secteur } from "@prisma/client";
-import { auditLog } from "@/lib/logger";
+import { ActivityLogger } from "@/lib/activity-logger";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from "@/lib/exceptions";
 
 // Schéma de validation pour l'affectation
 const affectationSchema = z.object({
@@ -14,28 +16,27 @@ const affectationSchema = z.object({
 });
 
 // PATCH /api/reclamations/[id]/affecter - Affecter une réclamation
-export async function PATCH(
+export const PATCH = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
-    // Vérifier les permissions (admin, gouverneur ou autorité locale)
-    const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'];
-    if (!allowedRoles.includes(session.user.role)) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+  // Vérifier les permissions (admin, gouverneur ou autorité locale)
+  const allowedRoles = ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR', 'AUTORITE_LOCALE'];
+  if (!allowedRoles.includes(session.user.role || '')) {
+    throw new ForbiddenError("Non autorisé");
+  }
 
-    const reclamationId = parseInt(params.id);
-    if (isNaN(reclamationId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+  const reclamationId = parseInt(params.id);
+  if (isNaN(reclamationId)) {
+    throw new ValidationError("ID invalide");
+  }
 
     // Vérifier que la réclamation existe
     const reclamation = await prisma.reclamation.findUnique({
@@ -43,41 +44,34 @@ export async function PATCH(
       select: { id: true, titre: true, statut: true, communeId: true, affecteeAAutoriteId: true, affectationReclamation: true },
     });
 
-    if (!reclamation) {
-      return NextResponse.json({ error: "Réclamation non trouvée" }, { status: 404 });
+  if (!reclamation) {
+    throw new NotFoundError("Réclamation non trouvée");
+  }
+
+  // Le gouverneur ne peut affecter que les réclamations déjà acceptées/validées par l'admin
+  if (session.user.role === 'GOUVERNEUR' && reclamation.statut !== 'ACCEPTEE') {
+    throw new ForbiddenError("Le gouverneur ne peut affecter que les réclamations acceptées par l'administration");
+  }
+
+  // ✅ SECURITY FIX: AUTORITE_LOCALE — vérification de juridiction territoriale
+  if (session.user.role === 'AUTORITE_LOCALE') {
+    const autorite = await prisma.user.findUnique({
+      where: { id: parseInt(session.user.id as string) },
+      select: { communeResponsableId: true },
+    });
+
+    if (reclamation.communeId !== autorite?.communeResponsableId) {
+      throw new ForbiddenError("Vous ne pouvez gérer que les réclamations de votre commune");
     }
+  }
 
-    // Le gouverneur ne peut affecter que les réclamations déjà acceptées/validées par l'admin
-    if (session.user.role === 'GOUVERNEUR' && reclamation.statut !== 'ACCEPTEE') {
-      return NextResponse.json({ 
-        error: "Le gouverneur ne peut affecter que les réclamations acceptées par l'administration" 
-      }, { status: 403 });
-    }
+  // Valider les données
+  const body = await request.json();
+  const validation = affectationSchema.safeParse(body);
 
-    // ✅ SECURITY FIX: AUTORITE_LOCALE — vérification de juridiction territoriale
-    if (session.user.role === 'AUTORITE_LOCALE') {
-      const autorite = await prisma.user.findUnique({
-        where: { id: parseInt(session.user.id as string) },
-        select: { communeResponsableId: true },
-      });
-
-      if (reclamation.communeId !== autorite?.communeResponsableId) {
-        return NextResponse.json({
-          error: "Vous ne pouvez gérer que les réclamations de votre commune"
-        }, { status: 403 });
-      }
-    }
-
-    // Valider les données
-    const body = await request.json();
-    const validation = affectationSchema.safeParse(body);
-
-    if (!validation.success) {
-      return NextResponse.json({
-        error: "Données invalides",
-        details: validation.error.flatten(),
-      }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError("Données invalides", { fieldErrors: validation.error.flatten().fieldErrors });
+  }
 
     const { affecteAId, secteurAffecte, commentaireAffectation } = validation.data;
 
@@ -89,9 +83,9 @@ export async function PATCH(
         select: { id: true, nom: true, prenom: true, role: true, communeResponsableId: true },
       });
 
-      if (!agent) {
-        return NextResponse.json({ error: "Agent non trouvé ou inactif" }, { status: 404 });
-      }
+    if (!agent) {
+      throw new NotFoundError("Agent non trouvé ou inactif");
+    }
 
       // ✅ SECURITY FIX: AUTORITE_LOCALE ne peut affecter qu'à un agent de sa commune
       if (session.user.role === 'AUTORITE_LOCALE') {
@@ -99,11 +93,9 @@ export async function PATCH(
           where: { id: parseInt(session.user.id as string) },
           select: { communeResponsableId: true },
         });
-        if (agent.communeResponsableId !== autorite?.communeResponsableId) {
-          return NextResponse.json({
-            error: "Vous ne pouvez affecter qu'à un agent de votre commune"
-          }, { status: 403 });
-        }
+      if (agent.communeResponsableId !== autorite?.communeResponsableId) {
+        throw new ForbiddenError("Vous ne pouvez affecter qu'à un agent de votre commune");
+      }
       }
     }
 
@@ -148,15 +140,13 @@ export async function PATCH(
       });
     }
 
-    // Audit log
-    await auditLog({
-      action: affecteAId ? 'AFFECT_RECLAMATION' : 'DESAFFECT_RECLAMATION',
-      resource: 'RECLAMATION',
-      resourceId: String(reclamationId),
-      userId: session.user.id,
-      status: 'SUCCESS',
-      ipAddress: request.headers.get('x-forwarded-for') || '0.0.0.0',
-      userAgent: request.headers.get('user-agent') || 'unknown',
+  // Audit log
+  await ActivityLogger.custom({
+    action: affecteAId ? 'AFFECT_RECLAMATION' : 'DESAFFECT_RECLAMATION',
+    entity: 'RECLAMATION',
+    entityId: reclamationId,
+    userId: parseInt(session.user.id),
+    details: {
       previousValue: { 
         affecteeAAutoriteId: reclamation.affecteeAAutoriteId,
         affectationReclamation: reclamation.affectationReclamation
@@ -165,19 +155,12 @@ export async function PATCH(
         affecteeAAutoriteId: updated.affecteeAAutoriteId,
         affectationReclamation: updated.affectationReclamation
       },
-      details: {
-        agentName: agent ? `${agent.prenom} ${agent.nom}` : 'Désaffecté',
-        secteur: secteurAffecte
-      }
-    });
+      agentName: agent ? `${agent.prenom} ${agent.nom}` : 'Désaffecté',
+      secteur: secteurAffecte
+    }
+  });
 
-    return NextResponse.json({
-      message: affecteAId ? "Réclamation affectée avec succès" : "Réclamation désaffectée",
-      reclamation: updated,
-    });
-
-  } catch (error) {
-    console.error("Erreur PATCH /api/reclamations/[id]/affecter:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse({
+    reclamation: updated,
+  }, affecteAId ? "Réclamation affectée avec succès" : "Réclamation désaffectée");
+});

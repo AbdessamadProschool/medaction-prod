@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ForbiddenError } from '@/lib/exceptions';
 
 // Mapping table for older GeoJSON files
 // Updated to match verified DB Commune Names: 'MEDIOUNA', 'TIT MELLIL', 'LAHRAOUIYINE', 'SIDI HAJJAJ', 'MAJJATIA'
@@ -90,12 +91,11 @@ function getFirstCoord(geometry: any) {
   return null;
 }
 
-export async function POST(req: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(session.user?.role || '')) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
-    }
+export const POST = withErrorHandler(async (req: Request) => {
+  const session = await getServerSession(authOptions);
+  if (!session || !['SUPER_ADMIN', 'ADMIN'].includes(session.user?.role || '')) {
+    throw new ForbiddenError('Non autorisé');
+  }
 
     const { searchParams } = new URL(req.url);
     const entityType = searchParams.get('entity') || 'annexe'; // Default to 'annexe' if not specified
@@ -238,15 +238,8 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ 
-        success: true, 
-        count: processedCount, 
-        errors: errors,
-        message: `${processedCount} zones (${entityType}) mises à jour avec succès.`
-    });
-
-  } catch (error: any) {
-    console.error('Geo Import Error:', error);
-    return NextResponse.json({ error: 'Erreur lors de l\'import des données géographiques' }, { status: 500 });
-  }
-}
+  return successResponse({ 
+    count: processedCount, 
+    errors: errors,
+  }, `${processedCount} zones (${entityType}) mises à jour avec succès.`);
+});

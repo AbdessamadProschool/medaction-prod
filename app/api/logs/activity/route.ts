@@ -2,12 +2,16 @@ import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireRoles } from '@/lib/auth/role-guard';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { ForbiddenError } from '@/lib/exceptions';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // GET - Liste des logs d'activité
-export async function GET(request: NextRequest) {
-  try {
-    const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
-    if ('error' in auth) return auth.error;
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
+  if ('error' in auth) {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const { searchParams } = new URL(request.url);
     const page = safeParseInt(searchParams.get('page') || '1', 0);
@@ -94,50 +98,36 @@ export async function GET(request: NextRequest) {
       take: 5
     });
 
-    return NextResponse.json({
-      data: enrichedLogs,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      },
-      stats: {
-        last24h: stats,
-        total
-      }
-    });
-
-  } catch (error) {
-    console.error('Erreur GET activity logs:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    data: enrichedLogs,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+    stats,
+  });
+});
 
 // POST - Créer un log d'activité (usage interne)
-export async function POST(request: NextRequest) {
-  try {
-    const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
-    if ('error' in auth) return auth.error;
-
-    const body = await request.json();
-    
-    const log = await prisma.activityLog.create({
-      data: {
-        userId: body.userId || null,
-        action: body.action,
-        entity: body.entity,
-        entityId: body.entityId || null,
-        details: body.details || null,
-        ipAddress: body.ipAddress || null,
-        userAgent: body.userAgent || null,
-      }
-    });
-
-    return NextResponse.json({ data: log }, { status: 201 });
-
-  } catch (error) {
-    console.error('Erreur POST activity log:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const auth = await requireRoles(['ADMIN', 'SUPER_ADMIN']);
+  if ('error' in auth) {
+    throw new ForbiddenError('Accès non autorisé');
   }
-}
+
+  const body = await request.json();
+  
+  await ActivityLogger.custom({
+    userId: body.userId || null,
+    action: body.action,
+    entity: body.entity,
+    entityId: body.entityId || 0,
+    details: body.details || null,
+    ipAddress: body.ipAddress || null,
+    userAgent: body.userAgent || null,
+  });
+
+  return successResponse({ success: true }, 'Log créé avec succès');
+});

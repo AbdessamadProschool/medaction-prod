@@ -1,18 +1,17 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 
 /**
  * GET /api/auth/reset-password/validate
  * Valide un token de réinitialisation
  */
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const token = searchParams.get('token');
+export const GET = withErrorHandler(async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const token = searchParams.get('token');
 
-    if (!token) {
-      return NextResponse.json({ valid: false });
-    }
+  if (!token) {
+    return successResponse({ valid: false });
+  }
 
     // Chercher l'utilisateur avec ce token
     const user = await prisma.user.findFirst({
@@ -24,9 +23,5 @@ export async function GET(request: Request) {
       },
     });
 
-    return NextResponse.json({ valid: !!user });
-  } catch (error) {
-    console.error('[VALIDATE TOKEN] Erreur:', error);
-    return NextResponse.json({ valid: false });
-  }
-}
+  return successResponse({ valid: !!user });
+});

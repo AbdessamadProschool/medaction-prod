@@ -1,7 +1,7 @@
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { withErrorHandler } from "@/lib/api-handler";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
 import { Prisma } from "@prisma/client";
 
 // GET - Liste des annexes (filtrage optionnel par communeId)
@@ -31,12 +31,7 @@ export const GET = withErrorHandler(async (req: NextRequest) => {
     orderBy: { nom: 'asc' }
   });
 
-  return NextResponse.json(
-    { data: annexes },
-    {
-      headers: {
-        'Cache-Control': 'public, max-age=300, s-maxage=300', // Cache 5 min
-      }
-    }
-  );
+  const response = successResponse(annexes, undefined, 200);
+  response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
+  return response;
 });

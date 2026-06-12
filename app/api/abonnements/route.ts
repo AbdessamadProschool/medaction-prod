@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError, AppError } from '@/lib/exceptions';
 
 // GET - Liste des abonnements de l'utilisateur
@@ -61,8 +61,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     })
   ]);
 
-  return NextResponse.json({
-    success: true,
+  return successResponse({
     data: abonnements,
     pagination: {
       page,
@@ -151,9 +150,9 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   });
 
-  return NextResponse.json({
-    success: true,
-    message: `Vous êtes maintenant abonné à "${etablissement.nom}"`,
-    data: abonnement
-  }, { status: 201 });
+  return successResponse(
+    abonnement,
+    `Vous êtes maintenant abonné à "${etablissement.nom}"`,
+    201
+  );
 });

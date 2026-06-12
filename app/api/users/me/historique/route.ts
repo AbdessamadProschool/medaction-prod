@@ -3,15 +3,16 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { safeParseInt } from '@/lib/utils/parse';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError } from '@/lib/exceptions';
 
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    throw new UnauthorizedError("Non autorisé");
+  }
 
-    const userId = parseInt(session.user.id);
+  const userId = parseInt(session.user.id);
 
     const { searchParams } = new URL(request.url);
     const page = safeParseInt(searchParams.get('page'), 1);
@@ -39,27 +40,22 @@ export async function GET(request: NextRequest) {
     }
 
     const [logs, total] = await Promise.all([
-      prisma.auditLog.findMany({
+      prisma.activityLog.findMany({
         where: whereClause,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
       }),
-      prisma.auditLog.count({ where: whereClause })
+      prisma.activityLog.count({ where: whereClause })
     ]);
 
-    return NextResponse.json({
-      success: true,
-      data: logs,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
-      }
-    });
-  } catch (error) {
-    console.error('GET /api/users/me/historique error:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    data: logs,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  });
+});

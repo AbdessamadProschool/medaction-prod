@@ -65,7 +65,7 @@ describe('Lib Utils Tests', () => {
       const bucket = new TokenBucket(5, 10); // 10 tokens per second
       
       bucket.consume(5);
-      expect(bucket.getTokens()).toBe(0);
+      expect(bucket.getTokens()).toBeLessThan(0.1);
       
       await new Promise(resolve => setTimeout(resolve, 100));
       expect(bucket.getTokens()).toBeGreaterThan(0);

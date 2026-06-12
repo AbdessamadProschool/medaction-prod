@@ -6,6 +6,9 @@ import { withErrorHandler } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
 import { z } from 'zod';
 import { SecurityValidation } from '@/lib/security/validation';
+import { checkPermission } from '@/lib/permissions';
+import { notifyAdmins } from '@/lib/notifications';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // Schéma de validation sécurisé pour création d'événement
 const createEvenementSchema = z.object({
@@ -47,7 +50,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   
   // Vérifier la permission
-  const { checkPermission } = await import("@/lib/permissions");
   const hasPermission = await checkPermission(userId, 'evenements.create');
 
   if (!hasPermission) {
@@ -100,45 +102,18 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   });
 
-  // Notifier les admins (non-bloquant)
-  try {
-    const admins = await prisma.user.findMany({
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
-      select: { id: true }
-    });
-
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'NOUVEL_EVENEMENT',
-          titre: 'Nouvel événement à valider',
-          message: `L'événement "${evenement.titre}" attend votre validation.`,
-          lien: `/admin/evenements/${evenement.id}`,
-        }))
-      });
-    }
-  } catch (notifError) {
-    console.warn('Erreur notification événement:', notifError);
-  }
-
-  const { auditLog } = await import("@/lib/logger");
-  auditLog('CREATE_EVENEMENT', 'Evenement', evenement.id, userId, {
-    title: evenement.titre,
-    secteur: evenement.secteur,
-    etablissementId: evenement.etablissementId
+  // Notifier les admins (non-bloquant) — centralisé dans lib/notifications.ts
+  await notifyAdmins({
+    type: 'NOUVEL_EVENEMENT',
+    titre: 'Nouvel événement à valider',
+    message: `L'événement "${evenement.titre}" attend votre validation.`,
+    lien: `/admin/evenements/${evenement.id}`,
   });
 
-  await prisma.activityLog.create({
-    data: {
-      action: 'Création d\'un événement',
-      entity: 'Événements',
-      entityId: evenement.id.toString(),
-      details: `L'utilisateur a créé l'événement "${evenement.titre}"`,
-      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-      userAgent: request.headers.get('user-agent') || 'Unknown',
-      userId: userId
-    }
+  // Journalisation de l'activité — centralisée dans lib/activity-logger.ts
+  await ActivityLogger.create(userId, 'Evenement', evenement.id, {
+    titre: evenement.titre,
+    secteur: evenement.secteur,
   });
 
   return NextResponse.json({

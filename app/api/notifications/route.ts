@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ForbiddenError, ValidationError } from "@/lib/exceptions";
 
 // Types de notifications
 const NOTIFICATION_TYPES = [
@@ -24,13 +26,12 @@ const NOTIFICATION_TYPES = [
 ];
 
 // GET /api/notifications - Liste des notifications de l'utilisateur connecté
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
     const userId = parseInt(session.user.id as string);
     const { searchParams } = new URL(request.url);
@@ -65,64 +66,49 @@ export async function GET(request: NextRequest) {
       take: limit,
     });
 
-    return NextResponse.json({
-      notifications,
-      unreadCount,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      }
-    });
-
-  } catch (error) {
-    console.error("Erreur GET /api/notifications:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse({
+    notifications,
+    unreadCount,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    }
+  });
+});
 
 // POST /api/notifications - Créer une notification (admin/système)
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
-    // Seuls ADMIN et SUPER_ADMIN peuvent créer des notifications manuellement
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: "Accès non autorisé" }, { status: 403 });
-    }
+  // Seuls ADMIN et SUPER_ADMIN peuvent créer des notifications manuellement
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role || '')) {
+    throw new ForbiddenError("Accès non autorisé");
+  }
 
     const body = await request.json();
     const { userId, userIds, type, titre, message, lien } = body;
 
-    // Validation
-    if (!type || !titre || !message) {
-      return NextResponse.json(
-        { error: "type, titre et message sont requis" },
-        { status: 400 }
-      );
-    }
+  // Validation
+  if (!type || !titre || !message) {
+    throw new ValidationError("type, titre et message sont requis");
+  }
 
-    if (!NOTIFICATION_TYPES.includes(type)) {
-      return NextResponse.json(
-        { error: `Type invalide. Types autorisés: ${NOTIFICATION_TYPES.join(', ')}` },
-        { status: 400 }
-      );
-    }
+  if (!NOTIFICATION_TYPES.includes(type)) {
+    throw new ValidationError(`Type invalide. Types autorisés: ${NOTIFICATION_TYPES.join(', ')}`);
+  }
 
     // Créer pour un utilisateur ou plusieurs
     const targetUserIds = userIds || (userId ? [userId] : []);
 
-    if (targetUserIds.length === 0) {
-      return NextResponse.json(
-        { error: "userId ou userIds requis" },
-        { status: 400 }
-      );
-    }
+  if (targetUserIds.length === 0) {
+    throw new ValidationError("userId ou userIds requis");
+  }
 
     // Créer les notifications en masse
     const notifications = await prisma.notification.createMany({
@@ -135,26 +121,18 @@ export async function POST(request: NextRequest) {
       }))
     });
 
-    return NextResponse.json({
-      success: true,
-      message: `${notifications.count} notification(s) créée(s)`,
-      count: notifications.count,
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error("Erreur POST /api/notifications:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse({
+    count: notifications.count,
+  }, `${notifications.count} notification(s) créée(s)`, 201);
+});
 
 // DELETE /api/notifications - Supprimer toutes les notifications lues
-export async function DELETE(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+export const DELETE = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
     const userId = parseInt(session.user.id as string);
 
@@ -162,14 +140,7 @@ export async function DELETE(request: NextRequest) {
       where: { userId, isLue: true }
     });
 
-    return NextResponse.json({
-      success: true,
-      message: `${deleted.count} notification(s) supprimée(s)`,
-      count: deleted.count,
-    });
-
-  } catch (error) {
-    console.error("Erreur DELETE /api/notifications:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse({
+    count: deleted.count,
+  }, `${deleted.count} notification(s) supprimée(s)`);
+});

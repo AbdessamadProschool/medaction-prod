@@ -1,10 +1,12 @@
-﻿import { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 import { safeParseInt } from '@/lib/utils/parse';
+import { notifyAdmins } from '@/lib/notifications';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // POST - Soumettre une activité pour validation
 export const POST = withErrorHandler(async (
@@ -73,40 +75,22 @@ export const POST = withErrorHandler(async (
   });
 
   // Créer une notification pour les admins
-  const admins = await prisma.user.findMany({
-    take: 100,
-    where: { 
-      role: { in: ['ADMIN', 'SUPER_ADMIN'] },
-      isActive: true
-    },
-    select: { id: true }
+  await notifyAdmins({
+    type: 'ACTIVITE_A_VALIDER',
+    titre: 'Nouvelle activité à valider',
+    message: `L'activité "${activite.titre}" à ${activite.etablissement ? activite.etablissement.nom : 'la Province'} a été soumise pour validation.`,
+    lien: `/admin/programmes-activites`,
   });
 
-  if (admins.length > 0) {
-    await prisma.notification.createMany({
-      data: admins.map(admin => ({
-        userId: admin.id,
-        type: 'ACTIVITE_A_VALIDER',
-        titre: 'Nouvelle activité à valider',
-        message: `L'activité "${activite.titre}" à ${activite.etablissement ? activite.etablissement.nom : 'la Province'} a été soumise pour validation.`,
-        lien: `/admin/programmes-activites`,
-        isRead: false,
-      }))
-    });
-  }
-
   // Logger l'action
-  await prisma.activityLog.create({
-    data: {
-      userId,
-      action: 'SUBMIT_FOR_VALIDATION',
-      entity: 'ProgrammeActivite',
-      entityId: activiteId,
-      details: {
-        titre: activite.titre,
-        etablissement: activite.etablissement ? activite.etablissement.nom : 'Province',
-      },
-    }
+  await ActivityLogger.custom({
+    action: 'Soumission activité',
+    entity: 'Activite',
+    entityId: activite.id,
+    details: {
+      message: `L'utilisateur a soumis l'activité "${activite.titre}" pour validation`
+    },
+    userId
   });
 
   return successResponse(updated, 'Activité soumise pour validation avec succès');

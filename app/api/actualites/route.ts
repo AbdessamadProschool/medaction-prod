@@ -4,10 +4,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptions';
 import { z } from 'zod';
 import { sanitizeString } from '@/lib/security/validation';
+import { checkPermission } from '@/lib/permissions';
+import { notifyAdmins } from '@/lib/notifications';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // Schéma de validation pour création d'actualité (compatible Zod v4)
 const createActualiteSchema = z.object({
@@ -40,7 +43,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   
   // Vérifier la permission
-  const { checkPermission } = await import("@/lib/permissions");
   const hasPermission = await checkPermission(userId, 'actualites.create');
 
   if (!hasPermission) {
@@ -53,19 +55,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const validation = createActualiteSchema.safeParse(body);
 
   if (!validation.success) {
-    // Transformer les erreurs Zod en format lisible
-    const fieldErrors: Record<string, string[]> = {};
-    for (const issue of validation.error.issues) {
-      const field = issue.path.join('.') || 'general';
-      if (!fieldErrors[field]) fieldErrors[field] = [];
-      fieldErrors[field].push(issue.message);
-    }
-    
-    const errorMessages = Object.values(fieldErrors).flat();
-    throw new ValidationError(
-      errorMessages.length === 1 ? errorMessages[0] : `${errorMessages.length} erreurs de validation`,
-      { fieldErrors }
-    );
+    // withErrorHandler gère le formatage des ZodError — pas besoin de reshaping manuel
+    throw validation.error;
   }
 
   const data = validation.data;
@@ -99,45 +90,25 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     }
   });
 
-  // Notifier les admins (non bloquant)
-  try {
-    const admins = await prisma.user.findMany({
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
-      select: { id: true }
-    });
-
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'NOUVELLE_ACTUALITE',
-          titre: 'Nouvelle actualité à valider',
-          message: `L'actualité "${actualite.titre}" attend votre validation.`,
-          lien: `/admin/actualites/${actualite.id}`,
-        }))
-      });
-    }
-  } catch (notifError) {
-    console.error('Erreur notification (non bloquante):', notifError);
-  }
-
-  await prisma.activityLog.create({
-    data: {
-      action: 'Création d\'une actualité',
-      entity: 'Actualités',
-      entityId: actualite.id.toString(),
-      details: `L'utilisateur a créé l'actualité "${actualite.titre}"`,
-      ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
-      userAgent: request.headers.get('user-agent') || 'Unknown',
-      userId: userId
-    }
+  // Notifier les admins (non-bloquant) — centralisé dans lib/notifications.ts
+  await notifyAdmins({
+    type: 'NOUVELLE_ACTUALITE',
+    titre: 'Nouvelle actualité à valider',
+    message: `L'actualité "${actualite.titre}" attend votre validation.`,
+    lien: `/admin/actualites/${actualite.id}`,
   });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Actualité créée avec succès. Elle sera visible après validation par un administrateur.',
-    data: actualite 
-  }, { status: 201 });
+  // Journalisation de l'activité — centralisée dans lib/activity-logger.ts
+  await ActivityLogger.create(userId, 'Actualite', actualite.id, {
+    titre: actualite.titre,
+    categorie: actualite.categorie,
+  });
+
+  return successResponse(
+    actualite,
+    'Actualité créée avec succès. Elle sera visible après validation par un administrateur.',
+    201
+  );
 });
 
 // GET - Liste des actualités
@@ -218,9 +189,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.actualite.count({ where })
   ]);
 
-  return NextResponse.json(
+  const response = successResponse(
     {
-      success: true,
       data: actualites,
       pagination: {
         page,
@@ -229,10 +199,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         totalPages: Math.ceil(total / limit)
       }
     },
-    {
-      headers: {
-        'Cache-Control': isAdmin ? 'no-store' : 'public, max-age=60, s-maxage=60',
-      }
-    }
+    undefined,
+    200
   );
+  response.headers.set('Cache-Control', isAdmin ? 'no-store' : 'public, max-age=60, s-maxage=60');
+  return response;
 });

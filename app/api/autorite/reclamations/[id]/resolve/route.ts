@@ -1,37 +1,36 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { notifyReclamationResolved } from '@/lib/notifications';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 // POST - Résoudre une réclamation
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
     
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    if (session.user.role !== 'AUTORITE_LOCALE') {
-      return NextResponse.json({ error: 'Accès réservé aux autorités locales' }, { status: 403 });
-    }
+  if (session.user.role !== 'AUTORITE_LOCALE') {
+    throw new ForbiddenError('Accès réservé aux autorités locales');
+  }
 
     const reclamationId = safeParseInt(params.id, 0);
     const autoriteId = parseInt(session.user.id);
     const body = await request.json();
     const { solution } = body;
 
-    if (!solution || solution.trim().length < 10) {
-      return NextResponse.json({ 
-        error: 'La solution doit contenir au moins 10 caractères' 
-      }, { status: 400 });
-    }
+  if (!solution || solution.trim().length < 10) {
+    throw new ValidationError('La solution doit contenir au moins 10 caractères');
+  }
 
     // Vérifier que la réclamation est bien affectée à cette autorité
     const reclamation = await prisma.reclamation.findFirst({
@@ -43,9 +42,9 @@ export async function POST(
       select: { id: true, userId: true, titre: true }
     });
 
-    if (!reclamation) {
-      return NextResponse.json({ error: 'Réclamation non trouvée ou déjà résolue' }, { status: 404 });
-    }
+  if (!reclamation) {
+    throw new NotFoundError('Réclamation non trouvée ou déjà résolue');
+  }
 
     // Mettre à jour la réclamation
     const updatedReclamation = await prisma.reclamation.update({
@@ -73,14 +72,8 @@ export async function POST(
     // Notifier le citoyen
     await notifyReclamationResolved(reclamationId, reclamation.userId);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Réclamation marquée comme résolue',
-      data: updatedReclamation,
-    });
-
-  } catch (error) {
-    console.error('Erreur résolution réclamation:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(
+    updatedReclamation,
+    'Réclamation marquée comme résolue'
+  );
+});

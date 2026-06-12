@@ -1,8 +1,9 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { ActivityLogger } from '@/lib/activity-logger';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError, AppError } from '@/lib/exceptions';
 
 // POST - Clôturer un événement avec rapport
@@ -76,23 +77,21 @@ export const POST = withErrorHandler(async (
     }
   });
 
-  // Créer un log d'audit
+  // Créer un log d'activité
   try {
-    await prisma.auditLog.create({
-      data: {
-        action: 'CLOTURE_EVENEMENT',
-        resourceType: 'Evenement',
-        resourceId: id.toString(),
-        userId: parseInt(session.user.id),
-        details: JSON.stringify({
-          titre: evenement.titre,
-          rapportCloture: body.rapportCloture.substring(0, 100) + '...',
-          bilanParticipation: body.bilanParticipation,
-        })
+    await ActivityLogger.custom({
+      action: 'CLOTURE_EVENEMENT',
+      entity: 'Evenement',
+      entityId: id,
+      userId: parseInt(session.user.id),
+      details: {
+        titre: evenement.titre,
+        rapportCloture: body.rapportCloture.substring(0, 100) + '...',
+        bilanParticipation: body.bilanParticipation,
       }
     });
   } catch (auditError) {
-    console.error('Erreur audit (non bloquante):', auditError);
+    console.error('Erreur activity logger (non bloquante):', auditError);
   }
 
   // Notification au créateur de l'événement
@@ -112,9 +111,5 @@ export const POST = withErrorHandler(async (
     console.error('Erreur notification (non bloquante):', notifError);
   }
 
-  return NextResponse.json({
-    success: true,
-    message: `L'événement "${evenement.titre}" a été clôturé avec succès`,
-    data: updated
-  });
+  return successResponse(updated, `L'événement "${evenement.titre}" a été clôturé avec succès`);
 });

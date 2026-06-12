@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler } from '@/lib/api-handler';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
+import { notifyAdmins } from '@/lib/notifications';
 
 function slugify(text: string) {
   return text.toString().toLowerCase()
@@ -66,9 +67,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     prisma.campagne.count({ where }),
   ]);
 
-  return NextResponse.json({
-    success: true,
-    data: campagnes,
+  return successResponse({
+    campagnes,
     pagination: {
       page,
       limit,
@@ -79,15 +79,18 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 });
 
 // POST - Créer une campagne
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id || session.user.role !== 'DELEGATION') {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const userId = parseInt(session.user.id);
+  if (session.user.role !== 'DELEGATION') {
+    throw new ForbiddenError('Accès réservé aux délégations');
+  }
+
+  const userId = parseInt(session.user.id);
     const body = await request.json();
 
     // Génération du slug
@@ -135,36 +138,12 @@ export async function POST(request: NextRequest) {
     }
 
     // === NOTIFICATION AUX ADMINS ===
-    try {
-      const admins = await prisma.user.findMany({
-        where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
-        select: { id: true }
-      });
-      
-      if (admins.length > 0) {
-        await prisma.notification.createMany({
-          data: admins.map(admin => ({
-            userId: admin.id,
-            type: 'CAMPAGNE_CREATION',
-            titre: 'Nouvelle campagne créée',
-            message: `La campagne "${body.titre}" a été créée par la délégation et est en attente de validation.`,
-            lien: `/admin/campagnes`,
-            isLue: false,
-            createdAt: new Date()
-          }))
-        });
-      }
-    } catch (notifError) {
-      console.error('Erreur notification:', notifError);
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: campagne,
+    await notifyAdmins({
+      type: 'CAMPAGNE_CREATION',
+      titre: 'Nouvelle campagne créée',
+      message: `La campagne "${body.titre}" a été créée par la délégation et est en attente de validation.`,
+      lien: `/admin/campagnes`,
     });
 
-  } catch (error) {
-    console.error('Erreur création campagne:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(campagne);
+});

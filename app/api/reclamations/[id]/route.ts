@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { SecurityValidation } from '@/lib/security/validation';
 import { withErrorHandler, successResponse, withAudit } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
-import { auditLog } from '@/lib/logger';
 
 // Schéma de mise à jour sécurisé - INTERDIT les changements de statut directs
 const updateReclamationSchema = z.object({

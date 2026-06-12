@@ -104,8 +104,8 @@ export const POST = withPermission('reclamations.create', withErrorHandler(async
     await tx.activityLog.create({
       data: {
         action: 'Création d\'une réclamation',
-        entity: 'Réclamations',
-        entityId: reclamation.id.toString(),
+        entity: 'Réclamation',
+        entityId: reclamation.id,
         details: `L'utilisateur a créé la réclamation "${reclamation.titre}"`,
         ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1',
         userAgent: request.headers.get('user-agent') || 'Unknown',

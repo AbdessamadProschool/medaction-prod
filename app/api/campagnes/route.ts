@@ -4,15 +4,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
-import { withErrorHandler, errorResponse } from '@/lib/api-handler';
+import { withErrorHandler, successResponse, errorResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 import { SystemLogger } from '@/lib/system-logger';
 
 // GET - Liste des campagnes (Publique + Admin)
 export const GET = withErrorHandler(async (request: NextRequest) => {
-  try {
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
     const isAdminOrDelegation = session?.user && ['ADMIN', 'SUPER_ADMIN', 'DELEGATION', 'GOUVERNEUR'].includes(session.user.role || '');
 
     const { searchParams } = new URL(request.url);
@@ -67,10 +66,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       }
     }
 
-    // Exécution de la requête avec gestion d'erreur spécifique
-    try {
-      const [campagnes, total] = await Promise.all([
-        prisma.campagne.findMany({
+    // Exécution de la requête
+    const [campagnes, total] = await Promise.all([
+      prisma.campagne.findMany({
           where,
           include: {
             _count: { select: { participations: true } },
@@ -128,8 +126,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         createdAt: c.createdAt.toISOString(),
       }));
 
-      return NextResponse.json({
-        success: true,
+      return successResponse({
         data: formattedCampagnes,
         pagination: {
           total,
@@ -138,18 +135,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
           totalPages: Math.ceil(total / limit),
         },
       });
-    } catch (prismaError: any) {
-      SystemLogger.error('api:campagnes:db', `Prisma Error: ${prismaError.message}`, { where });
-      throw prismaError; // Laissé au wrapper withErrorHandler
-    }
-  } catch (error: any) {
-    SystemLogger.error('api:campagnes', `Global error: ${error.message}`);
-    return errorResponse(
-      'Une erreur est survenue lors de la récupération des campagnes.',
-      'CAMPAGNES_FETCH_ERROR',
-      500
-    );
-  }
 });
 
 // POST - Créer une campagne
@@ -228,9 +213,5 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     },
   });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Campagne créée avec succès',
-    data: campagne,
-  }, { status: 201 });
+  return successResponse(campagne, 'Campagne créée avec succès', 201);
 });

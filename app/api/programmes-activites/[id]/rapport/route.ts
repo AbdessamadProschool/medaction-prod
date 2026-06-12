@@ -2,46 +2,46 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { getSafeId } from '@/lib/utils/parse';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // POST /api/programmes-activites/[id]/rapport - Enregistrer le rapport d'activité
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const activityId = parseInt(params.id);
-    if (isNaN(activityId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  const activityId = getSafeId(params.id);
 
-    // Vérifier que l'activité existe
-    const activite = await prisma.programmeActivite.findUnique({
-      where: { id: activityId },
-      include: { etablissement: true },
-    });
+  // Vérifier que l'activité existe
+  const activite = await prisma.programmeActivite.findUnique({
+    where: { id: activityId },
+    include: { etablissement: true },
+  });
 
-    if (!activite) {
-      return NextResponse.json({ error: 'Activité non trouvée' }, { status: 404 });
-    }
+  if (!activite) {
+    throw new NotFoundError('Activité non trouvée');
+  }
 
     // Vérifier les permissions (coordinateur de l'établissement)
     const userRole = session.user.role;
     const etablissementsGeres = session.user.etablissementsGeres || [];
     
-    const canEdit = 
-      ['ADMIN', 'SUPER_ADMIN'].includes(userRole) ||
-      (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId ? etablissementsGeres.includes(activite.etablissementId) : false);
+  const canEdit = 
+    ['ADMIN', 'SUPER_ADMIN'].includes(userRole) ||
+    (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId ? etablissementsGeres.includes(activite.etablissementId) : false);
 
-    if (!canEdit) {
-      return NextResponse.json({ error: 'Non autorisé à modifier cette activité' }, { status: 403 });
-    }
+  if (!canEdit) {
+    throw new ForbiddenError('Non autorisé à modifier cette activité');
+  }
 
     // Vérifier que l'activité est terminée ou planifiée (passée)
     const activityDate = new Date(activite.date);
@@ -49,11 +49,9 @@ export async function POST(
     
     const now = new Date();
     
-    if (activityDate > now && activite.statut !== 'TERMINEE' && activite.statut !== 'RAPPORT_COMPLETE') {
-      return NextResponse.json({ 
-        error: 'Le rapport ne peut être rempli qu\'après la fin de l\'activité' 
-      }, { status: 400 });
-    }
+  if (activityDate > now && activite.statut !== 'TERMINEE' && activite.statut !== 'RAPPORT_COMPLETE') {
+    throw new ValidationError('Le rapport ne peut être rempli qu\'après la fin de l\'activité');
+  }
 
     // Récupérer les données du rapport
     const body = await request.json();
@@ -66,10 +64,10 @@ export async function POST(
       recommandations,
     } = body;
 
-    // Valider les données
-    if (presenceEffective === undefined || presenceEffective < 0) {
-      return NextResponse.json({ error: 'Le nombre de participants est requis' }, { status: 400 });
-    }
+  // Valider les données
+  if (presenceEffective === undefined || presenceEffective < 0) {
+    throw new ValidationError('Le nombre de participants est requis');
+  }
 
     // Calculer le taux de présence
     const tauxPresence = activite.participantsAttendus 
@@ -93,55 +91,40 @@ export async function POST(
       },
     });
 
-    // Créer un log d'activité
-    try {
-      await prisma.activityLog.create({
-        data: {
-          action: 'RAPPORT_ACTIVITE',
-          entity: 'ProgrammeActivite',
-          entityId: activityId,
-          userId: parseInt(session.user.id),
-          details: {
-            message: `Rapport complété pour l'activité "${activite.titre}"`,
-            presenceEffective,
-            tauxPresence,
-            noteQualite,
-          },
-        },
-      });
-    } catch (e) {
-      // Log non critique
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Rapport enregistré avec succès',
-      data: updatedActivite,
+  // Créer un log d'activité
+  try {
+    await ActivityLogger.custom({
+      action: 'RAPPORT_ACTIVITE',
+      entity: 'ProgrammeActivite',
+      entityId: activityId,
+      details: {
+        message: `Rapport complété pour l'activité "${activite.titre}"`,
+        presenceEffective,
+        tauxPresence,
+        noteQualite,
+      },
+      userId: parseInt(session.user.id)
     });
-
-  } catch (error) {
-    console.error('Erreur POST rapport:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  } catch (e) {
+    // Log non critique
   }
-}
+
+  return successResponse(updatedActivite, 'Rapport enregistré avec succès');
+});
 
 // GET /api/programmes-activites/[id]/rapport - Récupérer le rapport
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non autorisé');
+  }
 
-    const activityId = parseInt(params.id);
-    if (isNaN(activityId)) {
-      return NextResponse.json({ error: 'ID invalide' }, { status: 400 });
-    }
+  const activityId = getSafeId(params.id);
 
     const activite = await prisma.programmeActivite.findUnique({
       where: { id: activityId },
@@ -169,29 +152,24 @@ export async function GET(
       },
     });
 
-    if (!activite) {
-      return NextResponse.json({ error: 'Activité non trouvée' }, { status: 404 });
-    }
+  if (!activite) {
+    throw new NotFoundError('Activité non trouvée');
+  }
 
     // SECURITY FIX: Vérification des permissions (alignement avec POST)
     const userRole = session.user.role;
     const etablissementsGeres = session.user.etablissementsGeres || [];
     
-    const canAccess = 
-      ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(userRole) ||
-      userRole === 'DELEGATION' ||
-      (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId 
-        ? etablissementsGeres.includes(activite.etablissementId) 
-        : false);
+  const canAccess = 
+    ['ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'].includes(userRole) ||
+    userRole === 'DELEGATION' ||
+    (userRole === 'COORDINATEUR_ACTIVITES' && activite.etablissementId 
+      ? etablissementsGeres.includes(activite.etablissementId) 
+      : false);
 
-    if (!canAccess) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
-
-    return NextResponse.json({ data: activite });
-
-  } catch (error) {
-    console.error('Erreur GET rapport:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!canAccess) {
+    throw new ForbiddenError('Accès refusé');
   }
-}
+
+  return successResponse(activite);
+});

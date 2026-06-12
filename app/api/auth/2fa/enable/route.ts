@@ -4,8 +4,11 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { authenticator } from 'otplib';
 import * as QRCode from 'qrcode';
+import { ActivityLogger } from '@/lib/activity-logger';
 import { randomBytes } from 'crypto';
 import bcrypt from 'bcryptjs';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ValidationError, NotFoundError } from '@/lib/exceptions';
 
 // Configuration TOTP
 authenticator.options = {
@@ -32,13 +35,12 @@ async function generateBackupCodes(count: number = 8): Promise<{ plain: string[]
 }
 
 // POST - Activer le 2FA (génère le secret et le QR code)
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
     if (!request.headers.get('content-type')?.includes('application/json') && request.headers.get('content-type') !== null) {
       // Allow empty body or application/json, wait, POST 2FA enable doesn't require a body actually, it just generates a secret.
@@ -46,10 +48,10 @@ export async function POST(request: NextRequest) {
       // Actually `request.json()` might fail if there's no body.
     }
     
-    // Oh wait, if POST does not use request.json(), it still shouldn't accept form submissions.
-    if (request.headers.get('content-type') === 'application/x-www-form-urlencoded' || request.headers.get('content-type')?.startsWith('multipart/form-data') || request.headers.get('content-type') === 'text/plain') {
-        return NextResponse.json({ error: 'Unsupported Media Type' }, { status: 415 });
-    }
+  // Oh wait, if POST does not use request.json(), it still shouldn't accept form submissions.
+  if (request.headers.get('content-type') === 'application/x-www-form-urlencoded' || request.headers.get('content-type')?.startsWith('multipart/form-data') || request.headers.get('content-type') === 'text/plain') {
+      throw new ValidationError('Unsupported Media Type');
+  }
 
     const userId = parseInt(session.user.id);
 
@@ -64,15 +66,13 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
-    }
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé');
+  }
 
-    if (user.twoFactorEnabled) {
-      return NextResponse.json({ 
-        error: 'L\'authentification à deux facteurs est déjà activée' 
-      }, { status: 400 });
-    }
+  if (user.twoFactorEnabled) {
+    throw new ValidationError('L\'authentification à deux facteurs est déjà activée');
+  }
 
     // Générer un nouveau secret TOTP
     const secret = authenticator.generateSecret();
@@ -104,37 +104,28 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      message: 'Secret 2FA généré avec succès',
-      data: {
-        secret,
-        qrCode: qrCodeDataUrl,
-        // Retourner les codes EN CLAIR à l'utilisateur (une seule fois!)
-        backupCodes: plainBackupCodes,
-        otpauthUrl,
-      }
-    });
-
-  } catch (error) {
-    console.error('Erreur activation 2FA:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse({
+    secret,
+    qrCode: qrCodeDataUrl,
+    // Retourner les codes EN CLAIR à l'utilisateur (une seule fois!)
+    backupCodes: plainBackupCodes,
+    otpauthUrl,
+  }, 'Secret 2FA généré avec succès');
+});
 
 // DELETE - Désactiver le 2FA
-export async function DELETE(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const DELETE = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    const userId = parseInt(session.user.id);
-    
-    if (!request.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 415 });
-    }
+  const userId = parseInt(session.user.id);
+  
+  if (!request.headers.get('content-type')?.includes('application/json')) {
+    throw new ValidationError('Content-Type must be application/json');
+  }
 
     const body = await request.json();
     const { code, password } = body;
@@ -150,15 +141,13 @@ export async function DELETE(request: NextRequest) {
       }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
-    }
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé');
+  }
 
-    if (!user.twoFactorEnabled) {
-      return NextResponse.json({ 
-        error: 'L\'authentification à deux facteurs n\'est pas activée' 
-      }, { status: 400 });
-    }
+  if (!user.twoFactorEnabled) {
+    throw new ValidationError('L\'authentification à deux facteurs n\'est pas activée');
+  }
 
     // Vérifier le code 2FA
     if (user.twoFactorSecret) {
@@ -167,10 +156,10 @@ export async function DELETE(request: NextRequest) {
         secret: user.twoFactorSecret,
       });
 
-      if (!isValid) {
-        return NextResponse.json({ error: 'Code 2FA invalide' }, { status: 400 });
-      }
+    if (!isValid) {
+      throw new ValidationError('Code 2FA invalide');
     }
+  }
 
     // Désactiver le 2FA
     await prisma.user.update({
@@ -183,33 +172,23 @@ export async function DELETE(request: NextRequest) {
     });
 
     // Log l'activité
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        action: 'DISABLE_2FA',
-        entity: 'User',
-        entityId: userId,
-      }
+    await ActivityLogger.custom({
+      action: 'DISABLE_2FA',
+      entity: 'User',
+      entityId: userId,
+      userId
     });
 
-    return NextResponse.json({
-      message: 'Authentification à deux facteurs désactivée'
-    });
-
-  } catch (error) {
-    console.error('Erreur désactivation 2FA:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(null, 'Authentification à deux facteurs désactivée');
+});
 
 // GET - Statut 2FA de l'utilisateur
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
     const userId = parseInt(session.user.id);
 
@@ -221,17 +200,12 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Utilisateur non trouvé' }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      enabled: user.twoFactorEnabled,
-      pending: !user.twoFactorEnabled && !!user.twoFactorSecret,
-    });
-
-  } catch (error) {
-    console.error('Erreur statut 2FA:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  if (!user) {
+    throw new NotFoundError('Utilisateur non trouvé');
   }
-}
+
+  return successResponse({
+    enabled: user.twoFactorEnabled,
+    pending: !user.twoFactorEnabled && !!user.twoFactorSecret,
+  });
+});

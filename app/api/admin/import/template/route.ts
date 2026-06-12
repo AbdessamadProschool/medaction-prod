@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import ExcelJS from 'exceljs';
+import { withErrorHandler } from '@/lib/api-handler';
+import { ForbiddenError, ValidationError } from '@/lib/exceptions';
 
 const MANDATORY_STAR = ' *';
 
@@ -99,10 +101,10 @@ const ENTITY_TEMPLATES: Record<string, any[]> = {
   ],
 };
 
-export async function GET(req: Request) {
+export const GET = withErrorHandler(async (req: Request) => {
   const session = await getServerSession(authOptions);
   if (session?.user?.role !== 'SUPER_ADMIN' && session?.user?.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 403 });
+    throw new ForbiddenError('Non autorisé');
   }
 
   const { searchParams } = new URL(req.url);
@@ -110,7 +112,7 @@ export async function GET(req: Request) {
   const sector = searchParams.get('sector') || 'AUTRE';
 
   if (!entity) {
-    return NextResponse.json({ error: 'Entité manquante' }, { status: 400 });
+    throw new ValidationError('Entité manquante');
   }
 
   const workbook = new ExcelJS.Workbook();
@@ -126,7 +128,7 @@ export async function GET(req: Request) {
   } else if (ENTITY_TEMPLATES[entity]) {
     columns = ENTITY_TEMPLATES[entity];
   } else {
-    return NextResponse.json({ error: 'Entité invalide' }, { status: 400 });
+    throw new ValidationError('Entité invalide');
   }
 
   worksheet.columns = columns;
@@ -151,5 +153,5 @@ export async function GET(req: Request) {
       'Content-Disposition': `attachment; filename="template_${entity}${entity === 'etablissement' ? '_' + sector : ''}.xlsx"`,
     },
   });
-}
+});
 

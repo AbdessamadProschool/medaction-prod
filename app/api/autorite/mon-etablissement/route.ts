@@ -1,20 +1,20 @@
-import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler, successResponse } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
 
 // GET - Récupérer l'établissement lié à l'utilisateur autorité locale
-export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async () => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    if (session.user.role !== 'AUTORITE_LOCALE') {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
-    }
+  if (session.user.role !== 'AUTORITE_LOCALE') {
+    throw new ForbiddenError('Accès refusé');
+  }
 
     const userId = parseInt(session.user.id);
 
@@ -36,9 +36,9 @@ export async function GET() {
       }
     });
 
-    if (!user?.communeResponsable) {
-      return NextResponse.json({ data: null });
-    }
+  if (!user?.communeResponsable) {
+    return successResponse(null);
+  }
 
     const commune = user.communeResponsable;
 
@@ -64,10 +64,5 @@ export async function GET() {
       services: ['Gestion Administrative', 'Urbanisme', 'Etat Civil', 'Voirie'] // Services génériques
     };
 
-    return NextResponse.json({ success: true, data });
-
-  } catch (error) {
-    console.error('Erreur récupération établissement:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+  return successResponse(data);
+});

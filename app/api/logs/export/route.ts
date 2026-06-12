@@ -3,20 +3,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { withErrorHandler } from '@/lib/api-handler';
+import { UnauthorizedError, ForbiddenError } from '@/lib/exceptions';
+import { ActivityLogger } from '@/lib/activity-logger';
 
 // GET - Exporter les logs d'activité
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
-    }
+export const GET = withErrorHandler(async (request: NextRequest) => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new UnauthorizedError('Non authentifié');
+  }
 
-    // Seuls les admins peuvent exporter les logs
-    if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
-      return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
-    }
+  // Seuls les admins peuvent exporter les logs
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(session.user.role)) {
+    throw new ForbiddenError('Accès non autorisé');
+  }
 
     const { searchParams } = new URL(request.url);
     const format = searchParams.get('format') || 'csv';
@@ -72,13 +74,12 @@ export async function GET(request: NextRequest) {
     const usersMap = new Map(users.map(u => [u.id, u]));
 
     // Log l'export
-    await prisma.activityLog.create({
-      data: {
-        userId: parseInt(session.user.id),
-        action: 'EXPORT_LOGS',
-        entity: 'ActivityLog',
-        details: { count: logs.length, format, filters: { userId, action, entity, dateFrom, dateTo } },
-      }
+    await ActivityLogger.custom({
+      action: 'EXPORT_LOGS',
+      entity: 'ActivityLog',
+      entityId: 0,
+      details: { count: logs.length, format, filters: { userId, action, entity, dateFrom, dateTo } },
+      userId: parseInt(session.user.id)
     });
 
     if (format === 'json') {
@@ -118,18 +119,13 @@ export async function GET(request: NextRequest) {
         ].join(';');
       });
 
-      const csv = csvHeader + csvRows.join('\n');
+      const csvContent = csvHeader + csvRows.join('\n');
 
-      return new NextResponse(csv, {
+      return new NextResponse(csvContent, {
         headers: {
           'Content-Type': 'text/csv; charset=utf-8',
           'Content-Disposition': `attachment; filename=logs_export_${new Date().toISOString().split('T')[0]}.csv`,
-        },
+        }
       });
     }
-
-  } catch (error) {
-    console.error('Erreur export logs:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
-  }
-}
+});

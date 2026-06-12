@@ -1,41 +1,40 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { z } from "zod";
+import { notifyAdmins } from '@/lib/notifications';
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ValidationError, NotFoundError } from "@/lib/exceptions";
 
 const signalementSchema = z.object({
   motif: z.string().min(10).max(500),
 });
 
 // POST /api/evaluations/[id]/signaler - Signaler une évaluation
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ id: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
-    const evaluationId = parseInt(params.id);
+  const evaluationId = parseInt(params.id);
 
-    if (isNaN(evaluationId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+  if (isNaN(evaluationId)) {
+    throw new ValidationError("ID invalide");
+  }
 
-    const body = await request.json();
-    const validation = signalementSchema.safeParse(body);
+  const body = await request.json();
+  const validation = signalementSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json({
-        error: "Motif invalide (10-500 caractères requis)",
-        details: validation.error.flatten(),
-      }, { status: 400 });
-    }
+  if (!validation.success) {
+    throw new ValidationError("Motif invalide (10-500 caractères requis)", { details: validation.error.flatten() });
+  }
 
     const { motif } = validation.data;
 
@@ -44,15 +43,13 @@ export async function POST(
       where: { id: evaluationId },
     });
 
-    if (!evaluation) {
-      return NextResponse.json({ error: "Évaluation non trouvée" }, { status: 404 });
-    }
+  if (!evaluation) {
+    throw new NotFoundError("Évaluation non trouvée");
+  }
 
-    if (evaluation.isSignalee) {
-      return NextResponse.json({ 
-        error: "Cette évaluation a déjà été signalée" 
-      }, { status: 400 });
-    }
+  if (evaluation.isSignalee) {
+    throw new ValidationError("Cette évaluation a déjà été signalée");
+  }
 
     // Mettre à jour l'évaluation
     await prisma.evaluation.update({
@@ -64,30 +61,15 @@ export async function POST(
     });
 
     // Notifier les admins
-    const admins = await prisma.user.findMany({
-      take: 100,
-      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] }, isActive: true },
-      select: { id: true },
+    await notifyAdmins({
+      type: 'EVALUATION_SIGNALEE',
+      titre: 'Évaluation signalée',
+      message: `Une évaluation a été signalée pour modération`,
+      lien: `/admin/evaluations/${evaluationId}`,
     });
 
-    if (admins.length > 0) {
-      await prisma.notification.createMany({
-        data: admins.map(admin => ({
-          userId: admin.id,
-          type: 'EVALUATION_SIGNALEE',
-          titre: 'Évaluation signalée',
-          message: `Une évaluation a été signalée pour modération`,
-          lien: `/admin/evaluations/${evaluationId}`,
-        })),
-      });
-    }
-
-    return NextResponse.json({
-      message: "Évaluation signalée. Un administrateur examinera le signalement.",
-    });
-
-  } catch (error) {
-    console.error("Erreur POST /api/evaluations/[id]/signaler:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse(
+    null,
+    "Évaluation signalée. Un administrateur examinera le signalement."
+  );
+});

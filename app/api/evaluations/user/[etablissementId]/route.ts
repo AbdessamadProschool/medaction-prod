@@ -1,27 +1,28 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { withErrorHandler, successResponse } from "@/lib/api-handler";
+import { UnauthorizedError, ValidationError } from "@/lib/exceptions";
 
 // GET /api/evaluations/user/[etablissementId] - Évaluation de l'utilisateur pour un établissement
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params: _p }: { params: Promise<{ etablissementId: string }> }
-) {
+) => {
   const params = await _p;
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
-    }
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) {
+    throw new UnauthorizedError("Non authentifié");
+  }
 
-    const userId = parseInt(session.user.id as string);
-    const etablissementId = parseInt(params.etablissementId);
+  const userId = parseInt(session.user.id as string);
+  const etablissementId = parseInt(params.etablissementId);
 
-    if (isNaN(etablissementId)) {
-      return NextResponse.json({ error: "ID invalide" }, { status: 400 });
-    }
+  if (isNaN(etablissementId)) {
+    throw new ValidationError("ID invalide");
+  }
 
     // Chercher l'évaluation existante
     const evaluation = await prisma.evaluation.findUnique({
@@ -33,12 +34,12 @@ export async function GET(
       },
     });
 
-    if (!evaluation) {
-      return NextResponse.json({ 
-        hasEvaluated: false,
-        evaluation: null,
-      });
-    }
+  if (!evaluation) {
+    return successResponse({ 
+      hasEvaluated: false,
+      evaluation: null,
+    });
+  }
 
     // Vérifier si modifiable (< 7 jours)
     const isModifiable = new Date() <= evaluation.dateExpiration;
@@ -46,15 +47,10 @@ export async function GET(
       (evaluation.dateExpiration.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     ));
 
-    return NextResponse.json({
-      hasEvaluated: true,
-      evaluation,
-      isModifiable,
-      joursRestants,
-    });
-
-  } catch (error) {
-    console.error("Erreur GET /api/evaluations/user/[etablissementId]:", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-  }
-}
+  return successResponse({
+    hasEvaluated: true,
+    evaluation,
+    isModifiable,
+    joursRestants,
+  });
+});

@@ -99,6 +99,21 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    if (activeDropdown === null) return;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.dropdown-trigger') && !target.closest('.dropdown-menu-container')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [activeDropdown]);
+
   // New state variables for state-based dialogs/modals
   const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
   const [showResetId, setShowResetId] = useState<number | null>(null);
@@ -428,7 +443,10 @@ export default function UsersPage() {
                             onClick={() => setActiveDropdown(activeDropdown === user.id ? null : user.id)}
                             variant="outline"
                             size="icon"
-                            className={activeDropdown === user.id ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))]' : ''}
+                            className={cn(
+                              "dropdown-trigger",
+                              activeDropdown === user.id ? 'bg-[hsl(var(--gov-blue))] text-white border-[hsl(var(--gov-blue))]' : ''
+                            )}
                             aria-label="Actions"
                             aria-expanded={activeDropdown === user.id}
                           >
@@ -443,7 +461,7 @@ export default function UsersPage() {
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: 10 }}
                               // z-[60] pour être au-dessus de tout sur mobile
-                              className="absolute end-0 mt-2 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-[60] backdrop-blur-xl bg-card/95 overflow-hidden"
+                              className="dropdown-menu-container absolute end-0 mt-2 w-64 bg-card rounded-2xl shadow-2xl border border-border py-2 z-[60] backdrop-blur-xl bg-card/95 overflow-hidden"
                             >
                               <button
                                 onClick={() => handleEditRole(user)}
@@ -563,9 +581,6 @@ export default function UsersPage() {
           />
         )}
 
-        {activeDropdown && (
-          <div className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px]" onClick={() => setActiveDropdown(null)} />
-        )}
 
         {/* Delete Confirmation Modal */}
         {showDeleteId && targetUser && (

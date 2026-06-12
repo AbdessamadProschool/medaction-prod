@@ -47,6 +47,21 @@ export async function POST(request: Request) {
             e.dateDebut.toISOString(),
             e.nombreInscrits
         ]);
+    } else if (type === 'dashboard') {
+        const [usersCount, reclamationsCount, eventsCount, etablissementsCount] = await Promise.all([
+            prisma.user.count(),
+            prisma.reclamation.count(),
+            prisma.evenement.count(),
+            prisma.etablissement.count()
+        ]);
+        
+        headers = ['Métrique', 'Valeur'];
+        data = [
+            ['Total Utilisateurs', usersCount],
+            ['Total Réclamations', reclamationsCount],
+            ['Total Événements', eventsCount],
+            ['Total Établissements', etablissementsCount]
+        ];
     }
 
     // Generate CSV

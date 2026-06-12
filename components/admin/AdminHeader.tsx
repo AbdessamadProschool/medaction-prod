@@ -84,16 +84,9 @@ export default function AdminHeader() {
   return (
     <header className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b-2 border-[hsl(var(--gov-gold)/0.3)] px-4 sm:px-6 py-3 shadow-sm">
       <div className="flex items-center justify-between">
-        {/* Search */}
+        {/* Search - Supprimé car inactif et non fonctionnel pour le moment */}
         <div className="flex-1 max-w-lg">
-          <div className="relative group">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors" />
-            <input
-              type="text"
-              placeholder={t('search_placeholder')}
-              className="gov-input ps-10"
-            />
-          </div>
+          {/* La barre de recherche globale a été retirée à la demande de l'utilisateur */}
         </div>
 
         {/* Right side */}

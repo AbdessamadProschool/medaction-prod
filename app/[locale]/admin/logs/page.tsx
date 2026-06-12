@@ -119,6 +119,7 @@ const ACTION_STYLES: Record<string, string> = {
   'EXPORT': 'bg-gov-blue/10 text-gov-blue-dark',
   'EXPORT_LOGS': 'bg-gov-blue/10 text-gov-blue-dark',
   'UPDATE_PERMISSIONS': 'bg-gov-gold/10 text-gov-gold',
+  'CLOTURE': 'bg-slate-100 text-slate-700 border border-slate-200',
 };
 
 const LEVEL_ICONS: Record<string, React.ReactNode> = {
@@ -374,7 +375,7 @@ export default function AdminLogsPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
           <div className="text-start">
             <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg">
+              <div className="p-2 bg-gov-blue text-white rounded-none">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-2xl font-bold text-foreground">
@@ -741,7 +742,7 @@ export default function AdminLogsPage() {
                         <td className="px-4 py-3">
                           {log.user ? (
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                              <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
                                 {log.user.prenom?.[0]}{log.user.nom?.[0]}
                               </div>
                               <div className="min-w-0">
@@ -865,7 +866,7 @@ export default function AdminLogsPage() {
                         <td className="px-4 py-3">
                           {log.user ? (
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-gov-blue to-gov-blue-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                              <div className="w-7 h-7 rounded-none bg-gov-blue flex items-center justify-center text-white text-[10px] font-bold shrink-0">
                                 {log.user.name?.[0]}
                               </div>
                               <div className="min-w-0">
@@ -985,9 +986,9 @@ export default function AdminLogsPage() {
               dir={locale === 'ar' ? 'rtl' : 'ltr'}
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-7 border-b border-border bg-muted/30">
+              <div className="flex items-center justify-between p-7 border-b border-border bg-slate-50">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-500/20">
+                    <div className="p-3 bg-gov-blue text-white rounded-none">
                         <FileJson size={24} />
                     </div>
                     <div>
@@ -1110,10 +1111,10 @@ export default function AdminLogsPage() {
                 </div>
 
               </div>
-                  <div className="p-6 border-t border-border bg-muted/30 flex justify-end">
+              <div className="p-6 border-t border-border bg-slate-50 flex justify-end">
                 <button 
                   onClick={() => setSelectedLog(null)}
-                  className="px-8 py-3 bg-gradient-to-r from-gov-green to-gov-green-dark text-white rounded-2xl hover:opacity-90 transition-all text-sm font-black shadow-lg shadow-gov-green/20 uppercase tracking-widest"
+                  className="px-8 py-3 bg-gov-blue text-white rounded-none hover:bg-gov-blue-dark transition-colors text-sm font-bold uppercase tracking-wider"
                 >
                   {t('close')}
                 </button>

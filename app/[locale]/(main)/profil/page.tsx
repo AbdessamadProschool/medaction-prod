@@ -346,9 +346,9 @@ export default function ProfilPage() {
               )}
             </div>
             
-            {/* Lien rapide vers les abonnements */}
-            <PermissionGuard permission="etablissements.subscribe">
-              <div className="mt-4 pt-4 border-t border-white/20">
+            {/* Liens rapides */}
+            <div className="mt-4 pt-4 border-t border-white/20 flex flex-wrap gap-3">
+              <PermissionGuard permission="etablissements.subscribe">
                 <Link
                   href="/profil/abonnements"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[hsl(var(--gov-blue-dark))] font-bold rounded-xl hover:bg-gray-50 shadow-md transition-all"
@@ -356,8 +356,15 @@ export default function ProfilPage() {
                   <HeartIcon className="w-4 h-4" />
                   <span>{t('subscriptions_btn')}</span>
                 </Link>
-              </div>
-            </PermissionGuard>
+              </PermissionGuard>
+              <Link
+                href="/profil/historique"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 shadow-md transition-all border border-white/20"
+              >
+                <HistoryIcon className="w-4 h-4" />
+                <span>{t('system.my_history', { fallback: 'Mon Historique' })}</span>
+              </Link>
+            </div>
           </div>
 
           {/* Tabs */}
@@ -600,6 +607,14 @@ function HeartIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+    </svg>
+  );
+}
+
+function HistoryIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   );
 }

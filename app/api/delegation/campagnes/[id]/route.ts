@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
+import { logActivity } from '@/lib/activity-logger';
 
 interface RouteParams {
   params: Promise<{
@@ -112,6 +114,33 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: updateData,
     });
 
+    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
+    const userAgent = request.headers.get('user-agent') || null;
+    const actionName = (body.statut === 'CLOTUREE') ? 'CLOTURE_CAMPAGNE' : 'UPDATE_CAMPAGNE';
+
+    await auditLog({
+      action: actionName,
+      resource: 'Campagne',
+      resourceId: id,
+      userId: userId,
+      details: { titre: updatedCampagne.titre, fields: Object.keys(updateData) },
+      previousValue: campagne,
+      newValue: updatedCampagne,
+      ipAddress,
+      userAgent,
+      status: 'SUCCESS'
+    });
+
+    await logActivity({
+      userId: userId,
+      action: actionName,
+      entity: 'Campagne',
+      entityId: id,
+      details: { titre: updatedCampagne.titre },
+      ipAddress,
+      userAgent
+    });
+
     return NextResponse.json({ success: true, data: updatedCampagne });
   } catch (error) {
     console.error(error);
@@ -146,6 +175,31 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     await prisma.campagne.delete({
       where: { id },
+    });
+
+    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
+    const userAgent = request.headers.get('user-agent') || null;
+
+    await auditLog({
+      action: 'DELETE_CAMPAGNE',
+      resource: 'Campagne',
+      resourceId: id,
+      userId: userId,
+      details: { titre: campagne.titre },
+      previousValue: campagne,
+      ipAddress,
+      userAgent,
+      status: 'SUCCESS'
+    });
+
+    await logActivity({
+      userId: userId,
+      action: 'DELETE_CAMPAGNE',
+      entity: 'Campagne',
+      entityId: id,
+      details: { titre: campagne.titre },
+      ipAddress,
+      userAgent
     });
 
     return NextResponse.json({ success: true });

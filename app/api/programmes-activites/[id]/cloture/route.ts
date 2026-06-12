@@ -1,9 +1,11 @@
-﻿import { safeParseInt } from '@/lib/utils/parse';
+import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { z } from 'zod';
+import { auditLog } from '@/lib/logger';
+import { logActivity } from '@/lib/activity-logger';
 
 const clotureSchema = z.object({
   presenceEffective: z.number().int().min(0),
@@ -95,6 +97,32 @@ export async function POST(
         dateRapport: new Date(),
         alerteRapportEnvoyee: false // Reset alert
       }
+    });
+
+    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
+    const userAgent = request.headers.get('user-agent') || null;
+
+    await auditLog({
+      action: 'CLOTURE_ACTIVITE',
+      resource: 'ProgrammeActivite',
+      resourceId: activityId,
+      userId: userId,
+      details: { titre: updated.titre, presenceEffective: data.presenceEffective },
+      previousValue: activite,
+      newValue: updated,
+      ipAddress,
+      userAgent,
+      status: 'SUCCESS'
+    });
+
+    await logActivity({
+      userId: userId,
+      action: 'CLOTURE_ACTIVITE',
+      entity: 'ProgrammeActivite',
+      entityId: activityId,
+      details: { titre: updated.titre },
+      ipAddress,
+      userAgent
     });
 
     return NextResponse.json({

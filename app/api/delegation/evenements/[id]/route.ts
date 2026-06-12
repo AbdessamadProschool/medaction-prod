@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
+import { auditLog } from '@/lib/logger';
+import { logActivity } from '@/lib/activity-logger';
 
 // Next.js 15: params is now a Promise
 interface RouteParams {
@@ -113,6 +115,31 @@ export async function DELETE(request: NextRequest, segmentData: RouteParams) {
 
     await prisma.evenement.delete({
       where: { id },
+    });
+
+    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
+    const userAgent = request.headers.get('user-agent') || null;
+
+    await auditLog({
+      action: 'DELETE_EVENEMENT',
+      resource: 'Evenement',
+      resourceId: id,
+      userId: userId,
+      details: { titre: evenement.titre },
+      previousValue: evenement,
+      ipAddress,
+      userAgent,
+      status: 'SUCCESS'
+    });
+
+    await logActivity({
+      userId: userId,
+      action: 'DELETE_EVENEMENT',
+      entity: 'Evenement',
+      entityId: id,
+      details: { titre: evenement.titre },
+      ipAddress,
+      userAgent
     });
 
     return NextResponse.json({ success: true });
@@ -252,6 +279,33 @@ export async function PUT(request: NextRequest, segmentData: RouteParams) {
         }
       });
   
+      const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
+      const userAgent = request.headers.get('user-agent') || null;
+      const actionName = body.action === 'CLOTURE' ? 'CLOTURE_EVENEMENT' : 'UPDATE_EVENEMENT';
+
+      await auditLog({
+        action: actionName,
+        resource: 'Evenement',
+        resourceId: id,
+        userId: userId,
+        details: { titre: updatedEvenement.titre, fields: Object.keys(updateData) },
+        previousValue: evenement,
+        newValue: updatedEvenement,
+        ipAddress,
+        userAgent,
+        status: 'SUCCESS'
+      });
+
+      await logActivity({
+        userId: userId,
+        action: actionName,
+        entity: 'Evenement',
+        entityId: id,
+        details: { titre: updatedEvenement.titre },
+        ipAddress,
+        userAgent
+      });
+
       return NextResponse.json({ success: true, data: updatedEvenement });
     } catch (error) {
       console.error('PUT /api/delegation/evenements/[id] error:', error);

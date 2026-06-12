@@ -140,7 +140,8 @@
                 "view": "Voir logs"
             },
             "backup": "Gérer backups",
-            "restore": "Restaurer système"
+            "restore": "Restaurer système",
+            "my_history": "Mon Historique"
         },
         "permissions": {
             "manage": "Gérer permissions"
@@ -3612,7 +3613,15 @@
             "UPDATE_ETABLISSEMENT": "Modif. Établissement",
             "DELETE_ESTABLISSEMENT": "Suppr. Établissement",
             "AFFECT_RECLAMATION": "Affectation Réclamation",
-            "UPDATE_SETTINGS": "Mise à jour Paramètres"
+            "UPDATE_SETTINGS": "Mise à jour Paramètres",
+            "CLOTURE": "Clôture",
+            "CLOTURE_EVENEMENT": "Clôture Événement",
+            "CLOTURE_ACTIVITE": "Clôture Activité",
+            "CLOTURE_CAMPAGNE": "Clôture Campagne",
+            "UPDATE_EVENEMENT": "Modif. Événement",
+            "DELETE_EVENEMENT": "Suppr. Événement",
+            "UPDATE_CAMPAGNE": "Modif. Campagne",
+            "DELETE_CAMPAGNE": "Suppr. Campagne"
         },
         "entities": {
             "User": "Utilisateur",

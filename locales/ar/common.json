@@ -143,7 +143,8 @@
                 "view": "Voir logs"
             },
             "backup": "Gérer backups",
-            "restore": "Restaurer système"
+            "restore": "Restaurer système",
+            "my_history": "سجلي التاريخي"
         },
         "permissions": {
             "manage": "Gérer permissions"
@@ -4277,7 +4278,15 @@
             "UPDATE_ETABLISSEMENT": "تعديل مؤسسة",
             "DELETE_ETABLISSEMENT": "حذف مؤسسة",
             "AFFECT_RECLAMATION": "إسناد الشكاية",
-            "UPDATE_SETTINGS": "تحديث الإعدادات"
+            "UPDATE_SETTINGS": "تحديث الإعدادات",
+            "CLOTURE": "إغلاق",
+            "CLOTURE_EVENEMENT": "إغلاق الحدث",
+            "CLOTURE_ACTIVITE": "إغلاق النشاط",
+            "CLOTURE_CAMPAGNE": "إغلاق الحملة",
+            "UPDATE_EVENEMENT": "تعديل الحدث",
+            "DELETE_EVENEMENT": "حذف الحدث",
+            "UPDATE_CAMPAGNE": "تعديل الحملة",
+            "DELETE_CAMPAGNE": "حذف الحملة"
         },
         "entities": {
             "User": "مستخدم",

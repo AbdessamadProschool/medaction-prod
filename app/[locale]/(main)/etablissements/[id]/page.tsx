@@ -273,15 +273,33 @@ export default function EtablissementDetailPage() {
 
   const shouldFetchEvents = activeTab === 'events' && etablissement;
   const { data: evenementsResponse } = useData<any>(shouldFetchEvents ? `/api/evenements?etablissementId=${etablissement.id}` : null);
-  const evenements = evenementsResponse?.data || [];
+  const evenements = Array.isArray(evenementsResponse?.data?.data)
+    ? evenementsResponse.data.data
+    : Array.isArray(evenementsResponse?.data)
+      ? evenementsResponse.data
+      : Array.isArray(evenementsResponse)
+        ? evenementsResponse
+        : [];
 
   const shouldFetchActivites = activeTab === 'activites' && etablissement;
   const { data: activitesResponse } = useData<any>(shouldFetchActivites ? `/api/programmes-activites?etablissementId=${etablissement.id}` : null);
-  const activites = activitesResponse?.data || [];
+  const activites = Array.isArray(activitesResponse?.data?.data)
+    ? activitesResponse.data.data
+    : Array.isArray(activitesResponse?.data)
+      ? activitesResponse.data
+      : Array.isArray(activitesResponse)
+        ? activitesResponse
+        : [];
 
   const shouldFetchActualites = activeTab === 'actualites' && etablissement;
   const { data: actualitesResponse } = useData<any>(shouldFetchActualites ? `/api/actualites?etablissementId=${etablissement.id}` : null);
-  const actualites = actualitesResponse?.data || [];
+  const actualites = Array.isArray(actualitesResponse?.data?.data)
+    ? actualitesResponse.data.data
+    : Array.isArray(actualitesResponse?.data)
+      ? actualitesResponse.data
+      : Array.isArray(actualitesResponse)
+        ? actualitesResponse
+        : [];
 
   if (loading) {
     return (

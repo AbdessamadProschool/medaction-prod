@@ -81,9 +81,15 @@ function EvenementsContent() {
   // Data fetching using useData
   const { data: eventsResponse, isLoading: loading } = useData(`/api/evenements?${queryParams.toString()}`);
   
-  // Handle response structure
-  const events = Array.isArray(eventsResponse) ? eventsResponse : eventsResponse?.data || [];
-  const pagination = eventsResponse?.pagination || eventsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
+  // Support both wrapped and unwrapped response structures
+  const events: Evenement[] = Array.isArray(eventsResponse?.data?.data)
+    ? eventsResponse.data.data
+    : Array.isArray(eventsResponse?.data)
+      ? eventsResponse.data
+      : Array.isArray(eventsResponse)
+        ? eventsResponse
+        : [];
+  const pagination = eventsResponse?.data?.pagination || eventsResponse?.pagination || eventsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
   const totalPages = pagination.totalPages || 1;
   const total = pagination.total || 0;
 

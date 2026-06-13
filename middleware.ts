@@ -425,7 +425,10 @@ function isValidLocaleOrPath(pathname: string): boolean {
     '/manifest.json',
     '/sw.js',
     '/icon.png',
-    '/apple-icon.png'
+    '/apple-icon.png',
+    '/maintenance',
+    '/login',
+    '/acces-refuse'
   ];
   
   if (allowedExact.includes(lowercase)) {

@@ -114,10 +114,15 @@ function EtablissementsContent() {
 
   const { data: etabsResponse, isLoading: loading } = useData(`/api/etablissements?${queryParams.toString()}`);
   
-  // L'API renvoie souvent un objet { success: true, data: [...], pagination: {...} } 
-  // que le hook useData déballe parfois. Pour gérer toutes les structures :
-  const etablissements = Array.isArray(etabsResponse) ? etabsResponse : etabsResponse?.data || [];
-  const pagination = etabsResponse?.pagination || etabsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
+  // Support both wrapped and unwrapped response structures
+  const etablissements: Etablissement[] = Array.isArray(etabsResponse?.data?.data)
+    ? etabsResponse.data.data
+    : Array.isArray(etabsResponse?.data)
+      ? etabsResponse.data
+      : Array.isArray(etabsResponse)
+        ? etabsResponse
+        : [];
+  const pagination = etabsResponse?.data?.pagination || etabsResponse?.pagination || etabsResponse?.meta?.pagination || { totalPages: 1, total: 0 };
   const totalPages = pagination.totalPages || 1;
   const total = pagination.total || 0;
 

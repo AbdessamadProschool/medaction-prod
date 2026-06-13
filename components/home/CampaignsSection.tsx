@@ -56,7 +56,11 @@ export default function CampaignsSection() {
   const t = useTranslations();
   const locale = useLocale();
   const { data, isLoading: loading } = useData('/api/campagnes?limit=4');
-  const campagnes = data?.data || [];
+  const campagnes: Campagne[] = Array.isArray(data?.data?.data)
+    ? data.data.data
+    : Array.isArray(data?.data)
+      ? data.data
+      : [];
 
   if (loading) {
     return (

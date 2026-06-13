@@ -214,7 +214,8 @@ export default function SuperAdminSettingsPage() {
   // Fetch settings
   useEffect(() => {
     if (settingsData && !hasChanges) {
-      setSettings({ ...DEFAULT_SETTINGS, ...settingsData });
+      const settings = settingsData.data || settingsData;
+      setSettings({ ...DEFAULT_SETTINGS, ...settings });
     }
   }, [settingsData, hasChanges]);
 

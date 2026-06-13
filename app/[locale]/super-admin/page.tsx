@@ -194,8 +194,8 @@ export default function SuperAdminDashboard() {
   const refreshing = refreshingStats || refreshingLogs;
 
   const stats = useMemo<SystemStats | null>(() => {
-    if (!statsData || !statsData.stats) return null;
-    const data = statsData;
+    const data = statsData?.data || statsData;
+    if (!data || !data.stats) return null;
     return {
       users: {
         total: data.stats?.utilisateurs?.total || 0,

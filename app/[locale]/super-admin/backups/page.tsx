@@ -54,7 +54,8 @@ export default function SuperAdminBackupsPage() {
 
   useEffect(() => {
     if (backupsData) {
-      setBackups(backupsData);
+      const bList = backupsData.data || backupsData;
+      setBackups(Array.isArray(bList) ? bList : []);
     }
   }, [backupsData]);
 

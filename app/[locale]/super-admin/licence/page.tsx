@@ -18,7 +18,8 @@ interface LicenseInfo {
 
 export default function LicensePage() {
   const t = useTranslations();
-  const { data: license, isLoading: loading, mutate: refreshLicense } = useData('/api/admin/license');
+  const { data: licenseResponse, isLoading: loading, mutate: refreshLicense } = useData('/api/admin/license');
+  const license = licenseResponse?.data || licenseResponse;
   const fetchLicenseInfo = () => refreshLicense();
 
   const getStatusColor = () => {

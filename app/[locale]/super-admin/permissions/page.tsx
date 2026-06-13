@@ -84,18 +84,21 @@ export default function SuperAdminPermissionsPage() {
   const [deleteConfirmPerm, setDeleteConfirmPerm] = useState<Permission | null>(null);
 
   const permissions = useMemo(() => {
-    return permissionsData?.permissions || [];
+    const data = permissionsData?.data || permissionsData;
+    return Array.isArray(data?.permissions) ? data.permissions : [];
   }, [permissionsData]);
 
   const groupedPermissions = useMemo<PermissionGroup[]>(() => {
-    if (!permissions.length) return [];
+    if (!Array.isArray(permissions) || !permissions.length) return [];
     
     const grouped: Record<string, Permission[]> = {};
     permissions.forEach((perm: Permission) => {
-      if (!grouped[perm.groupe]) {
-        grouped[perm.groupe] = [];
+      if (perm && perm.groupe) {
+        if (!grouped[perm.groupe]) {
+          grouped[perm.groupe] = [];
+        }
+        grouped[perm.groupe].push(perm);
       }
-      grouped[perm.groupe].push(perm);
     });
     
     return Object.entries(grouped).map(([groupe, perms]) => ({
@@ -103,7 +106,7 @@ export default function SuperAdminPermissionsPage() {
       label: perms[0]?.groupeLabel || groupe,
       icon: GROUP_ICONS[groupe]?.icon || Lock,
       color: GROUP_ICONS[groupe]?.color || 'from-gray-500 to-gray-700',
-      permissions: perms.sort((a, b) => a.ordre - b.ordre),
+      permissions: Array.isArray(perms) ? perms.sort((a, b) => a.ordre - b.ordre) : [],
     }));
   }, [permissions]);
 
@@ -171,14 +174,19 @@ export default function SuperAdminPermissionsPage() {
   };
 
   // Filter permissions by search
-  const filteredGroups = groupedPermissions.map(group => ({
-    ...group,
-    permissions: group.permissions.filter((p: any) =>
-      p.nom.toLowerCase().includes(search.toLowerCase()) ||
-      p.code.toLowerCase().includes(search.toLowerCase()) ||
-      p.description?.toLowerCase().includes(search.toLowerCase())
-    ),
-  })).filter(g => g.permissions.length > 0);
+  const filteredGroups = useMemo(() => {
+    if (!Array.isArray(groupedPermissions)) return [];
+    return groupedPermissions.map(group => ({
+      ...group,
+      permissions: Array.isArray(group.permissions)
+        ? group.permissions.filter((p: any) =>
+            (p.nom || '').toLowerCase().includes(search.toLowerCase()) ||
+            (p.code || '').toLowerCase().includes(search.toLowerCase()) ||
+            (p.description || '').toLowerCase().includes(search.toLowerCase())
+          )
+        : [],
+    })).filter(g => g.permissions.length > 0);
+  }, [groupedPermissions, search]);
 
   if (status === 'loading' || loading) {
     return (

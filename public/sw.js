@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mediouna-pwa-cache-v1';
+const CACHE_NAME = 'mediouna-pwa-cache-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -30,19 +30,45 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const url = event.request.url;
+  // Ne pas intercepter les requêtes API, Next.js hot reload, etc.
+  if (
+    url.includes('/api/') || 
+    url.includes('/_next/webpack-hmr') || 
+    url.includes('/_next/data/')
+  ) {
+    return;
+  }
+
+  // Stratégie Network-First : réseau en priorité, sinon cache
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).then((fetchRes) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          if (event.request.url.startsWith('http')) {
-            cache.put(event.request, fetchRes.clone());
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200) {
+          return networkResponse;
+        }
+
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          if (url.startsWith('http')) {
+            cache.put(event.request, responseToCache);
           }
-          return fetchRes;
         });
-      });
-    }).catch(() => {
-      // Basic offline fallback (optional)
-      return caches.match('/');
-    })
+
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Fallback hors ligne basique
+          if (event.request.mode === 'navigate') {
+            return caches.match('/');
+          }
+          return new Response('Network error occurred', { status: 503, statusText: 'Offline' });
+        });
+      })
   );
 });

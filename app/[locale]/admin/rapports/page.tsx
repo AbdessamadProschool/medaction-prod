@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useData } from '@/hooks/use-data';
+import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 const ReclamationsStatusPieChart = dynamic(() => import('@/components/admin/RapportsCharts').then(mod => mod.ReclamationsStatusPieChart), {
@@ -49,6 +50,8 @@ const COLORS = [
 
 export default function RapportsPage() {
   const t = useTranslations('admin.reports_page');
+  const params_route = useParams();
+  const locale = (params_route?.locale as string) || 'fr';
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
@@ -80,9 +83,128 @@ export default function RapportsPage() {
         a.download = `rapport-${type}.csv`;
         a.click();
       } else {
-        // PDF Export - Simulation ou ouverture d'une vue imprimable
-        alert("L'export PDF sera généré et téléchargé.");
-        // Ici on pourrait appeler l'API PDF et générer un PDF client-side avec les données reçues
+        const res = await fetch('/api/export/pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, ...dateRange })
+        });
+        const data = await res.json();
+        
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          alert(locale === 'ar' ? 'يرجى السماح بالنوافذ المنبثقة لطباعة التقرير.' : 'Veuillez autoriser les fenêtres surgissantes (popups) pour imprimer le rapport.');
+          return;
+        }
+
+        const isAr = locale === 'ar';
+        const dir = isAr ? 'rtl' : 'ltr';
+        
+        const formatStatus = (status: string, lang: string) => {
+          const statusMap: Record<string, Record<string, string>> = {
+            EN_ATTENTE: { ar: 'في الانتظار', fr: 'En attente' },
+            EN_COURS: { ar: 'قيد المعالجة', fr: 'En cours' },
+            RESOLUE: { ar: 'تم حلها', fr: 'Résolue' },
+            REJETEE: { ar: 'مرفوضة', fr: 'Rejetée' }
+          };
+          return statusMap[status]?.[lang] || status;
+        };
+
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>${isAr ? 'تقرير النشاط الإجمالي' : "Rapport Global d'Activité"}</title>
+              <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+              <style>
+                @media print {
+                  body { -webkit-print-color-adjust: exact; }
+                  .no-print { display: none; }
+                }
+                body {
+                  font-family: system-ui, -apple-system, sans-serif;
+                }
+              </style>
+            </head>
+            <body dir="${dir}" class="p-12 bg-white text-gray-800">
+              <div class="flex items-center justify-between border-b-2 border-gray-200 pb-6 mb-8">
+                <div>
+                  <h1 class="text-3xl font-extrabold text-gray-900">${isAr ? 'بوابة مديونة الرقمية' : 'Portail Numérique de Médiouna'}</h1>
+                  <p class="text-sm font-medium text-gray-500 mt-1">${isAr ? 'عمالة إقليم مديونة' : 'Province de Médiouna'}</p>
+                </div>
+                <img src="/images/logo-portal-mediouna.png" alt="Logo" class="h-16 w-auto object-contain">
+              </div>
+
+              <div class="mb-8">
+                <h2 class="text-2xl font-black text-gray-800 mb-2">${isAr ? 'تقرير النشاط الإجمالي للرقابة والمتابعة' : "Rapport Global d'Activité et de Suivi"}</h2>
+                <p class="text-sm font-bold text-gray-600 bg-gray-100 px-4 py-2 rounded-xl inline-block">
+                  ${isAr ? 'الفترة الزمنية:' : 'Période :'} ${dateRange.startDate} ${isAr ? 'إلى' : 'à'} ${dateRange.endDate}
+                </p>
+              </div>
+
+              <!-- KPIs Grid -->
+              <div class="grid grid-cols-3 gap-6 mb-10">
+                <div class="p-6 border border-gray-200 rounded-2xl bg-gray-50/50">
+                  <p class="text-xs font-black uppercase tracking-wider text-gray-500">${isAr ? 'إجمالي الشكايات' : 'Total Réclamations'}</p>
+                  <p class="text-4xl font-black text-red-600 mt-2">${data.stats?.reclamations || 0}</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-2xl bg-gray-50/50">
+                  <p class="text-xs font-black uppercase tracking-wider text-gray-500">${isAr ? 'إجمالي الفعاليات' : 'Total Événements'}</p>
+                  <p class="text-4xl font-black text-blue-600 mt-2">${data.stats?.evenements || 0}</p>
+                </div>
+                <div class="p-6 border border-gray-200 rounded-2xl bg-gray-50/50">
+                  <p class="text-xs font-black uppercase tracking-wider text-gray-500">${isAr ? 'إجمالي المستخدمين الجدد' : 'Total Nouveaux Utilisateurs'}</p>
+                  <p class="text-4xl font-black text-green-600 mt-2">${data.stats?.users || 0}</p>
+                </div>
+              </div>
+
+              <!-- Reclamations by Status -->
+              <div class="mb-10">
+                <h3 class="text-lg font-black text-gray-800 mb-4 border-b border-gray-200 pb-2">${isAr ? 'توزيع الشكايات حسب حالة المعالجة' : 'Répartition des réclamations par statut'}</h3>
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-gray-100 text-gray-700">
+                      <th class="p-3 text-sm font-black border-b border-gray-200">${isAr ? 'حالة الشكاية' : 'Statut de la réclamation'}</th>
+                      <th class="p-3 text-sm font-black border-b border-gray-200 text-right">${isAr ? 'عدد الشكايات' : 'Nombre de réclamations'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${(data.details?.reclamationsByStatus || []).map((item: any) => `
+                      <tr class="border-b border-gray-100 text-gray-600">
+                        <td class="p-3 text-sm font-bold">${formatStatus(item.statut, isAr ? 'ar' : 'fr')}</td>
+                        <td class="p-3 text-sm font-bold text-right">${item._count?._all || 0}</td>
+                      </tr>
+                    `).join('')}
+                    ${(!data.details?.reclamationsByStatus || data.details.reclamationsByStatus.length === 0) ? `
+                      <tr>
+                        <td colspan="2" class="p-6 text-sm text-gray-400 text-center">${isAr ? 'لا توجد بيانات متاحة حالياً' : 'Aucune donnée disponible actuellement'}</td>
+                      </tr>
+                    ` : ''}
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Signature Footer -->
+              <div class="mt-24 flex justify-between text-sm text-gray-500">
+                <div>
+                  <p>${isAr ? 'تم استخراج هذا التقرير في:' : 'Rapport extrait le :'} ${new Date().toLocaleDateString()}</p>
+                  <p class="text-xs text-gray-400 mt-1">${isAr ? 'النظام الرقمي لعمالة إقليم مديونة' : 'Système Numérique de la Province de Médiouna'}</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-extrabold text-gray-700 mb-12">${isAr ? 'توقيع واعتماد الإدارة' : "Cachet et Signature de l'Administration"}</p>
+                  <div class="w-48 border-b-2 border-gray-400 h-10 inline-block"></div>
+                </div>
+              </div>
+
+              <script>
+                window.onload = function() {
+                  window.print();
+                }
+              </script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
       }
     } catch (error) {
       console.error('Erreur export:', error);
@@ -102,6 +224,21 @@ export default function RapportsPage() {
       </div>
     );
   }
+
+  const formatStatusLabel = (status: string) => {
+    const statusMap: Record<string, Record<string, string>> = {
+      EN_ATTENTE: { ar: 'في الانتظار', fr: 'En attente' },
+      EN_COURS: { ar: 'قيد المعالجة', fr: 'En cours' },
+      RESOLUE: { ar: 'تم حلها', fr: 'Résolue' },
+      REJETEE: { ar: 'مرفوضة', fr: 'Rejetée' }
+    };
+    return statusMap[status]?.[locale] || status;
+  };
+
+  const translatedStatusData = reclamationsData?.byStatus?.map((item: any) => ({
+    ...item,
+    statut: formatStatusLabel(item.statut)
+  })) || [];
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
@@ -128,6 +265,7 @@ export default function RapportsPage() {
               <input 
                 type="date" 
                 value={dateRange.startDate}
+                max={dateRange.endDate}
                 onChange={e => setDateRange({...dateRange, startDate: e.target.value})}
                 className="bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest focus:ring-0 cursor-pointer"
               />
@@ -138,6 +276,7 @@ export default function RapportsPage() {
               <input 
                 type="date" 
                 value={dateRange.endDate}
+                min={dateRange.startDate}
                 onChange={e => setDateRange({...dateRange, endDate: e.target.value})}
                 className="bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest focus:ring-0 cursor-pointer"
               />
@@ -174,7 +313,7 @@ export default function RapportsPage() {
             className="gov-btn-outline h-12 px-6 rounded-2xl text-[10px] uppercase tracking-widest font-black flex items-center gap-3 bg-muted/50 border-border text-muted-foreground hover:bg-foreground hover:text-background"
         >
             <FileText size={18} /> 
-            Export Rapport Global PDF
+            {locale === 'ar' ? 'تصدير التقرير العام (PDF)' : 'Export Rapport Global PDF'}
         </button>
       </div>
 
@@ -256,11 +395,11 @@ export default function RapportsPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-xl font-extrabold text-foreground">{t('charts.reclamations_by_status')}</h3>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">Répartition par état de traitement</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{locale === 'ar' ? 'التوزيع حسب حالة المعالجة' : 'Répartition par état de traitement'}</p>
             </div>
           </div>
           <div className="h-80">
-              <ReclamationsStatusPieChart data={reclamationsData?.byStatus || []} />
+              <ReclamationsStatusPieChart data={translatedStatusData} />
           </div>
         </motion.div>
  
@@ -272,7 +411,7 @@ export default function RapportsPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-xl font-extrabold text-foreground">{t('charts.reclamations_evolution')}</h3>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">Historique des dépôts citoyens</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{locale === 'ar' ? 'سجل شكايات المواطنين' : 'Historique des dépôts citoyens'}</p>
             </div>
           </div>
           <div className="h-80">
@@ -291,7 +430,7 @@ export default function RapportsPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-xl font-extrabold text-foreground">{t('charts.reclamations_by_commune')}</h3>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">Focus géographique sur les doléances</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{locale === 'ar' ? 'التركيز الجغرافي للشكايات' : 'Focus géographique sur les doléances'}</p>
             </div>
           </div>
           <div className="h-80">
@@ -307,7 +446,7 @@ export default function RapportsPage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-xl font-extrabold text-foreground">{t('charts.top_5_establishments')}</h3>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">Palmarès de la satisfaction citoyenne</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">{locale === 'ar' ? 'مستوى رضا المواطنين' : 'Palmarès de la satisfaction citoyenne'}</p>
             </div>
           </div>
           <div className="space-y-4">
@@ -321,7 +460,7 @@ export default function RapportsPage() {
                         <span className="font-extrabold text-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors line-clamp-1">{etab.nom}</span>
                         <div className="flex items-center gap-2 mt-0.5">
                           <Building2 size={12} className="text-muted-foreground/40" />
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{etab.secteur || 'Secteur Public'}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{etab.secteur || (locale === 'ar' ? 'القطاع العام' : 'Secteur Public')}</span>
                         </div>
                       </div>
                     </div>

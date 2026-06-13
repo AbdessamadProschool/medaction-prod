@@ -22,7 +22,7 @@ function escapeCsvField(value: string): string {
 }
 
 function buildCsvResponse(headers: string[], rows: CsvRow[], exportType: ExportType): NextResponse {
-  const csvContent = [
+  const csvContent = '\uFEFF' + [
     headers.join(','),
     ...rows.map(row => row.join(',')),
   ].join('\n');

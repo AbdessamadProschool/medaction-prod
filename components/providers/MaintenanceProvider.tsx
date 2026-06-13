@@ -2,7 +2,8 @@
 
 import { useEffect, useState, createContext, useContext, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import LoadingScreen from '@/components/ui/LoadingScreen';
 
 interface MaintenanceContextType {

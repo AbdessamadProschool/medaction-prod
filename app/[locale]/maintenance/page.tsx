@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
 import { Wrench, RefreshCw, Mail, Clock } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 
 export default function MaintenancePage() {
   const t = useTranslations('maintenance');
+  const router = useRouter();
   const locale = useLocale();
   const [timeLeft, setTimeLeft] = useState('');
   const isAr = locale === 'ar';
@@ -144,7 +145,7 @@ export default function MaintenancePage() {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => router.push('/')}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-semibold transition-all duration-200"
           >
             <RefreshCw className="w-5 h-5" />

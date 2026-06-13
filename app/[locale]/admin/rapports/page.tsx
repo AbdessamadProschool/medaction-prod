@@ -88,7 +88,8 @@ export default function RapportsPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type, ...dateRange })
         });
-        const data = await res.json();
+        const rawData = await res.json();
+        const data = rawData?.data || rawData;
         
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
@@ -169,7 +170,7 @@ export default function RapportsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    ${(data.details?.reclamationsByStatus || []).map((item: any) => `
+                    ${(Array.isArray(data.details?.reclamationsByStatus) ? data.details.reclamationsByStatus : []).map((item: any) => `
                       <tr class="border-b border-gray-100 text-gray-600">
                         <td class="p-3 text-sm font-bold">${formatStatus(item.statut, isAr ? 'ar' : 'fr')}</td>
                         <td class="p-3 text-sm font-bold text-right">${item._count?._all || 0}</td>
@@ -235,10 +236,16 @@ export default function RapportsPage() {
     return statusMap[status]?.[locale] || status;
   };
 
-  const translatedStatusData = reclamationsData?.byStatus?.map((item: any) => ({
-    ...item,
-    statut: formatStatusLabel(item.statut)
-  })) || [];
+  const rData = reclamationsData?.data || reclamationsData;
+  const eData = evenementsData?.data || evenementsData;
+  const sData = satisfactionData?.data || satisfactionData;
+
+  const translatedStatusData = Array.isArray(rData?.byStatus)
+    ? rData.byStatus.map((item: any) => ({
+        ...item,
+        statut: formatStatusLabel(item.statut)
+      }))
+    : [];
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
@@ -322,35 +329,35 @@ export default function RapportsPage() {
         {[
           { 
             label: t('kpi_cards.total_reclamations'), 
-            value: reclamationsData?.total || 0, 
+            value: rData?.total || 0, 
             icon: AlertCircle, 
             color: 'hsl(var(--gov-red))'
           },
           { 
             label: t('kpi_cards.total_events'), 
-            value: evenementsData?.total || 0, 
+            value: eData?.total || 0, 
             icon: Calendar, 
             color: 'hsl(var(--gov-blue))'
           },
           { 
             label: t('kpi_cards.average_rating'), 
-            value: satisfactionData?.global?.average?.toFixed(1) || 'N/A', 
+            value: typeof sData?.global?.average === 'number' ? sData.global.average.toFixed(1) : 'N/A', 
             icon: Star, 
             color: 'hsl(var(--gov-yellow))',
             suffix: ' ★'
           },
           { 
             label: t('kpi_cards.event_participation'), 
-            value: evenementsData?.participation?.totalInscrits || 0, 
+            value: eData?.participation?.totalInscrits || 0, 
             icon: Users, 
             color: 'hsl(var(--gov-green))' 
           },
           {
             label: locale === 'ar' ? 'نسبة الحل' : 'Taux de résolution',
-            value: satisfactionData?.global?.resolutionRate ?? '—',
+            value: sData?.global?.resolutionRate ?? '—',
             icon: CheckCircle,
             color: 'hsl(var(--gov-green))',
-            suffix: satisfactionData?.global?.resolutionRate !== undefined ? '%' : ''
+            suffix: sData?.global?.resolutionRate !== undefined ? '%' : ''
           },
         ].map((stat, i) => (
           <motion.div
@@ -415,7 +422,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-              <ReclamationsEvolutionAreaChart data={reclamationsData?.evolution || []} />
+              <ReclamationsEvolutionAreaChart data={Array.isArray(rData?.evolution) ? rData.evolution : []} />
           </div>
         </motion.div>
       </div>
@@ -434,7 +441,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="h-80">
-              <ReclamationsCommuneBarChart data={reclamationsData?.byCommune || []} />
+              <ReclamationsCommuneBarChart data={Array.isArray(rData?.byCommune) ? rData.byCommune : []} />
           </div>
         </motion.div>
  
@@ -450,7 +457,7 @@ export default function RapportsPage() {
             </div>
           </div>
           <div className="space-y-4">
-            {satisfactionData?.topEtablissements?.map((etab: any, i: number) => (
+            {Array.isArray(sData?.topEtablissements) && sData.topEtablissements.map((etab: any, i: number) => (
                 <div key={i} className="group flex items-center justify-between p-4 bg-muted/20 hover:bg-muted/40 rounded-2xl border border-border/50 transition-all hover:scale-[1.01]">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-xs font-black text-muted-foreground group-hover:text-[hsl(var(--gov-blue))] transition-colors shadow-sm">
@@ -466,7 +473,7 @@ export default function RapportsPage() {
                     </div>
                     <div className="flex flex-col items-end">
                         <div className="flex items-center gap-1.5 px-3 py-1 bg-[hsl(var(--gov-yellow))/0.1] rounded-full border border-[hsl(var(--gov-yellow))/0.2]">
-                          <span className="text-xs font-black text-[hsl(var(--gov-yellow))]">{etab.noteMoyenne.toFixed(1)}</span>
+                          <span className="text-xs font-black text-[hsl(var(--gov-yellow))]">{typeof etab.noteMoyenne === 'number' ? etab.noteMoyenne.toFixed(1) : etab.noteMoyenne}</span>
                           <Star size={12} className="text-[hsl(var(--gov-yellow))] fill-current" />
                         </div>
                         <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-1.5 opacity-40">
@@ -475,7 +482,7 @@ export default function RapportsPage() {
                     </div>
                 </div>
             ))}
-            {(!satisfactionData?.topEtablissements || satisfactionData.topEtablissements.length === 0) && (
+            {(!sData?.topEtablissements || sData.topEtablissements.length === 0) && (
                 <div className="flex flex-col items-center justify-center py-12 opacity-30">
                   <TrendingUp size={48} />
                   <p className="text-[10px] font-bold uppercase tracking-widest mt-4">{t('no_data')}</p>

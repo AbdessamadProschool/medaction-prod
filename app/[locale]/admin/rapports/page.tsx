@@ -318,21 +318,19 @@ export default function RapportsPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {[
           { 
             label: t('kpi_cards.total_reclamations'), 
             value: reclamationsData?.total || 0, 
             icon: AlertCircle, 
-            color: 'hsl(var(--gov-red))',
-            trend: '+12%' 
+            color: 'hsl(var(--gov-red))'
           },
           { 
             label: t('kpi_cards.total_events'), 
             value: evenementsData?.total || 0, 
             icon: Calendar, 
-            color: 'hsl(var(--gov-blue))',
-            trend: '+5%'
+            color: 'hsl(var(--gov-blue))'
           },
           { 
             label: t('kpi_cards.average_rating'), 
@@ -346,6 +344,13 @@ export default function RapportsPage() {
             value: evenementsData?.participation?.totalInscrits || 0, 
             icon: Users, 
             color: 'hsl(var(--gov-green))' 
+          },
+          {
+            label: locale === 'ar' ? 'نسبة الحل' : 'Taux de résolution',
+            value: satisfactionData?.global?.resolutionRate ?? '—',
+            icon: CheckCircle,
+            color: 'hsl(var(--gov-green))',
+            suffix: satisfactionData?.global?.resolutionRate !== undefined ? '%' : ''
           },
         ].map((stat, i) => (
           <motion.div
@@ -370,11 +375,6 @@ export default function RapportsPage() {
                 >
                   <stat.icon className="w-5 h-5" />
                 </div>
-                {stat.trend && (
-                  <span className="text-[10px] font-black text-[hsl(var(--gov-green))] bg-[hsl(var(--gov-green))/0.1] px-2 py-1 rounded-full">
-                    {stat.trend}
-                  </span>
-                )}
               </div>
               <p className="text-3xl font-black text-foreground mb-1 tracking-tight">
                 {stat.value}{stat.suffix}

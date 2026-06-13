@@ -67,9 +67,15 @@ function ActualitesContent() {
   }, [page, search, categorie]);
 
   const { data: responseData, isLoading: loading } = useData(`/api/actualites?${queryStr}`);
-  const actualites: Actualite[] = responseData?.data || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  
+  // Support both wrapped and unwrapped response structures
+  const actualites: Actualite[] = Array.isArray(responseData?.data?.data)
+    ? responseData.data.data
+    : Array.isArray(responseData?.data)
+      ? responseData.data
+      : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || responseData?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || responseData?.pagination?.total || 0;
 
   // Update URL helper
   const updateFilter = (key: string, value: string) => {

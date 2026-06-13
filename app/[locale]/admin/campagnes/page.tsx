@@ -114,15 +114,25 @@ export default function AdminCampagnesPage() {
 
   const { data: campagnesData, isLoading: loading, mutate: fetchCampagnes } = useData(`/api/campagnes?${queryParams.toString()}`);
 
-  const campagnes = campagnesData?.data || [];
-  const totalPages = campagnesData?.pagination?.totalPages || 1;
-  const total = campagnesData?.pagination?.total || 0;
+  // /api/campagnes returns successResponse({data: campagnes[], pagination})
+  // → SWR: { success, data: { data: campagnes[], pagination } } (double-nested)
+  const campagnes: Campagne[] = Array.isArray(campagnesData?.data?.data)
+    ? campagnesData.data.data
+    : Array.isArray(campagnesData?.data)
+      ? campagnesData.data
+      : [];
+  const totalPages = campagnesData?.data?.pagination?.totalPages || campagnesData?.pagination?.totalPages || 1;
+  const total = campagnesData?.data?.pagination?.total || campagnesData?.pagination?.total || 0;
 
   const stats = useMemo(() => {
-    const allCampagnes = campagnesData?.data || [];
+    const allCampagnes: Campagne[] = Array.isArray(campagnesData?.data?.data)
+      ? campagnesData.data.data
+      : Array.isArray(campagnesData?.data)
+        ? campagnesData.data
+        : [];
     return {
-      total: campagnesData?.pagination?.total || 0,
-      actives: allCampagnes.filter((c: Campagne) => c.statut === 'ACTIVE').length,
+      total: campagnesData?.data?.pagination?.total || campagnesData?.pagination?.total || 0,
+      actives:  allCampagnes.filter((c: Campagne) => c.statut === 'ACTIVE').length,
       enAttente: allCampagnes.filter((c: Campagne) => c.statut === 'EN_ATTENTE').length,
       terminees: allCampagnes.filter((c: Campagne) => c.statut === 'TERMINEE').length,
       totalParticipants: allCampagnes.reduce((acc: number, c: Campagne) => acc + (c.nombreParticipants || 0), 0),

@@ -60,7 +60,11 @@ function CampagnesContent() {
   // ECC: useData
   const featuredEnabled = page === 1 && !search && !selectedType;
   const { data: featuredData } = useData(featuredEnabled ? '/api/campagnes?featured=true&limit=5' : null);
-  const featuredCampagnes: Campagne[] = featuredData?.data || [];
+  const featuredCampagnes: Campagne[] = Array.isArray(featuredData?.data?.data)
+    ? featuredData.data.data
+    : Array.isArray(featuredData?.data)
+      ? featuredData.data
+      : [];
 
   const queryStr = useMemo(() => {
     const params = new URLSearchParams();
@@ -72,10 +76,20 @@ function CampagnesContent() {
   }, [page, search, selectedType]);
 
   const { data: responseData, isLoading: loading, mutate: refreshCampagnes } = useData(`/api/campagnes?${queryStr}`);
-  const campagnes: Campagne[] = responseData?.data || [];
-  const types: TypeCampagne[] = responseData?.types || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  
+  // Support both wrapped and unwrapped response structures
+  const campagnes: Campagne[] = Array.isArray(responseData?.data?.data)
+    ? responseData.data.data
+    : Array.isArray(responseData?.data)
+      ? responseData.data
+      : [];
+  const types: TypeCampagne[] = Array.isArray(responseData?.data?.types)
+    ? responseData.data.types
+    : Array.isArray(responseData?.types)
+      ? responseData.types
+      : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || responseData?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || responseData?.pagination?.total || 0;
 
   // UI State
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);

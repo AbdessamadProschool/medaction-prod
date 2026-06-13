@@ -169,18 +169,26 @@ export default function AdminReclamationsPage() {
   
   const { data: reclamationsData, isLoading: loadingReclamations, mutate: loadReclamations } = useData(`/api/reclamations?${queryParams.toString()}`);
 
-  const reclamations = reclamationsData?.data || [];
-  const totalPages = reclamationsData?.pagination?.totalPages || 1;
-  const total = reclamationsData?.pagination?.total || 0;
+  // /api/reclamations returns { success, data: reclamations[], pagination, stats }
+  // Support both direct and double-nested successResponse layouts
+  const reclamations: Reclamation[] = Array.isArray(reclamationsData?.data?.data)
+    ? reclamationsData.data.data
+    : Array.isArray(reclamationsData?.data)
+      ? reclamationsData.data
+      : [];
+  const totalPages = reclamationsData?.data?.pagination?.totalPages || reclamationsData?.pagination?.totalPages || 1;
+  const total = reclamationsData?.data?.pagination?.total || reclamationsData?.pagination?.total || 0;
 
   const stats = useMemo(() => {
-    if (reclamationsData?.stats) {
+    const rStats = reclamationsData?.data?.stats || reclamationsData?.stats;
+    const rTotal = reclamationsData?.data?.pagination?.total || reclamationsData?.pagination?.total || 0;
+    if (rStats) {
       return {
-        total: reclamationsData?.pagination?.total || 0,
-        enAttente: reclamationsData.stats.enAttente || 0,
-        aDispatcher: reclamationsData.stats.aDispatcher || 0,
-        enCours: reclamationsData.stats.enCours || 0,
-        rejetees: (reclamationsData?.pagination?.total || 0) - (reclamationsData.stats.enAttente || 0) - (reclamationsData.stats.acceptees || 0),
+        total: rTotal,
+        enAttente: rStats.enAttente || 0,
+        aDispatcher: rStats.aDispatcher || 0,
+        enCours: rStats.enCours || 0,
+        rejetees: rTotal - (rStats.enAttente || 0) - (rStats.acceptees || 0),
       };
     }
     return { total: 0, enAttente: 0, aDispatcher: 0, enCours: 0, rejetees: 0 };

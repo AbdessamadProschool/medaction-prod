@@ -238,7 +238,16 @@ export default function SuperAdminDashboard() {
 
   const recentLogs = useMemo<RecentLog[]>(() => {
     if (!logsData) return [];
-    const logs = Array.isArray(logsData.data) ? logsData.data : (Array.isArray(logsData) ? logsData : []);
+    // /api/admin/logs returns successResponse({ data: logs[], pagination })
+    // which SWR receives as { success: true, data: { data: logs[], pagination: {} } }
+    const nestedLogs = logsData.data?.data;
+    const logs = Array.isArray(nestedLogs)
+      ? nestedLogs
+      : Array.isArray(logsData.data)
+        ? logsData.data
+        : Array.isArray(logsData)
+          ? logsData
+          : [];
     return logs.map((l: any) => ({
       ...l,
       timestamp: l.createdAt || l.timestamp

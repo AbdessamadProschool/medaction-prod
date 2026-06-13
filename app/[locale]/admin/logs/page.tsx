@@ -302,13 +302,22 @@ export default function AdminLogsPage() {
   }, [logsData]);
 
   // Derived states
-  const activityLogs: ActivityLog[] = activeTab === 'activity' ? (logsData?.data || []) : [];
-  const systemLogs: SystemLog[] = activeTab === 'system' ? (logsData?.data || []) : [];
-  const auditLogs: AuditLog[] = activeTab === 'audit' ? (logsData?.data || []) : [];
+  // API: successResponse({ data: logs[], pagination }) → { success, data: { data: logs[], pagination } }
+  const extractLogs = (data: any): any[] => {
+    if (!data) return [];
+    const nestedArr = data?.data?.data;
+    if (Array.isArray(nestedArr)) return nestedArr;
+    if (Array.isArray(data?.data)) return data.data;
+    if (Array.isArray(data)) return data;
+    return [];
+  };
+  const activityLogs: ActivityLog[] = activeTab === 'activity' ? extractLogs(logsData) : [];
+  const systemLogs: SystemLog[] = activeTab === 'system' ? extractLogs(logsData) : [];
+  const auditLogs: AuditLog[] = activeTab === 'audit' ? extractLogs(logsData) : [];
   
-  const totalPages = logsData?.pagination?.totalPages || 1;
-  const total = logsData?.pagination?.total || 0;
-  const stats = logsData?.stats || null;
+  const totalPages = logsData?.data?.pagination?.totalPages || logsData?.pagination?.totalPages || 1;
+  const total = logsData?.data?.pagination?.total || logsData?.pagination?.total || 0;
+  const stats = logsData?.data?.stats || logsData?.stats || null;
 
   // Vérifier authentification
   useEffect(() => {

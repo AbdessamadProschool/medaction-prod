@@ -159,14 +159,24 @@ function AdminEvenementsContent() {
   
   const { data: evenementsData, isLoading: loading, mutate: loadEvenements } = useData(`/api/evenements?${queryParams.toString()}`);
 
-  const evenements = evenementsData?.data || [];
-  const totalPages = evenementsData?.pagination?.totalPages || 1;
-  const total = evenementsData?.pagination?.total || 0;
+  // /api/evenements returns successResponse({data: evenements[], pagination})
+  // → SWR: { success, data: { data: evenements[], pagination } } (double-nested)
+  const evenements: Evenement[] = Array.isArray(evenementsData?.data?.data)
+    ? evenementsData.data.data
+    : Array.isArray(evenementsData?.data)
+      ? evenementsData.data
+      : [];
+  const totalPages = evenementsData?.data?.pagination?.totalPages || evenementsData?.pagination?.totalPages || 1;
+  const total = evenementsData?.data?.pagination?.total || evenementsData?.pagination?.total || 0;
 
   const stats = useMemo(() => {
-    const allEvts = evenementsData?.data || [];
+    const allEvts: Evenement[] = Array.isArray(evenementsData?.data?.data)
+      ? evenementsData.data.data
+      : Array.isArray(evenementsData?.data)
+        ? evenementsData.data
+        : [];
     return {
-      total: evenementsData?.pagination?.total || 0,
+      total: evenementsData?.data?.pagination?.total || evenementsData?.pagination?.total || 0,
       enAttente: allEvts.filter((e: Evenement) => e.statut === 'EN_ATTENTE_VALIDATION').length,
       publiees: allEvts.filter((e: Evenement) => e.statut === 'PUBLIEE').length,
       enCours: allEvts.filter((e: Evenement) => e.statut === 'EN_ACTION').length,

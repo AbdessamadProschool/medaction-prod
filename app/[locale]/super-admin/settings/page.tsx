@@ -214,8 +214,15 @@ export default function SuperAdminSettingsPage() {
   // Fetch settings
   useEffect(() => {
     if (settingsData && !hasChanges) {
-      const settings = settingsData.data || settingsData;
-      setSettings({ ...DEFAULT_SETTINGS, ...settings });
+      // Drill through potential double-nesting from successResponse()
+      const raw = settingsData?.data?.data || settingsData?.data || settingsData;
+      // Deep category-level merge: preserve array/primitive defaults for missing fields
+      setSettings({
+        general:       { ...DEFAULT_SETTINGS.general,       ...(raw?.general       || {}) },
+        security:      { ...DEFAULT_SETTINGS.security,      ...(raw?.security      || {}) },
+        notifications: { ...DEFAULT_SETTINGS.notifications, ...(raw?.notifications || {}) },
+        reclamations:  { ...DEFAULT_SETTINGS.reclamations,  ...(raw?.reclamations  || {}) },
+      });
     }
   }, [settingsData, hasChanges]);
 

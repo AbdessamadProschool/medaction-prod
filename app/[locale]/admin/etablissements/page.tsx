@@ -115,17 +115,28 @@ export default function AdminEtablissementsPage() {
 
   const { data: etablissementsData, isLoading: loading, mutate: fetchEtablissements } = useData(`/api/etablissements?${queryParams.toString()}`);
   
-  const etablissements = etablissementsData?.data || [];
-  const pagination = etablissementsData?.pagination || etablissementsData?.meta?.pagination || { totalPages: 1, total: 0 };
+  // /api/etablissements returns successResponse({data: items[], pagination})
+  // → SWR: { success, data: { data: items[], pagination } } (double-nested)
+  const etablissements: Etablissement[] = Array.isArray(etablissementsData?.data?.data)
+    ? etablissementsData.data.data
+    : Array.isArray(etablissementsData?.data)
+      ? etablissementsData.data
+      : [];
+  const pagination = etablissementsData?.data?.pagination
+    || etablissementsData?.pagination
+    || etablissementsData?.meta?.pagination
+    || { totalPages: 1, total: 0 };
   const totalPages = pagination.totalPages || 1;
   const total = pagination.total || 0;
 
   const stats = {
     total: total,
-    valides: etablissements.filter((e: Etablissement) => e.isValide).length,
-    publies: etablissements.filter((e: Etablissement) => e.isPublie).length,
+    valides:   etablissements.filter((e: Etablissement) => e.isValide).length,
+    publies:   etablissements.filter((e: Etablissement) => e.isPublie).length,
     enAttente: etablissements.filter((e: Etablissement) => !e.isValide).length,
-    averageRating: etablissements.length > 0 ? etablissements.reduce((acc: number, e: Etablissement) => acc + e.noteMoyenne, 0) / etablissements.length : 0,
+    averageRating: etablissements.length > 0
+      ? etablissements.reduce((acc: number, e: Etablissement) => acc + e.noteMoyenne, 0) / etablissements.length
+      : 0,
   };
 
   const handleValidate = async (id: number, action: 'valider' | 'publier' | 'misEnAvant') => {

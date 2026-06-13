@@ -107,12 +107,22 @@ export default function AdminActualitesPage() {
 
   const { data: actualitesData, isLoading: loading, mutate: fetchActualites } = useData(`/api/actualites?${queryParams.toString()}`);
 
-  const actualites = Array.isArray(actualitesData?.data) ? actualitesData.data : [];
-  const totalPages = actualitesData?.pagination?.totalPages || 1;
-  const total = actualitesData?.pagination?.total || 0;
+  // /api/actualites returns successResponse({data: actualites[], pagination})
+  // → SWR: { success, data: { data: actualites[], pagination } } (double-nested)
+  const actualites: Actualite[] = Array.isArray(actualitesData?.data?.data)
+    ? actualitesData.data.data
+    : Array.isArray(actualitesData?.data)
+      ? actualitesData.data
+      : [];
+  const totalPages = actualitesData?.data?.pagination?.totalPages || actualitesData?.pagination?.totalPages || 1;
+  const total = actualitesData?.data?.pagination?.total || actualitesData?.pagination?.total || 0;
 
   const stats = useMemo(() => {
-    const allData = Array.isArray(actualitesData?.data) ? actualitesData.data : [];
+    const allData: Actualite[] = Array.isArray(actualitesData?.data?.data)
+      ? actualitesData.data.data
+      : Array.isArray(actualitesData?.data)
+        ? actualitesData.data
+        : [];
     const statsCounts: Record<string, number> = {};
     allData.forEach((a: Actualite) => {
       statsCounts[a.statut] = (statsCounts[a.statut] || 0) + 1;

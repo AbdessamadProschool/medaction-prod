@@ -60,10 +60,20 @@ function ArticlesContent() {
   }, [page, search, selectedCategorie]);
 
   const { data: responseData, isLoading: loading } = useData(`/api/articles?${queryStr}`);
-  const articles: Article[] = responseData?.data || [];
-  const categories: Categorie[] = responseData?.categories || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  
+  // Support both wrapped and unwrapped response structures
+  const articles: Article[] = Array.isArray(responseData?.data?.data)
+    ? responseData.data.data
+    : Array.isArray(responseData?.data)
+      ? responseData.data
+      : [];
+  const categories: Categorie[] = Array.isArray(responseData?.data?.categories)
+    ? responseData.data.categories
+    : Array.isArray(responseData?.categories)
+      ? responseData.categories
+      : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || responseData?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || responseData?.pagination?.total || 0;
 
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());

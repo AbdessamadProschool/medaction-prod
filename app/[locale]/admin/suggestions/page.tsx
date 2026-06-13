@@ -117,10 +117,14 @@ export default function AdminSuggestionsPage() {
 
   const { data: suggestionsData, isLoading: loading, mutate: fetchSuggestions } = useData(`/api/suggestions?${queryParams.toString()}`);
 
-  const suggestions = suggestionsData?.data || [];
-  const totalPages = suggestionsData?.pagination?.totalPages || 1;
-  const total = suggestionsData?.pagination?.total || 0;
-  const stats = suggestionsData?.stats?.parStatut || {};
+  const suggestions: Suggestion[] = Array.isArray(suggestionsData?.data?.data)
+    ? suggestionsData.data.data
+    : Array.isArray(suggestionsData?.data)
+      ? suggestionsData.data
+      : [];
+  const totalPages = suggestionsData?.data?.pagination?.totalPages || suggestionsData?.pagination?.totalPages || 1;
+  const total = suggestionsData?.data?.pagination?.total || suggestionsData?.pagination?.total || 0;
+  const stats = suggestionsData?.data?.stats?.parStatut || suggestionsData?.stats?.parStatut || {};
 
   const handleChangeStatut = async (suggestionId: number, newStatut: string) => {
     setActionLoading(`${suggestionId}-${newStatut}`);

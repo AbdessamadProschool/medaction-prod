@@ -87,15 +87,25 @@ export default function AdminArticlesPage() {
 
   const { data: articlesData, isLoading: loading, mutate: fetchArticles } = useData(`/api/articles?${queryParams.toString()}`);
 
-  const articles = Array.isArray(articlesData?.data) ? articlesData.data : [];
-  const totalPages = articlesData?.pagination?.totalPages || 1;
-  const total = articlesData?.pagination?.total || 0;
+  // /api/articles returns successResponse({data: items[], pagination, categories})
+  // → SWR: { success, data: { data: items[], pagination, categories } } (double-nested)
+  const articles: Article[] = Array.isArray(articlesData?.data?.data)
+    ? articlesData.data.data
+    : Array.isArray(articlesData?.data)
+      ? articlesData.data
+      : [];
+  const totalPages = articlesData?.data?.pagination?.totalPages || articlesData?.pagination?.totalPages || 1;
+  const total = articlesData?.data?.pagination?.total || articlesData?.pagination?.total || 0;
 
   const stats = useMemo(() => {
-    const all = Array.isArray(articlesData?.data) ? articlesData.data : [];
+    const all: Article[] = Array.isArray(articlesData?.data?.data)
+      ? articlesData.data.data
+      : Array.isArray(articlesData?.data)
+        ? articlesData.data
+        : [];
     return {
-      total: articlesData?.pagination?.total || 0,
-      publies: all.filter((a: Article) => a.statut === 'PUBLIE').length,
+      total: articlesData?.data?.pagination?.total || articlesData?.pagination?.total || 0,
+      publies:   all.filter((a: Article) => a.statut === 'PUBLIE').length,
       enAttente: all.filter((a: Article) => a.statut === 'EN_ATTENTE').length,
       brouillons: all.filter((a: Article) => a.statut === 'BROUILLON').length,
       totalVues: all.reduce((acc: number, a: Article) => acc + (a.nombreVues || 0), 0),

@@ -111,9 +111,10 @@ export default function GovHeader() {
     try {
       const res = await fetch('/api/notifications?limit=5');
       if (res.ok) {
-        const data = await res.json();
-        setUnreadCount(data.unreadCount);
-        setNotifications(data.notifications);
+        const raw = await res.json();
+        const payload = raw?.data || raw;
+        setUnreadCount(payload?.unreadCount || 0);
+        setNotifications(payload?.notifications || []);
       }
     } catch (error) {
       console.error('Erreur notifications:', error);
@@ -422,7 +423,7 @@ export default function GovHeader() {
                                    <div className="w-8 h-8 create-spin mx-auto mb-3 border-2 border-amber-500 border-t-transparent rounded-full" />
                                    <p className="text-xs font-medium text-gray-400">{t('common.chargement')}</p>
                                 </div>
-                              ) : notifications.length > 0 ? (
+                              ) : (Array.isArray(notifications) && notifications.length > 0) ? (
                                 notifications.map((notif: any) => (
                                   <Link 
                                     key={notif.id} 

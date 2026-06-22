@@ -81,9 +81,10 @@ export default function NotificationsDropdown() {
     try {
       const res = await fetch('/api/notifications?limit=10');
       if (res.ok) {
-        const data = await res.json();
-        setNotifications(data.notifications || data.data || []);
-        setUnreadCount(data.unreadCount || 0);
+        const raw = await res.json();
+        const payload = raw?.data || raw;
+        setNotifications(payload?.notifications || []);
+        setUnreadCount(payload?.unreadCount || 0);
       }
     } catch (error) {
       console.error('Erreur chargement notifications:', error);
@@ -223,7 +224,7 @@ export default function NotificationsDropdown() {
                 <div className="py-12 flex items-center justify-center">
                   <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
                 </div>
-              ) : notifications.length === 0 ? (
+              ) : (!Array.isArray(notifications) || notifications.length === 0) ? (
                 <div className="py-16 text-center">
                   <motion.div
                     initial={{ scale: 0.8 }}

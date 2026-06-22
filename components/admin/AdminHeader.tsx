@@ -47,8 +47,9 @@ export default function AdminHeader() {
 
   useEffect(() => {
     if (notificationsData) {
-      setNotifications(notificationsData.notifications || []);
-      setUnreadCount(notificationsData.count || 0);
+      const payload = notificationsData?.data || notificationsData;
+      setNotifications(payload?.notifications || []);
+      setUnreadCount(payload?.unreadCount || 0);
     }
   }, [notificationsData]);
 
@@ -141,7 +142,7 @@ export default function AdminHeader() {
                   )}
                 </div>
                 <div className="max-h-80 overflow-y-auto scrollbar-hide">
-                  {notifications.length === 0 ? (
+                  {!Array.isArray(notifications) || notifications.length === 0 ? (
                     <div className="px-4 py-8 text-center text-muted-foreground text-sm flex flex-col items-center gap-2">
                       <Bell className="w-8 h-8 opacity-20" />
                       {t('no_notifications')}

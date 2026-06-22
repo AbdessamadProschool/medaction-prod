@@ -50,8 +50,9 @@ export default function GovernorNotificationsPage() {
     try {
       const res = await fetch('/api/notifications?limit=50');
       if (res.ok) {
-        const data = await res.json();
-        const mapped = (data.notifications || []).map((n: any) => ({
+        const raw = await res.json();
+        const payload = raw?.data || raw;
+        const mapped = (payload?.notifications || []).map((n: any) => ({
           id: n.id,
           titre: n.titre,
           description: n.message,

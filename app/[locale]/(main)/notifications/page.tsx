@@ -116,13 +116,14 @@ export default function NotificationsPage() {
 
       const res = await fetch(`/api/notifications?${params}`);
       if (res.ok) {
-        const data = await res.json();
-        setNotifications(data.notifications);
-        setUnreadCount(data.unreadCount);
+        const raw = await res.json();
+        const payload = raw?.data || raw;
+        setNotifications(payload?.notifications || []);
+        setUnreadCount(payload?.unreadCount || 0);
         setPagination(prev => ({
           ...prev,
-          total: data.pagination.total,
-          totalPages: data.pagination.totalPages,
+          total: payload?.pagination?.total || 0,
+          totalPages: payload?.pagination?.totalPages || 0,
         }));
       }
     } catch (error) {
@@ -238,7 +239,7 @@ export default function NotificationsPage() {
             <div className="py-12 flex items-center justify-center">
               <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
             </div>
-          ) : notifications.length === 0 ? (
+          ) : (!Array.isArray(notifications) || notifications.length === 0) ? (
             <div className="py-16 text-center">
               <Bell className="w-16 h-16 text-gray-200 mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">

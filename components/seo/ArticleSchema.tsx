@@ -41,10 +41,16 @@ const ArticleSchema = ({
     }
   };
 
+  // Escape script tags and HTML-sensitive characters to prevent XSS injection via JSON-LD
+  const safeJsonLd = JSON.stringify(schema)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd }}
     />
   );
 };

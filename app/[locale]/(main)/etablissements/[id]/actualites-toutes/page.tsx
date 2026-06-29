@@ -79,7 +79,7 @@ export default function ToutesActualitesPage() {
       const res = await fetch(`/api/actualites?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setActualites(data.data || data.actualites || []);
+        setActualites(Array.isArray(data?.data) ? data.data : Array.isArray(data?.actualites) ? data.actualites : []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || data.total || 0);
       }

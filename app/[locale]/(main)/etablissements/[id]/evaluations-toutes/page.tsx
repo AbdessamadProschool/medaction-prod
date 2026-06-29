@@ -67,11 +67,11 @@ export default function ToutesEvaluationsPage() {
       );
       if (res.ok) {
         const data = await res.json();
-        setEvaluations(data.evaluations);
+        setEvaluations(Array.isArray(data.evaluations) ? data.evaluations : []);
         setEtablissement(data.etablissement);
-        setDistribution(data.distribution);
-        setTotalPages(data.pagination.totalPages);
-        setTotal(data.pagination.total);
+        setDistribution(data.distribution || {});
+        setTotalPages(data.pagination?.totalPages || 1);
+        setTotal(data.pagination?.total || 0);
       }
     } catch (error) {
       console.error('Erreur:', error);

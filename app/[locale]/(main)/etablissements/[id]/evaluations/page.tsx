@@ -84,12 +84,12 @@ export default function EvaluationsPage() {
       if (res.ok) {
         const data = await res.json();
         setEtablissement(data.etablissement);
-        setEvaluations(data.evaluations);
-        setDistribution(data.distribution);
+        setEvaluations(Array.isArray(data.evaluations) ? data.evaluations : []);
+        setDistribution(data.distribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 });
         setPagination(prev => ({
           ...prev,
-          total: data.pagination.total,
-          totalPages: data.pagination.totalPages,
+          total: data.pagination?.total || 0,
+          totalPages: data.pagination?.totalPages || 0,
         }));
       } else if (res.status === 404) {
         setError('Établissement non trouvé');

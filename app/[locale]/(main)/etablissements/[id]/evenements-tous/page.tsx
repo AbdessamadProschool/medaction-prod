@@ -89,7 +89,7 @@ export default function TousEvenementsPage() {
       const res = await fetch(`/api/evenements?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
-        setEvenements(data.data || data.evenements || []);
+        setEvenements(Array.isArray(data?.data) ? data.data : Array.isArray(data?.evenements) ? data.evenements : []);
         setTotalPages(data.pagination?.totalPages || 1);
         setTotal(data.pagination?.total || data.total || 0);
       }

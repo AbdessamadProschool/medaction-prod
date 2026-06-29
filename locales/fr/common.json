@@ -1748,6 +1748,12 @@
       "filter_status_all": "Tous les statuts",
       "reset_filters": "Réinitialiser",
       "no_users": "Aucun utilisateur trouvé",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "close": "Fermer",
+      "messages": {
+        "resetting": "Réinitialisation en cours..."
+      },
       "pagination": "Page {start}-{end} sur {total}",
       "roles": {
         "CITOYEN": "Citoyen",

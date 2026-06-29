@@ -1626,6 +1626,12 @@
       "filter_status_all": "كل الحالات",
       "reset_filters": "إعادة ضبط",
       "no_users": "لا يوجد مستخدمين",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد",
+      "close": "إغلاق",
+      "messages": {
+        "resetting": "جاري إعادة الضبط..."
+      },
       "pagination": "صفحة {start}-{end} من {total}",
       "roles": {
         "CITOYEN": "مواطن",

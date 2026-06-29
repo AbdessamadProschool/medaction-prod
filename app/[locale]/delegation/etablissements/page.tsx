@@ -90,7 +90,7 @@ export default function DelegationEtablissementsPage() {
           Array(6).fill(0).map((_, i) => (
             <div key={i} className="h-48 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
           ))
-        ) : etablissements.length === 0 ? (
+        ) : (!Array.isArray(etablissements) || etablissements.length === 0) ? (
           <div className="col-span-full py-20 text-center bg-gray-50 dark:bg-gray-900/40 rounded-3xl border border-dashed border-gray-200">
             <Building2 className="mx-auto text-gray-300 mb-4" size={48} />
             <p className="text-gray-500 font-medium">Aucun établissement trouvé</p>

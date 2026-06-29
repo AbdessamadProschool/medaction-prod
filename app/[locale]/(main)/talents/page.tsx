@@ -150,7 +150,7 @@ function TalentsContent() {
           </div>
         ) : (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-            {talents.map((talent) => (
+            {(Array.isArray(talents) ? talents : []).map((talent) => (
               <TalentCard
                 key={talent.id}
                 talent={talent}

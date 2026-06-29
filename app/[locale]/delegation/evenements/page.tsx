@@ -266,7 +266,7 @@ export default function MesEvenementsPage() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {evenements.map((event: Evenement, idx: number) => {
+                        {(Array.isArray(evenements) ? evenements : []).map((event: Evenement, idx: number) => {
                         const statut = getStatusLabel(event.statut);
                         return (
                             <motion.tr 
@@ -382,7 +382,7 @@ export default function MesEvenementsPage() {
                 /* GRID VIEW */
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence mode='popLayout'>
-                    {evenements.map((event: Evenement, index: number) => {
+                    {(Array.isArray(evenements) ? evenements : []).map((event: Evenement, index: number) => {
                     const statut = getStatusLabel(event.statut);
                     return (
                     <motion.div

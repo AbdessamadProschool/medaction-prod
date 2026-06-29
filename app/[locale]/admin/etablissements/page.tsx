@@ -467,7 +467,7 @@ export default function AdminEtablissementsPage() {
               </td>
             </tr>
           ) : (
-            etablissements.map((etablissement: any) => (
+            (Array.isArray(etablissements) ? etablissements : []).map((etablissement: any) => (
               <GovTr
                 key={etablissement.id}
                 onClick={() => { setSelectedEtablissement(etablissement); setShowDetailModal(true); }}

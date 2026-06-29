@@ -399,7 +399,7 @@ export default function AdminActualitesPage() {
             </p>
           </div>
         ) : (
-          actualites.map((actualite: any) => {
+          (Array.isArray(actualites) ? actualites : []).map((actualite: any) => {
             const style = STATUT_STYLES[actualite.statut] || STATUT_STYLES.BROUILLON;
             const Icon = style.icon;
             

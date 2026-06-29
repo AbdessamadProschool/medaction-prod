@@ -172,7 +172,7 @@ export default function ReclamationsUrgentesPage() {
                 className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-red-500"
               >
                 <option value="">Toutes les communes</option>
-                {communes.map((c: any) => (
+                {(Array.isArray(communes) ? communes : []).map((c: any) => (
                   <option key={c.id} value={c.id.toString()}>{c.nom}</option>
                 ))}
               </select>
@@ -208,7 +208,7 @@ export default function ReclamationsUrgentesPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {reclamations.map((reclamation: any, index: any) => {
+            {(Array.isArray(reclamations) ? reclamations : []).map((reclamation: any, index: any) => {
               const urgency = getUrgencyLevel(reclamation.createdAt);
               
               return (

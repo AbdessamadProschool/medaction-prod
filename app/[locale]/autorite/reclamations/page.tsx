@@ -169,7 +169,7 @@ export default function AutoriteReclamationsPage() {
                 }`}
                 >
                 <option value="">{t('filters.all_categories')}</option>
-                {categories.map((cat: any) => (
+                {(Array.isArray(categories) ? categories : []).map((cat: any) => (
                     <option key={cat.value} value={cat.value}>
                     {cat.label} ({cat.count})
                     </option>
@@ -247,7 +247,7 @@ export default function AutoriteReclamationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   <AnimatePresence>
-                    {reclamations.map((reclamation: any, index: any) => (
+                    {(Array.isArray(reclamations) ? reclamations : []).map((reclamation: any, index: any) => (
                       <motion.tr
                         key={reclamation.id}
                         initial={{ opacity: 0, y: 10 }}

@@ -157,7 +157,7 @@ export default function UserHistoriquePage() {
               <div className={`absolute top-8 bottom-8 w-0.5 bg-gray-100 ${locale === 'ar' ? 'right-[51px]' : 'left-[51px]'}`}></div>
               
               <ul className="space-y-8 relative">
-                {logs.map((log, index) => {
+                {(Array.isArray(logs) ? logs : []).map((log, index) => {
                   const style = getActionStyle(log.action);
                   const Icon = style.icon;
                   return (

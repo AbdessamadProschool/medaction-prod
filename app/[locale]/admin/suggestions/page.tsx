@@ -262,7 +262,7 @@ export default function AdminSuggestionsPage() {
         </thead>
         <tbody className="divide-y divide-border">
           {suggestions.length > 0 ? (
-            suggestions.map((suggestion: any) => {
+            (Array.isArray(suggestions) ? suggestions : []).map((suggestion: any) => {
               const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
               const StatutIcon = statutInfo.icon;
               const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;

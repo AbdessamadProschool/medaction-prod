@@ -1,4 +1,4 @@
-{
+﻿{
   "locale": {
     "code": "fr",
     "dir": "ltr"
@@ -6130,7 +6130,10 @@
     "processed_on": "Demande traitée le {date}",
     "back_list": "Retour à la liste",
     "update_etab": "Mise à jour de l'établissement",
-    "soumettre": "Soumettre la demande"
+    "soumettre": "Soumettre la demande",
+    "pending_requests_title": "Mes demandes en cours",
+    "pending_requests_desc": "Suivez l'état de validation de vos propositions par l'administration.",
+    "view_history": "Voir l'historique"
   },
   "history_actions": {
     "CREATION": "Création de la réclamation",

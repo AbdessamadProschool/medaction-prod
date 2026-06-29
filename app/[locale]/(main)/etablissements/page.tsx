@@ -346,7 +346,7 @@ function EtablissementsContent() {
                     className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <option value="">{t('filters.all_communes')}</option>
-                    {communes.map((c: any) => (
+                    {(Array.isArray(communes) ? communes : []).map((c: any) => (
                       <option key={c.id} value={c.id}>
                         {getLocalizedCommuneName(c, locale)}
                       </option>
@@ -364,7 +364,7 @@ function EtablissementsContent() {
                     className="block w-full py-2.5 px-3 border border-gray-200 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gov-blue/20 focus:border-gov-blue sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <option value="">{t('filters.all_annexes') || 'Toutes les annexes'}</option>
-                    {annexes.map((a: any) => (
+                    {(Array.isArray(annexes) ? annexes : []).map((a: any) => (
                       <option key={a.id} value={a.id}>
                         {getLocalizedCommuneName(a, locale)}
                       </option>
@@ -493,7 +493,7 @@ function EtablissementsContent() {
                 <>
                   <div className={view === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
                     <AnimatePresence mode="popLayout">
-                      {etablissements.map((etab: any, index: any) => (
+                      {(Array.isArray(etablissements) ? etablissements : []).map((etab: any, index: any) => (
                         <EtablissementCard 
                           key={etab.id} 
                           etablissement={etab} 

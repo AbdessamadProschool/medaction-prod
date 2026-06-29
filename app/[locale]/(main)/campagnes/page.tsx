@@ -207,7 +207,7 @@ function CampagnesContent() {
       {featuredCampagnes.length > 0 && !search && !selectedType ? (
          <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900 group">
             <AnimatePresence mode="wait">
-               {featuredCampagnes.map((campagne, index) => {
+               {(Array.isArray(featuredCampagnes) ? featuredCampagnes : []).map((campagne, index) => {
                   const bgImage = getNormalizedImageUrl(campagne.imageCouverture || campagne.imagePrincipale);
                   
                   if (index !== carouselIndex) return null;
@@ -416,7 +416,7 @@ function CampagnesContent() {
                 <>
                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                       <AnimatePresence mode="popLayout">
-                         {campagnes.map((campagne, index) => (
+                         {(Array.isArray(campagnes) ? campagnes : []).map((campagne, index) => (
                             <CampaignCard 
                                key={campagne.id} 
                                campagne={campagne} 

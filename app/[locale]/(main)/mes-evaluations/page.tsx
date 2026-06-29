@@ -125,7 +125,7 @@ export default function MesEvaluationsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {evaluations.map((evaluation: any, index: any) => (
+            {(Array.isArray(evaluations) ? evaluations : []).map((evaluation: any, index: any) => (
               <motion.div
                 key={evaluation.id}
                 initial={{ opacity: 0, y: 20 }}

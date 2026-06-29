@@ -315,7 +315,7 @@ export default function NouveauEventPage() {
                   leftIcon={<Building2 size={18} />}
                   options={[
                     { label: tForm('select_placeholder'), value: "" },
-                    ...etablissements.map((e: any) => ({
+                    ...(Array.isArray(etablissements) ? etablissements : []).map((e: any) => ({
                       label: locale === 'ar' ? (e.nomArabe || e.nom) : e.nom,
                       value: e.id
                     }))

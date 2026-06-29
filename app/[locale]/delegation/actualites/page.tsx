@@ -172,7 +172,7 @@ export default function MesActualitesPage() {
             <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
                     <AnimatePresence mode='popLayout'>
-                        {actualites.map((actu: any, index: any) => (
+                        {(Array.isArray(actualites) ? actualites : []).map((actu: any, index: any) => (
                         <motion.div
                             key={actu.id}
                             layout

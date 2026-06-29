@@ -336,7 +336,7 @@ export default function AutoriteDashboard() {
               </div>
             ) : (
               <div className="flex-1 overflow-visible">
-                {recentReclamations.map((reclamation, index) => (
+                {(Array.isArray(recentReclamations) ? recentReclamations : []).map((reclamation, index) => (
                   <div
                     key={reclamation.id}
                     className={`relative p-4 hover:bg-blue-50/30 transition-all border-b border-gray-50 last:border-0 group ${index === 0 ? 'bg-blue-50/10' : ''}`}

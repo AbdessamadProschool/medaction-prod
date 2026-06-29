@@ -425,7 +425,7 @@ export default function AuditClient() {
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 <AnimatePresence>
-                    {logs.map((log, index) => {
+                    {(Array.isArray(logs) ? logs : []).map((log, index) => {
                       const style = getActionStyle(log.action);
                       const Icon = style.icon;
                       

@@ -187,7 +187,7 @@ function ArticlesContent() {
                     {t('all_categories')}
                     {!selectedCategorie && <div className="w-1.5 h-1.5 bg-white rounded-full shadow-sm" />}
                   </button>
-                  {categories.map((cat) => (
+                  {(Array.isArray(categories) ? categories : []).map((cat) => (
                     <button
                       key={cat.nom}
                       onClick={() => updateFilter('categorie', cat.nom)}
@@ -257,7 +257,7 @@ function ArticlesContent() {
             ) : (
               <>
                 <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
-                  {articles.map((article, index) => (
+                  {(Array.isArray(articles) ? articles : []).map((article, index) => (
                     <ArticleCard key={article.id} article={article} index={index} />
                   ))}
                 </div>

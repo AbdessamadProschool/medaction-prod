@@ -452,7 +452,7 @@ export default function GouverneurDashboard() {
                 <div class='section-num'>04</div>
                 <h3>Alertes et Recommandations Stratégiques</h3>
             </div>
-            ${d.alerts.map((a:any)=>`
+            ${(Array.isArray(d.alerts) ? d.alerts : []).map((a:any)=>`
                 <div class='alert-item'>
                     <div class='alert-icon'>⚠️</div>
                     <div class='alert-content'>
@@ -804,7 +804,7 @@ export default function GouverneurDashboard() {
                                    <p className="text-sm font-medium">{t('header.notifications.none')}</p>
                                 </div>
                              ) : (
-                               alerts.map((alert, idx) => (
+                               (Array.isArray(alerts) ? alerts : []).map((alert, idx) => (
                                   <button key={idx} onClick={() => handleAlertClick(alert)} className="w-full text-start p-4 border-b border-gray-50 hover:bg-slate-50 transition-colors flex items-start gap-3 relative group">
                                      <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
                                        alert.priorite === 'HAUTE' ? 'bg-red-500' : 
@@ -1030,7 +1030,7 @@ export default function GouverneurDashboard() {
                                      )}
 
                                      {/* Alerts */}
-                                     {aiInsights?.alerts && Array.isArray(aiInsights.alerts) && aiInsights.alerts.map((alert: any, i:number) => (
+                                     {aiInsights?.alerts && Array.isArray(aiInsights.alerts) && (Array.isArray(aiInsights.alerts) ? aiInsights.alerts : []).map((alert: any, i:number) => (
                                        <div key={i} className="flex items-center gap-4 p-4 rounded-2xl border bg-red-50 border-red-100 text-red-800">
                                           <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm text-red-500">
                                              <AlertTriangle size={16} />

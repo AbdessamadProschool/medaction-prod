@@ -313,7 +313,7 @@ export default function ValidationPage() {
             </p>
           </div>
         ) : (
-          items.map((item: any) => (
+          (Array.isArray(items) ? items : []).map((item: any) => (
             <PendingCard
               key={item.id}
               item={item}

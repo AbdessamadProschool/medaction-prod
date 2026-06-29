@@ -108,16 +108,12 @@ export default function NouveauEventPage() {
 
         const res = await fetch(url);
         const data = await res.json();
-        if (data.data) {
-          setEtablissements(data.data);
-        }
+        if (data.data) { setEtablissements(Array.isArray(data.data) ? data.data : (Array.isArray(data.data.data) ? data.data.data : [])); }
         
         // Fetch all establishments for location selection
         const resAll = await fetch('/api/etablissements?limit=100');
         const dataAll = await resAll.json();
-        if (dataAll.data) {
-          setAllEtablissements(dataAll.data);
-        }
+        if (dataAll.data) { setAllEtablissements(Array.isArray(dataAll.data) ? dataAll.data : (Array.isArray(dataAll.data.data) ? dataAll.data.data : [])); }
       } catch (error) {
         console.error("Erreur chargement établissements", error);
       }
@@ -408,7 +404,7 @@ export default function NouveauEventPage() {
                       className="w-full px-4 py-3 pr-12 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_establishment')}</option>
-                      {etablissements.map(e => (
+                      {(Array.isArray(etablissements) ? etablissements : []).map(e => (
                         <option key={e.id} value={e.id}>{e.nom}</option>
                       ))}
                     </select>

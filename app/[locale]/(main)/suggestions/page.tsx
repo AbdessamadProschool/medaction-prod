@@ -286,7 +286,7 @@ export default function SuggestionsPage() {
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <AnimatePresence mode="popLayout">
-              {suggestions.map((suggestion, index) => {
+              {(Array.isArray(suggestions) ? suggestions : []).map((suggestion, index) => {
                 const statutInfo = STATUT_CONFIG[suggestion.statut] || STATUT_CONFIG.SOUMISE;
                 const StatutIcon = statutInfo.icon;
                 const catInfo = suggestion.categorie ? CATEGORIES[suggestion.categorie] : null;

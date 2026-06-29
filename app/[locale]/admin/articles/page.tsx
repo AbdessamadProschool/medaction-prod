@@ -359,7 +359,7 @@ export default function AdminArticlesPage() {
             </p>
           </div>
         ) : (
-          articles.map((article: any) => {
+          (Array.isArray(articles) ? articles : []).map((article: any) => {
             const statutConfig = STATUT_CONFIG[article.statut] || STATUT_CONFIG.BROUILLON;
             const StatutIcon = statutConfig.icon;
             

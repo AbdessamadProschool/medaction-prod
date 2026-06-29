@@ -366,7 +366,7 @@ export default function AdminCampagnesPage() {
             />
           </div>
         ) : (
-          campagnes.map((campagne: any) => {
+          (Array.isArray(campagnes) ? campagnes : []).map((campagne: any) => {
             const statutConfig = STATUT_CONFIG[campagne.statut] || STATUT_CONFIG.BROUILLON;
             const StatutIcon = statutConfig.icon;
             const progress = getProgressPercentage(campagne);

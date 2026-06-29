@@ -460,7 +460,7 @@ function AdminEvenementsContent() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-          {evenements.map((evenement: Evenement) => {
+          {(Array.isArray(evenements) ? evenements : []).map((evenement: Evenement) => {
             const statutKey = statusKeyMap[evenement.statut] || 'pending';
             const statutBadgeMap: Record<string, string> = {
               pending: 'gold',

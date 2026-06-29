@@ -81,7 +81,7 @@ export default function CoordinateurDashboard() {
   const stats = useMemo<Stats | null>(() => {
     if (!responseData?.data) return null;
     const activites = responseData.data;
-    const uniqueEtablissements = new Set(activites.map((a: any) => a.etablissementId));
+    const uniqueEtablissements = new Set((Array.isArray(activites) ? activites : []).map((a: any) => a.etablissementId));
     
     return {
       etablissements: uniqueEtablissements.size,

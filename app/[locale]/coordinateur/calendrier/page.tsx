@@ -1080,7 +1080,7 @@ function CreateActivityPanel({
                             onChange={e => setFormData({...formData, etablissementId: parseInt(e.target.value)})}
                         >
                             <option value={0}>{t('select_establishment')}</option>
-                            {etablissements.map((e: any) => (
+                            {(Array.isArray(etablissements) ? etablissements : []).map((e: any) => (
                                 <option key={e.id} value={e.id}>{e.nom}</option>
                             ))}
                         </select>

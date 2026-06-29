@@ -610,7 +610,7 @@ export default function AdminReclamationsPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {reclamations.length > 0 ? (
-                reclamations.map((r: any, i: any) => {
+                (Array.isArray(reclamations) ? reclamations : []).map((r: any, i: any) => {
                   const statusKey = r.statut ?? "EN_ATTENTE";
 
                   return (

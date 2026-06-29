@@ -281,7 +281,7 @@ export default function DelegationDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  recentItems.map((item: RecentItem) => (
+                  (Array.isArray(recentItems) ? recentItems : []).map((item: RecentItem) => (
                     <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/20 transition-all group">
                       <td className="px-6 py-5">
                         <Link href={`/delegation/${item.type}s/${item.id}`} className="font-black text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors block line-clamp-2 leading-tight">

@@ -85,11 +85,13 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
         
         if (communesRes.ok) {
           const data = await communesRes.json();
-          setCommunes(data.communes || data.data || []);
+          const rawCommunes = data.communes || data.data || [];
+          setCommunes(Array.isArray(rawCommunes) ? rawCommunes : (Array.isArray(rawCommunes.data) ? rawCommunes.data : []));
         }
         if (etabRes.ok) {
           const data = await etabRes.json();
-          setEtablissements(data.etablissements || data.data || []);
+          const rawEtabs = data.etablissements || data.data || [];
+          setEtablissements(Array.isArray(rawEtabs) ? rawEtabs : (Array.isArray(rawEtabs.data) ? rawEtabs.data : []));
         }
       } catch (err) {
         console.error('Erreur chargement données:', err);
@@ -319,7 +321,7 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
                  {tCreate('fields.establishments', { count: etablissementsGeres.length })} *
               </label>
               <div className="max-h-60 overflow-y-auto border border-border bg-muted/20 rounded-[1.5rem] p-3 space-y-1 custom-scrollbar shadow-inner">
-                {etablissements.length === 0 ? (
+                {!Array.isArray(etablissements) || etablissements.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40">
                     <Loader2 className="w-8 h-8 animate-spin mb-3" />
                     <p className="text-[10px] font-black uppercase tracking-widest">{t('loading')}</p>

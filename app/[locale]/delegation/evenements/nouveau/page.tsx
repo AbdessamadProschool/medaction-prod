@@ -584,7 +584,7 @@ export default function NouveauEventPage() {
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">{t('sections.datetime.select_establishment_location')}</option>
-                        {allEtablissements
+                        {Array.isArray(allEtablissements) && allEtablissements
                           .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
                           .map(e => (
                           <option key={e.id} value={e.id} className="truncate max-w-[250px]">{e.nom} {e.secteur ? `(${e.secteur})` : ''}</option>

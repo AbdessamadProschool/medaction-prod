@@ -97,14 +97,14 @@ export default function ModifierEvenementPage() {
         const res = await fetch(url);
         const data = await res.json();
         if (data.data) {
-          setEtablissements(data.data);
+          setEtablissements(Array.isArray(data.data) ? data.data : (Array.isArray(data.data.data) ? data.data.data : []));
         }
         
         // Fetch all establishments for location selection
         const resAll = await fetch('/api/etablissements?limit=100');
         const dataAll = await resAll.json();
         if (dataAll.data) {
-          setAllEtablissements(dataAll.data);
+          setAllEtablissements(Array.isArray(dataAll.data) ? dataAll.data : (Array.isArray(dataAll.data.data) ? dataAll.data.data : []));
         }
       } catch (error) {
         console.error("Erreur chargement établissements", error);
@@ -474,7 +474,7 @@ export default function ModifierEvenementPage() {
                       className="w-full px-4 py-2 pr-11 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-gray-50/50 focus:bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-white text-sm text-start"
                     >
                       <option value="">{t('sections.general.select_establishment')}</option>
-                      {etablissements.map(e => (
+                      {Array.isArray(etablissements) && etablissements.map(e => (
                         <option key={e.id} value={e.id}>{e.nom}</option>
                       ))}
                     </select>
@@ -622,7 +622,7 @@ export default function ModifierEvenementPage() {
                         className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 outline-none font-bold text-gray-700 appearance-none bg-white cursor-pointer transition-colors text-sm"
                       >
                         <option value="">Sélectionnez un établissement...</option>
-                        {allEtablissements
+                        {Array.isArray(allEtablissements) && allEtablissements
                           .filter(e => !lieuSecteur || e.secteur === lieuSecteur)
                           .map(e => (
                           <option key={e.id} value={e.id} className="truncate max-w-[250px]">{e.nom} {e.secteur ? `(${e.secteur})` : ''}</option>

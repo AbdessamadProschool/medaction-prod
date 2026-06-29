@@ -81,11 +81,13 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
         
         if (communesRes.ok) {
           const data = await communesRes.json();
-          setCommunes(data.communes || data.data || []);
+          const rawCommunes = data.communes || data.data || [];
+          setCommunes(Array.isArray(rawCommunes) ? rawCommunes : (Array.isArray(rawCommunes.data) ? rawCommunes.data : []));
         }
         if (etabRes.ok) {
           const data = await etabRes.json();
-          setEtablissements(data.etablissements || data.data || []);
+          const rawEtabs = data.etablissements || data.data || [];
+          setEtablissements(Array.isArray(rawEtabs) ? rawEtabs : (Array.isArray(rawEtabs.data) ? rawEtabs.data : []));
         }
       } catch (err) {
         console.error('Erreur chargement données:', err);
@@ -400,7 +402,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                    {t('fields.establishments', { count: formData.etablissementsGeres.length })} *
                 </label>
                 <div className="max-h-48 overflow-y-auto border border-border bg-muted/20 rounded-2xl p-3 space-y-1 custom-scrollbar">
-                  {etablissements.length === 0 ? (
+                  {!Array.isArray(etablissements) || etablissements.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-muted-foreground/40">
                       <Loader2 className="w-6 h-6 animate-spin mb-2" />
                       <p className="text-[10px] font-black uppercase tracking-widest">{t('loading_establishments')}</p>

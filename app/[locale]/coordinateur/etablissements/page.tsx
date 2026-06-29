@@ -56,17 +56,18 @@ export default function CoordinateurEtablissementsPage() {
   const { data: session } = useSession();
   const [search, setSearch] = useState('');
   const { data: responseData, isLoading: loading, mutate: refreshData } = useData('/api/etablissements');
-  const etablissements = responseData?.data || responseData?.etablissements || [];
+  const rawEtabs = responseData?.data || responseData?.etablissements || [];
+  const etablissements = Array.isArray(rawEtabs) ? rawEtabs : (Array.isArray(rawEtabs.data) ? rawEtabs.data : []);
 
   const fetchEtablissements = async () => {
     await refreshData();
   };
 
-  const filteredEtablissements = etablissements.filter((e: any) =>
-    e.nom.toLowerCase().includes(search.toLowerCase()) ||
-    e.code.toLowerCase().includes(search.toLowerCase()) ||
-    e.secteur.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredEtablissements = Array.isArray(etablissements) ? etablissements.filter((e: any) =>
+    e.nom?.toLowerCase().includes(search.toLowerCase()) ||
+    e.code?.toLowerCase().includes(search.toLowerCase()) ||
+    e.secteur?.toLowerCase().includes(search.toLowerCase())
+  ) : [];
 
   return (
     <div className="space-y-6 text-right" dir="rtl">

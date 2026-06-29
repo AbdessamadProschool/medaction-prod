@@ -61,7 +61,9 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
         }
         const res = await fetch(url);
         const data = await res.json();
-        if(data.data) setEtablissements(data.data);
+        if(data.data) {
+          setEtablissements(Array.isArray(data.data) ? data.data : (Array.isArray(data.data.data) ? data.data.data : []));
+        }
       } catch (error) {
         console.error(error);
       }
@@ -361,7 +363,7 @@ export default function EditActualitePage({ params }: { params: Promise<{ id: st
                      className="w-full px-4 py-2.5 pr-6 pl-10 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-semibold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                  >
                     <option value="">{t('sections.context.establishment_placeholder')}</option>
-                    {etablissements.map(e => (
+                    {Array.isArray(etablissements) && etablissements.map(e => (
                     <option key={e.id} value={e.id}>{e.nom}</option>
                     ))}
                  </select>

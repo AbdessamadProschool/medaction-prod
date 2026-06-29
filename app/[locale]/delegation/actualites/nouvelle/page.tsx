@@ -60,7 +60,7 @@ export default function NouvelleActualitePage() {
         const res = await fetch(url);
         const data = await res.json();
         if(data.data) {
-          setEtablissements(data.data);
+          setEtablissements(Array.isArray(data.data) ? data.data : (Array.isArray(data.data.data) ? data.data.data : []));
         }
       } catch (error) {
         console.error("Erreur chargement établissements", error);
@@ -318,7 +318,7 @@ export default function NouvelleActualitePage() {
                      className="w-full px-4 py-3 pr-10 pl-6 rounded-xl border border-gray-200 focus:border-gov-blue/30 focus:ring-2 focus:ring-gov-blue/20 outline-none bg-white font-bold text-gray-700 appearance-none cursor-pointer transition-all hover:bg-gray-50 text-sm text-start"
                  >
                     <option value="">{t('sections.context.establishment_placeholder')}</option>
-                    {etablissements.map(e => (
+                    {Array.isArray(etablissements) && etablissements.map(e => (
                     <option key={e.id} value={e.id}>{e.nom}</option>
                     ))}
                  </select>

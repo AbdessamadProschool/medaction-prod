@@ -38,15 +38,16 @@ export default function CoordinateurRapportsPage() {
   const [filterStatut, setFilterStatut] = useState<'all' | 'pending' | 'completed'>('all');
   const today = new Date().toISOString().split('T')[0];
   const { data: responseData, isLoading: loading, mutate: refreshData } = useData(`/api/programmes-activites?dateFin=${today}&statut=TERMINEE,RAPPORT_COMPLETE&limit=50`);
-  const rapports = responseData?.data || [];
+  const rawRapports = responseData?.data || [];
+  const rapports = Array.isArray(rawRapports) ? rawRapports : (Array.isArray(rawRapports.data) ? rawRapports.data : []);
 
   const fetchRapports = async () => {
     await refreshData();
   };
 
-  const filteredRapports = rapports.filter((rapport: any) => {
-    const matchSearch = rapport.titre.toLowerCase().includes(search.toLowerCase()) ||
-                       rapport.etablissement?.nom.toLowerCase().includes(search.toLowerCase());
+  const filteredRapports = Array.isArray(rapports) ? rapports.filter((rapport: any) => {
+    const matchSearch = rapport.titre?.toLowerCase().includes(search.toLowerCase()) ||
+                       rapport.etablissement?.nom?.toLowerCase().includes(search.toLowerCase());
     
     if (filterStatut === 'pending') {
       return matchSearch && rapport.statut === 'TERMINEE';
@@ -55,10 +56,10 @@ export default function CoordinateurRapportsPage() {
       return matchSearch && rapport.statut === 'RAPPORT_COMPLETE';
     }
     return matchSearch;
-  });
+  }) : [];
 
-  const pendingCount = rapports.filter((r: any) => r.statut === 'TERMINEE').length;
-  const completedCount = rapports.filter((r: any) => r.statut === 'RAPPORT_COMPLETE').length;
+  const pendingCount = Array.isArray(rapports) ? rapports.filter((r: any) => r.statut === 'TERMINEE').length : 0;
+  const completedCount = Array.isArray(rapports) ? rapports.filter((r: any) => r.statut === 'RAPPORT_COMPLETE').length : 0;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ar-MA', {

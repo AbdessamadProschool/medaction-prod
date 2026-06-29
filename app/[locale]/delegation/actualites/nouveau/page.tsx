@@ -55,7 +55,7 @@ export default function NouvelleActualitePage() {
         const res = await fetch(url);
         const data = await res.json();
         if(data.data) {
-          setEtablissements(data.data);
+          setEtablissements(Array.isArray(data.data) ? data.data : (Array.isArray(data.data.data) ? data.data.data : []));
         }
       } catch (error) {
         console.error("Erreur chargement établissements", error);
@@ -271,7 +271,7 @@ export default function NouvelleActualitePage() {
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500/20 focus:border-gov-gold/30 outline-none bg-white text-sm"
               >
                 <option value="">Sélectionner un établissement...</option>
-                {etablissements.map(e => (
+                {Array.isArray(etablissements) && etablissements.map(e => (
                   <option key={e.id} value={e.id}>{e.nom}</option>
                 ))}
               </select>

@@ -77,11 +77,12 @@ export default function AutoriteReclamationsPage() {
   }, [page, statut, categorie, search]);
 
   const { data: responseData, isLoading: loading, mutate: refreshReclamations } = useData(`/api/autorite/reclamations?${queryParams}`);
-  
-  const reclamations = responseData?.data || [];
-  const categories = responseData?.categories || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  // /api/autorite/reclamations → successResponse({reclamations, categories, pagination})
+  // SWR reçoit: { success, data: { reclamations: [...], categories: [...], pagination: {...} } }
+  const reclamations = Array.isArray(responseData?.data?.reclamations) ? responseData.data.reclamations : [];
+  const categories = Array.isArray(responseData?.data?.categories) ? responseData.data.categories : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

@@ -57,9 +57,13 @@ export default function MesCampagnesPage() {
   });
 
   const { data: responseData, isLoading: loading, mutate: refreshCampagnes } = useData(`/api/delegation/campagnes?${searchParams.toString()}`);
-  const campagnes = responseData?.data || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  // /api/delegation/campagnes → successResponse({campagnes, pagination})
+  // SWR reçoit: { success, data: { campagnes: [...], pagination: {...} } }
+  const campagnes: Campagne[] = Array.isArray(responseData?.data?.campagnes)
+    ? responseData.data.campagnes
+    : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
   
   const actionMutation = useMutation();
 

@@ -50,9 +50,13 @@ export default function MesArticlesPage() {
   });
 
   const { data: responseData, isLoading: loading, mutate: refreshArticles } = useData(`/api/delegation/articles?${searchParams.toString()}`);
-  const articles = responseData?.data || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  // /api/delegation/articles → successResponse({articles, pagination})
+  // SWR reçoit: { success, data: { articles: [...], pagination: {...} } }
+  const articles = Array.isArray(responseData?.data?.articles)
+    ? responseData.data.articles
+    : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
   
   const actionMutation = useMutation();
 

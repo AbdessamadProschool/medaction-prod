@@ -93,9 +93,13 @@ export default function MesEvenementsPage() {
   });
 
   const { data: responseData, isLoading: loading, mutate: refreshEvenements } = useData(`/api/delegation/evenements?${searchParams.toString()}`);
-  const evenements = responseData?.data || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  // /api/delegation/evenements → successResponse({evenements, pagination})
+  // SWR reçoit: { success, data: { evenements: [...], pagination: {...} } }
+  const evenements: Evenement[] = Array.isArray(responseData?.data?.evenements)
+    ? responseData.data.evenements
+    : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
   
   const actionMutation = useMutation();
 

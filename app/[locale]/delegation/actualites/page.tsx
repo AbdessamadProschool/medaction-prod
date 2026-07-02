@@ -53,9 +53,13 @@ export default function MesActualitesPage() {
   });
 
   const { data: responseData, isLoading: loading, mutate: refreshActualites } = useData(`/api/delegation/actualites?${searchParams.toString()}`);
-  const actualites = responseData?.data || [];
-  const totalPages = responseData?.pagination?.totalPages || 1;
-  const total = responseData?.pagination?.total || 0;
+  // /api/delegation/actualites → successResponse({actualites, pagination})
+  // SWR reçoit: { success, data: { actualites: [...], pagination: {...} } }
+  const actualites = Array.isArray(responseData?.data?.actualites)
+    ? responseData.data.actualites
+    : [];
+  const totalPages = responseData?.data?.pagination?.totalPages || 1;
+  const total = responseData?.data?.pagination?.total || 0;
   
   const actionMutation = useMutation();
 

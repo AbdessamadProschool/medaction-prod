@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { 
   CheckCircle, 
@@ -14,7 +13,7 @@ import {
   ArrowRight,
   Loader2
 } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function ClotureEventPage({ params }: { params: Promise<{ id: string }> }) {

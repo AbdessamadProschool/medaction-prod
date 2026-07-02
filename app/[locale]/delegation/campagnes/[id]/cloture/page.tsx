@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { 
   CheckCircle, 
@@ -15,14 +14,14 @@ import {
   Loader2,
   Target
 } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { toast } from 'sonner';
 
 export default function ClotureCampagnePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const campagneId = resolvedParams.id;
   const t = useTranslations('delegation.dashboard.campaign_closure');
-  const tEdit = useTranslations('delegation.dashboard.campaign_edit');
+  const tEdit = useTranslations('delegation.dashboard.campaigns.edit_page');
   const locale = useLocale();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
   const router = useRouter();

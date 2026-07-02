@@ -124,6 +124,7 @@ export default function ClotureCampagnePage({ params }: { params: Promise<{ id: 
           nombreParticipations: parseInt(nbParticipations),
           bilanDescription: bilanDescription,
           rapportClotureUrl: compteRenduUrl,
+          images: images,
           isActive: false // Clôturée = plus active
         }),
       });

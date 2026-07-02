@@ -3490,6 +3490,7 @@
       "save": "Enregistrer",
       "cancel": "Annuler",
       "description": "Description du bilan",
+      "campaign_description": "Description du bilan de la campagne",
       "participants": "Nombre de participants",
       "reset_bilan": "Réinitialiser le bilan",
       "confirm_reset": "Voulez-vous vraiment supprimer ce bilan ? L'événement redeviendra 'Publié' et les détails du bilan seront effacés."

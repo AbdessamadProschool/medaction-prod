@@ -12,7 +12,7 @@ export const GET = withPermission('bilans.read', withErrorHandler(async (request
   // Campagnes terminées ou closes
   const campagnes = await prisma.campagne.findMany({
     where: {
-      statut: { in: ['TERMINEE', 'ARCHIVEE'] },
+      statut: { in: ['TERMINEE', 'ARCHIVEE', 'CLOTUREE'] },
     },
     select: {
       id: true,

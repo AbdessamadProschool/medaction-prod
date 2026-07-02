@@ -106,6 +106,50 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: Rou
       data: updateData,
     });
 
+    // === GESTION DES MÉDIAS DE CLÔTURE (RAPPORT ET GALERIE) ===
+    // Supprimer les anciens fichiers de clôture/bilan (ceux qui ne sont pas la bannière principale)
+    await prisma.media.deleteMany({
+      where: {
+        campagneId: id,
+        nomFichier: { not: 'Bannière campagne' }
+      }
+    });
+
+    // Créer l'entrée Media pour le rapport PDF de clôture
+    if (body.rapportClotureUrl) {
+      await prisma.media.create({
+        data: {
+          nomFichier: 'Compte Rendu Bilan',
+          cheminFichier: body.rapportClotureUrl,
+          urlPublique: body.rapportClotureUrl,
+          type: 'DOCUMENT',
+          mimeType: 'application/pdf',
+          campagneId: id,
+          uploadePar: userId
+        }
+      });
+    }
+
+    // Créer les entrées Media pour la galerie d'images de clôture
+    if (body.images && Array.isArray(body.images)) {
+      for (const imgUrl of body.images) {
+        if (imgUrl) {
+          const ext = imgUrl.split('.').pop() || 'png';
+          await prisma.media.create({
+            data: {
+              nomFichier: 'Bilan Image',
+              cheminFichier: imgUrl,
+              urlPublique: imgUrl,
+              type: 'IMAGE',
+              mimeType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+              campagneId: id,
+              uploadePar: userId
+            }
+          });
+        }
+      }
+    }
+
     const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || null;
     const userAgent = request.headers.get('user-agent') || null;
   const actionName = (body.statut === 'CLOTUREE') ? 'CLOTURE_CAMPAGNE' : 'UPDATE_CAMPAGNE';

@@ -111,7 +111,7 @@ export const UPLOAD_CONFIG = {
     /<script/i,                  // JavaScript
     /javascript:/i,              // JavaScript protocol
     /vbscript:/i,               // VBScript protocol
-    /on\w+\s*=/i,               // Event handlers (onclick, onload, etc.)
+    /on(click|load|submit|focus|blur|change|key\w+|mouse\w+|touch\w+)\s*=/i, // Specific event handlers to avoid binary false positives (e.g. 'only=')
     /\b(eval|system|exec|passthru|shell_exec)\s*\(/i, // Dangerous function calls as words
     /\$_(GET|POST|REQUEST|FILES)\b/,    // PHP superglobals
     /<\s*iframe/i,              // iframes
@@ -396,12 +396,24 @@ export async function validateUploadedFile(
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
+  // Find expected MIME type based on extension (since browser declared type can be empty/wrong)
+  let expectedMimeType = file.type;
+  const fileExt = extValidation.extension;
+  if (fileExt) {
+    const foundMime = Object.keys(UPLOAD_CONFIG.ALLOWED_TYPES).find(mime => 
+      UPLOAD_CONFIG.ALLOWED_TYPES[mime].extensions.includes(fileExt)
+    );
+    if (foundMime) {
+      expectedMimeType = foundMime;
+    }
+  }
+
   // 5. Validate magic bytes (OWASP: CWE-434)
-  const magicValidation = validateMagicBytes(buffer, file.type);
+  const magicValidation = validateMagicBytes(buffer, expectedMimeType);
   if (!magicValidation.isValid) {
     return {
       isValid: false,
-      error: `File content does not match declared type (${file.type})`,
+      error: `File content does not match expected type (${expectedMimeType})`,
       errorCode: 'MAGIC_BYTES_MISMATCH',
     };
   }

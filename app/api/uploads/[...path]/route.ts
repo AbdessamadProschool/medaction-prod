@@ -210,23 +210,25 @@ export async function GET(
             });
 
             if (!media) {
-              return new NextResponse('Not Found', { status: 404 });
-            }
-
-            let isOwner = false;
-            if (prefix.startsWith('event') && media.evenement) {
-              isOwner = media.evenement.createdBy === userId;
-            } else if (prefix.startsWith('campaign') && media.campagne) {
-              isOwner = media.campagne.createdBy === userId;
+              // Si le fichier n'est pas enregistré dans la base Media (ex: rapport/bilan de campagne chargé en direct),
+              // et que l'utilisateur est autorisé (isAdmin est true), on autorise l'accès.
+              console.log(`[FILE-SERVE] Media record not found in DB for: ${requestedPath}. Allowing access for authorized role.`);
             } else {
-              isOwner = media.uploadePar === userId;
-            }
+              let isOwner = false;
+              if (prefix.startsWith('event') && media.evenement) {
+                isOwner = media.evenement.createdBy === userId;
+              } else if (prefix.startsWith('campaign') && media.campagne) {
+                isOwner = media.campagne.createdBy === userId;
+              } else {
+                isOwner = media.uploadePar === userId;
+              }
 
-            if (!isOwner) {
-              return NextResponse.json(
-                { error: 'Accès refusé', code: 'ACCESS_DENIED' },
-                { status: 403 }
-              );
+              if (!isOwner) {
+                return NextResponse.json(
+                  { error: 'Accès refusé', code: 'ACCESS_DENIED' },
+                  { status: 403 }
+                );
+              }
             }
           } catch (err) {
             console.error('[FILE-SERVE] Error in report ownership check:', err);

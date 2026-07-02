@@ -1,4 +1,4 @@
-﻿{
+{
   "locale": {
     "code": "fr",
     "dir": "ltr"
@@ -1900,6 +1900,7 @@
       "SOLIDARITE": "Solidarité",
       "ECOLOGIE": "Écologie",
       "CITOYENNETE": "Citoyenneté",
+      "SOCIAL": "Social",
       "AUTRE": "Autre",
       "SANTE": "Santé",
       "CULTURE": "Culture",
@@ -5757,6 +5758,7 @@
         "SOLIDARITE": "Solidarité",
         "ECOLOGIE": "Écologie",
         "CITOYENNETE": "Citoyenneté",
+        "SOCIAL": "Social",
         "SANTE": "Santé",
         "EDUCATION": "Éducation",
         "SPORT": "Sport",

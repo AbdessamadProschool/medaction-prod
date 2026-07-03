@@ -141,11 +141,11 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
-      - name: ESLint
-        run: npm run lint
+      - name: ESLint Strict
+        run: npm run lint:strict
 
       - name: TypeScript Check
-        run: npx tsc --noEmit --skipLibCheck
+        run: npm run typecheck
 
   # ═══════════════════════════════════════════════════════════════════════════
   # 5. UNIT TESTS

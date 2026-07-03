@@ -10,6 +10,8 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "lint:strict": "eslint . --max-warnings=0",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

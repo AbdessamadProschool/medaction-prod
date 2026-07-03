@@ -4,6 +4,34 @@ import nextPlugin from "@next/eslint-plugin-next";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default ts.config(
+  {
+    ignores: [
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/out/**",
+      "**/postgres_data/**",
+      "**/backups/**",
+      "**/uploads/**",
+      "**/public/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/*.min.js",
+      "**/scratch/**",
+      "/*.js",
+      "*.js",
+      "security-audit/**",
+      "pentest-results/**",
+      "scripts/**",
+      "e2e/**",
+      "__tests__/**",
+      "tests/**",
+      "locales/*.js",
+      "prisma/*.js",
+      "next-env.d.ts",
+      "global.d.ts",
+      "next.config.mjs"
+    ]
+  },
   js.configs.recommended,
   ...ts.configs.recommended,
   {

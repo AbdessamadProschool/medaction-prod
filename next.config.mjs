@@ -128,8 +128,8 @@ const nextConfig = {
     ];
   },
   serverExternalPackages: ['prisma', '@prisma/client', 'bcryptjs', 'puppeteer', 'sharp'],
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: false },
+  eslint: { ignoreDuringBuilds: false },
 };
 
 export default withNextIntl(nextConfig);

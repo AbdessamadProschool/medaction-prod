@@ -408,7 +408,6 @@ IMPORTANT: Ces codes vous permettent de récupérer l'accès à votre compte si 
                       {t('setup_modal.step1_scan')}
                     </p>
                     <div className="inline-block p-4 bg-white border-2 border-gray-200 rounded-xl shadow-sm">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={setupData.qrCode} 
                         alt="QR Code pour configurer l'authentification à deux facteurs" 

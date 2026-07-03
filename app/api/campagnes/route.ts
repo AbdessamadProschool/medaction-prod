@@ -24,7 +24,6 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     const featured = searchParams.get('featured') === 'true';
     const statutParam = searchParams.get('statut');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
     // Filtres de base

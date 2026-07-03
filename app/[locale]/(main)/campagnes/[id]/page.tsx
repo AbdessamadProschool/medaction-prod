@@ -153,6 +153,7 @@ export default function CampagneDetailPage() {
     const end = new Date(campagne.dateFin);
     end.setHours(23, 59, 59, 999);
     const now = new Date();
+    if (now > end) return locale === 'ar' ? 'انتهت الحملة' : 'Campagne terminée';
     now.setHours(0, 0, 0, 0);
     const diffDays = Math.max(0, Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
     if (diffDays === 0) return t('status_finishes_today');
@@ -192,6 +193,7 @@ export default function CampagneDetailPage() {
   })();
 
   const isEnCours = campagne.statut === 'EN_COURS';
+  const isDateExpired = !!(campagne?.dateFin && new Date() > new Date(new Date(campagne.dateFin).setHours(23, 59, 59)));
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
@@ -257,12 +259,12 @@ export default function CampagneDetailPage() {
             >
               <span className={cn(
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wide",
-                isEnCours
+                isEnCours && !isDateExpired
                   ? "bg-green-500 text-white"
                   : "bg-white/20 text-white border border-white/30"
               )}>
-                <span className={cn("w-1.5 h-1.5 rounded-full", isEnCours ? "bg-white animate-pulse" : "bg-white/60")} />
-                {isEnCours ? (locale === 'ar' ? 'جارية' : 'En cours') : t('status_simple')}
+                <span className={cn("w-1.5 h-1.5 rounded-full", isEnCours && !isDateExpired ? "bg-white animate-pulse" : "bg-white/60")} />
+                {isEnCours && !isDateExpired ? (locale === 'ar' ? 'جارية' : 'En cours') : (locale === 'ar' ? 'منتهية' : 'Terminée')}
               </span>
 
               {campagne.type && (
@@ -510,11 +512,13 @@ export default function CampagneDetailPage() {
 
               <button
                 onClick={handleParticipate}
-                disabled={participating || campagne?.statut !== 'EN_COURS'}
+                disabled={participating || campagne?.statut !== 'EN_COURS' || isDateExpired}
                 className="w-full py-3.5 bg-[hsl(var(--gov-blue))] text-white font-bold rounded-xl hover:bg-[hsl(var(--gov-blue-dark))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
               >
                 {participating ? (
                   <><Loader2 className="w-4 h-4 animate-spin" />{t('processing')}</>
+                ) : isDateExpired ? (
+                  locale === 'ar' ? 'انتهت الحملة' : 'Campagne terminée'
                 ) : t('participate_btn')}
               </button>
 
@@ -590,10 +594,10 @@ export default function CampagneDetailPage() {
                   <span className="text-sm text-white/80">{locale === 'ar' ? 'الحالة' : 'Statut'}</span>
                   <span className={cn(
                     "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black",
-                    isEnCours ? "bg-green-500/20 text-green-400" : "bg-white/10 text-white/70"
+                    isEnCours && !isDateExpired ? "bg-green-500/20 text-green-400" : "bg-white/10 text-white/70"
                   )}>
-                    <span className={cn("w-1.5 h-1.5 rounded-full", isEnCours ? "bg-green-400 animate-pulse" : "bg-white/40")} />
-                    {isEnCours ? (locale === 'ar' ? 'جارية' : 'Active') : t('status_simple')}
+                    <span className={cn("w-1.5 h-1.5 rounded-full", isEnCours && !isDateExpired ? "bg-green-400 animate-pulse" : "bg-white/40")} />
+                    {isEnCours && !isDateExpired ? (locale === 'ar' ? 'جارية' : 'Active') : (locale === 'ar' ? 'منتهية' : 'Terminée')}
                   </span>
                 </div>
                 {campagne.dateFin && (

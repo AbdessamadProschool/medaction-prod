@@ -21,7 +21,11 @@ import {
   Loader2,
   Info,
   Trophy,
-  History
+  History,
+  Award,
+  Download,
+  ExternalLink,
+  Image as ImageIcon
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -41,6 +45,9 @@ interface CampagneDetail {
   lieu?: string;
   createdAt: string;
   couleur?: string;
+  medias?: any[];
+  bilanDescription?: string;
+  rapportClotureUrl?: string;
 }
 
 export default function CampagneDetailPage() {
@@ -48,11 +55,15 @@ export default function CampagneDetailPage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('delegation.dashboard.campaigns');
+  const tEvents = useTranslations('delegation.dashboard.events');
   
   const [campagne, setCampagne] = useState<CampagneDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const bilanImages = campagne?.medias?.filter((m: any) => m.nomFichier === 'Bilan Image' || m.nomFichier === 'Image Bilan') || [];
+  const compteRendu = campagne?.medias?.find((m: any) => m.nomFichier === 'Compte Rendu Bilan');
 
   useEffect(() => {
     if (!params.id) return;
@@ -210,6 +221,83 @@ export default function CampagneDetailPage() {
            </div>
         </div>
       </div>
+
+       {/* Bottom Section - Reports/Gallery */}
+       {campagne.statut === 'CLOTUREE' && (
+         <div className="grid md:grid-cols-2 gap-6 mt-8">
+           <motion.div 
+             initial={{ opacity: 0, scale: 0.95 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ delay: 0.3 }}
+             className="bg-gov-green/5/50 rounded-3xl p-6 shadow-sm border border-gov-green/30 relative overflow-hidden group"
+           >
+              <div className="absolute top-0 right-0 p-6 opacity-5">
+                 <Award className="w-24 h-24" />
+              </div>
+              
+              <h3 className="text-lg font-black text-gov-green-dark mb-4 flex items-center gap-3 border-b border-gov-green/30/50 pb-3">
+                <Award size={20} className="text-gov-green" />
+                {tEvents('report_title')}
+              </h3>
+              
+              <div className="space-y-4 text-start">
+                 <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gov-green/30 shadow-sm">
+                    <div className="flex items-center gap-2">
+                       <Users size={16} className="text-gov-green" />
+                       <span className="text-[9px] font-black uppercase text-gray-400">{tEvents('participants_count')}</span>
+                    </div>
+                    <span className="text-xl font-black text-gov-green-dark">{(campagne.nombreParticipations || 0).toLocaleString(locale)}</span>
+                 </div>
+
+                 <p className="text-gov-green-dark/70 text-sm font-medium leading-relaxed bg-white/40 p-4 rounded-xl border border-gov-green/30/30">
+                   {campagne.bilanDescription || '-'}
+                 </p>
+
+                 {compteRendu && (
+                   <a 
+                     href={compteRendu.urlPublique} 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className="w-full flex items-center justify-center gap-2 py-3 bg-gov-green text-white rounded-xl font-black text-xs shadow-xl shadow-gov-green/20 hover:bg-gov-green transition-all transform hover:-translate-y-1 no-underline"
+                   >
+                      <Download size={16} />
+                      {tEvents('download_report')}
+                   </a>
+                 )}
+              </div>
+           </motion.div>
+
+           {bilanImages.length > 0 && (
+             <motion.div 
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               transition={{ delay: 0.4 }}
+               className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"
+             >
+                <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-3 border-b border-gray-50 pb-3">
+                  <ImageIcon size={20} className="text-gray-400" />
+                  {tEvents('visualize_gallery')}
+                </h3>
+                <div className="grid grid-cols-3 gap-3">
+                   {bilanImages.map((img: any, idx: number) => (
+                      <a 
+                        key={idx} 
+                        href={img.urlPublique} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="relative aspect-square rounded-xl overflow-hidden border border-gray-100 group"
+                      >
+                         <img src={img.urlPublique} alt="Gallery" className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" />
+                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <ExternalLink size={16} className="text-white" />
+                         </div>
+                      </a>
+                   ))}
+                </div>
+             </motion.div>
+           )}
+         </div>
+       )}
 
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         {/* Main Content (8 cols) */}

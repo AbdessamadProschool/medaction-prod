@@ -26,7 +26,9 @@ export const GET = withErrorHandler(async (request: NextRequest, { params }: Rou
     const campagne = await prisma.campagne.findUnique({
       where: { id },
       include: {
-        medias: { take: 1, select: { urlPublique: true } },
+        medias: {
+          select: { id: true, urlPublique: true, type: true, nomFichier: true }
+        },
         _count: { select: { participations: true } }
       }
     });
@@ -46,7 +48,7 @@ export const GET = withErrorHandler(async (request: NextRequest, { params }: Rou
 
   return successResponse({
     ...campagne,
-    imagePrincipale: campagne.imagePrincipale || campagne.medias?.[0]?.urlPublique || null
+    imagePrincipale: campagne.imagePrincipale || campagne.medias?.find(m => m.nomFichier === 'Bannière campagne')?.urlPublique || null
   });
 });
 

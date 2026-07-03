@@ -55,6 +55,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     where.isActive = true;
   } else if (statut === 'INACTIVE') {
     where.isActive = false;
+  } else if (statut === 'A_CLOTURER') {
+    where.statut = { notIn: ['TERMINEE', 'CLOTUREE', 'ARCHIVEE'] };
+    where.dateFin = { lt: new Date() };
   }
 
   const [campagnes, total] = await Promise.all([

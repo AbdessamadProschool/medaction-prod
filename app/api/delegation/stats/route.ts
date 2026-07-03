@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
       prisma.campagne.count({
         where: {
           createdBy: userId,
-          statut: { not: 'TERMINEE' },
+          statut: { notIn: ['TERMINEE', 'CLOTUREE', 'ARCHIVEE'] },
           dateFin: { lt: new Date() }
         }
       }),

@@ -62,7 +62,7 @@ export default function StatistiquesPubliquesPage() {
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-6">Évolution des Réclamations</h3>
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0}>
                 <BarChart data={dataReclamations}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" />
@@ -82,7 +82,7 @@ export default function StatistiquesPubliquesPage() {
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 mb-6">Répartition par Secteur</h3>
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0}>
                 <PieChart>
                   <Pie
                     data={dataSecteurs}

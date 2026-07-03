@@ -143,7 +143,12 @@ export default function CreateEvenementModal({ isOpen, onClose, onSuccess }: Cre
       
       if (etablissementsRes.ok) {
         const data = await etablissementsRes.json();
-        setEtablissements(data.data || []);
+        const items = Array.isArray(data?.data?.data) 
+          ? data.data.data 
+          : Array.isArray(data?.data) 
+            ? data.data 
+            : [];
+        setEtablissements(items);
       }
     } catch (error) {
       console.error('Erreur chargement données:', error);

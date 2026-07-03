@@ -1233,7 +1233,10 @@
         "surface": "m²",
         "cadre": "Ex: Médical / Enseignant",
         "percent": "%",
-        "dh": "DH"
+        "dh": "DH",
+        "telephone": "+212 ...",
+        "email": "contact@...",
+        "website": "https://..."
       },
       "actions": {
         "cancel": "Annuler",
@@ -1357,7 +1360,8 @@
         "is_free": "Participation gratuite",
         "price": "Prix d'entrée (DH)",
         "event_photos": "Photos de l'événement",
-        "add_photo": "Ajouter"
+        "add_photo": "Ajouter",
+        "select_sector": "Sélectionner un secteur..."
       },
       "errors": {
         "image_size": "L'image ne doit pas dépasser 5MB",
@@ -1414,7 +1418,8 @@
       "messages": {
         "confirm_restore": "Êtes-vous sûr de vouloir restaurer à partir de cette sauvegarde ? Cette action écrasera les données actuelles.",
         "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible.",
-        "created": "Sauvegarde créée avec succès"
+        "created": "Sauvegarde créée avec succès",
+        "creating": "Création de la sauvegarde en cours..."
       }
     },
     "reclamation_detail_page": {
@@ -4825,6 +4830,7 @@
   },
   "delegation": {
     "dashboard": {
+      "campaign_edit": "Modifier la campagne",
       "title": "Délégation {sector}",
       "welcome": "Espace de gestion - {name}",
       "content_summary": "Contenus",
@@ -5813,14 +5819,22 @@
       "CREATE_BACKUP": "Création sauvegarde",
       "RECLAMATION_CREATE": "Création réclamation",
       "RECLAMATION_UPDATE": "Mise à jour réclamation",
-      "RECLAMATION_DELETE": "Suppression réclamation"
+      "RECLAMATION_DELETE": "Suppression réclamation",
+      "DELETE_CAMPAGNE": "Suppression campagne",
+      "CLOTURE_EVENEMENT": "Clôture événement",
+      "CLOTURE_CAMPAGNE": "Clôture campagne",
+      "UPDATE_CAMPAGNE": "Modification campagne",
+      "VALIDATE_CONTENT": "Validation contenu"
     },
     "entities": {
       "User": "Utilisateur",
       "Reclamation": "Réclamation",
       "System": "Système",
       "Route": "Route / URL",
-      "Authentication": "Authentification"
+      "Authentication": "Authentification",
+      "Campagne": "Campagne",
+      "Evenement": "Événement",
+      "ACTUALITE": "Actualité"
     },
     "modal": {
       "title": "Détails de l'entrée #{id}",

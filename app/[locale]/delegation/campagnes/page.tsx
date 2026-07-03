@@ -67,6 +67,25 @@ export default function MesCampagnesPage() {
   
   const actionMutation = useMutation();
 
+  useEffect(() => {
+    async function triggerAutoClose() {
+      try {
+        const res = await fetch('/api/admin/system/close-expired-campagnes', {
+          method: 'POST',
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.closedCount > 0) {
+            refreshCampagnes();
+          }
+        }
+      } catch (err) {
+        console.error("Erreur lors de la clôture automatique:", err);
+      }
+    }
+    triggerAutoClose();
+  }, [refreshCampagnes]);
+
   const handleDeleteClick = (id: number) => {
     setCampagneToDeleteId(id);
   };

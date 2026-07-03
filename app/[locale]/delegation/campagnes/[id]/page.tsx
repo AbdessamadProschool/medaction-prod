@@ -55,7 +55,7 @@ export default function CampagneDetailPage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations('delegation.dashboard.campaigns');
-  const tEvents = useTranslations('delegation.dashboard.events');
+  const tEvents = useTranslations('delegation.dashboard.events.event_details');
   
   const [campagne, setCampagne] = useState<CampagneDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -253,17 +253,17 @@ export default function CampagneDetailPage() {
                    {campagne.bilanDescription || '-'}
                  </p>
 
-                 {compteRendu && (
-                   <a 
-                     href={compteRendu.urlPublique} 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                     className="w-full flex items-center justify-center gap-2 py-3 bg-gov-green text-white rounded-xl font-black text-xs shadow-xl shadow-gov-green/20 hover:bg-gov-green transition-all transform hover:-translate-y-1 no-underline"
-                   >
-                      <Download size={16} />
-                      {tEvents('download_report')}
-                   </a>
-                 )}
+                  {(compteRendu || campagne.rapportClotureUrl) && (
+                    <a 
+                      href={compteRendu?.urlPublique || campagne.rapportClotureUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-gov-green text-white rounded-xl font-black text-xs shadow-xl shadow-gov-green/20 hover:bg-gov-green transition-all transform hover:-translate-y-1 no-underline"
+                    >
+                       <Download size={16} />
+                       {tEvents('download_report')}
+                    </a>
+                  )}
               </div>
            </motion.div>
 

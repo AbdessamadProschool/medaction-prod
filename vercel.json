@@ -3,6 +3,10 @@
     {
       "path": "/api/admin/system/cleanup-logs",
       "schedule": "0 0 1 * *"
+    },
+    {
+      "path": "/api/admin/system/close-expired-campagnes",
+      "schedule": "0 0 * * *"
     }
   ]
 }

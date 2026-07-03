@@ -1061,7 +1061,10 @@
         "surface": "م²",
         "cadre": "مثال: طبي / مدرس",
         "percent": "%",
-        "dh": "درهم"
+        "dh": "درهم",
+        "telephone": "+212 ...",
+        "email": "contact@...",
+        "website": "https://..."
       },
       "search_placeholder": "البحث عن مؤسسة بالاسم أو الكود...",
       "no_establishments": "لم يتم العثور على أي مؤسسة",
@@ -1810,7 +1813,8 @@
         "is_free": "مشاركة مجانية",
         "price": "سعر الدخول (درهم)",
         "event_photos": "صور الحدث",
-        "add_photo": "إضافة"
+        "add_photo": "إضافة",
+        "select_sector": "اختر قطاعاً..."
       },
       "errors": {
         "image_size": "يجب ألا تتجاوز الصورة 5 ميجابايت",
@@ -1891,7 +1895,8 @@
       "messages": {
         "confirm_restore": "هل أنت متأكد من استعادة هذه النسخة الاحتياطية؟ سيمحو هذا البيانات الحالية.",
         "confirm_delete": "هل أنت متأكد من حذف هذه النسخة الاحتياطية؟ هذا الإجراء لا يمكن التراجع عنه.",
-        "created": "تم إنشاء النسخة الاحتياطية بنجاح"
+        "created": "تم إنشاء النسخة الاحتياطية بنجاح",
+        "creating": "جاري إنشاء النسخة الاحتياطية..."
       },
       "empty": "لا توجد نسخ احتياطية"
     },
@@ -4534,6 +4539,7 @@
   },
   "delegation": {
     "dashboard": {
+      "campaign_edit": "تعديل الحملة",
       "title": "مندوبية {sector}",
       "welcome": "فضاء الإدارة - {name}",
       "content_summary": "محتويات",
@@ -5649,14 +5655,22 @@
       "CREATE_BACKUP": "إنشاء نسخة احتياطية",
       "RECLAMATION_CREATE": "إنشاء شكاية",
       "RECLAMATION_UPDATE": "تحديث شكاية",
-      "RECLAMATION_DELETE": "حذف شكاية"
+      "RECLAMATION_DELETE": "حذف شكاية",
+      "DELETE_CAMPAGNE": "حذف الحملة",
+      "CLOTURE_EVENEMENT": "إغلاق الحدث",
+      "CLOTURE_CAMPAGNE": "إغلاق الحملة",
+      "UPDATE_CAMPAGNE": "تعديل الحملة",
+      "VALIDATE_CONTENT": "المصادقة على المحتوى"
     },
     "entities": {
       "User": "مستخدم",
       "Reclamation": "شكاية",
       "System": "النظام",
       "Route": "المسار / الرابط",
-      "Authentication": "المصادقة"
+      "Authentication": "المصادقة",
+      "Campagne": "حملة",
+      "Evenement": "حدث",
+      "ACTUALITE": "خبر / مستجد"
     },
     "modal": {
       "title": "تفاصيل السجل #{id}",

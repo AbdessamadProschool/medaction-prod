@@ -514,7 +514,7 @@ export default function DecisionCenterModal({ etablissement: initialEtab, isOpen
                                         { subject: t('radar.news'), A: Math.min(news * 15, 100), fullMark: 100 },
                                     ];
                                     return (
-                                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                        <ResponsiveContainer width="100%" height={400} minWidth={1} minHeight={1}>
                                             <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                                                 <PolarGrid stroke="#cbd5e1" strokeDasharray="4 4" />
                                                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#1e293b', fontSize: 11, fontWeight: '900' }} />

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { hashPassword } from '@/lib/auth/password';
+import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError, AppError } from '@/lib/exceptions';
@@ -130,6 +131,8 @@ export const PUT = withErrorHandler(async (
         isActive: true,
       },
     });
+
+    revalidateTag(`user-session-${id}`);
 
   return successResponse({ 
     admin: updatedAdmin 

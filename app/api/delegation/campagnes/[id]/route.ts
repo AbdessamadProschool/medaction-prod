@@ -5,7 +5,8 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { ActivityLogger } from '@/lib/activity-logger';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, NotFoundError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
+import { campagneSchema } from '@/lib/validations/delegation';
 
 interface RouteParams {
   params: Promise<{
@@ -64,38 +65,57 @@ export const PUT = withErrorHandler(async (request: NextRequest, { params }: Rou
     const id = safeParseInt(idParam, 0);
     const body = await request.json();
 
+    // === VALIDATION DÉTAILLÉE VIA ZOD ===
+    const validation = campagneSchema.partial().safeParse(body);
+    if (!validation.success) {
+      const formattedErrors = validation.error.format();
+      throw new ValidationError(
+        'Erreur de validation',
+        { 
+          fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+            if (key !== '_errors') {
+              acc[key] = (formattedErrors as any)[key]?._errors || [];
+            }
+            return acc;
+          }, {} as Record<string, string[]>)
+        }
+      );
+    }
+
+    const validatedData = validation.data;
+
     // Vérifier propriété
     const campagne = await prisma.campagne.findUnique({
       where: { id },
     });
 
-  if (!campagne) {
-    throw new NotFoundError('Campagne introuvable');
-  }
+    if (!campagne) {
+      throw new NotFoundError('Campagne introuvable');
+    }
 
-  if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
-    throw new ForbiddenError('Action non autorisée');
-  }
+    if (campagne.createdBy !== userId && session.user.role !== 'ADMIN' && session.user.role !== 'SUPER_ADMIN') {
+      throw new ForbiddenError('Action non autorisée');
+    }
 
     // Préparation des données update
     const updateData: any = {};
 
-    if (body.nom) updateData.nom = body.nom.trim();
-    if (body.titre) updateData.titre = body.titre.trim();
-    if (body.description !== undefined) updateData.description = body.description?.trim() || null;
-    if (body.contenu) updateData.contenu = body.contenu.trim();
-    if (body.type) updateData.type = body.type;
-    if (body.objectifParticipations !== undefined) {
-      updateData.objectifParticipations = body.objectifParticipations ? parseInt(body.objectifParticipations) : null;
+    if (validatedData.nom) updateData.nom = validatedData.nom.trim();
+    if (validatedData.titre) updateData.titre = validatedData.titre.trim();
+    if (validatedData.description !== undefined) updateData.description = validatedData.description;
+    if (validatedData.contenu) updateData.contenu = validatedData.contenu.trim();
+    if (validatedData.type) updateData.type = validatedData.type;
+    if (validatedData.objectifParticipations !== undefined) {
+      updateData.objectifParticipations = validatedData.objectifParticipations;
     }
-    if (body.dateDebut !== undefined) {
-      updateData.dateDebut = body.dateDebut ? new Date(body.dateDebut) : null;
+    if (validatedData.dateDebut !== undefined) {
+      updateData.dateDebut = validatedData.dateDebut;
     }
-    if (body.dateFin !== undefined) {
-      updateData.dateFin = body.dateFin ? new Date(body.dateFin) : null;
+    if (validatedData.dateFin !== undefined) {
+      updateData.dateFin = validatedData.dateFin;
     }
-    if (body.couleurTheme !== undefined) updateData.couleurTheme = body.couleurTheme;
-    if (body.imagePrincipale !== undefined) updateData.imagePrincipale = body.imagePrincipale;
+    if (validatedData.couleurTheme !== undefined) updateData.couleurTheme = validatedData.couleurTheme;
+    if (validatedData.imagePrincipale !== undefined) updateData.imagePrincipale = validatedData.imagePrincipale;
     
     // Champs de clôture
     if (body.statut) updateData.statut = body.statut;

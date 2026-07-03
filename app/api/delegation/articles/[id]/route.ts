@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError, AppError } from '@/lib/exceptions';
+import { articleSchema } from '@/lib/validations/delegation';
 
 async function getArticleWithOwnershipCheck(articleId: number, session: any) {
   const article = await prisma.article.findUnique({
@@ -73,18 +74,36 @@ export const PATCH = withErrorHandler(async (
   await getArticleWithOwnershipCheck(articleId, session);
 
   const body = await request.json();
-  const { titre, description, contenu, categorie, tags, imagePrincipale, isPublie } = body;
+
+  // === VALIDATION DÉTAILLÉE VIA ZOD ===
+  const validation = articleSchema.partial().safeParse(body);
+  if (!validation.success) {
+    const formattedErrors = validation.error.format();
+    throw new ValidationError(
+      'Erreur de validation',
+      { 
+        fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+          if (key !== '_errors') {
+            acc[key] = (formattedErrors as any)[key]?._errors || [];
+          }
+          return acc;
+        }, {} as Record<string, string[]>)
+      }
+    );
+  }
+
+  const validatedData = validation.data;
 
   const article = await prisma.article.update({
     where: { id: articleId },
     data: {
-      titre,
-      description,
-      contenu,
-      categorie,
-      tags,
-      imagePrincipale,
-      isPublie,
+      titre: validatedData.titre,
+      description: validatedData.resume || validatedData.description,
+      contenu: validatedData.contenu,
+      categorie: validatedData.categorie,
+      tags: validatedData.tags,
+      imagePrincipale: validatedData.imagePrincipale,
+      isPublie: validatedData.isPublie,
       updatedAt: new Date(),
     }
   });

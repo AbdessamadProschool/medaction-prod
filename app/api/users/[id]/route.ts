@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { SecurityValidation } from "@/lib/security/validation";
 import { ActivityLogger } from "@/lib/activity-logger";
@@ -194,6 +195,8 @@ export const PATCH = withPermission('users.edit', withErrorHandler(async (
       updatedAt: true,
     }
   });
+
+  revalidateTag(`user-session-${userId}`);
 
   // Audit logging
   await ActivityLogger.custom({

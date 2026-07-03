@@ -171,6 +171,7 @@ model User {
   dateInscription         DateTime  @default(now())
   
   // Préférences utilisateur (notifications, thème, etc.)
+  languePreferee          String    @default("fr")
   preferences             Json?     @default("{}")
   
   createdAt               DateTime  @default(now())

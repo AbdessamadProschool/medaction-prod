@@ -34,6 +34,21 @@ export async function notifyAdmins(payload: AdminNotificationPayload): Promise<v
 }
 
 /**
+ * Récupère la langue préférée d'un utilisateur. Fallback sur 'fr'.
+ */
+async function getUserLang(userId: number): Promise<string> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { languePreferee: true }
+    });
+    return user?.languePreferee || 'fr';
+  } catch {
+    return 'fr';
+  }
+}
+
+/**
  * Notifie le déposant que sa réclamation a été acceptée.
  * Non-bloquant : les erreurs ne propagent pas.
  */
@@ -42,12 +57,18 @@ export async function notifyReclamationAccepted(
   userId: number
 ): Promise<void> {
   try {
+    const lang = await getUserLang(userId);
+    const titre = lang === 'ar' ? 'تم قبول الشكوى' : 'Réclamation acceptée';
+    const message = lang === 'ar' 
+      ? 'تم قبول شكواك وسيتم معالجتها قريباً.' 
+      : 'Votre réclamation a été acceptée et sera traitée prochainement.';
+
     await prisma.notification.create({
       data: {
         userId,
         type: 'RECLAMATION_ACCEPTEE',
-        titre: 'Réclamation acceptée',
-        message: 'Votre réclamation a été acceptée et sera traitée prochainement.',
+        titre,
+        message,
         lien: `/mes-reclamations/${reclamationId}`,
       },
     });
@@ -66,12 +87,18 @@ export async function notifyReclamationRejected(
   motifRejet: string
 ): Promise<void> {
   try {
+    const lang = await getUserLang(userId);
+    const titre = lang === 'ar' ? 'تم رفض الشكوى' : 'Réclamation rejetée';
+    const message = lang === 'ar' 
+      ? `تم رفض شكواك. السبب: ${motifRejet}` 
+      : `Votre réclamation a été rejetée. Motif : ${motifRejet}`;
+
     await prisma.notification.create({
       data: {
         userId,
         type: 'RECLAMATION_REJETEE',
-        titre: 'Réclamation rejetée',
-        message: `Votre réclamation a été rejetée. Motif : ${motifRejet}`,
+        titre,
+        message,
         lien: `/mes-reclamations/${reclamationId}`,
       },
     });
@@ -89,12 +116,18 @@ export async function notifyReclamationAssigned(
   autoriteId: number
 ): Promise<void> {
   try {
+    const lang = await getUserLang(autoriteId);
+    const titre = lang === 'ar' ? 'تم تعيين شكوى جديدة' : 'Nouvelle réclamation affectée';
+    const message = lang === 'ar' 
+      ? 'تم تعيين شكوى لك لمعالجتها.' 
+      : 'Une réclamation vous a été affectée pour traitement.';
+
     await prisma.notification.create({
       data: {
         userId: autoriteId,
         type: 'RECLAMATION_AFFECTEE',
-        titre: 'Nouvelle réclamation affectée',
-        message: 'Une réclamation vous a été affectée pour traitement.',
+        titre,
+        message,
         lien: `/autorite/reclamations/${reclamationId}`,
       },
     });
@@ -112,12 +145,18 @@ export async function notifyReclamationResolved(
   userId: number
 ): Promise<void> {
   try {
+    const lang = await getUserLang(userId);
+    const titre = lang === 'ar' ? 'تم حل الشكوى' : 'Réclamation résolue';
+    const message = lang === 'ar' 
+      ? 'تم حل شكواك بنجاح.' 
+      : 'Votre réclamation a été résolue avec succès.';
+
     await prisma.notification.create({
       data: {
         userId,
         type: 'RECLAMATION_RESOLUE',
-        titre: 'Réclamation résolue',
-        message: 'Votre réclamation a été résolue avec succès.',
+        titre,
+        message,
         lien: `/mes-reclamations/${reclamationId}`,
       },
     });

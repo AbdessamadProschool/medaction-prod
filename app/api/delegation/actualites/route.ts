@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
 import { notifyAdmins } from '@/lib/notifications';
+import { actualiteSchema } from '@/lib/validations/delegation';
 
 // GET - Liste des actualités de la délégation
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -83,55 +84,46 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   const body = await request.json();
 
-  // Validation détaillée
-  const errors: Array<{ field: string; message: string }> = [];
-
-  if (!body.titre || body.titre.trim().length < 5) {
-    errors.push({ field: 'titre', message: 'Le titre est obligatoire (minimum 5 caractères)' });
-  }
-  if (body.titre && body.titre.length > 100) {
-    errors.push({ field: 'titre', message: 'Le titre ne doit pas dépasser 100 caractères' });
-  }
-
-  if (!body.contenu || body.contenu.trim().length < 20) {
-    errors.push({ field: 'contenu', message: 'Le contenu est obligatoire (minimum 20 caractères)' });
-  }
-
-  if (!body.etablissementId) {
-    errors.push({ field: 'etablissementId', message: 'Veuillez sélectionner un établissement' });
-  }
-
-  if (errors.length > 0) {
+  // === VALIDATION DÉTAILLÉE VIA ZOD ===
+  const validation = actualiteSchema.safeParse(body);
+  if (!validation.success) {
+    const formattedErrors = validation.error.format();
     throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
+      'Erreur de validation',
       { 
-        fieldErrors: errors.reduce((acc, e) => {
-          if (!acc[e.field]) acc[e.field] = [];
-          acc[e.field].push(e.message);
+        fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+          if (key !== '_errors') {
+            acc[key] = (formattedErrors as any)[key]?._errors || [];
+          }
           return acc;
         }, {} as Record<string, string[]>)
       }
     );
   }
 
+  const validatedData = validation.data;
+
   // Vérifier que l'établissement existe
-  if (body.etablissementId) {
-    const etablissement = await prisma.etablissement.findUnique({
-      where: { id: parseInt(body.etablissementId) }
-    });
-    if (!etablissement) {
-      throw new NotFoundError("L'établissement sélectionné n'existe pas");
-    }
+  const etablissement = await prisma.etablissement.findUnique({
+    where: { id: validatedData.etablissementId }
+  });
+  if (!etablissement) {
+    throw new NotFoundError("L'établissement sélectionné n'existe pas");
+  }
+
+  // === ISOLATION SECTORIELLE STRICTE ===
+  if (etablissement.secteur !== session.user.secteurResponsable) {
+    throw new ForbiddenError('Cet établissement appartient à un autre secteur');
   }
 
   const actualite = await prisma.actualite.create({
     data: {
-      titre: body.titre.trim(),
-      contenu: body.contenu?.trim() || '',
-      description: body.resume?.trim() || body.description?.trim(),
-      categorie: body.categorie,
-      etablissementId: parseInt(body.etablissementId),
-      isPublie: body.isPublie || false,
+      titre: validatedData.titre,
+      contenu: validatedData.contenu,
+      description: validatedData.resume || validatedData.description,
+      categorie: validatedData.categorie,
+      etablissementId: validatedData.etablissementId,
+      isPublie: validatedData.isPublie,
       isValide: false, // Nécessite validation admin
       statut: 'EN_ATTENTE_VALIDATION',
       createdBy: userId,
@@ -139,12 +131,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   });
 
   // Création du média si image fournie
-  if (body.imagePrincipale) {
+  if (validatedData.imagePrincipale) {
     await prisma.media.create({
       data: {
         nomFichier: 'Image Principale',
-        cheminFichier: body.imagePrincipale,
-        urlPublique: body.imagePrincipale,
+        cheminFichier: validatedData.imagePrincipale,
+        urlPublique: validatedData.imagePrincipale,
         type: 'IMAGE',
         mimeType: 'image/jpeg',
         actualiteId: actualite.id,

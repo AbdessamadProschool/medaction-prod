@@ -1043,7 +1043,8 @@
         }
       },
       "common": {
-        "select": "تحديد"
+        "select": "تحديد",
+        "choose": "اختر..."
       },
       "placeholders": {
         "nom": "مثال: مدرسة المنار",
@@ -5656,6 +5657,7 @@
       "RECLAMATION_CREATE": "إنشاء شكاية",
       "RECLAMATION_UPDATE": "تحديث شكاية",
       "RECLAMATION_DELETE": "حذف شكاية",
+      "UPDATE_ETABLISSEMENT": "تعديل مؤسسة",
       "DELETE_CAMPAGNE": "حذف الحملة",
       "CLOTURE_EVENEMENT": "إغلاق الحدث",
       "CLOTURE_CAMPAGNE": "إغلاق الحملة",
@@ -5670,7 +5672,8 @@
       "Authentication": "المصادقة",
       "Campagne": "حملة",
       "Evenement": "حدث",
-      "ACTUALITE": "خبر / مستجد"
+      "ACTUALITE": "خبر / مستجد",
+      "ETABLISSEMENT": "مؤسسة"
     },
     "modal": {
       "title": "تفاصيل السجل #{id}",

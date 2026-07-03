@@ -3,7 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, ValidationError, NotFoundError, AppError } from '@/lib/exceptions';
+import { actualiteSchema } from '@/lib/validations/delegation';
 
 async function getActualiteWithOwnershipCheck(actualiteId: number, session: any) {
   const actualite = await prisma.actualite.findUnique({
@@ -81,23 +82,54 @@ export const PATCH = withErrorHandler(async (
   await getActualiteWithOwnershipCheck(actualiteId, session);
 
   const body = await request.json();
-  const { titre, description, contenu, categorie, etablissementId, imagePrincipale } = body;
+
+  // === VALIDATION DÉTAILLÉE VIA ZOD ===
+  const validation = actualiteSchema.partial().safeParse(body);
+  if (!validation.success) {
+    const formattedErrors = validation.error.format();
+    throw new ValidationError(
+      'Erreur de validation',
+      { 
+        fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+          if (key !== '_errors') {
+            acc[key] = (formattedErrors as any)[key]?._errors || [];
+          }
+          return acc;
+        }, {} as Record<string, string[]>)
+      }
+    );
+  }
+
+  const validatedData = validation.data;
+
+  // Si l'établissement est modifié, valider le secteur
+  if (validatedData.etablissementId) {
+    const etablissement = await prisma.etablissement.findUnique({
+      where: { id: validatedData.etablissementId }
+    });
+    if (!etablissement) {
+      throw new NotFoundError("L'établissement sélectionné n'existe pas");
+    }
+    if (session.user.role === 'DELEGATION' && etablissement.secteur !== session.user.secteurResponsable) {
+      throw new ForbiddenError('Cet établissement appartient à un autre secteur');
+    }
+  }
 
   // Mise à jour de l'actualité (sans imagePrincipale qui n'existe pas dans le modèle)
   const actualite = await prisma.actualite.update({
     where: { id: actualiteId },
     data: {
-      titre,
-      description,
-      contenu,
-      categorie,
-      etablissementId,
+      titre: validatedData.titre,
+      description: validatedData.resume || validatedData.description,
+      contenu: validatedData.contenu,
+      categorie: validatedData.categorie,
+      etablissementId: validatedData.etablissementId,
       updatedAt: new Date(),
     }
   });
 
   // Gérer l'image via la table Media
-  if (imagePrincipale !== undefined) {
+  if (validatedData.imagePrincipale !== undefined) {
     // Supprimer l'ancienne image principale si elle existe
     await prisma.media.deleteMany({
       where: {
@@ -107,12 +139,12 @@ export const PATCH = withErrorHandler(async (
     });
 
     // Créer la nouvelle image si fournie
-    if (imagePrincipale) {
+    if (validatedData.imagePrincipale) {
       await prisma.media.create({
         data: {
           nomFichier: 'Image Principale',
-          cheminFichier: imagePrincipale,
-          urlPublique: imagePrincipale,
+          cheminFichier: validatedData.imagePrincipale,
+          urlPublique: validatedData.imagePrincipale,
           type: 'IMAGE',
           mimeType: 'image/jpeg',
           actualiteId: actualiteId,

@@ -1,7 +1,8 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { revalidateTag } from "next/cache";
 
 // PATCH /api/users/[id]/status - Modifier le statut (actif/inactif) d'un utilisateur
 export async function PATCH(
@@ -96,6 +97,8 @@ export async function PATCH(
         updatedAt: true,
       }
     });
+
+    revalidateTag(`user-session-${userId}`);
 
     // Log de l'action (pour audit)
     const action = isActive ? 'ACTIVATED' : 'DEACTIVATED';

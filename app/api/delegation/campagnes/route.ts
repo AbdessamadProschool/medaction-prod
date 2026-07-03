@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError } from '@/lib/exceptions';
 import { notifyAdmins } from '@/lib/notifications';
+import { campagneSchema } from '@/lib/validations/delegation';
 
 function slugify(text: string) {
   return text.toString().toLowerCase()
@@ -96,12 +97,31 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
     const body = await request.json();
 
+    // === VALIDATION DÉTAILLÉE VIA ZOD ===
+    const validation = campagneSchema.safeParse(body);
+    if (!validation.success) {
+      const formattedErrors = validation.error.format();
+      throw new ValidationError(
+        'Erreur de validation',
+        { 
+          fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+            if (key !== '_errors') {
+              acc[key] = (formattedErrors as any)[key]?._errors || [];
+            }
+            return acc;
+          }, {} as Record<string, string[]>)
+        }
+      );
+    }
+
+    const validatedData = validation.data;
+
     // Génération du slug
-    let baseSlug = slugify(body.nom);
+    let baseSlug = slugify(validatedData.nom);
     let slug = baseSlug;
     let counter = 1;
     
-    // Check uniqueness (simple implementation)
+    // Check uniqueness
     while (await prisma.campagne.findUnique({ where: { slug } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
@@ -109,29 +129,29 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 
     const campagne = await prisma.campagne.create({
       data: {
-        nom: body.nom,
+        nom: validatedData.nom,
         slug: slug,
-        titre: body.titre,
-        description: body.description,
-        contenu: body.contenu,
-        type: body.type,
-        objectifParticipations: body.objectifParticipations,
-        dateDebut: body.dateDebut ? new Date(body.dateDebut) : undefined,
-        dateFin: body.dateFin ? new Date(body.dateFin) : undefined,
-        couleurTheme: body.couleurTheme,
-        imagePrincipale: body.imagePrincipale,
+        titre: validatedData.titre,
+        description: validatedData.description,
+        contenu: validatedData.contenu,
+        type: validatedData.type,
+        objectifParticipations: validatedData.objectifParticipations,
+        dateDebut: validatedData.dateDebut || undefined,
+        dateFin: validatedData.dateFin || undefined,
+        couleurTheme: validatedData.couleurTheme,
+        imagePrincipale: validatedData.imagePrincipale,
         statut: 'EN_ATTENTE', // Force validation
         isActive: false,      // Inactive par défaut
         createdBy: userId,
       },
     });
 
-    if (body.imagePrincipale) {
+    if (validatedData.imagePrincipale) {
       await prisma.media.create({
         data: {
           nomFichier: 'Bannière campagne',
-          cheminFichier: body.imagePrincipale,
-          urlPublique: body.imagePrincipale,
+          cheminFichier: validatedData.imagePrincipale,
+          urlPublique: validatedData.imagePrincipale,
           type: 'IMAGE',
           mimeType: 'image/jpeg',
           campagneId: campagne.id,

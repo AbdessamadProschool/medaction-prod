@@ -1,6 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/db';
+import { unstable_cache } from 'next/cache';
 import { verifyPassword } from '@/lib/auth/password';
 import { AuthToken, AuthUser } from '@/lib/auth/types';
 import { authenticator } from 'otplib';
@@ -20,6 +21,31 @@ authenticator.options = {
  * Configuration NextAuth.js avec stratégie JWT
  * Intègre la gestion des tentatives de connexion et le blocage temporaire
  */
+export const getCachedUser = (userId: number) => {
+  return unstable_cache(
+    async () => {
+      return prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          nom: true,
+          prenom: true,
+          role: true,
+          photo: true,
+          secteurResponsable: true,
+          communeResponsableId: true,
+          etablissementsGeres: true,
+          isActive: true,
+          isEmailVerifie: true,
+        },
+      });
+    },
+    [`user-session-${userId}`],
+    { revalidate: 60, tags: [`user-session-${userId}`] }
+  )();
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -372,22 +398,7 @@ export const authOptions: NextAuthOptions = {
       const userId = Number(authToken.id);
 
       const dbUser = Number.isFinite(userId)
-        ? await prisma.user.findUnique({
-            where: { id: userId },
-            select: {
-              id: true,
-              email: true,
-              nom: true,
-              prenom: true,
-              role: true,
-              photo: true,
-              secteurResponsable: true,
-              communeResponsableId: true,
-              etablissementsGeres: true,
-              isActive: true,
-              isEmailVerifie: true,
-            },
-          })
+        ? await getCachedUser(userId)
         : null;
 
       if (!dbUser || !dbUser.isActive) {

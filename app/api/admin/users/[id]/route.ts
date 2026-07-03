@@ -2,6 +2,7 @@ import { safeParseInt } from '@/lib/utils/parse';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth/password';
+import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { ForbiddenError, NotFoundError, BadRequestError } from '@/lib/exceptions';
@@ -101,6 +102,8 @@ export const PUT = withPermission('users.edit', withErrorHandler(async (request:
       isActive: true,
     },
   });
+
+  revalidateTag(`user-session-${id}`);
 
   // Audit log avec comparaison d'état
   await ActivityLogger.custom({

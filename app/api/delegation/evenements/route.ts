@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
 import { UnauthorizedError, ForbiddenError, ValidationError, AppError } from '@/lib/exceptions';
 import { notifyAdmins } from '@/lib/notifications';
+import { evenementSchema } from '@/lib/validations/delegation';
 
 // GET - Liste des événements de la délégation
 export const GET = withErrorHandler(async (request: NextRequest) => {
@@ -82,131 +83,76 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const userId = parseInt(session.user.id);
   const body = await request.json();
 
-  // === VALIDATION DÉTAILLÉE ===
-  const errors: Array<{ field: string; message: string }> = [];
-
-  // Champs obligatoires
-  if (!body.titre || body.titre.trim().length < 5) {
-    errors.push({ field: 'titre', message: 'Le titre est obligatoire (minimum 5 caractères)' });
-  }
-  if (body.titre && body.titre.length > 100) {
-    errors.push({ field: 'titre', message: 'Le titre ne doit pas dépasser 100 caractères' });
-  }
-
-  if (!body.description || body.description.trim().length < 20) {
-    errors.push({ field: 'description', message: 'La description est obligatoire (minimum 20 caractères)' });
-  }
-
-  if (!body.etablissementId) {
-    errors.push({ field: 'etablissementId', message: 'Veuillez sélectionner un établissement organisateur' });
-  }
-
-  if (!body.typeCategorique) {
-    errors.push({ field: 'typeCategorique', message: 'Le type d\'événement est obligatoire' });
-  }
-
-  if (!body.dateDebut) {
-    errors.push({ field: 'dateDebut', message: 'La date de début est obligatoire' });
-  } else {
-    const dateDebut = new Date(body.dateDebut);
-    if (isNaN(dateDebut.getTime())) {
-      errors.push({ field: 'dateDebut', message: 'La date de début n\'est pas valide' });
-    }
-  }
-
-  // Validation email si fourni
-  if (body.emailContact && body.emailContact.trim()) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.emailContact)) {
-      errors.push({ field: 'emailContact', message: 'L\'adresse email n\'est pas valide' });
-    }
-  }
-
-  // Validation URL inscription si fournie
-  if (body.lienInscription && body.lienInscription.trim()) {
-    try {
-      new URL(body.lienInscription);
-    } catch {
-      errors.push({ field: 'lienInscription', message: 'Le lien d\'inscription doit être une URL valide (commençant par http:// ou https://)' });
-    }
-  }
-
-  if (errors.length > 0) {
+  // === VALIDATION DÉTAILLÉE VIA ZOD ===
+  const validation = evenementSchema.safeParse(body);
+  if (!validation.success) {
+    const formattedErrors = validation.error.format();
     throw new ValidationError(
-      errors.length === 1 ? errors[0].message : `${errors.length} erreurs de validation`,
+      'Erreur de validation',
       { 
-        fieldErrors: errors.reduce((acc, e) => {
-          if (!acc[e.field]) acc[e.field] = [];
-          acc[e.field].push(e.message);
+        fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+          if (key !== '_errors') {
+            acc[key] = (formattedErrors as any)[key]?._errors || [];
+          }
           return acc;
         }, {} as Record<string, string[]>)
       }
     );
   }
 
-  // Récupérer la commune de l'établissement
-  let communeId = body.communeId;
-  let secteur = session.user.secteurResponsable as import('@prisma/client').Secteur || 'AUTRE';
+  const validatedData = validation.data;
 
-  if (body.etablissementId) {
-    const etablissement = await prisma.etablissement.findUnique({
-      where: { id: parseInt(body.etablissementId) },
-      include: { commune: true }
-    });
-    
-    if (!etablissement) {
-      throw new AppError('L\'établissement sélectionné n\'existe pas', 'NOT_FOUND', 400);
-    }
-    
-    if (!communeId) communeId = etablissement.communeId;
-    if (etablissement.secteur) secteur = etablissement.secteur;
+  // Récupérer l'établissement et valider le secteur
+  const etablissement = await prisma.etablissement.findUnique({
+    where: { id: validatedData.etablissementId },
+    include: { commune: true }
+  });
+  
+  if (!etablissement) {
+    throw new AppError('L\'établissement sélectionné n\'existe pas', 'NOT_FOUND', 400);
   }
 
-  if (!communeId) {
-    throw new AppError('Impossible de déterminer la commune pour cet établissement', 'VALIDATION_ERROR', 400);
+  // === ISOLATION SECTORIELLE STRICTE ===
+  if (etablissement.secteur !== session.user.secteurResponsable) {
+    throw new ForbiddenError('Cet établissement appartient à un autre secteur');
   }
-
-  // Parse tags
-  const tagsArray = body.tags ? 
-    (Array.isArray(body.tags) ? body.tags : body.tags.split(',').map((t: string) => t.trim()).filter(Boolean)) 
-    : [];
 
   const evenement = await prisma.evenement.create({
     data: {
-      titre: body.titre.trim(),
-      description: body.description.trim(),
-      typeCategorique: body.typeCategorique,
-      secteur: secteur,
-      dateDebut: new Date(body.dateDebut),
-      dateFin: body.dateFin ? new Date(body.dateFin) : undefined,
-      heureDebut: body.heureDebut,
-      heureFin: body.heureFin,
-      lieu: body.lieu?.trim(),
-      adresse: body.adresse?.trim(),
-      quartierDouar: body.quartierDouar?.trim(),
-      tags: tagsArray,
-      organisateur: body.organisateur?.trim(),
-      contactOrganisateur: body.contactOrganisateur?.trim(),
-      emailContact: body.emailContact?.trim(),
-      capaciteMax: body.capaciteMax ? parseInt(body.capaciteMax) : undefined,
-      inscriptionsOuvertes: body.inscriptionsOuvertes || false,
-      lienInscription: body.lienInscription?.trim(),
-      etablissementId: parseInt(body.etablissementId),
-      communeId: communeId,
-      isOrganiseParProvince: body.isOrganiseParProvince || false,
-      sousCouvertProvince: body.sousCouvertProvince || false,
+      titre: validatedData.titre,
+      description: validatedData.description,
+      typeCategorique: validatedData.typeCategorique,
+      secteur: etablissement.secteur,
+      dateDebut: validatedData.dateDebut,
+      dateFin: validatedData.dateFin || undefined,
+      heureDebut: validatedData.heureDebut,
+      heureFin: validatedData.heureFin,
+      lieu: validatedData.lieu,
+      adresse: validatedData.adresse,
+      quartierDouar: validatedData.quartierDouar,
+      tags: validatedData.tags,
+      organisateur: validatedData.organisateur,
+      contactOrganisateur: validatedData.contactOrganisateur,
+      emailContact: validatedData.emailContact,
+      capaciteMax: validatedData.capaciteMax || undefined,
+      inscriptionsOuvertes: validatedData.inscriptionsOuvertes,
+      lienInscription: validatedData.lienInscription,
+      etablissementId: validatedData.etablissementId,
+      communeId: etablissement.communeId,
+      isOrganiseParProvince: validatedData.isOrganiseParProvince,
+      sousCouvertProvince: validatedData.sousCouvertProvince,
       statut: 'EN_ATTENTE_VALIDATION',
       createdBy: userId,
     },
   });
 
   // Création du média si image fournie
-  if (body.imagePrincipale) {
+  if (validatedData.imagePrincipale) {
     await prisma.media.create({
       data: {
         nomFichier: 'Image Principale',
-        cheminFichier: body.imagePrincipale,
-        urlPublique: body.imagePrincipale,
+        cheminFichier: validatedData.imagePrincipale,
+        urlPublique: validatedData.imagePrincipale,
         type: 'IMAGE',
         mimeType: 'image/jpeg',
         evenementId: evenement.id,
@@ -219,7 +165,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   await notifyAdmins({
     type: 'EVENT_CREATION',
     titre: 'Nouvel événement à valider',
-    message: `L'événement "${body.titre}" a été créé par la délégation (Secteur: ${secteur}) et attend votre validation.`,
+    message: `L'événement "${validatedData.titre}" a été créé par la délégation (Secteur: ${etablissement.secteur}) et attend votre validation.`,
     lien: `/admin/evenements`,
   });
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { revalidateTag } from "next/cache";
 
 // Rôles valides
 const VALID_ROLES = ['CITOYEN', 'DELEGATION', 'AUTORITE_LOCALE', 'COORDINATEUR_ACTIVITES', 'ADMIN', 'SUPER_ADMIN', 'GOUVERNEUR'];
@@ -199,6 +200,8 @@ export async function PATCH(
         updatedAt: true,
       }
     });
+
+    revalidateTag(`user-session-${userId}`);
 
     // Log de l'action (pour audit)
     console.log(`[AUDIT] User ${session.user.id} (${currentUserRole}) changed role of user ${userId} from ${existingUser.role} to ${role}`);

@@ -4,7 +4,8 @@ import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/db';
 import { ActivityLogger } from '@/lib/activity-logger';
 import { withErrorHandler, successResponse } from '@/lib/api-handler';
-import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from '@/lib/exceptions';
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError, AppError } from '@/lib/exceptions';
+import { evenementSchema } from '@/lib/validations/delegation';
 
 // Next.js 15: params is now a Promise
 interface RouteParams {
@@ -193,29 +194,68 @@ export const PUT = withErrorHandler(async (request: NextRequest, segmentData: Ro
               });
           }
       } else {
+          // === VALIDATION DÉTAILLÉE VIA ZOD ===
+          const validation = evenementSchema.partial().safeParse(body);
+          if (!validation.success) {
+            const formattedErrors = validation.error.format();
+            throw new ValidationError(
+              'Erreur de validation',
+              { 
+                fieldErrors: Object.keys(formattedErrors).reduce((acc, key) => {
+                  if (key !== '_errors') {
+                    acc[key] = (formattedErrors as any)[key]?._errors || [];
+                  }
+                  return acc;
+                }, {} as Record<string, string[]>)
+              }
+            );
+          }
+
+          const validatedData = validation.data;
+
+          // Si l'établissement est modifié, valider le secteur
+          if (validatedData.etablissementId) {
+            const etablissement = await prisma.etablissement.findUnique({
+              where: { id: validatedData.etablissementId }
+            });
+            if (!etablissement) {
+              throw new AppError('L\'établissement sélectionné n\'existe pas', 'NOT_FOUND', 400);
+            }
+            if (session.user.role === 'DELEGATION' && etablissement.secteur !== session.user.secteurResponsable) {
+              throw new ForbiddenError('Cet établissement appartient à un autre secteur');
+            }
+            updateData.etablissementId = validatedData.etablissementId;
+            updateData.communeId = etablissement.communeId;
+            updateData.secteur = etablissement.secteur;
+          } else if (validatedData.secteur && session.user.role === 'DELEGATION' && validatedData.secteur !== session.user.secteurResponsable) {
+            throw new ForbiddenError('Secteur non autorisé pour cette délégation');
+          } else if (validatedData.secteur) {
+            updateData.secteur = validatedData.secteur;
+          }
+
           // Cas modification normale - tous les champs
-          if (body.titre) updateData.titre = body.titre.trim();
-          if (body.description) updateData.description = body.description.trim();
-          if (body.typeCategorique) updateData.typeCategorique = body.typeCategorique;
-          if (body.dateDebut) updateData.dateDebut = new Date(body.dateDebut);
-          if (body.dateFin) updateData.dateFin = new Date(body.dateFin);
-          if (body.heureDebut !== undefined) updateData.heureDebut = body.heureDebut || null;
-          if (body.heureFin !== undefined) updateData.heureFin = body.heureFin || null;
-          if (body.lieu !== undefined) updateData.lieu = body.lieu?.trim() || null;
-          if (body.adresse !== undefined) updateData.adresse = body.adresse?.trim() || null;
-          if (body.quartierDouar !== undefined) updateData.quartierDouar = body.quartierDouar?.trim() || null;
-          if (body.capaciteMax !== undefined) updateData.capaciteMax = body.capaciteMax ? parseInt(body.capaciteMax) : null;
-          if (body.organisateur !== undefined) updateData.organisateur = body.organisateur?.trim() || null;
-          if (body.contactOrganisateur !== undefined) updateData.contactOrganisateur = body.contactOrganisateur?.trim() || null;
-          if (body.emailContact !== undefined) updateData.emailContact = body.emailContact?.trim() || null;
-          if (body.inscriptionsOuvertes !== undefined) updateData.inscriptionsOuvertes = body.inscriptionsOuvertes;
-          if (body.lienInscription !== undefined) updateData.lienInscription = body.lienInscription?.trim() || null;
-          if (body.tags !== undefined) updateData.tags = Array.isArray(body.tags) ? body.tags : [];
-          if (body.isOrganiseParProvince !== undefined) updateData.isOrganiseParProvince = body.isOrganiseParProvince;
-          if (body.sousCouvertProvince !== undefined) updateData.sousCouvertProvince = body.sousCouvertProvince;
+          if (validatedData.titre) updateData.titre = validatedData.titre.trim();
+          if (validatedData.description) updateData.description = validatedData.description.trim();
+          if (validatedData.typeCategorique) updateData.typeCategorique = validatedData.typeCategorique;
+          if (validatedData.dateDebut) updateData.dateDebut = validatedData.dateDebut;
+          if (validatedData.dateFin) updateData.dateFin = validatedData.dateFin;
+          if (validatedData.heureDebut !== undefined) updateData.heureDebut = validatedData.heureDebut;
+          if (validatedData.heureFin !== undefined) updateData.heureFin = validatedData.heureFin;
+          if (validatedData.lieu !== undefined) updateData.lieu = validatedData.lieu;
+          if (validatedData.adresse !== undefined) updateData.adresse = validatedData.adresse;
+          if (validatedData.quartierDouar !== undefined) updateData.quartierDouar = validatedData.quartierDouar;
+          if (validatedData.capaciteMax !== undefined) updateData.capaciteMax = validatedData.capaciteMax;
+          if (validatedData.organisateur !== undefined) updateData.organisateur = validatedData.organisateur;
+          if (validatedData.contactOrganisateur !== undefined) updateData.contactOrganisateur = validatedData.contactOrganisateur;
+          if (validatedData.emailContact !== undefined) updateData.emailContact = validatedData.emailContact;
+          if (validatedData.inscriptionsOuvertes !== undefined) updateData.inscriptionsOuvertes = validatedData.inscriptionsOuvertes;
+          if (validatedData.lienInscription !== undefined) updateData.lienInscription = validatedData.lienInscription;
+          if (validatedData.tags !== undefined) updateData.tags = validatedData.tags;
+          if (validatedData.isOrganiseParProvince !== undefined) updateData.isOrganiseParProvince = validatedData.isOrganiseParProvince;
+          if (validatedData.sousCouvertProvince !== undefined) updateData.sousCouvertProvince = validatedData.sousCouvertProvince;
 
           // === GESTION DE L'IMAGE PRINCIPALE ===
-          if (body.imagePrincipale !== undefined) {
+          if (validatedData.imagePrincipale !== undefined) {
             // Supprimer l'ancienne image principale si elle existe
             await prisma.media.deleteMany({
               where: {
@@ -225,12 +265,12 @@ export const PUT = withErrorHandler(async (request: NextRequest, segmentData: Ro
             });
 
             // Créer la nouvelle image si fournie
-            if (body.imagePrincipale) {
+            if (validatedData.imagePrincipale) {
               await prisma.media.create({
                 data: {
                   nomFichier: 'Image Principale',
-                  cheminFichier: body.imagePrincipale,
-                  urlPublique: body.imagePrincipale,
+                  cheminFichier: validatedData.imagePrincipale,
+                  urlPublique: validatedData.imagePrincipale,
                   type: 'IMAGE',
                   mimeType: 'image/jpeg',
                   evenementId: id,

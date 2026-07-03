@@ -25,7 +25,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const skip = (page - 1) * limit;
 
   // Récupérer tous les établissements et le count en Promise.all
-  const [etablissements, totalCount] = await Promise.all([
+  const [etablissements, totalCount, resolvedCounts] = await Promise.all([
     prisma.etablissement.findMany({
       skip,
       take: limit,
@@ -70,8 +70,21 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         }
       }
     }),
-    prisma.etablissement.count()
+    prisma.etablissement.count(),
+    prisma.reclamation.groupBy({
+      by: ['etablissementId'],
+      where: {
+        etablissementId: { not: null },
+        dateResolution: { not: null }
+      },
+      _count: { id: true }
+    })
   ]);
+
+  // Associer chaque etablissementId à son nombre de réclamations résolues
+  const resolvedMap = new Map<number, number>(
+    resolvedCounts.map(item => [item.etablissementId!, item._count.id])
+  );
 
   // Calcul de la performance par établissement
   const performanceData = etablissements.map(etab => {
@@ -122,7 +135,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
         actualites: etab._count.actualites,
         evaluations: etab._count.evaluations,
         abonnements: etab._count.abonnements,
-        resolvedReclamations: etab.reclamations.filter((r: { statut: string | null }) => r.statut === 'ACCEPTEE').length, 
+        resolvedReclamations: resolvedMap.get(etab.id) || 0, 
         subscribers: etab._count.abonnements,
         note: etab.noteMoyenne || 0,
       }

@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth/config";
 import { prisma } from "@/lib/db";
 import { etablissementUpdateSchema } from "@/lib/validations/etablissement";
 import { withErrorHandler, successResponse } from "@/lib/api-handler";
-import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError } from "@/lib/exceptions";
+import { UnauthorizedError, ForbiddenError, NotFoundError, ValidationError, AppError } from "@/lib/exceptions";
 import { getSafeId } from "@/lib/utils/parse";
 import { ActivityLogger } from "@/lib/activity-logger";
 
@@ -149,7 +149,7 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
   // Vérifier existence
   const existing = await prisma.etablissement.findUnique({
     where: { id: etablissementId },
-    select: { id: true, nom: true }
+    select: { id: true, nom: true, nomArabe: true, latitude: true, longitude: true }
   });
 
   if (!existing) {
@@ -182,6 +182,19 @@ export const PATCH = withErrorHandler(async (req: NextRequest, { params }: Route
 
   if (!result.success) {
     throw new ValidationError("Données invalides", { fieldErrors: result.error.flatten().fieldErrors });
+  }
+
+  // Vérifier s'il y a un doublon par nom ou coordonnées (ignorant le signe moins de la longitude)
+  const duplicate = await checkDuplicateEtablissement({
+    nom: result.data.nom !== undefined ? result.data.nom : existing.nom,
+    nomArabe: result.data.nomArabe !== undefined ? result.data.nomArabe : existing.nomArabe,
+    latitude: result.data.latitude !== undefined ? result.data.latitude : existing.latitude,
+    longitude: result.data.longitude !== undefined ? result.data.longitude : existing.longitude,
+    excludeId: etablissementId
+  });
+
+  if (duplicate) {
+    throw new AppError(duplicate.message, 'CONFLICT', 409);
   }
 
   // Mise de côté des champs admin et verrouillage secteur
@@ -289,3 +302,68 @@ export const DELETE = withErrorHandler(async (req: NextRequest, { params }: Rout
 
   return successResponse(null, `Établissement "${existing.nom}" (${existing.code}) supprimé avec succès`);
 });
+
+async function checkDuplicateEtablissement(params: {
+  nom: string;
+  nomArabe?: string | null;
+  latitude: number;
+  longitude: number;
+  excludeId?: number;
+}) {
+  const { nom, nomArabe, latitude, longitude, excludeId } = params;
+  
+  // 1. Chercher par nom identique (insensible à la casse)
+  const nameWhere: any = {
+    OR: [
+      { nom: { equals: nom.trim(), mode: 'insensitive' } }
+    ]
+  };
+  if (nomArabe && nomArabe.trim() !== '') {
+    nameWhere.OR.push({ nomArabe: { equals: nomArabe.trim(), mode: 'insensitive' } });
+  }
+  if (excludeId) {
+    nameWhere.id = { not: excludeId };
+  }
+
+  const byName = await prisma.etablissement.findFirst({
+    where: nameWhere,
+    select: { id: true, nom: true, code: true }
+  });
+
+  if (byName) {
+    return {
+      type: 'NAME',
+      message: `Un établissement nommé "${byName.nom}" (Code: ${byName.code}) existe déjà.`,
+    };
+  }
+
+  // 2. Chercher par proximité géographique (latitude proche)
+  const geoWhere: any = {
+    latitude: {
+      gte: latitude - 0.0001,
+      lte: latitude + 0.0001
+    }
+  };
+  if (excludeId) {
+    geoWhere.id = { not: excludeId };
+  }
+
+  const nearbyEtablissements = await prisma.etablissement.findMany({
+    where: geoWhere,
+    select: { id: true, nom: true, code: true, latitude: true, longitude: true }
+  });
+
+  for (const e of nearbyEtablissements) {
+    const latDiff = Math.abs(e.latitude - latitude);
+    const longDiff = Math.abs(Math.abs(e.longitude) - Math.abs(longitude));
+    
+    if (latDiff < 0.0001 && longDiff < 0.0001) {
+      return {
+        type: 'COORDINATES',
+        message: `Un établissement existe déjà aux mêmes coordonnées : "${e.nom}" (Code: ${e.code}).`,
+      };
+    }
+  }
+
+  return null;
+}

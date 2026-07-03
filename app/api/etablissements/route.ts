@@ -187,6 +187,18 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
     throw new AppError("Ce code d'établissement existe déjà", 'CONFLICT', 409);
   }
 
+  // Vérifier s'il y a un doublon par nom ou coordonnées (ignorant le signe moins de la longitude)
+  const duplicate = await checkDuplicateEtablissement({
+    nom: result.data.nom,
+    nomArabe: result.data.nomArabe,
+    latitude: result.data.latitude,
+    longitude: result.data.longitude,
+  });
+
+  if (duplicate) {
+    throw new AppError(duplicate.message, 'CONFLICT', 409);
+  }
+
   // Vérifier que la commune existe
   const commune = await prisma.commune.findUnique({
     where: { id: result.data.communeId }
@@ -225,3 +237,68 @@ export const POST = withErrorHandler(async (req: NextRequest) => {
 
   return successResponse(etablissement, "Établissement créé avec succès", 201);
 });
+
+async function checkDuplicateEtablissement(params: {
+  nom: string;
+  nomArabe?: string | null;
+  latitude: number;
+  longitude: number;
+  excludeId?: number;
+}) {
+  const { nom, nomArabe, latitude, longitude, excludeId } = params;
+  
+  // 1. Chercher par nom identique (insensible à la casse)
+  const nameWhere: any = {
+    OR: [
+      { nom: { equals: nom.trim(), mode: 'insensitive' } }
+    ]
+  };
+  if (nomArabe && nomArabe.trim() !== '') {
+    nameWhere.OR.push({ nomArabe: { equals: nomArabe.trim(), mode: 'insensitive' } });
+  }
+  if (excludeId) {
+    nameWhere.id = { not: excludeId };
+  }
+
+  const byName = await prisma.etablissement.findFirst({
+    where: nameWhere,
+    select: { id: true, nom: true, code: true }
+  });
+
+  if (byName) {
+    return {
+      type: 'NAME',
+      message: `Un établissement nommé "${byName.nom}" (Code: ${byName.code}) existe déjà.`,
+    };
+  }
+
+  // 2. Chercher par proximité géographique (latitude proche)
+  const geoWhere: any = {
+    latitude: {
+      gte: latitude - 0.0001,
+      lte: latitude + 0.0001
+    }
+  };
+  if (excludeId) {
+    geoWhere.id = { not: excludeId };
+  }
+
+  const nearbyEtablissements = await prisma.etablissement.findMany({
+    where: geoWhere,
+    select: { id: true, nom: true, code: true, latitude: true, longitude: true }
+  });
+
+  for (const e of nearbyEtablissements) {
+    const latDiff = Math.abs(e.latitude - latitude);
+    const longDiff = Math.abs(Math.abs(e.longitude) - Math.abs(longitude));
+    
+    if (latDiff < 0.0001 && longDiff < 0.0001) {
+      return {
+        type: 'COORDINATES',
+        message: `Un établissement existe déjà aux mêmes coordonnées : "${e.nom}" (Code: ${e.code}).`,
+      };
+    }
+  }
+
+  return null;
+}

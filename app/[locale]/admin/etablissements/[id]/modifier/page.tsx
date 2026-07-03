@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
 import { 
   Building2, 
   MapPin, 
@@ -18,7 +19,6 @@ import {
   Target
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GovInput, GovSelect, GovButton } from '@/components/ui';

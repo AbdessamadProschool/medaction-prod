@@ -227,7 +227,16 @@ export default function ModifierEtablissementPage() {
         resolve(true);
         router.push('/admin/etablissements');
       } catch (err: any) {
-        reject(new Error(err.message || t('actions.server_error')));
+        console.error("Erreur de mutation:", err, err.info);
+        const fieldErrors = err.info?.error?.fieldErrors;
+        if (fieldErrors) {
+          const detailMessages = Object.entries(fieldErrors)
+            .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
+            .join(' | ');
+          reject(new Error(`Données invalides : ${detailMessages}`));
+        } else {
+          reject(new Error(err.message || t('actions.server_error')));
+        }
       } finally {
         setLoading(false);
       }

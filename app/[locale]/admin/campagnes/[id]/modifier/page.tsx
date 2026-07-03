@@ -166,8 +166,16 @@ export default function AdminEditCampagnePage() {
         router.push('/admin/campagnes');
         router.refresh();
       } catch (error: any) {
-        console.error(error);
-        reject(new Error('Erreur: ' + (error.message || t('validation.error'))));
+        console.error("Erreur de mutation:", error, error.info);
+        const fieldErrors = error.info?.error?.fieldErrors;
+        if (fieldErrors) {
+          const detailMessages = Object.entries(fieldErrors)
+            .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
+            .join(' | ');
+          reject(new Error(`Données invalides : ${detailMessages}`));
+        } else {
+          reject(new Error('Erreur: ' + (error.message || t('validation.error'))));
+        }
       } finally {
         setLoading(false);
       }

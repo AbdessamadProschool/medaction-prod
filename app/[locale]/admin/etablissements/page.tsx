@@ -46,6 +46,7 @@ interface Etablissement {
   code: string;
   secteur: string;
   adresse: string | null;
+  adresseComplete?: string | null;
   telephone: string | null;
   email: string | null;
   siteWeb: string | null;
@@ -98,6 +99,87 @@ export default function AdminEtablissementsPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [showDeleteId, setShowDeleteId] = useState<number | null>(null);
   const [showBulkConfirm, setShowBulkConfirm] = useState<'publish' | 'delete' | null>(null);
+
+  // Inline Editing States
+  const [isEditing, setIsEditing] = useState(false);
+  const [editNom, setEditNom] = useState('');
+  const [editAdresse, setEditAdresse] = useState('');
+  const [editTelephone, setEditTelephone] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editLatitude, setEditLatitude] = useState('');
+  const [editLongitude, setEditLongitude] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  const openDetailModal = (etablissement: any) => {
+    setSelectedEtablissement(etablissement);
+    setShowDetailModal(true);
+    setIsEditing(false);
+    setEditNom(etablissement.nom);
+    setEditAdresse(etablissement.adresseComplete || etablissement.adresse || '');
+    setEditTelephone(etablissement.telephone || '');
+    setEditEmail(etablissement.email || '');
+    setEditLatitude(etablissement.latitude?.toString() || '');
+    setEditLongitude(etablissement.longitude?.toString() || '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedEtablissement) return;
+    if (!editNom.trim()) {
+      toast.error(locale === 'ar' ? 'الاسم مطلوب' : 'Le nom est obligatoire');
+      return;
+    }
+    
+    const lat = parseFloat(editLatitude);
+    const lng = parseFloat(editLongitude);
+    
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+      toast.error(locale === 'ar' ? 'خطوط العرض غير صالحة' : 'Latitude invalide (-90 à 90)');
+      return;
+    }
+    if (isNaN(lng) || lng < -180 || lng > 180) {
+      toast.error(locale === 'ar' ? 'خطوط الطول غير صالحة' : 'Longitude invalide (-180 à 180)');
+      return;
+    }
+
+    setSavingEdit(true);
+    try {
+      const res = await fetch(`/api/etablissements/${selectedEtablissement.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nom: editNom.trim(),
+          adresseComplete: editAdresse.trim(),
+          telephone: editTelephone.trim() || null,
+          email: editEmail.trim() || null,
+          latitude: lat,
+          longitude: lng,
+        }),
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        toast.success(locale === 'ar' ? 'تم تحديث المؤسسة بنجاح' : 'Établissement mis à jour avec succès');
+        setSelectedEtablissement(prev => prev ? {
+          ...prev,
+          nom: editNom.trim(),
+          adresse: editAdresse.trim(),
+          telephone: editTelephone.trim() || null,
+          email: editEmail.trim() || null,
+          latitude: lat,
+          longitude: lng,
+        } : null);
+        setIsEditing(false);
+        fetchEtablissements();
+      } else {
+        toast.error(result.message || (locale === 'ar' ? 'فشل التحديث' : 'Échec de la mise à jour'));
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(locale === 'ar' ? 'خطأ في الخادم' : 'Erreur serveur');
+    } finally {
+      setSavingEdit(false);
+    }
+  };
 
   // Mutations
   const actionMutation = useMutation();
@@ -470,7 +552,7 @@ export default function AdminEtablissementsPage() {
             (Array.isArray(etablissements) ? etablissements : []).map((etablissement: any) => (
               <GovTr
                 key={etablissement.id}
-                onClick={() => { setSelectedEtablissement(etablissement); setShowDetailModal(true); }}
+                onClick={() => openDetailModal(etablissement)}
               >
                 <GovTd>
                   <div className="flex items-center gap-4">
@@ -530,8 +612,7 @@ export default function AdminEtablissementsPage() {
                     <GovButton
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedEtablissement(etablissement);
-                        setShowDetailModal(true);
+                        openDetailModal(etablissement);
                       }}
                       variant="ghost"
                       size="icon"
@@ -638,171 +719,308 @@ export default function AdminEtablissementsPage() {
                     {tModal('management')}
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-2">
+                  {!isEditing && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground flex items-center gap-2 text-xs font-bold"
+                      title={locale === 'ar' ? 'تعديل' : 'Modifier'}
+                    >
+                      <Edit size={16} />
+                      <span className="hidden sm:inline">{locale === 'ar' ? 'تعديل' : 'Modifier'}</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowDetailModal(false)}
+                    className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
  
               {/* Content */}
               <div className="p-8 space-y-10">
-                {/* Header Profile */}
-                <div className="flex items-center gap-6">
-                  <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-inner overflow-hidden relative">
-                    {selectedEtablissement.photoPrincipale ? (
-                      <Image 
-                        src={selectedEtablissement.photoPrincipale} 
-                        alt={selectedEtablissement.nom}
-                        fill
-                        className="object-cover"
+                {isEditing ? (
+                  <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="space-y-6">
+                    {/* Nom Field */}
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        {locale === 'ar' ? 'اسم المؤسسة' : "Nom de l'établissement"}
+                      </label>
+                      <input
+                        type="text"
+                        value={editNom}
+                        onChange={(e) => setEditNom(e.target.value)}
+                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
+                        required
                       />
-                    ) : (
-                      <Building2 className="w-10 h-10" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-foreground mb-1">
-                      {selectedEtablissement.nom}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 bg-muted rounded-full text-[9px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
-                        {selectedEtablissement.code}
-                      </span>
-                      <StatusBadge color="blue">
-                        {getSecteurLabel(selectedEtablissement.secteur)}
-                      </StatusBadge>
                     </div>
-                  </div>
-                </div>
- 
-                {/* Rating Card */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-6 bg-[hsl(var(--gov-yellow))/0.03] rounded-3xl border border-[hsl(var(--gov-yellow))/0.1] text-center">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-[hsl(var(--gov-yellow))] mb-2 opacity-60">{tModal('average_rating')}</p>
-                    <p className="text-4xl font-black text-foreground leading-none mb-3">
-                      {selectedEtablissement.noteMoyenne.toFixed(1)}
-                    </p>
-                    <div className="flex items-center justify-center gap-1 text-[hsl(var(--gov-yellow))]">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={14}
-                          className={star <= Math.round(selectedEtablissement.noteMoyenne) ? 'fill-current' : ''}
+
+                    {/* Adresse Field */}
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        {locale === 'ar' ? 'العنوان' : 'Adresse'}
+                      </label>
+                      <input
+                        type="text"
+                        value={editAdresse}
+                        onChange={(e) => setEditAdresse(e.target.value)}
+                        className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
+                      />
+                    </div>
+
+                    {/* Contact Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                          {locale === 'ar' ? 'الهاتف' : 'Téléphone'}
+                        </label>
+                        <input
+                          type="text"
+                          value={editTelephone}
+                          onChange={(e) => setEditTelephone(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
                         />
-                      ))}
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                          {locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                        </label>
+                        <input
+                          type="email"
+                          value={editEmail}
+                          onChange={(e) => setEditEmail(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50 text-center">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">{tModal('total_reviews')}</p>
-                    <p className="text-4xl font-black text-foreground leading-none mb-3">
-                      {selectedEtablissement.nombreEvaluations}
-                    </p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-40">{tModal('citizen_reviews')}</p>
-                  </div>
-                </div>
- 
-                {/* Contact Info */}
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
-                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
-                    {tModal('contact_info')}
-                  </h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    {selectedEtablissement.adresse && (
-                      <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
-                        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-red))]">
-                          <MapPin size={18} />
-                        </div>
-                        <span className="text-sm font-bold text-foreground">{selectedEtablissement.adresse}</span>
+
+                    {/* GPS Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                          {locale === 'ar' ? 'خط العرض (Latitude)' : 'Latitude'}
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={editLatitude}
+                          onChange={(e) => setEditLatitude(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
+                          required
+                        />
                       </div>
-                    )}
-                    {selectedEtablissement.telephone && (
-                      <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
-                        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-blue))]">
-                          <Phone size={18} />
-                        </div>
-                        <span className="text-sm font-bold text-foreground">{selectedEtablissement.telephone}</span>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                          {locale === 'ar' ? 'خط الطول (Longitude)' : 'Longitude'}
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={editLongitude}
+                          onChange={(e) => setEditLongitude(e.target.value)}
+                          className="w-full px-4 py-3 bg-muted/30 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--gov-blue))] text-foreground font-semibold"
+                          required
+                        />
                       </div>
-                    )}
-                    {selectedEtablissement.email && (
-                      <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
-                        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-muted))]">
-                          <Mail size={18} />
-                        </div>
-                        <span className="text-sm font-bold text-foreground">{selectedEtablissement.email}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
- 
-                {/* Workflow Actions */}
-                <div className="space-y-4 pt-10 border-t border-border">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
-                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-green))] rounded-full" />
-                    {tModal('admin_actions')}
-                  </h4>
-                  <div className="grid grid-cols-1 gap-4">
-                    <GovButton
-                      onClick={() => handleValidate(selectedEtablissement.id, 'valider')}
-                      disabled={!!actionLoading}
-                      loading={actionLoading === `valider-${selectedEtablissement.id}`}
-                      variant={selectedEtablissement.isValide ? "outline" : "primary"}
-                      leftIcon={!(actionLoading === `valider-${selectedEtablissement.id}`) && (selectedEtablissement.isValide ? <CheckCircle size={18} /> : <Award size={18} />)}
-                      className={`w-full justify-between h-16 ${selectedEtablissement.isValide ? "text-[hsl(var(--gov-green))] bg-[hsl(var(--gov-green))/0.05] border-[hsl(var(--gov-green))/0.2]" : ""}`}
-                    >
-                      <span>{selectedEtablissement.isValide ? t('card.validated') : t('card.validate')}</span>
-                      <ChevronRight size={16} />
-                    </GovButton>
- 
-                    <GovButton
-                      onClick={() => handleValidate(selectedEtablissement.id, 'publier')}
-                      disabled={!!actionLoading}
-                      loading={actionLoading === `publier-${selectedEtablissement.id}`}
-                      variant={selectedEtablissement.isPublie ? "outline" : "primary"}
-                      leftIcon={!(actionLoading === `publier-${selectedEtablissement.id}`) && <Globe size={18} />}
-                      className={`w-full justify-between h-16 ${selectedEtablissement.isPublie ? "text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.2]" : ""}`}
-                    >
-                      <span>{selectedEtablissement.isPublie ? t('card.unpublish') : t('card.publish')}</span>
-                      <ChevronRight size={16} />
-                    </GovButton>
- 
-                    <GovButton
-                      onClick={() => handleValidate(selectedEtablissement.id, 'misEnAvant')}
-                      disabled={!!actionLoading}
-                      loading={actionLoading === `misEnAvant-${selectedEtablissement.id}`}
-                      variant={selectedEtablissement.isMisEnAvant ? "outline" : "primary"}
-                      leftIcon={!(actionLoading === `misEnAvant-${selectedEtablissement.id}`) && <Star size={18} />}
-                      className={`w-full justify-between h-16 ${selectedEtablissement.isMisEnAvant ? "text-[hsl(var(--gov-yellow))] bg-[hsl(var(--gov-yellow))/0.05] border-[hsl(var(--gov-yellow))/0.2]" : ""}`}
-                    >
-                      <span>{selectedEtablissement.isMisEnAvant ? tModal('remove_highlight') : tModal('add_highlight')}</span>
-                      <ChevronRight size={16} />
-                    </GovButton>
- 
-                    <div className="pt-6">
+                    </div>
+
+                    {/* Edit Buttons */}
+                    <div className="flex items-center gap-3 pt-6 border-t border-border">
                       <GovButton
-                        onClick={() => handleDelete(selectedEtablissement.id)}
-                        disabled={!!actionLoading}
-                        variant="outline"
-                        leftIcon={<Trash2 size={18} />}
-                        className="w-full justify-center h-16 border-dashed border-[hsl(var(--gov-red))/0.3] text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05]"
+                        type="submit"
+                        loading={savingEdit}
+                        variant="primary"
+                        className="flex-1 h-12 justify-center"
                       >
-                        {t('card.delete')}
+                        {locale === 'ar' ? 'حفظ التعديلات' : 'Enregistrer'}
+                      </GovButton>
+                      <GovButton
+                        type="button"
+                        onClick={() => setIsEditing(false)}
+                        variant="outline"
+                        className="flex-1 h-12 justify-center"
+                      >
+                        {locale === 'ar' ? 'إلغاء' : 'Annuler'}
                       </GovButton>
                     </div>
-                  </div>
-                </div>
- 
-                {/* Footer Actions */}
-                <div className="pt-10">
-                  <button
-                    onClick={() => setShowDetailModal(false)}
-                    className="w-full px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
-                  >
-                    {tModal('close_view')}
-                  </button>
-                </div>
+                  </form>
+                ) : (
+                  <>
+                    {/* Header Profile */}
+                    <div className="flex items-center gap-6">
+                      <div className="w-24 h-24 rounded-3xl bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-inner overflow-hidden relative">
+                        {selectedEtablissement.photoPrincipale ? (
+                          <Image 
+                            src={selectedEtablissement.photoPrincipale} 
+                            alt={selectedEtablissement.nom}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <Building2 className="w-10 h-10" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-black text-foreground mb-1">
+                          {selectedEtablissement.nom}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1 bg-muted rounded-full text-[9px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
+                            {selectedEtablissement.code}
+                          </span>
+                          <StatusBadge color="blue">
+                            {getSecteurLabel(selectedEtablissement.secteur)}
+                          </StatusBadge>
+                        </div>
+                      </div>
+                    </div>
+     
+                    {/* Rating Card */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-6 bg-[hsl(var(--gov-yellow))/0.03] rounded-3xl border border-[hsl(var(--gov-yellow))/0.1] text-center">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-[hsl(var(--gov-yellow))] mb-2 opacity-60">{tModal('average_rating')}</p>
+                        <p className="text-4xl font-black text-foreground leading-none mb-3">
+                          {selectedEtablissement.noteMoyenne.toFixed(1)}
+                        </p>
+                        <div className="flex items-center justify-center gap-1 text-[hsl(var(--gov-yellow))]">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={14}
+                              className={star <= Math.round(selectedEtablissement.noteMoyenne) ? 'fill-current' : ''}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-6 bg-muted/30 rounded-3xl border border-border/50 text-center">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2 opacity-60">{tModal('total_reviews')}</p>
+                        <p className="text-4xl font-black text-foreground leading-none mb-3">
+                          {selectedEtablissement.nombreEvaluations}
+                        </p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-40">{tModal('citizen_reviews')}</p>
+                      </div>
+                    </div>
+     
+                    {/* Contact Info */}
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
+                        {tModal('contact_info')}
+                      </h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {(selectedEtablissement.adresseComplete || selectedEtablissement.adresse) && (
+                          <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-red))]">
+                              <MapPin size={18} />
+                            </div>
+                            <span className="text-sm font-bold text-foreground">
+                              {selectedEtablissement.adresseComplete || selectedEtablissement.adresse}
+                            </span>
+                          </div>
+                        )}
+                        {selectedEtablissement.telephone && (
+                          <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                              <Phone size={18} />
+                            </div>
+                            <span className="text-sm font-bold text-foreground">{selectedEtablissement.telephone}</span>
+                          </div>
+                        )}
+                        {selectedEtablissement.email && (
+                          <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-muted))]">
+                              <Mail size={18} />
+                            </div>
+                            <span className="text-sm font-bold text-foreground">{selectedEtablissement.email}</span>
+                          </div>
+                        )}
+                        {/* GPS Coordinates */}
+                        <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/50">
+                          <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-[hsl(var(--gov-gold))]">
+                            <MapPin size={18} />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
+                              {locale === 'ar' ? 'الإحداثيات الجغرافية (GPS)' : 'Coordonnées GPS'}
+                            </p>
+                            <p className="text-sm font-bold text-foreground">
+                              Lat: {selectedEtablissement.latitude} | Lng: {selectedEtablissement.longitude}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+     
+                    {/* Workflow Actions */}
+                    <div className="space-y-4 pt-10 border-t border-border">
+                      <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-[hsl(var(--gov-green))] rounded-full" />
+                        {tModal('admin_actions')}
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4">
+                        <GovButton
+                          onClick={() => handleValidate(selectedEtablissement.id, 'valider')}
+                          disabled={!!actionLoading}
+                          loading={actionLoading === `valider-${selectedEtablissement.id}`}
+                          variant={selectedEtablissement.isValide ? "outline" : "primary"}
+                          leftIcon={!(actionLoading === `valider-${selectedEtablissement.id}`) && (selectedEtablissement.isValide ? <CheckCircle size={18} /> : <Award size={18} />)}
+                          className={`w-full justify-between h-16 ${selectedEtablissement.isValide ? "text-[hsl(var(--gov-green))] bg-[hsl(var(--gov-green))/0.05] border-[hsl(var(--gov-green))/0.2]" : ""}`}
+                        >
+                          <span>{selectedEtablissement.isValide ? t('card.validated') : t('card.validate')}</span>
+                          <ChevronRight size={16} />
+                        </GovButton>
+     
+                        <GovButton
+                          onClick={() => handleValidate(selectedEtablissement.id, 'publier')}
+                          disabled={!!actionLoading}
+                          loading={actionLoading === `publier-${selectedEtablissement.id}`}
+                          variant={selectedEtablissement.isPublie ? "outline" : "primary"}
+                          leftIcon={!(actionLoading === `publier-${selectedEtablissement.id}`) && <Globe size={18} />}
+                          className={`w-full justify-between h-16 ${selectedEtablissement.isPublie ? "text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue))/0.05] border-[hsl(var(--gov-blue))/0.2]" : ""}`}
+                        >
+                          <span>{selectedEtablissement.isPublie ? t('card.unpublish') : t('card.publish')}</span>
+                          <ChevronRight size={16} />
+                        </GovButton>
+     
+                        <GovButton
+                          onClick={() => handleValidate(selectedEtablissement.id, 'misEnAvant')}
+                          disabled={!!actionLoading}
+                          loading={actionLoading === `misEnAvant-${selectedEtablissement.id}`}
+                          variant={selectedEtablissement.isMisEnAvant ? "outline" : "primary"}
+                          leftIcon={!(actionLoading === `misEnAvant-${selectedEtablissement.id}`) && <Star size={18} />}
+                          className={`w-full justify-between h-16 ${selectedEtablissement.isMisEnAvant ? "text-[hsl(var(--gov-yellow))] bg-[hsl(var(--gov-yellow))/0.05] border-[hsl(var(--gov-yellow))/0.2]" : ""}`}
+                        >
+                          <span>{selectedEtablissement.isMisEnAvant ? tModal('remove_highlight') : tModal('add_highlight')}</span>
+                          <ChevronRight size={16} />
+                        </GovButton>
+     
+                        <div className="pt-6">
+                          <GovButton
+                            onClick={() => handleDelete(selectedEtablissement.id)}
+                            disabled={!!actionLoading}
+                            variant="outline"
+                            leftIcon={<Trash2 size={18} />}
+                            className="w-full justify-center h-16 border-dashed border-[hsl(var(--gov-red))/0.3] text-[hsl(var(--gov-red))] hover:bg-[hsl(var(--gov-red))/0.05]"
+                          >
+                            {t('card.delete')}
+                          </GovButton>
+                        </div>
+                      </div>
+                    </div>
+     
+                    {/* Footer Actions */}
+                    <div className="pt-10">
+                      <button
+                        onClick={() => setShowDetailModal(false)}
+                        className="w-full px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
+                      >
+                        {tModal('close_view')}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           </>

@@ -1701,6 +1701,8 @@
       "views": "Vues",
       "likes": "J'aime",
       "establishment": "Établissement",
+      "delete_confirm": "Êtes-vous sûr de vouloir effectuer cette suppression ?",
+      "cancel": "Annuler",
       "commune": "Commune",
       "created_on": "Créé le {date}",
       "change_status": "Changer le statut",

@@ -1,11 +1,9 @@
-import { useTranslations } from 'next-intl';
 import { Construction } from 'lucide-react';
 import Link from 'next/link';
 import { GovButton } from '@/components/ui/GovButton';
 
 export default async function EditEtablissementPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const t = useTranslations();
   
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-background rounded-3xl border border-border shadow-sm">

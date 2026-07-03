@@ -1918,6 +1918,8 @@
       "views": "مشاهدات",
       "likes": "إعجابات",
       "establishment": "المؤسسة",
+      "delete_confirm": "هل أنت متأكد من رغبتك في حذف هذا العنصر؟",
+      "cancel": "إلغاء",
       "commune": "الجماعة",
       "created_on": "أنشئ في {date}",
       "change_status": "تغيير الحالة",

@@ -33,6 +33,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 // Simple JSON renderer
 const JSONValue = ({ value }: { value: any }) => {
@@ -772,21 +773,17 @@ export default function AdminLogsPage() {
                 )}
                 
                 <div>
-                  <label className="block text-sm text-muted-foreground mb-1">{t('date_from')}</label>
-                  <input
-                    type="date"
+                  <GovDatePicker
+                    label={t('date_from')}
                     value={filters.dateFrom}
-                    onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
-                    className="w-full px-3 py-2 border border-border bg-background rounded-lg text-sm text-foreground"
+                    onChange={(val) => setFilters({ ...filters, dateFrom: val })}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-muted-foreground mb-1">{t('date_to')}</label>
-                  <input
-                    type="date"
+                  <GovDatePicker
+                    label={t('date_to')}
                     value={filters.dateTo}
-                    onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
-                    className="w-full px-3 py-2 border border-border bg-background rounded-lg text-sm text-foreground"
+                    onChange={(val) => setFilters({ ...filters, dateTo: val })}
                   />
                 </div>
               </div>

@@ -11,6 +11,7 @@ import {
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 export default function EvenementsTab({ highlightId }: { highlightId?: number }) {
   const t = useTranslations('governor');
@@ -283,28 +284,18 @@ export default function EvenementsTab({ highlightId }: { highlightId?: number })
             <Shield className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
           </div>
 
-          {/* New Date Filters */}
-          <div className="relative">
-            <input
-              type="date"
-              value={dateDebut}
-              onChange={(e) => { setDateDebut(e.target.value); setPage(1); }}
-              className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
-            />
-            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-black pointer-events-none opacity-40">{isAr ? 'من' : 'Du'}</div>
-          </div>
+          {/* Date Filters */}
+          <GovDatePicker
+            value={dateDebut}
+            onChange={(val) => { setDateDebut(val); setPage(1); }}
+            placeholder={isAr ? 'من تاريخ' : 'Du'}
+          />
 
-          <div className="relative">
-            <input
-              type="date"
-              value={dateFin}
-              onChange={(e) => { setDateFin(e.target.value); setPage(1); }}
-              className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl appearance-none font-black text-[10px] uppercase tracking-widest text-slate-700 focus:outline-none focus:ring-2 focus:ring-gov-blue/10 transition-all cursor-pointer shadow-sm"
-            />
-            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-gov-blue" size={16} />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-black pointer-events-none opacity-40">{isAr ? 'إلى' : 'Au'}</div>
-          </div>
+          <GovDatePicker
+            value={dateFin}
+            onChange={(val) => { setDateFin(val); setPage(1); }}
+            placeholder={isAr ? 'إلى تاريخ' : 'Au'}
+          />
         </div>
 
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">

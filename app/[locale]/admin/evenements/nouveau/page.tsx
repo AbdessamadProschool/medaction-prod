@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useSession } from 'next-auth/react';
@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '@/hooks/use-data';
@@ -71,7 +72,7 @@ export default function NouveauEventPage() {
   const uploadMutation = useMutation();
   const actionMutation = useMutation();
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<EventForm>({
+  const { register, handleSubmit, formState: { errors }, watch, control } = useForm<EventForm>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       inscriptionsOuvertes: false
@@ -373,20 +374,30 @@ export default function NouveauEventPage() {
             </div>
             
             <div className="p-8 space-y-8">
-              {/* Dates */}
               <div className="grid md:grid-cols-2 gap-8">
-                <GovInput
-                  label={tForm('start_date') + " *"}
-                  type="date"
-                  error={errors.dateDebut?.message}
-                  leftIcon={<Calendar size={18} />}
-                  {...register('dateDebut')}
+                <Controller
+                  control={control}
+                  name="dateDebut"
+                  render={({ field }) => (
+                    <GovDatePicker
+                      label={tForm('start_date') + " *"}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.dateDebut?.message}
+                    />
+                  )}
                 />
-                <GovInput
-                  label={tForm('end_date')}
-                  type="date"
-                  leftIcon={<Calendar size={18} />}
-                  {...register('dateFin')}
+                <Controller
+                  control={control}
+                  name="dateFin"
+                  render={({ field }) => (
+                    <GovDatePicker
+                      label={tForm('end_date')}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.dateFin?.message}
+                    />
+                  )}
                 />
               </div>
 

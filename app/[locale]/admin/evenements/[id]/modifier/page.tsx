@@ -27,6 +27,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 interface Evenement {
   id: number;
@@ -585,29 +586,16 @@ export default function ModifierEvenementPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Dates */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin_evenement_modifier.date_debut')}
-              </label>
-              <input
-                type="date"
-                value={formData.dateDebut}
-                onChange={(e) => setFormData({ ...formData, dateDebut: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('admin_evenement_modifier.date_fin')}
-              </label>
-              <input
-                type="date"
-                value={formData.dateFin}
-                onChange={(e) => setFormData({ ...formData, dateFin: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gov-green/20"
-              />
-            </div>
+            <GovDatePicker
+              label={t('admin_evenement_modifier.date_debut')}
+              value={formData.dateDebut}
+              onChange={(val) => setFormData({ ...formData, dateDebut: val })}
+            />
+            <GovDatePicker
+              label={t('admin_evenement_modifier.date_fin')}
+              value={formData.dateFin}
+              onChange={(val) => setFormData({ ...formData, dateFin: val })}
+            />
             
             {/* Lieu */}
             <div>

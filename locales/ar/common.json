@@ -486,6 +486,8 @@
           "desc": "حاول تغيير مرشحات البحث الخاصة بك."
         },
         "labels": {
+          "citizen_campaign": "حملة مواطنة",
+          "campaign_success": "معدل نجاح الحملة",
           "photos": "الصور",
           "participations": "المشاركات",
           "closing_report": "تقرير الختام",

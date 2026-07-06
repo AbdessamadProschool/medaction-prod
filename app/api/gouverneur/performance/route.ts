@@ -21,7 +21,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   // Parse pagination params
   const { searchParams } = new URL(request.url);
   const page = Math.max(safeParseInt(searchParams.get('page') || '1', 0), 1);
-  const limit = Math.min(Math.max(safeParseInt(searchParams.get('limit') || '20', 0), 1), 100);
+  const limit = Math.min(Math.max(safeParseInt(searchParams.get('limit') || '500', 0), 1), 1000);
   const skip = (page - 1) * limit;
 
   // Récupérer tous les établissements et le count en Promise.all

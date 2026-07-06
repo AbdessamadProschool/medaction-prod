@@ -181,7 +181,7 @@ test.describe('Dashboards', () => {
       await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(2000);
       
-      const filters = page.locator('input[type="date"], select, [data-testid*="filter"], .filter');
+      const filters = page.locator('.react-datepicker-wrapper input, select, [data-testid*="filter"], .filter');
       
       if (await filters.count() > 0) {
         expect(await filters.count()).toBeGreaterThan(0);

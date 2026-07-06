@@ -48,6 +48,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { GovInput, GovSelect } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 
@@ -562,17 +563,17 @@ export default function AdminReclamationsPage() {
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">{tCommon('date_range')}</label>
                       <div className="grid grid-cols-2 gap-2">
-                        <GovInput
-                          type="date"
+                        <GovDatePicker
                           value={filters.dateDebut}
-                          onChange={(e) => setFilters({ ...filters, dateDebut: e.target.value })}
+                          onChange={(val) => setFilters({ ...filters, dateDebut: val })}
                           className="h-11 px-2 text-xs"
+                          placeholder={locale === 'ar' ? 'من' : 'Du'}
                         />
-                        <GovInput
-                          type="date"
+                        <GovDatePicker
                           value={filters.dateFin}
-                          onChange={(e) => setFilters({ ...filters, dateFin: e.target.value })}
+                          onChange={(val) => setFilters({ ...filters, dateFin: val })}
                           className="h-11 px-2 text-xs"
+                          placeholder={locale === 'ar' ? 'إلى' : 'Au'}
                         />
                       </div>
                     </div>

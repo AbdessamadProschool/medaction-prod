@@ -50,6 +50,7 @@ import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import BulkImportModal from '@/components/coordinateur/BulkImportModal';
 import { toast } from 'sonner';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 interface Activite {
   id: number;
@@ -958,19 +959,11 @@ function CreateActivityPanel({
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2 text-right">{t('date')}</label>
-                         <div className="relative">
-                            <input 
-                                type="date"
-                                required 
-                                value={formData.date}
-                                onChange={e => setFormData({...formData, date: e.target.value})}
-                                className="w-full pr-12 pl-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-right h-[50px] font-bold text-gray-800"
-                            />
-                            <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 pointer-events-none" />
-                        </div>
-                    </div>
+                    <GovDatePicker
+                        label={t('date') + " *"}
+                        value={formData.date}
+                        onChange={val => setFormData({...formData, date: val})}
+                    />
                     
                     {/* Date Preview Card */}
                     <div className="bg-blue-50 rounded-xl border border-blue-100 p-3 flex flex-col justify-center items-center text-center">
@@ -1328,19 +1321,11 @@ function CreateActivityPanel({
                                 )}
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 mb-1 text-right">{t('recurrence_end')}</label>
-                                <input 
-                                    type="date"
-                                    required={formData.isRecurrent}
+                                <GovDatePicker
+                                    label={t('recurrence_end') + (formData.isRecurrent ? " *" : "")}
                                     value={formData.recurrenceEndDate || ''}
-                                    onChange={e => setFormData({...formData, recurrenceEndDate: e.target.value})}
-                                    className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 outline-none text-sm text-right"
+                                    onChange={val => setFormData({...formData, recurrenceEndDate: val})}
                                 />
-                                <p className="text-[10px] text-blue-600 mt-1 font-bold px-1 text-right">
-                                    {formData.recurrenceEndDate && !isNaN(new Date(formData.recurrenceEndDate).getTime()) 
-                                        ? format(parseISO(formData.recurrenceEndDate), 'EEEE d MMMM yyyy', { locale: arMA })
-                                        : ''}
-                                </p>
                             </div>
                         </div>
                     )}

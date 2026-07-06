@@ -487,6 +487,8 @@
           "desc": "Essayez de modifier vos filtres de recherche."
         },
         "labels": {
+          "citizen_campaign": "Campagne citoyenne",
+          "campaign_success": "Taux de réussite de la campagne",
           "photos": "Photos",
           "participations": "Participations",
           "closing_report": "Rapport de Clôture",

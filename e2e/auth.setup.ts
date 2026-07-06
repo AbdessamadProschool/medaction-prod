@@ -1,5 +1,7 @@
 import { test as setup, expect } from '@playwright/test';
 import path from 'path';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const authFile = path.join(__dirname, '.auth/user.json');
 
@@ -7,6 +9,28 @@ const authFile = path.join(__dirname, '.auth/user.json');
  * Setup d'authentification - Exécuté une fois avant tous les tests
  */
 setup('authenticate', async ({ page }) => {
+  // S'assurer que l'utilisateur test existe dans la base de données locale
+  const prisma = new PrismaClient();
+  const hashedPassword = await bcrypt.hash('TestPassword123!', 12);
+  await prisma.user.upsert({
+    where: { email: 'test@medaction.ma' },
+    update: {
+      role: 'ADMIN',
+      isActive: true,
+      isEmailVerifie: true,
+    },
+    create: {
+      email: 'test@medaction.ma',
+      nom: 'Test',
+      prenom: 'Admin',
+      motDePasse: hashedPassword,
+      role: 'ADMIN',
+      isActive: true,
+      isEmailVerifie: true,
+    }
+  });
+  await prisma.$disconnect();
+
   // Aller sur la page de connexion
   await page.goto('/login');
   

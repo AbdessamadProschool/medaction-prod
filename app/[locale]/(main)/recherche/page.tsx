@@ -22,6 +22,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 interface SearchResult {
   id: number;
@@ -446,24 +447,16 @@ function SearchPageContent() {
               
               {(activeType === 'evenements' || activeType === 'actualites') && (
                 <>
-                  <div>
-                    <label className="gov-label">{t('filters_section.date_from')}</label>
-                    <input
-                      type="date"
-                      value={filters.dateFrom}
-                      onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
-                      className="gov-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="gov-label">{t('filters_section.date_to')}</label>
-                    <input
-                      type="date"
-                      value={filters.dateTo}
-                      onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
-                      className="gov-input"
-                    />
-                  </div>
+                  <GovDatePicker
+                    label={t('filters_section.date_from')}
+                    value={filters.dateFrom}
+                    onChange={(val) => setFilters({ ...filters, dateFrom: val })}
+                  />
+                  <GovDatePicker
+                    label={t('filters_section.date_to')}
+                    value={filters.dateTo}
+                    onChange={(val) => setFilters({ ...filters, dateTo: val })}
+                  />
                 </>
               )}
               

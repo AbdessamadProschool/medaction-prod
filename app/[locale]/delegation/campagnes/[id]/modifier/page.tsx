@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslations } from 'next-intl';
@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { toast } from 'sonner';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 export default function ModifierCampagnePage() {
   const t = useTranslations('delegation.dashboard.campaigns.edit_page');
@@ -59,7 +60,7 @@ export default function ModifierCampagnePage() {
 
   type CampagneForm = z.infer<typeof campagneSchema>;
 
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<CampagneForm>({
+  const { register, handleSubmit, formState: { errors }, reset, watch, control } = useForm<CampagneForm>({
     resolver: zodResolver(campagneSchema),
   });
 
@@ -417,23 +418,31 @@ export default function ModifierCampagnePage() {
             <div className="p-4 space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700 text-start">
-                    {tCreate('sections.datetime.start_date')}
-                  </label>
-                  <input
-                    {...register('dateDebut')}
-                    type="date"
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                  <Controller
+                    control={control}
+                    name="dateDebut"
+                    render={({ field }) => (
+                      <GovDatePicker
+                        label={tCreate('sections.datetime.start_date')}
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={errors.dateDebut?.message}
+                      />
+                    )}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-gray-700 text-start">{tCreate('sections.datetime.end_date')}</label>
-                  <input
-                    {...register('dateFin')}
-                    type="date"
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-gov-gold/30 focus:ring-2 focus:ring-amber-500/10 outline-none font-bold text-gray-700 cursor-pointer text-sm bg-gray-50/50 focus:bg-white transition-all text-start"
+                  <Controller
+                    control={control}
+                    name="dateFin"
+                    render={({ field }) => (
+                      <GovDatePicker
+                        label={tCreate('sections.datetime.end_date')}
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={errors.dateFin?.message}
+                      />
+                    )}
                   />
                 </div>
               </div>

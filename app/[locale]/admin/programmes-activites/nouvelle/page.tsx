@@ -24,11 +24,12 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 export default function AdminNouveauProgrammePage() {
   const t = useTranslations('admin_activity_create');
   const router = useRouter();
@@ -68,7 +69,7 @@ export default function AdminNouveauProgrammePage() {
     }
   });
 
-  const { register, handleSubmit, formState: { errors } } = form;
+  const { register, handleSubmit, formState: { errors }, control } = form;
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
@@ -228,20 +229,18 @@ export default function AdminNouveauProgrammePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-2.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">
-                  {t('fields.date')} <span className="text-[hsl(var(--gov-red))]">*</span>
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-muted-foreground group-focus-within:text-[hsl(var(--gov-blue))] transition-colors">
-                    <CalendarIcon size={16} />
-                  </div>
-                  <input
-                    type="date"
-                    {...register("date")}
-                    className="gov-input pl-12 h-12 text-sm font-bold"
-                  />
-                </div>
-                {errors.date && <p className="text-[10px] font-bold text-[hsl(var(--gov-red))] ml-1">{errors.date.message}</p>}
+                <Controller
+                  control={control}
+                  name="date"
+                  render={({ field }) => (
+                    <GovDatePicker
+                      label={t('fields.date') + " *"}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.date?.message}
+                    />
+                  )}
+                />
               </div>
 
               <div className="space-y-2.5">

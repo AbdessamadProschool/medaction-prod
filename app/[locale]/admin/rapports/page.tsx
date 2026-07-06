@@ -38,6 +38,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { GovDatePicker } from '@/components/ui/GovDatePicker';
 
 const COLORS = [
   'hsl(var(--gov-blue))',
@@ -52,6 +53,7 @@ export default function RapportsPage() {
   const t = useTranslations('admin.reports_page');
   const params_route = useParams();
   const locale = (params_route?.locale as string) || 'fr';
+  const isAr = locale === 'ar';
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0]
@@ -264,31 +266,22 @@ export default function RapportsPage() {
             {t('subtitle')}
           </p>
         </div>
-        
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-3 bg-card border border-border rounded-2xl p-2 shadow-sm">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-xl">
-              <Calendar size={14} className="text-muted-foreground" />
-              <input 
-                type="date" 
-                value={dateRange.startDate}
-                max={dateRange.endDate}
-                onChange={e => setDateRange({...dateRange, startDate: e.target.value})}
-                className="bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest focus:ring-0 cursor-pointer"
-              />
-            </div>
-            <ArrowRight size={14} className="text-muted-foreground/30" />
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-xl">
-              <Calendar size={14} className="text-muted-foreground" />
-              <input 
-                type="date" 
-                value={dateRange.endDate}
-                min={dateRange.startDate}
-                onChange={e => setDateRange({...dateRange, endDate: e.target.value})}
-                className="bg-transparent border-none p-0 text-[10px] font-bold uppercase tracking-widest focus:ring-0 cursor-pointer"
-              />
-            </div>
-          </div>
+          <GovDatePicker
+            value={dateRange.startDate}
+            onChange={val => setDateRange({...dateRange, startDate: val})}
+            placeholder={isAr ? 'من تاريخ' : 'Du'}
+            containerClassName="w-40"
+            className="!py-2 !px-3 text-xs"
+          />
+          <ArrowRight size={14} className="text-muted-foreground/30" />
+          <GovDatePicker
+            value={dateRange.endDate}
+            onChange={val => setDateRange({...dateRange, endDate: val})}
+            placeholder={isAr ? 'إلى تاريخ' : 'Au'}
+            containerClassName="w-40"
+            className="!py-2 !px-3 text-xs"
+          />
           
           <button
             onClick={async () => { await fetchData(); }}

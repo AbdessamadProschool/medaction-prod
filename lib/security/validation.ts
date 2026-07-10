@@ -92,14 +92,31 @@ export function stripHtml(input: string): string {
     .trim();
 }
 
+// Helper to decode common HTML entities to prevent double-escaping
+function decodeHtmlEntities(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&#x60;/g, '`')
+    .replace(/&apos;/g, "'");
+}
+
 /**
  * Sanitize input for safe display and storage
  */
 export function sanitizeString(input: string): string {
   if (!input || typeof input !== 'string') return '';
   
+  // 1. Decode existing entities to prevent double-escaping
+  const decodedInput = decodeHtmlEntities(input);
+  
   // SECURITY FIX: Remove null bytes (\x00) which crash PostgreSQL encoding
-  const cleanInput = input.replace(/\x00/g, '');
+  const cleanInput = decodedInput.replace(/\x00/g, '');
   
   return stripHtml(cleanInput)
     .replace(/[<>"'&`]/g, (char) => {

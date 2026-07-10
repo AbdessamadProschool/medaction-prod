@@ -36,6 +36,20 @@ export function stripHtml(input: string): string {
     .replace(/<!--[\s\S]*?-->/g, ''); // Remove HTML comments
 }
 
+// Helper to decode common HTML entities to prevent double-escaping
+function decodeHtmlEntities(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&#x60;/g, '`')
+    .replace(/&apos;/g, "'");
+}
+
 /**
  * Sanitize a string for safe display and storage
  * - Removes HTML tags
@@ -45,7 +59,10 @@ export function stripHtml(input: string): string {
 export function sanitizeString(input: string): string {
   if (!input || typeof input !== 'string') return '';
   
-  return stripHtml(input)
+  // 1. Decode existing entities to prevent double-escaping
+  const decodedInput = decodeHtmlEntities(input);
+  
+  return stripHtml(decodedInput)
     .replace(/[<>"'&`]/g, (char) => {
       const map: Record<string, string> = {
         '<': '&lt;',

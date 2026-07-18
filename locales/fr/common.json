@@ -728,6 +728,10 @@
       },
       "filter_labels": {
         "search": "Rechercher...",
+        "search_placeholder": "Rechercher un événement...",
+        "statut": "Statut",
+        "secteur": "Secteur",
+        "commune": "Commune",
         "all_statuses": "Tous statuts",
         "all_sectors": "Tous secteurs",
         "all_muncipalities": "Toutes communes",
@@ -5838,6 +5842,7 @@
       "Authentication": "Authentification",
       "Campagne": "Campagne",
       "Evenement": "Événement",
+      "EVENEMENT": "Événement",
       "ACTUALITE": "Actualité",
       "ETABLISSEMENT": "Établissement"
     },
@@ -6187,5 +6192,11 @@
     "no_logs": "Aucun journal ne correspond aux filtres sélectionnés",
     "technical_details": "Détails techniques"
   },
-  "confirm_delete": "Confirmer la suppression"
+  "confirm_delete": "Confirmer la suppression",
+  "advanced_filters": "Filtres avancés",
+  "search": "Rechercher",
+  "all_statuses": "Tous les statuts",
+  "all": "Tous",
+  "date_range": "Période",
+  "reset_filters": "Réinitialiser les filtres"
 }

@@ -1468,6 +1468,10 @@
       },
       "filter_labels": {
         "search": "بحث بالاسم...",
+        "search_placeholder": "البحث عن حدث...",
+        "statut": "الحالة",
+        "secteur": "القطاع",
+        "commune": "الجماعة",
         "all_statuses": "جميع الحالات",
         "all_sectors": "جميع القطاعات",
         "all_muncipalities": "جميع الجماعات",
@@ -5674,6 +5678,7 @@
       "Authentication": "المصادقة",
       "Campagne": "حملة",
       "Evenement": "حدث",
+      "EVENEMENT": "حدث",
       "ACTUALITE": "خبر / مستجد",
       "ETABLISSEMENT": "مؤسسة"
     },
@@ -6370,5 +6375,11 @@
     "no_logs": "لا توجد سجلات مطابقة للفلاتر المحددة",
     "technical_details": "التفاصيل التقنية"
   },
-  "confirm_delete": "تأكيد الحذف"
+  "confirm_delete": "تأكيد الحذف",
+  "advanced_filters": "تصفية متقدمة",
+  "search": "بحث",
+  "all_statuses": "جميع الحالات",
+  "all": "الكل",
+  "date_range": "الفترة الزمنية",
+  "reset_filters": "إعادة تعيين الفلاتر"
 }

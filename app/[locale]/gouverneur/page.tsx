@@ -706,7 +706,7 @@ export default function GouverneurDashboard() {
           <div className="p-6 mt-auto border-t border-white/10">
               <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl mb-4">
                  <div className="w-10 h-10 bg-gov-gold/20 text-gov-gold rounded-full flex items-center justify-center font-bold">
-                    {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
+                    {(session?.user?.prenom?.[0] || '').toUpperCase()}{(session?.user?.nom?.[0] || '').toUpperCase()}
                  </div>
                  <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{session?.user?.prenom} {session?.user?.nom}</p>

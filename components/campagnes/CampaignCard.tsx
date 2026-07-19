@@ -91,7 +91,7 @@ export default function CampaignCard({ campagne, onClick, index = 0 }: CampaignC
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-4 sm:p-6 flex flex-col flex-1">
         <h3 className="font-bold text-xl text-gray-900 mb-2 line-clamp-2 group-hover:text-gov-green transition-colors leading-tight">
           {campagne.titre}
         </h3>

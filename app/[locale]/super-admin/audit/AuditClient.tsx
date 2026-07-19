@@ -35,6 +35,7 @@ import {
   Mail
 } from 'lucide-react';
 import { useAccessLogger } from '../../../../hooks/use-access-logger';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 
 interface ActivityLog {
   id: number;
@@ -410,117 +411,115 @@ export default function AuditClient() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden"
         >
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50/50 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('audit_page.columns.date')}</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('audit_page.columns.user')}</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('audit_page.columns.action')}</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('audit_page.columns.target')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('audit_page.columns.details')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                <AnimatePresence>
-                    {(Array.isArray(logs) ? logs : []).map((log, index) => {
-                      const style = getActionStyle(log.action);
-                      const Icon = style.icon;
-                      
-                      return (
-                      <motion.tr 
-                        key={log.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                              {new Date(log.createdAt).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' })}
-                            </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                              <Clock size={10} />
-                              {new Date(log.createdAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          {log.user ? (
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs ring-2 ring-white dark:ring-gray-800">
-                                {log.user.prenom?.[0] || ''}{log.user.nom?.[0] || ''}
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {log.user.prenom} {log.user.nom}
-                                </span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">{log.user.email}</span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-xs">
-                                SYS
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-sm font-medium text-gray-900 dark:text-white">{t('audit_log.modal.system')}</span>
-                                <span className="text-xs text-gray-500 italic">-</span>
-                              </div>
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${style.bg} ${style.text} border-transparent`}>
-                            <Icon size={12} />
-                            {getActionLabel(log.action)}
+          <GovTable>
+            <thead>
+              <GovTr>
+                <GovTh>{t('audit_page.columns.date')}</GovTh>
+                <GovTh>{t('audit_page.columns.user')}</GovTh>
+                <GovTh>{t('audit_page.columns.action')}</GovTh>
+                <GovTh>{t('audit_page.columns.target')}</GovTh>
+                <GovTh className="text-right">{t('audit_page.columns.details')}</GovTh>
+              </GovTr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                  {(Array.isArray(logs) ? logs : []).map((log, index) => {
+                    const style = getActionStyle(log.action);
+                    const Icon = style.icon;
+                    
+                    return (
+                    <GovTr 
+                      key={log.id}
+                      onClick={() => setSelectedLog(log)}
+                      className="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors group cursor-pointer"
+                    >
+                      <GovTd className="whitespace-nowrap">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {new Date(log.createdAt).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' })}
                           </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                             <div className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500">
-                                <FileJson size={14} />
-                             </div>
-                             <div className="flex flex-col">
-                                <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{getEntityLabel(log.entity)}</span>
-                                <span className="text-xs text-gray-400">ID: {log.entityId || 'N/A'}</span>
-                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => setSelectedLog(log)}
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 rounded-lg transition-all transform hover:scale-105"
-                            title={t('audit_page.view_details')}
-                            aria-label={t('audit_page.view_details')}
-                          >
-                            <Eye size={18} />
-                          </button>
-                        </td>
-                      </motion.tr>
-                    );
-                    })}
-                </AnimatePresence>
-                
-                {logs.length === 0 && !loading && (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-16 text-center text-gray-500">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                            <Activity className="w-8 h-8 text-gray-300" />
+                          <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <Clock size={10} />
+                            {new Date(log.createdAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                          </span>
                         </div>
-                        <p className="text-lg font-medium">{t('audit_page.no_logs')}</p>
-                        <p className="text-sm text-gray-400">{t('audit_page.modify_filters_hint')}</p>
+                      </GovTd>
+                      <GovTd>
+                        {log.user ? (
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs ring-2 ring-white dark:ring-gray-800">
+                              {(log.user.prenom?.[0] || '').toUpperCase()}{(log.user.nom?.[0] || '').toUpperCase()}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                {log.user.prenom} {log.user.nom}
+                              </span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{log.user.email}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 flex items-center justify-center font-bold text-xs">
+                              SYS
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium text-gray-900 dark:text-white">{t('audit_log.modal.system')}</span>
+                              <span className="text-xs text-gray-500 italic">-</span>
+                            </div>
+                          </div>
+                        )}
+                      </GovTd>
+                      <GovTd>
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${style.bg} ${style.text} border-transparent`}>
+                          <Icon size={12} />
+                          {getActionLabel(log.action)}
+                        </span>
+                      </GovTd>
+                      <GovTd>
+                        <div className="flex items-center gap-2">
+                           <div className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500">
+                              <FileJson size={14} />
+                           </div>
+                           <div className="flex flex-col">
+                              <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{getEntityLabel(log.entity)}</span>
+                              <span className="text-xs text-gray-400">ID: {log.entityId || 'N/A'}</span>
+                           </div>
+                        </div>
+                      </GovTd>
+                      <GovTd className="text-right">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLog(log);
+                          }}
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 rounded-lg transition-all transform hover:scale-105"
+                          title={t('audit_page.view_details')}
+                          aria-label={t('audit_page.view_details')}
+                        >
+                          <Eye size={18} />
+                        </button>
+                      </GovTd>
+                    </GovTr>
+                  );
+                  })}
+              </AnimatePresence>
+              
+              {logs.length === 0 && !loading && (
+                <GovTr>
+                  <GovTd colSpan={5} className="px-6 py-16 text-center text-gray-500">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                          <Activity className="w-8 h-8 text-gray-300" />
                       </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                      <p className="text-lg font-medium">{t('audit_page.no_logs')}</p>
+                      <p className="text-sm text-gray-400">{t('audit_page.modify_filters_hint')}</p>
+                    </div>
+                  </GovTd>
+                </GovTr>
+              )}
+            </tbody>
+          </GovTable>
 
           {/* Pagination */}
           {totalPages > 1 && (

@@ -38,7 +38,7 @@ import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovInput, GovSelect } from '@/components/ui';
-import { cn } from '@/lib/utils';
+import { cn, decodeHtmlEntities } from '@/lib/utils';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 
@@ -305,7 +305,9 @@ function AdminEvenementsContent() {
             size="icon"
             loading={refreshing || loading}
             title={t('refresh')}
-          />
+          >
+            <RefreshCw size={16} />
+          </GovButton>
           <GovButton
             onClick={() => setShowFilters(!showFilters)}
             variant={showFilters ? "primary" : "outline"}
@@ -446,8 +448,11 @@ function AdminEvenementsContent() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Table */}
-      <GovTable>
+      {/* Table Section */}
+      <div className="mb-6 space-y-4">
+        {/* Vue Desktop: Tableau */}
+        <div className="hidden md:block overflow-x-auto custom-scrollbar bg-card rounded-2xl shadow-sm border border-border">
+          <GovTable>
         <thead>
           <tr>
             <GovTh>{t('table.event')}</GovTh>
@@ -590,68 +595,175 @@ function AdminEvenementsContent() {
           })}
         </tbody>
       </GovTable>
+      </div>
 
-        {evenements.length === 0 && (
-          <div className="p-8">
-            <EmptyState
-              icon={<Calendar className="w-10 h-10" />}
-              title={t('empty')}
-              description="Aucun événement ne correspond à vos critères actuels. Vous pouvez en créer un nouveau ou ajuster vos filtres."
-              action={
-                (filters.search || filters.statut || filters.secteur || filters.communeId) ? (
-                  <button 
-                    onClick={resetFilters}
-                    className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mt-2"
-                  >
-                    Effacer les filtres
-                  </button>
-                ) : undefined
-              }
-            />
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between px-8 py-6 border-t border-border/50 bg-muted/10">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              {t('pagination.page', { current: page, total: totalPages })}
-            </p>
-            <div className="flex items-center gap-3">
-              <GovButton
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                variant="outline"
-                size="icon"
+      {/* Vue Mobile: Cartes Empilées */}
+      {evenements.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:hidden">
+          {(Array.isArray(evenements) ? evenements : []).map((evenement: Evenement) => {
+            const statutKey = statusKeyMap[evenement.statut] || 'pending';
+            const secteurLabel = tSectors(evenement.secteur);
+            
+            return (
+              <div 
+                key={evenement.id} 
+                className="gov-card p-5 bg-card/80 backdrop-blur-xl border border-border rounded-2xl flex flex-col gap-4 shadow-sm"
               >
-                {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-              </GovButton>
-              <div className="flex items-center gap-1">
-                {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                  const pageNum = i + 1;
-                  return (
+                {/* En-tête: Statut & Inscrits */}
+                <div className="flex items-start justify-between gap-2">
+                  <StatusBadge status={evenement.statut} animate={evenement.statut === 'EN_ATTENTE_VALIDATION'} />
+                  <div className="flex items-center gap-1.5 bg-muted px-2 py-1 rounded-lg border border-border shrink-0">
+                    <Users size={12} className="text-muted-foreground" />
+                    <span className="text-xs font-black text-foreground">{evenement.nombreInscrits}</span>
+                    {evenement.capaciteMax && (
+                      <span className="text-[10px] text-muted-foreground">/ {evenement.capaciteMax}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Titre & Catégorie */}
+                <div>
+                  <h3 className="text-sm font-bold text-foreground line-clamp-2">{evenement.titre}</h3>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="px-2 py-1 bg-muted rounded-md text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border inline-block">
+                      {secteurLabel}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">{evenement.typeCategorique}</span>
+                  </div>
+                </div>
+
+                {/* Date & Lieu */}
+                <div className="grid grid-cols-2 gap-2 py-3 border-y border-border/50">
+                  <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                    <Calendar size={14} className="text-[hsl(var(--gov-blue))] shrink-0" />
+                    <span className="truncate">{new Date(evenement.dateDebut).toLocaleDateString(locale === 'ar' ? 'ar-MA' : 'fr-FR')}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground justify-end">
+                    <MapPin size={14} className="text-[hsl(var(--gov-red))] shrink-0" />
+                    <span className="truncate text-right">
+                      {evenement.lieu || (locale === 'ar' ? (evenement.commune?.nomArabe || evenement.commune?.nom) : evenement.commune?.nom) || '-'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="grid grid-cols-3 gap-2 mt-1">
+                  <GovButton
+                    onClick={() => { setSelectedEvenement(evenement); setShowDetailModal(true); }}
+                    variant="outline"
+                    size="sm"
+                    title={t('actions.view')}
+                    className="w-full h-10 text-muted-foreground border-border hover:bg-muted"
+                  >
+                    <Eye size={18} />
+                  </GovButton>
+                  
+                  {evenement.statut !== 'CLOTUREE' ? (
                     <GovButton
-                      key={pageNum}
-                      onClick={() => setPage(pageNum)}
-                      variant={page === pageNum ? "primary" : "outline"}
-                      className="w-10 h-10 p-0"
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      title={t('actions.edit')}
+                      className="w-full h-10 text-gov-gold border-gov-gold/20 hover:bg-gov-gold/5"
                     >
-                      {pageNum}
+                      <Link href={`/admin/evenements/${evenement.id}/modifier`}>
+                        <Edit2 size={18} />
+                      </Link>
                     </GovButton>
-                  );
-                })}
+                  ) : (
+                    <div />
+                  )}
+
+                  {evenement.statut === 'EN_ATTENTE_VALIDATION' ? (
+                    <GovButton
+                      onClick={() => handleValidation(evenement.id, 'valider')}
+                      variant="outline"
+                      size="sm"
+                      title={t('actions.validate')}
+                      className="w-full h-10 text-[hsl(var(--gov-green))] border-[hsl(var(--gov-green))/0.2] hover:bg-[hsl(var(--gov-green))/0.05]"
+                    >
+                      <CheckCircle size={18} />
+                    </GovButton>
+                  ) : (
+                    <GovButton
+                      onClick={() => handleDelete(evenement.id)}
+                      variant="outline"
+                      size="sm"
+                      title={tModal('delete')}
+                      className="w-full h-10 text-gov-red border-gov-red/20 hover:bg-gov-red/5"
+                    >
+                      <Trash2 size={18} />
+                    </GovButton>
+                  )}
+                </div>
               </div>
-              <GovButton
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                variant="outline"
-                size="icon"
+            );
+          })}
+        </div>
+      )}
+
+      {evenements.length === 0 && (
+        <div className="p-8">
+          <EmptyState
+            icon={<Calendar className="w-10 h-10" />}
+            title={t('empty')}
+            description="Aucun événement ne correspond à vos critères actuels. Vous pouvez en créer un nouveau ou ajuster vos filtres."
+            action={
+              (filters.search || filters.statut || filters.secteur || filters.communeId) ? (
+                <button 
+                  onClick={resetFilters}
+                  className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mt-2 shadow-sm font-medium"
+                >
+                  Effacer les filtres
+                </button>
+              ) : undefined
+            }
+          />
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-4 sm:px-8 py-6 bg-card border border-border rounded-3xl shadow-xl shadow-[hsl(var(--gov-blue))/0.02]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">
+            {t('pagination.page', { current: page, total: totalPages })}
+          </p>
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-start">
+            <GovButton
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              variant="outline"
+              size="icon"
+            >
+              {locale === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </GovButton>
+            <div className="flex items-center gap-1">
+              {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <GovButton
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    variant={page === pageNum ? "primary" : "outline"}
+                    className="w-8 h-8 sm:w-10 sm:h-10 p-0 text-xs sm:text-sm"
+                  >
+                    {pageNum}
+                  </GovButton>
+                );
+              })}
+            </div>
+            <GovButton
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              variant="outline"
+              size="icon"
               >
                 {locale === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
               </GovButton>
-            </div>
           </div>
-        )}
+        </div>
+      )}
+      </div>
 
       {/* Modal Création */}
       <CreateEvenementModal
@@ -795,7 +907,7 @@ function AdminEvenementsContent() {
                     {tModal('description_event')}
                   </h4>
                   <div dir="auto" className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium text-justify">
-                    {selectedEvenement.description}
+                    {decodeHtmlEntities(selectedEvenement.description)}
                   </div>
                 </div>
 

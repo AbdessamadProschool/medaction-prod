@@ -34,6 +34,8 @@ import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { GovDatePicker } from '@/components/ui/GovDatePicker';
+import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { cn } from '@/lib/utils';
 
 // Simple JSON renderer
 const JSONValue = ({ value }: { value: any }) => {
@@ -804,8 +806,9 @@ export default function AdminLogsPage() {
         <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
           <div className="overflow-x-auto">
             {activeTab === 'activity' && (
-              viewMode === 'table' ? (
-                <table className="w-full">
+              <>
+                <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
+                  <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
                       <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
@@ -841,7 +844,7 @@ export default function AdminLogsPage() {
                                   className="w-7 h-7 rounded-none bg-gov-blue hover:bg-gov-blue-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0 transition-colors"
                                   title={locale === 'ar' ? 'عرض السجل الزمني' : 'Voir la timeline'}
                                 >
-                                  {log.user.prenom?.[0]}{log.user.nom?.[0]}
+                                  {(log.user.prenom?.[0] || '').toUpperCase()}{(log.user.nom?.[0] || '').toUpperCase()}
                                 </button>
                                 <div className="min-w-0 text-start">
                                   <button
@@ -900,8 +903,8 @@ export default function AdminLogsPage() {
                     })}
                   </tbody>
                 </table>
-              ) : (
-                <div className="p-8 relative">
+                </div>
+                <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
                   <ul className="space-y-8 relative">
                     {activityLogs.map((log) => {
@@ -969,12 +972,13 @@ export default function AdminLogsPage() {
                     })}
                   </ul>
                 </div>
-              )
+              </>
             )}
 
             {activeTab === 'system' && (
-              viewMode === 'table' ? (
-                <table className="w-full">
+              <>
+                <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
+                  <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
                       <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
@@ -1019,8 +1023,8 @@ export default function AdminLogsPage() {
                     ))}
                   </tbody>
                 </table>
-              ) : (
-                <div className="p-8 relative">
+                </div>
+                <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
                   <ul className="space-y-8 relative">
                     {systemLogs.map((log) => (
@@ -1055,12 +1059,13 @@ export default function AdminLogsPage() {
                     ))}
                   </ul>
                 </div>
-              )
+              </>
             )}
 
             {activeTab === 'audit' && (
-              viewMode === 'table' ? (
-                <table className="w-full">
+              <>
+                <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
+                  <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
                       <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
@@ -1160,8 +1165,8 @@ export default function AdminLogsPage() {
                     })}
                   </tbody>
                 </table>
-              ) : (
-                <div className="p-8 relative">
+                </div>
+                <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
                   <ul className="space-y-8 relative">
                     {auditLogs.map((log) => {
@@ -1238,7 +1243,7 @@ export default function AdminLogsPage() {
                     })}
                   </ul>
                 </div>
-              )
+              </>
             )}
           </div>
 

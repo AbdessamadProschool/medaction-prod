@@ -58,9 +58,9 @@ export default function AdminStatsPage() {
       moisDernier: data?.data?.stats?.reclamations?.moisDernier ?? 0,
       parStatut: data?.data?.charts?.reclamationsParStatut?.map((s: any) => ({
         statut: s.statut === 'En attente' ? 'EN_ATTENTE' : 
-                s.statut === 'À affecter' ? 'ACCEPTEE' : // Mapping approximatif pour le rendu
-                s.statut === 'En cours' ? 'ACCEPTEE' :
-                s.statut === 'Résolues' ? 'ACCEPTEE' :
+                s.statut === 'À affecter' ? 'TO_DISPATCH' :
+                s.statut === 'En cours' ? 'EN_COURS' :
+                s.statut === 'Résolues' ? 'RESOLUE' :
                 s.statut === 'Rejetées' ? 'REJETEE' : s.statut,
         count: s.count
       })) ?? [],

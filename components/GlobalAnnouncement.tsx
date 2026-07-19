@@ -22,8 +22,9 @@ export default function GlobalAnnouncement() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
 
-  // Hide on admin pages to avoid annoyance
+  // Hide on admin pages and auth pages — NEVER block login/auth flows
   const isAdmin = pathname?.includes('/admin') || pathname?.includes('/super-admin');
+  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/auth/') || pathname?.includes('/register') || pathname?.includes('/forgot-password');
 
   useEffect(() => {
     // Fetch settings
@@ -69,6 +70,21 @@ export default function GlobalAnnouncement() {
       .catch(err => console.error('Failed to load announcement', err));
   }, [pathname]);
 
+  // Handle Escape key closure for accessibility
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    if (isVisible) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isVisible]);
+
   const handleClose = () => {
     setIsVisible(false);
     if (config?.showOncePerSession && (config.type === 'POPUP' || !config.type)) {
@@ -76,7 +92,7 @@ export default function GlobalAnnouncement() {
     }
   };
 
-  if (!config || !isVisible || isAdmin) return null;
+  if (!config || !isVisible || isAdmin || isAuthPage) return null;
 
   // Render Ticker
   if (config.type === 'TICKER') {
@@ -101,12 +117,20 @@ export default function GlobalAnnouncement() {
       const isRTL = /[\u0600-\u06FF]/.test(config.message || '');
       
       return (
-          <div className={`relative z-[60] w-full overflow-hidden py-3 text-start border-b border-white/10 ${getBgStyles()}`}>
+          <div 
+            role="status" 
+            aria-live="polite" 
+            className={`relative z-[60] w-full overflow-hidden py-3 text-start border-b border-white/10 ${getBgStyles()}`}
+          >
               {/* Patterns */}
               <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent)]" />
               
               <div className="absolute top-0 right-0 z-20 h-full flex items-center pr-3 rtl:right-auto rtl:left-0 rtl:pl-3">
-                  <button onClick={handleClose} className="p-1.5 hover:bg-white/20 rounded-full transition-all hover:scale-110 active:scale-90 backdrop-blur-sm border border-white/10">
+                  <button 
+                    onClick={handleClose} 
+                    aria-label="Fermer l'annonce"
+                    className="p-1.5 hover:bg-white/20 rounded-full transition-all hover:scale-110 active:scale-90 backdrop-blur-sm border border-white/10"
+                  >
                       <X size={16} />
                   </button>
               </div>
@@ -159,14 +183,18 @@ export default function GlobalAnnouncement() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm pointer-events-auto"
           onClick={handleClose}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="announcement-title"
+          aria-describedby="announcement-message"
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-white dark:bg-gray-800 rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl relative overflow-hidden text-start font-cairo"
+            className="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-lg p-8 shadow-2xl relative overflow-hidden text-start font-cairo"
             onClick={e => e.stopPropagation()}
           >
             {/* Decoration */}
@@ -178,6 +206,7 @@ export default function GlobalAnnouncement() {
             
             <button
               onClick={handleClose}
+              aria-label="Fermer la boîte de dialogue"
               className="absolute top-6 right-6 rtl:right-auto rtl:left-6 p-2 bg-gray-100 dark:bg-gray-700 rounded-2xl hover:bg-gray-200 transition-colors"
             >
               <X size={20} className="text-gray-600 dark:text-gray-300" />
@@ -194,11 +223,11 @@ export default function GlobalAnnouncement() {
                    <Info size={40} />}
               </div>
 
-              <h3 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-4 tracking-tight">
+              <h3 id="announcement-title" className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-4 tracking-tight">
                 {config.title}
               </h3>
               
-              <div className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap text-lg font-medium leading-relaxed">
+              <div id="announcement-message" className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap text-lg font-medium leading-relaxed">
                 {config.message}
               </div>
 

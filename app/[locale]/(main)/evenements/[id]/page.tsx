@@ -18,7 +18,7 @@ import { PermissionGuard } from '@/hooks/use-permission';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
-import { cn } from '@/lib/utils';
+import { cn, decodeHtmlEntities } from '@/lib/utils';
 
 // Map dynamique (SSR disabled)
 const LocationMap = dynamic(() => import('@/components/maps/LocationMap'), {
@@ -443,7 +443,7 @@ export default function EvenementDetailPage() {
                   className="prose prose-lg text-gray-700 leading-relaxed whitespace-pre-wrap text-justify"
                   dir="auto"
                 >
-                   {locale === 'ar' && event.descriptionAr ? event.descriptionAr : event.description}
+                    {decodeHtmlEntities(locale === 'ar' && event.descriptionAr ? event.descriptionAr : event.description)}
                 </div>
 
                 {/* Tags */}

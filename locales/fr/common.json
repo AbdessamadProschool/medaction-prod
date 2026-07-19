@@ -884,7 +884,10 @@
       "form": {
         "sector": "Secteur de l'événement"
       },
-      "loading": "Chargement des événements..."
+      "loading": "Chargement des événements...",
+      "pagination": {
+        "page": "Page {current} sur {total}"
+      }
     },
     "news_page": {
       "page_title": "Actualités",
@@ -1766,7 +1769,13 @@
       "confirm": "Confirmer",
       "close": "Fermer",
       "messages": {
-        "resetting": "Réinitialisation en cours..."
+        "error": "Une erreur est survenue",
+        "status_changed": "Le compte a été {status}",
+        "delete_confirm": "Supprimer {name} ?",
+        "user_deleted": "Utilisateur supprimé",
+        "reset_password_confirm": "Réinitialiser le mot de passe de {name} ?",
+        "reset_password_alert": "Nouveau mot de passe : {password}",
+        "reset_password_success": "Mot de passe réinitialisé"
       },
       "pagination": "Page {start}-{end} sur {total}",
       "roles": {
@@ -1875,15 +1884,6 @@
         "deactivate": "Désactiver",
         "activate": "Activer",
         "delete": "Supprimer"
-      },
-      "messages": {
-        "error": "Une erreur est survenue",
-        "status_changed": "Le compte a été {status}",
-        "delete_confirm": "Supprimer {name} ?",
-        "user_deleted": "Utilisateur supprimé",
-        "reset_password_confirm": "Réinitialiser le mot de passe de {name} ?",
-        "reset_password_alert": "Nouveau mot de passe : {password}",
-        "reset_password_success": "Mot de passe réinitialisé"
       },
       "refresh": "Actualiser"
     }
@@ -2061,13 +2061,7 @@
     "slide4_subtitle_alt": "Votre avis compte",
     "slide4_description_alt": "Contribuez activement aux décisions locales."
   },
-  "search": {
-    "title": "Explorez la Province",
-    "subtitle": "Trouvez les établissements, événements et services par secteur ou commune",
-    "placeholder": "Nom d'établissement...",
-    "quick": "Recherche Rapide",
-    "all_communes": "Toutes les communes"
-  },
+  "search": "Rechercher",
   "sectors": {
     "title": "Secteurs d'activité",
     "filter": "Cliquez pour filtrer",
@@ -2090,7 +2084,10 @@
   "status": {
     "pending": "En attente",
     "accepted": "Acceptée",
-    "rejected": "Rejetée"
+    "rejected": "Rejetée",
+    "to_dispatch": "À affecter",
+    "in_progress": "En cours",
+    "resolved": "Résolue"
   },
   "events": {
     "title": "Événements à venir",
@@ -2635,6 +2632,34 @@
         "confirm_restore": "Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cela écrasera les données actuelles.",
         "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette sauvegarde ? Cette action est irréversible."
       }
+    },
+    "status": {
+      "en_attente": "En attente",
+      "acceptee": "Acceptée",
+      "rejetee": "Rejetée",
+      "to_dispatch": "À affecter",
+      "en_cours": "En cours",
+      "resolue": "Résolue",
+      "soumise": "Soumise",
+      "annulee": "Annulée",
+      "en_attente_validation": "En attente de validation",
+      "validee": "Validée",
+      "publiee": "Publiée",
+      "cloturee": "Clôturée",
+      "brouillon": "Brouillon",
+      "planifiee": "Planifiée",
+      "terminee": "Terminée",
+      "rapport_complete": "Rapport complété",
+      "reportee": "Reportée",
+      "depubliee": "Dépubliée",
+      "archivee": "Archivée",
+      "en_examen": "En examen",
+      "approuvee": "Approuvée",
+      "implementee": "Implémentée",
+      "en_attente_article": "En attente",
+      "publie": "Publié",
+      "rejete": "Rejeté",
+      "archive": "Archivé"
     }
   },
   "stats": {
@@ -2688,6 +2713,7 @@
     "loading": "Chargement...",
     "cancel": "Annuler",
     "confirm": "Confirmer",
+    "confirm_delete": "Confirmer la suppression",
     "save": "Enregistrer",
     "delete": "Supprimer",
     "edit": "Modifier",
@@ -3740,7 +3766,7 @@
     "new_value": "NOUVELLE VALEUR",
     "all": "Toutes",
     "export_btn": "Exporter",
-    "page_x_of_y": "Page {current} sur {total}",
+    "page_x_of_y": "Page {current} sur {total} ({count} résultats)",
     "details_modal_title": "Détails du Log #{id}",
     "type_level": "Type / Niveau",
     "source_action": "Source / Action",
@@ -6194,7 +6220,6 @@
   },
   "confirm_delete": "Confirmer la suppression",
   "advanced_filters": "Filtres avancés",
-  "search": "Rechercher",
   "all_statuses": "Tous les statuts",
   "all": "Tous",
   "date_range": "Période",

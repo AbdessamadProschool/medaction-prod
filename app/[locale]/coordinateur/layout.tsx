@@ -137,7 +137,7 @@ export default function CoordinateurLayout({
           <div className="p-4">
             <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gov-gold to-gov-gold-dark flex items-center justify-center text-white font-bold shadow-lg">
-                {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
+                {(session?.user?.prenom?.[0] || '').toUpperCase()}{(session?.user?.nom?.[0] || '').toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-bold text-sm truncate">
@@ -254,7 +254,7 @@ export default function CoordinateurLayout({
                 className="flex items-center gap-3 p-1.5 pr-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200"
               >
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gov-blue to-gov-blue-dark flex items-center justify-center text-white font-bold text-sm shadow-md">
-                  {session?.user?.prenom?.[0]}{session?.user?.nom?.[0]}
+                 {(session?.user?.prenom?.[0] || '').toUpperCase()}{(session?.user?.nom?.[0] || '').toUpperCase()}
                 </div>
                 <div className="hidden md:block text-right">
                     <span className="block text-sm font-bold text-gray-900 leading-none mb-1">{session?.user?.prenom}</span>

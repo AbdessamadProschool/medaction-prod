@@ -382,18 +382,18 @@ export default function AdminReclamationsPage() {
                 <Flag className="w-7 h-7 group-hover:scale-110 transition-transform duration-500" />
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
                   <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
                     {t('page_title')}
                   </h1>
-                  <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)]">
+                  <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)] whitespace-nowrap">
                     {tCommon('nav.user_menu.admin')}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground text-sm font-medium">
                   <p>{t('total_reclamations', { count: total })}</p>
-                  <div className="w-1 h-1 bg-border rounded-full" />
-                  <p className="flex items-center gap-1.5">
+                  <div className="hidden sm:block w-1 h-1 bg-border rounded-full" />
+                  <p className="flex items-center gap-1.5 whitespace-nowrap">
                     <Shield size={14} className="text-[hsl(var(--gov-blue))]" />
                     {tCommon('governance_secure')}
                   </p>
@@ -413,7 +413,9 @@ export default function AdminReclamationsPage() {
                 size="icon"
                 loading={refreshing || loadingReclamations}
                 title={tCommon('refresh')}
-              />
+              >
+                <RefreshCw size={16} />
+              </GovButton>
               
               <div className="h-10 w-px bg-border mx-1 hidden sm:block" />
               
@@ -595,9 +597,11 @@ export default function AdminReclamationsPage() {
           </AnimatePresence>
 
           {/* Table Section */}
-          <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden mb-6">
-            <div className="overflow-x-auto custom-scrollbar">
-              <GovTable>
+          <div className="mb-6 space-y-4">
+            {/* Vue Desktop: Tableau */}
+            <div className="hidden md:block bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+              <div className="overflow-x-auto custom-scrollbar">
+                <GovTable>
             <thead>
               <tr>
                 <GovTh>{t('table.ref')}</GovTh>
@@ -738,6 +742,121 @@ export default function AdminReclamationsPage() {
             </tbody>
           </GovTable>
           </div>
+          </div>
+
+          {/* Vue Mobile: Cartes Empilées */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+              {reclamations.length > 0 ? (
+                (Array.isArray(reclamations) ? reclamations : []).map((r: any) => {
+                  const statusKey = r.statut ?? "EN_ATTENTE";
+                  return (
+                    <div 
+                      key={r.id} 
+                      className="gov-card p-5 bg-card/80 backdrop-blur-xl border border-border rounded-2xl flex flex-col gap-4 cursor-pointer hover:border-[hsl(var(--gov-blue)/0.3)] transition-colors shadow-sm"
+                      onClick={() => {
+                        setSelectedReclamation(r);
+                        setShowDetail(true);
+                      }}
+                    >
+                      {/* En-tête: Ref & Statut */}
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-mono text-xs font-black text-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] px-2 py-1 rounded border border-[hsl(var(--gov-blue)/0.1)] shrink-0">
+                          #{(r as any).reference || r.id.toString().padStart(4, '0')}
+                        </span>
+                        <StatusBadge status={statusKey} animate={statusKey === 'EN_ATTENTE'} />
+                      </div>
+                      
+                      {/* Sujet & Catégorie */}
+                      <div>
+                        <h3 className="text-sm font-bold text-foreground line-clamp-2">{r.titre}</h3>
+                        <div className="mt-2">
+                          <span className="text-[10px] font-bold bg-muted px-2 py-1 rounded text-muted-foreground uppercase tracking-widest inline-block">
+                            {tCategories(r.categorie)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Citoyen & Affectation */}
+                      <div className="flex items-center justify-between gap-4 py-3 border-y border-border/50">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center text-[hsl(var(--gov-blue))] font-black text-xs shrink-0">
+                            {r.user?.nom?.[0] || 'U'}
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-foreground line-clamp-1">{r.user?.nom || tCommon('reclamations.anonyme')}</p>
+                            <p className="text-[10px] text-muted-foreground">{new Date(r.createdAt).toLocaleDateString(locale)}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right shrink-0">
+                          {(r as any).affecteeAAutorite ? (
+                            <div className="flex items-center gap-1.5 text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100 justify-end">
+                              <User size={12} className="shrink-0" />
+                              <span className="text-[10px] font-black uppercase tracking-widest max-w-[80px] truncate">
+                                {(r as any).affecteeAAutorite.nom}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center justify-end gap-1 opacity-60">
+                              <Minus size={12} />
+                              {t('not_assigned')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="grid grid-cols-3 gap-2 mt-1">
+                        <GovButton 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedReclamation(r);
+                            setShowAffectationModal(true);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 h-10"
+                          title={t('actions.assign')}
+                        >
+                          <UserPlus size={18} />
+                        </GovButton>
+                        <GovButton 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedReclamation(r);
+                            setShowStatutModal(true);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-gov-green-dark border-gov-green/20 hover:bg-gov-green/5 h-10"
+                          title={t('actions.update_status')}
+                        >
+                          <Edit size={18} />
+                        </GovButton>
+                        <GovButton 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedReclamation(r);
+                            setShowDeleteModal(true);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="w-full text-gov-red border-gov-red/20 hover:bg-gov-red/5 h-10"
+                          title={tActions('delete')}
+                        >
+                          <Trash2 size={18} />
+                        </GovButton>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="p-10 text-center bg-card rounded-2xl shadow-sm border border-border flex flex-col items-center gap-4">
+                  <Flag size={48} className="text-muted-foreground opacity-40" />
+                  <p className="text-sm font-black uppercase tracking-widest opacity-60">{t('no_reclamations')}</p>
+                </div>
+              )}
+            </div>
 
             {/* Institutional Pagination */}
             <div className="px-6 py-5 bg-muted/20 border-t border-border flex items-center justify-between">

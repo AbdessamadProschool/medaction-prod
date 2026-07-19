@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { useLocale, useTranslations } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
-import { cn } from '@/lib/utils';
+import { cn, decodeHtmlEntities } from '@/lib/utils';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 
 interface Campagne {
@@ -377,12 +377,12 @@ export default function CampagneDetailPage() {
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900">{t('about_title')}</h2>
               </div>
               <div className="prose prose-sm sm:prose text-gray-700 leading-relaxed whitespace-pre-wrap" dir="auto">
-                {locale === 'ar' && campagne.descriptionAr ? campagne.descriptionAr : campagne.description || (locale === 'ar' ? 'لا يوجد وصف متاح.' : 'Aucune description disponible.')}
+                {decodeHtmlEntities(locale === 'ar' && campagne.descriptionAr ? campagne.descriptionAr : campagne.description || (locale === 'ar' ? 'لا يوجد وصف متاح.' : 'Aucune description disponible.'))}
               </div>
 
               {campagne.contenu && (
                 <div className="prose prose-sm sm:prose text-gray-700 leading-relaxed whitespace-pre-wrap mt-6 pt-6 border-t border-gray-100" dir="auto">
-                  {locale === 'ar' && campagne.contenuAr ? campagne.contenuAr : campagne.contenu}
+                  {decodeHtmlEntities(locale === 'ar' && campagne.contenuAr ? campagne.contenuAr : campagne.contenu)}
                 </div>
               )}
             </motion.div>

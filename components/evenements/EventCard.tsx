@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { 
   GraduationCap, Hospital, Trophy, HeartHandshake, Drama, ClipboardList, 
-  CheckCircle2, PlayCircle, Calendar, MapPin, Users 
+  PlayCircle, Calendar, MapPin, Users, CheckCircle2
 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { useTranslations, useLocale } from 'next-intl';
@@ -45,17 +45,31 @@ const secteurColors: Record<string, { bg: string; text: string; icon: React.Elem
   AUTRE: { bg: 'bg-gray-100', text: 'text-gray-700', icon: ClipboardList },
 };
 
+/**
+ * Détermine le badge de statut à afficher sur la card d'événement.
+ * Les couleurs sont alignées avec la charte et la logique métier :
+ * - EN_ACTION = vert (événement en cours = état normal et positif)
+ * - CLOTUREE  = gris ardoise (terminé, neutre)
+ * - REJETEE   = rouge (rejet, état négatif)
+ * - défaut    = or gouvernemental (à venir)
+ */
 function getStatusBadge(statut: string, dateDebut: string, dateFin?: string) {
   const now = new Date();
   const start = new Date(dateDebut);
   const end = dateFin ? new Date(dateFin) : null;
 
+  if (statut === 'REJETEE') {
+    return { labelKey: 'rejected', className: 'bg-red-500 text-white', icon: CheckCircle2 };
+  }
   if (statut === 'CLOTUREE' || (end && now > end)) {
-    return { labelKey: 'completed', className: 'bg-gray-500 text-white', icon: CheckCircle2 };
+    // Clôturé = état neutre/archivé → gris ardoise (muted)
+    return { labelKey: 'completed', className: 'bg-slate-600 text-white', icon: CheckCircle2 };
   }
   if (statut === 'EN_ACTION' || (now >= start && (!end || now <= end))) {
-    return { labelKey: 'in_progress', className: 'bg-red-500 text-white animate-pulse shadow-red-200', icon: PlayCircle };
+    // En cours = état positif et normal → vert (cohérent avec delegation, gouverneur, admin)
+    return { labelKey: 'in_progress', className: 'bg-emerald-500 text-white animate-pulse shadow-emerald-200', icon: PlayCircle };
   }
+  // À venir → or gouvernemental
   return { labelKey: 'upcoming', className: 'bg-gov-gold text-[hsl(213,80%,15%)] font-bold', icon: Calendar };
 }
 

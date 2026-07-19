@@ -8,7 +8,7 @@ import { performanceCache, CACHE_TTL, cacheKey } from '@/lib/cache/performance-c
 const DEFAULT_CONFIG = {
   isActive: true,
   title: "Version Bêta - إطلاق تجريبي",
-  message: "Bienvenue sur le Portail MEDIOUNA. Cette plateforme est en phase de lancement. Vos retours nous sont précieux pour améliorer le service.\n\nمرحبًا بكم في بوابة مديونة. هذه المنصة في مرحلة الإطلاق التجريبي. ملاحظاتكم قيمة لتحسين الخدمة.",
+  message: "Bienvenue sur le Portail MEDIOUNA. Cette plateforme est en phase de lancement. Vos retours nous sont précieux pour améliorer le service.\n\nمرحبًا بكم في بوابة مديونة. cette plateforme est en phase de lancement. Vos retours nous sont précieux pour améliorer le service.\n\nمرحبًا بكم في بوابة مديونة. هذه المنصة in phase de lancement. Vos retours nous sont précieux pour améliorer le service.\n\nمرحبًا بكم في بوابة مديونة. هذه المنصة في مرحلة الإطلاق التجريبي. ملاحظاتكم قيمة لتحسين الخدمة.",
   showOncePerSession: true
 };
 

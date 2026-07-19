@@ -458,13 +458,13 @@ export default function SuperAdminDashboard() {
                 title={t('super_admin.quick_actions.users')}
                 icon={Users}
                 href="/admin/utilisateurs"
-                color="from-[hsl(var(--gov-blue-light))] to-[hsl(var(--gov-blue))]"
+                color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.reclamations')}
                 icon={MessageSquare}
                 href="/admin/reclamations"
-                color="from-orange-500 to-red-600"
+                color="from-orange-500 to-orange-700"
                 badge={stats?.reclamations.enAttente}
               />
               <QuickAction
@@ -477,43 +477,43 @@ export default function SuperAdminDashboard() {
                 title={t('super_admin.quick_actions.events')}
                 icon={Calendar}
                 href="/admin/evenements"
-                color="from-[hsl(var(--gov-red))] to-[hsl(var(--gov-red-dark))]"
+                color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.establishments')}
                 icon={Building2}
                 href="/admin/etablissements"
-                color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
+                color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.activities')}
                 icon={ClipboardList}
                 href="/admin/programmes-activites"
-                color="from-[hsl(var(--gov-blue-light))] to-[hsl(var(--gov-blue))]"
+                color="from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.logs')}
                 icon={FileText}
                 href="/super-admin/audit"
-                color="from-gray-500 to-gray-700"
+                color="from-slate-500 to-slate-700"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.import')}
                 icon={Database}
                 href="/super-admin/import"
-                color="from-lime-500 to-green-600"
+                color="from-[hsl(var(--gov-green))] to-[hsl(var(--gov-green-dark))]"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.licence')}
                 icon={Key}
                 href="/super-admin/licence"
-                color="from-amber-500 to-yellow-600"
+                color="from-amber-500 to-amber-700"
               />
               <QuickAction
                 title={t('super_admin.quick_actions.settings')}
                 icon={Settings}
                 href="/super-admin/settings"
-                color="from-pink-500 to-rose-600"
+                color="from-amber-500 to-amber-700"
               />
             </div>
           </motion.div>

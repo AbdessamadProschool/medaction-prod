@@ -42,7 +42,8 @@
     "i18n:translate": "tsx scripts/i18n/translate-missing.ts",
     "maintenance:backup": "tsx scripts/backup.ts",
     "maintenance:clear": "tsx scripts/clear-tables.ts",
-    "maintenance:restore": "tsx scripts/restore.ts"
+    "maintenance:restore": "tsx scripts/restore.ts",
+    "test:i18n": "node scripts/check-i18n.js --strict"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.7.5",

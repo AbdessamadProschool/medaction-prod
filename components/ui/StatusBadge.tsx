@@ -75,6 +75,24 @@ export type StatusType =
   | 'VALIDEE' 
   | 'PUBLIEE' 
   | 'CLOTUREE'
+  // StatutActivite
+  | 'BROUILLON'
+  | 'PLANIFIEE'
+  | 'TERMINEE'
+  | 'RAPPORT_COMPLETE'
+  | 'REPORTEE'
+  // StatutActualite
+  | 'DEPUBLIEE'
+  | 'ARCHIVEE'
+  // StatutSuggestion
+  | 'EN_EXAMEN'
+  | 'APPROUVEE'
+  | 'IMPLEMENTEE'
+  // StatutArticle (noms sans accord — genre neutre dans le schéma Prisma)
+  | 'EN_ATTENTE'
+  | 'PUBLIE'
+  | 'REJETE'
+  | 'ARCHIVE'
   | string;
 
 export interface StatusBadgeProps
@@ -105,16 +123,56 @@ import {
 } from 'lucide-react';
 
 const NEW_STATUS_CONFIG: Record<string, { color: "blue" | "green" | "gold" | "red" | "purple" | "muted", icon: React.ElementType, pulse?: boolean }> = {
-  SOUMISE: { color: 'blue', icon: Send },
-  ACCEPTEE: { color: 'blue', icon: CheckSquare },
-  EN_COURS: { color: 'gold', icon: Loader2, pulse: true },
-  RESOLUE: { color: 'green', icon: CheckCircle2 },
-  REJETEE: { color: 'red', icon: XCircle },
-  ANNULEE: { color: 'muted', icon: Ban },
-  EN_ATTENTE_VALIDATION: { color: 'gold', icon: Clock, pulse: true },
-  VALIDEE: { color: 'green', icon: ShieldCheck },
-  PUBLIEE: { color: 'blue', icon: Globe },
-  CLOTUREE: { color: 'muted', icon: Lock },
+  // ── Statuts génériques / Réclamations ──────────────────────────
+  SOUMISE:              { color: 'blue',   icon: Send },
+  ACCEPTEE:             { color: 'blue',   icon: CheckSquare },
+  EN_COURS:             { color: 'gold',   icon: Loader2,       pulse: true  },
+  RESOLUE:              { color: 'green',  icon: CheckCircle2 },
+  REJETEE:              { color: 'red',    icon: XCircle },
+  ANNULEE:              { color: 'muted',  icon: Ban },
+
+  // ── StatutEvenement ─────────────────────────────────────────────
+  EN_ATTENTE_VALIDATION:{ color: 'gold',   icon: Clock,         pulse: true  },
+  VALIDEE:              { color: 'green',  icon: ShieldCheck },
+  PUBLIEE:              { color: 'blue',   icon: Globe },
+  CLOTUREE:             { color: 'muted',  icon: Lock },
+
+  // ── StatutActivite ──────────────────────────────────────────────
+  BROUILLON:            { color: 'muted',  icon: FileText },
+  // PLANIFIEE : validé et programmé = état informationnel positif (bleu)
+  PLANIFIEE:            { color: 'blue',   icon: Clock },
+  // EN_COURS déjà couvert ci-dessus
+  // TERMINEE : accompli sans rapport → neutre, pas de célébration
+  TERMINEE:             { color: 'muted',  icon: CheckCircle2 },
+  // RAPPORT_COMPLETE : rapport rempli = finalisation réussie → vert
+  RAPPORT_COMPLETE:     { color: 'green',  icon: CheckSquare },
+  // REPORTEE : date changée = alerte douce, attention requise → or
+  REPORTEE:             { color: 'gold',   icon: AlertTriangle, pulse: true  },
+
+  // ── StatutActualite ─────────────────────────────────────────────
+  // BROUILLON, EN_ATTENTE_VALIDATION, VALIDEE, PUBLIEE déjà couverts
+  // DEPUBLIEE : contenu retiré = alerte modérée, pas encore archivé → or
+  DEPUBLIEE:            { color: 'gold',   icon: AlertTriangle },
+  // ARCHIVEE : archivé = neutre, plus actif → gris
+  ARCHIVEE:             { color: 'muted',  icon: Archive },
+
+  // ── StatutSuggestion ────────────────────────────────────────────
+  // SOUMISE déjà couverte
+  // EN_EXAMEN : en cours d’examen = gold pulsé (attention rédacteur)
+  EN_EXAMEN:            { color: 'gold',   icon: Clock,         pulse: true  },
+  // APPROUVEE : approuvée mais pas encore implémentée → blue (validé sans finalisation)
+  APPROUVEE:            { color: 'blue',   icon: ShieldCheck },
+  // REJETEE déjà couverte
+  // IMPLEMENTEE : implémenté = résultat final positif → vert
+  IMPLEMENTEE:          { color: 'green',  icon: CheckCircle2 },
+
+  // ── StatutArticle (noms sans accord — genre neutre Prisma) ──────
+  // Note : PUBLIE/REJETE/ARCHIVE != PUBLIEE/REJETEE/ARCHIVEE (StatutActualite)
+  // Une migration de renommage serait plus propre à terme (hors scope).
+  EN_ATTENTE:           { color: 'gold',   icon: Clock,         pulse: true  },
+  PUBLIE:               { color: 'blue',   icon: Globe },
+  REJETE:               { color: 'red',    icon: XCircle },
+  ARCHIVE:              { color: 'muted',  icon: Archive },
 };
 
 export function StatusBadge({

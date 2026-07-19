@@ -39,6 +39,8 @@ import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface Etablissement {
   id: number;
@@ -84,6 +86,7 @@ export default function AdminEtablissementsPage() {
   const tSectors = useTranslations('admin.users_page.sectors');
   const tModal = useTranslations('admin.common_modal');
   const locale = useLocale();
+  const router = useRouter();
 
   const [page, setPage] = useState(1);
   
@@ -365,7 +368,9 @@ export default function AdminEtablissementsPage() {
             size="icon"
             loading={loading && etablissements.length > 0}
             title={t('refresh') || "Actualiser"}
-          />
+          >
+            <RefreshCw size={16} />
+          </GovButton>
 
           <div className="flex items-center gap-1 bg-card border border-border rounded-2xl p-1 shadow-sm">
             <GovButton
@@ -503,8 +508,11 @@ export default function AdminEtablissementsPage() {
         )}
       </AnimatePresence>
 
-      {/* Table View */}
-      <GovTable>
+      {/* Table Section */}
+      <div className="mb-6 space-y-4">
+        {/* Vue Desktop: Tableau */}
+        <div className="hidden md:block overflow-x-auto custom-scrollbar bg-card rounded-2xl shadow-sm border border-border">
+          <GovTable>
         <thead>
           <tr>
             <GovTh>{t('card.name') || "Établissement"}</GovTh>
@@ -647,16 +655,131 @@ export default function AdminEtablissementsPage() {
               </GovTr>
             ))
           )}
-        </tbody>
-      </GovTable>
+          </tbody>
+        </GovTable>
+        </div>
+
+        {/* Vue Mobile: Cartes Empilées */}
+        <div className="grid grid-cols-1 gap-4 md:hidden">
+          {loading ? (
+            [...Array(5)].map((_, i) => (
+              <div key={i} className="gov-card p-5 bg-card/80 rounded-2xl flex flex-col gap-4 animate-pulse">
+                <div className="flex items-center gap-4"><div className="h-10 w-10 bg-muted rounded-lg" /><div className="space-y-2 flex-1"><div className="h-4 w-32 bg-muted rounded" /><div className="h-3 w-20 bg-muted rounded" /></div></div>
+                <div className="h-8 w-full bg-muted rounded" />
+              </div>
+            ))
+          ) : etablissements.length === 0 ? (
+            <div className="p-10 text-center bg-card rounded-2xl border border-border flex flex-col items-center justify-center">
+              <Building2 className="w-10 h-10 text-muted-foreground mb-4 opacity-50" />
+              <h3 className="text-xl font-black text-foreground mb-2">{t('empty.title')}</h3>
+              <p className="text-muted-foreground text-sm font-medium leading-relaxed">
+                {search || secteurFilter ? t('empty.no_results') : t('empty.description')}
+              </p>
+              {(search || secteurFilter || validFilter) && (
+                <GovButton
+                  onClick={() => { setSearch(''); setSecteurFilter(''); setValidFilter(''); }}
+                  variant="primary"
+                  className="mt-4 shadow-lg shadow-[hsl(var(--gov-blue))/0.2]"
+                >
+                  {t('reset')}
+                </GovButton>
+              )}
+            </div>
+          ) : (
+            (Array.isArray(etablissements) ? etablissements : []).map((etablissement: any) => (
+              <div 
+                key={etablissement.id} 
+                className="gov-card p-5 bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-sm relative cursor-pointer hover:border-[hsl(var(--gov-blue)/0.3)] transition-colors"
+                onClick={() => openDetailModal(etablissement)}
+              >
+                {/* En-tête: Identité */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground border border-border shadow-sm overflow-hidden shrink-0 relative">
+                    {etablissement.photoPrincipale ? (
+                      <Image src={etablissement.photoPrincipale} alt={etablissement.nom} fill className="object-cover" />
+                    ) : (
+                      <Building2 size={24} />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-sm font-extrabold text-foreground line-clamp-1">{etablissement.nom}</span>
+                      {etablissement.isMisEnAvant && <Star size={12} className="text-[hsl(var(--gov-gold))] fill-current shrink-0" />}
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">
+                      {etablissement.code}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Secteur & Localisation */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div>
+                    <span className="px-2 py-1 bg-muted rounded-md text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border inline-block">
+                      {getSecteurLabel(etablissement.secteur)}
+                    </span>
+                  </div>
+                  {etablissement.commune && (
+                    <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground justify-end">
+                      <MapPin size={12} className="text-[hsl(var(--gov-red))] shrink-0" />
+                      <span className="truncate">{locale === 'ar' ? (etablissement.commune.nomArabe || etablissement.commune.nom) : etablissement.commune.nom}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Statut & Note */}
+                <div className="flex items-center justify-between py-3 border-y border-border/50">
+                  <div className="flex flex-wrap gap-1">
+                    <StatusBadge status={etablissement.isValide ? "VALIDEE" : "REJETEE"} size="sm" />
+                    {etablissement.isPublie && <StatusBadge status="PUBLIEE" size="sm" />}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Star size={14} className="text-[hsl(var(--gov-gold))] fill-current" />
+                    <span className="text-sm font-black text-foreground">{etablissement.noteMoyenne.toFixed(1)}</span>
+                    <span className="text-[10px] font-bold text-muted-foreground">({etablissement.nombreEvaluations})</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  <GovButton
+                    onClick={(e) => { e.stopPropagation(); openDetailModal(etablissement); }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-10 text-muted-foreground border-border hover:bg-muted"
+                  >
+                    <Eye size={18} />
+                  </GovButton>
+                  <GovButton
+                    onClick={(e) => { e.stopPropagation(); handleValidate(etablissement.id, 'publier'); }}
+                    variant="outline"
+                    size="sm"
+                    className={cn("w-full h-10", etablissement.isPublie ? "text-[hsl(var(--gov-blue))] border-[hsl(var(--gov-blue))/0.2]" : "text-muted-foreground border-border hover:bg-muted")}
+                    loading={actionLoading === `publier-${etablissement.id}`}
+                  >
+                    <Globe size={18} />
+                  </GovButton>
+                  <GovButton
+                    onClick={(e) => { e.stopPropagation(); router.push(`/admin/etablissements/${etablissement.id}/modifier`); }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-10 text-muted-foreground border-border hover:bg-muted"
+                  >
+                    <Edit size={18} />
+                  </GovButton>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-8 py-6 bg-card border border-border rounded-3xl shadow-xl shadow-[hsl(var(--gov-blue))/0.02]">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <div className="flex items-center justify-between px-4 sm:px-8 py-6 bg-card border border-border rounded-3xl shadow-xl shadow-[hsl(var(--gov-blue))/0.02]">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">
             {t('pagination.info', { page, total: totalPages })}
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-start">
             <GovButton
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -673,7 +796,7 @@ export default function AdminEtablissementsPage() {
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
                     variant={page === pageNum ? "primary" : "outline"}
-                    className="w-10 h-10 p-0"
+                    className="w-8 h-8 sm:w-10 sm:h-10 p-0 text-xs sm:text-sm"
                   >
                     {pageNum}
                   </GovButton>
@@ -691,6 +814,7 @@ export default function AdminEtablissementsPage() {
           </div>
         </div>
       )}
+      </div>
 
       {/* Detail Modal (Institutional Sidebar) */}
       <AnimatePresence>

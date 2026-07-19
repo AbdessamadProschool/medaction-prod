@@ -37,6 +37,7 @@
       "modals": {
         "assignment": {
           "title": "Affectation de Dossier",
+          "subtitle": "Sélectionnez l'entité ou l'agent en charge de traiter cette réclamation.",
           "unassign": "Désaffecter le dossier",
           "no_agents": "Aucun agent disponible",
           "select_label": "Sélectionner un agent ou autorité",

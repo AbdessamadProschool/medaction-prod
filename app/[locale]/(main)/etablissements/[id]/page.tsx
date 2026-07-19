@@ -1328,7 +1328,7 @@ export default function EtablissementDetailPage() {
                          <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 rounded-full bg-gov-blue/10 text-gov-blue flex items-center justify-center font-bold">
-                                  {evaluation.user?.prenom?.[0]}{evaluation.user?.nom?.[0]}
+                                  {(evaluation.user?.prenom?.[0] || '').toUpperCase()}{(evaluation.user?.nom?.[0] || '').toUpperCase()}
                                </div>
                                <div>
                                   <p className="font-bold text-gray-900">{evaluation.user?.prenom} {evaluation.user?.nom}</p>

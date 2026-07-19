@@ -11,6 +11,7 @@
   font-family: inherit !important;
   border-radius: 0.75rem !important; /* rounded-xl */
   border: 1px solid hsl(var(--border)) !important;
+  /* TODO: replace with token shadow-elevation-2 once FIX-LAYOUT-1 tokens are defined */
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   background-color: hsl(var(--background)) !important;
   color: hsl(var(--foreground)) !important;
@@ -29,7 +30,7 @@
 .react-datepicker-year-header {
   color: hsl(var(--foreground)) !important;
   font-weight: 700 !important;
-  font-size: 0.9rem !important;
+  @apply text-sm !important;
 }
 
 .react-datepicker__day-name,
@@ -109,4 +110,14 @@
 
 .react-datepicker-rtl .react-datepicker__navigation-icon--next::before {
   transform: rotate(225deg);
+}
+
+/* Navigation arrows — override library default grey with charte token */
+.react-datepicker__navigation-icon::before {
+  border-color: hsl(var(--foreground) / 0.4) !important;
+  transition: border-color 0.15s ease;
+}
+
+.react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+  border-color: hsl(var(--foreground)) !important;
 }

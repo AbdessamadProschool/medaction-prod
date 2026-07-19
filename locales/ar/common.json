@@ -1624,7 +1624,10 @@
       "form": {
         "sector": "Secteur de l'événement"
       },
-      "loading": "جاري تحميل الأحداث..."
+      "loading": "جاري تحميل الأحداث...",
+      "pagination": {
+        "page": "الصفحة {current} من {total}"
+      }
     },
     "users_page": {
       "page_title": "إدارة المستخدمين",
@@ -1640,7 +1643,13 @@
       "confirm": "تأكيد",
       "close": "إغلاق",
       "messages": {
-        "resetting": "جاري إعادة الضبط..."
+        "error": "حدث خطأ",
+        "status_changed": "تم {status} الحساب",
+        "delete_confirm": "حذف {name}؟",
+        "user_deleted": "تم حذف المستخدم",
+        "reset_password_confirm": "تغيير كلمة مرور {name}؟",
+        "reset_password_alert": "كلمة المرور الجديدة: {password}",
+        "reset_password_success": "تم تغيير كلمة المرور"
       },
       "pagination": "صفحة {start}-{end} من {total}",
       "roles": {
@@ -1749,15 +1758,6 @@
         "deactivate": "تعطيل",
         "activate": "تفعيل",
         "delete": "حذف"
-      },
-      "messages": {
-        "error": "حدث خطأ",
-        "status_changed": "تم {status} الحساب",
-        "delete_confirm": "حذف {name}؟",
-        "user_deleted": "تم حذف المستخدم",
-        "reset_password_confirm": "تغيير كلمة مرور {name}؟",
-        "reset_password_alert": "كلمة المرور الجديدة: {password}",
-        "reset_password_success": "تم تغيير كلمة المرور"
       },
       "refresh": "تحديث القائمة"
     },
@@ -2314,13 +2314,7 @@
     "slide4_subtitle_alt": "رأيك يهم",
     "slide4_description_alt": "المساهمة بنشاط في القرارات المحلية."
   },
-  "search": {
-    "title": "استكشاف الإقليم",
-    "subtitle": "البحث عن المؤسسات والخدمات حسب المجال الجغرافي أو القطاع",
-    "placeholder": "البحث عن مؤسسة، خدمة...",
-    "quick": "الوصول السريع",
-    "all_communes": "جميع الجماعات الترابية"
-  },
+  "search": "بحث",
   "sectors": {
     "title": "قطاعات النشاط",
     "filter": "تصفية حسب القطاع",
@@ -2774,8 +2768,36 @@
           "establishment_required": "المؤسسة مطلوبة",
           "server_error": "خطأ في الخادم"
         },
-        "loading": "جاري التحميل..."
+        "loading": "جاري التحميل...",
+        "submit_btn": "حفظ التغييرات"
       }
+    },
+    "status": {
+      "en_attente": "قيد الانتظار",
+      "acceptee": "مقبولة",
+      "rejetee": "مرفوضة",
+      "to_dispatch": "للتعيين",
+      "en_cours": "جارية",
+      "resolue": "محلولة",
+      "soumise": "مقدمة",
+      "annulee": "ملغاة",
+      "en_attente_validation": "في انتظار التحقق",
+      "validee": "تم التحقق",
+      "publiee": "منشورة",
+      "cloturee": "مغلقة",
+      "brouillon": "مسودة",
+      "planifiee": "مجدولة",
+      "terminee": "منتهية",
+      "rapport_complete": "تقرير مكتمل",
+      "reportee": "مؤجلة",
+      "depubliee": "مسحوبة",
+      "archivee": "مؤرشفة",
+      "en_examen": "قيد الدراسة",
+      "approuvee": "معتمدة",
+      "implementee": "مُطبّقة",
+      "publie": "منشور",
+      "rejete": "مرفوض",
+      "archive": "مؤرشف"
     }
   },
   "stats": {
@@ -4325,7 +4347,7 @@
     "new_value": "القيمة الجديدة",
     "all": "الكل",
     "export_btn": "تصدير",
-    "page_x_of_y": "الصفحة {current} من {total}",
+    "page_x_of_y": "الصفحة {current} من {total} ({count} نتيجة)",
     "details_modal_title": "تفاصيل السجل رقم {id}",
     "type_level": "النوع / المستوى",
     "source_action": "المصدر / الإجراء",
@@ -6377,7 +6399,6 @@
   },
   "confirm_delete": "تأكيد الحذف",
   "advanced_filters": "تصفية متقدمة",
-  "search": "بحث",
   "all_statuses": "جميع الحالات",
   "all": "الكل",
   "date_range": "الفترة الزمنية",

@@ -126,7 +126,8 @@
           "establishment_required": "L'affectation à un établissement est requise",
           "server_error": "Erreur de communication avec le serveur"
         },
-        "loading": "Mise à jour en cours..."
+        "loading": "Mise à jour en cours...",
+        "submit_btn": "Enregistrer les modifications"
       }
     }
   }

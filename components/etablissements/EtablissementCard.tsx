@@ -174,7 +174,7 @@ export default function EtablissementCard({ etablissement, index, view = 'grid' 
       </div>
 
       {/* Body Content */}
-      <div className="flex flex-col flex-1 p-5">
+      <div className="flex flex-col flex-1 p-4 sm:p-6">
         <div className="flex-1">
           <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-2 truncate">
             <MapPin className="w-3.5 h-3.5 shrink-0" />

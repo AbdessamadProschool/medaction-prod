@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { decodeHtmlEntities } from '@/lib/utils';
 
 const getCategoryKey = (cat: string) => {
   return cat.toUpperCase()
@@ -230,7 +231,7 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ id: st
             {article.resume && (
                <div className="bg-gray-50 p-6 rounded-2xl mb-8 border-l-2 border-gov-gold">
                   <p dir="auto" className="text-lg text-gray-700 italic leading-relaxed font-medium text-justify">
-                     {locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume}
+                     {decodeHtmlEntities(locale === 'ar' && article.resumeAr ? article.resumeAr : article.resume)}
                   </p>
                </div>
             )}

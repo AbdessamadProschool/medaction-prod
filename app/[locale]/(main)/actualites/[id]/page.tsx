@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { decodeHtmlEntities } from '@/lib/utils';
 
 interface Actualite {
   id: number;
@@ -272,7 +273,7 @@ export default function ActualiteDetailPage() {
               {/* Lead Text / Description */}
               {actualite.description && (
                 <div dir="auto" className={`text-xl md:text-2xl font-medium text-gray-900 mb-8 max-w-3xl text-justify ${locale === 'ar' ? 'leading-loose' : 'leading-relaxed'}`}>
-                   {locale === 'ar' && actualite.descriptionAr ? actualite.descriptionAr : actualite.description}
+                   {decodeHtmlEntities(locale === 'ar' && actualite.descriptionAr ? actualite.descriptionAr : actualite.description)}
                 </div>
               )}
 

@@ -19,9 +19,18 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // BYPASS FOR LOCAL SCREENSHOTS
-    setLicenseStatus({ valid: true });
-    setLoading(false);
+    // Check settings
+    fetch('/api/settings/license')
+      .then(res => res.json())
+      .then((data: LicenseStatus) => {
+        setLicenseStatus(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to verify license', err);
+        setLicenseStatus({ valid: false, error: 'Database check failed' });
+        setLoading(false);
+      });
   }, []);
 
   // Chargement

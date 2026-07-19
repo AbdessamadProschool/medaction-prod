@@ -89,7 +89,7 @@ export default function ReclamationCard({ reclamation, onClick, onDelete }: Recl
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}
       onClick={onClick}
-      className="bg-white rounded-2xl border border-gray-100 p-5 cursor-pointer transition-all hover:border-gov-gold/50"
+      className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6 cursor-pointer transition-all hover:border-gov-gold/50"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">

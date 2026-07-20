@@ -35,7 +35,7 @@ import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { GovButton } from '@/components/ui/GovButton';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { useData } from '@/hooks/use-data';
 import { usePermission } from '@/hooks/use-permission';
@@ -373,9 +373,9 @@ export default function AdminDashboard() {
       )}
 
       {/* KPI Cards */}
-      <KpiGrid cols={4}>
+      <GovKpiGrid cols={4}>
         {can('users.read') && (
-          <KpiCard
+          <GovKpiCard
             index={0}
             label={t('metrics.users')}
             value={stats?.utilisateurs?.total ?? 0}
@@ -388,7 +388,7 @@ export default function AdminDashboard() {
           />
         )}
         {can('etablissements.read') && (
-          <KpiCard
+          <GovKpiCard
             index={1}
             label={t('metrics.establishments')}
             value={stats?.etablissements?.total ?? 0}
@@ -401,7 +401,7 @@ export default function AdminDashboard() {
           />
         )}
         {can('evenements.read') && (
-          <KpiCard
+          <GovKpiCard
             index={2}
             label={t('metrics.events')}
             value={stats?.evenements?.total ?? 0}
@@ -414,7 +414,7 @@ export default function AdminDashboard() {
           />
         )}
         {can('reclamations.read') && (
-          <KpiCard
+          <GovKpiCard
             index={3}
             label={t('metrics.reclamations')}
             value={stats?.reclamations?.total ?? 0}
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
             subLabel={t('metrics.pending')}
           />
         )}
-      </KpiGrid>
+      </GovKpiGrid>
 
       {/* Quick Actions */}
       <motion.div variants={itemVariants}>

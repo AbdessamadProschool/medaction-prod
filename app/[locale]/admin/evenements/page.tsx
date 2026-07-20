@@ -34,7 +34,7 @@ import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
 import { GovButton } from '@/components/ui/GovButton';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovInput, GovSelect, GovModal, GovPageHeader } from '@/components/ui';
@@ -312,43 +312,43 @@ function AdminEvenementsContent() {
       </div>
 
       {/* Stats Cards */}
-      <KpiGrid cols={5}>
-        <KpiCard
+      <GovKpiGrid cols={5}>
+        <GovKpiCard
           index={0}
           label={t('stats.total')}
           value={stats.total}
           icon={Calendar}
           variant="blue"
         />
-        <KpiCard
+        <GovKpiCard
           index={1}
           label={t('stats.pending')}
           value={stats.enAttente}
           icon={Clock}
           variant="red"
         />
-        <KpiCard
+        <GovKpiCard
           index={2}
           label={t('stats.published')}
           value={stats.publiees}
           icon={CheckCircle}
           variant="green"
         />
-        <KpiCard
+        <GovKpiCard
           index={3}
           label={t('stats.in_progress')}
           value={stats.enCours}
           icon={Play}
           variant="blue"
         />
-        <KpiCard
+        <GovKpiCard
           index={4}
           label={t('stats.closed')}
           value={stats.cloturees}
           icon={Archive}
           variant="muted"
         />
-      </KpiGrid>
+      </GovKpiGrid>
 
       {/* Filtres avancés */}
       <AnimatePresence>

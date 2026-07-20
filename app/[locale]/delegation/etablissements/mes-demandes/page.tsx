@@ -30,7 +30,7 @@ import { format as formatDate } from 'date-fns';
 import { fr, ar } from 'date-fns/locale';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
+import { GovButton } from '@/components/ui';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -106,10 +106,10 @@ export default function MesDemandesPage() {
                 className="pl-12 pr-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
               />
             </div>
-            <Button variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
+            <GovButton variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
               <History size={16} className="mr-2" />
               {te('requests.refresh')}
-            </Button>
+            </GovButton>
           </div>
         </div>
 

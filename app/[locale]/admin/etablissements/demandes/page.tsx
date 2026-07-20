@@ -32,7 +32,7 @@ import { getDemandesEtablissement, traiterDemandeEtablissement } from '@/app/act
 import { format as formatDate } from 'date-fns';
 import { fr, ar } from 'date-fns/locale';
 import { useParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { GovButton } from '@/components/ui';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import EmptyState from '@/components/ui/EmptyState';
@@ -134,10 +134,10 @@ export default function AdminDemandesPage() {
                 className="ltr:pl-12 rtl:pr-12 ltr:pr-6 rtl:pl-6 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full md:w-64 focus:ring-2 focus:ring-[hsl(213,80%,28%)] transition-all outline-none text-sm font-bold text-gray-900 dark:text-white"
               />
             </div>
-            <Button variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
+            <GovButton variant="outline" onClick={fetchDemandes} className="rounded-xl h-10 px-4 border-gray-200 dark:border-gray-700 font-bold hover:bg-gray-50 dark:hover:bg-gray-800">
               <History size={16} className="ltr:mr-2 rtl:ml-2" />
               {te('requests.refresh')}
-            </Button>
+            </GovButton>
           </div>
         </div>
 

@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { GovPageHeader, GovCard, GovButton } from '@/components/ui';
 import {
   Shield,
@@ -488,8 +488,8 @@ export default function SuperAdminDashboard() {
           </motion.div>
 
           {/* Stats Grid */}
-          <KpiGrid cols={4}>
-            <KpiCard
+          <GovKpiGrid cols={4}>
+            <GovKpiCard
               index={0}
               label={t('super_admin.stats.total_users')}
               value={stats?.users.total || 0}
@@ -502,7 +502,7 @@ export default function SuperAdminDashboard() {
                 { label: t('super_admin.stats.citizens'), value: stats?.users.citoyens || 0 },
               ]}
             />
-            <KpiCard
+            <GovKpiCard
               index={1}
               label={t('super_admin.stats.establishments')}
               value={stats?.content.etablissements || 0}
@@ -513,7 +513,7 @@ export default function SuperAdminDashboard() {
                 { label: t('super_admin.stats.events'), value: stats?.content.evenements || 0 },
               ]}
             />
-            <KpiCard
+            <GovKpiCard
               index={2}
               label={t('super_admin.stats.reclamations')}
               value={stats?.reclamations.total || 0}
@@ -524,7 +524,7 @@ export default function SuperAdminDashboard() {
                 { label: t('super_admin.stats.urgent'), value: stats?.reclamations.urgentes || 0 },
               ]}
             />
-            <KpiCard
+            <GovKpiCard
               index={3}
               label={t('super_admin.stats.content')}
               value={(stats?.content.actualites || 0) + (stats?.content.articles || 0)}
@@ -535,7 +535,7 @@ export default function SuperAdminDashboard() {
                 { label: t('super_admin.stats.articles'), value: stats?.content.articles || 0 },
               ]}
             />
-          </KpiGrid>
+          </GovKpiGrid>
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

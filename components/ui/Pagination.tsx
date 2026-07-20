@@ -31,13 +31,13 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
         <button
           key={1}
           onClick={() => onPageChange(1)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all hover:bg-gray-100 text-gray-600"
+          className="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all hover:bg-muted text-foreground border border-transparent hover:border-border"
         >
           1
         </button>
       );
       if (start > 2) {
-        pages.push(<span key="dots-start" className="px-1 text-gray-300">...</span>);
+        pages.push(<span key="dots-start" className="px-1 text-muted-foreground">...</span>);
       }
     }
 
@@ -48,8 +48,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
           onClick={() => onPageChange(i)}
           className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${
             currentPage === i
-              ? 'bg-gov-blue text-white shadow-lg shadow-blue-900/20 active:scale-95'
-              : 'text-gray-600 hover:bg-gray-100 active:scale-95'
+              ? 'bg-[hsl(var(--gov-blue))] text-white shadow-lg shadow-[hsl(var(--gov-blue))]/20 active:scale-95'
+              : 'text-foreground hover:bg-muted border border-transparent hover:border-border active:scale-95'
           }`}
         >
           {i}
@@ -59,13 +59,13 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
     if (end < totalPages) {
       if (end < totalPages - 1) {
-        pages.push(<span key="dots-end" className="px-1 text-gray-300">...</span>);
+        pages.push(<span key="dots-end" className="px-1 text-muted-foreground">...</span>);
       }
       pages.push(
         <button
           key={totalPages}
           onClick={() => onPageChange(totalPages)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all hover:bg-gray-100 text-gray-600"
+          className="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-all hover:bg-muted text-foreground border border-transparent hover:border-border"
         >
           {totalPages}
         </button>
@@ -79,12 +79,12 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-12 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm"
+      className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-12 bg-card p-4 rounded-2xl border border-border shadow-sm"
     >
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 hover:border-gray-300 group"
+        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-foreground bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 group"
       >
         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform rtl:rotate-180" />
         <span className="hidden sm:inline">{t('prev')}</span>
@@ -97,7 +97,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 hover:border-gray-300 group"
+        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-foreground bg-card border border-border rounded-xl hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 group"
       >
         <span className="hidden sm:inline">{t('next')}</span>
         <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform rtl:rotate-180" />

@@ -34,7 +34,7 @@ import { Link } from '@/i18n/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
 import { GovButton } from '@/components/ui/GovButton';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovModal, GovPageHeader } from '@/components/ui';
@@ -382,36 +382,36 @@ export default function AdminEtablissementsPage() {
         />
         
       {/* Stats Cards */}
-      <KpiGrid cols={4}>
-        <KpiCard
+      <GovKpiGrid cols={4}>
+        <GovKpiCard
           index={0}
           label={t('stats.total')}
           value={stats.total}
           icon={Building2}
           variant="blue"
         />
-        <KpiCard
+        <GovKpiCard
           index={1}
           label={t('stats.validated')}
           value={stats.valides}
           icon={CheckCircle}
           variant="green"
         />
-        <KpiCard
+        <GovKpiCard
           index={2}
           label={t('stats.published')}
           value={stats.publies}
           icon={Globe}
           variant="blue"
         />
-        <KpiCard
+        <GovKpiCard
           index={3}
           label={t('stats.average_rating')}
           value={stats.averageRating.toFixed(1)}
           icon={Star}
           variant="gold"
         />
-      </KpiGrid>
+      </GovKpiGrid>
 
       {/* Filters */}
       <AnimatePresence>

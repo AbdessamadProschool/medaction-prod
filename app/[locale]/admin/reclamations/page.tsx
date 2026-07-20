@@ -43,7 +43,7 @@ import { PermissionGuard } from '@/hooks/use-permission';
 import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
 import { GovInput, GovSelect, GovButton, GovPageHeader } from '@/components/ui';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { cn } from '@/lib/utils';
@@ -423,43 +423,43 @@ export default function AdminReclamationsPage() {
           />
 
           {/* Stats Grid */}
-          <KpiGrid cols={5} className="mb-10">
-            <KpiCard
+          <GovKpiGrid cols={5} className="mb-10">
+            <GovKpiCard
               label={t('stats.total')}
               value={stats.total}
               icon={Flag}
               variant="blue"
               index={0}
             />
-            <KpiCard
+            <GovKpiCard
               label={t('stats.pending')}
               value={stats.enAttente}
               icon={Clock}
               variant="gold"
               index={1}
             />
-            <KpiCard
+            <GovKpiCard
               label={t('stats.to_dispatch')}
               value={stats.aDispatcher}
               icon={ArrowUpDown}
               variant="muted"
               index={2}
             />
-            <KpiCard
+            <GovKpiCard
               label={t('stats.in_progress')}
               value={stats.enCours}
               icon={RefreshCw}
               variant="green"
               index={3}
             />
-            <KpiCard
+            <GovKpiCard
               label={t('stats.rejected')}
               value={stats.rejetees}
               icon={XCircle}
               variant="red"
               index={4}
             />
-          </KpiGrid>
+          </GovKpiGrid>
 
           {/* Advanced Filters */}
           <AnimatePresence>

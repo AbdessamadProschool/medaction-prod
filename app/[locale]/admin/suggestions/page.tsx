@@ -24,7 +24,7 @@ import {
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { GovButton, GovPageHeader } from '@/components/ui';
-import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovKpiCard, GovKpiGrid } from '@/components/ui/GovKpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { cn } from '@/lib/utils';
@@ -196,9 +196,9 @@ export default function AdminSuggestionsPage() {
       />
 
       {/* Stats Cards */}
-      <KpiGrid cols={5}>
+      <GovKpiGrid cols={5}>
         {Object.entries(STATUT_CONFIG).map(([key, config], i) => (
-          <KpiCard
+          <GovKpiCard
             key={key}
             index={i}
             label={t(`statuses.${key}`)}
@@ -209,7 +209,7 @@ export default function AdminSuggestionsPage() {
             className={statutFilter === key ? 'ring-2 ring-[hsl(var(--gov-blue))]' : ''}
           />
         ))}
-      </KpiGrid>
+      </GovKpiGrid>
 
       {/* Filters */}
       <div className="bg-card rounded-2xl shadow-sm border border-border p-4">

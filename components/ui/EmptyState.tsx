@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
 
 type EmptyStateProps = {
   icon?: React.ReactNode;
@@ -11,20 +12,24 @@ type EmptyStateProps = {
 
 export default function EmptyState({ icon, title, description, action, className }: EmptyStateProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-center text-center py-16 px-4 rounded-lg border border-dashed border-border bg-background/50", className)}>
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn("flex flex-col items-center justify-center text-center py-16 px-4 rounded-3xl border border-dashed border-border bg-card shadow-sm", className)}
+    >
       {icon && (
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/50 mb-4 text-muted-foreground">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 mb-4 text-muted-foreground shadow-inner border border-border">
           {icon}
         </div>
       )}
-      <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
+      <h3 className="text-xl font-extrabold text-foreground mb-2">{title}</h3>
       <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6 leading-relaxed">
         {description}
       </p>
       {action && (
-        <div>{action}</div>
+        <div className="mt-2">{action}</div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

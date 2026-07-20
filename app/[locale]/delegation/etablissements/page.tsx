@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
+import { GovButton } from '@/components/ui';
 import { Badge } from '@/components/ui/badge';
 import { useData } from '@/hooks/use-data';
 import { toast } from 'sonner';
@@ -55,10 +55,10 @@ export default function DelegationEtablissementsPage() {
                   </p>
                </div>
                <Link href="/delegation/etablissements/mes-demandes">
-                  <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl px-10 py-7 backdrop-blur-md font-bold text-base transition-all active:scale-95 shadow-lg">
+                  <GovButton className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl px-10 py-7 backdrop-blur-md font-bold text-base transition-all active:scale-95 shadow-lg">
                      {t('view_history')}
                      <ChevronRight className="ltr:ml-2 rtl:mr-2 rtl:rotate-180" size={20} />
-                  </Button>
+                  </GovButton>
                </Link>
             </div>
          </div>
@@ -77,10 +77,10 @@ export default function DelegationEtablissementsPage() {
           />
         </div>
         <Link href="/delegation/etablissements/nouveau">
-           <Button className="bg-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,20%)] text-white rounded-2xl px-8 py-7 shadow-lg shadow-blue-900/10 h-full whitespace-nowrap font-bold text-base">
+           <GovButton className="bg-[hsl(213,80%,28%)] hover:bg-[hsl(213,80%,20%)] text-white rounded-2xl px-8 py-7 shadow-lg shadow-blue-900/10 h-full whitespace-nowrap font-bold text-base">
              <Plus className="ltr:mr-2 rtl:ml-2" size={22} />
              {t('request_creation')}
-           </Button>
+           </GovButton>
         </Link>
       </div>
 
@@ -114,10 +114,10 @@ export default function DelegationEtablissementsPage() {
 
               <div className="flex gap-2">
                 <Link href={`/etablissements/${e.id}`} className="flex-1">
-                  <Button variant="outline" className="w-full rounded-xl border-gray-100 py-6 font-bold hover:bg-blue-50 hover:text-[hsl(213,80%,28%)] dark:hover:bg-blue-900/20 group-hover:border-blue-200 transition-all">
+                  <GovButton variant="outline" className="w-full rounded-xl border-gray-100 py-6 font-bold hover:bg-blue-50 hover:text-[hsl(213,80%,28%)] dark:hover:bg-blue-900/20 group-hover:border-blue-200 transition-all">
                     <Building2 size={18} className="ltr:mr-2 rtl:ml-2" />
                     {te('view_details') || 'Voir les détails'}
-                  </Button>
+                  </GovButton>
                 </Link>
               </div>
             </div>

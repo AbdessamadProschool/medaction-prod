@@ -6,24 +6,25 @@ import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
- * KpiCard — Carte de Statistique KPI
+ * GovKpiCard — Carte de Statistique KPI
  * Design System Gouvernemental Marocain — Province de Médiouna
  *
  * Remplace tous les blocs ad-hoc "gov-stat-card" dans admin/page.tsx et similaires.
  * Supporte : valeur, label, icône colorée, variation (±%), sous-valeur.
  */
 
-export type KpiVariant = 'blue' | 'green' | 'gold' | 'red' | 'muted';
+export type GovKpiVariant = 'blue' | 'green' | 'gold' | 'red' | 'purple' | 'muted';
 
-const VARIANT_COLORS: Record<KpiVariant, string> = {
+const VARIANT_COLORS: Record<GovKpiVariant, string> = {
   blue:  'hsl(var(--gov-blue))',
   green: 'hsl(var(--gov-green))',
   gold:  'hsl(var(--gov-gold))',
   red:   'hsl(var(--gov-red))',
+  purple: 'hsl(var(--gov-purple))',
   muted: 'hsl(var(--muted-foreground))',
 };
 
-export interface KpiCardProps {
+export interface GovKpiCardProps {
   /** Libellé principal */
   label: string;
   /** Valeur affichée en grand */
@@ -31,7 +32,7 @@ export interface KpiCardProps {
   /** Icône lucide-react ou tout ReactNode */
   icon: React.ElementType;
   /** Couleur thème */
-  variant?: KpiVariant;
+  variant?: GovKpiVariant;
   /** Variation en % — affiche badge TrendingUp/Down */
   change?: number;
   /** 'up' | 'down' | 'neutral' — direction de la variation */
@@ -50,7 +51,7 @@ export interface KpiCardProps {
   onClick?: () => void;
 }
 
-export function KpiCard({
+export function GovKpiCard({
   label,
   value,
   icon: Icon,
@@ -63,7 +64,7 @@ export function KpiCard({
   index = 0,
   className,
   onClick,
-}: KpiCardProps) {
+}: GovKpiCardProps) {
   const color = VARIANT_COLORS[variant];
   const prefersReducedMotion = useReducedMotion();
 
@@ -82,7 +83,7 @@ export function KpiCard({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       className={cn(
-        'gov-stat-card group relative overflow-hidden rounded-lg',
+        'gov-stat-card group relative overflow-hidden rounded-3xl',
         onClick && 'cursor-pointer focus-visible:ring-2 focus-visible:ring-[hsl(var(--gov-blue))]',
         className
       )}
@@ -167,9 +168,9 @@ export function KpiCard({
 }
 
 /**
- * KpiGrid — Grille 4 colonnes auto-responsive pour cartes KPI
+ * GovKpiGrid — Grille 4 colonnes auto-responsive pour cartes KPI
  */
-export function KpiGrid({
+export function GovKpiGrid({
   children,
   cols = 4,
   className,

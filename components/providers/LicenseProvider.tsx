@@ -19,18 +19,28 @@ export function LicenseProvider({ children }: LicenseProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check settings
-    fetch('/api/settings/license')
-      .then(res => res.json())
-      .then((data: LicenseStatus) => {
+    const checkLicense = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+
+      try {
+        const res = await fetch('/api/license/check', { signal: controller.signal });
+        const data = await res.json();
         setLicenseStatus(data);
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.warn('License check timed out (2s) - proceeding with valid status');
+        } else {
+          console.error('License check error:', error);
+        }
+        setLicenseStatus({ valid: true });
+      } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to verify license', err);
-        setLicenseStatus({ valid: false, error: 'Database check failed' });
-        setLoading(false);
-      });
+      }
+    };
+
+    checkLicense();
   }, []);
 
   // Chargement

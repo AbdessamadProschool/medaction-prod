@@ -27,6 +27,7 @@ import {
   PermissionCode 
 } from '@/lib/permissions-types';
 import { PermissionGuard } from '@/hooks/use-permission';
+import { GovPageHeader, GovButton } from '@/components/ui';
 
 // Mapping des icônes par groupe de permission
 const GROUP_ICONS: Record<string, any> = {
@@ -88,34 +89,17 @@ export default function AdminRolesPage() {
         <div className="absolute bottom-0 start-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 rtl:translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto relative z-10">
-          {/* Header Section */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
-                <Shield className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-                    {t('title')}
-                  </h1>
-                  <span className="px-3 py-1 bg-[hsl(var(--gov-gold)/0.1)] text-[hsl(var(--gov-gold-dark))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-gold)/0.2)]">
-                    Système RBAC
-                  </span>
-                </div>
-                <p className="text-muted-foreground text-sm font-medium max-w-2xl">
-                  {t('description')}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
+          <GovPageHeader
+            title={<span className="flex items-center gap-2">{t('title')} <span className="px-3 py-1 bg-[hsl(var(--gov-gold)/0.1)] text-[hsl(var(--gov-gold-dark))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-gold)/0.2)]">Système RBAC</span></span>}
+            subtitle={t('description')}
+            icon={<Shield className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />}
+            actions={
               <div className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--gov-gold))/0.1] text-[hsl(var(--gov-gold-dark))] rounded-xl text-xs font-black border border-[hsl(var(--gov-gold))/0.2] uppercase tracking-widest shadow-sm">
                 <Lock size={16} className="text-[hsl(var(--gov-gold-dark))]" />
                 {t('read_only_mode')}
               </div>
-            </div>
-          </div>
+            }
+          />
 
           {/* Quick Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">

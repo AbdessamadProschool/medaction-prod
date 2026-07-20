@@ -23,6 +23,7 @@ import {
   Layout
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { GovPageHeader, GovButton, GovTable, GovTh, GovTd, GovTr } from '@/components/ui';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 
@@ -87,41 +88,32 @@ export default function AdminTalentsPage() {
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <Sparkles className="text-[hsl(var(--gov-blue))] w-6 h-6" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
-              Gestion des Talents
-            </h1>
+      <GovPageHeader
+        title="Gestion des Talents"
+        subtitle="Valorisez les compétences et talents de la province"
+        icon={<Sparkles className="w-8 h-8" />}
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <GovButton
+              onClick={fetchTalents}
+              variant="outline"
+              size="icon"
+            >
+              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            </GovButton>
+            <GovButton
+              onClick={() => {
+                setEditingTalent(null);
+                setIsFormOpen(true);
+              }}
+              variant="primary"
+              leftIcon={<Plus size={18} />}
+            >
+              Nouveau Talent
+            </GovButton>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-15">
-            Valorisez les compétences et talents de la province
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={fetchTalents}
-            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group"
-          >
-            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          <button
-            onClick={() => {
-              setEditingTalent(null);
-              setIsFormOpen(true);
-            }}
-            className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
-          >
-            <Plus size={18} />
-            Nouveau Talent
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -210,50 +202,50 @@ export default function AdminTalentsPage() {
 
           {/* Table */}
           <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-[hsl(var(--gov-blue))/0.05]">
-            <div className="overflow-x-auto">
-              <table className="gov-table">
+            <div className="overflow-x-auto w-full min-w-full">
+              <GovTable>
                 <thead>
-                  <tr className="bg-muted/30">
-                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                  <tr>
+                    <GovTh>
                       Talent / Artiste
-                    </th>
-                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                    </GovTh>
+                    <GovTh>
                       Domaine d'expertise
-                    </th>
-                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                    </GovTh>
+                    <GovTh>
                       Statut & Visibilité
-                    </th>
-                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                    </GovTh>
+                    <GovTh>
                       Performance
-                    </th>
-                    <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-right whitespace-nowrap">
+                    </GovTh>
+                    <GovTh className="text-right">
                       Actions
-                    </th>
+                    </GovTh>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody>
                   {loading ? (
-                    <tr>
-                      <td colSpan={5} className="px-8 py-20 text-center">
+                    <GovTr>
+                      <GovTd colSpan={5} className="text-center py-20">
                         <div className="flex flex-col items-center gap-4">
                           <div className="w-10 h-10 border-4 border-[hsl(var(--gov-blue))/0.1] border-t-[hsl(var(--gov-blue))] rounded-full animate-spin" />
                           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground animate-pulse">Chargement des données...</p>
                         </div>
-                      </td>
-                    </tr>
+                      </GovTd>
+                    </GovTr>
                   ) : filteredTalents.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="px-8 py-20 text-center">
+                    <GovTr>
+                      <GovTd colSpan={5} className="text-center py-20">
                         <div className="flex flex-col items-center gap-4 opacity-40">
                           <Users size={48} />
                           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Aucun talent répertorié</p>
                         </div>
-                      </td>
-                    </tr>
+                      </GovTd>
+                    </GovTr>
                   ) : (
                     filteredTalents.map((talent) => (
-                      <tr key={talent.id} className="group hover:bg-muted/50 transition-colors">
-                        <td className="px-8 py-5">
+                      <GovTr key={talent.id}>
+                        <GovTd>
                           <div className="flex items-center gap-4">
                             <div className="w-14 h-14 rounded-2xl bg-muted overflow-hidden relative flex-shrink-0 border border-border shadow-inner">
                               {talent.photo ? (
@@ -280,13 +272,13 @@ export default function AdminTalentsPage() {
                               )}
                             </div>
                           </div>
-                        </td>
-                        <td className="px-6 py-5">
+                        </GovTd>
+                        <GovTd>
                           <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border">
                             {talent.domaine}
                           </span>
-                        </td>
-                        <td className="px-6 py-5">
+                        </GovTd>
+                        <GovTd>
                           <div className="flex flex-col gap-1.5">
                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm w-fit ${
                               talent.isPublie 
@@ -303,8 +295,8 @@ export default function AdminTalentsPage() {
                               </span>
                             )}
                           </div>
-                        </td>
-                        <td className="px-6 py-5">
+                        </GovTd>
+                        <GovTd>
                           <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border">
                               <Eye size={14} className="text-muted-foreground" />
@@ -318,8 +310,8 @@ export default function AdminTalentsPage() {
                               </span>
                             </div>
                           </div>
-                        </td>
-                        <td className="px-8 py-5">
+                        </GovTd>
+                        <GovTd className="text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => {
@@ -339,12 +331,12 @@ export default function AdminTalentsPage() {
                               <Trash2 size={16} />
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                        </GovTd>
+                      </GovTr>
                     ))
                   )}
                 </tbody>
-              </table>
+              </GovTable>
             </div>
           </div>
         </div>

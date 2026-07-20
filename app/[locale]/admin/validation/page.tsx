@@ -19,6 +19,7 @@ import {
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { SafeHTML } from '@/components/ui/SafeHTML';
+import { GovPageHeader, GovButton } from '@/components/ui';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 
@@ -243,19 +244,19 @@ export default function ValidationPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
-          <p className="text-gray-500 mt-1">
-            {t('subtitle', { count: totalPending })}
-          </p>
-        </div>
-        <button className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-          <Filter size={18} />
-          {t('filter')}
-        </button>
-      </div>
+      <GovPageHeader
+        title={t('title')}
+        subtitle={t('subtitle', { count: totalPending })}
+        icon={<CheckCircle className="w-8 h-8" />}
+        actions={
+          <GovButton
+            variant="outline"
+            leftIcon={<Filter size={18} />}
+          >
+            {t('filter')}
+          </GovButton>
+        }
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -1,0 +1,49 @@
+{
+  "PUBLIC": {
+    "bodyBg": "#f9fafa",
+    "bodyText": "#171e26",
+    "primaryBtnBg": "#0e4281",
+    "primaryBtnText": "#ffffff",
+    "secondaryBtnBg": "#000000",
+    "secondaryBtnText": "#ffffff",
+    "secondaryBtnBorder": "#dce0e5",
+    "inputBorder": "#dce0e5",
+    "inputBg": "#f9fafa",
+    "linkColor": "#cbd5e1",
+    "statuses": []
+  },
+  "CITOYEN": {
+    "bodyBg": "#f9fafa",
+    "bodyText": "#171e26",
+    "primaryBtnBg": "N/A",
+    "primaryBtnText": "N/A",
+    "secondaryBtnBg": "N/A",
+    "secondaryBtnText": "N/A",
+    "secondaryBtnBorder": "N/A",
+    "inputBorder": "N/A",
+    "inputBg": "N/A",
+    "linkColor": "N/A",
+    "statuses": []
+  },
+  "DELEGATION": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fdelegation\"\n============================================================"
+  },
+  "AUTORITE_LOCALE": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+  },
+  "COORDINATEUR_ACTIVITES": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fcoordinateur\"\n============================================================"
+  },
+  "GOUVERNEUR": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n  navigated to \"http://localhost:3000/fr/login?callbackUrl=%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Ffr%2Fgouverneur\"\n============================================================"
+  },
+  "ADMIN": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+  },
+  "SUPER_ADMIN": {
+    "error": "page.waitForURL: Timeout 25000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================"
+  },
+  "DatePicker": {
+    "error": "No datepicker input found on page"
+  }
+}

@@ -39,6 +39,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GovDatePicker } from '@/components/ui/GovDatePicker';
+import { GovPageHeader, GovButton } from '@/components/ui';
 
 const COLORS = [
   'hsl(var(--gov-blue))',
@@ -251,46 +252,38 @@ export default function RapportsPage() {
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <BarChart3 className="text-[hsl(var(--gov-blue))] w-6 h-6" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
-              {t('title')}
-            </h1>
+      <GovPageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        icon={<BarChart3 className="w-8 h-8" />}
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <GovDatePicker
+              value={dateRange.startDate}
+              onChange={val => setDateRange({...dateRange, startDate: val})}
+              placeholder={isAr ? 'من تاريخ' : 'Du'}
+              containerClassName="w-40"
+              className="!py-2 !px-3 text-xs"
+            />
+            <ArrowRight size={14} className="text-muted-foreground/30" />
+            <GovDatePicker
+              value={dateRange.endDate}
+              onChange={val => setDateRange({...dateRange, endDate: val})}
+              placeholder={isAr ? 'إلى تاريخ' : 'Au'}
+              containerClassName="w-40"
+              className="!py-2 !px-3 text-xs"
+            />
+            
+            <GovButton
+              onClick={async () => { await fetchData(); }}
+              variant="outline"
+              size="icon"
+            >
+              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            </GovButton>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-15">
-            {t('subtitle')}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <GovDatePicker
-            value={dateRange.startDate}
-            onChange={val => setDateRange({...dateRange, startDate: val})}
-            placeholder={isAr ? 'من تاريخ' : 'Du'}
-            containerClassName="w-40"
-            className="!py-2 !px-3 text-xs"
-          />
-          <ArrowRight size={14} className="text-muted-foreground/30" />
-          <GovDatePicker
-            value={dateRange.endDate}
-            onChange={val => setDateRange({...dateRange, endDate: val})}
-            placeholder={isAr ? 'إلى تاريخ' : 'Au'}
-            containerClassName="w-40"
-            className="!py-2 !px-3 text-xs"
-          />
-          
-          <button
-            onClick={async () => { await fetchData(); }}
-            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group"
-          >
-            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Actions Export */}
       <div className="flex flex-wrap items-center gap-4">

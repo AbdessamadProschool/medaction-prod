@@ -32,9 +32,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
+import { GovPageHeader, GovButton, GovTable, GovTh, GovTd, GovTr } from '@/components/ui';
 import { useData } from '@/hooks/use-data';
 import { GovDatePicker } from '@/components/ui/GovDatePicker';
-import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { cn } from '@/lib/utils';
 
 // Simple JSON renderer
@@ -269,31 +269,6 @@ export default function AdminLogsPage() {
     return session?.user && ['ADMIN', 'SUPER_ADMIN'].includes(session.user.role) ? endpoint : null;
   }, [session?.user, endpoint]);
 
-  const handleCleanup = async () => {
-    setShowCleanupConfirm(false);
-    
-    const cleanupPromise = new Promise<string>(async (resolve, reject) => {
-      try {
-        const res = await fetch('/api/admin/system/cleanup-logs', { method: 'POST' });
-        const data = await res.json();
-        if (res.ok) {
-          loadLogs();
-          resolve(data.message || 'Nettoyage réussi');
-        } else {
-          reject(new Error(data.error || 'Erreur lors du nettoyage'));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    toast.promise(cleanupPromise, {
-      loading: t('cleaning_logs', { defaultValue: 'Nettoyage des logs en cours...' }),
-      success: (message) => message,
-      error: (err) => err.message || 'Erreur lors du nettoyage',
-    });
-  };
-  
   const { data: logsData, isLoading: loading, isValidating: refreshing, mutate: loadLogs } = useData(shouldFetch, {
     refreshInterval: autoRefresh ? refreshInterval * 1000 : 0
   });
@@ -320,7 +295,6 @@ export default function AdminLogsPage() {
   
   const totalPages = logsData?.data?.pagination?.totalPages || logsData?.pagination?.totalPages || 1;
   const total = logsData?.data?.pagination?.total || logsData?.pagination?.total || 0;
-  const stats = logsData?.data?.stats || logsData?.stats || null;
 
   // Vérifier authentification
   useEffect(() => {
@@ -413,18 +387,10 @@ export default function AdminLogsPage() {
   return (
     <div className={`min-h-screen bg-background text-foreground p-6 ${locale === 'ar' ? 'font-cairo' : ''}`} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div className="text-start">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gov-blue text-white rounded-none">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-foreground">
-                {t('title')}
-              </h1>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <GovPageHeader
+          title={t('title')}
+          subtitle={
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
               <span>{t('total_entries', { count: total })}</span>
               <span>•</span>
               <span>
@@ -437,128 +403,131 @@ export default function AdminLogsPage() {
                 </span>
               )}
             </div>
-          </div>
+          }
+          icon={<FileText className="w-8 h-8" />}
+          actions={
             <div className="flex flex-wrap items-center gap-3">
-            {/* Auto-refresh controls */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg">
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium transition-colors ${
-                  autoRefresh 
-                    ? 'bg-green-100 text-green-700 border border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900' 
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                <RefreshCw size={14} className={autoRefresh ? 'animate-spin' : ''} />
-                {autoRefresh ? t('live') : t('auto')}
-              </button>
-              <select
-                value={refreshInterval}
-                onChange={(e) => setRefreshInterval(Number(e.target.value))}
-                className="text-sm border-0 bg-transparent focus:ring-0 text-muted-foreground"
-                disabled={!autoRefresh}
-              >
-                <option value={15}>15s</option>
-                <option value={30}>30s</option>
-                <option value={60}>1min</option>
-              </select>
-            </div>
-            
-            {/* View Mode Toggle */}
-            <div className="flex items-center border border-border rounded-lg overflow-hidden bg-card">
-              <button
-                onClick={() => setViewMode('table')}
-                className={`p-2 transition-colors ${
-                  viewMode === 'table' 
-                    ? 'bg-blue-600 text-white shadow-sm' 
-                    : 'text-muted-foreground hover:bg-muted bg-card'
-                }`}
-                title={locale === 'ar' ? 'جدول' : 'Tableau'}
-              >
-                <Monitor size={16} />
-              </button>
-              <button
-                onClick={() => setViewMode('timeline')}
-                className={`p-2 transition-colors ${
-                  viewMode === 'timeline' 
-                    ? 'bg-blue-600 text-white shadow-sm' 
-                    : 'text-muted-foreground hover:bg-muted bg-card'
-                }`}
-                title={locale === 'ar' ? 'المخطط الزمني' : 'Timeline'}
-              >
-                <History size={16} />
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
-                showFilters ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-950/20 dark:border-blue-800 dark:text-blue-400' : 'bg-card border-border text-foreground hover:bg-muted'
-              }`}
-            >
-              <Filter size={16} />
-              {t('filters_btn')}
-            </button>
-            
-            <button
-              onClick={loadLogs}
-              disabled={refreshing}
-              className="p-2 bg-card border border-border rounded-lg hover:bg-muted disabled:opacity-50 text-foreground"
-              title={t('refresh_now')}
-            >
-              <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
-            </button>
-            
-            {isSuperAdmin && activeTab === 'audit' && (
-              <button
-                onClick={() => {
-                  setConfirmModal({
-                    title: t('confirm_cleanup_title') || 'Nettoyage des journaux',
-                    message: t('confirm_cleanup') || 'Voulez-vous vraiment nettoyer les journaux ?',
-                    onConfirm: async () => {
-                      try {
-                        const res = await fetch('/api/admin/system/cleanup-logs', { method: 'POST' });
-                        const data = await res.json();
-                        if (res.ok) {
-                          toast.success(data.message);
-                          loadLogs();
-                        } else {
-                          toast.error(data.error);
-                        }
-                      } catch (error) {
-                        toast.error('Erreur lors du nettoyage');
-                      }
-                    }
-                  });
-                }}
-                className="flex items-center gap-2 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-sm font-medium transition-colors dark:bg-red-950/30 dark:text-red-400 dark:border-red-900"
-              >
-                <Trash2 size={16} />
-                {t('cleanup')}
-              </button>
-            )}
-
-            {activeTab === 'activity' && (
-              <div className="flex items-center border border-border rounded-lg overflow-hidden">
+              {/* Auto-refresh controls */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg h-[42px]">
                 <button
-                  onClick={() => handleExport('csv')}
-                  disabled={exporting}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-card hover:bg-muted text-sm font-medium text-foreground border-e border-border"
+                  onClick={() => setAutoRefresh(!autoRefresh)}
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium transition-colors ${
+                    autoRefresh 
+                      ? 'bg-green-100 text-green-700 border border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900' 
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
                 >
-                  <Download size={14} />
-                  {t('export_csv')}
+                  <RefreshCw size={14} className={autoRefresh ? 'animate-spin' : ''} />
+                  {autoRefresh ? t('live') : t('auto')}
+                </button>
+                <select
+                  value={refreshInterval}
+                  onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                  className="text-sm border-0 bg-transparent focus:ring-0 text-muted-foreground"
+                  disabled={!autoRefresh}
+                >
+                  <option value={15}>15s</option>
+                  <option value={30}>30s</option>
+                  <option value={60}>1min</option>
+                </select>
+              </div>
+              
+              {/* View Mode Toggle */}
+              <div className="flex items-center border border-border rounded-lg overflow-hidden bg-card h-[42px]">
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={`p-2 h-full transition-colors ${
+                    viewMode === 'table' 
+                      ? 'bg-blue-600 text-white shadow-sm' 
+                      : 'text-muted-foreground hover:bg-muted bg-card'
+                  }`}
+                  title={locale === 'ar' ? 'جدول' : 'Tableau'}
+                >
+                  <Monitor size={16} />
                 </button>
                 <button
-                  onClick={() => handleExport('json')}
-                  disabled={exporting}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-card hover:bg-muted text-sm font-medium text-foreground"
+                  onClick={() => setViewMode('timeline')}
+                  className={`p-2 h-full transition-colors ${
+                    viewMode === 'timeline' 
+                      ? 'bg-blue-600 text-white shadow-sm' 
+                      : 'text-muted-foreground hover:bg-muted bg-card'
+                  }`}
+                  title={locale === 'ar' ? 'المخطط الزمني' : 'Timeline'}
                 >
-                  {t('export_json')}
+                  <History size={16} />
                 </button>
               </div>
-            )}
-          </div>
-        </div>
+
+              <GovButton
+                onClick={() => setShowFilters(!showFilters)}
+                variant={showFilters ? 'primary' : 'outline'}
+                leftIcon={<Filter size={16} />}
+              >
+                {t('filters_btn')}
+              </GovButton>
+              
+              <GovButton
+                onClick={loadLogs}
+                disabled={refreshing}
+                variant="outline"
+                size="icon"
+                title={t('refresh_now')}
+              >
+                <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+              </GovButton>
+              
+              {isSuperAdmin && activeTab === 'audit' && (
+                <GovButton
+                  onClick={() => {
+                    setConfirmModal({
+                      title: t('confirm_cleanup_title') || 'Nettoyage des journaux',
+                      message: t('confirm_cleanup') || 'Voulez-vous vraiment nettoyer les journaux ?',
+                      onConfirm: async () => {
+                        try {
+                          const res = await fetch('/api/admin/system/cleanup-logs', { method: 'POST' });
+                          if (res.ok) {
+                            toast.success('Journaux nettoyés');
+                            loadLogs();
+                          } else {
+                            toast.error('Erreur lors du nettoyage');
+                          }
+                        } catch (err) {
+                          toast.error('Erreur de connexion');
+                        }
+                      }
+                    });
+                  }}
+                  variant="outline"
+                  className="text-red-500 hover:bg-red-50 hover:text-red-600 border-red-200"
+                  leftIcon={<Trash2 size={16} />}
+                >
+                  {t('cleanup')}
+                </GovButton>
+              )}
+
+              {activeTab === 'activity' && (
+                <div className="flex items-center border border-border rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => handleExport('csv')}
+                    disabled={exporting}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-card hover:bg-muted text-sm font-medium text-foreground border-e border-border"
+                  >
+                    <Download size={14} />
+                    {t('export_csv')}
+                  </button>
+                  <button
+                    onClick={() => handleExport('json')}
+                    disabled={exporting}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-card hover:bg-muted text-sm font-medium text-foreground"
+                  >
+                    <Download size={14} />
+                    {t('export_json')}
+                  </button>
+                </div>
+              )}
+            </div>
+          }
+        />
 
         {selectedUserFilter && (
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 flex items-center justify-between shadow-sm dark:bg-blue-950/20 dark:border-blue-900 dark:text-blue-400">
@@ -808,29 +777,29 @@ export default function AdminLogsPage() {
             {activeTab === 'activity' && (
               <>
                 <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
-                  <table className="w-full">
-                  <thead className="bg-muted/50">
+                  <GovTable>
+                  <thead>
                     <tr>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('entity')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('ip')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
+                      <GovTh>{t('date')}</GovTh>
+                      <GovTh>{t('user')}</GovTh>
+                      <GovTh>{t('action_label')}</GovTh>
+                      <GovTh>{t('entity')}</GovTh>
+                      <GovTh>{t('ip')}</GovTh>
+                      <GovTh>{t('details')}</GovTh>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody>
                     {activityLogs.map((log) => {
                       const actionInfo = getActionInfo(log.action);
                       return (
-                        <tr key={log.id} className="hover:bg-muted/50 transition-colors">
-                          <td className="px-4 py-3">
+                        <GovTr key={log.id}>
+                          <GovTd>
                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                               <Clock size={14} className="shrink-0" />
                               <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
                             </div>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             {log.user ? (
                               <div className="flex items-center gap-2">
                                 <button
@@ -866,21 +835,21 @@ export default function AdminLogsPage() {
                             ) : (
                               <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
                             )}
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
                               {actionInfo.label}
                             </span>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <div className="text-sm">
                               <span className="text-foreground font-medium">{t(`entities.${log.entity}`, { fallback: log.entity })}</span>
                               {log.entityId && (
                                 <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.entityId}</span>
                               )}
                             </div>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             {log.ipAddress ? (
                               <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
                                 <Globe size={12} className="shrink-0" />
@@ -889,20 +858,20 @@ export default function AdminLogsPage() {
                             ) : (
                               <span className="text-muted-foreground">-</span>
                             )}
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <button
                               onClick={() => setSelectedLog(log)}
                               className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
                             >
                               {t('view_details')}
                             </button>
-                          </td>
-                        </tr>
+                          </GovTd>
+                        </GovTr>
                       );
                     })}
                   </tbody>
-                </table>
+                </GovTable>
                 </div>
                 <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
@@ -978,51 +947,51 @@ export default function AdminLogsPage() {
             {activeTab === 'system' && (
               <>
                 <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
-                  <table className="w-full">
-                  <thead className="bg-muted/50">
+                  <GovTable>
+                  <thead>
                     <tr>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('level')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('source')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('message')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
+                      <GovTh>{t('date')}</GovTh>
+                      <GovTh>{t('level')}</GovTh>
+                      <GovTh>{t('source')}</GovTh>
+                      <GovTh>{t('message')}</GovTh>
+                      <GovTh>{t('details')}</GovTh>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody>
                     {systemLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-muted/50 transition-colors">
-                        <td className="px-4 py-3">
+                      <GovTr key={log.id}>
+                        <GovTd>
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <Clock size={14} className="shrink-0" />
                             <span className="font-mono whitespace-nowrap">{formatDate(log.timestamp)}</span>
                           </div>
-                        </td>
-                        <td className="px-4 py-3">
+                        </GovTd>
+                        <GovTd>
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-bold ${LEVEL_COLORS[log.level]}`}>
                             {LEVEL_ICONS[log.level]}
                             {t(`levels.${log.level}`)}
                           </span>
-                        </td>
-                        <td className="px-4 py-3">
+                        </GovTd>
+                        <GovTd>
                           <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded font-bold">
                             {log.source}
                           </span>
-                        </td>
-                        <td className="px-4 py-3">
+                        </GovTd>
+                        <GovTd>
                           <p className="text-sm text-foreground line-clamp-1" title={log.message}>{log.message}</p>
-                        </td>
-                        <td className="px-4 py-3">
+                        </GovTd>
+                        <GovTd>
                           <button
                             onClick={() => setSelectedLog(log)}
                             className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold transition-colors"
                           >
                             {t('view_details')}
                           </button>
-                        </td>
-                      </tr>
+                        </GovTd>
+                      </GovTr>
                     ))}
                   </tbody>
-                </table>
+                </GovTable>
                 </div>
                 <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>
@@ -1065,29 +1034,29 @@ export default function AdminLogsPage() {
             {activeTab === 'audit' && (
               <>
                 <div className={viewMode === 'table' ? "hidden md:block w-full min-w-full" : "hidden"}>
-                  <table className="w-full">
-                  <thead className="bg-muted/50">
+                  <GovTable>
+                  <thead>
                     <tr>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('date')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('user')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('action_label')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('resource')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('status')}</th>
-                      <th className={`px-4 py-3 ${locale === 'ar' ? 'text-right' : 'text-left'} text-xs font-medium text-muted-foreground uppercase tracking-wider`}>{t('details')}</th>
+                      <GovTh>{t('date')}</GovTh>
+                      <GovTh>{t('user')}</GovTh>
+                      <GovTh>{t('action_label')}</GovTh>
+                      <GovTh>{t('resource')}</GovTh>
+                      <GovTh>{t('status')}</GovTh>
+                      <GovTh>{t('details')}</GovTh>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody>
                     {auditLogs.map((log) => {
                       const actionInfo = getActionInfo(log.action);
                       return (
-                        <tr key={log.id} className="hover:bg-muted/50 transition-colors">
-                          <td className="px-4 py-3">
+                        <GovTr key={log.id}>
+                          <GovTd>
                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                               <Clock size={14} className="shrink-0" />
                               <span className="font-mono whitespace-nowrap">{formatDate(log.createdAt)}</span>
                             </div>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             {log.user ? (
                               <div className="flex items-center gap-2">
                                 <button
@@ -1132,39 +1101,39 @@ export default function AdminLogsPage() {
                             ) : (
                               <span className="text-xs text-muted-foreground italic font-medium">{t('system_user')}</span>
                             )}
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase ${actionInfo.color}`}>
                               {actionInfo.label}
                             </span>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <div className="text-sm">
                               <span className="text-foreground font-medium">{t(`entities.${log.resourceType ?? ''}`, { fallback: log.resourceType ?? '' })}</span>
                               {log.resourceId && (
                                 <span className="text-muted-foreground ms-1 font-mono text-xs">#{log.resourceId}</span>
                               )}
                             </div>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${log.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                               {log.success ? <Check size={10} /> : <X size={10} />}
                               {log.success ? t('success') : t('failure')}
                             </span>
-                          </td>
-                          <td className="px-4 py-3">
+                          </GovTd>
+                          <GovTd>
                             <button
                               onClick={() => setSelectedLog(log)}
                               className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold flex items-center gap-1 transition-colors"
                             >
                               {t('view_details')}
                             </button>
-                          </td>
-                        </tr>
+                          </GovTd>
+                        </GovTr>
                       );
                     })}
                   </tbody>
-                </table>
+                </GovTable>
                 </div>
                 <div className={cn("relative", viewMode === 'timeline' ? "block p-4 sm:p-8" : "block md:hidden p-4 sm:p-8")}>
                   <div className={`absolute top-8 bottom-8 w-0.5 bg-border ${locale === 'ar' ? 'right-[23px]' : 'left-[23px]'}`}></div>

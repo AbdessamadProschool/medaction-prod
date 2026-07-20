@@ -36,3 +36,5 @@ export * from './GovTable';
 export * from './GovInput';
 export * from './GovSelect';
 export * from './GovTextarea';
+export * from './GovModal';
+export * from './GovPageHeader';

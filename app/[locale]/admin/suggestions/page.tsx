@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
-import { GovButton } from '@/components/ui/GovButton';
+import { GovButton, GovPageHeader } from '@/components/ui';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
@@ -189,20 +189,11 @@ export default function AdminSuggestionsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-gov-gold to-gov-gold-dark rounded-xl flex items-center justify-center text-white">
-              <Lightbulb className="w-5 h-5" />
-            </div>
-            {t('page_title')}
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t('page_subtitle')}
-          </p>
-        </div>
-      </div>
+      <GovPageHeader
+        title={t('page_title')}
+        subtitle={t('page_subtitle')}
+        icon={<Lightbulb className="w-8 h-8" />}
+      />
 
       {/* Stats Cards */}
       <KpiGrid cols={5}>

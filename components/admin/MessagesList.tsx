@@ -18,6 +18,8 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
+import { GovModal } from '@/components/ui/GovModal';
+import { GovPageHeader, GovButton } from '@/components/ui';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
@@ -69,40 +71,29 @@ export default function MessagesList() {
 
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900 group">
-               <Mail className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
+      <GovPageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        icon={<Mail className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />}
+        actions={
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="relative flex-1 md:w-80">
+              <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 ${locale === 'ar' ? 'right-4' : 'left-4'}`} />
+              <input 
+                type="text" 
+                placeholder={t('search_placeholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full py-2.5 bg-background border border-input rounded-xl focus:ring-2 focus:ring-[hsl(var(--gov-blue))] outline-none transition-colors shadow-sm ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+              />
             </div>
-            <span className="text-foreground">
-              {t('title')}
-            </span>
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 ml-1 flex items-center gap-2">
-            <span className="w-8 h-[2px] bg-[hsl(var(--gov-blue))]/30 rounded-full" />
-            {t('subtitle')}
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="relative flex-1 md:w-80">
-            <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 ${locale === 'ar' ? 'right-4' : 'left-4'}`} />
-            <input 
-              type="text" 
-              placeholder={t('search_placeholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full py-3 bg-background border border-input rounded-lg focus:ring-2 focus:ring-[hsl(var(--gov-blue))] outline-none transition-colors shadow-sm ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
-            />
+            <div className="flex flex-col items-end">
+              <span className="text-2xl font-black text-[hsl(var(--gov-blue))]">{filteredMessages.length}</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('messages_count', { count: filteredMessages.length }).split(' ')[0]}</span>
+            </div>
           </div>
-          <div className="flex flex-col items-end">
-            <span className="text-2xl font-black text-[hsl(var(--gov-blue))]">{filteredMessages.length}</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('messages_count', { count: filteredMessages.length }).split(' ')[0]}</span>
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       {error ? (
         <div className="bg-[hsl(var(--gov-red)/0.08)] p-6 rounded-lg border border-[hsl(var(--gov-red)/0.25)] flex gap-4 items-center">
@@ -217,87 +208,62 @@ export default function MessagesList() {
             </GovTable>
       )}
 
-      {/* Message Modal */}
-      <AnimatePresence>
-        {selectedMessage && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[hsl(var(--gov-blue-dark)/0.72)]"
-            onClick={() => setSelectedMessage(null)}
-          >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-lg w-full max-w-2xl shadow-lg overflow-hidden border border-border"
-              dir={locale === 'ar' ? 'rtl' : 'ltr'}
-            >
-              {/* Modal Header */}
-              <div className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 p-8 flex justify-between items-start">
-                 <div className="flex items-center gap-5">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-xl ${
-                        selectedMessage.userId ? 'bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] shadow-[hsl(var(--gov-blue))]/20' : 'bg-gradient-to-br from-gray-400 to-gray-500 shadow-gray-200'
-                    }`}>
-                        {selectedMessage.nom ? selectedMessage.nom.charAt(0).toUpperCase() : '?'}
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-1">{selectedMessage.sujet}</h3>
-                        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                             <div className="flex items-center gap-1.5 font-bold text-gray-700 dark:text-gray-300">
-                               <User className="w-4 h-4 text-[hsl(var(--gov-blue))]" />
-                               <span>{selectedMessage.nom}</span>
-                             </div>
-                             <span className="w-1.5 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
-                             <span className="text-[hsl(var(--gov-blue))] font-medium underline decoration-dotted underline-offset-4">{selectedMessage.email}</span>
-                        </div>
-                    </div>
-                 </div>
-                 <button 
-                  onClick={() => setSelectedMessage(null)}
-                  className="p-2.5 bg-white dark:bg-gray-800 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-all shadow-sm border border-gray-100 dark:border-gray-700 hover:rotate-90"
+      <GovModal
+        isOpen={!!selectedMessage}
+        onClose={() => setSelectedMessage(null)}
+        title={selectedMessage?.sujet}
+        subtitle={
+          <div className="flex flex-wrap items-center gap-3 text-sm mt-1">
+             <div className="flex items-center gap-1.5 font-bold text-foreground">
+               <User className="w-4 h-4 text-[hsl(var(--gov-blue))]" />
+               <span>{selectedMessage?.nom}</span>
+             </div>
+             <span className="w-1.5 h-1.5 bg-border rounded-full" />
+             <span className="text-[hsl(var(--gov-blue))] font-medium">{selectedMessage?.email}</span>
+          </div>
+        }
+        icon={
+           <div className={`w-full h-full flex items-center justify-center text-white text-xl font-bold rounded-2xl ${
+             selectedMessage?.userId ? 'bg-gradient-to-br from-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))]' : 'bg-gradient-to-br from-gray-400 to-gray-500'
+           }`}>
+             {selectedMessage?.nom ? selectedMessage.nom.charAt(0).toUpperCase() : '?'}
+           </div>
+        }
+        footer={
+           <div className="flex w-full items-center justify-between gap-4">
+             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-3 py-1 bg-background rounded-full border border-border shadow-sm">
+               ID: {selectedMessage?.id}
+             </span>
+             <div className="flex gap-3">
+               <GovButton variant="outline" onClick={() => setSelectedMessage(null)}>
+                 {t('close')}
+               </GovButton>
+               {selectedMessage && (
+                 <GovButton 
+                   variant="primary" 
+                   onClick={() => window.location.href = `mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.sujet}`}
+                   leftIcon={<Reply className={`w-5 h-5 ${locale === 'ar' ? 'rotate-180' : ''}`} />}
                  >
-                   <X className="w-6 h-6" />
-                 </button>
-              </div>
-              
-              {/* Modal Body */}
-              <div className="p-8">
-                 <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 font-mono bg-gray-50/50 p-2 rounded-lg w-fit">
-                    <Clock className="w-4 h-4" />
-                    {t('received_on', { date: format(new Date(selectedMessage.createdAt), 'PPPP p', { locale: dateLocale }) })}
-                 </div>
-                 
-                 <div className="text-gray-700 leading-loose text-lg whitespace-pre-wrap">
-                    {selectedMessage.message}
-                 </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="bg-gray-50 dark:bg-gray-700/30 p-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-gray-100 dark:border-gray-700">
-                 <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest bg-white dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm">ID: {selectedMessage.id}</span>
-                 <div className="flex gap-4 w-full sm:w-auto">
-                    <button 
-                      onClick={() => setSelectedMessage(null)}
-                      className="flex-1 sm:flex-none px-6 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-2xl font-bold transition-colors"
-                    >
-                      {t('close')}
-                    </button>
-                    <a 
-                      href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.sujet}`}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-3 bg-[hsl(var(--gov-blue))] text-white rounded-2xl font-bold shadow-xl shadow-[hsl(var(--gov-blue))]/20 hover:bg-[hsl(var(--gov-blue-dark))] transition-all transform hover:-translate-y-1 active:scale-95"
-                    >
-                      <Reply className={`w-5 h-5 ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                      {t('reply_email')}
-                    </a>
-                 </div>
-              </div>
-            </motion.div>
-          </motion.div>
+                   {t('reply_email')}
+                 </GovButton>
+               )}
+             </div>
+           </div>
+        }
+      >
+        {selectedMessage && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono bg-muted/30 p-3 rounded-xl w-fit border border-border/50">
+               <Clock className="w-4 h-4" />
+               {t('received_on', { date: format(new Date(selectedMessage.createdAt), 'PPPP p', { locale: dateLocale }) })}
+            </div>
+            
+            <div className="text-foreground leading-loose text-lg whitespace-pre-wrap">
+               {selectedMessage.message}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </GovModal>
     </div>
   );
 }

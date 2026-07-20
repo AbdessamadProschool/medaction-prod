@@ -19,6 +19,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { GovPageHeader, GovButton } from '@/components/ui';
 
 
 interface SettingsData {
@@ -156,33 +157,22 @@ const DEFAULT_SETTINGS: SettingsData = {
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.02)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1200px] mx-auto relative z-10">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-xl shadow-[hsl(var(--gov-blue)/0.25)] ring-4 ring-white dark:ring-gray-900 group">
-                <Settings className="w-8 h-8 group-hover:rotate-90 transition-transform duration-700" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-foreground mb-1">
-                  {t('title')}
-                </h1>
-                <p className="text-muted-foreground text-sm font-medium">
-                  {t('subtitle')}
-                </p>
-              </div>
-            </div>
-            
-            <button
-              onClick={handleSave}
-              disabled={saving || !isSuperAdmin}
-              className="gov-btn gov-btn-primary px-8 py-3 h-auto shadow-lg shadow-[hsl(var(--gov-blue)/0.2)] disabled:opacity-50 disabled:grayscale transition-all hover:scale-105 active:scale-95"
-            >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
-              <span className="font-black uppercase tracking-widest text-xs">
-                {saving ? t('saving') : t('save')}
-              </span>
-            </button>
-          </div>
+          <GovPageHeader
+            title={t('title')}
+            subtitle={t('subtitle')}
+            icon={<Settings className="w-8 h-8 group-hover:rotate-90 transition-transform duration-700" />}
+            actions={
+              <GovButton
+                onClick={handleSave}
+                disabled={saving || !isSuperAdmin}
+                variant="primary"
+                leftIcon={saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                className="shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]"
+              >
+                {t('save')}
+              </GovButton>
+            }
+          />
 
           {!isSuperAdmin && (
             <motion.div 

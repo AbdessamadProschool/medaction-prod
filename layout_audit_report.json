@@ -1,0 +1,310 @@
+[
+  {
+    "page": "PUBLIC",
+    "borderRadius": [
+      {
+        "val": "9999px",
+        "element": "card (h-1.5 bg-white/10 rounded)"
+      }
+    ],
+    "boxShadow": [],
+    "paddingKPI": [],
+    "containers": []
+  },
+  {
+    "page": "CITOYEN",
+    "borderRadius": [
+      {
+        "val": "10px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (exemple@email.com)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (Mot de passe)"
+      },
+      {
+        "val": "9999px",
+        "element": "card (absolute top-1/2 start-1/)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "12px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "boxShadow": [
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "paddingKPI": [],
+    "containers": [
+      {
+        "element": "div.w-full.max-w-md",
+        "maxWidth": "448px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      }
+    ]
+  },
+  {
+    "page": "DELEGATION",
+    "borderRadius": [
+      {
+        "val": "10px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (exemple@email.com)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (Mot de passe)"
+      },
+      {
+        "val": "9999px",
+        "element": "card (absolute top-1/2 start-1/)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "12px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "boxShadow": [
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "paddingKPI": [],
+    "containers": [
+      {
+        "element": "div.w-full.max-w-md",
+        "maxWidth": "448px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      }
+    ]
+  },
+  {
+    "page": "AUTORITE_LOCALE",
+    "borderRadius": [
+      {
+        "val": "10px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (exemple@email.com)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (Mot de passe)"
+      },
+      {
+        "val": "9999px",
+        "element": "card (absolute top-1/2 start-1/)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "12px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "boxShadow": [
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "paddingKPI": [],
+    "containers": [
+      {
+        "element": "div.w-full.max-w-md",
+        "maxWidth": "448px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      }
+    ]
+  },
+  {
+    "page": "GOUVERNEUR",
+    "borderRadius": [
+      {
+        "val": "10px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (exemple@email.com)"
+      },
+      {
+        "val": "12px",
+        "element": "input/select (Mot de passe)"
+      },
+      {
+        "val": "9999px",
+        "element": "card (absolute top-1/2 start-1/)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "10px",
+        "element": "card (flex items-center gap-3 t)"
+      },
+      {
+        "val": "12px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "12px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "boxShadow": [
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "button (Se connecter au)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-16 h-16 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px",
+        "element": "card (w-12 h-12 bg-white rounde)"
+      },
+      {
+        "val": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "element": "card (gov-card gov-card-officia)"
+      }
+    ],
+    "paddingKPI": [],
+    "containers": [
+      {
+        "element": "div.w-full.max-w-md",
+        "maxWidth": "448px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px"
+      }
+    ]
+  }
+]

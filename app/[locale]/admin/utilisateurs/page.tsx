@@ -28,7 +28,7 @@ import { PermissionGuard } from '@/hooks/use-permission';
 import EmptyState from '@/components/ui/EmptyState';
 import CreateUserModal from './CreateUserModal';
 import EditRoleModal from './EditRoleModal';
-import { GovButton } from '@/components/ui/GovButton';
+import { GovButton, GovPageHeader } from '@/components/ui';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { cn } from '@/lib/utils';
@@ -244,50 +244,40 @@ export default function UsersPage() {
         <div className="absolute bottom-0 start-0 w-[400px] h-[400px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 rtl:translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto relative z-10 space-y-8">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900 group">
-                <Users className="w-8 h-8 group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-foreground mb-1">
-                  {t('page_title')}
-                </h1>
-                <p className="text-muted-foreground text-sm font-medium">
-                  {t('total_users', { count: total })}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-3">
-              <GovButton
-                onClick={() => fetchUsers()}
-                variant="outline"
-                size="icon"
-                loading={loading}
-                title={t('refresh')}
-              >
-                <RefreshCw size={16} />
-              </GovButton>
-              <GovButton
-                variant="outline"
-                leftIcon={<Download size={18} />}
-              >
-                {t('export')}
-              </GovButton>
-              <PermissionGuard permission="users.create">
+          <GovPageHeader
+            title={t('page_title')}
+            subtitle={t('total_users', { count: total })}
+            icon={<Users className="w-8 h-8" />}
+            actions={
+              <div className="flex flex-wrap items-center gap-3">
                 <GovButton
-                  onClick={() => setShowCreateModal(true)}
-                  variant="primary"
-                  leftIcon={<Plus size={20} />}
-                  className="shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]"
+                  onClick={() => fetchUsers()}
+                  variant="outline"
+                  size="icon"
+                  loading={loading}
+                  title={t('refresh')}
                 >
-                  <span className="font-black uppercase tracking-widest text-xs">{t('add')}</span>
+                  <RefreshCw size={16} />
                 </GovButton>
-              </PermissionGuard>
-            </div>
-          </div>
+                <GovButton
+                  variant="outline"
+                  leftIcon={<Download size={18} />}
+                >
+                  {t('export')}
+                </GovButton>
+                <PermissionGuard permission="users.create">
+                  <GovButton
+                    onClick={() => setShowCreateModal(true)}
+                    variant="primary"
+                    leftIcon={<Plus size={20} />}
+                    className="shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]"
+                  >
+                    <span className="font-black uppercase tracking-widest text-xs">{t('add')}</span>
+                  </GovButton>
+                </PermissionGuard>
+              </div>
+            }
+          />
 
           {/* Filters Bar */}
           <div className="gov-card p-6 bg-card/50 backdrop-blur-sm border-dashed">

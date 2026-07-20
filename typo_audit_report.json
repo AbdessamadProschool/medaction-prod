@@ -1,0 +1,510 @@
+[
+  {
+    "page": "PUBLIC_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "30px",
+        "fontWeight": "700",
+        "lineHeight": "36px",
+        "text": "بوابة مديونة"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "عمالة مديونة"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "30px",
+        "fontWeight": "700",
+        "lineHeight": "36px",
+        "text": "بوابة"
+      }
+    ]
+  },
+  {
+    "page": "CITOYEN_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "DELEGATION_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "AUTORITE_LOCALE_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "COORDINATEUR_ACTIVITES_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "GOUVERNEUR_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "ADMIN_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  },
+  {
+    "page": "SUPER_ADMIN_AR",
+    "elements": [
+      {
+        "label": "H1",
+        "selector": "h1",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "45px",
+        "text": "بوابة المواطن"
+      },
+      {
+        "label": "H2",
+        "selector": "h2",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL MEDIOUNA"
+      },
+      {
+        "label": "Texte Courant (p)",
+        "selector": "p",
+        "fontFamily": "Inter, \"Inter Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "text": "Province de Médiouna"
+      },
+      {
+        "label": "Texte Courant (span)",
+        "selector": "span",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "lineHeight": "32px",
+        "text": "PORTAIL"
+      },
+      {
+        "label": "Label de formulaire",
+        "selector": "label",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "14px",
+        "fontWeight": "700",
+        "lineHeight": "20px",
+        "text": "البريد الإلكتروني"
+      },
+      {
+        "label": "Bouton",
+        "selector": "button",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "24px",
+        "text": "الدخول للبوابة"
+      },
+      {
+        "label": "Input",
+        "selector": "input",
+        "fontFamily": "Cairo, \"Cairo Fallback\", ui-sans-serif, system-ui",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "text": ""
+      }
+    ]
+  }
+]

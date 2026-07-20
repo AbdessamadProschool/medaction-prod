@@ -34,6 +34,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { GovPageHeader, GovButton, GovTable, GovTh, GovTd, GovTr } from '@/components/ui';
 
 interface ProgrammeActivite {
   id: number;
@@ -198,42 +199,29 @@ export default function AdminProgrammesActivitesPage() {
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <ClipboardList className="text-[hsl(var(--gov-blue))] w-6 h-6" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
-              {t('title')}
-            </h1>
+      <GovPageHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        icon={<ClipboardList className="w-8 h-8" />}
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <GovButton
+              onClick={async () => { await fetchActivites(); }}
+              disabled={loading}
+              variant="outline"
+              size="icon"
+              loading={loading}
+            >
+              <RefreshCw size={18} />
+            </GovButton>
+            <Link href="/admin/programmes-activites/nouvelle">
+              <GovButton variant="primary" leftIcon={<Plus size={18} />}>
+                {t('create')}
+              </GovButton>
+            </Link>
           </div>
-          <p className="text-muted-foreground font-medium text-lg ml-15">
-            {t('subtitle')}
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={async () => { await fetchActivites(); }}
-            disabled={loading}
-            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl hover:bg-muted hover:border-muted-foreground/30 transition-all shadow-sm group disabled:opacity-50"
-          >
-            <RefreshCw size={20} className={`text-muted-foreground group-hover:text-foreground transition-colors ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          
-          <Link
-            href="/admin/programmes-activites/nouvelle"
-            className="gov-btn-primary h-12 px-8 rounded-2xl text-xs uppercase tracking-widest font-bold"
-          >
-            <>
-              <Plus size={18} />
-              {t('create')}
-            </>
-          </Link>
-        </div>
-      </div>
+        }
+      />
 
       {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -339,27 +327,27 @@ export default function AdminProgrammesActivitesPage() {
             <p className="text-muted-foreground max-w-md mx-auto text-sm">{t('empty.subtitle')}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="gov-table">
+          <div className="overflow-x-auto w-full min-w-full">
+            <GovTable>
               <thead>
-                <tr className="bg-muted/30">
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.activity')}</th>
-                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.establishment')}</th>
-                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.date')}</th>
-                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.status')}</th>
-                  <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">{t('table.validation')}</th>
-                  <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground text-right whitespace-nowrap">{t('table.actions')}</th>
+                <tr>
+                  <GovTh>{t('table.activity')}</GovTh>
+                  <GovTh>{t('table.establishment')}</GovTh>
+                  <GovTh>{t('table.date')}</GovTh>
+                  <GovTh>{t('table.status')}</GovTh>
+                  <GovTh>{t('table.validation')}</GovTh>
+                  <GovTh className="text-right">{t('table.actions')}</GovTh>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody>
                 {filteredActivites.map((activite: any) => {
                   const statutConfig = STATUT_CONFIG[activite.statut] || STATUT_CONFIG.PLANIFIEE;
                   const StatusIcon = statutConfig.icon;
                   const statusLabel = t('status.' + statutConfig.label);
                   
                   return (
-                    <tr key={activite.id} className="group hover:bg-muted/50 transition-colors">
-                      <td className="px-8 py-5">
+                    <GovTr key={activite.id}>
+                      <GovTd>
                         <div className="flex items-center gap-4">
                           <div 
                             className="w-1.5 h-12 rounded-full flex-shrink-0" 
@@ -370,16 +358,16 @@ export default function AdminProgrammesActivitesPage() {
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60 mt-0.5">{t(`types.${activite.typeActivite}`) || activite.typeActivite}</p>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-6 py-5">
+                      </GovTd>
+                      <GovTd>
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border shadow-inner">
                             <Building2 size={14} className="text-muted-foreground/60" />
                           </div>
                           <span className="text-sm font-bold text-foreground line-clamp-1">{activite.etablissement.nom}</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-5">
+                      </GovTd>
+                      <GovTd>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2 text-foreground">
                             <Calendar size={14} className="text-[hsl(var(--gov-blue))]" />
@@ -391,9 +379,9 @@ export default function AdminProgrammesActivitesPage() {
                             <Clock size={12} />
                             <span className="text-[10px] font-bold uppercase tracking-widest">{activite.heureDebut}h - {activite.heureFin}h</span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
+                          </div>
+                      </GovTd>
+                      <GovTd>
                         <span 
                           className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm"
                           style={{ backgroundColor: `${statutConfig.color}10`, color: statutConfig.color, borderColor: `${statutConfig.color}20` }}
@@ -401,8 +389,8 @@ export default function AdminProgrammesActivitesPage() {
                           <StatusIcon size={12} />
                           {statusLabel}
                         </span>
-                      </td>
-                      <td className="px-6 py-5">
+                      </GovTd>
+                      <GovTd>
                         {activite.isValideParAdmin ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[hsl(var(--gov-green))/0.1] text-[hsl(var(--gov-green))] rounded-full text-[10px] font-black uppercase tracking-widest border border-[hsl(var(--gov-green))/0.2]">
                             <CheckCircle size={12} />
@@ -414,8 +402,8 @@ export default function AdminProgrammesActivitesPage() {
                             {t('table.waiting')}
                           </span>
                         )}
-                      </td>
-                      <td className="px-8 py-5">
+                      </GovTd>
+                      <GovTd className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openDetail(activite)}
@@ -455,12 +443,12 @@ export default function AdminProgrammesActivitesPage() {
                             </button>
                           )}
                         </div>
-                      </td>
-                    </tr>
+                      </GovTd>
+                    </GovTr>
                   );
                 })}
               </tbody>
-            </table>
+            </GovTable>
           </div>
         )}
       </div>

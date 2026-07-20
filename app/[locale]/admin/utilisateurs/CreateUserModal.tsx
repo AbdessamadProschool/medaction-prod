@@ -5,8 +5,7 @@ import { X, User, Mail, Phone, Lock, Shield, Building2, Loader2, MapPin, Calenda
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
-import { GovInput, GovSelect, GovButton } from '@/components/ui';
-import { motion, AnimatePresence } from 'framer-motion';
+import { GovInput, GovSelect, GovButton, GovModal } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
 
@@ -206,41 +205,40 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-card/95 backdrop-blur-xl rounded-[2rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-border"
-      >
-        {/* Header */}
-        <div className="px-8 py-6 border-b border-border flex items-center justify-between shrink-0 bg-gradient-to-br from-card/50 to-muted/30">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg">
-              <User size={24} />
-            </div>
-            <div>
-              <h2 className="text-xl font-black text-foreground uppercase tracking-tight">{t('title')}</h2>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{t('subtitle')}</p>
-            </div>
-          </div>
+    <GovModal
+      isOpen={true}
+      onClose={onClose}
+      title={t('title')}
+      subtitle={t('subtitle')}
+      icon={<User size={24} />}
+      maxWidth="2xl"
+      footer={
+        <div className="flex w-full items-center justify-end gap-4">
           <GovButton
+            type="button"
             onClick={onClose}
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
+            variant="outline"
+            className="h-12 px-8"
           >
-            <X size={20} />
+            {t('cancel_btn')}
+          </GovButton>
+          <GovButton
+            type="submit"
+            form="create-user-form"
+            loading={loading}
+            className="h-12 px-10"
+          >
+            {t('submit_btn')}
           </GovButton>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
-          <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
-              {error}
-            </div>
-          )}
+      }
+    >
+      <form id="create-user-form" onSubmit={handleSubmit} className="flex flex-col gap-6">
+        {error && (
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
+            {error}
+          </div>
+        )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <GovInput
@@ -460,29 +458,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                 </span>
               </label>
             </div>
-          </div>
-
-          </div>
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-4 px-6 py-4 border-t border-border shrink-0 bg-card/95">
-            <GovButton
-              type="button"
-              onClick={onClose}
-              variant="outline"
-              className="h-12 px-8"
-            >
-              {t('cancel_btn')}
-            </GovButton>
-            <GovButton
-              type="submit"
-              loading={loading}
-              className="h-12 px-10"
-            >
-              {t('submit_btn')}
-            </GovButton>
-          </div>
-        </form>
-      </motion.div>
-    </div>
+      </form>
+    </GovModal>
   );
 }

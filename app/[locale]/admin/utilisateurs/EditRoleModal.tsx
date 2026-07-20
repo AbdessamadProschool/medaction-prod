@@ -5,9 +5,8 @@ import { X, Shield, Building2, Loader2, MapPin, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useSession } from 'next-auth/react';
-import { GovSelect, GovButton } from '@/components/ui';
+import { GovSelect, GovButton, GovModal } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { z } from 'zod';
 
@@ -172,212 +171,184 @@ export default function EditRoleModal({ user, onClose, onSuccess }: EditRoleModa
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="bg-card/95 backdrop-blur-xl rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col border border-border"
-      >
-        {/* Header */}
-        <div className="px-8 py-6 border-b border-border flex items-center justify-between shrink-0 bg-gradient-to-br from-card/50 to-muted/30">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg">
-              <Shield size={24} />
-            </div>
-            <div>
-              <h2 className="text-xl font-black text-foreground uppercase tracking-tight">{t('title')}</h2>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
-                {user.prenom} {user.nom} • {user.email}
-              </p>
-            </div>
-          </div>
+    <GovModal
+      isOpen={true}
+      onClose={onClose}
+      title={t('title')}
+      subtitle={t('subtitle', { name: `${user.prenom} ${user.nom}` })}
+      icon={<Shield size={24} />}
+      maxWidth="2xl"
+      footer={
+        <div className="flex w-full items-center justify-end gap-4">
           <GovButton
+            type="button"
             onClick={onClose}
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
+            variant="outline"
+            className="h-12 px-8"
           >
-            <X size={20} />
+            {t('cancel_btn')}
+          </GovButton>
+          <GovButton
+            type="submit"
+            form="edit-role-form"
+            loading={loading}
+            className="h-12 px-10"
+          >
+            {t('save_btn')}
           </GovButton>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-hidden">
-          <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-
-          {/* Current Role */}
-          <div className="mb-8 p-5 bg-gradient-to-br from-muted/30 to-muted/10 border border-border rounded-2xl shadow-sm">
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">{t('current_role')}</p>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
-                <Shield size={20} />
-              </div>
-              <p className="text-sm font-black text-foreground uppercase tracking-tight">
-                {tRolesMain(user.role)}
-              </p>
-            </div>
+      }
+    >
+      <form id="edit-role-form" onSubmit={handleSubmit} className="flex flex-col gap-6">
+        {error && (
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
+            {error}
           </div>
+        )}
 
-          {/* Role Selection */}
-          <div className="mb-8">
-            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
-              {t('new_role')}
-            </label>
-            <div className="space-y-3">
-              {ROLES.map((role) => (
-                <label
-                  key={role.value}
-                  className={cn(
-                    "relative flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all",
-                    selectedRole === role.value
-                      ? "border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] shadow-md shadow-[hsl(var(--gov-blue)/0.1)]"
-                      : "border-border bg-muted/20 hover:border-border/80"
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value={role.value}
-                    checked={selectedRole === role.value}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    className="sr-only"
-                  />
-                  <div className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center transition-colors shadow-sm",
-                    selectedRole === role.value ? "bg-[hsl(var(--gov-blue))] text-white" : "bg-muted text-muted-foreground"
-                  )}>
-                    {role.value === 'COORDINATEUR_ACTIVITES' ? (
-                      <Calendar size={24} />
-                    ) : (
-                      <Shield size={24} />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-black text-foreground uppercase tracking-tight">{tRolesMain(role.value)}</p>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{tRoles(role.value)}</p>
-                  </div>
-                  {selectedRole === role.value && (
-                    <motion.div 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="w-6 h-6 bg-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center shadow-lg"
-                    >
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </motion.div>
-                  )}
-                </label>
-              ))}
+        {/* Current Role */}
+        <div className="p-5 bg-gradient-to-br from-muted/30 to-muted/10 border border-border rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">{t('current_role')}</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[hsl(var(--gov-blue)/0.1)] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+              <Shield size={20} />
             </div>
+            <p className="text-sm font-black text-foreground uppercase tracking-tight">
+              {tRolesMain(user.role)}
+            </p>
           </div>
+        </div>
 
-          {/* Secteur (pour DELEGATION) */}
-          {selectedRole === 'DELEGATION' && (
-            <div className="mb-8">
-              <GovSelect
-                label={tCreate('fields.sector') + ' *'}
-                required
-                value={secteurResponsable}
-                onChange={(e) => setSecteurResponsable(e.target.value)}
-                options={[
-                  { label: tCreate('select_option.sector'), value: '' },
-                  ...SECTEURS.map(s => ({ label: tSectors(s), value: s }))
-                ]}
-                leftIcon={<Shield size={18} />}
-              />
-            </div>
-          )}
-
-          {/* Commune (pour AUTORITE_LOCALE) */}
-          {selectedRole === 'AUTORITE_LOCALE' && (
-            <div className="mb-8">
-              <GovSelect
-                label={tCreate('fields.commune') + ' *'}
-                required
-                value={communeResponsableId}
-                onChange={(e) => setCommuneResponsableId(e.target.value)}
-                options={[
-                  { label: tCreate('select_option.commune'), value: '' },
-                  ...communes.map(c => ({ 
-                    label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom, 
-                    value: c.id 
-                  }))
-                ]}
-                leftIcon={<MapPin size={18} />}
-              />
-            </div>
-          )}
-
-          {/* Établissements (pour COORDINATEUR_ACTIVITES) */}
-          {selectedRole === 'COORDINATEUR_ACTIVITES' && (
-            <div className="mb-8">
-              <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
-                 {tCreate('fields.establishments', { count: etablissementsGeres.length })} *
-              </label>
-              <div className="max-h-60 overflow-y-auto border border-border bg-muted/20 rounded-[1.5rem] p-3 space-y-1 custom-scrollbar shadow-inner">
-                {!Array.isArray(etablissements) || etablissements.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40">
-                    <Loader2 className="w-8 h-8 animate-spin mb-3" />
-                    <p className="text-[10px] font-black uppercase tracking-widest">{t('loading')}</p>
-                  </div>
-                ) : (
-                  etablissements.map((etab) => (
-                    <label
-                      key={etab.id}
-                      className={cn(
-                        "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border border-transparent",
-                        etablissementsGeres.includes(etab.id)
-                          ? "bg-[hsl(var(--gov-blue)/0.1)] border-[hsl(var(--gov-blue)/0.2)] shadow-sm"
-                          : "hover:bg-muted/40"
-                      )}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={etablissementsGeres.includes(etab.id)}
-                        onChange={() => toggleEtablissement(etab.id)}
-                        className="w-5 h-5 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))/0.2]"
-                      />
-                      <Building2 className={cn("w-4 h-4", etablissementsGeres.includes(etab.id) ? "text-[hsl(var(--gov-blue))]" : "text-muted-foreground")} />
-                      <span className={cn(
-                        "text-xs font-black uppercase tracking-tight",
-                        etablissementsGeres.includes(etab.id) ? "text-foreground" : "text-muted-foreground"
-                      )}>
-                        {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
-                      </span>
-                    </label>
-                  ))
+        {/* Role Selection */}
+        <div>
+          <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
+            {t('new_role')}
+          </label>
+          <div className="space-y-3">
+            {ROLES.map((role) => (
+              <label
+                key={role.value}
+                className={cn(
+                  "relative flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all",
+                  selectedRole === role.value
+                    ? "border-[hsl(var(--gov-blue))] bg-[hsl(var(--gov-blue)/0.05)] shadow-md shadow-[hsl(var(--gov-blue)/0.1)]"
+                    : "border-border bg-muted/20 hover:border-border/80"
                 )}
-              </div>
-            </div>
-          )}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value={role.value}
+                  checked={selectedRole === role.value}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  className="sr-only"
+                />
+                <div className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center transition-colors shadow-sm",
+                  selectedRole === role.value ? "bg-[hsl(var(--gov-blue))] text-white" : "bg-muted text-muted-foreground"
+                )}>
+                  {role.value === 'COORDINATEUR_ACTIVITES' ? (
+                    <Calendar size={24} />
+                  ) : (
+                    <Shield size={24} />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-black text-foreground uppercase tracking-tight">{tRolesMain(role.value)}</p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{tRoles(role.value)}</p>
+                </div>
+                {selectedRole === role.value && (
+                  <div className="w-6 h-6 bg-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center shadow-lg">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+              </label>
+            ))}
+          </div>
+        </div>
 
+        {/* Secteur (pour DELEGATION) */}
+        {selectedRole === 'DELEGATION' && (
+          <div>
+            <GovSelect
+              label={tCreate('fields.sector') + ' *'}
+              required
+              value={secteurResponsable}
+              onChange={(e) => setSecteurResponsable(e.target.value)}
+              options={[
+                { label: tCreate('select_option.sector'), value: '' },
+                ...SECTEURS.map(s => ({ label: tSectors(s), value: s }))
+              ]}
+              leftIcon={<Shield size={18} />}
+            />
           </div>
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-4 px-6 py-4 border-t border-border shrink-0 bg-card/95">
-            <GovButton
-              type="button"
-              onClick={onClose}
-              variant="outline"
-              className="h-12 px-8"
-            >
-              {tCreate('cancel_btn')}
-            </GovButton>
-            <GovButton
-              type="submit"
-              loading={loading}
-              className="h-12 px-10"
-            >
-              {t('submit_btn')}
-            </GovButton>
+        )}
+
+        {/* Commune (pour AUTORITE_LOCALE) */}
+        {selectedRole === 'AUTORITE_LOCALE' && (
+          <div>
+            <GovSelect
+              label={tCreate('fields.commune') + ' *'}
+              required
+              value={communeResponsableId}
+              onChange={(e) => setCommuneResponsableId(e.target.value)}
+              options={[
+                { label: tCreate('select_option.commune'), value: '' },
+                ...communes.map(c => ({ 
+                  label: locale === 'ar' ? (c.nomArabe || c.nom) : c.nom, 
+                  value: c.id 
+                }))
+              ]}
+              leftIcon={<MapPin size={18} />}
+            />
           </div>
-        </form>
-      </motion.div>
-    </div>
+        )}
+
+        {/* Établissements (pour COORDINATEUR_ACTIVITES) */}
+        {selectedRole === 'COORDINATEUR_ACTIVITES' && (
+          <div>
+            <label className="block text-[10px] font-black text-muted-foreground uppercase tracking-widest px-1 mb-4">
+                {tCreate('fields.establishments', { count: etablissementsGeres.length })} *
+            </label>
+            <div className="max-h-60 overflow-y-auto border border-border bg-muted/20 rounded-[1.5rem] p-3 space-y-1 custom-scrollbar shadow-inner">
+              {!Array.isArray(etablissements) || etablissements.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/40">
+                  <Loader2 className="w-8 h-8 animate-spin mb-3" />
+                  <p className="text-[10px] font-black uppercase tracking-widest">{t('loading')}</p>
+                </div>
+              ) : (
+                etablissements.map((etab) => (
+                  <label
+                    key={etab.id}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border border-transparent",
+                      etablissementsGeres.includes(etab.id)
+                        ? "bg-[hsl(var(--gov-blue)/0.1)] border-[hsl(var(--gov-blue)/0.2)] shadow-sm"
+                        : "hover:bg-muted/40"
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={etablissementsGeres.includes(etab.id)}
+                      onChange={() => toggleEtablissement(etab.id)}
+                      className="w-5 h-5 rounded-lg border-border text-[hsl(var(--gov-blue))] focus:ring-[hsl(var(--gov-blue))/0.2]"
+                    />
+                    <Building2 className={cn("w-4 h-4", etablissementsGeres.includes(etab.id) ? "text-[hsl(var(--gov-blue))]" : "text-muted-foreground")} />
+                    <span className={cn(
+                      "text-xs font-black uppercase tracking-tight",
+                      etablissementsGeres.includes(etab.id) ? "text-foreground" : "text-muted-foreground"
+                    )}>
+                      {locale === 'ar' ? (etab.nomArabe || etab.nom) : etab.nom}
+                    </span>
+                  </label>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </form>
+    </GovModal>
   );
 }

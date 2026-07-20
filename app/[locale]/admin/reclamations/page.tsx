@@ -42,11 +42,10 @@ import { toast } from 'sonner';
 import { PermissionGuard } from '@/hooks/use-permission';
 import { useTranslations, useLocale } from 'next-intl';
 import EmptyState from '@/components/ui/EmptyState';
-import { GovButton } from '@/components/ui/GovButton';
+import { GovInput, GovSelect, GovButton, GovPageHeader } from '@/components/ui';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
-import { GovInput, GovSelect } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { GovDatePicker } from '@/components/ui/GovDatePicker';
 import { useData } from '@/hooks/use-data';
@@ -375,73 +374,53 @@ export default function AdminReclamationsPage() {
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[hsl(var(--gov-gold)/0.03)] rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto relative z-10">
-          {/* Header Section */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
-            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[#ebd281]/30 ring-2 ring-white dark:ring-gray-900 group">
-                <Flag className="w-7 h-7 group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-                    {t('page_title')}
-                  </h1>
-                  <span className="px-3 py-1 bg-[hsl(var(--gov-blue)/0.1)] text-[hsl(var(--gov-blue))] text-[10px] font-black rounded-full uppercase tracking-widest border border-[hsl(var(--gov-blue)/0.2)] whitespace-nowrap">
-                    {tCommon('nav.user_menu.admin')}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground text-sm font-medium">
-                  <p>{t('total_reclamations', { count: total })}</p>
-                  <div className="hidden sm:block w-1 h-1 bg-border rounded-full" />
-                  <p className="flex items-center gap-1.5 whitespace-nowrap">
-                    <Shield size={14} className="text-[hsl(var(--gov-blue))]" />
-                    {tCommon('governance_secure')}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-3">
-              <GovButton
-                onClick={async () => {
-                  setRefreshing(true);
-                  await loadReclamations();
-                  setRefreshing(false);
-                }}
-                disabled={refreshing || loadingReclamations}
-                variant="outline"
-                size="icon"
-                loading={refreshing || loadingReclamations}
-                title={tCommon('refresh')}
-              >
-                <RefreshCw size={16} />
-              </GovButton>
-              
-              <div className="h-10 w-px bg-border mx-1 hidden sm:block" />
-              
-              <GovButton
-                onClick={() => setShowFilters(!showFilters)}
-                variant={showFilters ? 'primary' : 'outline'}
-                leftIcon={<Filter size={18} className={showFilters ? 'scale-110' : ''} />}
-                className={showFilters ? 'shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]' : ''}
-              >
-                {tActions('filter')}
-                {Object.values(filters).filter(v => v !== '').length > 0 && (
-                  <span className="ms-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
-                    {Object.values(filters).filter(v => v !== '').length}
-                  </span>
-                )}
-              </GovButton>
+          <GovPageHeader
+            title={t('page_title')}
+            subtitle={t('total_reclamations', { count: total })}
+            icon={<Flag className="w-8 h-8" />}
+            actions={
+              <div className="flex flex-wrap items-center gap-3">
+                <GovButton
+                  onClick={async () => {
+                    setRefreshing(true);
+                    await loadReclamations();
+                    setRefreshing(false);
+                  }}
+                  disabled={refreshing || loadingReclamations}
+                  variant="outline"
+                  size="icon"
+                  loading={refreshing || loadingReclamations}
+                  title={tCommon('refresh')}
+                >
+                  <RefreshCw size={16} />
+                </GovButton>
+                
+                <div className="h-10 w-px bg-border mx-1 hidden sm:block" />
+                
+                <GovButton
+                  onClick={() => setShowFilters(!showFilters)}
+                  variant={showFilters ? 'primary' : 'outline'}
+                  leftIcon={<Filter size={18} className={showFilters ? 'scale-110' : ''} />}
+                  className={showFilters ? 'shadow-lg shadow-[hsl(var(--gov-blue)/0.2)]' : ''}
+                >
+                  {tActions('filter')}
+                  {Object.values(filters).filter(v => v !== '').length > 0 && (
+                    <span className="ms-1 w-5 h-5 bg-white text-[hsl(var(--gov-blue))] rounded-full flex items-center justify-center text-[10px] font-black shadow-sm">
+                      {Object.values(filters).filter(v => v !== '').length}
+                    </span>
+                  )}
+                </GovButton>
 
-              <GovButton
-                onClick={() => {/* Export logic */}}
-                variant="outline"
-                leftIcon={<Download size={18} />}
-              >
-                {tCommon('export')}
-              </GovButton>
-            </div>
-          </div>
+                <GovButton
+                  onClick={() => {/* Export logic */}}
+                  variant="outline"
+                  leftIcon={<Download size={18} />}
+                >
+                  {tCommon('export')}
+                </GovButton>
+              </div>
+            }
+          />
 
           {/* Stats Grid */}
           <KpiGrid cols={5} className="mb-10">

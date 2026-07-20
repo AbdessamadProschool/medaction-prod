@@ -104,17 +104,6 @@ export default async function RootLayout({
             <NextIntlClientProvider
               messages={messages}
               locale={locale}
-              onError={(error) => {
-                // Log translation errors to console so monitoring tools (like Sentry) catch it
-                console.error('[next-intl] Missing translation key:', error.message);
-              }}
-              getMessageFallback={({ namespace, key, error }) => {
-                // Return a cleaned-up human-readable fallback instead of the raw key path
-                const lastPart = key.split('.').pop() || key;
-                return lastPart
-                  .replace(/_/g, ' ')
-                  .replace(/\b\w/g, (c) => c.toUpperCase());
-              }}
             >
               <LicenseProvider>
                 <MaintenanceProvider>

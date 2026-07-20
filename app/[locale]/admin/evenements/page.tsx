@@ -280,7 +280,7 @@ function AdminEvenementsContent() {
       {/* Header */}
       <GovPageHeader
         title={t('title')}
-        description={t('subtitle')}
+        subtitle={t('subtitle')}
         icon={<Calendar className="w-8 h-8" />}
         actions={
           <div className="flex flex-wrap items-center gap-3">

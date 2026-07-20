@@ -113,6 +113,7 @@ export default function AdminEtablissementsPage() {
   const [editLatitude, setEditLatitude] = useState('');
   const [editLongitude, setEditLongitude] = useState('');
   const [savingEdit, setSavingEdit] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const openDetailModal = (etablissement: any) => {
     setSelectedEtablissement(etablissement);

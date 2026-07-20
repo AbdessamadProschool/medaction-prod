@@ -8,6 +8,7 @@ export { Input } from './input';
 export { Textarea } from './textarea';
 export { Badge, badgeVariants } from './badge';
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card';
+export { GovCard, GovCardHeader, GovCardFooter, GovCardContent } from './GovCard';
 
 // === GOV DESIGN SYSTEM — Étapes 3, 5, 6 ===
 /** Étape 3 — Bouton universel gouvernemental */

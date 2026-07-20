@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface GovPageHeaderProps {
-  title: string;
-  subtitle?: string;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
   icon?: React.ReactNode;
   badge?: React.ReactNode;
   actions?: React.ReactNode;

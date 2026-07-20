@@ -232,6 +232,21 @@ export default function AdminLogsPage() {
   // Cleanup confirmation state
   const [showCleanupConfirm, setShowCleanupConfirm] = useState(false);
 
+  const handleCleanup = async () => {
+    try {
+      const res = await fetch('/api/admin/system/cleanup-logs', { method: 'POST' });
+      if (res.ok) {
+        toast.success(t('cleanup_success', { defaultValue: 'Logs nettoyés avec succès' }));
+      } else {
+        toast.error(t('cleanup_error', { defaultValue: 'Erreur lors du nettoyage' }));
+      }
+    } catch (error) {
+      toast.error('Erreur serveur');
+    } finally {
+      setShowCleanupConfirm(false);
+    }
+  };
+
   // Endpoint dynamique mémoïsé
   const endpoint = useMemo(() => {
     const params = new URLSearchParams();

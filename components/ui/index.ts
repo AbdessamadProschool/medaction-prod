@@ -15,8 +15,8 @@ export { GovButton, govButtonVariants } from './GovButton';
 export type { GovButtonProps } from './GovButton';
 
 /** Étape 5 — Carte KPI avec animation et variation */
-export { KpiCard, KpiGrid } from './KpiCard';
-export type { KpiCardProps, KpiVariant } from './KpiCard';
+export { GovKpiCard, GovKpiGrid } from './GovKpiCard';
+export type { GovKpiCardProps, GovKpiVariant } from './GovKpiCard';
 
 /** Étape 6 — Badge de statut avec helpers domaine */
 export { StatusBadge, resolveReclamationStatus, resolveEvenementStatus } from './StatusBadge';

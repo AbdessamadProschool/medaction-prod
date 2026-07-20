@@ -640,7 +640,7 @@ export default function SuperAdminDashboard() {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </GovCard>
           </div>
 
           {/* Additional Admin Features */}

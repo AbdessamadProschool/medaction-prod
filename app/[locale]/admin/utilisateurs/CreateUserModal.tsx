@@ -458,6 +458,7 @@ export default function CreateUserModal({ onClose, onSuccess }: CreateUserModalP
                 </span>
               </label>
             </div>
+          </div>
       </form>
     </GovModal>
   );

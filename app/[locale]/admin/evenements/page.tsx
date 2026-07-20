@@ -278,7 +278,13 @@ function AdminEvenementsContent() {
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
       {/* Header */}
-          <GovButton
+      <GovPageHeader
+        title={t('title')}
+        description={t('subtitle')}
+        icon={<Calendar className="w-8 h-8" />}
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <GovButton
             onClick={async () => {
               setRefreshing(true);
               await loadEvenements();
@@ -308,8 +314,9 @@ function AdminEvenementsContent() {
           >
             {t('create')}
           </GovButton>
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {/* Stats Cards */}
       <GovKpiGrid cols={5}>

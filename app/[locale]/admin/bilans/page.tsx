@@ -34,6 +34,7 @@ import { toast } from 'sonner';
 import { useTranslations, useLocale } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
+import { GovPageHeader, GovCard, GovButton } from '@/components/ui';
 
 interface MediaItem {
   id: number;
@@ -381,19 +382,11 @@ export default function BilansPage() {
   return (
     <div className="space-y-8 bg-background min-h-screen p-4 sm:p-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-extrabold text-foreground flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#ebd281] to-[#d4b962] rounded-2xl flex items-center justify-center text-[#0a3b68] shadow-lg shadow-[hsl(var(--gov-blue)/0.3)]">
-              <BarChart3 className="w-6 h-6" />
-            </div>
-            {t('admin_bilans.title')}
-          </h1>
-          <p className="text-muted-foreground mt-2 font-medium">
-            {t('admin_bilans.subtitle')}
-          </p>
-        </div>
-      </div>
+      <GovPageHeader
+        title={t('admin_bilans.title')}
+        subtitle={t('admin_bilans.subtitle')}
+        icon={<BarChart3 className="w-8 h-8" />}
+      />
 
       {/* Stats Cards */}
       <motion.div 
@@ -457,7 +450,7 @@ export default function BilansPage() {
       <div 
         role="tablist" 
         aria-label={t('admin_bilans.tabs.aria_label') || "Onglets des bilans"}
-        className="flex gap-4 p-1.5 bg-muted rounded-2xl w-fit border border-border shadow-sm"
+        className="flex flex-wrap gap-2 sm:gap-4 p-1.5 bg-muted rounded-2xl w-full sm:w-fit border border-border shadow-sm"
       >
         <button
           role="tab"

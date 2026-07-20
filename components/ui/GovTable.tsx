@@ -15,7 +15,7 @@ interface GovTableProps extends React.HTMLAttributes<HTMLTableElement> {
 const GovTable = React.forwardRef<HTMLTableElement, GovTableProps>(
   ({ className, wrapperClassName, children, ...props }, ref) => {
     return (
-      <div className={cn('gov-table-wrapper bg-card/50 backdrop-blur-sm shadow-xl rounded-xl overflow-hidden border border-border', wrapperClassName)}>
+      <div className={cn('gov-table-wrapper bg-card rounded-[2rem] shadow-sm hover:shadow-md transition-shadow border border-border/50 overflow-hidden', wrapperClassName)}>
         {/* overflow-x-auto with -webkit-overflow-scrolling for iOS momentum scroll */}
         <div className="overflow-x-auto -webkit-overflow-scrolling-touch w-full">
           <table

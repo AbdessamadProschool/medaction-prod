@@ -37,7 +37,7 @@ import { GovButton } from '@/components/ui/GovButton';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
 import { GovTable, GovTh, GovTd, GovTr } from '@/components/ui/GovTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { GovInput, GovSelect } from '@/components/ui';
+import { GovInput, GovSelect, GovModal, GovPageHeader } from '@/components/ui';
 import { cn, decodeHtmlEntities } from '@/lib/utils';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
@@ -278,22 +278,6 @@ function AdminEvenementsContent() {
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-20">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-[hsl(var(--gov-blue))/0.1] rounded-2xl flex items-center justify-center border border-[hsl(var(--gov-blue))/0.2]">
-              <Calendar className="text-[hsl(var(--gov-blue))] w-6 h-6" />
-            </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
-              {t('title')}
-            </h1>
-          </div>
-          <p className="text-muted-foreground font-medium text-base sm:text-lg ms-0">
-            {t('subtitle', { count: total })}
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-3">
           <GovButton
             onClick={async () => {
               setRefreshing(true);
@@ -776,180 +760,151 @@ function AdminEvenementsContent() {
       />
 
       {/* Detail Modal (Institutional Sidebar) */}
-      <AnimatePresence>
-        {showDetailModal && selectedEvenement && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+      <GovModal
+        isOpen={showDetailModal && selectedEvenement !== null}
+        onClose={() => setShowDetailModal(false)}
+        title={selectedEvenement?.titre}
+        subtitle={selectedEvenement?.typeCategorique}
+        maxWidth="3xl"
+        footer={
+          <div className="grid grid-cols-2 gap-4">
+            <button
               onClick={() => setShowDetailModal(false)}
-              className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
-            />
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              className="fixed inset-4 md:inset-10 lg:inset-x-[15%] lg:inset-y-10 bg-card shadow-2xl z-[101] overflow-y-auto rounded-3xl border border-border"
+              className="px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
             >
-              {/* Header */}
-              <div className="sticky top-0 bg-card/80 backdrop-blur-md border-b border-border px-8 py-6 flex items-center justify-between z-10">
-                <div>
-                  <h2 dir="auto" className="text-xl font-extrabold text-foreground">
-                    {selectedEvenement.titre}
-                  </h2>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
-                    {selectedEvenement.typeCategorique}
+              {tModal('close')}
+            </button>
+            {selectedEvenement && (
+              <Link
+                href={`/admin/evenements/${selectedEvenement.id}/modifier`}
+                className="gov-btn-primary py-4 rounded-2xl flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-bold"
+              >
+                <Edit2 size={16} />
+                {tModal('edit_full')}
+              </Link>
+            )}
+          </div>
+        }
+      >
+        {selectedEvenement && (
+          <div className="space-y-10">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('sector')}</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center text-[hsl(var(--gov-blue))]">
+                    <Building2 size={16} />
+                  </div>
+                  <p className="font-extrabold text-foreground">{tSectors(selectedEvenement.secteur)}</p>
+                </div>
+              </div>
+              <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('registrations')}</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center text-[hsl(var(--gov-green))]">
+                    <Users size={16} />
+                  </div>
+                  <p className="font-extrabold text-foreground">
+                    {selectedEvenement.nombreInscrits}
+                    {selectedEvenement.capaciteMax && <span className="text-muted-foreground/60 font-medium ml-1">/ {selectedEvenement.capaciteMax}</span>}
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="p-2.5 hover:bg-muted rounded-xl transition-colors border border-transparent hover:border-border text-muted-foreground hover:text-foreground"
-                >
-                  <X size={20} />
-                </button>
               </div>
+            </div>
 
-              {/* Content */}
-              <div className="p-8 space-y-10">
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('sector')}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-blue))/0.1] flex items-center justify-center text-[hsl(var(--gov-blue))]">
-                        <Building2 size={16} />
-                      </div>
-                      <p className="font-extrabold text-foreground">{tSectors(selectedEvenement.secteur)}</p>
-                    </div>
-                  </div>
-                  <div className="p-6 bg-muted/30 rounded-3xl border border-border/50">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('registrations')}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--gov-green))/0.1] flex items-center justify-center text-[hsl(var(--gov-green))]">
-                        <Users size={16} />
-                      </div>
-                      <p className="font-extrabold text-foreground">
-                        {selectedEvenement.nombreInscrits}
-                        {selectedEvenement.capaciteMax && <span className="text-muted-foreground/60 font-medium ml-1">/ {selectedEvenement.capaciteMax}</span>}
-                      </p>
-                    </div>
+            {/* Info List */}
+            <div className="space-y-6">
+              {/* Provincial Partnership Banner */}
+              {(selectedEvenement.isOrganiseParProvince || selectedEvenement.sousCouvertProvince) && (
+                <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800">
+                  <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
+                  <div className="text-sm font-bold">
+                    {selectedEvenement.sousCouvertProvince 
+                      ? (locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna')
+                      : (locale === 'ar' ? 'رسمي - عمالة إقليم مديونة' : 'Officiel - Province de Médiouna')
+                    }
                   </div>
                 </div>
+              )}
 
-                {/* Info List */}
-                <div className="space-y-6">
-                  {/* Provincial Partnership Banner */}
-                  {(selectedEvenement.isOrganiseParProvince || selectedEvenement.sousCouvertProvince) && (
-                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-800">
-                      <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
-                      <div className="text-sm font-bold">
-                        {selectedEvenement.sousCouvertProvince 
-                          ? (locale === 'ar' ? 'تحت إشراف عمالة إقليم مديونة' : 'Sous couvert de la Province de Médiouna')
-                          : (locale === 'ar' ? 'رسمي - عمالة إقليم مديونة' : 'Officiel - Province de Médiouna')
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('period')}</p>
+                  <p className="font-bold text-foreground">
+                    {new Date(selectedEvenement.dateDebut).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    {selectedEvenement.dateFin && (
+                      <span className="block text-sm text-muted-foreground/80 mt-1">
+                        au {new Date(selectedEvenement.dateFin).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                      </span>
+                    )}
+                    {selectedEvenement.heureDebut && (
+                      <span className="block text-xs text-muted-foreground mt-1">
+                        {locale === 'ar' 
+                          ? `من الساعة ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `إلى ${selectedEvenement.heureFin}` : ''}`
+                          : `De ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `à ${selectedEvenement.heureFin}` : ''}`
                         }
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
-                      <Calendar className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('period')}</p>
-                      <p className="font-bold text-foreground">
-                        {new Date(selectedEvenement.dateDebut).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                        {selectedEvenement.dateFin && (
-                          <span className="block text-sm text-muted-foreground/80 mt-1">
-                            au {new Date(selectedEvenement.dateFin).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                          </span>
-                        )}
-                        {selectedEvenement.heureDebut && (
-                          <span className="block text-xs text-muted-foreground mt-1">
-                            {locale === 'ar' 
-                              ? `من الساعة ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `إلى ${selectedEvenement.heureFin}` : ''}`
-                              : `De ${selectedEvenement.heureDebut} ${selectedEvenement.heureFin ? `à ${selectedEvenement.heureFin}` : ''}`
-                            }
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
-                      <MapPin className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('location')}</p>
-                      <p className="font-bold text-foreground">
-                        {(() => {
-                          const parts: string[] = [];
-                          if (selectedEvenement.lieu) parts.push(selectedEvenement.lieu);
-                          if (selectedEvenement.lieuEtablissement) {
-                            parts.push(locale === 'ar' && selectedEvenement.lieuEtablissement.nomArabe ? selectedEvenement.lieuEtablissement.nomArabe : selectedEvenement.lieuEtablissement.nom);
-                          }
-                          if (selectedEvenement.commune) {
-                            parts.push(locale === 'ar' ? (selectedEvenement.commune.nomArabe || selectedEvenement.commune.nom) : selectedEvenement.commune.nom);
-                          }
-                          return parts.join(', ');
-                        })()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
-                    <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
-                    {tModal('description_event')}
-                  </h4>
-                  <div dir="auto" className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium text-justify">
-                    {decodeHtmlEntities(selectedEvenement.description)}
-                  </div>
-                </div>
-
-                {/* Status Section */}
-                <div className="p-6 bg-[hsl(var(--gov-blue))/0.03] rounded-3xl border border-[hsl(var(--gov-blue))/0.1] space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tModal('current_status')}</span>
-                    <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color} border-current/10`}>
-                      {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
-                    </span>
-                  </div>
-                  {selectedEvenement.isMisEnAvant && (
-                    <div className="flex items-center gap-2 text-amber-700 bg-amber-50/80 px-4 py-2 rounded-xl border border-amber-200/50">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">{tModal('featured_event')}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Footer Actions */}
-                <div className="grid grid-cols-2 gap-4 pt-10 border-t border-border">
-                  <button
-                    onClick={() => setShowDetailModal(false)}
-                    className="px-6 py-4 bg-muted text-muted-foreground rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-muted/80 transition-all border border-transparent hover:border-border"
-                  >
-                    {tModal('close')}
-                  </button>
-                  <Link
-                    href={`/admin/evenements/${selectedEvenement.id}/modifier`}
-                    className="gov-btn-primary py-4 rounded-2xl justify-center text-xs uppercase tracking-widest font-bold"
-                  >
-                    <>
-                      <Edit2 size={16} />
-                      {tModal('edit_full')}
-                    </>
-                  </Link>
+                      </span>
+                    )}
+                  </p>
                 </div>
               </div>
-            </motion.div>
-          </>
+
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 border border-border">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{tModal('location')}</p>
+                  <p className="font-bold text-foreground">
+                    {(() => {
+                      const parts: string[] = [];
+                      if (selectedEvenement.lieu) parts.push(selectedEvenement.lieu);
+                      if (selectedEvenement.lieuEtablissement) {
+                        parts.push(locale === 'ar' && selectedEvenement.lieuEtablissement.nomArabe ? selectedEvenement.lieuEtablissement.nomArabe : selectedEvenement.lieuEtablissement.nom);
+                      }
+                      if (selectedEvenement.commune) {
+                        parts.push(locale === 'ar' ? (selectedEvenement.commune.nomArabe || selectedEvenement.commune.nom) : selectedEvenement.commune.nom);
+                      }
+                      return parts.join(', ');
+                    })()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-4 bg-[hsl(var(--gov-blue))] rounded-full" />
+                {tModal('description_event')}
+              </h4>
+              <div dir="auto" className="p-6 bg-muted/20 rounded-3xl border border-border/50 text-muted-foreground leading-relaxed font-medium text-justify">
+                {decodeHtmlEntities(selectedEvenement.description)}
+              </div>
+            </div>
+
+            {/* Status Section */}
+            <div className="p-6 bg-[hsl(var(--gov-blue))/0.03] rounded-3xl border border-[hsl(var(--gov-blue))/0.1] space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tModal('current_status')}</span>
+                <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${STATUT_CONFIG[selectedEvenement.statut]?.bg} ${STATUT_CONFIG[selectedEvenement.statut]?.color} border-current/10`}>
+                  {t('status.' + (statusKeyMap[selectedEvenement.statut] || 'pending'))}
+                </span>
+              </div>
+              {selectedEvenement.isMisEnAvant && (
+                <div className="flex items-center gap-2 text-amber-700 bg-amber-50/80 px-4 py-2 rounded-xl border border-amber-200/50">
+                  <Star className="w-4 h-4 fill-current" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">{tModal('featured_event')}</span>
+                </div>
+              )}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </GovModal>
     </div>
   );
 }

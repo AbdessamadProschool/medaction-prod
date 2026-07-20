@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useData } from '@/hooks/use-data';
 import { useMutation } from '@/hooks/use-mutation';
 import { KpiCard, KpiGrid } from '@/components/ui/KpiCard';
+import { GovPageHeader, GovCard, GovButton } from '@/components/ui';
 import {
   Shield,
   ShieldCheck,
@@ -316,68 +317,39 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Top Bar */}
-      <div className="bg-gradient-to-r from-[hsl(var(--gov-blue-dark))] via-[hsl(var(--gov-blue))] to-[hsl(var(--gov-blue-dark))] text-white">
-        {/* Tricolor band */}
-        <div className="h-1 bg-gradient-to-r from-[hsl(348,83%,47%)] via-[hsl(45,93%,47%)] to-[hsl(145,63%,32%)]" />
-        
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {/* Back buttons */}
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/"
-                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  title={t('super_admin.home')}
-                >
-                  <Home size={20} />
-                </Link>
-                <Link
-                  href="/admin"
-                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  title={t('super_admin.dashboard_admin')}
-                >
-                  <ArrowLeft size={20} />
-                </Link>
-              </div>
-              
-              <div className="w-px h-8 bg-white/20" />
-              
-              <div className="p-2 bg-white/10 rounded-xl backdrop-blur">
-                <ShieldCheck className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white drop-shadow-sm">{t('super_admin.title')}</h1>
-                <p className="text-white/80 text-sm font-medium mt-1">{t('super_admin.subtitle')}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={fetchData}
-                disabled={refreshing}
-                className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+      <GovPageHeader
+        title={t('super_admin.title')}
+        subtitle={t('super_admin.subtitle')}
+        icon={<ShieldCheck className="w-8 h-8" />}
+        actions={
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <button
+              onClick={fetchData}
+              disabled={refreshing}
+              className="p-2 bg-[hsl(var(--gov-blue))/0.1] text-[hsl(var(--gov-blue))] rounded-lg hover:bg-[hsl(var(--gov-blue))/0.2] transition-colors"
+            >
+              <RefreshCw size={20} className={refreshing ? 'animate-spin' : ''} />
+            </button>
+            <GovButton
+              onClick={handleExportAll}
+              variant="outline"
+              leftIcon={<Download size={18} />}
+            >
+              {t('super_admin.export')}
+            </GovButton>
+            <Link
+              href="/super-admin/admins"
+            >
+              <GovButton
+                variant="primary"
+                leftIcon={<UserCog size={18} />}
               >
-                <RefreshCw size={20} className={refreshing ? 'animate-spin' : ''} />
-              </button>
-              <button
-                onClick={handleExportAll}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-              >
-                <Download size={18} />
-                {t('super_admin.export')}
-              </button>
-              <Link
-                href="/super-admin/admins"
-                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--gov-gold))] text-[hsl(var(--gov-blue-dark))] rounded-lg font-medium hover:bg-[hsl(var(--gov-gold-light))] transition-colors"
-              >
-                <UserCog size={18} />
                 {t('super_admin.manage_admins')}
-              </Link>
-            </div>
+              </GovButton>
+            </Link>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <motion.div
@@ -387,10 +359,7 @@ export default function SuperAdminDashboard() {
           className="space-y-8"
         >
           {/* System Health */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-          >
+          <GovCard className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <Server className="w-5 h-5 text-[hsl(var(--gov-blue))]" />
@@ -438,7 +407,7 @@ export default function SuperAdminDashboard() {
                 <p className="text-xl font-bold text-gray-900 dark:text-white">{stats?.system.errors24h || 0}</p>
               </div>
             </div>
-          </motion.div>
+          </GovCard>
 
           {/* Quick Actions */}
           <motion.div variants={itemVariants}>
@@ -571,10 +540,7 @@ export default function SuperAdminDashboard() {
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Activity */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-            >
+            <GovCard className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <Activity className="w-5 h-5 text-blue-500" />
@@ -614,13 +580,10 @@ export default function SuperAdminDashboard() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </GovCard>
 
             {/* Permissions Overview */}
-            <motion.div
-              variants={itemVariants}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-            >
+            <GovCard className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <Shield className="w-5 h-5 text-[hsl(var(--gov-blue))]" />

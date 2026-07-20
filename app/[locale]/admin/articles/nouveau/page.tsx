@@ -24,7 +24,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import { GovInput, GovSelect, GovTextarea, GovButton } from '@/components/ui';
+import { GovInput, GovSelect, GovTextarea, GovButton, GovPageHeader, GovCard } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { useMutation } from '@/hooks/use-mutation';
 
@@ -122,64 +122,43 @@ export default function NouvelArticlePage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-24">
-      {/* Header Institutional */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-center justify-between gap-6"
-      >
-        <div className="space-y-4">
-          <Link 
-            href="/admin/articles"
-            className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
-              <ArrowLeft size={14} />
-            </div>
-            <span>{t('back_list')}</span>
-          </Link>
-          
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 bg-gradient-to-br from-gov-green to-gov-green-dark rounded-[2rem] flex items-center justify-center shadow-2xl shadow-gov-green/20 ring-8 ring-gov-green/20">
-              <FileText className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black tracking-tight text-foreground uppercase italic">
-                {t('create_title')}
-              </h1>
-              <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] opacity-70 mt-1">
-                {t('create_subtitle')}
-              </p>
-            </div>
+      <GovPageHeader
+        title={t('create_title')}
+        subtitle={t('create_subtitle')}
+        icon={<FileText className="w-8 h-8" />}
+        actions={
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <Link 
+              href="/admin/articles"
+              className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mr-2"
+            >
+              <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center group-hover:border-foreground/20 group-hover:bg-muted/50 transition-all">
+                <ArrowLeft size={14} />
+              </div>
+              <span className="hidden sm:inline">{t('back_list')}</span>
+            </Link>
+            <GovButton
+              onClick={handleSubmit(onSubmit)}
+              loading={loading}
+              variant="primary"
+              leftIcon={!loading && <Save size={18} />}
+              className="rounded-full px-8 bg-[hsl(var(--gov-green))] hover:bg-[hsl(var(--gov-green-dark))] border-none"
+            >
+              {t('actions.save')}
+            </GovButton>
           </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-           <GovButton
-            onClick={handleSubmit(onSubmit)}
-            loading={loading}
-            variant="primary"
-            leftIcon={!loading && <Save size={18} />}
-            className="rounded-full px-10 shadow-xl shadow-gov-green/20 bg-gov-green hover:bg-gov-green border-none"
-          >
-            {t('actions.save')}
-          </GovButton>
-        </div>
-      </motion.div>
+        }
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         
         {/* Left Column: Editor */}
         <div className="lg:col-span-2 space-y-10">
           {/* Cover Image Section */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
-          >
+          <GovCard className="overflow-hidden">
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-gov-green rounded-full" />
+                <div className="w-2 h-5 bg-[hsl(var(--gov-green))] rounded-full" />
                 {t('sections.image')}
               </h2>
             </div>
@@ -237,18 +216,13 @@ export default function NouvelArticlePage() {
                 )}
               </AnimatePresence>
             </div>
-          </motion.div>
+          </GovCard>
 
           {/* Main Content Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border overflow-hidden shadow-2xl shadow-gov-green/20"
-          >
+          <GovCard className="overflow-hidden">
             <div className="p-10 border-b border-border/50 bg-muted/5">
               <h2 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
-                <div className="w-2 h-5 bg-gov-green rounded-full" />
+                <div className="w-2 h-5 bg-[hsl(var(--gov-green))] rounded-full" />
                 {t('sections.content')}
               </h2>
             </div>
@@ -279,18 +253,13 @@ export default function NouvelArticlePage() {
                 className="leading-relaxed font-serif text-lg"
               />
             </div>
-          </motion.div>
+          </GovCard>
         </div>
 
         {/* Right Column: Taxonomy & Publishing */}
         <div className="space-y-10">
           {/* Section Classification */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
-          >
+          <GovCard className="p-10">
             <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3">
@@ -318,15 +287,10 @@ export default function NouvelArticlePage() {
                 {...register('tags')}
               />
             </div>
-          </motion.div>
+          </GovCard>
 
           {/* Section Publication */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-10 shadow-xl"
-          >
+          <GovCard className="p-10">
             <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-3 mb-8">
               <Eye className="w-5 h-5 text-gov-blue" />
               {t('sections.publication')}
@@ -355,7 +319,7 @@ export default function NouvelArticlePage() {
                 </div>
               </div>
             </label>
-          </motion.div>
+          </GovCard>
 
           {/* Tips Card */}
           <motion.div 

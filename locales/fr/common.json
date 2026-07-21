@@ -1586,7 +1586,14 @@
       "limit": "Limite",
       "includeNonPublie": "Inclure non publiés",
       "loading": "Chargement des établissements...",
-      "refresh": "Actualiser"
+      "refresh": "Actualiser",
+      "title": "Établissements de santé",
+      "subtitle": "Gérez les établissements de la province",
+      "actions": {
+        "refresh": "Rafraîchir",
+        "filter": "Filtrer",
+        "create": "Créer un établissement"
+      }
     },
     "programs_page": {
       "title": "Programmes et Activités",
@@ -2061,7 +2068,23 @@
     "slide4_subtitle_alt": "Votre avis compte",
     "slide4_description_alt": "Contribuez activement aux décisions locales."
   },
-  "search": "Rechercher",
+  "search": {
+    "0": "R",
+    "1": "e",
+    "2": "c",
+    "3": "h",
+    "4": "e",
+    "5": "r",
+    "6": "c",
+    "7": "h",
+    "8": "e",
+    "9": "r",
+    "all_communes": "Toutes les communes",
+    "placeholder": "Rechercher...",
+    "quick": "Recherche rapide",
+    "title": "Recherche globale",
+    "subtitle": "Recherchez à travers toutes les données"
+  },
   "sectors": {
     "title": "Secteurs d'activité",
     "filter": "Cliquez pour filtrer",
